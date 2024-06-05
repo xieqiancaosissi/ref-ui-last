@@ -24,5 +24,6 @@ module.exports = {
     "@typescript-eslint/ban-types": "off",
     "react-hooks/exhaustive-deps": "off",
     "@typescript-eslint/no-non-null-assertion": "off",
+    "@typescript-eslint/no-inferrable-types": "off",
   },
 };

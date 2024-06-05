@@ -6,19 +6,21 @@ import {
   PoolIcon,
   FarmsIcon,
   YoursIcon,
+  StakeIcon,
 } from "./icons";
 
-interface IMenu {
+export interface IMenu {
   id: string;
   label: string | React.ReactElement;
   path?: string;
   children?: IMenuChild[];
+  icon?: string | React.ReactElement;
 }
-interface IMenuChild {
+export interface IMenuChild {
   id: string;
   label: string | React.ReactElement;
   icon: React.ReactElement;
-  path: "";
+  path: string;
 }
 export function menuData(): IMenu[] {
   return [
@@ -30,7 +32,7 @@ export function menuData(): IMenu[] {
           id: "swap",
           label: "Swap",
           icon: <SwapIcon />,
-          path: "",
+          path: "/",
         },
         {
           id: "limit",
@@ -47,20 +49,20 @@ export function menuData(): IMenu[] {
       ],
     },
     {
-      id: "pool",
-      label: "POOL",
+      id: "earn",
+      label: "EARN",
       children: [
         {
           id: "pools",
           label: "Pools",
           icon: <PoolIcon />,
-          path: "",
+          path: "/pools",
         },
         {
           id: "farms",
           label: "Farms",
           icon: <FarmsIcon />,
-          path: "",
+          path: "/farms",
         },
         {
           id: "yours",
@@ -68,22 +70,18 @@ export function menuData(): IMenu[] {
           icon: <YoursIcon />,
           path: "",
         },
+        {
+          id: "stake",
+          label: "Stake",
+          icon: <StakeIcon />,
+          path: "",
+        },
       ],
     },
     {
-      id: "stake",
-      label: "STAKE",
-      path: "",
-    },
-    {
       id: "meme",
-      label: (
-        <>
-          MEME
-          <Image src="/images/memeMenu.svg" width={24} height={24} alt="" />
-          SEASON
-        </>
-      ),
+      icon: <Image src="/images/memeMenu.svg" width={24} height={24} alt="" />,
+      label: "MEME SEASON",
       path: "",
     },
   ];

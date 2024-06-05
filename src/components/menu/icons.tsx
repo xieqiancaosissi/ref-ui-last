@@ -203,6 +203,33 @@ export function YoursIcon() {
     </svg>
   );
 }
+export function StakeIcon() {
+  return (
+    <svg
+      width="18"
+      height="21"
+      viewBox="0 0 18 21"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <g>
+        <path
+          d="M7.82674 1.59595C8.54699 1.1558 9.45301 1.1558 10.1733 1.59595L16.1733 5.26262C16.8421 5.67135 17.25 6.39868 17.25 7.1825V13.6067C17.25 14.3745 16.8584 15.0893 16.2114 15.5027L10.2114 19.3361C9.47273 19.808 8.52727 19.808 7.78862 19.3361L1.78863 15.5027C1.14157 15.0893 0.75 14.3745 0.75 13.6067V7.1825C0.75 6.39868 1.15791 5.67135 1.82674 5.26262L7.82674 1.59595Z"
+          stroke="currentColor"
+          strokeWidth="1.5"
+        />
+        <path
+          d="M12.4819 14.18L10.3918 11.3649H11.0487C11.0487 11.3649 12.4819 11.4776 12.4819 9.90111V8.09945C12.4819 6.97341 11.6726 6.71997 11.0487 6.71997H8.30169H5.55469V8.26827H9.94393C10.3321 8.26827 10.6863 8.42711 10.6863 8.77507V9.6759C10.6863 10.1263 10.3321 10.2388 9.94393 10.2388H7.03909L9.94393 14.18H12.4819Z"
+          fill="currentColor"
+        />
+        <path
+          d="M5.55469 14.1799V11.0833L7.7941 14.1799H5.55469Z"
+          fill="currentColor"
+        />
+      </g>
+    </svg>
+  );
+}
 
 export function DownArrowIcon(props: any) {
   return (
@@ -328,6 +355,53 @@ export function ChangeIcon(props: any) {
         stroke="currentColor"
         strokeWidth="1.2"
       />
+    </svg>
+  );
+}
+export function MenuContainer(props: any) {
+  return (
+    <svg
+      {...props}
+      width="681"
+      height="48"
+      viewBox="0 0 681 48"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M1 1H680L662.091 42.1898C660.821 45.1107 657.94 47 654.755 47H26.2452C23.0602 47 20.1786 45.1107 18.9086 42.1898L1 1Z"
+        fill="url(#paint0_linear_3261_193)"
+        fillOpacity="0.4"
+      />
+      <path
+        d="M1 1L18.9086 42.1898C20.1786 45.1107 23.0602 47 26.2452 47H654.755C657.94 47 660.821 45.1107 662.091 42.1898L680 1"
+        stroke="url(#paint1_linear_3261_193)"
+      />
+      <defs>
+        <linearGradient
+          id="paint0_linear_3261_193"
+          x1="291"
+          y1="51"
+          x2="291"
+          y2="0.999999"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stopColor="#212E3B" />
+          <stop offset="1" stopColor="#212B35" stopOpacity="0" />
+        </linearGradient>
+        <linearGradient
+          id="paint1_linear_3261_193"
+          x1="31"
+          y1="24"
+          x2="551"
+          y2="24"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stopColor="#26323C" stopOpacity="0.4" />
+          <stop offset="0.497107" stopColor="#486176" />
+          <stop offset="1" stopColor="#26323C" stopOpacity="0.4" />
+        </linearGradient>
+      </defs>
     </svg>
   );
 }

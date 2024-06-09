@@ -75,6 +75,7 @@ export async function getContractInstance({
   const contract = new Contract(account, contractId, {
     viewMethods,
     changeMethods,
+    useLocalViewExecution: true,
   });
   return contract;
 }

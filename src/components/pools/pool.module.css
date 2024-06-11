@@ -1,0 +1,22 @@
+.chartsContainter {
+    @apply w-full h-81 flex-col justify-center items-center;
+    background: linear-gradient(180deg, rgba(33, 43, 53, 0) 0%, rgba(33, 43, 53, 0.4) 100%);
+    padding: 30px 0 2px 0;
+
+}
+
+.filterPoolType {
+    @apply text-xs cursor-pointer border border-gray-100 rounded w-101 h-9 frcc;
+}
+
+.filterSeacrhInputContainer {
+    @apply border border-gray-100 w-58 h-9 frc p-1 rounded;
+}
+
+.filterSearchInputAfter {
+    @apply frcc w-7 h-7 bg-gray-20 text-gray-50 text-base rounded-md;
+}
+
+.filterSearchInput {
+    @apply  border-none w-36 bg-transparent outline-none caret-white mr-1 ml-1 text-white text-sm;
+}

@@ -63,10 +63,6 @@ const config: Config = {
       minHeight: {
         ...getStyleMapping(1800, 0),
       },
-      backgroundImage: (theme) => ({
-        linearGrayBack:
-          "linear-gradient(356.54deg, #2A3643 2.38%, #6A88A9 90.82%)",
-      }),
     },
   },
   plugins: [

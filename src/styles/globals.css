@@ -1,7 +1,18 @@
 @tailwind base;
 @tailwind utilities;
 @import url("./aggregation.css");
-
+@font-face {
+  font-family: "SpaceGrotesk";
+  src: url("../../public/SpaceGrotesk-Light.ttf");
+}
+@font-face {
+  font-family: "SpaceGroteskBold";
+  src: url("../../public/SpaceGrotesk-Bold.ttf");
+}
+@font-face {
+  font-family: "SpaceGroteskRegular";
+  src: url("../../public/SpaceGrotesk-Regular.ttf");
+}
 * {
   box-sizing: border-box;
 }
@@ -11,6 +22,7 @@
 
 body {
   /* background: var(--background-color); */
+  font-family: "SpaceGroteskRegular";
 }
 
 @layer utilities {

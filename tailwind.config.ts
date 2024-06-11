@@ -20,6 +20,10 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      backgroundImage: (theme) => ({
+        farmTitleBg:
+          "linear-gradient(180deg, rgba(33, 43, 53, 0) 24.77%, rgba(33, 43, 53, 0.4) 124.77%)",
+      }),
       colors: {
         primaryDark: "#030F1",
         primaryGreen: "#9EFF00",

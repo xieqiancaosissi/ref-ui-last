@@ -7,9 +7,7 @@ const Farms = () => {
   const accountId = accountStore.getIsSignedIn();
   return (
     <main className={`text-white`}>
-      <div className="bg-farmTitleBg h-72">
-        Farm page
-      </div>
+      <div className="bg-farmTitleBg h-72">Farm page</div>
     </main>
   );
 };

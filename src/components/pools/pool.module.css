@@ -1,5 +1,5 @@
 .chartsContainter {
-  @apply w-full h-81 flex-col justify-center items-center;
+  @apply w-full min-h-81 flex-col justify-center items-center;
   background: linear-gradient(
     180deg,
     rgba(33, 43, 53, 0) 0%,
@@ -16,10 +16,14 @@
   @apply border border-gray-100 w-58 h-9 frc p-1 rounded;
 }
 
-.filterSearchInputAfter {
+.filterSearchInputBefore {
   @apply frcc w-7 h-7 bg-gray-20 text-gray-50 text-base rounded-md;
 }
 
 .filterSearchInput {
-  @apply border-none w-36 bg-transparent outline-none caret-white mr-1 ml-1 text-white text-sm;
+  @apply border-none w-40 bg-transparent outline-none caret-white mr-1 ml-1 text-white text-sm;
+}
+
+.createPoolButton {
+  @apply frcc text-sm font-bold text-gray-50 bg-gray-40 rounded-md ml-3  h-9 w-29 cursor-pointer hover:opacity-85;
 }

@@ -20,10 +20,6 @@ const config: Config = {
   ],
   theme: {
     extend: {
-      backgroundImage: (theme) => ({
-        farmTitleBg:
-          "linear-gradient(180deg, rgba(33, 43, 53, 0) 24.77%, rgba(33, 43, 53, 0.4) 124.77%)",
-      }),
       colors: {
         primaryDark: "#030F1",
         primaryGreen: "#9EFF00",
@@ -63,6 +59,12 @@ const config: Config = {
       minHeight: {
         ...getStyleMapping(1800, 0),
       },
+      backgroundImage: (theme) => ({
+        poolsTypelinearGrayBg:
+          "linear-gradient(356.54deg, #2A3643 2.38%, #6A88A9 90.82%)",
+        farmTitleBg:
+          "linear-gradient(180deg, rgba(33, 43, 53, 0) 24.77%, rgba(33, 43, 53, 0.4) 124.77%)",
+      }),
     },
   },
   plugins: [

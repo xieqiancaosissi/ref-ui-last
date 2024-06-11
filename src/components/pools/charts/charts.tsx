@@ -27,7 +27,58 @@ export default function Charts({ title }: { title: string }) {
   // init charts
   useEffect(() => {
     const chartInstance = charts.init(chartRef.current);
-    const options = {};
+    const options = {
+      xAxis: {
+        type: "category",
+        boundaryGap: false,
+        data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+        show: false,
+      },
+      yAxis: {
+        type: "value",
+        show: false,
+      },
+      series: [
+        {
+          data: [0, 8000, 2000, 14000, 12000, 13300, 10],
+          type: "line",
+          symbol: "none",
+          areaStyle: {
+            normal: {
+              color: {
+                type: "linear",
+                x: 0,
+                y: 0,
+                x2: 0,
+                y2: 1,
+                colorStops: [
+                  {
+                    offset: 0,
+                    color: "rgba(158, 255, 0, 0.3)",
+                  },
+                  {
+                    offset: 1,
+                    color: "rgba(158, 254, 1, 0.1)", //
+                  },
+                ],
+                global: false, //
+              },
+            },
+          },
+          lineStyle: {
+            color: "#9EFE01",
+            width: 1,
+          },
+        },
+      ],
+      // axisPointer: {
+      //   show: true,
+      //   type: "line",
+      //   lineStyle: {
+      //     cap: "round",
+      //   },
+      // },
+    };
     chartInstance.setOption(options);
     return () => {
       chartInstance.dispose();

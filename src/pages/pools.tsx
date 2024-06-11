@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useAccountStore } from "@/stores/account";
 import { getAccountNearBalance } from "@/services/token";
 import poolStyle from "@/components/pools/pool.module.css";
+import { SearchIcon } from "@/components/pools/icon";
 import Charts from "@/components/pools/charts/charts";
 
 export default function Farms() {
@@ -49,7 +50,7 @@ export default function Farms() {
                     className={`
                   ${
                     isActive == item.value
-                      ? "text-white bg-linearGrayBack rounded"
+                      ? "text-white bg-poolsTypelinearGrayBg rounded"
                       : "text-gray-60"
                   }
                    w-25 h-8 frcc
@@ -64,11 +65,14 @@ export default function Farms() {
               })}
             </div>
             {/* search & create pool */}
-            <div>
+            <div className="frcc">
               <div className={poolStyle.filterSeacrhInputContainer}>
-                <div className={poolStyle.filterSearchInputAfter}>#</div>
+                <div className={poolStyle.filterSearchInputBefore}>#</div>
                 <input type="text" className={poolStyle.filterSearchInput} />
+                <SearchIcon />
               </div>
+              {/* create pool btn */}
+              <div className={poolStyle.createPoolButton}>+ Create Pool</div>
             </div>
           </div>
         </div>

@@ -1,13 +1,13 @@
 .chartsTitle {
-    @apply flex justify-between items-center;
+  @apply flex justify-between items-center;
 }
-.chartsTitle>div:first-child {
-        @apply flex-col items-center;
+.chartsTitle > div:first-child {
+  @apply flex-col items-center;
 }
-.chartsTitle>div:last-child {
-    @apply flex items-center;
+.chartsTitle > div:last-child {
+  @apply flex items-center;
 }
 .chartsContent {
-    width: 32.8125rem;
-    height: 171.5px;
+  width: 32.8125rem;
+  height: 171.5px;
 }

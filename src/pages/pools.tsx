@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import { useAccountStore } from "@/stores/account";
 import { getAccountNearBalance } from "@/services/token";
 import poolStyle from "@/components/pools/pool.module.css";
-import { SearchIcon } from "@/components/pools/icon";
+import { SearchIcon, Star } from "@/components/pools/icon";
 import Charts from "@/components/pools/charts/charts";
+import Classic from "@/components/pools/classicPool/classic";
 
 export default function Farms() {
   const accountStore = useAccountStore();
@@ -32,13 +33,14 @@ export default function Farms() {
     <div>
       {/* charts & pools filter */}
       <div className={poolStyle.chartsContainter}>
-        {/* line charts */}
+        {/* charts */}
         <div className="w-full frcc">
-          <Charts title="TVL(Total Value Locked)"></Charts>
+          <Charts title="TVL(Total Value Locked)" type="tvl"></Charts>
           <div className="ml-4 mr-4"></div>
-          <Charts title="Volume(24h)"></Charts>
+          <Charts title="Volume(24h)" type="24h"></Charts>
         </div>
-        {/* filter tab & search input*/}
+
+        {/* search input */}
         <div className="w-full frcc mt-4">
           <div className="w-270 flex justify-between">
             {/* pool tab */}
@@ -53,17 +55,19 @@ export default function Farms() {
                       ? "text-white bg-poolsTypelinearGrayBg rounded"
                       : "text-gray-60"
                   }
-                   w-25 h-8 frcc
+                   w-25 h-8 frcc text-base 
                 `}
                     onClick={() => {
                       setActive(item.value);
                     }}
                   >
+                    {item.value == "Watchlist" && <Star />}
                     {item.value}
                   </div>
                 );
               })}
             </div>
+
             {/* search & create pool */}
             <div className="frcc">
               <div className={poolStyle.filterSeacrhInputContainer}>
@@ -71,13 +75,14 @@ export default function Farms() {
                 <input type="text" className={poolStyle.filterSearchInput} />
                 <SearchIcon />
               </div>
-              {/* create pool btn */}
               <div className={poolStyle.createPoolButton}>+ Create Pool</div>
             </div>
           </div>
         </div>
       </div>
+
       {/* classic */}
+      {isActive == "Classic" && <Classic />}
 
       {/* stable */}
 

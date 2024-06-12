@@ -23,6 +23,7 @@ const config: Config = {
       colors: {
         primaryDark: "#030F1",
         primaryGreen: "#9EFF00",
+        poolTabBgOpacity15: "rgba(126, 138, 147, 0.15)",
         gray: {
           10: "#91A2AE",
           20: "#212B35",

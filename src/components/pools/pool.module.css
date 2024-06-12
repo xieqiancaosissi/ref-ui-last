@@ -1,11 +1,11 @@
 .chartsContainter {
-  @apply w-full min-h-81 flex-col justify-center items-center;
+  @apply w-full fccc;
   background: linear-gradient(
     180deg,
     rgba(33, 43, 53, 0) 0%,
     rgba(33, 43, 53, 0.4) 100%
   );
-  padding: 30px 0 2px 0;
+  padding: 30px 0 6px 0;
 }
 
 .filterPoolType {

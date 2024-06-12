@@ -57,6 +57,7 @@ export default function WalletConnect() {
   async function changeAccount(accountId: string) {
     accountStore.setAccountId(accountId);
     accountStore.setIsSignedIn(!!accountId);
+    accountStore.setWalletLoading(false);
     setAccountId(accountId);
   }
   async function get_current_wallet() {

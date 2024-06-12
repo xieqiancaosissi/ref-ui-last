@@ -33,13 +33,20 @@ const config: Config = {
           60: "#7E8A93",
           70: "#2D343D",
           80: "#8C9093",
+          90: "#26323C",
           100: "#2B3843",
+          110: "#AABAC7",
+          120: "#4E5B6A",
+          130: "#717E8D",
+          140: "#414B57",
         },
         dark: {
           10: "#1B242C",
           20: "#DFE4E8",
           30: "#030f16",
           40: "#2B343B",
+          50: "#3A434D",
+          60: "#141C22",
         },
         green: {
           10: "#9EFE01",
@@ -47,6 +54,12 @@ const config: Config = {
         lightWhite: {
           10: "#FFF2F2",
           20: "#F6FBFE",
+        },
+        red: {
+          10: "#FF4B76",
+        },
+        yellow: {
+          10: "#E6B401",
         },
       },
       width: {
@@ -66,8 +79,13 @@ const config: Config = {
           "linear-gradient(356.54deg, #2A3643 2.38%, #6A88A9 90.82%)",
         farmTitleBg:
           "linear-gradient(180deg, rgba(33, 43, 53, 0) 24.77%, rgba(33, 43, 53, 0.4) 124.77%)",
+<<<<<<< HEAD
         farmTitleBtnBor:
           "linear-gradient(90deg, rgba(255, 247, 45, 0.3) 0%, rgba(158, 255, 0, 0.3) 100%)",
+=======
+        greenGradient: "linear-gradient(90deg, #9EFF00 0%, #5F9900 100%)",
+        greenGradient2: "linear-gradient(90deg, #9DFD01 0%, #5F9900 110.34%)",
+>>>>>>> 840f93f (t add swap base ui)
       }),
     },
   },

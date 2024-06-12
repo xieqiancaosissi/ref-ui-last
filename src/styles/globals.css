@@ -55,3 +55,10 @@ body {
   background-color: #9efe01;
   border: none;
 }
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+

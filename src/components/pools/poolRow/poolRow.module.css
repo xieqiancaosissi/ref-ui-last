@@ -1,0 +1,16 @@
+.poolContainer {
+    @apply frcc w-276 h-15 mt-3 rounded-lg px-3 text-white text-sm font-medium;
+    background: rgba(33, 43, 53, 0.3);
+}
+  
+  .poolContainer > div:first-child {
+    @apply w-109;
+  }
+  
+  .poolContainer > div:last-child {
+    @apply frc flex-1 justify-around;
+  }
+
+  .poolContainer > div:last-child > div {
+    @apply min-w-40 frcc;
+  }

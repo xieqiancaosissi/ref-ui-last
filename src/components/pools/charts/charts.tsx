@@ -1,97 +1,93 @@
 import React, { useRef, useEffect, useState } from "react";
 import * as charts from "echarts";
 import styles from "./charts.module.css";
+import {
+  colorStop24H,
+  colorStopTvl,
+  chartsOtherConfig,
+  timeTabList,
+} from "./config";
+import { addThousandSeparator } from "@/utils/uiNumber";
 
-export default function Charts({ title }: { title: string }) {
+export default function Charts({
+  title,
+  type,
+}: {
+  title: string;
+  type: string;
+}) {
   const chartRef = useRef(null);
   const [isActive, setActive] = useState("7D");
-  const timeTabList = [
-    {
-      key: "7",
-      value: "7D",
-    },
-    {
-      key: "30",
-      value: "30D",
-    },
-    {
-      key: "90",
-      value: "90D",
-    },
-    {
-      key: "180",
-      value: "180D",
-    },
-  ];
+  const [chartsData, setChartsData] = useState<Array<number>>([]);
+
+  // mock data
+  useEffect(() => {
+    setTimeout(() => {
+      setChartsData([0, 1400, 9000, 2000, 1000, 1800, 20]);
+    }, 500);
+  }, []);
 
   // init charts
   useEffect(() => {
     const chartInstance = charts.init(chartRef.current);
+
     const options = {
       xAxis: {
         type: "category",
         boundaryGap: false,
-        data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+        data: ["", "", "", "", "", "", ""],
         show: false,
       },
-      yAxis: {
-        type: "value",
-        show: false,
+      yAxis: chartsOtherConfig.yAxis,
+      tooltip: chartsOtherConfig.tooltip,
+      grid: chartsOtherConfig.grid,
+      axisPointer: {
+        ...chartsOtherConfig.axisPointer,
+        lineStyle: {
+          color: type == "tvl" ? "#9EFE01" : "#657EFF",
+        },
       },
       series: [
         {
-          data: [0, 8000, 2000, 14000, 12000, 13300, 10],
+          data: chartsData,
           type: "line",
-          symbol: "none",
           areaStyle: {
             normal: {
               color: {
-                type: "linear",
-                x: 0,
-                y: 0,
-                x2: 0,
-                y2: 1,
-                colorStops: [
-                  {
-                    offset: 0,
-                    color: "rgba(158, 255, 0, 0.3)",
-                  },
-                  {
-                    offset: 1,
-                    color: "rgba(158, 254, 1, 0.1)", //
-                  },
-                ],
-                global: false, //
+                ...chartsOtherConfig.series.areaStyle.normal.color,
+                colorStops: type == "tvl" ? colorStopTvl : colorStop24H,
               },
             },
           },
           lineStyle: {
-            color: "#9EFE01",
+            color: type == "tvl" ? "#9EFE01" : "#657EFF",
             width: 1,
+          },
+          itemStyle: chartsOtherConfig.series.itemStyle,
+          emphasis: {
+            itemStyle: {
+              color: type == "tvl" ? "#9EFE01" : "#657EFF",
+              opacity: 1,
+            },
           },
         },
       ],
-      // axisPointer: {
-      //   show: true,
-      //   type: "line",
-      //   lineStyle: {
-      //     cap: "round",
-      //   },
-      // },
     };
     chartInstance.setOption(options);
     return () => {
       chartInstance.dispose();
     };
-  }, []);
+  }, [chartsData]);
 
   return (
-    <div>
+    <div className="relative">
       {/* title & tab */}
       <div className={styles.chartsTitle}>
         <div>
           <div className="text-gray-50 text-sm">{title}</div>
-          <div className="text-white text-xl">$7,405,110.345</div>
+          <div className="text-white text-xl">
+            ${addThousandSeparator(7405110.345)}
+          </div>
         </div>
         <div className="text-xs cursor-pointer">
           {timeTabList.map((item, index) => {
@@ -117,7 +113,15 @@ export default function Charts({ title }: { title: string }) {
         </div>
       </div>
       {/* main charts */}
-      <div ref={chartRef} className={styles.chartsContent}></div>
+      <div className={styles.chartsContent}>
+        <div
+          ref={chartRef}
+          style={{
+            width: "100%",
+            height: "260px",
+          }}
+        ></div>
+      </div>
     </div>
   );
 }

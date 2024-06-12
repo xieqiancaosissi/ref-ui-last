@@ -9,5 +9,6 @@
 }
 .chartsContent {
   width: 32.8125rem;
-  height: 171.5px;
+  @apply flex items-start h-43 overflow-hidden;
+  
 }

@@ -1,33 +1,33 @@
 export const tabList = [
   {
-    key: "All",
+    key: "all",
     value: "All",
   },
   {
-    key: "New",
+    key: "new",
     value: "New",
   },
   {
-    key: "Farm",
+    key: "farm",
     value: "Farm",
   },
   {
-    key: "Meme",
+    key: "meme",
     value: "Meme",
   },
   {
-    key: "Other",
+    key: "other",
     value: "Other",
   },
 ];
 
 export const classicHeader = [
   {
-    key: "Fee",
+    key: "fee",
     value: "Fee",
   },
   {
-    key: "APR",
+    key: "apr",
     value: "APR",
   },
   {
@@ -35,7 +35,7 @@ export const classicHeader = [
     value: "Volume (24h)",
   },
   {
-    key: "TVL",
+    key: "tvl",
     value: "TVL",
   },
 ];

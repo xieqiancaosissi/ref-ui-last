@@ -9,22 +9,22 @@ import Classic from "@/components/pools/classicPool/classic";
 export default function Farms() {
   const accountStore = useAccountStore();
   const accountId = accountStore.getIsSignedIn();
-  const [isActive, setActive] = useState("Classic");
+  const [isActive, setActive] = useState("classic");
   const poolTypeList = [
     {
-      key: "Classic",
+      key: "classic",
       value: "Classic",
     },
     {
-      key: "Stable",
+      key: "stable",
       value: "Stable",
     },
     {
-      key: "DCL",
+      key: "dcl",
       value: "DCL",
     },
     {
-      key: "Watchlist",
+      key: "watchlist",
       value: "Watchlist",
     },
   ];
@@ -51,17 +51,17 @@ export default function Farms() {
                     key={item.key + index}
                     className={`
                   ${
-                    isActive == item.value
+                    isActive == item.key
                       ? "text-white bg-poolsTypelinearGrayBg rounded"
                       : "text-gray-60"
                   }
                    w-25 h-8 frcc text-base 
                 `}
                     onClick={() => {
-                      setActive(item.value);
+                      setActive(item.key);
                     }}
                   >
-                    {item.value == "Watchlist" && <Star />}
+                    {item.key == "watchlist" && <Star />}
                     {item.value}
                   </div>
                 );
@@ -82,7 +82,7 @@ export default function Farms() {
       </div>
 
       {/* classic */}
-      {isActive == "Classic" && <Classic />}
+      {isActive == "classic" && <Classic />}
 
       {/* stable */}
 

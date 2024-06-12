@@ -10,5 +10,4 @@
 .chartsContent {
   width: 32.8125rem;
   @apply flex items-start h-43 overflow-hidden;
-  
 }

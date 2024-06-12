@@ -38,6 +38,7 @@ const config: Config = {
           10: "#1B242C",
           20: "#DFE4E8",
           30: "#030f16",
+          40: "#2B343B",
         },
         green: {
           10: "#9EFE01",
@@ -64,6 +65,8 @@ const config: Config = {
           "linear-gradient(356.54deg, #2A3643 2.38%, #6A88A9 90.82%)",
         farmTitleBg:
           "linear-gradient(180deg, rgba(33, 43, 53, 0) 24.77%, rgba(33, 43, 53, 0.4) 124.77%)",
+        farmTitleBtnBor:
+          "linear-gradient(90deg, rgba(255, 247, 45, 0.3) 0%, rgba(158, 255, 0, 0.3) 100%)",
       }),
     },
   },

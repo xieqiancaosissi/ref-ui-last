@@ -13,6 +13,7 @@
   font-family: "SpaceGroteskRegular";
   src: url("../../public/SpaceGrotesk-Regular.ttf");
 }
+
 * {
   box-sizing: border-box;
 }
@@ -29,4 +30,28 @@ body {
   .text-balance {
     text-wrap: balance;
   }
+}
+
+.paceGrotesk-Bold {
+  font-family: 'SpaceGroteskBold';
+}
+
+.checkbox-radio {
+  appearance: none;
+  background-color: transparent;
+  border: 1px solid #91A2AE;
+  border-radius: 2px;
+  margin: 0;
+  font-size: 1.5rem;
+  width: 14px;
+  height: 14px;
+  transform: translateY(-0.075em);
+  display: grid;
+  place-content: center;
+  position: relative;
+}
+
+.checkbox-radio:checked {
+  background-color: #9EFE01;
+  border: none;
 }

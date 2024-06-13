@@ -7,6 +7,7 @@ import getConfig from "../utils/config";
 
 const config = getConfig();
 export const REF_FARM_BOOST_CONTRACT_ID = config.REF_FARM_BOOST_CONTRACT_ID;
+export const REF_FI_CONTRACT_ID = config.REF_FI_CONTRACT_ID;
 
 export const executeMultipleTransactions = async (
   transactions: Transaction[],

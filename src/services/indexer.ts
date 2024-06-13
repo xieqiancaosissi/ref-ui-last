@@ -1,5 +1,6 @@
 import getConfig from "../utils/config";
 import { getAuthenticationHeaders } from "../services/signature";
+const config = getConfig();
 export const currentRefPrice = async (): Promise<any> => {
   return await fetch(
     getConfig().indexerUrl +
@@ -18,5 +19,19 @@ export const currentRefPrice = async (): Promise<any> => {
     })
     .catch(() => {
       return "-";
+    });
+};
+
+export const getTokenPriceList = async (): Promise<any> => {
+  return await fetch(config.indexerUrl + "/list-token-price", {
+    method: "GET",
+    headers: {
+      "Content-type": "application/json; charset=UTF-8",
+      ...getAuthenticationHeaders("/list-token-price"),
+    },
+  })
+    .then((res) => res.json())
+    .then((list) => {
+      return list;
     });
 };

@@ -1,4 +1,4 @@
-import { SetStateAction, useContext, useEffect, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import { useAccountStore } from "../../stores/account";
 import {
   FarmAvatarIcon,
@@ -7,7 +7,26 @@ import {
   FarmWithdrawIcon,
 } from "./icons";
 import { SearchIcon } from "../pools/icon";
-import { get_unWithDraw_rewards } from "@/services/farm";
+import {
+  getBoostTokenPrices,
+  get_unWithDraw_rewards,
+} from "../../services/farm";
+
+const farmsTypeList = [
+  { key: "All", value: "All" },
+  { key: "Classic", value: "Classic" },
+  { key: "DCL", value: "DCL" },
+];
+const farmsChildTypeList = [
+  { key: "All", value: "All" },
+  { key: "New", value: "New" },
+  { key: "NEAR", value: "NEAR" },
+  { key: "Stable", value: "Stable" },
+  { key: "ETH", value: "ETH" },
+  { key: "Meme", value: "Meme" },
+  { key: "Ended", value: "Ended" },
+  { key: "Others", value: "Others" },
+];
 
 const Farms = () => {
   const { getIsSignedIn } = useAccountStore();
@@ -18,34 +37,28 @@ const Farms = () => {
   const [user_unWithdraw_rewards, set_user_unWithdraw_rewards] = useState<
     Record<string, string>
   >({});
-  const farmsTypeList = [
-    { key: "All", value: "All" },
-    { key: "Classic", value: "Classic" },
-    { key: "DCL", value: "DCL" },
-  ];
-  const farmsChildTypeList = [
-    { key: "All", value: "All" },
-    { key: "New", value: "New" },
-    { key: "NEAR", value: "NEAR" },
-    { key: "Stable", value: "Stable" },
-    { key: "ETH", value: "ETH" },
-    { key: "Meme", value: "Meme" },
-    { key: "Ended", value: "Ended" },
-    { key: "Others", value: "Others" },
-  ];
-  // useEffect(() => {
-  //   get_user_unWithDraw_rewards();
-  // }, [accountId]);
+  const [tokenPriceList, setTokenPriceList] = useState<any>({});
+  useEffect(() => {
+    init();
+    get_user_unWithDraw_rewards();
+  }, [accountId]);
   const handleCheckbox = (value: SetStateAction<string>) => {
     setSelected(value);
   };
+  async function init() {
+    // get all token prices
+    const tokenPriceList = await getBoostTokenPrices();
+    setTokenPriceList(tokenPriceList);
+  }
+  // get user unWithDraw rewards data
   async function get_user_unWithDraw_rewards() {
     if (accountId) {
       const userRewardList = await get_unWithDraw_rewards();
       set_user_unWithdraw_rewards(userRewardList);
     }
   }
-  // console.log(user_unWithdraw_rewards, "111user_unWithdraw_rewards");
+  // console.log(user_unWithdraw_rewards, "user_unWithdraw_rewards");
+  // console.log(tokenPriceList, "tokenPriceList");
   return (
     <main className="dark:text-white">
       {/* title */}

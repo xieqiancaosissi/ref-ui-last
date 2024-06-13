@@ -29,6 +29,13 @@ export default function Farms() {
     },
   ];
 
+  const [keyWordsType, setKeyWordsType] = useState("token");
+  const [searchValue, setSearchValue] = useState("");
+
+  const sendSearchValue = (e: any) => {
+    setSearchValue(e.target.value);
+  };
+
   return (
     <div>
       {/* charts & pools filter */}
@@ -71,9 +78,31 @@ export default function Farms() {
             {/* search & create pool */}
             <div className="frcc">
               <div className={poolStyle.filterSeacrhInputContainer}>
-                <div className={poolStyle.filterSearchInputBefore}>#</div>
-                <input type="text" className={poolStyle.filterSearchInput} />
-                <SearchIcon />
+                <div
+                  onClick={() => {
+                    keyWordsType == "token"
+                      ? setKeyWordsType("id")
+                      : setKeyWordsType("token");
+                    setSearchValue("");
+                  }}
+                  className={`${poolStyle.filterSearchInputBefore} ${
+                    keyWordsType == "token"
+                      ? "bg-gray-20 text-gray-50"
+                      : "bg-green-10 text-white"
+                  }`}
+                >
+                  #
+                </div>
+                <input
+                  type="text"
+                  className={poolStyle.filterSearchInput}
+                  placeholder={`Search pool by ${keyWordsType}`}
+                  onChange={sendSearchValue}
+                  value={searchValue}
+                />
+                <span className="hover:scale-110">
+                  <SearchIcon />
+                </span>
               </div>
               <div className={poolStyle.createPoolButton}>+ Create Pool</div>
             </div>
@@ -82,7 +111,9 @@ export default function Farms() {
       </div>
 
       {/* classic */}
-      {isActive == "classic" && <Classic />}
+      {isActive == "classic" && (
+        <Classic searchValue={keyWordsType == "token" ? searchValue : ""} /> // if keywords = token, u can use search interface
+      )}
 
       {/* stable */}
 

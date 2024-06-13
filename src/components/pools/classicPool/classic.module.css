@@ -2,6 +2,7 @@
   @apply w-13 h-6 flex items-center justify-center ml-2 rounded;
 }
 
+/* hide low tvl checkbox styles */
 .customCheckbox {
   @apply frcc cursor-default;
 }
@@ -43,6 +44,7 @@
   @apply select-none font-normal text-xs;
 }
 
+/* pool head */
 .headDiv {
   @apply frc text-gray-60 text-sm justify-between px-3 mt-8 mb-2 cursor-default;
 }

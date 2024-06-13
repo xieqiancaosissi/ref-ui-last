@@ -12,6 +12,7 @@ export const getSearchResult = async ({
   token_list = "",
   pool_id_list = "",
   onlyUseId = false,
+  labels = "",
 }: {
   type?: string;
   sort?: string;
@@ -24,6 +25,7 @@ export const getSearchResult = async ({
   token_type?: string;
   pool_id_list?: string;
   onlyUseId?: boolean;
+  labels?: string;
 }): Promise<any[]> => {
   let tktype = token_type;
   if (token_type == "all") {
@@ -41,7 +43,7 @@ export const getSearchResult = async ({
   try {
     let pools: any;
     const url = !onlyUseId
-      ? `/pool/search?type=${type}&sort=${sort}&limit=${limit}&offset=${offset}&farm=${farm}&hide_low_pool=${hide_low_pool}&order_by=${order}&token_type=${tktype}&token_list=${token_list}&pool_id_list=${pool_id_list}`
+      ? `/pool/search?type=${type}&sort=${sort}&limit=${limit}&labels=${labels}&offset=${offset}&farm=${farm}&hide_low_pool=${hide_low_pool}&order_by=${order}&token_type=${tktype}&token_list=${token_list}&pool_id_list=${pool_id_list}`
       : `/pool/search?pool_id_list=${pool_id_list}`;
     pools = await fetch(getConfig().indexerUrl + url, {
       method: "GET",

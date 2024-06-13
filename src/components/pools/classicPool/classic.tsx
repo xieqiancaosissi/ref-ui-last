@@ -4,24 +4,18 @@ import styles from "./classic.module.css";
 import { DownArrow, UpArrow, DownArrowSelect } from "../icon";
 import PoolRow from "../../pools/poolRow/poolRow";
 import Pagination from "@/components/pagination/pagination";
-import { getSearchResult } from "@/services/pool";
+import { usePoolSearch } from "@/hooks/usePools";
 
-export default function Classic() {
-  const [isActive, setActive] = useState("All");
+export default function Classic({ searchValue }: { searchValue: string }) {
+  const [isActive, setActive] = useState("");
   const [sortMap, setSortMap] = useState({ key: "tvl", sort: "desc" });
   const [isChecked, setIsChecked] = useState(false);
-  const [poolList, setPoolList] = useState([]);
+
   // pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(100);
-  const [totalItems, setTotalItems] = useState(0);
-  const handlePageChange = ({
-    newPage,
-    newSize,
-  }: {
-    newPage: any;
-    newSize: any;
-  }) => {
+
+  const handlePageChange = (newPage: number, newSize: number) => {
     setCurrentPage(newPage);
   };
   const handleSizeChange = (newSize: number) => {
@@ -44,26 +38,14 @@ export default function Classic() {
     }
   };
 
-  useEffect(() => {
-    getSearchResult({
-      type: "classic",
-      sort: sortMap.key,
-      limit: "100",
-      offset: "0",
-      farm: isActive == "farm",
-      hide_low_pool: isChecked,
-      order: sortMap.sort,
-      token_type: "",
-      token_list: "",
-      pool_id_list: "",
-      onlyUseId: false,
-    }).then((res: any) => {
-      if (res.total > 0) {
-        setTotalItems(res.total);
-        setPoolList(res.list);
-      }
-    });
-  }, [isChecked]);
+  const { poolList, totalItems, isLoading } = usePoolSearch({
+    isChecked,
+    sortKey: sortMap.key,
+    sortOrder: sortMap.sort,
+    currentPage,
+    isActive,
+    searchValue,
+  });
 
   return (
     <div className="flex flex-col items-center  w-full mt-8">
@@ -77,14 +59,15 @@ export default function Classic() {
                 key={item.key + index}
                 className={`
                   ${
-                    isActive == item.value
+                    isActive == item.key
                       ? "text-white bg-gray-100 "
                       : "text-gray-60 bg-poolTabBgOpacity15"
                   }
                   ${styles.tab}
                 `}
                 onClick={() => {
-                  setActive(item.value);
+                  setActive(item.key);
+                  setCurrentPage(1);
                 }}
               >
                 {item.value}
@@ -97,7 +80,10 @@ export default function Classic() {
             <input
               type="checkbox"
               checked={isChecked}
-              onChange={handleCheckboxChange}
+              onChange={() => {
+                handleCheckboxChange(event);
+                setCurrentPage(1);
+              }}
             />
             <span className={styles.checkmark}></span>
             <span className={styles.checkPlaceholder}>Hide low TVL pools</span>
@@ -133,13 +119,15 @@ export default function Classic() {
           })}
         </div>
       </header>
+
       {/* pool row */}
-      <PoolRow list={poolList} />
+      <PoolRow list={poolList} loading={isLoading} />
+
       {/* pagination */}
       <div className="w-276 mt-4">
         <Pagination
           totalItems={totalItems}
-          itemsPerPage={pageSize}
+          itemsPerPage={100}
           onChangePage={handlePageChange}
           onPageSizeChange={handleSizeChange}
         />

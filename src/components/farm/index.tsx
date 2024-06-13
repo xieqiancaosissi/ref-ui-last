@@ -1,4 +1,4 @@
-import { SetStateAction, useState } from "react";
+import { SetStateAction, useContext, useEffect, useState } from "react";
 import { useAccountStore } from "../../stores/account";
 import {
   FarmAvatarIcon,
@@ -7,6 +7,7 @@ import {
   FarmWithdrawIcon,
 } from "./icons";
 import { SearchIcon } from "../pools/icon";
+import { get_unWithDraw_rewards } from "@/services/farm";
 
 const Farms = () => {
   const { getIsSignedIn } = useAccountStore();
@@ -14,6 +15,9 @@ const Farms = () => {
   const [farmsType, setFarmsType] = useState("All");
   const [farmsChildType, setFarmsChildType] = useState("All");
   const [selected, setSelected] = useState("stakedOnly");
+  const [user_unWithdraw_rewards, set_user_unWithdraw_rewards] = useState<
+    Record<string, string>
+  >({});
   const farmsTypeList = [
     { key: "All", value: "All" },
     { key: "Classic", value: "Classic" },
@@ -29,10 +33,19 @@ const Farms = () => {
     { key: "Ended", value: "Ended" },
     { key: "Others", value: "Others" },
   ];
+  // useEffect(() => {
+  //   get_user_unWithDraw_rewards();
+  // }, [accountId]);
   const handleCheckbox = (value: SetStateAction<string>) => {
     setSelected(value);
   };
-
+  async function get_user_unWithDraw_rewards() {
+    if (accountId) {
+      const userRewardList = await get_unWithDraw_rewards();
+      set_user_unWithdraw_rewards(userRewardList);
+    }
+  }
+  console.log(user_unWithdraw_rewards, "111user_unWithdraw_rewards");
   return (
     <main className="dark:text-white">
       {/* title */}
@@ -49,7 +62,7 @@ const Farms = () => {
             className="rounded-lg py-2.5 px-4 frcc"
             style={{
               boxShadow:
-                "0 0 0 1px rgba(255, 247, 45, 0.3), 0 0 0 2px rgba(158, 255, 0, 0.3)",
+                "0 0 0 0.5px rgba(255, 247, 45, 0.3), 0 0 0 2px rgba(158, 255, 0, 0.3)",
             }}
           >
             <p className="text-gray-10 text-base">Withdraw</p>

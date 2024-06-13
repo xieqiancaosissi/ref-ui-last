@@ -1,4 +1,4 @@
-import { keyStores, utils, connect, Contract } from "near-api-js";
+import { Near, keyStores, utils, connect, Contract } from "near-api-js";
 import { Transaction as WSTransaction } from "@near-wallet-selector/core";
 import BN from "bn.js";
 import { getCurrentWallet, getSelector } from "../utils/wallet";
@@ -6,6 +6,8 @@ import { Transaction } from "../interfaces/wallet";
 import getConfig from "../utils/config";
 
 const config = getConfig();
+export const REF_FARM_BOOST_CONTRACT_ID = config.REF_FARM_BOOST_CONTRACT_ID;
+
 export const executeMultipleTransactions = async (
   transactions: Transaction[],
   callbackUrl?: string
@@ -78,4 +80,20 @@ export async function getContractInstance({
     useLocalViewExecution: true,
   });
   return contract;
+}
+
+export async function refFarmBoostViewFunction({
+  methodName,
+  args,
+}: {
+  contractId?: string;
+  methodName: string;
+  args?: object;
+}) {
+  const account = await getAccount();
+  return account.viewFunction({
+    contractId: REF_FARM_BOOST_CONTRACT_ID,
+    methodName,
+    args,
+  });
 }

@@ -55,7 +55,11 @@ export default function Footer() {
         <div className="flex items-center gap-1 mr-5">
           <RefPriceIcon />
           {!priceLoading ? (
-            <span>{refPrice ? "$" + Big(refPrice).toFixed(2) : "-"}</span>
+            <span>
+              {refPrice && !isNaN(parseFloat(refPrice))
+                ? "$" + Big(refPrice).toFixed(2)
+                : "-"}
+            </span>
           ) : (
             <SkeletonTheme
               baseColor="rgba(106, 114, 121, 0.3)"

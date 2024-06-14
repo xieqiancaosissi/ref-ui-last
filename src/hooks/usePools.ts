@@ -79,7 +79,7 @@ export const usePoolSearch = ({
       searchValue
     );
     //
-  }, [isChecked, sortKey, sortOrder, currentPage, isActive, searchValue]);
+  }, [currentPage, isChecked, sortKey, sortOrder, isActive, searchValue]);
 
   return { poolList, totalItems, isLoading: poolStore.getPoolListLoading() };
 };

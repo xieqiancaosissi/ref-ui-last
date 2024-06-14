@@ -43,7 +43,7 @@ export const getSearchResult = async ({
   try {
     let pools: any;
     const url = !onlyUseId
-      ? `/pool/search?type=${type}&sort=${sort}&limit=${limit}&labels=${labels}&offset=${offset}&farm=${farm}&hide_low_pool=${hide_low_pool}&order_by=${order}&token_type=${tktype}&token_list=${token_list}&pool_id_list=${pool_id_list}`
+      ? `/pool/search?type=${type}&sort=${sort}&limit=${limit}&labels=${labels}&offset=${offset}&hide_low_pool=${hide_low_pool}&order_by=${order}&token_type=${tktype}&token_list=${token_list}&pool_id_list=${pool_id_list}`
       : `/pool/search?pool_id_list=${pool_id_list}`;
     pools = await fetch(getConfig().indexerUrlcclp + url, {
       method: "GET",

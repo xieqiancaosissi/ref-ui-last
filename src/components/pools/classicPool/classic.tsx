@@ -47,6 +47,10 @@ export default function Classic({ searchValue }: { searchValue: string }) {
     searchValue,
   });
 
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [sortMap.key, sortMap.sort, isChecked, isActive, searchValue]);
+
   return (
     <div className="flex flex-col items-center  w-full mt-8">
       {/*  */}

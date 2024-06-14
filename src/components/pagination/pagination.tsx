@@ -17,7 +17,7 @@ const Pagination = ({
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(itemsPerPage);
   useEffect(() => {
-    if (currentPage > pageCount) setCurrentPage(1);
+    setCurrentPage(1);
   }, [pageCount]);
   const activePageStyle = { backgroundColor: "#566069" };
   const disableStyle = { color: "#7E8A93" };

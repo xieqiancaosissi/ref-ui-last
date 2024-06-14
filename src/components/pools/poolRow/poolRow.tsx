@@ -32,7 +32,12 @@ export default function PoolRow({
       ) : (
         updatedMapList.map((item, index) => {
           return (
-            <div key={item.id + "_" + index} className={styles.poolContainer}>
+            <div
+              key={item.id + "_" + index}
+              className={`${styles.poolContainer} ${
+                item.is_farm ? styles.isfarm : styles.notfarm
+              }`}
+            >
               {/* tokens */}
               <div className="flex items-center">
                 <div className={styles.tokenImgContainer}>

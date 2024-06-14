@@ -34,5 +34,5 @@
 }
 
 .tagPublicStyle {
-  @apply frcc text-xs italic w-13 h-5 rounded-xl
+  @apply frcc text-xs italic w-13 h-5 rounded-xl;
 }

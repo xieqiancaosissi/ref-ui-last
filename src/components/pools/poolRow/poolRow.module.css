@@ -15,9 +15,8 @@
   @apply min-w-40 frcc;
 }
 
-
 .tokenImgContainer {
- @apply flex items-center;
+  @apply flex items-center;
 }
 
 .tokenImgContainer img {

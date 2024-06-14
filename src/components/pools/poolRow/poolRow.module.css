@@ -1,12 +1,15 @@
 .poolContainer {
   @apply frcc w-276 h-15 mt-3 rounded-lg px-3 text-white text-sm font-medium;
-  
 }
 .notfarm {
   background: rgba(33, 43, 53, 0.3);
 }
 .isfarm {
-  background: radial-gradient(24.64% 177.05% at 11.82% 0%, rgba(250, 255, 0, 0.21) 0%, rgba(33, 43, 53, 0.09) 80.5%);
+  background: radial-gradient(
+    24.64% 177.05% at 11.82% 0%,
+    rgba(250, 255, 0, 0.21) 0%,
+    rgba(33, 43, 53, 0.09) 80.5%
+  );
 }
 
 .poolContainer > div:first-child {

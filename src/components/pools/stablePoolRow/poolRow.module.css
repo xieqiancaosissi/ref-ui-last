@@ -1,0 +1,67 @@
+.poolContainer {
+  @apply flex items-center w-276 min-h-18 mt-3 rounded-lg text-white text-sm font-medium  justify-between;
+}
+.notfarm {
+  background: rgba(33, 43, 53, 0.3);
+}
+.isfarm {
+  background: radial-gradient(
+    24.64% 177.05% at 11.82% 0%,
+    rgba(250, 255, 0, 0.21) 0%,
+    rgba(33, 43, 53, 0.09) 80.5%
+  );
+}
+
+.poolContainer > div:first-child {
+  @apply w-109 shrink-0 ml-5;
+}
+
+.poolContainer > div:last-child {
+  @apply frc  mr-3;
+}
+
+.poolContainer > div:last-child > div {
+  @apply w-40 flex flex-col justify-start shrink-0;
+}
+
+.tokenImgContainer {
+  @apply flex items-center;
+}
+
+.tokenImgContainer img {
+  width: 26px;
+  height: 26px;
+  @apply rounded-full border border-dark-40;
+}
+
+.tokenImgContainer > :nth-child(2) {
+  transform: translateX(-8px);
+}
+
+.tokenImgContainer > :nth-child(3) {
+  transform: translateX(-12px);
+}
+
+.tokenImgContainer > :nth-child(4) {
+  transform: translateX(-16px);
+}
+
+.symbol {
+  @apply text-base text-white font-medium pr-2;
+}
+
+.tagPublicStyle {
+  @apply frcc text-xs italic w-13 h-5 rounded-xl;
+}
+
+.tokenCharts {
+  @apply flex flex-wrap  w-40 text-gray-10 text-xs !important;
+}
+
+.tokenCharts > div:not(:last-child) {
+  @apply mr-3
+}
+
+.stableCharts {
+  @apply items-end !important;
+}

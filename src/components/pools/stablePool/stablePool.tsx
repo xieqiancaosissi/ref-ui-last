@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { tabList, classicHeader } from "./config";
-import styles from "./classic.module.css";
+import styles from "./stablePool.module.css";
 import { DownArrow, UpArrow, DownArrowSelect } from "../icon";
-import PoolRow from "../classicPoolRow/poolRow";
+import StablePoolRow from "../../pools/stablePoolRow/poolRow";
 import Pagination from "@/components/pagination/pagination";
 import { usePoolSearch } from "@/hooks/usePools";
 
@@ -45,6 +45,7 @@ export default function Classic({ searchValue }: { searchValue: string }) {
     currentPage,
     isActive,
     searchValue,
+    poolType: "stable",
   });
 
   // depency change init currentpage
@@ -57,29 +58,7 @@ export default function Classic({ searchValue }: { searchValue: string }) {
       {/*  */}
       <div className="frc w-276 justify-between">
         {/* head tab & hide low tvl pools*/}
-        <div className="text-xs cursor-pointer frcc">
-          {tabList.map((item, index) => {
-            return (
-              <div
-                key={item.key + index}
-                className={`
-                  ${
-                    isActive == item.key
-                      ? "text-white bg-gray-100 "
-                      : "text-gray-60 bg-poolTabBgOpacity15"
-                  }
-                  ${styles.tab}
-                `}
-                onClick={() => {
-                  setActive(item.key);
-                  setCurrentPage(1);
-                }}
-              >
-                {item.value}
-              </div>
-            );
-          })}
-        </div>
+        <div className="text-xs cursor-pointer frcc"></div>
         <div className="text-white text-xs cursor-default">
           <label className={styles.customCheckbox}>
             <input
@@ -101,7 +80,7 @@ export default function Classic({ searchValue }: { searchValue: string }) {
         <div>Pools</div>
         <div>
           {classicHeader.map((item, index) => {
-            return (
+            return item.key ? (
               <div
                 key={item.key}
                 className="frcc select-none"
@@ -120,13 +99,15 @@ export default function Classic({ searchValue }: { searchValue: string }) {
                   )}
                 </span>
               </div>
+            ) : (
+              <div className="frcc select-none"></div>
             );
           })}
         </div>
       </header>
 
       {/* pool row */}
-      <PoolRow list={poolList} loading={isLoading} />
+      <StablePoolRow list={poolList} loading={isLoading} />
 
       {/* pagination */}
       <div className="w-276 mt-4">

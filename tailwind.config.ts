@@ -21,6 +21,7 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        chartsPink: "#657EFF",
         primaryDark: "#030F1",
         primaryGreen: "#9EFF00",
         poolTabBgOpacity15: "rgba(126, 138, 147, 0.15)",

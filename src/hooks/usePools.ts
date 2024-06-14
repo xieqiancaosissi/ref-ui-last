@@ -12,6 +12,7 @@ type UsePoolSearchProps = {
   currentPage: number | null;
   isActive: string;
   searchValue: string;
+  poolType?: string;
 };
 
 //
@@ -28,6 +29,7 @@ export const usePoolSearch = ({
   currentPage,
   isActive,
   searchValue,
+  poolType,
 }: UsePoolSearchProps): UsePoolSearchResult => {
   //
   const [totalItems, setTotalItems] = useState(0);
@@ -38,7 +40,7 @@ export const usePoolSearch = ({
     _.debounce(
       (sortKey, currentPage, isActive, isChecked, sortOrder, searchValue) => {
         getSearchResult({
-          type: "classic",
+          type: poolType || "classic",
           sort: sortKey,
           limit: "100",
           offset: currentPage ? (((currentPage - 1) * 100) as any) : "0",
@@ -110,6 +112,7 @@ export const useTokenMetadata = (list: Array<any>) => {
           token_account_ids: item.token_account_ids.map((tokenId: string) => ({
             tokenId,
             icon: metadataMap.get(tokenId)?.icon,
+            decimals: metadataMap.get(tokenId)?.decimals,
           })),
           token_symbols: item.token_symbols.map((item: string) => {
             return item == "wNEAR" ? "NEAR" : item;

@@ -155,6 +155,27 @@ export function NearIcon(props: any) {
   );
 }
 
+export function NearIconMini(props: any) {
+  return (
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 18 18"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <circle cx="9" cy="9" r="8.5" fill="white" stroke="#1F2935" />
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M5.65614 6.43318V11.6249L8.22757 9.64134L8.48471 9.87415L6.32839 13.0097C5.52721 13.7686 4.11328 13.2551 4.11328 12.2054V5.79529C4.11328 4.70953 5.60999 4.21497 6.38245 5.04548L12.3419 11.4526V6.47394L10.0276 8.24447L9.77042 8.01166L11.6045 5.08471C12.37 4.23883 13.8847 4.7289 13.8847 5.82246V12.0905C13.8847 13.1763 12.388 13.6708 11.6155 12.8403L5.65614 6.43318Z"
+        fill="black"
+      />
+      <circle cx="9" cy="9" r="8.5" stroke="#273342" />
+    </svg>
+  );
+}
+
 export function DangerousIcon(props: any) {
   return (
     <svg

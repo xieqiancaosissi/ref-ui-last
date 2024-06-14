@@ -58,5 +58,5 @@
 }
 
 .headDiv > div:last-child > div {
-  @apply min-w-40 flex justify-start ;
+  @apply min-w-40 flex justify-start;
 }

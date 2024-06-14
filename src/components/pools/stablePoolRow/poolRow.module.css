@@ -59,7 +59,7 @@
 }
 
 .tokenCharts > div:not(:last-child) {
-  @apply mr-3
+  @apply mr-3;
 }
 
 .stableCharts {

@@ -4,9 +4,9 @@ const getStyleMapping = (max: number, min: number) => {
   if (!max) {
     return;
   }
-  // @ts-ignore
   const maxArray = [...Array(max + 1).keys()];
   return maxArray.reduce((pre, cur) => {
+    // @ts-ignore
     cur >= min && (pre[cur] = `${cur / 4}rem`);
     return pre;
   }, {});
@@ -25,6 +25,7 @@ const config: Config = {
         primaryGreen: "#9EFF00",
         poolTabBgOpacity15: "rgba(126, 138, 147, 0.15)",
         farmApyColor: "#FAFF00",
+        farmTagBg: "rgba(250, 255, 0, 0.11)",
         gray: {
           10: "#91A2AE",
           20: "#212B35",

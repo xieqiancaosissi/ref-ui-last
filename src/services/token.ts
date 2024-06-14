@@ -71,3 +71,35 @@ export const cacheTokens = async () => {
     }))
   );
 };
+
+export const getWhitelistedTokensInfo = async (): Promise<
+  Record<string, string[]>
+> => {
+  const account = await getAccount();
+  const globalWhitelist = await account.viewFunction({
+    contractId: getConfig().REF_FI_CONTRACT_ID as any,
+    methodName: "get_whitelisted_tokens",
+  });
+
+  return {
+    globalWhitelist: [...new Set<string>([...globalWhitelist])],
+  };
+};
+
+export const getGlobalWhitelist = async (): Promise<string[]> => {
+  const account = await getAccount();
+  const globalWhitelist = await account.viewFunction({
+    contractId: getConfig().REF_FI_CONTRACT_ID as any,
+    methodName: "get_whitelisted_tokens",
+  });
+  return [...new Set<string>([...globalWhitelist])];
+};
+
+export const get_auto_whitelisted_postfix = async (): Promise<string[]> => {
+  const account = await getAccount();
+  const metadata = await account.viewFunction({
+    contractId: getConfig().REF_FI_CONTRACT_ID as any,
+    methodName: "metadata",
+  });
+  return metadata.auto_whitelisted_postfix;
+};

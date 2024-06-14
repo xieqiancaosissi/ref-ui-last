@@ -32,3 +32,7 @@
 .symbol {
   @apply text-base text-white font-medium px-2;
 }
+
+.tagPublicStyle {
+  @apply frcc text-xs italic w-13 h-5 rounded-xl
+}

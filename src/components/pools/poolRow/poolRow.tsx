@@ -7,7 +7,8 @@ import {
   toInternationalCurrencySystem_number,
 } from "@/utils/uiNumber";
 import { useTokenMetadata } from "@/hooks/usePools";
-import { NearIcon } from "@/components/pools/icon";
+import { NearIcon, DangerousIcon } from "@/components/pools/icon";
+import { useRiskTokens } from "@/hooks/riskTokens";
 
 export default function PoolRow({
   list,
@@ -17,7 +18,8 @@ export default function PoolRow({
   loading: boolean;
 }) {
   const { isDealed, updatedMapList } = useTokenMetadata(list);
-  console.log(list, "list>>>");
+  const { pureIdList } = useRiskTokens();
+
   return (
     <div className="mb-2 max-h-90 overflow-auto">
       {loading || !isDealed ? (
@@ -45,6 +47,25 @@ export default function PoolRow({
                 <span className={styles.symbol}>
                   {item.token_symbols.join("-")}
                 </span>
+                {/* dangerous */}
+                {pureIdList.includes(item.token_account_ids[0].tokenId) && (
+                  <DangerousIcon />
+                )}
+                {/* tag */}
+                {item.is_farm && (
+                  <div
+                    className={` bg-farmTagBg text-farmApyColor ${styles.tagPublicStyle}`}
+                  >
+                    Farms
+                  </div>
+                )}
+                {item.is_new && (
+                  <div
+                    className={`bg-primaryGreen text-black ${styles.tagPublicStyle}`}
+                  >
+                    News
+                  </div>
+                )}
               </div>
               <div>
                 {/* fee */}

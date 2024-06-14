@@ -13,13 +13,11 @@ export const executeMultipleTransactions = async (
   transactions: Transaction[],
   callbackUrl?: string
 ) => {
-  const selector = getSelector();
-
   const wstransactions: WSTransaction[] = [];
 
   transactions.forEach((transaction) => {
     wstransactions.push({
-      signerId: selector.getAccountId(),
+      signerId: window.accountId,
       receiverId: transaction.receiverId,
       actions: transaction.functionCalls.map((fc) => {
         return {
@@ -59,9 +57,7 @@ export async function getNear() {
 
 export async function getAccount() {
   const nearConnection = await getNear();
-  const account = await nearConnection.account(
-    window.accountId || getSelector()?.getAccountId() || ""
-  );
+  const account = await nearConnection.account(window.accountId || "");
   return account;
 }
 

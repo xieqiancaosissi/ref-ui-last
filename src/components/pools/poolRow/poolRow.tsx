@@ -17,7 +17,7 @@ export default function PoolRow({
   loading: boolean;
 }) {
   const { isDealed, updatedMapList } = useTokenMetadata(list);
-
+  console.log(list, "list>>>");
   return (
     <div className="mb-2 max-h-90 overflow-auto">
       {loading || !isDealed ? (
@@ -36,7 +36,7 @@ export default function PoolRow({
                 <div className={styles.tokenImgContainer}>
                   {item.token_account_ids.map((ite: any, ind: number) => {
                     return ite.tokenId != "wrap.near" ? (
-                      <img src={ite.icon} key={ite + ind} />
+                      <img src={ite.icon} key={ite.tokenId + ind} />
                     ) : (
                       <NearIcon />
                     );
@@ -52,6 +52,11 @@ export default function PoolRow({
                 {/* apr */}
                 <div>
                   <span>{formatPercentage(item.apy)}</span>
+                  {item.farm_apy > 0 && (
+                    <span className="text-farmApyColor text-xs mt-1">
+                      +{formatPercentage(item.farm_apy)}
+                    </span>
+                  )}
                 </div>
                 {/* 24h */}
                 <div>{toInternationalCurrencySystem_usd(item.volume_24h)}</div>

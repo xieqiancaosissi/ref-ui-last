@@ -1,5 +1,5 @@
 import getConfig from "@/utils/config";
-import db, { BoostSeeds, TokenPrice } from "../store/RefDatabase";
+import db, { BoostSeeds, TokenPrice } from "../db/RefDatabase";
 import { REF_FI_CONTRACT_ID, refFarmBoostViewFunction } from "../utils/near";
 import { getCurrentWallet } from "../utils/wallets-integration";
 import { TokenMetadata } from "./ft-contract";

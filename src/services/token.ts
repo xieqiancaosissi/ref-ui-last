@@ -1,7 +1,7 @@
 import { getAccount } from "../utils/near";
 import getConfig from "../utils/config";
 import { getAuthenticationHeaders } from "../services/signature";
-import db from "@/store/RefDatabase";
+import db from "@/db/RefDatabase";
 import { TokenMetadata } from "./ft-contract";
 
 export async function ftGetTokenMetadata(tokenId: string) {

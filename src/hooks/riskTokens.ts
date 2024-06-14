@@ -16,7 +16,7 @@ import {
 
 import { getTokens } from "../services/token";
 import { getCurrentWallet } from "../utils/wallets-integration";
-import db from "../store/RefDatabase";
+import db from "../db/RefDatabase";
 import { get_auto_whitelisted_postfix } from "../services/token";
 
 export const useWhitelistTokens = (extraTokenIds: string[] = []) => {

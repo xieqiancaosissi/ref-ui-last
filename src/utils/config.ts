@@ -16,7 +16,7 @@ export default function getConfig(
         pikespeakUrl: "https://pikespeak.ai",
         nearExplorerUrl: "https://explorer.near.org/",
         indexerUrl: "https://api.ref.finance",
-        // indexerUrl: "https://apiself.cclp.finance",
+        indexerUrlcclp: "https://apiself.cclp.finance",
         sodakiApiUrl: "https://api.stats.ref.finance/api",
         txIdApiUrl: "https://api3.nearblocks.io",
         memeRankApiUrl: "https://api.ref.finance",

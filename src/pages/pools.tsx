@@ -5,6 +5,7 @@ import poolStyle from "@/components/pools/pool.module.css";
 import { SearchIcon, Star } from "@/components/pools/icon";
 import Charts from "@/components/pools/charts/charts";
 import Classic from "@/components/pools/classicPool/classic";
+import { getTokens } from "@/services/token";
 
 export default function Farms() {
   const accountStore = useAccountStore();

@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
 import { usePoolStore } from "@/stores/pool";
 import { getSearchResult } from "@/services/pool";
+import { ftGetTokenMetadata } from "@/services/token";
+
 import _ from "lodash";
 //
 type UsePoolSearchProps = {
@@ -80,4 +82,49 @@ export const usePoolSearch = ({
   }, [isChecked, sortKey, sortOrder, currentPage, isActive, searchValue]);
 
   return { poolList, totalItems, isLoading: poolStore.getPoolListLoading() };
+};
+
+// deal list to get token src
+export const useTokenMetadata = (list: Array<any>) => {
+  const [isDealed, setIsDealed] = useState(false);
+  const [updatedMapList, setUpdatedList] = useState<Array<any>>([]);
+
+  useEffect(() => {
+    let updatedList = [...list];
+    setIsDealed(false);
+
+    Promise.all(
+      list.flatMap((item) =>
+        item.token_account_ids.map((tokenId: string) =>
+          ftGetTokenMetadata(tokenId)
+        )
+      )
+    )
+      .then((metadataResults) => {
+        const metadataMap = new Map(
+          metadataResults.map((metadata) => [metadata.id, metadata])
+        );
+
+        updatedList = updatedList.map((item) => ({
+          ...item,
+          token_account_ids: item.token_account_ids.map((tokenId: string) => ({
+            tokenId,
+            icon: metadataMap.get(tokenId)?.icon,
+          })),
+          token_symbols: item.token_symbols.map((item: string) => {
+            return item == "wNEAR" ? "NEAR" : item;
+          }),
+        }));
+
+        setUpdatedList(updatedList);
+      })
+      .finally(() => {
+        setIsDealed(true);
+      })
+      .catch((error) => {
+        console.error("error:", error);
+      });
+  }, [list]);
+
+  return { isDealed, updatedMapList };
 };

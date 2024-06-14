@@ -134,3 +134,23 @@ export function UpArrow(props: any) {
     </svg>
   );
 }
+
+export function NearIcon(props: any) {
+  return (
+    <svg
+      width="26"
+      height="26"
+      viewBox="0 0 26 26"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <circle cx="13" cy="13" r="12.5" fill="white" stroke="#273342" />
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M8.16998 9.29221V16.7913L11.8843 13.9262L12.2557 14.2625L9.14101 18.7916C7.98375 19.8877 5.94141 19.1461 5.94141 17.6298V8.37081C5.94141 6.80249 8.10331 6.08813 9.2191 7.28775L17.8271 16.5425V9.35109L14.4843 11.9085L14.1128 11.5722L16.762 7.34442C17.8678 6.12259 20.0557 6.83048 20.0557 8.41006V17.4639C20.0557 19.0322 17.8938 19.7466 16.778 18.547L8.16998 9.29221Z"
+        fill="black"
+      />
+    </svg>
+  );
+}

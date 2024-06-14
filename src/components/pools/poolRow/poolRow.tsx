@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./poolRow.module.css";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import {
@@ -6,6 +6,8 @@ import {
   toInternationalCurrencySystem_usd,
   toInternationalCurrencySystem_number,
 } from "@/utils/uiNumber";
+import { useTokenMetadata } from "@/hooks/usePools";
+import { NearIcon } from "@/components/pools/icon";
 
 export default function PoolRow({
   list,
@@ -14,10 +16,11 @@ export default function PoolRow({
   list: Array<any>;
   loading: boolean;
 }) {
-  console.log(list, "list>>");
+  const { isDealed, updatedMapList } = useTokenMetadata(list);
+
   return (
     <div className="mb-2 max-h-90 overflow-auto">
-      {loading ? (
+      {loading || !isDealed ? (
         <SkeletonTheme
           baseColor="rgba(33, 43, 53, 0.3)"
           highlightColor="#2A3643"
@@ -25,11 +28,24 @@ export default function PoolRow({
           <Skeleton width={1100} height={56} count={5} className="mt-4" />
         </SkeletonTheme>
       ) : (
-        list.map((item, index) => {
+        updatedMapList.map((item, index) => {
           return (
             <div key={item.id + "_" + index} className={styles.poolContainer}>
               {/* tokens */}
-              <div></div>
+              <div className="flex items-center">
+                <div className={styles.tokenImgContainer}>
+                  {item.token_account_ids.map((ite: any, ind: number) => {
+                    return ite.tokenId != "wrap.near" ? (
+                      <img src={ite.icon} key={ite + ind} />
+                    ) : (
+                      <NearIcon />
+                    );
+                  })}
+                </div>
+                <span className={styles.symbol}>
+                  {item.token_symbols.join("-")}
+                </span>
+              </div>
               <div>
                 {/* fee */}
                 <div>{formatPercentage(item.total_fee * 100)}</div>

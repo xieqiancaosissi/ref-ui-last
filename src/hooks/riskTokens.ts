@@ -15,7 +15,6 @@ import {
 } from "../services/token";
 
 import { getTokens } from "../services/token";
-import { getCurrentWallet } from "../utils/wallets-integration";
 import db from "../db/RefDatabase";
 import { get_auto_whitelisted_postfix } from "../services/token";
 

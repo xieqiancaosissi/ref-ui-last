@@ -1,6 +1,7 @@
 @tailwind base;
+@tailwind components;
 @tailwind utilities;
-@import url("./aggregation.css");
+@import url("./aggregationClass.css");
 @font-face {
   font-family: "SpaceGrotesk";
   src: url("../../public/SpaceGrotesk-Light.ttf");

@@ -3,9 +3,9 @@ import { refFarmBoostViewFunction } from "../utils/near";
 import { toPrecision, scientificNotationToString } from "../utils/numbers";
 import { BigNumber } from "bignumber.js";
 import moment from "moment";
-import { getCurrentWallet } from "../utils/wallets-integration";
 import { TokenMetadata } from "./ft-contract";
 import { getAuthenticationHeaders } from "./signature";
+import { getAccountId } from "../utils/wallet";
 
 const config = getConfig();
 
@@ -55,7 +55,7 @@ export const getPoolBalance = async (pool_id: number) => {
     methodName: "get_pool_shares",
     args: {
       pool_id,
-      account_id: getCurrentWallet()?.wallet?.getAccountId(),
+      account_id: getAccountId(),
     },
   }).then((balance) => {
     return new BigNumber(balance.toString()).toFixed();
@@ -86,10 +86,7 @@ export const getPools = async (counter: number) => {
 
 export const getUserWalletTokens = async (): Promise<any> => {
   return await fetch(
-    config.helperUrl +
-      "/account/" +
-      getCurrentWallet()?.wallet?.getAccountId() +
-      "/likelyTokens",
+    config.helperUrl + "/account/" + getAccountId() + "/likelyTokens",
     {
       method: "GET",
       headers: { "Content-type": "application/json; charset=UTF-8" },

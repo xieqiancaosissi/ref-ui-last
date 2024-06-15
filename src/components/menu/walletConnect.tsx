@@ -9,6 +9,7 @@ import { DownArrowIcon, CopyIcon, DisconnectIcon, ChangeIcon } from "./icons";
 import { useAccountStore } from "../../stores/account";
 import { getCurrentWallet, getSelector } from "../../utils/wallet";
 import type { Wallet } from "@near-wallet-selector/core";
+import swapStyles from "../swap/swap.module.css";
 
 export default function WalletConnect() {
   const [accountId, setAccountId] = useState<string | undefined>();
@@ -145,7 +146,7 @@ export default function WalletConnect() {
                         >
                           <CopyToClipboard text={accountId}>
                             <CopyIcon
-                              className="controlButton"
+                              className={swapStyles.controlButton}
                               onClick={() => {
                                 setTipVisible(true);
                               }}
@@ -167,11 +168,11 @@ export default function WalletConnect() {
                     <div className="flex items-center pr-5 ml-10 gap-4">
                       <ChangeIcon
                         onClick={showWalletSelector}
-                        className="controlButton"
+                        className={swapStyles.controlButton}
                       />
                       <DisconnectIcon
                         onClick={signOut}
-                        className="controlButton"
+                        className={swapStyles.controlButton}
                       />
                     </div>
                   </div>

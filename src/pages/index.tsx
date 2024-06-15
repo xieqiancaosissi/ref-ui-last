@@ -4,14 +4,16 @@ import dynamic from "next/dynamic";
 import { getAccountNearBalance } from "../services/token";
 import {
   RefreshIcon,
-  SetIcon,
   SWitchButton,
   CheckboxIcon,
 } from "../components/swap/icons";
 import Input from "../components/swap/Input";
 import SwapDetail from "../components/swap/SwapDetail";
-import SetPopup from "../components/swap/SetPopup";
+import swapStyles from "../components/swap/swap.module.css";
 const SwapButton = dynamic(() => import("../components/swap/SwapButton"), {
+  ssr: false,
+});
+const SetPopup = dynamic(() => import("../components/swap/SetPopup"), {
   ssr: false,
 });
 
@@ -34,8 +36,8 @@ export default function Swap(props: any) {
         {/* set */}
         <div className="flex items-center justify-between">
           <span className="text-white font-bold text-xl">Swap</span>
-          <div className="flex items-center gap-2">
-            <span className="swapControlButton">
+          <div className="flex items-center gap-2 z-20">
+            <span className={swapStyles.swapControlButton}>
               <RefreshIcon />
             </span>
             <SetPopup />
@@ -44,7 +46,7 @@ export default function Swap(props: any) {
         {/* input part */}
         <div className="flex flex-col items-center mt-4">
           <Input />
-          <div className="flex items-center justify-center rounded w-7 h-7 cursor-pointer text-gray-50 hover:text-white  bg-dark-60 hover:bg-dark-10 -my-3.5 relative z-50 border-2 border-dark-10">
+          <div className="flex items-center justify-center rounded w-7 h-7 cursor-pointer text-gray-50 hover:text-white  bg-dark-60 hover:bg-dark-10 -my-3.5 relative z-10 border-2 border-dark-10">
             <SWitchButton />
           </div>
           <Input disabled={true} className="mt-0.5" />

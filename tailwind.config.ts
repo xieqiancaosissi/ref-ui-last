@@ -88,7 +88,8 @@ const config: Config = {
         farmTitleBtnBor:
           "linear-gradient(90deg, rgba(255, 247, 45, 0.3) 0%, rgba(158, 255, 0, 0.3) 100%)",
         greenGradient: "linear-gradient(90deg, #9EFF00 0%, #5F9900 100%)",
-        greenGradient2: "linear-gradient(90deg, #9DFD01 0%, #5F9900 110.34%)",
+        greenGradientDark:
+          "linear-gradient(90deg, #9DFD01 0%, #5F9900 110.34%)",
       }),
     },
   },

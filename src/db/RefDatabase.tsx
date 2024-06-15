@@ -40,22 +40,11 @@ export interface PoolsTokens {
   Dex?: string;
   pairAdd?: string;
 }
-
-export interface PoolDb extends Pool {
-  tvl?: string;
-}
-
 export interface FarmDexie {
   id: string;
+  farm_id: string;
   pool_id: string;
   status: string;
-}
-
-export interface WatchList {
-  id: string;
-  account: string;
-  pool_id: string;
-  update_time: number;
 }
 
 export interface TopPool {
@@ -93,9 +82,7 @@ export interface BoostSeeds {
 
 class RefDatabase extends Dexie {
   public tokens: Dexie.Table<TokenMetadata>;
-  public farms: Dexie.Table<FarmDexie>;
   public poolsTokens: Dexie.Table<PoolsTokens>;
-  public watchList: Dexie.Table<WatchList>;
   public topPools: Dexie.Table<TopPool>;
   public boostFarms: Dexie.Table<FarmDexie>;
   public tokenPrices: Dexie.Table<TokenPrice>;
@@ -104,38 +91,25 @@ class RefDatabase extends Dexie {
   public constructor() {
     super("RefDatabase");
 
-    this.version(5.6).stores({
-      tokens: "id, name, symbol, decimals, icon",
-      farms: "id, pool_id, status",
-      pools_tokens:
-        "id, token1Id, token2Id, token1Supply, token2Supply, fee, shares, update_time, token0_price",
-      watchList: "id, account, pool_id, update_time",
-      topPools: "id, pool_kind, update_time",
-      boostFarms: "id, pool_id, status",
-      tokenPrices: "id, symbol, update_time",
-      boostSeeds: "id, update_time",
+    this.version(1.0).stores({
+      tokens: "id",
+      pools_tokens: "id",
+      topPools: "id",
+      boostFarms: "id",
+      tokenPrices: "id",
+      boostSeeds: "id",
     });
 
     this.tokens = this.table("tokens");
-    this.farms = this.table("farms");
     this.poolsTokens = this.table("pools_tokens");
-    this.watchList = this.table("watchList");
     this.topPools = this.table("topPools");
     this.boostFarms = this.table("boostFarms");
     this.tokenPrices = this.table("tokenPrices");
     this.boostSeeds = this.table("boostSeeds");
   }
 
-  public allWatchList() {
-    return this.watchList;
-  }
-
   public allTokens() {
     return this.tokens;
-  }
-
-  public allFarms() {
-    return this.farms;
   }
 
   public allPoolsTokens() {
@@ -325,39 +299,6 @@ class RefDatabase extends Dexie {
     return [...normalItems, ...reverseItems];
   }
 
-  async queryPoolsByTokens2orig(tokenInId: string, tokenOutId: string) {
-    //Queries for any pools that contain either tokenInId OR tokenOutId OR both.
-    const normalItems = await this.poolsTokens
-      .where("token1Id")
-      .equals(tokenInId.toString())
-      .toArray();
-    const reverseItems = await this.poolsTokens
-      .where("token1Id")
-      .equals(tokenOutId.toString())
-      .toArray();
-
-    const normalItems2 = await this.poolsTokens
-      .where("token2Id")
-      .equals(tokenInId.toString())
-      .toArray();
-    const reverseItems2 = await this.poolsTokens
-      .where("token2Id")
-      .equals(tokenOutId.toString())
-      .toArray();
-    //note, there might be some overlap... we'll need to remove the duplicates, then sort by pool id:
-    const dup = [
-      ...normalItems,
-      ...reverseItems,
-      ...normalItems2,
-      ...reverseItems2,
-    ];
-    // let result = [...new Set(dup.map(JSON.stringify))]
-    //   .map(JSON.parse)
-    //   .sort((a, b) => a['id'] - b['id']);
-    const result = dup;
-    return result;
-  }
-
   async queryPoolsByTokens2(tokenInId: string, tokenOutId: string) {
     //Queries for any pools that contain either tokenInId OR tokenOutId OR both.
     const normalItems = await this.poolsTokens.toArray();
@@ -400,28 +341,6 @@ class RefDatabase extends Dexie {
     });
   }
 
-  // public async queryTopPoolsByIds({ poolIds }: { poolIds: string[] }) {
-  //   const pools = (await this.topPools.toArray()).filter((pool) =>
-  //     poolIds.includes(pool.id)
-  //   );
-
-  //   return pools.map((pool) => {
-  //     const { update_time, ...poolInfo } = pool;
-
-  //     const res = parsePool({
-  //       ...poolInfo,
-  //       id: Number(poolInfo.id),
-  //       share: '',
-  //       tvl: Number(poolInfo.tvl),
-  //     } as PoolRPCView);
-
-  //     return {
-  //       ...res,
-  //       dex: 'ref',
-  //     };
-  //   });
-  // }
-
   public async queryPoolsBytoken(tokenId: string) {
     const normalItems = await this.poolsTokens
       .where("token1Id")
@@ -445,7 +364,6 @@ class RefDatabase extends Dexie {
       token0_ref_price: item.token0_price,
     }));
   }
-  /***boost start****/
   public async queryBoostFarms() {
     const farms = await this.allBoostFarms().toArray();
     return farms;

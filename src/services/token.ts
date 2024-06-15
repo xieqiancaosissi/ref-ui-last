@@ -2,7 +2,6 @@ import { getAccount } from "../utils/near";
 import getConfig from "../utils/config";
 import { getAuthenticationHeaders } from "../services/signature";
 import db from "@/db/RefDatabase";
-import { TokenMetadata } from "./ft-contract";
 
 export async function ftGetTokenMetadata(tokenId: string) {
   let metadata: any = await db.allTokens().where({ id: tokenId }).first();
@@ -50,26 +49,6 @@ export const getTokens = async () => {
     .then((tokens) => {
       return tokens;
     });
-};
-
-export const cacheTokens = async () => {
-  const tokens = await getTokens();
-  const tokenArr = Object.keys(tokens).map((key) => ({
-    id: key,
-    icon: tokens[key].icon,
-    decimals: tokens[key].decimals,
-    name: tokens[key].name,
-    symbol: tokens[key].symbol,
-  }));
-  await db.tokens.bulkPut(
-    tokenArr.map((token: TokenMetadata) => ({
-      id: token.id,
-      name: token.name,
-      symbol: token.symbol,
-      decimals: token.decimals,
-      icon: token.icon,
-    }))
-  );
 };
 
 export const getWhitelistedTokensInfo = async (): Promise<

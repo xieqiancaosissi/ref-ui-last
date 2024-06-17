@@ -12,7 +12,7 @@ export const useAutoWhitelistTokens = (whitelistToken: TokenMetadata[]) => {
     if (whitelistToken.length > 0 && autoWhitelistedPostfix.length) {
       getAutoWhitelistedTokens();
     }
-  }, [whitelistToken, autoWhitelistedPostfix]);
+  }, [whitelistToken.length, autoWhitelistedPostfix.length]);
   async function getAutoWhitelistedTokens() {
     const all_ref_tokens = await getAllTokens();
     const white_list_token_map: Record<string, TokenMetadata> =

@@ -1,18 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import _ from "lodash";
 import { SolidArrowDownIcon } from "./Icons";
 import { useSelectTokens } from "../../../hooks/useSelectTokens";
 import {
-  useBalanceTokens,
-  ITokenMetadata,
+  useDefaultBalanceTokens,
+  useAutoBalanceTokens,
 } from "../../../hooks/useBalanceTokens";
-import { useTokenStore } from "../../../stores/token";
 import Table from "./Table";
-import { TokenMetadata } from "@/services/ft-contract";
 export default function AssetTable() {
-  const { defaultList = [], autoList = [] } = useSelectTokens();
   const [sort, setSort] = useState<"asc" | "desc">("desc");
   const [tab, setTab] = useState<"default" | "tkn">("default");
+  const { defaultList = [], autoList = [] } = useSelectTokens();
   const defaultDisplayTokens = useDefaultBalanceTokens(defaultList);
   const autoDisplayTokens = useAutoBalanceTokens(autoList);
 
@@ -67,37 +65,4 @@ export default function AssetTable() {
       </div>
     </div>
   );
-}
-
-function useDefaultBalanceTokens(defaultList: TokenMetadata[]) {
-  const [list, setList] = useState<ITokenMetadata[]>([]);
-  const tokenStore = useTokenStore();
-  const defaultAccountBalancesStore = tokenStore.getDefaultAccountBalances();
-  const defaultAccountBalancesServer = useBalanceTokens(defaultList);
-  useEffect(() => {
-    if (defaultAccountBalancesStore.length > 0) {
-      setList(defaultAccountBalancesStore);
-    }
-    if (defaultAccountBalancesServer.length > 0) {
-      setList(defaultAccountBalancesServer);
-      tokenStore.setDefaultAccountBalances(defaultAccountBalancesServer);
-    }
-  }, [defaultAccountBalancesStore, defaultAccountBalancesServer]);
-  return list;
-}
-function useAutoBalanceTokens(autoList: TokenMetadata[]) {
-  const [list, setList] = useState<ITokenMetadata[]>([]);
-  const tokenStore = useTokenStore();
-  const autoAccountBalancesStore = tokenStore.getAutoAccountBalances();
-  const autoAccountBalancesServer = useBalanceTokens(autoList);
-  useEffect(() => {
-    if (autoAccountBalancesStore.length > 0) {
-      setList(autoAccountBalancesStore);
-    }
-    if (autoAccountBalancesServer.length > 0) {
-      setList(autoAccountBalancesServer);
-      tokenStore.setAutoAccountBalances(autoAccountBalancesServer);
-    }
-  }, [autoAccountBalancesStore, autoAccountBalancesServer]);
-  return list;
 }

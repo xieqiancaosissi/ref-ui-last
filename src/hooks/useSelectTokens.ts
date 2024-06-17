@@ -4,8 +4,10 @@ import { useDefaultWhitelistTokens } from "./useDefaultWhitelistTokens";
 import { useAutoWhitelistTokens } from "./useAutoWhitelistTokens";
 import { useAutoWhitelistedPostfix } from "../hooks/useAutoWhitelistedPostfix";
 import getConfig from "../utils/config";
+import getConfigV2 from "../utils/configV2";
 import { NEAR_META_DATA, WNEAR_META_DATA } from "../utils/nearMetaData";
 const { WRAP_NEAR_CONTRACT_ID } = getConfig();
+const { HIDDEN_TOKEN_LIST } = getConfigV2();
 interface ISelectTokens {
   defaultList: TokenMetadata[];
   autoList: TokenMetadata[];
@@ -24,7 +26,11 @@ export const useSelectTokens = (): ISelectTokens => {
     ) {
       getSelectTokens();
     }
-  }, [whitelistToken, autoWhitelistToken, autoWhitelistedPostfix]);
+  }, [
+    whitelistToken.length,
+    autoWhitelistToken.length,
+    autoWhitelistedPostfix.length,
+  ]);
   async function getSelectTokens() {
     const defaultList = whitelistToken.map((token) => {
       if (
@@ -47,9 +53,15 @@ export const useSelectTokens = (): ISelectTokens => {
     const wnearToken = getWnearToken(defaultList);
     defaultList.push(wnearToken);
     setSelectTokens({
-      defaultList,
-      autoList,
-      totalList: [...defaultList, ...autoList],
+      defaultList: defaultList.filter(
+        (token) => !HIDDEN_TOKEN_LIST.includes(token.id)
+      ),
+      autoList: autoList.filter(
+        (token) => !HIDDEN_TOKEN_LIST.includes(token.id)
+      ),
+      totalList: [...defaultList, ...autoList].filter(
+        (token) => !HIDDEN_TOKEN_LIST.includes(token.id)
+      ),
     });
   }
   function getWnearToken(tokens: TokenMetadata[]) {

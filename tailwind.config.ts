@@ -93,6 +93,8 @@ const config: Config = {
         greenGradient: "linear-gradient(90deg, #9EFF00 0%, #5F9900 100%)",
         greenGradientDark:
           "linear-gradient(90deg, #9DFD01 0%, #5F9900 110.34%)",
+        farmItemBg:
+          "radial-gradient(59.55% 113.53% at 25.15% -10.79%, rgba(250, 255, 0, 0.3) 0%, rgba(33, 43, 53, 0.09) 100%)",
         createPoolLinear: "linear-gradient(90deg, #9EFF00 1.39%, #5F9900 100%)",
       }),
     },

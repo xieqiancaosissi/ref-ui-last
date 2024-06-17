@@ -35,3 +35,17 @@ export const getTokenPriceList = async (): Promise<any> => {
       return list;
     });
 };
+
+export const getTokens = async () => {
+  return await fetch(getConfig().indexerUrl + "/list-token", {
+    method: "GET",
+    headers: {
+      "Content-type": "application/json; charset=UTF-8",
+      ...getAuthenticationHeaders("/list-token"),
+    },
+  })
+    .then((res) => res.json())
+    .then((tokens) => {
+      return tokens;
+    });
+};

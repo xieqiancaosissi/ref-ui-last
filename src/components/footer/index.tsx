@@ -6,7 +6,7 @@ import "react-loading-skeleton/dist/skeleton.css";
 import { communityLinks, docLinks } from "./footerData";
 import { MoonIcon, SunIcon, RefPriceIcon } from "./icons";
 import { useThemeStore } from "../../stores/theme";
-import { useRefPrice } from "../../hooks/layout";
+import { useRefPrice } from "../../hooks/useRefPrice";
 export default function Footer() {
   const themeStore: any = useThemeStore();
   const currentTheme = themeStore.getTheme();

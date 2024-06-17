@@ -8,7 +8,7 @@ import {
 } from "@/utils/uiNumber";
 import { useTokenMetadata } from "@/hooks/usePools";
 import { NearIcon, DangerousIcon, NearIconMini } from "@/components/pools/icon";
-import { useRiskTokens } from "@/hooks/riskTokens";
+import { useRiskTokens } from "@/hooks/useRiskTokens";
 import StablePoolRowCharts from "@/components/pools/stablePoolRowCharts/index";
 
 export default function PoolRow({

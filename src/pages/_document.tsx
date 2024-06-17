@@ -7,7 +7,7 @@ export default function Document() {
         <link rel="icon" href="/favicon.ico" />
         <title>REF Finance</title>
       </Head>
-      <body className="dark:bg-dark-30 bg-lightWhite-20">
+      <body className="dark:bg-dark-30 bg-lightWhite-20" id="root">
         <Main />
         <NextScript />
       </body>

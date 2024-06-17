@@ -155,10 +155,10 @@ export default function WalletConnect() {
                           <Tooltip
                             id="copy-tooltip"
                             style={{
-                              backgroundColor: "transparent",
                               color: "#fff",
-                              padding: "0",
+                              padding: "4px",
                               fontSize: "12px",
+                              background: "#7E8A93",
                             }}
                             openOnClick
                           />

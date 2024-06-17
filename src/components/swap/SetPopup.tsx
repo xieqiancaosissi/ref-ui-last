@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { SetIcon } from "../../components/swap/icons";
-import { QuestionIcon } from "../../components/commonIcons";
+import { QuestionIcon } from "../../components/common/Icons";
 import { useSwapStore } from "../../stores/swap";
 import swapStyles from "./swap.module.css";
 

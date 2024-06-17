@@ -1,13 +1,13 @@
 import { getAccount } from "../utils/near";
 import getConfig from "../utils/config";
-import { getAuthenticationHeaders } from "../services/signature";
+import { getAccountId } from "../utils/wallet";
+import { viewFunction } from "../utils/near";
 import db from "@/db/RefDatabase";
 
 export async function ftGetTokenMetadata(tokenId: string) {
   let metadata: any = await db.allTokens().where({ id: tokenId }).first();
   if (!metadata) {
-    const account = await getAccount();
-    metadata = await account.viewFunction({
+    metadata = await viewFunction({
       contractId: tokenId,
       methodName: "ft_metadata",
       args: {},
@@ -37,48 +37,43 @@ export const getAccountNearBalance = async () => {
     });
 };
 
-export const getTokens = async () => {
-  return await fetch(getConfig().indexerUrl + "/list-token", {
-    method: "GET",
-    headers: {
-      "Content-type": "application/json; charset=UTF-8",
-      ...getAuthenticationHeaders("/list-token"),
-    },
-  })
-    .then((res) => res.json())
-    .then((tokens) => {
-      return tokens;
-    });
-};
-
-export const getWhitelistedTokensInfo = async (): Promise<
-  Record<string, string[]>
-> => {
-  const account = await getAccount();
-  const globalWhitelist = await account.viewFunction({
-    contractId: getConfig().REF_FI_CONTRACT_ID as any,
-    methodName: "get_whitelisted_tokens",
-  });
-
-  return {
-    globalWhitelist: [...new Set<string>([...globalWhitelist])],
-  };
-};
-
 export const getGlobalWhitelist = async (): Promise<string[]> => {
-  const account = await getAccount();
-  const globalWhitelist = await account.viewFunction({
-    contractId: getConfig().REF_FI_CONTRACT_ID as any,
+  const globalWhitelist = await viewFunction({
+    contractId: getConfig().REF_FI_CONTRACT_ID as string,
     methodName: "get_whitelisted_tokens",
   });
   return [...new Set<string>([...globalWhitelist])];
 };
+export const getAccountWhitelist = async (
+  accountId: string = getAccountId()
+): Promise<string[]> => {
+  const accountWhitelist = await viewFunction({
+    contractId: getConfig().REF_FI_CONTRACT_ID as string,
+    methodName: "get_user_whitelisted_tokens",
+    args: { account_id: accountId },
+  });
+  return [...new Set<string>([...accountWhitelist])];
+};
 
-export const get_auto_whitelisted_postfix = async (): Promise<string[]> => {
-  const account = await getAccount();
-  const metadata = await account.viewFunction({
-    contractId: getConfig().REF_FI_CONTRACT_ID as any,
+export const get_auto_whitelisted_postfix_list = async (): Promise<
+  string[]
+> => {
+  const metadata = await viewFunction({
+    contractId: getConfig().REF_FI_CONTRACT_ID as string,
     methodName: "metadata",
   });
   return metadata.auto_whitelisted_postfix;
+};
+
+export const ftGetBalance = (tokenId: string, account_id?: string) => {
+  if (tokenId === "NEAR") {
+    return getAccountNearBalance().then(({ available }: any) => available);
+  }
+  return viewFunction({
+    contractId: tokenId,
+    methodName: "ft_balance_of",
+    args: {
+      account_id: getAccountId(),
+    },
+  }).catch(() => "0");
 };

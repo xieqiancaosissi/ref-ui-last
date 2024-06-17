@@ -1,6 +1,6 @@
 import getConfig from "@/utils/config";
 import db, { BoostSeeds, TokenPrice } from "../db/RefDatabase";
-import { REF_FI_CONTRACT_ID, refFarmBoostViewFunction } from "../utils/near";
+import { REF_FARM_BOOST_CONTRACT_ID, viewFunction } from "../utils/near";
 import { getAccountId } from "../utils/wallet";
 import { TokenMetadata } from "./ft-contract";
 import { getTokenPriceList } from "./indexer";
@@ -86,7 +86,20 @@ export interface Seed {
   token_meta_data?: TokenMetadata;
   farmer_count: number;
 }
-
+export async function refFarmBoostViewFunction({
+  methodName,
+  args,
+}: {
+  contractId?: string;
+  methodName: string;
+  args?: object;
+}) {
+  return viewFunction({
+    contractId: REF_FARM_BOOST_CONTRACT_ID,
+    methodName,
+    args,
+  });
+}
 export const get_unWithDraw_rewards = async () => {
   const accountId = getAccountId();
   return await refFarmBoostViewFunction({

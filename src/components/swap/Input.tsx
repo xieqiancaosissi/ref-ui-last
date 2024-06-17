@@ -1,6 +1,9 @@
 import Image from "next/image";
-import { ArrowDownIcon } from "../../components/swap/icons";
 import { twMerge } from "tailwind-merge";
+import dynamic from "next/dynamic";
+const SelectTokenButton = dynamic(() => import("./SelectTokenButton"), {
+  ssr: false,
+});
 
 export default function Input(props: any) {
   const { disabled, className } = props;
@@ -21,13 +24,7 @@ export default function Input(props: any) {
           disabled={disabled}
           className="flex-grow w-1 bg-transparent outline-none font-bold text-white text-2xl"
         />
-        <div className="flex items-center cursor-pointer flex-shrink-0">
-          <Image width="20" height="20" alt="" src="/images/memeMenu.svg" />
-          <span className="text-white font-bold text-base ml-1.5 mr-2.5 ">
-            NEAR
-          </span>
-          <ArrowDownIcon className="text-gray-50" />
-        </div>
+        <SelectTokenButton />
       </div>
       <div className="flex items-center justify-between w-full text-sm text-gray-50 mt-2.5">
         <span>$140.5</span>

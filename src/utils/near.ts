@@ -79,6 +79,14 @@ export async function getContractInstance({
   return contract;
 }
 
+export async function viewFunction(viewArg: {
+  contractId: string;
+  methodName: string;
+  args?: object;
+}) {
+  const account = await getAccount();
+  return await account.viewFunction(viewArg);
+}
 export async function refFarmBoostViewFunction({
   methodName,
   args,

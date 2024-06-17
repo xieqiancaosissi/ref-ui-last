@@ -8,7 +8,7 @@ import {
 } from "@/utils/uiNumber";
 import { useTokenMetadata } from "@/hooks/usePools";
 import { NearIcon, DangerousIcon } from "@/components/pools/icon";
-import { useRiskTokens } from "@/hooks/riskTokens";
+import { useRiskTokens } from "@/hooks/useRiskTokens";
 
 export default function PoolRow({
   list,

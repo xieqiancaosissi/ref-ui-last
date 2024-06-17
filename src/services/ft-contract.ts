@@ -17,4 +17,5 @@ export interface TokenMetadata {
   t_value?: string;
   isRisk?: boolean;
   isUserToken?: boolean;
+  isDefaultWhiteToken?: boolean;
 }

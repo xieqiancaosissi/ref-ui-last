@@ -23,7 +23,9 @@ export default function SelectTokenButton(props: any) {
         </span>
         <ArrowDownIcon className="text-gray-50" />
       </div>
-      <SelectTokenModal isOpen={isOpen} onRequestClose={hideModal} />
+      {isOpen ? (
+        <SelectTokenModal isOpen={isOpen} onRequestClose={hideModal} />
+      ) : null}
     </div>
   );
 }

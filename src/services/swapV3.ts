@@ -1,3 +1,5 @@
+import { refSwapV3ViewFunction } from "../utils/near";
+import getConfig from "../utils/config";
 import { TokenMetadata } from "./ft-contract";
 
 export interface PoolInfo {
@@ -24,3 +26,13 @@ export interface PoolInfo {
   top_bin_apr_display?: string;
   tvlUnreal?: boolean;
 }
+
+export const listPools = async () => {
+  const res = await refSwapV3ViewFunction({
+    methodName: "list_pools",
+  });
+
+  return res.filter(
+    (p: any) => !getConfig().DCL_POOL_BLACK_LIST.includes(p?.pool_id)
+  );
+};

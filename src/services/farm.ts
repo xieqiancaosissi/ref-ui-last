@@ -1,11 +1,31 @@
 import getConfig from "@/utils/config";
 import db, { BoostSeeds, TokenPrice } from "../db/RefDatabase";
-import { REF_FARM_BOOST_CONTRACT_ID, viewFunction } from "../utils/near";
-import { getAccountId } from "../utils/wallet";
+import {
+  REF_FARM_BOOST_CONTRACT_ID,
+  REF_FI_CONTRACT_ID,
+  refFarmBoostFunctionCall,
+  viewFunction,
+} from "../utils/near";
+import { getAccountId, getCurrentWallet } from "../utils/wallet";
 import { TokenMetadata } from "./ft-contract";
-import { getTokenPriceList } from "./indexer";
+import { getPoolsByIds, getTokenPriceList } from "./indexer";
+import { listPools } from "./swapV3";
 
 const config = getConfig();
+const { REF_VE_CONTRACT_ID, REF_UNI_V3_SWAP_CONTRACT_ID } = config;
+export const DEFAULT_PAGE_LIMIT = 300;
+const STABLE_POOL_ID = getConfig().STABLE_POOL_ID;
+const STABLE_POOL_IDS = getConfig().STABLE_POOL_IDS;
+const STABLE_POOL_USN_ID = getConfig().STABLE_POOL_USN_ID;
+const expand = 6;
+
+export const classificationOfCoins_key = [
+  "stablecoin",
+  "near_ecosystem",
+  "bridged_tokens",
+  "gaming",
+  "nft",
+];
 export interface PoolInfo {
   pool_id?: string;
   token_x?: string;
@@ -86,6 +106,58 @@ export interface Seed {
   token_meta_data?: TokenMetadata;
   farmer_count: number;
 }
+
+export interface PoolInfo {
+  pool_id?: string;
+  token_x?: string;
+  token_y?: string;
+  fee: number;
+  point_delta?: number;
+  current_point?: number;
+  state?: string; // running or paused
+  total_liquidity?: string;
+  liquidity?: string;
+  liquidity_x?: string;
+  max_liquidity_per_point?: string;
+  percent?: string;
+  total_x?: string;
+  total_y?: string;
+  tvl?: number;
+  token_x_metadata?: TokenMetadata;
+  token_y_metadata?: TokenMetadata;
+  total_fee_x_charged?: string;
+  total_fee_y_charged?: string;
+  top_bin_apr?: string;
+  top_bin_apr_display?: string;
+  tvlUnreal?: boolean;
+}
+
+export interface BoostConfig {
+  affected_seeds: Record<string, number>;
+  booster_decimal: number;
+}
+
+export interface UserSeedInfo {
+  boost_ratios: any;
+  duration_sec: number;
+  free_amount: string;
+  locked_amount: string;
+  unlock_timestamp: string;
+  x_locked_amount: string;
+}
+interface FrontConfigBoost {
+  [key: string]: string | number | undefined;
+}
+
+export const frontConfigBoost: FrontConfigBoost = {
+  "4514": 102,
+  "4179": 101,
+  "79": "100",
+  "3": "99",
+  "4": "98",
+  "phoenix-bonds.near|wrap.near|2000": "97",
+};
+
 export async function refFarmBoostViewFunction({
   methodName,
   args,
@@ -142,4 +214,302 @@ export const getBoostTokenPricesFromServer = async (): Promise<
   } catch (error) {
     return {};
   }
+};
+
+export function getFarmClassification(): any {
+  const env: string = process.env.REACT_APP_NEAR_ENV || "";
+  if (env == "pub-testnet") {
+    return {
+      near: [
+        "usdt.fakes.testnet|wrap.testnet|2000",
+        "usdt.fakes.testnet|wrap.testnet|100",
+        "465",
+      ],
+      eth: ["phoenix-bonds.testnet|wrap.testnet|2000", "604"],
+      stable: ["79"],
+      meme: [],
+    };
+  } else if (env == "testnet") {
+    return {
+      near: [
+        "usdt.fakes.testnet|wrap.testnet|2000",
+        "usdt.fakes.testnet|wrap.testnet|100",
+        "465",
+      ],
+      eth: ["phoenix-bonds.testnet|wrap.testnet|2000", "604"],
+      stable: ["79"],
+      meme: [],
+    };
+  } else {
+    return {
+      near: [
+        "0",
+        "1207",
+        "1371",
+        "1395",
+        "2330",
+        "2448",
+        "2799",
+        "3",
+        "3019",
+        "3097",
+        "3474",
+        "3514",
+        "3515",
+        "3519",
+        "377",
+        "4",
+        "974",
+        "1195",
+        "1923",
+        "3448",
+        "553",
+        "79",
+        "2691",
+        "2800",
+        "3020",
+        "3433",
+        "3612",
+        "2769",
+        "2973",
+        "3667",
+        "3688",
+        "3699",
+        "3714",
+        "3471",
+        "3449",
+        "3819",
+        "3804",
+        "3815",
+        "phoenix-bonds.near|wrap.near|2000",
+        "4276",
+        "4314",
+        "3807",
+        "4276",
+        "4369",
+        "4514",
+        "4771",
+        "4479",
+        "4820",
+      ],
+      eth: [
+        "605",
+        "1207",
+        "2734",
+        "1395",
+        "1910",
+        "2330",
+        "2657",
+        "2691",
+        "2799",
+        "2800",
+        "3",
+        "3020",
+        "3433",
+        "4",
+        "974",
+        "3097",
+        "3636",
+        "3815",
+        "3804",
+        "3471",
+        "4479",
+      ],
+      stable: [
+        "1910",
+        "3020",
+        "3433",
+        "3514",
+        "3515",
+        "3688",
+        "3689",
+        "3699",
+        "4179",
+        "4514",
+      ],
+      meme: ["4314", "3807", "4276", "4369", "4771", "4820"],
+    };
+  }
+}
+
+export const list_seeds_info = async () => {
+  return await refFarmBoostViewFunction({
+    methodName: "list_seeds_info",
+  });
+};
+
+export const getBoostSeeds = async (): Promise<{
+  seeds: Seed[];
+  farms: FarmBoost[][];
+  pools: PoolRPCView[] & PoolInfo[];
+}> => {
+  try {
+    const seeds: Seed[] = [];
+    const farms: FarmBoost[][] = [];
+    const pools: PoolRPCView[] & PoolInfo[] = [];
+    const cacheData = await db.checkBoostSeeds();
+    if (cacheData) {
+      const list: BoostSeeds[] = await db.queryBoostSeeds();
+      list.forEach((s: BoostSeeds) => {
+        const { id, update_time, ...info } = s;
+        const { seed, farmList, pool } = info;
+        seeds.push(seed);
+        farms.push(farmList);
+        if (pool) {
+          pools.push(pool);
+        }
+      });
+      getBoostSeedsFromServer();
+      return { seeds, farms, pools };
+    } else {
+      const result = await getBoostSeedsFromServer();
+      return result;
+    }
+  } catch (error) {
+    return { seeds: [], farms: [], pools: [] };
+  }
+};
+export const list_seed_farms = async (seed_id: string) => {
+  try {
+    return await refFarmBoostViewFunction({
+      methodName: "list_seed_farms",
+      args: { seed_id },
+    });
+  } catch {
+    return null;
+  }
+};
+export const getBoostSeedsFromServer = async (): Promise<{
+  seeds: Seed[];
+  farms: FarmBoost[][];
+  pools: PoolRPCView[] & PoolInfo[];
+}> => {
+  try {
+    // get all seeds
+    let list_seeds = await list_seeds_info();
+    // not the classic and dcl seeds would be filtered
+    list_seeds = list_seeds.filter((seed: Seed) => {
+      const contract_id = seed.seed_id.split("@")?.[0];
+      return (
+        contract_id == REF_UNI_V3_SWAP_CONTRACT_ID ||
+        contract_id == REF_FI_CONTRACT_ID
+      );
+    });
+    // get all farms
+    const farmsPromiseList: Promise<any>[] = [];
+    const poolIds = new Set<string>();
+    const dcl_poolIds = new Set<string>();
+    // get all dcl pools
+    const dcl_all_pools: PoolInfo[] = await listPools();
+    let pools: any[] = [];
+    const both_normalPools_dclPools: any[] = [];
+    list_seeds.forEach((seed: Seed) => {
+      const { seed_id } = seed;
+      // seed type: [commonSeed, loveSeed, dclSeed]
+      const [contractId, tempPoolId] = seed_id.split("@");
+      if (tempPoolId && contractId !== REF_UNI_V3_SWAP_CONTRACT_ID) {
+        poolIds.add(tempPoolId);
+      } else if (tempPoolId && contractId == REF_UNI_V3_SWAP_CONTRACT_ID) {
+        const [fixRange, dcl_pool_id, left_point, right_point] =
+          tempPoolId.split("&");
+        dcl_poolIds.add(dcl_pool_id);
+      }
+      farmsPromiseList.push(list_seed_farms(seed_id));
+    });
+    const list_farms: FarmBoost[][] = await Promise.all(farmsPromiseList);
+    let cacheFarms: FarmBoost[] = [];
+    list_farms.forEach((arr: FarmBoost[]) => {
+      cacheFarms = cacheFarms.concat(arr);
+    });
+    pools = await getPoolsByIds({ pool_ids: Array.from(poolIds) });
+    // cache seeds farms pools
+    const cacheSeedsFarmsPools: any[] = [];
+    list_seeds.forEach((seed: Seed, index: number) => {
+      let pool: any = null;
+      const [contractId, tempPoolId] = seed.seed_id.split("@");
+      if (tempPoolId) {
+        if (contractId == REF_UNI_V3_SWAP_CONTRACT_ID) {
+          const [fixRange, dcl_pool_id, left_point, right_point] =
+            tempPoolId.split("&");
+          pool = dcl_all_pools.find((p: PoolInfo) => {
+            if (p.pool_id == dcl_pool_id) return true;
+          });
+        } else {
+          const id = tempPoolId;
+          pool = pools.find((p: any) => {
+            if (+p.id == +id) return true;
+          });
+        }
+      }
+      cacheSeedsFarmsPools.push({
+        id: seed.seed_id,
+        seed,
+        farmList: list_farms[index],
+        pool,
+      });
+      if (pool) {
+        both_normalPools_dclPools.push(pool);
+      }
+    });
+    db.cacheBoostSeeds(cacheSeedsFarmsPools);
+    return {
+      seeds: list_seeds,
+      farms: list_farms,
+      pools: both_normalPools_dclPools,
+    };
+  } catch (error) {
+    return {
+      seeds: [],
+      farms: [],
+      pools: [],
+    };
+  }
+};
+
+export const list_farmer_seeds = async () => {
+  const accountId = getAccountId();
+  return await refFarmBoostViewFunction({
+    methodName: "list_farmer_seeds",
+    args: { farmer_id: accountId },
+  });
+};
+
+export const get_unclaimed_rewards = async (seed_id: string) => {
+  const accountId = getAccountId();
+  return await refFarmBoostViewFunction({
+    methodName: "get_unclaimed_rewards",
+    args: { farmer_id: accountId, seed_id },
+  });
+};
+
+export const getVeSeedShare = async (): Promise<any> => {
+  // REF_VE_CONTRACT_ID
+  return await fetch(
+    config.sodakiApiUrl + `/seed/v2.ref-finance.near@79/accounts`,
+    {
+      method: "GET",
+    }
+  )
+    .then((res) => res.json())
+    .then((res) => {
+      return res;
+    })
+    .catch(() => {
+      return {};
+    });
+};
+
+export const get_config = async () => {
+  return await refFarmBoostViewFunction({
+    methodName: "get_config",
+  });
+};
+
+export const claimRewardBySeed_boost = async (
+  seed_id: string
+): Promise<any> => {
+  return refFarmBoostFunctionCall({
+    methodName: "claim_reward_by_seed",
+    args: { seed_id },
+  });
 };

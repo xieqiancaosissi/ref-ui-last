@@ -189,7 +189,7 @@ class RefDatabase extends Dexie {
   }
 
   public async queryFarms() {
-    const farms = await this.allFarms().toArray();
+    const farms = await this.allBoostFarms().toArray();
     return farms;
   }
 

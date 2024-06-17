@@ -106,7 +106,15 @@ export default function Farms() {
                   <SearchIcon />
                 </span>
               </div>
-              <div className={poolStyle.createPoolButton}>+ Create Pool</div>
+              <div
+                className={`${poolStyle.createPoolButton} ${
+                  isActive == "classic"
+                    ? "bg-createPoolLinear text-black cursor-pointer hover:opacity-85"
+                    : "text-gray-50 bg-gray-40 cursor-default"
+                }`}
+              >
+                + Create Pool
+              </div>
             </div>
           </div>
         </div>

@@ -52,6 +52,7 @@ const config: Config = {
           60: "#141C22",
           70: "#101922",
           80: "#566069",
+          45: "#16212A",
         },
         green: {
           10: "#9EFE01",
@@ -92,6 +93,7 @@ const config: Config = {
         greenGradient: "linear-gradient(90deg, #9EFF00 0%, #5F9900 100%)",
         greenGradientDark:
           "linear-gradient(90deg, #9DFD01 0%, #5F9900 110.34%)",
+        createPoolLinear: "linear-gradient(90deg, #9EFF00 1.39%, #5F9900 100%)",
       }),
     },
   },

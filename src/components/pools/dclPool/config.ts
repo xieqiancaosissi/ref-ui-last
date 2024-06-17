@@ -1,26 +1,3 @@
-export const tabList = [
-  {
-    key: "",
-    value: "All",
-  },
-  {
-    key: "new",
-    value: "New",
-  },
-  {
-    key: "farm",
-    value: "Farm",
-  },
-  {
-    key: "meme",
-    value: "Meme",
-  },
-  {
-    key: "other",
-    value: "Other",
-  },
-];
-
 export const dclHeader = [
   {
     key: "fee",
@@ -29,6 +6,9 @@ export const dclHeader = [
   {
     key: "apr",
     value: "Top Bin APR(24h)",
+    tip: true,
+    tipMsg:
+      "This is the trailing 24hr APR of the top performing bin in this pool.",
   },
   {
     key: "24h",

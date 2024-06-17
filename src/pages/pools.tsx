@@ -7,6 +7,7 @@ import Charts from "@/components/pools/charts/charts";
 import Classic from "@/components/pools/classicPool/classic";
 import Stable from "@/components/pools/stablePool/stablePool";
 import Dcl from "@/components/pools/dclPool/dcl";
+import CreatePool from "@/components/pools/createPoolModal/index";
 
 export default function Farms() {
   const accountStore = useAccountStore();
@@ -38,6 +39,14 @@ export default function Farms() {
     setSearchValue(e.target.value);
   };
 
+  // create pool
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  function showModal() {
+    setIsOpen(true);
+  }
+  function hideModal() {
+    setIsOpen(false);
+  }
   return (
     <div>
       {/* charts & pools filter */}
@@ -112,6 +121,9 @@ export default function Farms() {
                     ? "bg-createPoolLinear text-black cursor-pointer hover:opacity-85"
                     : "text-gray-50 bg-gray-40 cursor-default"
                 }`}
+                onClick={() => {
+                  isActive == "classic" && showModal();
+                }}
               >
                 + Create Pool
               </div>
@@ -135,6 +147,9 @@ export default function Farms() {
         <Dcl searchValue={keyWordsType == "token" ? searchValue : ""} />
       )}
       {/* watchlist */}
+
+      {/* create pool */}
+      <CreatePool isOpen={isOpen} onRequestClose={hideModal} />
     </div>
   );
 }

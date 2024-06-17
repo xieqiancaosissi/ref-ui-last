@@ -19,7 +19,6 @@ export default function PoolRow({
 }) {
   const { isDealed, updatedMapList } = useTokenMetadata(list);
   const { pureIdList } = useRiskTokens();
-
   return (
     <div className="mb-2 max-h-90 overflow-auto">
       {loading || !isDealed ? (

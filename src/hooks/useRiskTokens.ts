@@ -3,12 +3,17 @@ import { useSelectTokens } from "./useSelectTokens";
 
 export const useRiskTokens = () => {
   const { totalList } = useSelectTokens();
-  const pureIdList: any = [];
-  const allRiskTokens = useMemo(() => {
-    return totalList?.filter((token) => {
-      token.isRisk && pureIdList.push(token.id);
-      return token.isRisk;
-    });
+
+  const { allRiskTokens, pureIdList } = useMemo(() => {
+    const filteredTokens = totalList?.filter((token) => token.isRisk) || [];
+
+    const riskTokenIds = filteredTokens.map((token) => token.id);
+
+    return {
+      allRiskTokens: filteredTokens,
+      pureIdList: riskTokenIds,
+    };
   }, [totalList]);
-  return { allRiskTokens: allRiskTokens || [], pureIdList };
+
+  return { allRiskTokens, pureIdList };
 };

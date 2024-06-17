@@ -605,7 +605,9 @@ export function FarmView(props: {
     const { affected_seeds = {} } = boostConfig || {};
     const { seed_id } = seed;
     const user_seed = user_seeds_map[seed_id] || {};
-    const love_user_seed = user_seeds_map[REF_VE_CONTRACT_ID];
+    const love_user_seed = REF_VE_CONTRACT_ID
+      ? user_seeds_map[REF_VE_CONTRACT_ID]
+      : undefined;
     const base = affected_seeds[seed_id];
     const hasUserStaked = Object.keys(user_seed).length;
     if (base && loveSeed) {
@@ -662,7 +664,7 @@ export function FarmView(props: {
       return "";
     const { affected_seeds } = boostConfig;
     const { seed_id } = seed;
-    const base = affected_seeds[seed_id];
+    const base = affected_seeds?.[seed_id];
     let rate;
     if (+maxLoveShareAmount < 1) {
       rate = 1;
@@ -694,8 +696,10 @@ export function FarmView(props: {
     const { affected_seeds } = boostConfig;
     const { seed_id } = seed;
     const user_seed = user_seeds_map[seed_id] || {};
-    const love_user_seed = user_seeds_map[REF_VE_CONTRACT_ID];
-    const base = affected_seeds[seed_id];
+    const love_user_seed = REF_VE_CONTRACT_ID
+      ? user_seeds_map[REF_VE_CONTRACT_ID]
+      : undefined;
+    const base = affected_seeds?.[seed_id];
     const hasUserStaked = Object.keys(user_seed).length;
     const { free_amount } = love_user_seed || {};
     const userLoveAmount = toReadableNumber(LOVE_TOKEN_DECIMAL, free_amount);

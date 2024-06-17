@@ -220,7 +220,9 @@ export default function FarmsPage(props: any) {
   };
   async function getConfig() {
     const config = await get_config();
-    const data = config.booster_seeds[REF_VE_CONTRACT_ID];
+    const data = REF_VE_CONTRACT_ID
+      ? config.booster_seeds?.[REF_VE_CONTRACT_ID]
+      : undefined;
     boostConfig = data;
     setBoostConfig(data);
     setGlobalConfigLoading(false);
@@ -916,12 +918,13 @@ export default function FarmsPage(props: any) {
       if (pool) {
         pool.tokens_meta_data = tokens_meta_data;
       }
-      const promise_farm_meta_data = farmList?.map(async (farm: FarmBoost) => {
-        const tokenId = farm.terms.reward_token;
-        const tokenMetadata = await ftGetTokenMetadata(tokenId);
-        farm.token_meta_data = tokenMetadata;
-        return farm;
-      });
+      const promise_farm_meta_data =
+        farmList?.map(async (farm: FarmBoost) => {
+          const tokenId = farm.terms.reward_token;
+          const tokenMetadata = await ftGetTokenMetadata(tokenId);
+          farm.token_meta_data = tokenMetadata;
+          return farm;
+        }) ?? [];
       await Promise.all(promise_farm_meta_data);
       // get seed tvl
       const DECIMALS = seed_decimal;
@@ -1047,7 +1050,7 @@ export default function FarmsPage(props: any) {
       const list_user_seeds = await list_farmer_seeds();
       set_user_seeds_map(list_user_seeds);
       // get user unclaimed rewards
-      const userUncliamedRewards = {};
+      const userUncliamedRewards = {} as { [key: string]: any };
       const seed_ids = Object.keys(list_user_seeds);
       const request: Promise<any>[] = [];
       seed_ids.forEach((seed_id: string) => {
@@ -1061,7 +1064,7 @@ export default function FarmsPage(props: any) {
       });
       set_user_unclaimed_map(userUncliamedRewards);
       // get user unclaimed token meta
-      const unclaimed_token_meta_datas = {};
+      const unclaimed_token_meta_datas = {} as { [key: string]: any };
       const prom_rewards = Object.values(userUncliamedRewards).map(
         async (rewards) => {
           const tokens = Object.keys(rewards);
@@ -1257,8 +1260,8 @@ export default function FarmsPage(props: any) {
                   tokenPriceList={tokenPriceList}
                   getDetailData={getDetailData}
                   dayVolumeMap={dayVolumeMap}
-                  boostConfig={boostConfig}
-                  loveSeed={loveSeed}
+                  boostConfig={boostConfig || ({} as BoostConfig)}
+                  loveSeed={loveSeed || ({} as Seed)}
                   user_seeds_map={user_seeds_map}
                   user_unclaimed_map={user_unclaimed_map}
                   user_unclaimed_token_meta_map={user_unclaimed_token_meta_map}

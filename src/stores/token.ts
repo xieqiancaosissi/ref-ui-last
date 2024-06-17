@@ -54,28 +54,28 @@ export const useTokenStore = create(
     }
   )
 );
-// export const useTokenStore = create<ITokenStore>((set, get: any) => ({
-//   accountId: "",
-//   whitelisted_tokens: [],
-//   user_whitelisted_tokens: [],
-//   auto_whitelisted_postfix: [],
-//   defaultAccountBalances: [],
-//   autoAccountBalances: [],
-//   get_whitelisted_tokens: () => get().whitelisted_tokens,
-//   set_whitelisted_tokens: (whitelisted_tokens: string[]) =>
-//     set({ whitelisted_tokens }),
-//   get_user_whitelisted_tokens: () => get().user_whitelisted_tokens,
-//   set_user_whitelisted_tokens: (user_whitelisted_tokens: string[]) =>
-//     set({ user_whitelisted_tokens }),
-//   get_auto_whitelisted_postfix: () => get().auto_whitelisted_postfix,
-//   set_auto_whitelisted_postfix: (auto_whitelisted_postfix: string[]) =>
-//     set({ auto_whitelisted_postfix }),
-//   getDefaultAccountBalances: () => get().defaultAccountBalances,
-//   setDefaultAccountBalances: (defaultAccountBalances: ITokenMetadata[]) =>
-//     set({ defaultAccountBalances }),
-//   getAutoAccountBalances: () => get().autoAccountBalances,
-//   setAutoAccountBalances: (autoAccountBalances: ITokenMetadata[]) =>
-//     set({ autoAccountBalances }),
-//   setAccountId: (accountId: string) => set({ accountId }),
-//   getAccountId: () => get().accountId,
-// }));
+export const useAccountTokenStore = create<ITokenStore>((set, get: any) => ({
+  accountId: "",
+  whitelisted_tokens: [],
+  user_whitelisted_tokens: [],
+  auto_whitelisted_postfix: [],
+  defaultAccountBalances: [],
+  autoAccountBalances: [],
+  get_whitelisted_tokens: () => get().whitelisted_tokens,
+  set_whitelisted_tokens: (whitelisted_tokens: string[]) =>
+    set({ whitelisted_tokens }),
+  get_user_whitelisted_tokens: () => get().user_whitelisted_tokens,
+  set_user_whitelisted_tokens: (user_whitelisted_tokens: string[]) =>
+    set({ user_whitelisted_tokens }),
+  get_auto_whitelisted_postfix: () => get().auto_whitelisted_postfix,
+  set_auto_whitelisted_postfix: (auto_whitelisted_postfix: string[]) =>
+    set({ auto_whitelisted_postfix }),
+  getDefaultAccountBalances: () => get().defaultAccountBalances,
+  setDefaultAccountBalances: (defaultAccountBalances: ITokenMetadata[]) =>
+    set({ defaultAccountBalances }),
+  getAutoAccountBalances: () => get().autoAccountBalances,
+  setAutoAccountBalances: (autoAccountBalances: ITokenMetadata[]) =>
+    set({ autoAccountBalances }),
+  setAccountId: (accountId: string) => set({ accountId }),
+  getAccountId: () => get().accountId,
+}));

@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
-import { useAccountStore } from "../stores/account";
 import dynamic from "next/dynamic";
-import { getAccountNearBalance } from "../services/token";
 import {
   RefreshIcon,
   SWitchButton,
@@ -16,22 +14,18 @@ const SwapButton = dynamic(() => import("../components/swap/SwapButton"), {
 const SetPopup = dynamic(() => import("../components/swap/SetPopup"), {
   ssr: false,
 });
+const InitData = dynamic(() => import("../components/swap/InitData"), {
+  ssr: false,
+});
 
 export default function Swap(props: any) {
   const [highImpactCheck, setHighImpactCheck] = useState<boolean>(false);
-  const accountStore = useAccountStore();
-  const accountId = accountStore.getIsSignedIn();
-  useEffect(() => {
-    getNearMeta();
-  }, [accountId]);
-  async function getNearMeta() {
-    const b = await getAccountNearBalance();
-  }
   function onCheck() {
     setHighImpactCheck(!highImpactCheck);
   }
   return (
     <main className="m-auto my-20 select-none" style={{ width: "420px" }}>
+      <InitData />
       <div className="rounded-lg bg-dark-10 p-4">
         {/* set */}
         <div className="flex items-center justify-between">

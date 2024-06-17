@@ -25,5 +25,5 @@
 }
 
 .createPoolButton {
-  @apply frcc text-sm font-bold text-gray-50 bg-gray-40 rounded-md ml-3  h-9 w-29 cursor-pointer hover:opacity-85;
+  @apply frcc text-sm font-bold  rounded-md ml-3  h-9 w-29;
 }

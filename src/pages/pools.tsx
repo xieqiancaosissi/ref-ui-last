@@ -6,6 +6,7 @@ import { SearchIcon, Star } from "@/components/pools/icon";
 import Charts from "@/components/pools/charts/charts";
 import Classic from "@/components/pools/classicPool/classic";
 import Stable from "@/components/pools/stablePool/stablePool";
+import Dcl from "@/components/pools/dclPool/dcl";
 
 export default function Farms() {
   const accountStore = useAccountStore();
@@ -105,7 +106,15 @@ export default function Farms() {
                   <SearchIcon />
                 </span>
               </div>
-              <div className={poolStyle.createPoolButton}>+ Create Pool</div>
+              <div
+                className={`${poolStyle.createPoolButton} ${
+                  isActive == "classic"
+                    ? "bg-createPoolLinear text-black cursor-pointer hover:opacity-85"
+                    : "text-gray-50 bg-gray-40 cursor-default"
+                }`}
+              >
+                + Create Pool
+              </div>
             </div>
           </div>
         </div>
@@ -122,7 +131,9 @@ export default function Farms() {
       )}
 
       {/* dcl */}
-
+      {isActive == "dcl" && (
+        <Dcl searchValue={keyWordsType == "token" ? searchValue : ""} />
+      )}
       {/* watchlist */}
     </div>
   );

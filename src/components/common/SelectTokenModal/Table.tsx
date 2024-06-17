@@ -27,9 +27,13 @@ export default function Table({
   }
   function sortBy(tokenB: ITokenMetadata, tokenA: ITokenMetadata) {
     if (sort == "desc") {
-      return Big(tokenA.balance).minus(tokenB.balance).toNumber();
+      return Big(tokenA.balance || 0)
+        .minus(tokenB.balance || 0)
+        .toNumber();
     } else {
-      return Big(tokenB.balance).minus(tokenA.balance).toNumber();
+      return Big(tokenB.balance || 0)
+        .minus(tokenA.balance || 0)
+        .toNumber();
     }
   }
   return (
@@ -55,7 +59,7 @@ export default function Table({
               <span className="text-sm text-white">{token.symbol}</span>
             </div>
             <div className="flex items-center gap-2 text-sm text-white">
-              <span>{displayBalance(token.balance)}</span>
+              <span>{displayBalance(token.balance || "0")}</span>
               <CollectIcon
                 className="cursor-pointer text-gray-60"
                 // collected

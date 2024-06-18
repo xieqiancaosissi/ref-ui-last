@@ -180,7 +180,7 @@ export const get_unWithDraw_rewards = async () => {
   });
 };
 
-export const getBoostTokenPrices = async (): Promise<
+export const getAllTokenPrices = async (): Promise<
   Record<string, TokenPrice>
 > => {
   try {

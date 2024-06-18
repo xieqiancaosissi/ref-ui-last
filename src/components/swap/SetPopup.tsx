@@ -2,14 +2,14 @@ import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { SetIcon } from "../../components/swap/icons";
 import { QuestionIcon } from "../../components/common/Icons";
-import { useSwapStore } from "../../stores/swap";
+import { usePersistSwapStore } from "../../stores/swap";
 import swapStyles from "./swap.module.css";
 
 export default function SetPopup() {
   const [show, setShow] = useState<boolean>();
   const [slippage, setSlippage] = useState<string>("0.5");
   const slippageOptions = ["0.1", "0.5", "1"];
-  const swapStore: any = useSwapStore();
+  const swapStore: any = usePersistSwapStore();
   const smartRoute = swapStore.getSmartRoute();
   useEffect(() => {
     function handleOutsideClick(event: any) {

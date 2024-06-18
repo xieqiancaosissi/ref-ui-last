@@ -1,0 +1,1 @@
+export const MIN_RETAINED_NEAR_AMOUNT = 0.2;

@@ -8,6 +8,11 @@ import {
 import Input from "../components/swap/Input";
 import SwapDetail from "../components/swap/SwapDetail";
 import swapStyles from "../components/swap/swap.module.css";
+import {
+  useSwapStore,
+  usePersistSwapStore,
+  IPersistSwapStore,
+} from "@/stores/swap";
 const SwapButton = dynamic(() => import("../components/swap/SwapButton"), {
   ssr: false,
 });
@@ -20,8 +25,18 @@ const InitData = dynamic(() => import("../components/swap/InitData"), {
 
 export default function Swap(props: any) {
   const [highImpactCheck, setHighImpactCheck] = useState<boolean>(false);
+  const swapStore = useSwapStore();
+  const persistSwapStore = usePersistSwapStore() as IPersistSwapStore;
+  const tokenIn = swapStore.getTokenIn();
+  const tokenOut = swapStore.getTokenOut();
   function onCheck() {
     setHighImpactCheck(!highImpactCheck);
+  }
+  function onSwitch() {
+    swapStore.setTokenIn(tokenOut);
+    swapStore.setTokenOut(tokenIn);
+    persistSwapStore.setTokenInId(tokenOut?.id);
+    persistSwapStore.setTokenOutId(tokenIn?.id);
   }
   return (
     <main className="m-auto my-20 select-none" style={{ width: "420px" }}>
@@ -39,14 +54,14 @@ export default function Swap(props: any) {
         </div>
         {/* input part */}
         <div className="flex flex-col items-center mt-4">
-          <Input />
+          <Input token={tokenIn} isIn />
           <div className="flex items-center justify-center rounded w-7 h-7 cursor-pointer text-gray-50 hover:text-white  bg-dark-60 hover:bg-dark-10 -my-3.5 relative z-10 border-2 border-dark-10">
-            <SWitchButton />
+            <SWitchButton onClick={onSwitch} />
           </div>
-          <Input disabled={true} className="mt-0.5" />
+          <Input disable token={tokenOut} isOut className="mt-0.5" />
         </div>
         {/* high price tip */}
-        <div className="flexBetween rounded border border-red-10 border-opacity-45 bg-red-10 bg-opacity-10 text-xs text-red-10 p-2 mt-4">
+        <div className="flexBetween rounded border border-red-10 border-opacity-45 bg-red-10 bg-opacity-10 text-xs text-red-10 p-2 mt-4 hidden">
           <div className="flex items-center gap-2">
             <div
               className={`flex items-center justify-center rounded-sm border border-red-10 cursor-pointer ${

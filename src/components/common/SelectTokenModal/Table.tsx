@@ -9,6 +9,7 @@ import { toPrecision } from "../../../utils/numbers";
 import { ButtonTextWrapper } from "../Button";
 import { useTokenStore } from "../../../stores/token";
 import { SelectTokenContext } from "./Context";
+import { TokenMetadata } from "@/services/ft-contract";
 type ISort = "asc" | "desc";
 export default function Table({
   tokens,
@@ -27,15 +28,6 @@ export default function Table({
   const { onSelect, onRequestClose } = useContext(SelectTokenContext);
   const tokenStore: any = useTokenStore();
   const common_tokens = tokenStore.get_common_tokens();
-  const common_tokens_map = common_tokens.reduce(
-    (acc: any, cur: ITokenMetadata) => {
-      return {
-        ...acc,
-        [cur.id]: cur,
-      };
-    },
-    {}
-  );
   const accountStore = useAccountStore();
   const isSignedIn = accountStore.isSignedIn;
   const empty = useMemo(() => {
@@ -67,14 +59,22 @@ export default function Table({
     setAddTokenLoading(true);
   }
   function addOrDeletCommonToken(token: ITokenMetadata) {
-    const copy = JSON.parse(JSON.stringify(common_tokens_map));
-    if (copy[token.id]) {
-      delete copy[token.id];
-      tokenStore.set_common_tokens(Object.values(copy));
+    const yes = isCollected(token);
+    if (yes) {
+      const new_common_tokens = common_tokens.filter(
+        (t: TokenMetadata) => !(t.id == token.id && t.symbol == token.symbol)
+      );
+      tokenStore.set_common_tokens(new_common_tokens);
     } else {
       common_tokens.push(token);
       tokenStore.set_common_tokens(common_tokens);
     }
+  }
+  function isCollected(token: TokenMetadata) {
+    const finded = common_tokens.find(
+      (t: TokenMetadata) => t.id == token.id && t.symbol == token.symbol
+    );
+    return !!finded;
   }
   return (
     <div className={`${hidden ? "hidden" : ""}`}>
@@ -111,7 +111,7 @@ export default function Table({
                   addOrDeletCommonToken(token);
                 }}
                 className="cursor-pointer text-gray-60"
-                collected={!!common_tokens_map[token.id]}
+                collected={isCollected(token)}
               />
             </div>
           </div>

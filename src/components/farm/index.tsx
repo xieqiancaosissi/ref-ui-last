@@ -17,7 +17,7 @@ import {
   classificationOfCoins_key,
   frontConfigBoost,
   getBoostSeeds,
-  getBoostTokenPrices,
+  getAllTokenPrices,
   getFarmClassification,
   getVeSeedShare,
   get_config,
@@ -270,7 +270,7 @@ export default function FarmsPage(props: any) {
 
     list_seeds = new_list_seeds;
     // get all token prices
-    const tokenPriceList = await getBoostTokenPrices();
+    const tokenPriceList = await getAllTokenPrices();
     setTokenPriceList(tokenPriceList);
     // get pool apr
     getAllPoolsDayVolume(list_seeds);

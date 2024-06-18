@@ -1,4 +1,4 @@
-import React, { useState, createContext } from "react";
+import React, { useState, createContext, useEffect } from "react";
 import Modal from "react-modal";
 import Image from "next/image";
 import { isMobile } from "../../../utils/device";
@@ -6,9 +6,19 @@ import { CloseIcon, SearchIcon } from "../Icons";
 import { CloseButttonIcon } from "./Icons";
 import AssetTable from "./AssetTable";
 import Styles from "./modal.module.css";
-import { useTokenStore } from "../../../stores/token";
+import {
+  useTokenStore,
+  useAccountTokenStore,
+  ITokenStore,
+  IAccountTokenStore,
+} from "../../../stores/token";
 import { ITokenMetadata } from "@/hooks/useBalanceTokens";
 import { SelectTokenContext } from "./Context";
+import { TokenMetadata } from "@/services/ft-contract";
+import { getAllTokenPrices } from "@/services/farm";
+import { TokenPrice } from "@/db/RefDatabase";
+import { toPrecision } from "@/utils/numbers";
+import { formatTokenPrice } from "@/utils/uiNumber";
 export default function SelectTokenModal({
   isOpen,
   onRequestClose,
@@ -19,19 +29,46 @@ export default function SelectTokenModal({
   onSelect: (token: ITokenMetadata) => void;
 }) {
   const [searchText, setSearchText] = useState<string>("");
-  const [hoverCommonTokenId, setHoverCommonTokenId] = useState<string>("");
-  const tokenStore: any = useTokenStore();
+  const [allTokenPrices, setAllTokenPrices] = useState<
+    Record<string, TokenPrice>
+  >({});
+  const [hoverCommonToken, setHoverCommonToken] =
+    useState<TokenMetadata | null>();
+  const tokenStore = useTokenStore() as ITokenStore;
+  const accountTokenStore = useAccountTokenStore() as IAccountTokenStore;
   const common_tokens: ITokenMetadata[] = tokenStore.get_common_tokens();
+  const defaultAccountBalances = accountTokenStore.getDefaultAccountBalances();
+  const autoAccountBalances = accountTokenStore.getAutoAccountBalances();
+  useEffect(() => {
+    getAllTokenPrices().then((res) => {
+      setAllTokenPrices(res);
+    });
+  }, []);
   function changeSearchText(e: any) {
     setSearchText(e.target.value);
   }
   function clearSearchText() {
     setSearchText("");
   }
-  function delete_common_token(tokenId: string) {
+  function delete_common_token(t: TokenMetadata) {
     tokenStore.set_common_tokens(
-      common_tokens.filter((token) => token.id !== tokenId)
+      common_tokens.filter(
+        (token) => !(token.id == t.id && token.symbol == t.symbol)
+      )
     );
+  }
+  function getTokenWithBalance(token: ITokenMetadata) {
+    const tokenFromDefault = defaultAccountBalances?.find(
+      (t) => t.id == token.id && t.symbol == token.symbol
+    );
+    const tokenFromAuto = autoAccountBalances?.find(
+      (t) => t.id == token.id && t.symbol == token.symbol
+    );
+    return tokenFromDefault || tokenFromAuto || token;
+  }
+  function getTokenUIPrice(tokenId: string) {
+    const price = allTokenPrices[tokenId]?.price || "";
+    return formatTokenPrice(price);
   }
   const cardWidth = isMobile() ? "95vw" : "430px";
   return (
@@ -61,6 +98,7 @@ export default function SelectTokenModal({
             onRequestClose,
             onSelect,
             searchText,
+            allTokenPrices,
           }}
         >
           {/* search box */}
@@ -94,13 +132,13 @@ export default function SelectTokenModal({
                     className={`flex items-center gap-1.5 relative pl-2 pr-3.5 py-0.5 border border-gray-70 hover:bg-gray-70 cursor-pointer rounded-lg`}
                     key={token.id}
                     onMouseEnter={() => {
-                      setHoverCommonTokenId(token.id);
+                      setHoverCommonToken(token);
                     }}
                     onMouseLeave={() => {
-                      setHoverCommonTokenId("");
+                      setHoverCommonToken(null);
                     }}
                     onClick={() => {
-                      onSelect(token);
+                      onSelect(getTokenWithBalance(token));
                       onRequestClose();
                     }}
                   >
@@ -117,12 +155,16 @@ export default function SelectTokenModal({
                     />
                     <div className="flex flex-col">
                       <span className="text-sm text-white">{token.symbol}</span>
-                      <span className="text-xs text-gray-50">$32.6</span>
+                      <span className="text-xs text-gray-50">
+                        {getTokenUIPrice(token.id)}
+                      </span>
                     </div>
-                    {hoverCommonTokenId == token.id ? (
+                    {hoverCommonToken?.id == token.id &&
+                    hoverCommonToken.symbol == token.symbol ? (
                       <CloseButttonIcon
-                        onClick={() => {
-                          delete_common_token(token.id);
+                        onClick={(e: any) => {
+                          e.stopPropagation();
+                          delete_common_token(token);
                         }}
                         className="absolute -right-2 -top-2 cursor-pointer transform scale-75"
                       />

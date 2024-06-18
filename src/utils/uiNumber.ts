@@ -1,5 +1,9 @@
 import Big from "big.js";
-import { formatWithCommas, toInternationalCurrencySystem } from "./numbers";
+import {
+  formatWithCommas,
+  toInternationalCurrencySystem,
+  toPrecision,
+} from "./numbers";
 
 export const formatWithCommas_usd = (v: any) => {
   if (isInvalid(v)) return "$-";
@@ -116,4 +120,21 @@ export const addThousandSeparator = (num: any) => {
   const numParts = num.toString().split(".");
   numParts[0] = numParts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   return numParts.join(".");
+};
+
+export const formatTokenPrice = (v: string | number, precision = 2) => {
+  if (isInvalid(v)) return "$-";
+  let zero = "";
+  for (let i = 0; i < precision - 1; i++) {
+    zero += "0";
+  }
+  zero = `0.${zero}1`;
+  const decimal = new Big(v);
+  if (decimal.eq(0)) {
+    return "$0";
+  } else if (decimal.lt(zero)) {
+    return `<$${zero}`;
+  } else {
+    return `$${toPrecision(decimal.toFixed(), precision)}`;
+  }
 };

@@ -16,6 +16,7 @@ export default function getConfigV2(
           "a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.factory.bridge.near",
           "dac17f958d2ee523a2206206994597c13d831ec7.factory.bridge.near",
         ],
+        INIT_SWAP_PAIRS: ["near", "token.v2.ref-finance.near"],
       };
     case "pub-testnet":
       return {
@@ -30,6 +31,7 @@ export default function getConfigV2(
           "usdc.fakes.testnet",
           "usdt.fakes.testnet",
         ],
+        INIT_SWAP_PAIRS: ["near", "ref.fakes.testnet"],
       };
     case "testnet":
       return {
@@ -42,6 +44,7 @@ export default function getConfigV2(
           "usdc.fakes.testnet",
           "usdt.fakes.testnet",
         ],
+        INIT_SWAP_PAIRS: ["near", "ref.fakes.testnet"],
       };
     default:
       return {
@@ -56,6 +59,7 @@ export default function getConfigV2(
           "a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.factory.bridge.near",
           "dac17f958d2ee523a2206206994597c13d831ec7.factory.bridge.near",
         ],
+        INIT_SWAP_PAIRS: ["near", "token.v2.ref-finance.near"],
       };
   }
 }

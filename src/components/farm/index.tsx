@@ -1,5 +1,5 @@
 /* eslint-disable prefer-const */
-import { SetStateAction, useEffect, useRef, useState } from "react";
+import { SetStateAction, useEffect, useMemo, useRef, useState } from "react";
 import { useAccountStore } from "../../stores/account";
 import {
   FarmAvatarIcon,
@@ -69,22 +69,7 @@ import {
 import { get24hVolumes } from "../../services/indexer";
 import { LOVE_TOKEN_DECIMAL, getLoveAmount } from "../../services/referendum";
 import { FarmView } from "./components/FarmView";
-
-const farmsTypeList = [
-  { key: "All", value: "All" },
-  { key: "Classic", value: "Classic" },
-  { key: "DCL", value: "DCL" },
-];
-const farmsChildTypeList = [
-  { key: "All", value: "All" },
-  { key: "New", value: "New" },
-  { key: "NEAR", value: "NEAR" },
-  { key: "Stable", value: "Stable" },
-  { key: "ETH", value: "ETH" },
-  { key: "Meme", value: "Meme" },
-  { key: "Ended", value: "Ended" },
-  { key: "Others", value: "Others" },
-];
+import SelectBox from "./components/SelectBox";
 
 const {
   REF_VE_CONTRACT_ID,
@@ -131,7 +116,7 @@ export default function FarmsPage(props: any) {
   const [noData, setNoData] = useState(false);
   const [count, setCount] = useState(0);
   const [dayVolumeMap, setDayVolumeMap] = useState<any>({});
-  const searchRef = useRef(null);
+  const searchRef = useRef<HTMLInputElement>(null);
   const refreshTime = 300000;
   const sortList = {
     // tvl: intl.formatMessage({ id: 'tvl' }),
@@ -143,33 +128,27 @@ export default function FarmsPage(props: any) {
   let [boostConfig, setBoostConfig] = useState<BoostConfig | null>(null);
   const history = useHistory();
   const [farmTypeList, setFarmTypeList] = useState([
-    { id: "all", label: "all" },
-    { id: "dcl", label: "dcl_farms" },
-    { id: "classic", label: "classic_farms" },
+    { id: "all", label: "All" },
+    { id: "dcl", label: "Classic" },
+    { id: "classic", label: "DCL" },
   ]);
   const [filterTypeList, setFilterTypeList] = useState([
-    { id: "all", label: "all" },
+    { id: "all", label: "All" },
+    { id: "new", name: "New" },
+    { id: "near", name: "NEAR" },
+    { id: "stable", name: "Stable" },
+    { id: "eth", name: "ETH" },
+    { id: "meme", name: "Meme" },
     {
       id: "boost",
       name: "Boost",
-      icon: <BoostOptIcon></BoostOptIcon>,
       hidden: REF_VE_CONTRACT_ID ? false : true,
     },
-    { id: "near", name: "NEAR", icon: <NearOptIcon></NearOptIcon> },
-    { id: "stable", name: "Stable", icon: <StableOption></StableOption> },
-    { id: "eth", name: "ETH", icon: <EthOptIcon></EthOptIcon> },
-    { id: "meme", name: "Meme", icon: <MemeOptIcon></MemeOptIcon> },
-    { id: "new", name: "New", icon: <NewIcon></NewIcon> },
-    { id: "others", name: "Others", icon: <OthersOptIcon></OthersOptIcon> },
+    { id: "others", name: "Others" },
   ]);
   const [sort, setSort] = useState("apr");
   const [keyWords, setKeyWords] = useState("");
-  const [farmTab, setFarmTab] = useState(
-    typeof window !== "undefined"
-      ? localStorage.getItem("BOOST_FARM_TAB") || "all"
-      : "all"
-  );
-  // all、yours
+  // const [farmTab, setFarmTab] = useState("all"); // all、yours
   const [farm_type_selectedId, set_farm_type_selectedId] = useState("all");
   const [filter_type_selectedId, set_filter_type_selectedId] = useState("all");
   const [has_dcl_farms_in_display_list, set_has_dcl_farms_in_display_list] =
@@ -206,7 +185,7 @@ export default function FarmsPage(props: any) {
   }, [count]);
   useEffect(() => {
     searchByCondition();
-  }, [farm_type_selectedId, filter_type_selectedId, keyWords, farmTab]);
+  }, [farm_type_selectedId, filter_type_selectedId, keyWords]);
   useEffect(() => {
     sortFarms();
   }, [sort]);
@@ -581,8 +560,8 @@ export default function FarmsPage(props: any) {
     }
   }
   function searchByCondition(from?: string) {
-    set_farm_display_List(farm_display_List.sort());
-    set_farm_display_ended_List(farm_display_ended_List.sort());
+    farm_display_List = farm_display_List.sort();
+    farm_display_ended_List = farm_display_ended_List.sort();
     let noDataEnd = true,
       noDataLive = true;
     const commonSeedFarms = mergeCommonSeedsFarms();
@@ -613,10 +592,7 @@ export default function FarmsPage(props: any) {
         condition4 = true;
       }
       // farm_type
-      if (farmTab == "yours") {
-        condition3 = true;
-        condition4 = true;
-      } else if (farm_type_selectedId == "all") {
+      if (farm_type_selectedId == "all") {
         condition3 = true;
       } else if (farm_type_selectedId == "dcl") {
         if (is_dcl_farm) {
@@ -632,16 +608,7 @@ export default function FarmsPage(props: any) {
         }
       }
       // filter_type
-      if (farmTab == "yours") {
-        if (userStaked) {
-          const commonSeedFarmList = commonSeedFarms[seed_id] || [];
-          if (commonSeedFarmList.length == 2 && isEnd) {
-            condition1 = false;
-          } else {
-            condition1 = true;
-          }
-        }
-      } else if (filter_type_selectedId == "all") {
+      if (filter_type_selectedId == "all") {
         condition1 = true;
       } else if (filter_type_selectedId == "boost" && boostConfig) {
         const affected_seeds_keys = Object.keys(boostConfig.affected_seeds);
@@ -851,11 +818,7 @@ export default function FarmsPage(props: any) {
       const is_dcl_farm = contractId == REF_UNI_V3_SWAP_CONTRACT_ID;
       return is_dcl_farm && !hidden;
     });
-    if (farmTab == "yours") {
-      setNoData(noDataLive);
-    } else {
-      setNoData(noDataEnd && noDataLive);
-    }
+    setNoData(noDataEnd && noDataLive);
     if (from == "main") {
       setHomePageLoading(false);
     }
@@ -1136,6 +1099,23 @@ export default function FarmsPage(props: any) {
     });
     set_your_seeds_quantity(yourSeeds.length.toString());
   }
+  function getFarmVisibleLength() {
+    const list = farm_display_ended_List.filter((seed: Seed) => {
+      if (!seed.hidden) return true;
+    });
+    return list.length;
+  }
+  const endFarmLength = useMemo(() => {
+    return getFarmVisibleLength();
+  }, [farm_display_ended_List]);
+  function switchEndedFarmListDisplayStatus() {
+    const current = !showEndedFarmList;
+    localStorage.setItem("endedfarmShow", current ? "1" : "0");
+    setShowEndedFarmList(current);
+  }
+  function searchByKeyWords(value: string) {
+    setKeyWords(value);
+  }
   // console.log(user_unWithdraw_rewards, "user_unWithdraw_rewards");
   // console.log(tokenPriceList, "tokenPriceList");
   return (
@@ -1163,19 +1143,13 @@ export default function FarmsPage(props: any) {
         </div>
         <div className="frcb w-3/5">
           <div className="frcc border border-dark-40 rounded-md p-0.5">
-            {farmsTypeList.map((item) => (
-              <div
-                key={item.key}
-                className={`${
-                  farmsType === item.value
-                    ? "bg-poolsTypelinearGrayBg rounded"
-                    : "text-gray-60"
-                } w-25 h-8 frcc cursor-pointer text-sm`}
-                onClick={() => setFarmsType(item.value)}
-              >
-                {item.value}
-              </div>
-            ))}
+            <SelectBox
+              list={farmTypeList}
+              containerClass="lg:mr-2.5 xsm:mr-1"
+              type="farm_type"
+              selectedId={farm_type_selectedId}
+              setSelectedId={set_farm_type_selectedId}
+            ></SelectBox>
           </div>
           <div className="frcc">
             <div className="frcc text-sm mr-10">
@@ -1187,13 +1161,26 @@ export default function FarmsPage(props: any) {
                 APR <FarmDownArrown className="ml-2" />
               </p>
             </div>
-            <div className="border border-gray-100 w-52 h-9 frc p-1 rounded">
+            <div
+              className={`border border-gray-100 w-52 h-9 frc p-1 rounded ${
+                keyWords ? "border border-borderLightBlueColor" : ""
+              }`}
+            >
               <input
+                ref={searchRef}
                 type="text"
-                placeholder="Search Farms by token"
                 className="border-none w-40 bg-transparent outline-none caret-white mr-1 ml-1 text-white text-sm"
-              />
-              <SearchIcon />
+                onWheel={(event) => searchRef.current?.blur()}
+                onChange={({ target }) => searchByKeyWords(target.value)}
+                placeholder="Search Farms by token"
+              ></input>
+              <span
+                className={`${
+                  keyWords ? "text-lightGreenColor" : "text-farmText"
+                }`}
+              >
+                <SearchIcon />
+              </span>
             </div>
           </div>
         </div>
@@ -1203,19 +1190,12 @@ export default function FarmsPage(props: any) {
         {/* select */}
         <div className="frcb mb-3.5">
           <div className="frcc">
-            {farmsChildTypeList.map((item) => (
-              <div
-                key={item.key}
-                className={`rounded-2xl border border-dark-40 py-1 px-3.5 text-sm mr-1 mb-1 cursor-pointer ${
-                  farmsChildType === item.key
-                    ? "bg-gray-100 text-white"
-                    : "text-gray-60"
-                }`}
-                onClick={() => setFarmsChildType(item.key)}
-              >
-                {item.value}
-              </div>
-            ))}
+            <SelectBox
+              list={filterTypeList}
+              type="filter"
+              selectedId={filter_type_selectedId}
+              setSelectedId={set_filter_type_selectedId}
+            ></SelectBox>
           </div>
           <div className="frcc">
             <label className="inline-flex items-center mr-6 relative">
@@ -1247,29 +1227,69 @@ export default function FarmsPage(props: any) {
           </div>
         </div>
         {/* list */}
-        <div className="grid grid-cols-3 gap-x-5 gap-y-9 m-auto mt-8">
-          {farm_display_List.map((seed: Seed, index: number) => {
-            return (
-              <div
-                key={seed.seed_id + index}
-                className={`bg-gray-20 rounded-lg {seed.hidden ? "hidden" : ""}`}
-              >
-                <FarmView
-                  seed={seed}
-                  all_seeds={farm_display_List}
-                  tokenPriceList={tokenPriceList}
-                  getDetailData={getDetailData}
-                  dayVolumeMap={dayVolumeMap}
-                  boostConfig={boostConfig || ({} as BoostConfig)}
-                  loveSeed={loveSeed || ({} as Seed)}
-                  user_seeds_map={user_seeds_map}
-                  user_unclaimed_map={user_unclaimed_map}
-                  user_unclaimed_token_meta_map={user_unclaimed_token_meta_map}
-                  maxLoveShareAmount={maxLoveShareAmount}
-                ></FarmView>
-              </div>
-            );
-          })}
+        <div className="mb-8">
+          <div className="grid grid-cols-3 gap-x-10 gap-y-6 m-auto">
+            {farm_display_List.map((seed: Seed, index: number) => {
+              return (
+                <div
+                  key={seed.seed_id + index}
+                  className={
+                    seed.hidden
+                      ? "hidden"
+                      : index < 2
+                      ? "bg-farmItemBg rounded-lg"
+                      : "bg-gray-20 bg-opacity-30 rounded-lg"
+                  }
+                >
+                  <FarmView
+                    seed={seed}
+                    all_seeds={farm_display_List}
+                    tokenPriceList={tokenPriceList}
+                    getDetailData={getDetailData}
+                    dayVolumeMap={dayVolumeMap}
+                    boostConfig={boostConfig || ({} as BoostConfig)}
+                    loveSeed={loveSeed || ({} as Seed)}
+                    user_seeds_map={user_seeds_map}
+                    user_unclaimed_map={user_unclaimed_map}
+                    user_unclaimed_token_meta_map={
+                      user_unclaimed_token_meta_map
+                    }
+                    maxLoveShareAmount={maxLoveShareAmount}
+                  ></FarmView>
+                </div>
+              );
+            })}
+          </div>
+          <div
+            className={`grid grid-cols-3 gap-x-5 gap-y-9 m-auto mt-8 ${
+              showEndedFarmList ? "" : "hidden"
+            }`}
+          >
+            {farm_display_ended_List.map((seed: Seed, index: number) => {
+              return (
+                <div
+                  key={seed.seed_id + index}
+                  className={seed.hidden ? "hidden" : ""}
+                >
+                  <FarmView
+                    seed={seed}
+                    all_seeds={farm_display_List}
+                    tokenPriceList={tokenPriceList}
+                    getDetailData={getDetailData}
+                    dayVolumeMap={dayVolumeMap}
+                    boostConfig={boostConfig || ({} as BoostConfig)}
+                    loveSeed={loveSeed || ({} as Seed)}
+                    user_seeds_map={user_seeds_map}
+                    user_unclaimed_map={user_unclaimed_map}
+                    user_unclaimed_token_meta_map={
+                      user_unclaimed_token_meta_map
+                    }
+                    maxLoveShareAmount={maxLoveShareAmount}
+                  ></FarmView>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
     </main>

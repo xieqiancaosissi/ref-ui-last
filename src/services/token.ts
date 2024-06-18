@@ -3,6 +3,8 @@ import getConfig from "../utils/config";
 import { getAccountId } from "../utils/wallet";
 import { viewFunction } from "../utils/near";
 import db from "@/db/RefDatabase";
+import { useEffect, useState } from "react";
+import { TokenMetadata } from "./ft-contract";
 
 export async function ftGetTokenMetadata(tokenId: string) {
   let metadata: any = await db.allTokens().where({ id: tokenId }).first();
@@ -76,4 +78,20 @@ export const ftGetBalance = (tokenId: string, account_id?: string) => {
       account_id: getAccountId(),
     },
   }).catch(() => "0");
+};
+
+export const useTokens = (ids: string[] = [], curTokens?: TokenMetadata[]) => {
+  const [tokens, setTokens] = useState<TokenMetadata[]>();
+
+  useEffect(() => {
+    if (curTokens && curTokens.length > 0) {
+      setTokens(curTokens);
+      return;
+    }
+    Promise.all<TokenMetadata>(ids.map((id) => ftGetTokenMetadata(id))).then(
+      setTokens
+    );
+  }, [ids.join("")]);
+
+  return tokens;
 };

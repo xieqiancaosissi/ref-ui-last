@@ -1,26 +1,3 @@
-export const tabList = [
-  {
-    key: "",
-    value: "All",
-  },
-  {
-    key: "new",
-    value: "New",
-  },
-  {
-    key: "farm",
-    value: "Farm",
-  },
-  {
-    key: "meme",
-    value: "Meme",
-  },
-  {
-    key: "other",
-    value: "Other",
-  },
-];
-
 export const classicHeader = [
   {
     key: "apr",
@@ -37,5 +14,24 @@ export const classicHeader = [
   {
     key: "",
     value: "",
+  },
+];
+
+export const poolsFilterList = [
+  {
+    key: "",
+    value: "All",
+  },
+  {
+    key: "usd",
+    value: "USD",
+  },
+  {
+    key: "btc",
+    value: "BTC",
+  },
+  {
+    key: "near",
+    value: "NEAR",
   },
 ];

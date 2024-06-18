@@ -89,7 +89,7 @@ export default function PoolRow({
               </div>
 
               {/* last child */}
-              <div>
+              <div className={styles.poolLast}>
                 {/* apr */}
                 <div>
                   <span>{formatPercentage(item.apy)}</span>
@@ -156,6 +156,21 @@ export default function PoolRow({
                     legendJson={legendJson}
                     highlight={legendJson.id === item.id}
                   />
+                </div>
+              </div>
+
+              {/* hide farm div */}
+              <div className={styles.farmContainer}>
+                <div>
+                  <div>Shares: 0%</div>
+                  <div className="frcc">
+                    <div className={`${styles.btnStyle} ${styles.lightBtn}`}>
+                      Add
+                    </div>
+                    <div className={`${styles.btnStyle} ${styles.darkBtn}`}>
+                      Remove
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

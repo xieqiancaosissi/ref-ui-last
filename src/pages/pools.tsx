@@ -11,7 +11,8 @@ import CreatePool from "@/components/pools/createPoolModal/index";
 
 export default function Farms() {
   const accountStore = useAccountStore();
-  const accountId = accountStore.getIsSignedIn();
+  const accountId = accountStore.getAccountId();
+
   const [isActive, setActive] = useState("classic");
   const poolTypeList = [
     {
@@ -117,12 +118,12 @@ export default function Farms() {
               </div>
               <div
                 className={`${poolStyle.createPoolButton} ${
-                  isActive == "classic"
+                  accountId && isActive == "classic"
                     ? "bg-createPoolLinear text-black cursor-pointer hover:opacity-85"
                     : "text-gray-50 bg-gray-40 cursor-default"
                 }`}
                 onClick={() => {
-                  isActive == "classic" && showModal();
+                  accountId && isActive == "classic" && showModal();
                 }}
               >
                 + Create Pool

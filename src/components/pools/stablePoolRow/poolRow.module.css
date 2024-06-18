@@ -16,12 +16,12 @@
   @apply w-109 shrink-0 ml-5;
 }
 
-.poolContainer:hover .farmContainer{
-  display: block
+.poolContainer:hover .farmContainer {
+  display: block;
 }
 
 .poolContainer:hover {
-  @apply pb-3
+  @apply pb-3;
 }
 .poolLast {
   @apply frc  mr-1;
@@ -79,17 +79,16 @@
   display: none;
 }
 
-.farmContainer>div:first-child {
-@apply border border-gray-30 w-full h-13 rounded flex px-3 items-center justify-between
+.farmContainer > div:first-child {
+  @apply border border-gray-30 w-full h-13 rounded flex px-3 items-center justify-between;
 }
-
 
 .btnStyle {
   @apply w-21 h-7 frcc text-sm font-bold rounded cursor-pointer mx-2 hover:opacity-80;
 }
-.lightBtn{
+.lightBtn {
   @apply border border-green-10 text-green-10;
-} 
+}
 .darkBtn {
   @apply border border-gray-90 text-white;
 }

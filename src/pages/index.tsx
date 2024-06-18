@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
+import { motion } from "framer-motion";
 import {
   RefreshIcon,
   SWitchButton,
@@ -8,6 +9,8 @@ import {
 import Input from "../components/swap/Input";
 import SwapDetail from "../components/swap/SwapDetail";
 import swapStyles from "../components/swap/swap.module.css";
+import { reloadTopPools } from "@/services/swap";
+import { POOL_REFRESH_INTERVAL } from "@/utils/constant";
 import {
   useSwapStore,
   usePersistSwapStore,
@@ -25,10 +28,17 @@ const InitData = dynamic(() => import("../components/swap/InitData"), {
 
 export default function Swap(props: any) {
   const [highImpactCheck, setHighImpactCheck] = useState<boolean>(false);
+  const [pinLoading, setpinLoading] = useState<boolean>(false);
   const swapStore = useSwapStore();
   const persistSwapStore = usePersistSwapStore() as IPersistSwapStore;
   const tokenIn = swapStore.getTokenIn();
   const tokenOut = swapStore.getTokenOut();
+  useEffect(() => {
+    const id = setInterval(reloadPools, POOL_REFRESH_INTERVAL);
+    return () => {
+      clearInterval(id);
+    };
+  }, []);
   function onCheck() {
     setHighImpactCheck(!highImpactCheck);
   }
@@ -38,6 +48,21 @@ export default function Swap(props: any) {
     persistSwapStore.setTokenInId(tokenOut?.id);
     persistSwapStore.setTokenOutId(tokenIn?.id);
   }
+  const variants = {
+    static: { transform: "rotate(0deg)" },
+    spin: {
+      transform: "rotate(360deg)",
+      transition: { duration: 1, repeat: Infinity, ease: "linear" },
+    },
+  };
+  async function reloadPools() {
+    if (pinLoading) return;
+    setpinLoading(true);
+    const status = await reloadTopPools();
+    if (status == "success") {
+      setpinLoading(false);
+    }
+  }
   return (
     <main className="m-auto my-20 select-none" style={{ width: "420px" }}>
       <InitData />
@@ -46,8 +71,17 @@ export default function Swap(props: any) {
         <div className="flex items-center justify-between">
           <span className="text-white font-bold text-xl">Swap</span>
           <div className="flex items-center gap-2 z-20">
-            <span className={swapStyles.swapControlButton}>
-              <RefreshIcon />
+            <span
+              className={swapStyles.swapControlButton}
+              onClick={reloadPools}
+            >
+              {pinLoading ? (
+                <motion.span variants={variants} animate="spin">
+                  <RefreshIcon className="text-white" />
+                </motion.span>
+              ) : (
+                <RefreshIcon />
+              )}
             </span>
             <SetPopup />
           </div>

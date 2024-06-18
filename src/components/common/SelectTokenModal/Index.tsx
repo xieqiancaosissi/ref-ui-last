@@ -130,6 +130,9 @@ export default function SelectTokenModal({
                 return (
                   <div
                     className={`flex items-center gap-1.5 relative pl-2 pr-3.5 py-0.5 border border-gray-70 hover:bg-gray-70 cursor-pointer rounded-lg`}
+                    style={{
+                      minWidth: "90px",
+                    }}
                     key={token.id}
                     onMouseEnter={() => {
                       setHoverCommonToken(token);

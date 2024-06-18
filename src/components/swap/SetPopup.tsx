@@ -3,11 +3,12 @@ import { motion } from "framer-motion";
 import { SetIcon } from "../../components/swap/icons";
 import { QuestionIcon } from "../../components/common/Icons";
 import { usePersistSwapStore } from "../../stores/swap";
+import { INIT_SLIPPAGE_VALUE } from "@/utils/constant";
 import swapStyles from "./swap.module.css";
 
 export default function SetPopup() {
   const [show, setShow] = useState<boolean>();
-  const [slippage, setSlippage] = useState<string>("0.5");
+  const [slippage, setSlippage] = useState<string>(INIT_SLIPPAGE_VALUE);
   const slippageOptions = ["0.1", "0.5", "1"];
   const swapStore: any = usePersistSwapStore();
   const smartRoute = swapStore.getSmartRoute();
@@ -32,6 +33,14 @@ export default function SetPopup() {
   }
   function hideSet() {
     setShow(false);
+  }
+  function onchange(e: any) {
+    setSlippage(e.target.value);
+  }
+  function onblur(e: any) {
+    if (!slippage) {
+      setSlippage(INIT_SLIPPAGE_VALUE);
+    }
   }
   const variants = {
     on: { marginLeft: "16px" },
@@ -68,6 +77,9 @@ export default function SetPopup() {
                         : "text-gray-50"
                     }`}
                     key={item}
+                    onClick={() => {
+                      setSlippage(item);
+                    }}
                   >
                     {item}%
                   </span>
@@ -79,8 +91,11 @@ export default function SetPopup() {
               style={{ padding: "3px 6px" }}
             >
               <input
+                type="number"
                 className="w-8 bg-transparent outline-none text-right"
-                // value={0.5}
+                value={slippage}
+                onChange={onchange}
+                onBlur={onblur}
               />
               %
             </div>

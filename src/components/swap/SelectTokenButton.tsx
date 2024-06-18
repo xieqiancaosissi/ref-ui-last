@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import SelectTokenModal from "../../components/common/SelectTokenModal/Index";
 import { ArrowDownIcon } from "../../components/swap/icons";
 import { useEffect, useState } from "react";
@@ -45,26 +46,33 @@ export default function SelectTokenButton(props: ISelectTokenButtonProps) {
   }
   return (
     <div>
-      <div
-        className="flex items-center cursor-pointer flex-shrink-0"
-        onClick={showModal}
-      >
-        <Image
-          width="20"
-          height="20"
-          alt=""
-          src={showToken?.icon || ""}
-          style={{
-            width: "20px",
-            height: "20px",
-          }}
-          className="rounded-full border border-gray-110"
-        />
-        <span className="text-white font-bold text-base ml-1.5 mr-2.5 ">
-          {showToken?.symbol}
-        </span>
-        <ArrowDownIcon className="text-gray-50" />
-      </div>
+      {showToken ? (
+        <div
+          className="flex items-center cursor-pointer flex-shrink-0"
+          onClick={showModal}
+        >
+          <Image
+            width="20"
+            height="20"
+            alt=""
+            src={showToken.icon || ""}
+            style={{
+              width: "20px",
+              height: "20px",
+            }}
+            className="rounded-full border border-gray-110"
+          />
+          <span className="text-white font-bold text-base ml-1.5 mr-2.5 ">
+            {showToken.symbol}
+          </span>
+          <ArrowDownIcon className="text-gray-50" />
+        </div>
+      ) : (
+        <SkeletonTheme baseColor="#212B35" highlightColor="#2A3643">
+          <Skeleton height={20} width={80} />
+        </SkeletonTheme>
+      )}
+
       {isOpen ? (
         <SelectTokenModal
           isOpen={isOpen}

@@ -41,9 +41,9 @@ export const usePersistSwapStore = create(
 );
 
 interface ISwapStore {
-  getTokenIn: () => ITokenMetadata | null;
+  getTokenIn: () => ITokenMetadata;
   setTokenIn: (token: ITokenMetadata) => void;
-  getTokenOut: () => ITokenMetadata | null;
+  getTokenOut: () => ITokenMetadata;
   setTokenOut: (token: ITokenMetadata) => void;
   getTokenInAmount: () => string;
   setTokenInAmount: (tokenInAmount: string) => void;

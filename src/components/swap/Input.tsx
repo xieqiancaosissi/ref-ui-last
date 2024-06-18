@@ -5,8 +5,11 @@ import dynamic from "next/dynamic";
 import { ITokenMetadata } from "@/hooks/useBalanceTokens";
 import { useSwapStore } from "@/stores/swap";
 import { toPrecision } from "@/utils/numbers";
+import { formatTokenPrice } from "@/utils/uiNumber";
 import { MIN_RETAINED_NEAR_AMOUNT } from "@/utils/constant";
 import getConfig from "@/utils/config";
+import { getAllTokenPrices } from "@/services/farm";
+import { TokenPrice } from "@/db/RefDatabase";
 import { useEffect, useState } from "react";
 const SelectTokenButton = dynamic(() => import("./SelectTokenButton"), {
   ssr: false,
@@ -14,7 +17,7 @@ const SelectTokenButton = dynamic(() => import("./SelectTokenButton"), {
 interface IInputProps {
   className?: string;
   disable?: boolean;
-  token: ITokenMetadata | null;
+  token: ITokenMetadata;
   isIn?: boolean;
   isOut?: boolean;
 }
@@ -23,9 +26,17 @@ export default function Input(props: IInputProps) {
   const { className, disable, token, isIn, isOut } = props;
   const [amount, setAmount] = useState<string>("");
   const [showNearTip, setShowNearTip] = useState<boolean>(false);
+  const [allTokenPrices, setAllTokenPrices] = useState<
+    Record<string, TokenPrice>
+  >({});
   const swapStore = useSwapStore();
   const tokenOutAmount = swapStore.getTokenOutAmount();
   const isNEAR = token?.id == WRAP_NEAR_CONTRACT_ID && token?.symbol == "NEAR";
+  useEffect(() => {
+    getAllTokenPrices().then((res) => {
+      setAllTokenPrices(res);
+    });
+  }, []);
   useEffect(() => {
     if (isIn) {
       swapStore.setTokenInAmount(amount);
@@ -65,6 +76,11 @@ export default function Input(props: IInputProps) {
     }
     return balance || "";
   }
+  function getTokenValue() {
+    return formatTokenPrice(
+      new Big(amount || 0).mul(allTokenPrices[token?.id]?.price || 0).toFixed()
+    );
+  }
   return (
     <div
       className={twMerge(
@@ -87,7 +103,7 @@ export default function Input(props: IInputProps) {
         <SelectTokenButton isIn={isIn} isOut={isOut} />
       </div>
       <div className="flex items-center justify-between w-full text-sm text-gray-50 mt-2.5">
-        <span>$140.5</span>
+        <span>{getTokenValue()}</span>
         <div className="flex items-center gap-0.5">
           Balance:
           <span

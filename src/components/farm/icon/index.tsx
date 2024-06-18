@@ -95,7 +95,8 @@ export function FarmWithdrawIcon({ ...props }) {
   );
 }
 
-export function FarmDownArrown({ ...props }) {
+// eslint-disable-next-line react/prop-types
+export function FarmDownArrown({ strokeColor = "#7E8A93", ...props }) {
   return (
     <svg
       {...props}
@@ -107,19 +108,19 @@ export function FarmDownArrown({ ...props }) {
     >
       <path
         d="M4 1L4 10"
-        stroke="#7E8A93"
+        stroke={strokeColor}
         strokeWidth="1.5"
         strokeLinecap="round"
       />
       <path
         d="M1 7L4 10"
-        stroke="#7E8A93"
+        stroke={strokeColor}
         strokeWidth="1.5"
         strokeLinecap="round"
       />
       <path
         d="M7 7L4 10"
-        stroke="#7E8A93"
+        stroke={strokeColor}
         strokeWidth="1.5"
         strokeLinecap="round"
       />

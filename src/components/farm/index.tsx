@@ -89,7 +89,7 @@ export default function FarmsPage(props: any) {
   const accountId = getIsSignedIn();
   const [farmsType, setFarmsType] = useState("All");
   const [farmsChildType, setFarmsChildType] = useState("All");
-  const [selected, setSelected] = useState("stakedOnly");
+  const [selected, setSelected] = useState("");
   const [user_unWithdraw_rewards, set_user_unWithdraw_rewards] = useState<
     Record<string, string>
   >({});
@@ -105,12 +105,7 @@ export default function FarmsPage(props: any) {
   const [user_seeds_map, set_user_seeds_map] = useState<
     Record<string, UserSeedInfo>
   >({});
-  const [showEndedFarmList, setShowEndedFarmList] = useState(
-    typeof window !== "undefined" &&
-      localStorage.getItem("endedfarmShow") === "1"
-      ? true
-      : false
-  );
+  const [showEndedFarmList, setShowEndedFarmList] = useState(false);
   const [homePageLoading, setHomePageLoading] = useState(true);
   const intl = useIntl();
   const [noData, setNoData] = useState(false);
@@ -118,9 +113,7 @@ export default function FarmsPage(props: any) {
   const [dayVolumeMap, setDayVolumeMap] = useState<any>({});
   const searchRef = useRef<HTMLInputElement>(null);
   const refreshTime = 300000;
-  const sortList = {
-    // tvl: intl.formatMessage({ id: 'tvl' }),
-    // apr: intl.formatMessage({ id: 'apr' }),
+  const sortList: { [key: string]: string } = {
     tvl: "TVL",
     apr: "APR",
   };
@@ -148,7 +141,7 @@ export default function FarmsPage(props: any) {
   ]);
   const [sort, setSort] = useState("apr");
   const [keyWords, setKeyWords] = useState("");
-  // const [farmTab, setFarmTab] = useState("all"); // all、yours
+  const [farmTab, setFarmTab] = useState("all"); // all、yours
   const [farm_type_selectedId, set_farm_type_selectedId] = useState("all");
   const [filter_type_selectedId, set_filter_type_selectedId] = useState("all");
   const [has_dcl_farms_in_display_list, set_has_dcl_farms_in_display_list] =
@@ -185,7 +178,7 @@ export default function FarmsPage(props: any) {
   }, [count]);
   useEffect(() => {
     searchByCondition();
-  }, [farm_type_selectedId, filter_type_selectedId, keyWords]);
+  }, [farm_type_selectedId, filter_type_selectedId, keyWords, farmTab]);
   useEffect(() => {
     sortFarms();
   }, [sort]);
@@ -592,7 +585,10 @@ export default function FarmsPage(props: any) {
         condition4 = true;
       }
       // farm_type
-      if (farm_type_selectedId == "all") {
+      if (farmTab == "yours") {
+        condition3 = true;
+        condition4 = true;
+      } else if (farm_type_selectedId == "all") {
         condition3 = true;
       } else if (farm_type_selectedId == "dcl") {
         if (is_dcl_farm) {
@@ -608,7 +604,16 @@ export default function FarmsPage(props: any) {
         }
       }
       // filter_type
-      if (filter_type_selectedId == "all") {
+      if (farmTab == "yours") {
+        if (userStaked) {
+          const commonSeedFarmList = commonSeedFarms[seed_id] || [];
+          if (commonSeedFarmList.length == 2 && isEnd) {
+            condition1 = false;
+          } else {
+            condition1 = true;
+          }
+        }
+      } else if (filter_type_selectedId == "all") {
         condition1 = true;
       } else if (filter_type_selectedId == "boost" && boostConfig) {
         const affected_seeds_keys = Object.keys(boostConfig.affected_seeds);
@@ -818,7 +823,11 @@ export default function FarmsPage(props: any) {
       const is_dcl_farm = contractId == REF_UNI_V3_SWAP_CONTRACT_ID;
       return is_dcl_farm && !hidden;
     });
-    setNoData(noDataEnd && noDataLive);
+    if (farmTab == "yours") {
+      setNoData(noDataLive);
+    } else {
+      setNoData(noDataEnd && noDataLive);
+    }
     if (from == "main") {
       setHomePageLoading(false);
     }
@@ -834,9 +843,7 @@ export default function FarmsPage(props: any) {
     if (keyWords) {
       setShowEndedFarmList(true);
     } else {
-      setShowEndedFarmList(
-        localStorage.getItem("endedfarmShow") == "1" ? true : false
-      );
+      setShowEndedFarmList(false);
     }
   }
   async function getFarmDataList(initData: any) {
@@ -1108,13 +1115,18 @@ export default function FarmsPage(props: any) {
   const endFarmLength = useMemo(() => {
     return getFarmVisibleLength();
   }, [farm_display_ended_List]);
-  function switchEndedFarmListDisplayStatus() {
-    const current = !showEndedFarmList;
-    localStorage.setItem("endedfarmShow", current ? "1" : "0");
-    setShowEndedFarmList(current);
-  }
   function searchByKeyWords(value: string) {
     setKeyWords(value);
+  }
+  function changeSort(sortKey: any) {
+    setSort(sortKey);
+  }
+  function switchFarmTab(tab: string) {
+    setFarmTab(tab);
+    if (tab == "yours") {
+      set_farm_type_selectedId("all");
+      set_filter_type_selectedId("all");
+    }
   }
   // console.log(user_unWithdraw_rewards, "user_unWithdraw_rewards");
   // console.log(tokenPriceList, "tokenPriceList");
@@ -1154,12 +1166,32 @@ export default function FarmsPage(props: any) {
           <div className="frcc">
             <div className="frcc text-sm mr-10">
               <p className="text-gray-60 mr-2">Sort by:</p>
-              <p className="frcc text-gray-60 border-r border-gray-60 border-opacity-30 pr-3.5">
-                TVL <FarmDownArrown className="ml-2" />
-              </p>
-              <p className="frcc text-gray-60 ml-3.5">
-                APR <FarmDownArrown className="ml-2" />
-              </p>
+              {Object.keys(sortList).map((item, index) => {
+                const value = sortList[item];
+                const disabled = has_dcl_farms_in_display_list && item == "tvl";
+                return (
+                  <div
+                    className={`flex items-center justify-between rounded-lg h-9  px-3 py-0.5 ml-1 text-xs ${
+                      sort == item ? "text-white" : "text-gray-60"
+                    } ${
+                      disabled
+                        ? "text-opacity-50 cursor-not-allowed"
+                        : "hover:bg-cardBg cursor-pointer"
+                    }`}
+                    key={index}
+                    onClick={() => {
+                      if (disabled) return;
+                      changeSort(item);
+                    }}
+                  >
+                    {value}
+                    <FarmDownArrown
+                      className="ml-2"
+                      strokeColor={sort === item ? "#9EFE01" : "#7E8A93"}
+                    />
+                  </div>
+                );
+              })}
             </div>
             <div
               className={`border border-gray-100 w-52 h-9 frc p-1 rounded ${
@@ -1198,23 +1230,62 @@ export default function FarmsPage(props: any) {
             ></SelectBox>
           </div>
           <div className="frcc">
-            <label className="inline-flex items-center mr-6 relative">
+            <label
+              className="inline-flex items-center mr-6 relative"
+              onClick={() => {
+                if (selected === "stakedOnly") {
+                  switchFarmTab("all");
+                } else {
+                  switchFarmTab("yours");
+                }
+              }}
+            >
               <input
                 type="checkbox"
                 checked={selected === "stakedOnly"}
-                onChange={() => handleCheckbox("stakedOnly")}
+                onChange={() => {
+                  handleCheckbox("stakedOnly");
+                  if (selected === "stakedOnly") {
+                    switchFarmTab("all");
+                    handleCheckbox("");
+                  } else {
+                    switchFarmTab("yours");
+                    handleCheckbox("stakedOnly");
+                  }
+                }}
                 className="checkbox-radio"
+                onClick={(e) => e.stopPropagation()}
               />
               <span className="ml-1.5 text-gray-10 text-sm">Staked only</span>
               {selected === "stakedOnly" && (
                 <FarmInputCheck className="absolute top-1 left-0.5" />
               )}
             </label>
-            <label className="inline-flex items-center relative">
+            <label
+              className="inline-flex items-center relative"
+              onClick={() => {
+                if (selected === "showEndedFarms") {
+                  setShowEndedFarmList(false);
+                } else {
+                  setShowEndedFarmList(true);
+                }
+              }}
+            >
               <input
                 type="checkbox"
                 checked={selected === "showEndedFarms"}
-                onChange={() => handleCheckbox("showEndedFarms")}
+                onChange={() => {
+                  handleCheckbox("showEndedFarms");
+                  if (selected === "showEndedFarms") {
+                    setShowEndedFarmList(false);
+                    handleCheckbox("");
+                  } else {
+                    switchFarmTab("all");
+                    setShowEndedFarmList(true);
+                    handleCheckbox("showEndedFarms");
+                  }
+                }}
+                onClick={(e) => e.stopPropagation()}
                 className="checkbox-radio"
               />
               <span className="ml-1.5 text-gray-10 text-sm">
@@ -1261,7 +1332,7 @@ export default function FarmsPage(props: any) {
             })}
           </div>
           <div
-            className={`grid grid-cols-3 gap-x-5 gap-y-9 m-auto mt-8 ${
+            className={`grid grid-cols-3 gap-x-10 gap-y-6 m-auto ${
               showEndedFarmList ? "" : "hidden"
             }`}
           >
@@ -1269,7 +1340,9 @@ export default function FarmsPage(props: any) {
               return (
                 <div
                   key={seed.seed_id + index}
-                  className={seed.hidden ? "hidden" : ""}
+                  className={
+                    seed.hidden ? "hidden" : "bg-gray-20 opacity-50 rounded-lg"
+                  }
                 >
                   <FarmView
                     seed={seed}

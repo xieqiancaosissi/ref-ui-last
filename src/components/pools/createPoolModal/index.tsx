@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
 import { CreatePoolTitle, CreatePoolClose } from "@/components/pools/icon";
 import Fee from "./createPoolFee/index";
@@ -14,6 +14,7 @@ export default function CreatePoolModal({
 }) {
   const [createFee, setCreateFee] = useState(0);
   const [token, setToken] = useState(["", ""]);
+  const [isDisabled, setDisabled] = useState(true);
 
   const handleFee = (e: any) => {
     setCreateFee(e * 100);
@@ -28,6 +29,14 @@ export default function CreatePoolModal({
   const createPool = () => {
     addSimpleLiquidityPool(token, createFee);
   };
+
+  useEffect(() => {
+    if (!token[0] || !token[1] || createFee < 0) {
+      setDisabled(true);
+    } else {
+      setDisabled(false);
+    }
+  }, [token[0], token[1], createFee]);
 
   return (
     <Modal
@@ -57,10 +66,21 @@ export default function CreatePoolModal({
             </div>
             {/* fee */}
             <Fee getherFee={handleFee} />
+
+            {/* for tips */}
+            {/* <div className="text-white text-xs mt-2">不能为空</div> */}
           </div>
           <div
-            onClick={() => createPool()}
-            className="w-full bg-createPoolLinear text-black text-base font-bold frcc h-10 rounded-lg cursor-pointer hover:opacity-85"
+            onClick={() => {
+              !isDisabled && createPool();
+            }}
+            className={`w-full text-base font-bold frcc h-10 rounded-lg cursor-pointer 
+                ${
+                  isDisabled
+                    ? "text-gray-50 bg-gray-40 cursor-default"
+                    : "bg-createPoolLinear text-black hover:opacity-85 "
+                }
+              `}
           >
             Create
           </div>

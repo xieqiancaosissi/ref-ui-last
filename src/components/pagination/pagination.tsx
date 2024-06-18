@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useEffect } from "react";
+import pageStyle from "./index.module.css";
 import { isMobile } from "@/utils/device";
 
 const Pagination = ({
@@ -43,7 +44,7 @@ const Pagination = ({
 
   const goToPage = (pageNumber: any) => {
     if (pageNumber >= 1 && pageNumber <= pageCount && pageNumber !== "...") {
-      setCurrentPage(pageNumber);
+      setCurrentPage(Number(pageNumber));
       onChangePage(pageNumber, pageSize);
     }
   };
@@ -114,6 +115,23 @@ const Pagination = ({
       </div>
     );
   }, [currentPage, pageCount]);
+
+  // go to
+  const [goToValue, setGoToValue] = useState(1);
+  const gotoValueChange = (e: any) => {
+    setGoToValue(Number(e.target.value));
+  };
+  const handleKeyPress = (e: any) => {
+    if (e.key === "Enter") {
+      if (goToValue > pageCount) {
+        goToPage(pageCount);
+      } else if (goToValue < 1) {
+        goToPage(1);
+      } else {
+        goToPage(goToValue);
+      }
+    }
+  };
 
   return (
     pageCount > 0 && (
@@ -188,6 +206,23 @@ const Pagination = ({
           </ul>
         ) : (
           pageNumbersListForMobile
+        )}
+
+        {!isMobile() ? (
+          <div className="frcc ml-4">
+            <span className="text-gray-50 text-sm">Go to</span>
+            <div className={pageStyle.filterSeacrhInputContainer}>
+              <input
+                type="number"
+                className={pageStyle.filterSearchInput}
+                value={goToValue}
+                onChange={(e) => gotoValueChange(e)}
+                onKeyPress={handleKeyPress}
+              />
+            </div>
+          </div>
+        ) : (
+          ""
         )}
 
         {isMobile() ? (

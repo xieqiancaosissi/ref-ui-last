@@ -78,3 +78,13 @@ input::-webkit-inner-spin-button {
   background: #030f16;
   border-radius: 2px;
 }
+
+.react-tooltip.custom-tooltip {
+  border-radius: 5px;
+  border: 1px solid #414B57;
+  background: #2A3643;
+  font-size: 12px;
+  z-index: 99;
+  padding: 8px 12px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}

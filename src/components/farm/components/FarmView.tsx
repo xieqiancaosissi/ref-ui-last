@@ -41,12 +41,16 @@ import {
   CalcIcon,
 } from "../icon/FarmBoost";
 import getConfig from "../../../utils/config";
+import { NEAR_META_DATA, WNEAR_META_DATA } from "../../../utils/nearMetaData";
+import { useTokens } from "../../../services/token";
+import CustomTooltip from "../../customTooltip/customTooltip";
 
 const {
   REF_VE_CONTRACT_ID,
   FARM_BLACK_LIST_V2,
   boostBlackList,
   REF_UNI_V3_SWAP_CONTRACT_ID,
+  WRAP_NEAR_CONTRACT_ID,
 } = getConfig();
 
 export function FarmView(props: {
@@ -94,6 +98,9 @@ export function FarmView(props: {
   const [yourActualAprRate, setYourActualAprRate] = useState("1");
   const tokens = sortTokens(seed.pool?.tokens_meta_data || []);
   const history = useHistory();
+  const unClaimedTokens = useTokens(
+    Object.keys(user_unclaimed_map[seed_id] || {})
+  );
   //   const intl = useIntl();
   const rate_need_to_reverse_display = useMemo(() => {
     const tokens_meta_data = seed.pool?.tokens_meta_data;
@@ -164,65 +171,58 @@ export function FarmView(props: {
   //     return apr;
   //   }
   function getAllRewardsSymbols() {
-    const tempMap: { [key: string]: string } = {};
+    const tempMap: {
+      [key: string]: { icon: string; symbol: string; name: string };
+    } = {};
     if (!seed || !seed.farmList) {
       return [];
     }
     seed.farmList.forEach((farm: FarmBoost) => {
       const { token_meta_data } = farm;
       if (token_meta_data) {
-        const { icon, id } = token_meta_data;
+        const { id } = token_meta_data;
+        let { icon, symbol, name } = token_meta_data;
+        if (id === WRAP_NEAR_CONTRACT_ID) {
+          icon = NEAR_META_DATA.icon;
+          symbol = NEAR_META_DATA.symbol;
+          name = NEAR_META_DATA.name;
+        }
+
         if (icon && id) {
-          tempMap[id] = icon;
+          tempMap[id] = { icon, symbol, name };
         }
       }
     });
     return Object.entries(tempMap);
   }
 
-  //   function totalTvlPerWeekDisplay() {
-  //     const farms = seed.farmList;
-  //     const rewardTokenIconMap = {};
-  //     let totalPrice = 0;
-  //     const effectiveFarms = getEffectiveFarmList(farms);
-  //     effectiveFarms.forEach((farm: FarmBoost) => {
-  //       const { id, decimals, icon } = farm.token_meta_data;
-  //       const { daily_reward } = farm.terms;
-  //       rewardTokenIconMap[id] = icon;
-  //       const tokenPrice = tokenPriceList[id]?.price;
-  //       if (tokenPrice && tokenPrice != "N/A") {
-  //         const tokenAmount = toReadableNumber(decimals, daily_reward);
-  //         totalPrice += +new BigNumber(tokenAmount)
-  //           .multipliedBy(tokenPrice)
-  //           .toFixed();
-  //       }
-  //     });
-  //     totalPrice = +new BigNumber(totalPrice).multipliedBy(7).toFixed();
-  //     const totalPriceDisplay =
-  //       totalPrice == 0
-  //         ? "-"
-  //         : "$" + toInternationalCurrencySystem(totalPrice.toString(), 2);
-  //     return totalPriceDisplay;
-  //   }
-  //   function getTotalUnclaimedRewards() {
-  //     let totalPrice = 0;
-  //     unClaimedTokens?.forEach((token: TokenMetadata) => {
-  //       const { id, decimals } = token;
-  //       const num = (user_unclaimed_map[seed.seed_id] || {})[id];
-  //       const amount = toReadableNumber(decimals, num || "0");
-  //       const tokenPrice = tokenPriceList[id]?.price;
-  //       if (tokenPrice && tokenPrice != "N/A") {
-  //         totalPrice += +amount * tokenPrice;
-  //       }
-  //     });
-  //     if (totalPrice == 0) {
-  //       return "-";
-  //     } else if (new BigNumber("0.01").isGreaterThan(totalPrice)) {
-  //       return "<$0.01";
-  //     } else {
-  //       return `$${toInternationalCurrencySystem(totalPrice.toString(), 2)}`;
-  //     }
-  //   }
+  function totalTvlPerWeekDisplay() {
+    const farms = seed.farmList || [];
+    const rewardTokenIconMap: { [key: string]: string } = {};
+    let totalPrice = 0;
+    const effectiveFarms = getEffectiveFarmList(farms);
+    effectiveFarms.forEach((farm: FarmBoost) => {
+      if (!farm.token_meta_data || farm.token_meta_data.id === undefined) {
+        return;
+      }
+      const { id, decimals, icon } = farm.token_meta_data || {};
+      const { daily_reward } = farm.terms;
+      rewardTokenIconMap[id] = icon;
+      const tokenPrice = tokenPriceList[id]?.price;
+      if (tokenPrice && tokenPrice != "N/A") {
+        const tokenAmount = toReadableNumber(decimals, daily_reward);
+        totalPrice += +new BigNumber(tokenAmount)
+          .multipliedBy(tokenPrice)
+          .toFixed();
+      }
+    });
+    totalPrice = +new BigNumber(totalPrice).multipliedBy(7).toFixed();
+    const totalPriceDisplay =
+      totalPrice == 0
+        ? "-"
+        : "$" + toInternationalCurrencySystem(totalPrice.toString(), 2);
+    return totalPriceDisplay;
+  }
   function getAprTip() {
     const tempList = seed.farmList;
     const lastList: any[] = [];
@@ -855,6 +855,38 @@ export function FarmView(props: {
       </div>
     );
   }
+  function getTotalUnclaimedRewards() {
+    let totalPrice = 0;
+    unClaimedTokens?.forEach((token: TokenMetadata) => {
+      const { id, decimals } = token;
+      const num = (user_unclaimed_map[seed.seed_id] || {})[id];
+      const amount = toReadableNumber(decimals, num || "0");
+      const tokenPrice = tokenPriceList[id]?.price;
+      if (tokenPrice && tokenPrice != "N/A") {
+        totalPrice += +amount * tokenPrice;
+      }
+    });
+    if (totalPrice == 0) {
+      return "-";
+    } else if (new BigNumber("0.01").isGreaterThan(totalPrice)) {
+      return "<$0.01";
+    } else {
+      return `$${toInternationalCurrencySystem(totalPrice.toString(), 2)}`;
+    }
+  }
+  function toRealSymbol(symbol: string) {
+    if (!symbol) return "";
+    const blackList = ["nUSDO", "nKOK"];
+
+    if (!symbol) return symbol;
+
+    if (symbol === "nWETH" || symbol === "WETH") return "wETH";
+    if (blackList.includes(symbol)) return symbol;
+    return symbol?.charAt(0) === "n" &&
+      symbol.charAt(1) === symbol.charAt(1).toUpperCase()
+      ? symbol.substring(1)
+      : symbol;
+  }
   const isHaveUnclaimedReward = haveUnclaimedReward();
   const aprUpLimit = getAprUpperLimit();
   const needForbidden =
@@ -862,358 +894,194 @@ export function FarmView(props: {
     (FARM_BLACK_LIST_V2 || []).indexOf(
       pool.id?.toString() || pool.pool_id?.toString() || ""
     ) > -1;
-  const tokens_sort: TokenMetadata[] = sort_tokens_by_base(tokens);
-  const is_mobile = isMobile();
+  const preprocessedTokens = tokens.map((token) => {
+    if (token.id === WRAP_NEAR_CONTRACT_ID) {
+      const newToken = { ...token };
+      newToken.icon = NEAR_META_DATA.icon;
+      newToken.symbol = "NEAR";
+      newToken.name = "Near";
+      return newToken;
+    }
+    return token;
+  });
+  const tokens_sort: TokenMetadata[] = sort_tokens_by_base(preprocessedTokens);
   return (
     <>
       <div
         onClick={() => {
           goFarmDetailPage(seed);
         }}
-        className={`relative rounded-2xl cursor-pointer bg-cardBg ${
-          is_mobile ? "outline-none taphight" : "hover:shadow-blue"
-        } ${isEnded() || needForbidden ? "farmEnded" : ""}
+        className={`relative rounded-2xl cursor-pointer bg-cardBg p-5 ${
+          isEnded() || needForbidden ? "farmEnded" : ""
+        }
         `}
       >
-        <div className="flex absolute -top-5 z-10 justify-center w-full">
-          {tokens_sort.map((token, index) => {
-            return (
-              <label
-                key={token.id}
-                style={{
-                  border: "4px solid #374958",
-                }}
-                className={`h-9 w-9 rounded-full box-content overflow-hidden bg-cardBg ${
-                  index != 0 ? "-ml-1" : ""
-                }`}
-              >
-                <img src={token.icon} className="w-full h-full"></img>
-              </label>
-            );
-          })}
-        </div>
-        {getBoostMutil()}
-        <div className="boxInfo">
-          <div className="relative flex flex-col items-center  px-5 rounded-t-2xl overflow-hidden bg-boostUpBoxBg">
-            <div
-              className={`flex items-center cursor-pointer text-white font-bold text-xl mt-9`}
-            >
-              {/* link for looking into */}
-              {/* <a href={`javascript:void(${"/pool/" + pool.id})`}>
+        <div className="frcb mb-5">
+          <div className="relative w-full h-14">
+            {tokens_sort.length === 2 ? (
+              <>
                 {tokens_sort.map((token, index) => {
-                  const hLine = index === tokens.length - 1 ? "" : "-";
-                  return `${toRealSymbol(token.symbol)}${hLine}`;
-                })}
-              </a> */}
-            </div>
-            <div
-              className={`text-white text-right my-4`}
-              data-class="reactTip"
-              data-tooltip-id={
-                seed.farmList && seed.farmList.length > 0
-                  ? "rewardPerWeekId" + seed.farmList[0].farm_id
-                  : undefined
-              }
-              data-place="top"
-              data-tooltip-html={getRewardsPerWeekTip()}
-            >
-              <div className="flex items-center bg-black bg-opacity-20 rounded-full p-0.5">
-                <span className="flex hover:bg-black hover:bg-opacity-20 rounded-full">
-                  {getAllRewardsSymbols().map(
-                    ([id, icon]: [string, string], index) => {
-                      return (
-                        <img
-                          key={id}
-                          src={icon}
-                          className={`h-4 w-4 rounded-full border border-gradientFromHover ${
-                            index != 0 ? "-ml-1" : ""
-                          }`}
-                        ></img>
-                      );
-                    }
-                  )}
-                </span>
-                {/* <span className="text-farmText text-sm mx-1.5">
-                  {totalTvlPerWeekDisplay()}/week
-                </span> */}
-              </div>
-            </div>
+                  const isSecondToken = index === 1;
+                  const sizeClass = isSecondToken ? "w-10 h-10" : "w-8 h-8";
+                  const positionClass = isSecondToken
+                    ? "absolute top-3 left-3 z-20"
+                    : "absolute top-0 left-0 z-10";
 
-            {/* <div className="flex items-center justify-between">
-              {error ? <Alert level="warn" message={error.message} /> : null}
-            </div> */}
-            <div className="flex flex-col absolute left-2.5 top-2">
-              {isPending() ? (
-                <div className="flex flex-col text-purpleColor text-xs bg-lightPurpleColor rounded-lg px-2 py-0.5">
-                  COMING
-                  {/* <Countdown
-                    date={moment.unix(getStartTime()).valueOf()}
-                    renderer={renderer}
-                  /> */}
+                  return (
+                    <label
+                      key={token.id}
+                      className={`rounded-full box-content overflow-hidden bg-cardBg border border-dark-90 ${sizeClass} ${positionClass}`}
+                    >
+                      <img src={token.icon} className="w-full h-full" />
+                    </label>
+                  );
+                })}
+              </>
+            ) : (
+              <div className="relative grid grid-cols-2 grid-rows-2 gap-0">
+                {tokens_sort.map((token, index) => {
+                  let zIndex = 10 + index;
+                  if (index === 1 || index === 3) zIndex += 2;
+                  if (index === 2 || index === 3) zIndex += 1;
+
+                  const marginClass =
+                    index === 1
+                      ? "ml-[-34px]"
+                      : index === 2
+                      ? "mt-[-6px]"
+                      : index === 3
+                      ? "ml-[-34px] mt-[-6px]"
+                      : "";
+
+                  return (
+                    <label
+                      key={token.id}
+                      className={`rounded-full box-content overflow-hidden bg-cardBg w-6 h-6 border border-dark-90 ${marginClass}`}
+                      style={{ zIndex }}
+                    >
+                      <img src={token.icon} className="w-full h-full" />
+                    </label>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
+          <div className="flex flex-col items-end ">
+            <a
+              href={`javascript:void(${"/pool/" + pool?.id})`}
+              className="text-base"
+              style={{ whiteSpace: "nowrap" }}
+            >
+              {tokens_sort.map((token, index) => {
+                const hLine = index === tokens.length - 1 ? "" : "-";
+                return `${toRealSymbol(token.symbol)}${hLine}`;
+              })}
+            </a>
+            <div className="mt-1.5 frcc">
+              <div
+                className={`text-white text-right`}
+                data-class="reactTip"
+                data-tooltip-id={
+                  "rewardPerWeekId" + (seed?.farmList?.[0]?.farm_id ?? "")
+                }
+                data-place="top"
+                data-tooltip-html={getRewardsPerWeekTip()}
+              >
+                <div className="flex items-center bg-white bg-opacity-10 rounded-full p-0.5">
+                  <span className="flex hover:bg-black hover:bg-opacity-20 rounded-full w-max">
+                    {getAllRewardsSymbols().map(
+                      (
+                        [id, data]: [
+                          string,
+                          { icon: string; symbol: string; name: string }
+                        ],
+                        index
+                      ) => {
+                        return (
+                          <img
+                            key={id}
+                            src={data.icon}
+                            className={`h-4 w-4 rounded-full border border-green-10 ${
+                              index != 0 ? "-ml-1" : ""
+                            }`}
+                          ></img>
+                        );
+                      }
+                    )}
+                  </span>
+                  <span className="text-gray-10 text-xs mx-1.5">
+                    {totalTvlPerWeekDisplay()}/week
+                  </span>
                 </div>
-              ) : null}
-              {showNewTag() ? <NewTag></NewTag> : null}
-              {status_is_new_or_will_end() == "will end" ? (
-                <span className="text-xs text-redwarningColor bg-lightReBgColor rounded-3xl px-1.5 py-1">
-                  ending_soon
-                </span>
-              ) : null}
+              </div>
+              {showNewTag() ? <NewTag className="ml-1"></NewTag> : null}
             </div>
-            {needForbidden ? (
-              <div className="flex flex-col absolute left-3.5 top-3 z-50">
+          </div>
+        </div>
+        <div className="frcb mb-3.5">
+          <p className="text-gray-60 text-sm">Total staked</p>
+          <p className="text-sm">
+            {Number(seed.seedTvl) == 0
+              ? "-"
+              : `$${toInternationalCurrencySystem(seed.seedTvl || "", 2)}`}
+          </p>
+        </div>
+        <div className="frcb mb-3.5">
+          <p className="text-gray-60 text-sm">APR</p>
+          <p className="text-sm frcc">
+            {getTotalApr()}
+            <CalcIcon
+              onClick={(e: any) => {
+                e.stopPropagation();
+                setCalcVisible(true);
+              }}
+              className="text-farmText ml-1.5 cursor-pointer hover:text-greenColor"
+            />
+          </p>
+        </div>
+        <div className="frcb">
+          <p className="text-gray-60 text-sm">Your stake/Reward</p>
+          <p className="text-sm frcc">
+            {isHaveUnclaimedReward ? (
+              <div className="flex flex-col items-center flex-shrink-0">
                 <div
                   className="text-xl text-white"
                   data-type="info"
                   data-place="top"
                   data-multiline={true}
-                  data-tip={getForbiddenTip()}
+                  data-tip={getUnClaimTip()}
                   data-html={true}
                   data-tooltip-id={
-                    seed.farmList && seed.farmList.length > 0
-                      ? "forbiddenTip" + seed.farmList[0].farm_id
-                      : undefined
+                    "unclaimedId" + (seed?.farmList?.[0]?.farm_id ?? "")
                   }
                   data-class="reactTip"
                 >
-                  <ForbiddonIcon></ForbiddonIcon>
-                  {/* <CustomTooltip
-                    id={"forbiddenTip" + seed.farmList[0].farm_id}
-                  /> */}
-                </div>
-              </div>
-            ) : null}
-          </div>
-          {is_dcl_pool ? (
-            <div className="flex flex-col items-center justify-between px-5 py-3 h-28">
-              <div className="flex items-center justify-between w-full">
-                <span className="text-sm text-farmText">range</span>
-                <span>{getRange()}</span>
-              </div>
-              <div className="flex items-center justify-between w-full">
-                <div className="flex items-center text-sm text-farmText">
-                  apr
-                </div>
-                <div className="flex items-center">
                   <div
-                    data-type="info"
-                    data-place="top"
-                    data-multiline={true}
-                    data-tip={getAprTip()}
-                    data-html={true}
-                    data-tooltip-id={
-                      seed.farmList && seed.farmList.length > 0
-                        ? "aprId_dcl" + seed.farmList[0].farm_id
-                        : undefined
-                    }
-                    data-class="reactTip"
-                  >
-                    <div
-                      className={`text-sm ${
-                        getTotalApr() == "-"
-                          ? "text-farmText"
-                          : "text-white gotham_bold"
-                      }`}
-                    >
-                      {getTotalApr()}
-                    </div>
-                    {/* <CustomTooltip
-                      id={"aprId_dcl" + seed.farmList[0].farm_id}
-                    /> */}
-                  </div>
-                  <CalcIcon
-                    onClick={(e: any) => {
+                    className="flex items-center justify-center hover:bg-deepBlueHover rounded-lg text-sm text-white h-7 cursor-pointer"
+                    onClick={(e) => {
                       e.stopPropagation();
-                      setDclCalcVisible(true);
+                      claimReward();
                     }}
-                    className="text-farmText ml-1.5 cursor-pointer hover:text-greenColor"
+                  >
+                    <ButtonTextWrapper
+                      loading={claimLoading}
+                      Text={() => <>{getTotalUnclaimedRewards()}</>}
+                    />
+                  </div>
+                  <CustomTooltip
+                    id={"unclaimedId" + (seed?.farmList?.[0]?.farm_id ?? "")}
                   />
                 </div>
               </div>
-              <div className="flex items-center justify-between w-full">
-                <span className="text-sm text-farmText">to_claim</span>
-                {isHaveUnclaimedReward ? (
-                  <div className="flex flex-col items-center flex-shrink-0">
-                    <div
-                      className="text-xl text-white"
-                      data-type="info"
-                      data-place="top"
-                      data-multiline={true}
-                      data-tip={getUnClaimTip()}
-                      data-html={true}
-                      data-tooltip-id={
-                        seed.farmList && seed.farmList.length > 0
-                          ? "unclaimedId" + seed.farmList[0].farm_id
-                          : undefined
-                      }
-                      data-class="reactTip"
-                    >
-                      <div
-                        className="flex items-center justify-center bg-deepBlue hover:bg-deepBlueHover rounded-lg text-sm text-white h-7 cursor-pointer"
-                        style={{ minWidth: "4.6rem" }}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          claimReward();
-                        }}
-                      >
-                        {/* <ButtonTextWrapper
-                          loading={claimLoading}
-                          Text={() => <>{getTotalUnclaimedRewards()}</>}
-                        /> */}
-                      </div>
-                      {/* <CustomTooltip
-                        id={"unclaimedId" + seed.farmList[0].farm_id}
-                      /> */}
-                    </div>
-                  </div>
-                ) : (
-                  <span className="text-sm text-farmText">-</span>
-                )}
-              </div>
-            </div>
-          ) : null}
-          {!is_dcl_pool ? (
-            <div className="flex flex-col items-center justify-between px-5 py-3 h-28">
-              <div className="flex items-center justify-between w-full">
-                <span className="text-sm text-farmText">total_staked</span>
-                <span className="text-white">
-                  {/* {Number(seed.seedTvl) == 0
-                    ? "-"
-                    : `$${toInternationalCurrencySystem(seed.seedTvl, 2)}`} */}
-                  111
-                </span>
-              </div>
-              <div className="flex items-center justify-between w-full">
-                <div className="flex items-center text-sm text-farmText">
-                  {yourApr ? (
-                    <div
-                      data-type="info"
-                      data-place="right"
-                      data-multiline={true}
-                      // data-tip={isMobile() ? '': getRangeAprTip()}
-                      data-tip={""}
-                      data-html={true}
-                      data-tooltip-id={
-                        seed.farmList && seed.farmList.length > 0
-                          ? "aprRangeId" + seed.farmList[0].farm_id
-                          : undefined
-                      }
-                      data-class="reactTip"
-                    >
-                      <label
-                        onClick={switchApr}
-                        className={`text-sm cursor-pointer ${
-                          +aprSwitchStatus == 1 ? "text-white" : "text-farmText"
-                        }`}
-                      >
-                        your
-                      </label>
-                      <label className="text-farmText text-sm">/</label>
-                      <label
-                        onClick={switchApr}
-                        className={`text-sm cursor-pointer ${
-                          +aprSwitchStatus == 1 ? "text-farmText" : "text-white"
-                        }`}
-                      >
-                        max_apr
-                      </label>
-                      {/* <CustomTooltip
-                        id={"aprRangeId" + seed.farmList[0].farm_id}
-                      /> */}
-                    </div>
-                  ) : (
-                    <label className="text-farmText text-sm cursor-pointer">
-                      apr
-                    </label>
-                  )}
-                </div>
-                <div className="flex items-center">
-                  <div
-                    className="text-xl text-white"
-                    data-type="info"
-                    data-place="top"
-                    data-multiline={true}
-                    data-tip={getAprTip()}
-                    data-html={true}
-                    data-tooltip-id={
-                      seed.farmList && seed.farmList.length > 0
-                        ? "aprId" + seed.farmList[0].farm_id
-                        : undefined
-                    }
-                    data-class="reactTip"
-                  >
-                    <span
-                      className={`flex items-center flex-wrap justify-center text-white text-base`}
-                    >
-                      {yourApr && +aprSwitchStatus == 1 ? (
-                        <label className="text-sm gotham_bold">{yourApr}</label>
-                      ) : (
-                        <>
-                          <label
-                            className={`gotham_bold ${
-                              aprUpLimit ? "text-xs" : "text-sm"
-                            }`}
-                          >
-                            {getTotalApr()}
-                          </label>
-                          {aprUpLimit}
-                        </>
-                      )}
-                    </span>
-                    {/* <CustomTooltip id={"aprId" + seed.farmList[0].farm_id} /> */}
-                  </div>
-                  <CalcIcon
-                    onClick={(e: any) => {
-                      e.stopPropagation();
-                      setCalcVisible(true);
-                    }}
-                    className="text-farmText ml-1.5 cursor-pointer hover:text-greenColor"
-                  />
-                </div>
-              </div>
-              <div className="flex items-center justify-between w-full">
-                <span className="text-sm text-farmText">to_claim</span>
-                {isHaveUnclaimedReward ? (
-                  <div className="flex flex-col items-center flex-shrink-0">
-                    <div
-                      className="text-xl text-white"
-                      data-type="info"
-                      data-place="top"
-                      data-multiline={true}
-                      data-tip={getUnClaimTip()}
-                      data-html={true}
-                      data-tooltip-id={
-                        seed.farmList && seed.farmList.length > 0
-                          ? "unclaimedId" + seed.farmList[0].farm_id
-                          : undefined
-                      }
-                      data-class="reactTip"
-                    >
-                      <div
-                        className="flex items-center justify-center bg-deepBlue hover:bg-deepBlueHover rounded-lg text-sm text-white h-7 cursor-pointer"
-                        style={{ width: "4.6rem" }}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          claimReward();
-                        }}
-                      >
-                        {/* <ButtonTextWrapper
-                          loading={claimLoading}
-                          Text={() => <>{getTotalUnclaimedRewards()}</>}
-                        /> */}
-                      </div>
-                      {/* <CustomTooltip
-                        id={"unclaimedId" + seed.farmList[0].farm_id}
-                      /> */}
-                    </div>
-                  </div>
-                ) : (
-                  <span className="text-sm text-farmText">-</span>
-                )}
-              </div>
-            </div>
-          ) : null}
+            ) : (
+              <span className="text-sm text-farmText">-</span>
+            )}
+          </p>
         </div>
-        {/* <CustomTooltip id={"rewardPerWeekId" + seed?.farmList[0]?.farm_id} /> */}
+        <CustomTooltip
+          id={"rewardPerWeekId" + (seed?.farmList?.[0]?.farm_id ?? "")}
+        />
       </div>
       {/* {calcVisible ? (
         <CalcModelBooster

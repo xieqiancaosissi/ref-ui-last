@@ -4,10 +4,16 @@ import { ITokenMetadata } from "../hooks/useBalanceTokens";
 type ITokenStore = {
   whitelisted_tokens: string[];
   auto_whitelisted_postfix: string[];
+  common_tokens: ITokenMetadata[];
+  is_edited_common_tokens: boolean;
   get_whitelisted_tokens: () => string[];
   set_whitelisted_tokens: (whitelisted_tokens: ITokenMetadata[]) => void;
   get_auto_whitelisted_postfix: () => string[];
   set_auto_whitelisted_postfix: (auto_whitelisted_postfix: string[]) => void;
+  get_common_tokens: () => ITokenMetadata[];
+  set_common_tokens: (common_tokens: ITokenMetadata[]) => void;
+  get_is_edited_common_tokens: () => boolean;
+  set_is_edited_common_tokens: (is_edited_common_tokens: boolean) => void;
 };
 type IAccountTokenStore = {
   user_whitelisted_tokens: string[];
@@ -26,12 +32,20 @@ export const useTokenStore = create(
     (set, get: any) => ({
       whitelisted_tokens: [],
       auto_whitelisted_postfix: [],
+      common_tokens: [],
+      is_edited_common_tokens: false,
       get_whitelisted_tokens: () => get().whitelisted_tokens,
       set_whitelisted_tokens: (whitelisted_tokens: string[]) =>
         set({ whitelisted_tokens }),
       get_auto_whitelisted_postfix: () => get().auto_whitelisted_postfix,
       set_auto_whitelisted_postfix: (auto_whitelisted_postfix: string[]) =>
         set({ auto_whitelisted_postfix }),
+      get_common_tokens: () => get().common_tokens,
+      set_common_tokens: (common_tokens: ITokenMetadata[]) =>
+        set({ common_tokens }),
+      get_is_edited_common_tokens: () => get().is_edited_common_tokens,
+      set_is_edited_common_tokens: (is_edited_common_tokens: boolean) =>
+        set({ is_edited_common_tokens }),
     }),
     {
       name: "_cached_whitelisted_tokens",

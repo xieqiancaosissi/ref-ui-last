@@ -100,6 +100,10 @@ export default function WalletConnect() {
                     src={currentWallet?.metadata?.iconUrl || ""}
                     width={14}
                     height={14}
+                    style={{
+                      width: "14px",
+                      height: "14px",
+                    }}
                     alt=""
                   />
                 ) : null}
@@ -125,9 +129,13 @@ export default function WalletConnect() {
                       <div className="flex items-center gap-1.5">
                         {currentWallet?.metadata?.iconUrl ? (
                           <Image
-                            src={currentWallet.metadata.iconUrl}
+                            src={currentWallet.metadata.iconUrl || ""}
                             width={14}
                             height={14}
+                            style={{
+                              width: "14px",
+                              height: "14px",
+                            }}
                             alt=""
                           />
                         ) : null}

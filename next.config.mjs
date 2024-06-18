@@ -7,6 +7,18 @@ const nextConfig = {
   experimental: {
     esmExternals: "loose",
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "**",
+      },
+      {
+        protocol: "http",
+        hostname: "**",
+      },
+    ],
+  },
   // webpack: (config, { isServer }) => {
   //   if (!isServer) {
   //     config.plugins.push(

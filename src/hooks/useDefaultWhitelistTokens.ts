@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { TokenMetadata } from "../services/ft-contract";
+import getConfigV2 from "../utils/configV2";
 import { useTokenStore, useAccountTokenStore } from "../stores/token";
 import { useAccountStore } from "../stores/account";
 import {

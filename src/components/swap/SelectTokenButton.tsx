@@ -1,12 +1,39 @@
 import Image from "next/image";
 import SelectTokenModal from "../../components/common/SelectTokenModal/Index";
 import { ArrowDownIcon } from "../../components/swap/icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ITokenMetadata } from "@/hooks/useBalanceTokens";
+import {
+  usePersistSwapStore,
+  useSwapStore,
+  IPersistSwapStore,
+} from "@/stores/swap";
 
-export default function SelectTokenButton(props: any) {
+interface ISelectTokenButtonProps {
+  className?: string;
+  isIn?: boolean;
+  isOut?: boolean;
+}
+export default function SelectTokenButton(props: ISelectTokenButtonProps) {
+  const { isIn, isOut } = props;
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [selectToken, setSelectToken] = useState<ITokenMetadata>();
+  const persistSwapStore: IPersistSwapStore = usePersistSwapStore();
+  const swapStore = useSwapStore();
+  const tokenIn = swapStore.getTokenIn();
+  const tokenOut = swapStore.getTokenOut();
+  const showToken = isIn ? tokenIn : tokenOut;
+  useEffect(() => {
+    if (selectToken?.id) {
+      if (isIn) {
+        swapStore.setTokenIn(selectToken);
+        persistSwapStore.setTokenInId(selectToken?.id);
+      } else if (isOut) {
+        swapStore.setTokenOut(selectToken);
+        persistSwapStore.setTokenOutId(selectToken?.id);
+      }
+    }
+  }, [selectToken?.id]);
   function showModal() {
     setIsOpen(true);
   }
@@ -26,11 +53,15 @@ export default function SelectTokenButton(props: any) {
           width="20"
           height="20"
           alt=""
-          src={selectToken?.icon || ""}
-          className="rounded-full"
+          src={showToken?.icon || ""}
+          style={{
+            width: "20px",
+            height: "20px",
+          }}
+          className="rounded-full border border-gray-110"
         />
         <span className="text-white font-bold text-base ml-1.5 mr-2.5 ">
-          {selectToken?.symbol}
+          {showToken?.symbol}
         </span>
         <ArrowDownIcon className="text-gray-50" />
       </div>

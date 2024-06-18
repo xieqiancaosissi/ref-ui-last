@@ -17,6 +17,7 @@ export default function getConfig(
         nearExplorerUrl: "https://explorer.near.org/",
         indexerUrl: "https://api.ref.finance",
         indexerUrlcclp: "https://apiself.cclp.finance",
+        indexerOld: "https://indexer.ref.finance",
         sodakiApiUrl: "https://api.stats.ref.finance/api",
         txIdApiUrl: "https://api3.nearblocks.io",
         memeRankApiUrl: "https://api.ref.finance",

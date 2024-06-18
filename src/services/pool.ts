@@ -1,5 +1,11 @@
 import getConfig from "../utils/config";
 import { getAuthenticationHeaders } from "../services/signature";
+import { ftGetStorageBalance } from "./ft-contract";
+import { storageDepositForFTAction } from "./creator/storage";
+import { executeMultipleTransactions } from "./createPoolFn";
+
+const { REF_FI_CONTRACT_ID } = getConfig();
+
 export const getSearchResult = async ({
   type = "classic",
   sort = "tvl",
@@ -45,7 +51,7 @@ export const getSearchResult = async ({
     const url = !onlyUseId
       ? `/pool/search?type=${type}&sort=${sort}&limit=${limit}&labels=${labels}&offset=${offset}&hide_low_pool=${hide_low_pool}&order_by=${order}&token_type=${tktype}&token_list=${token_list}&pool_id_list=${pool_id_list}`
       : `/pool/search?pool_id_list=${pool_id_list}`;
-    pools = await fetch(getConfig().indexerUrlcclp + url, {
+    pools = await fetch(getConfig().indexerOld + url, {
       method: "GET",
       headers: {
         "Content-type": "application/json; charset=UTF-8",
@@ -63,4 +69,39 @@ export const getSearchResult = async ({
   } catch (error) {
     return [];
   }
+};
+
+//for create pool
+export const addSimpleLiquidityPool = async (
+  tokenIds: string[],
+  fee: number
+) => {
+  const storageBalances = await Promise.all(
+    tokenIds.map((id) => ftGetStorageBalance(id))
+  );
+  const transactions: any[] = storageBalances
+    .reduce((acc, sb, i) => {
+      if (!sb || sb.total === "0") acc.push(tokenIds[i]);
+      return acc;
+    }, [])
+    .map((id: any) => ({
+      receiverId: id,
+      functionCalls: [storageDepositForFTAction()],
+    }));
+
+  transactions.push({
+    receiverId: REF_FI_CONTRACT_ID,
+    functionCalls: [
+      {
+        methodName: "add_simple_pool",
+        args: { tokens: tokenIds, fee },
+        amount: "0.05",
+      },
+    ],
+  });
+
+  return executeMultipleTransactions(
+    transactions,
+    `${window.location.origin}/pools`
+  );
 };

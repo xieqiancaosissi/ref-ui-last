@@ -1,11 +1,7 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { ITokenMetadata } from "../hooks/useBalanceTokens";
-type ITokenStore = {
-  whitelisted_tokens: string[];
-  auto_whitelisted_postfix: string[];
-  common_tokens: ITokenMetadata[];
-  is_edited_common_tokens: boolean;
+export type ITokenStore = {
   get_whitelisted_tokens: () => string[];
   set_whitelisted_tokens: (whitelisted_tokens: ITokenMetadata[]) => void;
   get_auto_whitelisted_postfix: () => string[];
@@ -15,10 +11,7 @@ type ITokenStore = {
   get_is_edited_common_tokens: () => boolean;
   set_is_edited_common_tokens: (is_edited_common_tokens: boolean) => void;
 };
-type IAccountTokenStore = {
-  user_whitelisted_tokens: string[];
-  defaultAccountBalances: ITokenMetadata[];
-  autoAccountBalances: ITokenMetadata[];
+export type IAccountTokenStore = {
   get_user_whitelisted_tokens: () => string[];
   set_user_whitelisted_tokens: (user_whitelisted_tokens: string[]) => void;
   getDefaultAccountBalances: () => ITokenMetadata[];

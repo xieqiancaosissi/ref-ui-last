@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { tabList, classicHeader } from "./config";
+import { poolsFilterList, classicHeader } from "./config";
 import styles from "./stablePool.module.css";
 import { DownArrow, UpArrow, DownArrowSelect } from "../icon";
 import StablePoolRow from "../../pools/stablePoolRow/poolRow";
@@ -38,13 +38,16 @@ export default function Classic({ searchValue }: { searchValue: string }) {
     }
   };
 
+  // pools filter
+  const [activePools, setActivePools] = useState("");
+
   const { poolList, totalItems, isLoading } = usePoolSearch({
     isChecked,
     sortKey: sortMap.key,
     sortOrder: sortMap.sort,
     currentPage,
     isActive,
-    searchValue,
+    searchValue: activePools || searchValue,
     poolType: "stable",
   });
 
@@ -52,6 +55,11 @@ export default function Classic({ searchValue }: { searchValue: string }) {
   useEffect(() => {
     setCurrentPage(1);
   }, [sortMap.key, sortMap.sort, isChecked, isActive, searchValue]);
+
+  // deal with activePools
+  useEffect(() => {
+    setActivePools("");
+  }, [searchValue]);
 
   return (
     <div className="flex flex-col items-center  w-full mt-8">
@@ -77,7 +85,24 @@ export default function Classic({ searchValue }: { searchValue: string }) {
 
       {/* pool header */}
       <header className={styles.headDiv}>
-        <div>Pools</div>
+        <div className="flex items-center">
+          <span>Pools</span>
+          {poolsFilterList.map((item, index) => {
+            return (
+              <div
+                key={item.key + "_stablepool_" + index}
+                className={`w-10 h-5 frcc border border-gray-40 rounded-xl text-xs p-2 mx-1 ${
+                  activePools == item.key
+                    ? "bg-gray-100 text-white"
+                    : "text-gray-10 "
+                }`}
+                onClick={() => setActivePools(item.key)}
+              >
+                {item.value}
+              </div>
+            );
+          })}
+        </div>
         <div>
           {classicHeader.map((item, index) => {
             return item.key ? (

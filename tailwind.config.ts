@@ -75,6 +75,9 @@ const config: Config = {
       minWidth: {
         ...getStyleMapping(1800, 0),
       },
+      maxWidth: {
+        ...getStyleMapping(1800, 0),
+      },
       height: {
         ...getStyleMapping(1800, 0),
       },

@@ -85,7 +85,9 @@ export default function Classic({ searchValue }: { searchValue: string }) {
                 className="frcc select-none"
                 onClick={() => handleSort(item.key)}
               >
-                {item.tip && <HoverTip msg={item.tipMsg} />}
+                {item.tip && (
+                  <HoverTip msg={item.tipMsg} extraStyles={"w-78"} />
+                )}
                 <span>{item.value}</span>
                 <span className="ml-2">
                   {sortMap.key === item.key ? (

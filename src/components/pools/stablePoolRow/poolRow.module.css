@@ -1,5 +1,5 @@
 .poolContainer {
-  @apply flex items-center w-276 min-h-18 mt-3 rounded-lg text-white text-sm font-medium  justify-between;
+  @apply flex items-center w-276 min-h-18 mt-3 rounded-lg text-white text-sm font-medium  justify-between flex-wrap;
 }
 .notfarm {
   background: rgba(33, 43, 53, 0.3);
@@ -16,11 +16,18 @@
   @apply w-109 shrink-0 ml-5;
 }
 
-.poolContainer > div:last-child {
-  @apply frc  mr-3;
+.poolContainer:hover .farmContainer {
+  display: block;
 }
 
-.poolContainer > div:last-child > div {
+.poolContainer:hover {
+  @apply pb-3;
+}
+.poolLast {
+  @apply frc  mr-1;
+}
+
+.poolLast > div {
   @apply w-40 flex flex-col justify-start shrink-0;
 }
 
@@ -55,7 +62,7 @@
 }
 
 .tokenCharts {
-  @apply flex flex-wrap  w-40 text-gray-10 text-xs !important;
+  @apply flex flex-wrap  w-44 text-gray-10 text-xs !important;
 }
 
 .tokenCharts > div:not(:last-child) {
@@ -64,4 +71,24 @@
 
 .stableCharts {
   @apply items-end !important;
+}
+
+/* farm style */
+.farmContainer {
+  @apply h-16 w-276 frcc p-3 bg-transparent;
+  display: none;
+}
+
+.farmContainer > div:first-child {
+  @apply border border-gray-30 w-full h-13 rounded flex px-3 items-center justify-between;
+}
+
+.btnStyle {
+  @apply w-21 h-7 frcc text-sm font-bold rounded cursor-pointer mx-2 hover:opacity-80;
+}
+.lightBtn {
+  @apply border border-green-10 text-green-10;
+}
+.darkBtn {
+  @apply border border-gray-90 text-white;
 }

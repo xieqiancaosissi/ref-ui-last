@@ -142,7 +142,7 @@ export async function refVeViewFunction({
 }) {
   const account = await getAccount();
   return account.viewFunction({
-    contractId: REF_VE_CONTRACT_ID,
+    contractId: REF_VE_CONTRACT_ID as any,
     methodName,
     args,
   });

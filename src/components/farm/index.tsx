@@ -70,6 +70,7 @@ import { get24hVolumes } from "../../services/indexer";
 import { LOVE_TOKEN_DECIMAL, getLoveAmount } from "../../services/referendum";
 import { FarmView } from "./components/FarmView";
 import SelectBox from "./components/SelectBox";
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 
 const {
   REF_VE_CONTRACT_ID,
@@ -241,7 +242,7 @@ export default function FarmsPage(props: any) {
     const temp_list_farm: FarmBoost[][] = [];
     list_farm?.forEach((farmList: FarmBoost[]) => {
       let temp_farmList: FarmBoost[] = [];
-      temp_farmList = farmList.filter((farm: FarmBoost) => {
+      temp_farmList = farmList?.filter((farm: FarmBoost) => {
         const id = farm?.farm_id?.split("@")[1];
         if (boostBlackList.indexOf(id) == -1) {
           return true;
@@ -1142,13 +1143,7 @@ export default function FarmsPage(props: any) {
               <h1 className="text-3xl paceGrotesk-Bold">$260.34</h1>
             </div>
           </div>
-          <div
-            className="rounded-lg py-2.5 px-4 frcc"
-            style={{
-              boxShadow:
-                "0 0 0 0.5px rgba(255, 247, 45, 0.3), 0 0 0 2px rgba(158, 255, 0, 0.3)",
-            }}
-          >
+          <div className="gradient-border-container">
             <p className="text-gray-10 text-base">Withdraw</p>
             <FarmWithdrawIcon className="ml-2" />
           </div>
@@ -1301,70 +1296,87 @@ export default function FarmsPage(props: any) {
         </div>
         {/* list */}
         <div className="mb-8">
-          <div className="grid grid-cols-3 gap-x-10 gap-y-6 m-auto">
-            {farm_display_List.map((seed: Seed, index: number) => {
-              return (
-                <div
-                  key={seed.seed_id + index}
-                  className={
-                    seed.hidden
-                      ? "hidden"
-                      : index < 2
-                      ? "bg-farmItemBg rounded-lg"
-                      : "bg-gray-20 bg-opacity-30 rounded-lg"
-                  }
-                >
-                  <FarmView
-                    seed={seed}
-                    all_seeds={farm_display_List}
-                    tokenPriceList={tokenPriceList}
-                    getDetailData={getDetailData}
-                    dayVolumeMap={dayVolumeMap}
-                    boostConfig={boostConfig || ({} as BoostConfig)}
-                    loveSeed={loveSeed || ({} as Seed)}
-                    user_seeds_map={user_seeds_map}
-                    user_unclaimed_map={user_unclaimed_map}
-                    user_unclaimed_token_meta_map={
-                      user_unclaimed_token_meta_map
-                    }
-                    maxLoveShareAmount={maxLoveShareAmount}
-                  ></FarmView>
-                </div>
-              );
-            })}
-          </div>
-          <div
-            className={`grid grid-cols-3 gap-x-10 gap-y-6 m-auto ${
-              showEndedFarmList ? "" : "hidden"
-            }`}
-          >
-            {farm_display_ended_List.map((seed: Seed, index: number) => {
-              return (
-                <div
-                  key={seed.seed_id + index}
-                  className={
-                    seed.hidden ? "hidden" : "bg-gray-20 opacity-50 rounded-lg"
-                  }
-                >
-                  <FarmView
-                    seed={seed}
-                    all_seeds={farm_display_List}
-                    tokenPriceList={tokenPriceList}
-                    getDetailData={getDetailData}
-                    dayVolumeMap={dayVolumeMap}
-                    boostConfig={boostConfig || ({} as BoostConfig)}
-                    loveSeed={loveSeed || ({} as Seed)}
-                    user_seeds_map={user_seeds_map}
-                    user_unclaimed_map={user_unclaimed_map}
-                    user_unclaimed_token_meta_map={
-                      user_unclaimed_token_meta_map
-                    }
-                    maxLoveShareAmount={maxLoveShareAmount}
-                  ></FarmView>
-                </div>
-              );
-            })}
-          </div>
+          {homePageLoading && getUrlParams() ? null : homePageLoading ? (
+            <div className="flex justify-between">
+              <SkeletonTheme
+                baseColor="rgba(33, 43, 53, 0.3)"
+                highlightColor="#2A3643"
+              >
+                <Skeleton width={356} height={200} count={2} className="mt-4" />
+                <Skeleton width={356} height={200} count={2} className="mt-4" />
+                <Skeleton width={356} height={200} count={2} className="mt-4" />
+              </SkeletonTheme>
+            </div>
+          ) : (
+            <>
+              <div className="grid grid-cols-3 gap-x-10 gap-y-6 m-auto">
+                {farm_display_List.map((seed: Seed, index: number) => {
+                  return (
+                    <div
+                      key={seed.seed_id + index}
+                      className={
+                        seed.hidden
+                          ? "hidden"
+                          : index < 2
+                          ? "bg-farmItemBg rounded-lg"
+                          : "bg-gray-20 bg-opacity-30 rounded-lg"
+                      }
+                    >
+                      <FarmView
+                        seed={seed}
+                        all_seeds={farm_display_List}
+                        tokenPriceList={tokenPriceList}
+                        getDetailData={getDetailData}
+                        dayVolumeMap={dayVolumeMap}
+                        boostConfig={boostConfig || ({} as BoostConfig)}
+                        loveSeed={loveSeed || ({} as Seed)}
+                        user_seeds_map={user_seeds_map}
+                        user_unclaimed_map={user_unclaimed_map}
+                        user_unclaimed_token_meta_map={
+                          user_unclaimed_token_meta_map
+                        }
+                        maxLoveShareAmount={maxLoveShareAmount}
+                      ></FarmView>
+                    </div>
+                  );
+                })}
+                {showEndedFarmList ? (
+                  <>
+                    {farm_display_ended_List.map(
+                      (seed: Seed, index: number) => {
+                        return (
+                          <div
+                            key={seed.seed_id + index}
+                            className={
+                              seed.hidden
+                                ? "hidden"
+                                : "bg-gray-20 opacity-50 rounded-lg"
+                            }
+                          >
+                            <FarmView
+                              seed={seed}
+                              all_seeds={farm_display_List}
+                              tokenPriceList={tokenPriceList}
+                              getDetailData={getDetailData}
+                              dayVolumeMap={dayVolumeMap}
+                              boostConfig={boostConfig || ({} as BoostConfig)}
+                              loveSeed={loveSeed || ({} as Seed)}
+                              user_seeds_map={user_seeds_map}
+                              user_unclaimed_map={user_unclaimed_map}
+                              user_unclaimed_token_meta_map={
+                                user_unclaimed_token_meta_map
+                              }
+                              maxLoveShareAmount={maxLoveShareAmount}
+                            ></FarmView>
+                          </div>
+                        );
+                      }
+                    )}
+                  </>
+                ) : null}
+              </div>
+            </>
+          )}
         </div>
       </div>
     </main>

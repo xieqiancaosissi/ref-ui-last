@@ -103,7 +103,7 @@ input::-webkit-inner-spin-button {
 }
 
 .gradient-border-container::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
@@ -111,11 +111,14 @@ input::-webkit-inner-spin-button {
   bottom: 0;
   border-radius: 8px;
   padding: 1px;
-  background: linear-gradient(90deg, rgba(255, 247, 45, 0.3) 0%, rgba(158, 255, 0, 0.3) 100%);
+  background: linear-gradient(
+    90deg,
+    rgba(255, 247, 45, 0.3) 0%,
+    rgba(158, 255, 0, 0.3) 100%
+  );
   mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   mask-composite: exclude;
   -webkit-mask-composite: xor;
   pointer-events: none;
 }
-

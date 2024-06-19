@@ -2,6 +2,8 @@
 import { SetStateAction, useEffect, useMemo, useRef, useState } from "react";
 import { useAccountStore } from "../../stores/account";
 import {
+  Checkbox,
+  CheckboxSelected,
   FarmAvatarIcon,
   FarmDownArrown,
   FarmInputCheck,
@@ -810,11 +812,11 @@ export default function FarmsPage(props: any) {
       sortFarms(sort);
       set_has_dcl_farms_in_display_list(false);
     }
-    if (keyWords) {
-      setShowEndedFarmList(true);
-    } else {
-      setShowEndedFarmList(false);
-    }
+    // if (keyWords) {
+    //   setShowEndedFarmList(true);
+    // } else {
+    //   setShowEndedFarmList(false);
+    // }
   }
   async function getFarmDataList(initData: any) {
     const { list_seeds, tokenPriceList, defultPools } = initData;
@@ -1176,73 +1178,56 @@ export default function FarmsPage(props: any) {
               setSelectedId={set_filter_type_selectedId}
             ></SelectBox>
           </div>
-          <div className="frcc">
-            <label
-              className="inline-flex items-center mr-6 relative"
-              onClick={() => {
-                if (selected === "stakedOnly") {
-                  switchFarmTab("all");
-                } else {
-                  switchFarmTab("yours");
-                }
-              }}
-            >
-              <input
-                type="checkbox"
-                checked={selected === "stakedOnly"}
-                onChange={() => {
-                  handleCheckbox("stakedOnly");
-                  if (selected === "stakedOnly") {
-                    switchFarmTab("all");
-                    handleCheckbox("");
-                  } else {
-                    switchFarmTab("yours");
-                    handleCheckbox("stakedOnly");
-                  }
-                }}
-                className="checkbox-radio"
-                onClick={(e) => e.stopPropagation()}
-              />
-              <span className="ml-1.5 text-gray-10 text-sm">Staked only</span>
-              {selected === "stakedOnly" && (
-                <FarmInputCheck className="absolute top-1 left-0.5" />
-              )}
-            </label>
-            <label
-              className="inline-flex items-center relative"
-              onClick={() => {
-                if (selected === "showEndedFarms") {
-                  setShowEndedFarmList(false);
-                } else {
-                  setShowEndedFarmList(true);
-                }
-              }}
-            >
-              <input
-                type="checkbox"
-                checked={selected === "showEndedFarms"}
-                onChange={() => {
-                  handleCheckbox("showEndedFarms");
-                  if (selected === "showEndedFarms") {
+          {!homePageLoading && getUrlParams() ? null : !homePageLoading ? (
+            <div className="frcc">
+              {accountId ? (
+                <div
+                  className="frcc cursor-pointer"
+                  onClick={() => {
+                    if (farmTab === "yours") {
+                      switchFarmTab("all");
+                    } else {
+                      switchFarmTab("yours");
+                      if (showEndedFarmList) {
+                        setShowEndedFarmList(false);
+                      }
+                    }
+                  }}
+                >
+                  {farmTab === "yours" ? (
+                    <CheckboxSelected></CheckboxSelected>
+                  ) : (
+                    <Checkbox></Checkbox>
+                  )}
+                  <span className="ml-1.5 text-gray-10 text-sm">
+                    Staked only
+                  </span>
+                </div>
+              ) : null}
+              <div
+                className="frcc ml-6 cursor-pointer"
+                onClick={() => {
+                  if (showEndedFarmList === true) {
                     setShowEndedFarmList(false);
-                    handleCheckbox("");
                   } else {
-                    switchFarmTab("all");
                     setShowEndedFarmList(true);
-                    handleCheckbox("showEndedFarms");
+                    if (farmTab === "yours") {
+                      setFarmTab("all");
+                    }
                   }
                 }}
-                onClick={(e) => e.stopPropagation()}
-                className="checkbox-radio"
-              />
-              <span className="ml-1.5 text-gray-10 text-sm">
-                Show Ended Farms
-              </span>
-              {selected === "showEndedFarms" && (
-                <FarmInputCheck className="absolute top-1 left-0.5" />
-              )}
-            </label>
-          </div>
+              >
+                {showEndedFarmList === true ? (
+                  <CheckboxSelected></CheckboxSelected>
+                ) : (
+                  <Checkbox></Checkbox>
+                )}
+                <span className="ml-1.5 text-gray-10 text-sm">
+                  Show Ended Farms
+                </span>
+              </div>
+            </div>
+          ) : null}
         </div>
         {/* list */}
         <div className="mb-8">

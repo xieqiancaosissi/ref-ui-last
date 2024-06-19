@@ -10,7 +10,7 @@ import {
 import BigNumber from "bignumber.js";
 import getConfig from "@/utils/config";
 import { NEAR_META_DATA } from "@/utils/nearMetaData";
-import Withdraw from "./Withdraw";
+import Withdraw from "./WithdrawModal";
 
 const { WRAP_NEAR_CONTRACT_ID } = getConfig();
 

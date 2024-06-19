@@ -10,6 +10,7 @@ import {
 import BigNumber from "bignumber.js";
 import getConfig from "@/utils/config";
 import { NEAR_META_DATA } from "@/utils/nearMetaData";
+import Withdraw from "./Withdraw";
 
 const { WRAP_NEAR_CONTRACT_ID } = getConfig();
 
@@ -30,7 +31,7 @@ export default function WithDrawBox(props: {
   });
   const [rewardList, setRewardList] = useState<any>({});
   const [yourReward, setYourReward] = useState("-");
-  const [isOpen, setIsOpen] = useState(false);
+  const [isWithdrawOpen, setIsWithdrawOpen] = useState<boolean>(false);
   useEffect(() => {
     const tempList = Object.keys(actualRewardList).map(async (key: string) => {
       let rewardToken = await ftGetTokenMetadata(key);
@@ -104,6 +105,12 @@ export default function WithDrawBox(props: {
       isSignedIn ? setYourReward("$0.00") : "";
     }
   }
+  function showWithdrawModal() {
+    setIsWithdrawOpen(true);
+  }
+  function hideWithdrawModal() {
+    setIsWithdrawOpen(false);
+  }
   return (
     <div className="frcb mb-12 w-3/5">
       <div className="frcc">
@@ -132,10 +139,20 @@ export default function WithDrawBox(props: {
           </h1>
         </div>
       </div>
-      <div className="gradient-border-container">
+      <div
+        className="gradient-border-container cursor-pointer"
+        onClick={() => {
+          showWithdrawModal();
+        }}
+      >
         <p className="text-gray-10 text-base">Withdraw</p>
         <FarmWithdrawIcon className="ml-2" />
       </div>
+      <Withdraw
+        isOpen={isWithdrawOpen}
+        onRequestClose={hideWithdrawModal}
+        rewardList={rewardList}
+      />
     </div>
   );
 }

@@ -42,6 +42,7 @@ const config: Config = {
           120: "#4E5B6A",
           130: "#717E8D",
           140: "#414B57",
+          150: "#AFB7BD",
         },
         dark: {
           10: "#1B242C",

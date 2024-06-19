@@ -11,6 +11,8 @@ export const REF_FI_CONTRACT_ID = config.REF_FI_CONTRACT_ID;
 export const REF_UNI_V3_SWAP_CONTRACT_ID = config.REF_UNI_V3_SWAP_CONTRACT_ID;
 export const REF_VE_CONTRACT_ID = config.REF_VE_CONTRACT_ID;
 
+export const ONE_YOCTO_NEAR = "0.000000000000000000000001";
+
 export interface RefFiViewFunctionOptions {
   contractId?: string;
   methodName: string;
@@ -167,4 +169,11 @@ export const refFarmBoostFunctionCall = async ({
   };
 
   return await executeMultipleTransactions([transaction]);
+};
+
+export const executeFarmMultipleTransactions = async (
+  transactions: Transaction[],
+  callbackUrl?: string
+) => {
+  return executeMultipleTransactions(transactions, callbackUrl);
 };

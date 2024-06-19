@@ -3,16 +3,28 @@ import db, { BoostSeeds, TokenPrice } from "../db/RefDatabase";
 import {
   REF_FARM_BOOST_CONTRACT_ID,
   REF_FI_CONTRACT_ID,
+  RefFiFunctionCallOptions,
+  executeFarmMultipleTransactions,
   refFarmBoostFunctionCall,
   viewFunction,
 } from "../utils/near";
 import { getAccountId, getCurrentWallet } from "../utils/wallet";
-import { TokenMetadata } from "./ft-contract";
+import { TokenMetadata, ftGetStorageBalance } from "./ft-contract";
 import { getPoolsByIds, getTokenPriceList } from "./indexer";
 import { listPools } from "./swapV3";
+import {
+  STORAGE_TO_REGISTER_WITH_MFT,
+  storageDepositAction,
+} from "./creator/storage";
+import { nearMetadata, nearWithdrawTransaction } from "./wrap-near";
+import { toReadableNumber } from "../utils/numbers";
 
 const config = getConfig();
-const { REF_VE_CONTRACT_ID, REF_UNI_V3_SWAP_CONTRACT_ID } = config;
+const {
+  REF_VE_CONTRACT_ID,
+  REF_UNI_V3_SWAP_CONTRACT_ID,
+  WRAP_NEAR_CONTRACT_ID,
+} = config;
 export const DEFAULT_PAGE_LIMIT = 300;
 const STABLE_POOL_ID = getConfig().STABLE_POOL_ID;
 const STABLE_POOL_IDS = getConfig().STABLE_POOL_IDS;
@@ -147,6 +159,11 @@ export interface UserSeedInfo {
 }
 interface FrontConfigBoost {
   [key: string]: string | number | undefined;
+}
+
+export interface Transaction {
+  receiverId: string;
+  functionCalls: RefFiFunctionCallOptions[];
 }
 
 export const frontConfigBoost: FrontConfigBoost = {
@@ -526,4 +543,74 @@ export const getPoolIdBySeedId = (seed_id: string) => {
     }
   }
   return "";
+};
+
+export const toRealSymbol = (symbol: string) => {
+  if (!symbol) return "";
+  const blackList = ["nUSDO", "nKOK"];
+
+  if (!symbol) return symbol;
+
+  if (symbol === "nWETH" || symbol === "WETH") return "wETH";
+  if (blackList.includes(symbol)) return symbol;
+  return symbol?.charAt(0) === "n" &&
+    symbol.charAt(1) === symbol.charAt(1).toUpperCase()
+    ? symbol.substring(1)
+    : symbol;
+};
+
+export const getMftTokenId = (id: string) => {
+  return ":" + id;
+};
+
+export const withdrawAllReward_boost = async (
+  checkedList: Record<string, any>
+) => {
+  const transactions: Transaction[] = [];
+  const token_id_list = Object.keys(checkedList);
+  const ftBalancePromiseList: any[] = [];
+  const functionCalls: any[] = [];
+
+  token_id_list.forEach((token_id) => {
+    const ftBalance = ftGetStorageBalance(token_id);
+    ftBalancePromiseList.push(ftBalance);
+    functionCalls.push({
+      methodName: "withdraw_reward",
+      args: {
+        token_id,
+      },
+      gas: "50000000000000",
+    });
+  });
+  const resolvedBalanceList = await Promise.all(ftBalancePromiseList);
+  resolvedBalanceList.forEach((ftBalance, index) => {
+    if (!ftBalance) {
+      transactions.unshift({
+        receiverId: token_id_list[index],
+        functionCalls: [
+          storageDepositAction({
+            registrationOnly: true,
+            amount: STORAGE_TO_REGISTER_WITH_MFT,
+          }),
+        ],
+      });
+    }
+  });
+
+  transactions.push({
+    receiverId: REF_FARM_BOOST_CONTRACT_ID,
+    functionCalls,
+  });
+  if (Object.keys(checkedList).includes(WRAP_NEAR_CONTRACT_ID)) {
+    sessionStorage.setItem("near_with_draw_source", "farm_token");
+    transactions.push(
+      nearWithdrawTransaction(
+        toReadableNumber(
+          nearMetadata.decimals,
+          checkedList[WRAP_NEAR_CONTRACT_ID].value
+        )
+      )
+    );
+  }
+  return executeFarmMultipleTransactions(transactions);
 };

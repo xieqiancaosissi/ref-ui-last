@@ -908,9 +908,9 @@ export function FarmView(props: {
   return (
     <>
       <div
-        onClick={() => {
-          goFarmDetailPage(seed);
-        }}
+        // onClick={() => {
+        //   goFarmDetailPage(seed);
+        // }}
         className={`relative rounded-2xl cursor-pointer bg-cardBg p-5 ${
           isEnded() || needForbidden ? "farmEnded" : ""
         }

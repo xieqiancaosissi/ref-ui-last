@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
-import { Checkbox, CheckboxSelected, ModalClose } from "../icon";
+import {
+  Checkbox,
+  CheckboxSelected,
+  ModalClose,
+  WithdrawNodate,
+} from "../icon";
 import BigNumber from "bignumber.js";
 import {
   formatWithCommas,
@@ -179,26 +184,37 @@ export default function Withdraw({
                 </div>
               );
             })}
-            {Object.values(rewardList).length == 0 ? (
-              <div className="flex flex-col items-center justify-center py-6">
-                111
+            {Object.values(rewardList).length === 0 ? (
+              <div className="h-64 flex items-center justify-center">
+                <div className="flex flex-col items-center">
+                  <WithdrawNodate />
+                  <p className="text-base text-white text-opacity-60 mt-5">
+                    No claimed rewards yet
+                  </p>
+                </div>
               </div>
             ) : null}
           </>
-          <div className="flex justify-between mb-5">
-            <div className="frcc">
-              <label className="mr-5 cursor-pointer" onClick={clickAllCheckBox}>
-                {selectAll ? (
-                  <CheckboxSelected></CheckboxSelected>
-                ) : (
-                  <Checkbox></Checkbox>
-                )}
-              </label>
-
-              <label className="text-sm text-gray-10">All</label>
+          {Object.values(rewardList).length !== 0 ? (
+            <div className="flex justify-between mb-5">
+              <div className="frcc">
+                <label
+                  className="mr-5 cursor-pointer"
+                  onClick={clickAllCheckBox}
+                >
+                  {selectAll ? (
+                    <CheckboxSelected></CheckboxSelected>
+                  ) : (
+                    <Checkbox></Checkbox>
+                  )}
+                </label>
+                <label className="text-sm text-gray-10">All</label>
+              </div>
+              <div className="text-gray-10 text-sm">
+                {calculateAllRewards()}
+              </div>
             </div>
-            <div className="text-gray-10 text-sm">{calculateAllRewards()}</div>
-          </div>
+          ) : null}
           <div className="flex flex-col items-start bg-gray-40 justify-between rounded-lg px-6 py-4  mb-4">
             <span className="text-white text-sm">
               🤑 How to compound rewards?

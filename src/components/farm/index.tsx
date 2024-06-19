@@ -109,8 +109,8 @@ export default function FarmsPage(props: any) {
   const history = useHistory();
   const [farmTypeList, setFarmTypeList] = useState([
     { id: "all", label: "All" },
-    { id: "dcl", label: "Classic" },
-    { id: "classic", label: "DCL" },
+    { id: "classic", label: "Classice" },
+    { id: "dcl", label: "DCL" },
   ]);
   const [filterTypeList, setFilterTypeList] = useState([
     { id: "all", label: "All" },

@@ -140,7 +140,7 @@ export default function Withdraw({
               }}
             />
           </div>
-          <>
+          <div className="h-60 overflow-auto">
             {Object.values(rewardList).map((item: any) => {
               return (
                 <div
@@ -194,7 +194,7 @@ export default function Withdraw({
                 </div>
               </div>
             ) : null}
-          </>
+          </div>
           {Object.values(rewardList).length !== 0 ? (
             <div className="flex justify-between mb-5">
               <div className="frcc">

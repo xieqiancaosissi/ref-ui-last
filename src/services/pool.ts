@@ -105,3 +105,37 @@ export const addSimpleLiquidityPool = async (
     `${window.location.origin}/pools`
   );
 };
+
+export const getPoolIndexTvlOR24H = async (type: string, day: any) => {
+  try {
+    const url = `/v3/${type}/chart/line?day=${day}`;
+    const resp = await fetch(getConfig().tvlAnd24hUrl + url, {
+      method: "GET",
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+      },
+    }).then((res) => res.json());
+    const waitExportMap: {
+      high: number;
+      low: number;
+      list: number[];
+      totalVolume: number;
+    } = {
+      high: resp.data.high,
+      low: resp.data.low,
+      list: [],
+      totalVolume: 0,
+    };
+
+    waitExportMap.totalVolume = resp.data.list
+      .reduce((accumulator: any, currentValue: any) => {
+        const volume = parseFloat(currentValue.volume); //
+        waitExportMap.list.push(Number(volume.toFixed(2))); //
+        return accumulator + volume; //
+      }, 0)
+      .toFixed(3);
+    return waitExportMap;
+  } catch (error) {
+    return {};
+  }
+};

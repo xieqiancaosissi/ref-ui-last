@@ -1159,6 +1159,7 @@ export default function FarmsPage(props: any) {
               list={farmTypeList}
               containerClass="lg:mr-2.5 xsm:mr-1"
               type="farm_type"
+              disabled={farmTab == "yours"}
               selectedId={farm_type_selectedId}
               setSelectedId={set_farm_type_selectedId}
             ></SelectBox>
@@ -1225,6 +1226,7 @@ export default function FarmsPage(props: any) {
             <SelectBox
               list={filterTypeList}
               type="filter"
+              disabled={farmTab == "yours"}
               selectedId={filter_type_selectedId}
               setSelectedId={set_filter_type_selectedId}
             ></SelectBox>

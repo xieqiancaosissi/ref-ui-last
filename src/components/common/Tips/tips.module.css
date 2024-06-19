@@ -1,8 +1,10 @@
 .tooltip {
-  @apply absolute border border-slate-600 px-1 py-1 rounded-lg text-xs  bottom-6 bg-transparent text-lightWhite-20;
+  @apply absolute border  px-1 py-1 rounded-lg text-xs  bottom-6 text-yellow-10;
   left: 50%;
   display: none;
   transform: translateX(-50%);
+  border-color: rgba(230, 180, 1, 0.3);
+  background-color: rgba(230, 180, 1, 0.14);
 }
 .iconContainer:hover {
   cursor: pointer;

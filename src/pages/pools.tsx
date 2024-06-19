@@ -48,6 +48,35 @@ export default function Farms() {
   function hideModal() {
     setIsOpen(false);
   }
+
+  // map render pool components
+  const searchValueToUse = keyWordsType === "token" ? searchValue : "";
+
+  const components = [
+    {
+      id: "classic",
+      Component: Classic,
+    },
+    {
+      id: "stable",
+      Component: Stable,
+    },
+    {
+      id: "dcl",
+      Component: Dcl,
+    },
+  ];
+
+  const componentElements = components.map(({ id, Component }) => (
+    <div
+      key={id}
+      className={`${isActive !== id ? "opacity-0 fixed" : "opacity-100"}`}
+      style={{ zIndex: isActive !== id ? -100 : undefined }}
+    >
+      <Component searchValue={searchValueToUse} />
+    </div>
+  ));
+
   return (
     <div>
       {/* charts & pools filter */}
@@ -133,20 +162,9 @@ export default function Farms() {
         </div>
       </div>
 
-      {/* classic */}
-      {isActive == "classic" && (
-        <Classic searchValue={keyWordsType == "token" ? searchValue : ""} /> // if keywords = token, u can use search interface
-      )}
+      {/* classic dcl stable */}
+      <>{componentElements}</>
 
-      {/* stable */}
-      {isActive == "stable" && (
-        <Stable searchValue={keyWordsType == "token" ? searchValue : ""} />
-      )}
-
-      {/* dcl */}
-      {isActive == "dcl" && (
-        <Dcl searchValue={keyWordsType == "token" ? searchValue : ""} />
-      )}
       {/* watchlist */}
 
       {/* create pool */}

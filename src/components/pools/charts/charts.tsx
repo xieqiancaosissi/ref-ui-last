@@ -8,6 +8,7 @@ import {
   timeTabList,
 } from "./config";
 import { addThousandSeparator } from "@/utils/uiNumber";
+import { getPoolIndexTvlOR24H } from "@/services/pool";
 
 export default function Charts({
   title,
@@ -17,15 +18,8 @@ export default function Charts({
   type: string;
 }) {
   const chartRef = useRef(null);
-  const [isActive, setActive] = useState("7D");
-  const [chartsData, setChartsData] = useState<Array<number>>([]);
-
-  // mock data
-  useEffect(() => {
-    setTimeout(() => {
-      setChartsData([0, 1400, 9000, 2000, 1000, 1800, 20]);
-    }, 500);
-  }, []);
+  const [isActive, setActive] = useState(90);
+  const [chartsData, setChartsData] = useState<any>(null);
 
   // init charts
   useEffect(() => {
@@ -35,11 +29,15 @@ export default function Charts({
       xAxis: {
         type: "category",
         boundaryGap: false,
-        data: ["", "", "", "", "", "", ""],
+        data: new Array(chartsData?.list?.length).fill(""),
         show: false,
       },
       yAxis: chartsOtherConfig.yAxis,
-      tooltip: chartsOtherConfig.tooltip,
+      tooltip: Object.assign(chartsOtherConfig.tooltip, {
+        textStyle: {
+          color: type == "tvl" ? "#9EFE01" : "#657EFF",
+        },
+      }),
       grid: chartsOtherConfig.grid,
       axisPointer: {
         ...chartsOtherConfig.axisPointer,
@@ -49,7 +47,7 @@ export default function Charts({
       },
       series: [
         {
-          data: chartsData,
+          data: chartsData?.list,
           type: "line",
           areaStyle: {
             normal: {
@@ -79,6 +77,13 @@ export default function Charts({
     };
   }, [chartsData]);
 
+  // mock data
+  useEffect(() => {
+    getPoolIndexTvlOR24H(type, isActive).then((res) => {
+      setChartsData(res);
+    });
+  }, [isActive]);
+
   return (
     <div className="relative">
       {/* title & tab */}
@@ -86,7 +91,7 @@ export default function Charts({
         <div>
           <div className="text-gray-50 text-sm">{title}</div>
           <div className="text-white text-xl">
-            ${addThousandSeparator(7405110.345)}
+            ${addThousandSeparator(chartsData?.totalVolume || 0)}
           </div>
         </div>
         <div className="text-xs cursor-pointer">
@@ -96,14 +101,14 @@ export default function Charts({
                 key={item.key + index}
                 className={`
                   ${
-                    isActive == item.value
+                    isActive == item.key
                       ? "text-white bg-gray-100 rounded"
                       : "text-gray-60"
                   }
                    w-8 h-5 flex items-center justify-center ml-2
                 `}
                 onClick={() => {
-                  setActive(item.value);
+                  setActive(item.key);
                 }}
               >
                 {item.value}

@@ -1,18 +1,18 @@
 export const timeTabList = [
   {
-    key: "7",
+    key: 7,
     value: "7D",
   },
   {
-    key: "30",
+    key: 30,
     value: "30D",
   },
   {
-    key: "90",
+    key: 90,
     value: "90D",
   },
   {
-    key: "180",
+    key: 180,
     value: "180D",
   },
 ];
@@ -47,14 +47,15 @@ export const chartsOtherConfig = {
   },
   tooltip: {
     trigger: "axis",
-    formatter() {
-      return "";
-    },
+    backgroundColor: "transparent",
+    borderWidth: 0,
+    borderColor: "transparent",
+    position: [350, 10],
   },
   grid: {
     left: "-8%",
     right: "0%",
-    bottom: "36%",
+    bottom: "40%",
     containLabel: true,
   },
   axisPointer: {

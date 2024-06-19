@@ -103,7 +103,7 @@ export default function Classic({ searchValue }: { searchValue: string }) {
           {classicHeader.map((item, index) => {
             return (
               <div
-                key={item.key}
+                key={item.key + Math.random() + index}
                 className="frcc select-none"
                 onClick={() => handleSort(item.key)}
               >

@@ -4,6 +4,7 @@ import {
   Seed,
   UserSeedInfo,
   claimRewardBySeed_boost,
+  getPoolIdBySeedId,
 } from "../../../services/farm";
 import { useContext, useEffect, useMemo, useState } from "react";
 import { useAccountStore } from "../../../stores/account";
@@ -31,7 +32,6 @@ import { zeroPad } from "ethers/lib/utils";
 import _ from "lodash";
 import moment from "moment";
 import { useHistory } from "react-router-dom";
-import { getPoolIdBySeedId } from "..";
 import {
   LightningBase64Grey,
   LightningBase64,
@@ -898,8 +898,8 @@ export function FarmView(props: {
     if (token.id === WRAP_NEAR_CONTRACT_ID) {
       const newToken = { ...token };
       newToken.icon = NEAR_META_DATA.icon;
-      newToken.symbol = "NEAR";
-      newToken.name = "Near";
+      newToken.symbol = NEAR_META_DATA.symbol;
+      newToken.name = NEAR_META_DATA.name;
       return newToken;
     }
     return token;

@@ -513,3 +513,17 @@ export const claimRewardBySeed_boost = async (
     args: { seed_id },
   });
 };
+
+export const getPoolIdBySeedId = (seed_id: string) => {
+  const [contractId, temp_pool_id] = seed_id.split("@");
+  if (temp_pool_id) {
+    if (contractId == REF_UNI_V3_SWAP_CONTRACT_ID) {
+      const [fixRange, dcl_pool_id, left_point, right_point] =
+        temp_pool_id.split("&");
+      return dcl_pool_id;
+    } else {
+      return temp_pool_id;
+    }
+  }
+  return "";
+};

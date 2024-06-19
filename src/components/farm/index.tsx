@@ -25,6 +25,7 @@ import {
   get_unclaimed_rewards,
   list_farmer_seeds,
   list_seeds_info,
+  getPoolIdBySeedId,
 } from "../../services/farm";
 import getConfig from "../../utils/config";
 import { ftGetTokenMetadata } from "../../services/token";
@@ -39,38 +40,13 @@ import {
 } from "../../services/commonV3";
 import { TokenMetadata } from "../../services/ft-contract";
 import { useHistory } from "react-router-dom";
-import { FormattedMessage, useIntl } from "react-intl";
-import {
-  CalcIcon,
-  ArrowDownIcon,
-  SearchIcon,
-  BoostOptIcon,
-  NearOptIcon,
-  EthOptIcon,
-  OthersOptIcon,
-  Flight,
-  LoveIcon,
-  LoveTokenIcon,
-  BoostRightArrowIcon,
-  DirectionButton,
-  BoostLoveIcon,
-  WarningIcon,
-  LightningBase64,
-  LightningBase64Grey,
-  BoostFarmBannerImg,
-  BoostFarmNoDataIcon,
-  BoostDotIcon,
-  NewTag,
-  NewIcon,
-  ForbiddonIcon,
-  StableOption,
-  MemeOptIcon,
-} from "./icon/FarmBoost";
+import { SearchIcon } from "./icon/FarmBoost";
 import { get24hVolumes } from "../../services/indexer";
 import { LOVE_TOKEN_DECIMAL, getLoveAmount } from "../../services/referendum";
 import { FarmView } from "./components/FarmView";
 import SelectBox from "./components/SelectBox";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import WithDrawBox from "./components/WithDrawBox";
 
 const {
   REF_VE_CONTRACT_ID,
@@ -88,38 +64,48 @@ export default function FarmsPage(props: any) {
   } = props;
   const { getIsSignedIn } = useAccountStore();
   const accountId = getIsSignedIn();
-  const [farmsType, setFarmsType] = useState("All");
-  const [farmsChildType, setFarmsChildType] = useState("All");
   const [selected, setSelected] = useState("");
   const [user_unWithdraw_rewards, set_user_unWithdraw_rewards] = useState<
     Record<string, string>
   >({});
   const [tokenPriceList, setTokenPriceList] = useState<any>({});
-  // eslint-disable-next-line prefer-const
   let [farm_display_List, set_farm_display_List] = useState<any>([]);
-  // console.log(farm_display_List, "farm_display_List");
-  // eslint-disable-next-line prefer-const
   let [farm_display_ended_List, set_farm_display_ended_List] = useState<any>(
     []
   );
-  // console.log(farm_display_ended_List, "farm_display_ended_List");
   const [user_seeds_map, set_user_seeds_map] = useState<
     Record<string, UserSeedInfo>
   >({});
   const [showEndedFarmList, setShowEndedFarmList] = useState(false);
   const [homePageLoading, setHomePageLoading] = useState(true);
-  const intl = useIntl();
   const [noData, setNoData] = useState(false);
   const [count, setCount] = useState(0);
   const [dayVolumeMap, setDayVolumeMap] = useState<any>({});
   const searchRef = useRef<HTMLInputElement>(null);
+  let [loveSeed, setLoveSeed] = useState<Seed | null>(null);
+  let [boostConfig, setBoostConfig] = useState<BoostConfig | null>(null);
+  const [sort, setSort] = useState("apr");
+  const [keyWords, setKeyWords] = useState("");
+  const [farmTab, setFarmTab] = useState("all");
+  const [farm_type_selectedId, set_farm_type_selectedId] = useState("all");
+  const [filter_type_selectedId, set_filter_type_selectedId] = useState("all");
+  const [has_dcl_farms_in_display_list, set_has_dcl_farms_in_display_list] =
+    useState(true);
+  const [your_seeds_quantity, set_your_seeds_quantity] = useState("-");
+  const [user_unclaimed_map, set_user_unclaimed_map] = useState<
+    Record<string, any>
+  >({});
+  const [user_unclaimed_token_meta_map, set_user_unclaimed_token_meta_map] =
+    useState<Record<string, any>>({});
+  const [userDataLoading, setUserDataLoading] = useState<boolean>(true);
+  const [loveTokenBalance, setLoveTokenBalance] = useState("0");
+  const [maxLoveShareAmount, setMaxLoveShareAmount] = useState<string>("0");
+  const [globalConfigLoading, setGlobalConfigLoading] = useState<boolean>(true);
   const refreshTime = 300000;
   const sortList: { [key: string]: string } = {
     tvl: "TVL",
     apr: "APR",
   };
-  let [loveSeed, setLoveSeed] = useState<Seed | null>(null);
-  let [boostConfig, setBoostConfig] = useState<BoostConfig | null>(null);
   const history = useHistory();
   const [farmTypeList, setFarmTypeList] = useState([
     { id: "all", label: "All" },
@@ -140,23 +126,6 @@ export default function FarmsPage(props: any) {
     },
     { id: "others", name: "Others" },
   ]);
-  const [sort, setSort] = useState("apr");
-  const [keyWords, setKeyWords] = useState("");
-  const [farmTab, setFarmTab] = useState("all"); // all、yours
-  const [farm_type_selectedId, set_farm_type_selectedId] = useState("all");
-  const [filter_type_selectedId, set_filter_type_selectedId] = useState("all");
-  const [has_dcl_farms_in_display_list, set_has_dcl_farms_in_display_list] =
-    useState(true);
-  const [your_seeds_quantity, set_your_seeds_quantity] = useState("-");
-  const [user_unclaimed_map, set_user_unclaimed_map] = useState<
-    Record<string, any>
-  >({});
-  const [user_unclaimed_token_meta_map, set_user_unclaimed_token_meta_map] =
-    useState<Record<string, any>>({});
-  const [userDataLoading, setUserDataLoading] = useState<boolean>(true);
-  const [loveTokenBalance, setLoveTokenBalance] = useState("0");
-  const [maxLoveShareAmount, setMaxLoveShareAmount] = useState<string>("0");
-  const [globalConfigLoading, setGlobalConfigLoading] = useState<boolean>(true);
   useEffect(() => {
     init();
     getConfig();
@@ -1107,15 +1076,6 @@ export default function FarmsPage(props: any) {
     });
     set_your_seeds_quantity(yourSeeds.length.toString());
   }
-  function getFarmVisibleLength() {
-    const list = farm_display_ended_List.filter((seed: Seed) => {
-      if (!seed.hidden) return true;
-    });
-    return list.length;
-  }
-  const endFarmLength = useMemo(() => {
-    return getFarmVisibleLength();
-  }, [farm_display_ended_List]);
   function searchByKeyWords(value: string) {
     setKeyWords(value);
   }
@@ -1129,25 +1089,15 @@ export default function FarmsPage(props: any) {
       set_filter_type_selectedId("all");
     }
   }
-  // console.log(user_unWithdraw_rewards, "user_unWithdraw_rewards");
-  // console.log(tokenPriceList, "tokenPriceList");
   return (
     <main className="dark:text-white">
       {/* title */}
       <div className="bg-farmTitleBg fccc w-full pt-12 pb-1.5">
-        <div className="frcb mb-12 w-3/5">
-          <div className="frcc">
-            <FarmAvatarIcon className="mr-6" />
-            <div>
-              <p className="text-sm text-gray-50">Claimed Rewards</p>
-              <h1 className="text-3xl paceGrotesk-Bold">$260.34</h1>
-            </div>
-          </div>
-          <div className="gradient-border-container">
-            <p className="text-gray-10 text-base">Withdraw</p>
-            <FarmWithdrawIcon className="ml-2" />
-          </div>
-        </div>
+        <WithDrawBox
+          userRewardList={user_unWithdraw_rewards}
+          tokenPriceList={tokenPriceList}
+          farmDisplayList={farm_display_List}
+        ></WithDrawBox>
         <div className="frcb w-3/5">
           <div className="frcc border border-dark-40 rounded-md p-0.5">
             <SelectBox
@@ -1382,17 +1332,3 @@ export default function FarmsPage(props: any) {
     </main>
   );
 }
-
-export const getPoolIdBySeedId = (seed_id: string) => {
-  const [contractId, temp_pool_id] = seed_id.split("@");
-  if (temp_pool_id) {
-    if (contractId == REF_UNI_V3_SWAP_CONTRACT_ID) {
-      const [fixRange, dcl_pool_id, left_point, right_point] =
-        temp_pool_id.split("&");
-      return dcl_pool_id;
-    } else {
-      return temp_pool_id;
-    }
-  }
-  return "";
-};

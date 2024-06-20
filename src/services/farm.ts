@@ -6,6 +6,7 @@ import {
   RefFiFunctionCallOptions,
   executeFarmMultipleTransactions,
   refFarmBoostFunctionCall,
+  refFiViewFunction,
   viewFunction,
 } from "../utils/near";
 import { getAccountId, getCurrentWallet } from "../utils/wallet";
@@ -17,7 +18,11 @@ import {
   storageDepositAction,
 } from "./creator/storage";
 import { nearMetadata, nearWithdrawTransaction } from "./wrap-near";
-import { toReadableNumber } from "../utils/numbers";
+import {
+  toInternationalCurrencySystem,
+  toReadableNumber,
+} from "../utils/numbers";
+import BigNumber from "bignumber.js";
 
 const config = getConfig();
 const {
@@ -164,6 +169,14 @@ interface FrontConfigBoost {
 export interface Transaction {
   receiverId: string;
   functionCalls: RefFiFunctionCallOptions[];
+}
+
+export interface MonthData {
+  text: string;
+  m: number;
+  day: number;
+  second: number;
+  rate?: number;
 }
 
 export const frontConfigBoost: FrontConfigBoost = {
@@ -613,4 +626,24 @@ export const withdrawAllReward_boost = async (
     );
   }
   return executeFarmMultipleTransactions(transactions);
+};
+
+export const mftGetBalance = async (token_id: string) => {
+  const accountId = getAccountId();
+  return await refFiViewFunction({
+    methodName: "mft_balance_of",
+    args: { account_id: accountId, token_id },
+  });
+};
+
+export const handleNumber = (number: string) => {
+  const temp = toInternationalCurrencySystem(number, 3);
+  const length = temp.length;
+  const left = temp.substring(0, length - 1);
+  const right = temp.substring(length - 1);
+  let result = temp;
+  if (["K", "M", "B"].indexOf(right) > -1) {
+    result = new BigNumber(left).toFixed() + right;
+  }
+  return result;
 };

@@ -1,6 +1,8 @@
 import { getAccountId } from "@/utils/wallet";
 import { viewFunction } from "@/utils/near";
 import getConfigV2 from "@/utils/configV2";
+import getConfig from "@/utils/config";
+import { nearMetadata } from "./wrap-near";
 const configV2 = getConfigV2();
 export interface TokenMetadata {
   id: string;
@@ -90,4 +92,10 @@ export const ftViewFunction = (tokenId: string, { methodName, args }: any) => {
     methodName,
     args,
   });
+};
+
+export const unWrapToken = (token: TokenMetadata, keepId?: boolean) => {
+  if (token.id === getConfig().WRAP_NEAR_CONTRACT_ID)
+    return { ...nearMetadata, id: keepId ? token.id : nearMetadata.id };
+  else return token;
 };

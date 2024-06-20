@@ -1,6 +1,9 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { ITokenMetadata } from "../hooks/useBalanceTokens";
+import { TokenMetadata } from "../services/ft-contract";
+import { ftGetTokenMetadata } from "../services/token";
+import { useState, useEffect } from "react";
 export type ITokenStore = {
   get_whitelisted_tokens: () => string[];
   set_whitelisted_tokens: (whitelisted_tokens: ITokenMetadata[]) => void;
@@ -70,3 +73,19 @@ export const useAccountTokenStore = create(
     }
   )
 );
+
+export const useTokens = (ids: string[] = [], curTokens?: TokenMetadata[]) => {
+  const [tokens, setTokens] = useState<TokenMetadata[]>();
+
+  useEffect(() => {
+    if (curTokens && curTokens.length > 0) {
+      setTokens(curTokens);
+      return;
+    }
+    Promise.all<TokenMetadata>(ids.map((id) => ftGetTokenMetadata(id))).then(
+      setTokens
+    );
+  }, [ids.join("")]);
+
+  return tokens;
+};

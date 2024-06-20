@@ -44,6 +44,7 @@ import getConfig from "../../../utils/config";
 import { NEAR_META_DATA, WNEAR_META_DATA } from "../../../utils/nearMetaData";
 import { useTokens } from "../../../services/token";
 import CustomTooltip from "../../customTooltip/customTooltip";
+import CalcModelBooster from "./CalcModelBooster";
 
 const {
   REF_VE_CONTRACT_ID,
@@ -968,11 +969,7 @@ export function FarmView(props: {
           </div>
 
           <div className="flex flex-col items-end ">
-            <a
-              href={`javascript:void(${"/pool/" + pool?.id})`}
-              className="text-base"
-              style={{ whiteSpace: "nowrap" }}
-            >
+            <a href="#" className="text-base whitespace-nowrap">
               {tokens_sort.map((token, index) => {
                 const hLine = index === tokens.length - 1 ? "" : "-";
                 return `${toRealSymbol(token.symbol)}${hLine}`;
@@ -1042,48 +1039,13 @@ export function FarmView(props: {
         </div>
         <div className="frcb">
           <p className="text-gray-60 text-sm">Your stake/Reward</p>
-          <p className="text-sm frcc">
-            {isHaveUnclaimedReward ? (
-              <div className="flex flex-col items-center flex-shrink-0">
-                <div
-                  className="text-xl text-white"
-                  data-type="info"
-                  data-place="top"
-                  data-multiline={true}
-                  data-tip={getUnClaimTip()}
-                  data-html={true}
-                  data-tooltip-id={
-                    "unclaimedId" + (seed?.farmList?.[0]?.farm_id ?? "")
-                  }
-                  data-class="reactTip"
-                >
-                  <div
-                    className="flex items-center justify-center hover:bg-deepBlueHover rounded-lg text-sm text-white h-7 cursor-pointer"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      claimReward();
-                    }}
-                  >
-                    <ButtonTextWrapper
-                      loading={claimLoading}
-                      Text={() => <>{getTotalUnclaimedRewards()}</>}
-                    />
-                  </div>
-                  <CustomTooltip
-                    id={"unclaimedId" + (seed?.farmList?.[0]?.farm_id ?? "")}
-                  />
-                </div>
-              </div>
-            ) : (
-              <span className="text-sm text-farmText">-</span>
-            )}
-          </p>
+          <p className="text-sm frcc">-</p>
         </div>
         <CustomTooltip
           id={"rewardPerWeekId" + (seed?.farmList?.[0]?.farm_id ?? "")}
         />
       </div>
-      {/* {calcVisible ? (
+      {calcVisible ? (
         <CalcModelBooster
           isOpen={calcVisible}
           onRequestClose={(e) => {
@@ -1097,18 +1059,8 @@ export function FarmView(props: {
           user_seeds_map={user_seeds_map}
           user_unclaimed_map={user_unclaimed_map}
           user_unclaimed_token_meta_map={user_unclaimed_token_meta_map}
-          style={{
-            overlay: {
-              backdropFilter: "blur(15px)",
-              WebkitBackdropFilter: "blur(15px)",
-            },
-            content: {
-              outline: "none",
-              transform: "translate(-50%, -50%)",
-            },
-          }}
         />
-      ) : null} */}
+      ) : null}
       {/* {dclCalcVisible ? (
         <CalcModelDcl
           isOpen={dclCalcVisible}

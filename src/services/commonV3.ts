@@ -1,10 +1,10 @@
 import BigNumber from "bignumber.js";
 import { TokenMetadata } from "./ft-contract";
 import { PoolInfo } from "./swapV3";
-import { getTokens } from "./indexer";
 import getConfig from "../utils/config";
 import { FarmBoost, Seed } from "./farm";
 import { scientificNotationToString, toPrecision } from "../utils/numbers";
+import { getTokens } from "./tokens_static";
 import _ from "lodash";
 
 const { REF_UNI_V3_SWAP_CONTRACT_ID, boostBlackList } = getConfig();
@@ -155,7 +155,7 @@ export function get_total_value_by_liquidity_amount_dcl({
 
 // processing of pool id and farm id
 const FEE_TIER = [100, 400, 2000, 10000];
-const TOKENS = getTokens();
+const TOKENS: any = getTokens();
 function locate_fee(fee_tier: number) {
   for (let i = 0; i < FEE_TIER.length; i++) {
     if (FEE_TIER[i] == fee_tier) return i + 1;

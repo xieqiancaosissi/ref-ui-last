@@ -119,7 +119,12 @@ const Pagination = ({
   // go to
   const [goToValue, setGoToValue] = useState(1);
   const gotoValueChange = (e: any) => {
-    setGoToValue(Number(e.target.value));
+    if (e.target.value) {
+      setGoToValue(Number(e.target.value));
+    } else {
+      // @ts-ignore
+      setGoToValue("");
+    }
   };
   const handleKeyPress = (e: any) => {
     if (e.key === "Enter") {

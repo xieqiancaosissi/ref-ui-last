@@ -47,6 +47,13 @@ export default function CreatePoolModal({
       onRequestClose={(e) => {
         e.stopPropagation();
         onRequestClose();
+        setToken(["", ""]);
+      }}
+      style={{
+        overlay: {
+          backdropFilter: "blur(10px)",
+          WebkitBackdropFilter: "blur(10px)",
+        },
       }}
     >
       <div className="w-108">
@@ -57,6 +64,7 @@ export default function CreatePoolModal({
             className="hover:scale-110 hover:cursor-pointer"
             onClick={() => {
               onRequestClose();
+              setToken(["", ""]);
             }}
           />
         </div>

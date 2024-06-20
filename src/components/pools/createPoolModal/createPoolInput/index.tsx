@@ -21,6 +21,7 @@ export default function PoolInput({
     setIsOpen(false);
   }
   function onSelect(token: ITokenMetadata) {
+    console.log(token, "token");
     setSelectToken(token);
     // notice farther
     handleToken({
@@ -34,11 +35,15 @@ export default function PoolInput({
         <h2 className="text-gray-50 text-sm font-normal mb-3">{title}</h2>
         <div className="w-full h-16 rounded bg-dark-60 flex items-center justify-between border border-transparent px-4 hover:border-green-10">
           <div className="frcc">
-            <img
-              src={selectToken?.icon}
-              alt=""
-              className="w-6 h-6 rounded-full"
-            />
+            {selectToken?.icon ? (
+              <img
+                src={selectToken?.icon}
+                alt=""
+                className="w-6 h-6 rounded-full"
+              />
+            ) : (
+              <div className="w-6 h-6 rounded-full bg-dark-40 "></div>
+            )}
             <span className="text-base font-medium text-white ml-2">
               {selectToken?.symbol}
             </span>

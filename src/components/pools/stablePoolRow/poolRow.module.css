@@ -64,7 +64,9 @@
 .tokenCharts {
   @apply flex flex-wrap  w-44 text-gray-10 text-xs !important;
 }
-
+.tokenCharts> div {
+  @apply w-19 !important;
+}
 .tokenCharts > div:not(:last-child) {
   @apply mr-3;
 }

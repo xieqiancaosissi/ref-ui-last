@@ -1,3 +1,5 @@
+import { addThousandSeparator } from "@/utils/uiNumber";
+
 export const timeTabList = [
   {
     key: 7,
@@ -51,6 +53,8 @@ export const chartsOtherConfig = {
     borderWidth: 0,
     borderColor: "transparent",
     position: [350, 10],
+    valueFormatter: (value: any) =>
+      "$" + addThousandSeparator(value.toFixed(2)),
   },
   grid: {
     left: "-8%",

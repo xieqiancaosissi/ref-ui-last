@@ -139,3 +139,16 @@ export const getPoolIndexTvlOR24H = async (type: string, day: any) => {
     return {};
   }
 };
+
+export const getAllPoolData = async () => {
+  return await fetch(getConfig().indexerUrl + "/all-pool-data", {
+    method: "GET",
+    headers: {
+      ...getAuthenticationHeaders("/all-pool-data"),
+    },
+  })
+    .then((res) => res.json())
+    .then((res) => {
+      return res.data;
+    });
+};

@@ -7,6 +7,7 @@ import PoolRow from "../dclPoolRow/poolRow";
 import Pagination from "@/components/pagination/pagination";
 import { usePoolSearch } from "@/hooks/usePools";
 import HoverTip from "@/components/common/Tips/index";
+import PoolDocTips from "@/components/pools/poolDocTips/index";
 
 export default function Classic({ searchValue }: { searchValue: string }) {
   const [isActive, setActive] = useState("");
@@ -52,72 +53,59 @@ export default function Classic({ searchValue }: { searchValue: string }) {
   }, [sortMap.key, sortMap.sort, isChecked, isActive, searchValue]);
 
   return (
-    <div className="flex flex-col items-center  w-full ">
-      {/*  */}
-      <div className={styles.dclTips}>
-        <div>
-          <ExclamationIcon />
-          <span className="mx-1">
-            Discretized Concentrated Liquidity (DCL) pools.
-          </span>
-          <span
-            className={styles.learnMore}
-            onClick={() => {
-              window.open(
-                "https://guide.ref.finance/products/guides/liquidity-management/ref-v2-pools",
-                "_blank"
-              );
-            }}
-          >
-            Learn more
-          </span>
-        </div>
-      </div>
+    <>
+      <PoolDocTips
+        tips="Discretized Concentrated Liquidity (DCL) pools."
+        src="https://guide.ref.finance/products/guides/liquidity-management/ref-v2-pools"
+      />
+      <div className="flex flex-col items-center  w-full ">
+        {/*  */}
 
-      {/* pool header */}
-      <header className={styles.headDiv}>
-        <div>Pools</div>
-        <div>
-          {dclHeader.map((item, index) => {
-            return (
-              <div
-                key={item.key}
-                className="frcc select-none"
-                onClick={() => handleSort(item.key)}
-              >
-                {item.tip && (
-                  <HoverTip msg={item.tipMsg} extraStyles={"w-78"} />
-                )}
-                <span>{item.value}</span>
-                <span className="ml-2">
-                  {sortMap.key === item.key ? (
-                    sortMap.sort === "desc" ? (
-                      <DownArrowSelect />
-                    ) : (
-                      <UpArrow />
-                    )
-                  ) : (
-                    <DownArrow />
+        {/* pool header */}
+        <header className={styles.headDiv}>
+          <div>Pools</div>
+          <div>
+            {dclHeader.map((item, index) => {
+              return (
+                <div
+                  key={item.key}
+                  className="frcc select-none"
+                  onClick={() => handleSort(item.key)}
+                >
+                  {item.tip && (
+                    <HoverTip msg={item.tipMsg} extraStyles={"w-78"} />
                   )}
-                </span>
-              </div>
-            );
-          })}
+                  <span>{item.value}</span>
+                  <span className="ml-2">
+                    {sortMap.key === item.key ? (
+                      sortMap.sort === "desc" ? (
+                        <DownArrowSelect />
+                      ) : (
+                        <UpArrow />
+                      )
+                    ) : (
+                      <DownArrow />
+                    )}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        </header>
+
+        {/* pool row */}
+        <PoolRow list={poolList} loading={isLoading} />
+
+        {/* pagination */}
+        <div className="w-276 my-4">
+          <Pagination
+            totalItems={totalItems}
+            itemsPerPage={100}
+            onChangePage={handlePageChange}
+            onPageSizeChange={handleSizeChange}
+          />
         </div>
-      </header>
-
-      {/* pool row */}
-      <PoolRow list={poolList} loading={isLoading} />
-
-      {/* pagination */}
-      <div className="w-276 mt-4">
-        <Pagination
-          totalItems={totalItems}
-          itemsPerPage={100}
-          onChangePage={handlePageChange}
-          onPageSizeChange={handleSizeChange}
-        />
       </div>
-    </div>
+    </>
   );
 }

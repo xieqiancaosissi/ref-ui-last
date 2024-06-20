@@ -6,9 +6,12 @@ import {
   toInternationalCurrencySystem_usd,
   toInternationalCurrencySystem_number,
 } from "@/utils/uiNumber";
-import { useTokenMetadata } from "@/hooks/usePools";
-import { NearIcon, DangerousIcon } from "@/components/pools/icon";
+import { useTokenMetadata, checkIsHighRisk } from "@/hooks/usePools";
+import { NearIcon, DangerousIcon, TknIcon } from "@/components/pools/icon";
 import { useRiskTokens } from "@/hooks/useRiskTokens";
+import tokenIcons from "@/utils/tokenIconConfig";
+import Tips from "@/components/common/Tips/index";
+import { TokenIconComponent } from "@/components/pools/TokenIconWithTkn/index";
 
 export default function PoolRow({
   list,
@@ -19,6 +22,7 @@ export default function PoolRow({
 }) {
   const { isDealed, updatedMapList } = useTokenMetadata(list);
   const { pureIdList } = useRiskTokens();
+
   return (
     <div className="mb-2 max-h-90 overflow-auto">
       {loading || !isDealed ? (
@@ -39,24 +43,31 @@ export default function PoolRow({
             >
               {/* tokens */}
               <div className="flex items-center">
+                {/*render token icon */}
                 <div className={styles.tokenImgContainer}>
-                  {item.token_account_ids.map((ite: any, ind: number) => {
-                    return ite.tokenId != "wrap.near" ? (
-                      <img src={ite.icon} key={ite.tokenId + ind} />
-                    ) : (
-                      <NearIcon />
-                    );
-                  })}
+                  {item.token_account_ids.map((ite: any, ind: number) => (
+                    <TokenIconComponent
+                      key={ite.tokenId + ind}
+                      ite={ite}
+                      tokenIcons={tokenIcons}
+                    />
+                  ))}
                 </div>
+                {/*  */}
                 <span className={styles.symbol}>
                   {item.token_symbols.join("-")}
                 </span>
                 {/* dangerous */}
-                {pureIdList.includes(item.token_account_ids[0].tokenId) && (
+                {checkIsHighRisk(pureIdList, item).risk && (
                   <span className="mr-1">
-                    <DangerousIcon />
+                    <Tips
+                      msg={checkIsHighRisk(pureIdList, item).tips || ""}
+                      extraStyles={"w-50"}
+                      OhterIcon={DangerousIcon}
+                    />
                   </span>
                 )}
+
                 {/* tag */}
                 {item.is_farm && (
                   <div

@@ -131,3 +131,34 @@ export const useTokenMetadata = (list: Array<any>) => {
 
   return { isDealed, updatedMapList };
 };
+
+export const checkIsHighRisk = (pureIdList: any, arr: any) => {
+  const returnMap: any = [];
+  arr.token_account_ids.map((item: any, index: number) => {
+    if (pureIdList.includes(item.tokenId)) {
+      const waitpushIte = item;
+      Object.assign(waitpushIte, {
+        symbol: arr.token_symbols[index],
+      });
+      returnMap.push(waitpushIte);
+    }
+  });
+  if (returnMap.length == 1) {
+    return {
+      risk: true,
+      symbol: returnMap[0].symbol,
+      tips: `${returnMap[0].symbol} is uncertified token with high risk.`,
+    };
+  } else if (returnMap.length == 2) {
+    return {
+      risk: true,
+      symbol: returnMap[0].symbol,
+      symbol1: returnMap[1].symbol,
+      tips: `${returnMap[0].symbol} and ${returnMap[1].symbol} are uncertified token with high risk.`,
+    };
+  } else {
+    return {
+      risk: false,
+    };
+  }
+};

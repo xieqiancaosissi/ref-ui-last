@@ -1,0 +1,15 @@
+
+.tokenImgContainer {
+    @apply flex items-center;
+  }
+  
+.tokenImgContainer img {
+    width: 26px;
+    height: 26px;
+    @apply rounded-full border border-dark-40;
+}
+  
+.tokenImgContainer > :last-child {
+    transform: translateX(-4px);
+}
+  

@@ -1,5 +1,6 @@
 import React, { useRef, useEffect, useState } from "react";
 import * as charts from "echarts";
+import Big from "big.js";
 import styles from "./charts.module.css";
 import {
   colorStop24H,
@@ -8,7 +9,7 @@ import {
   timeTabList,
 } from "./config";
 import { addThousandSeparator } from "@/utils/uiNumber";
-import { getPoolIndexTvlOR24H } from "@/services/pool";
+import { getPoolIndexTvlOR24H, getAllPoolData } from "@/services/pool";
 
 export default function Charts({
   title,
@@ -18,9 +19,11 @@ export default function Charts({
   type: string;
 }) {
   const chartRef = useRef(null);
-  const [isActive, setActive] = useState(90);
+  const [isActive, setActive] = useState(30);
   const [chartsData, setChartsData] = useState<any>(null);
+  const [allTVL, setAllTVL] = useState<string>();
 
+  const [allVolume24h, setAllVolume24h] = useState<string>();
   // init charts
   useEffect(() => {
     const chartInstance = charts.init(chartRef.current);
@@ -82,6 +85,10 @@ export default function Charts({
     getPoolIndexTvlOR24H(type, isActive).then((res) => {
       setChartsData(res);
     });
+    getAllPoolData().then((res) => {
+      setAllTVL(res.tvl);
+      setAllVolume24h(res.volume_24h);
+    });
   }, [isActive]);
 
   return (
@@ -91,7 +98,12 @@ export default function Charts({
         <div>
           <div className="text-gray-50 text-sm">{title}</div>
           <div className="text-white text-xl">
-            ${addThousandSeparator(chartsData?.totalVolume || 0)}
+            $
+            {addThousandSeparator(
+              type == "tvl"
+                ? new Big(allTVL || "0").toFixed(2)
+                : new Big(allVolume24h || "0").toFixed(2)
+            )}
           </div>
         </div>
         <div className="text-xs cursor-pointer">

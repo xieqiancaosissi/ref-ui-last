@@ -8,6 +8,7 @@
 }
 .iconContainer:hover {
   cursor: pointer;
+  @apply w-full h-4;
 }
 .iconContainer:hover + .tooltip {
   @apply block;

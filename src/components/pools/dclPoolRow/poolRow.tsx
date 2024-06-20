@@ -6,9 +6,11 @@ import {
   toInternationalCurrencySystem_usd,
   toInternationalCurrencySystem_number,
 } from "@/utils/uiNumber";
-import { useTokenMetadata } from "@/hooks/usePools";
+import { useTokenMetadata, checkIsHighRisk } from "@/hooks/usePools";
 import { NearIcon, DangerousIcon } from "@/components/pools/icon";
 import { useRiskTokens } from "@/hooks/useRiskTokens";
+import tokenIcons from "@/utils/tokenIconConfig";
+import Tips from "@/components/common/Tips/index";
 
 export default function PoolRow({
   list,
@@ -42,10 +44,19 @@ export default function PoolRow({
               <div className="flex items-center">
                 <div className={styles.tokenImgContainer}>
                   {item.token_account_ids.map((ite: any, ind: number) => {
-                    return ite.tokenId != "wrap.near" ? (
-                      <img src={ite.icon} key={ite.tokenId + ind} />
+                    // if tokenid in tokenIcons
+                    return Reflect.has(tokenIcons, ite.tokenId) ? (
+                      // if token is near use new icon
+                      ite.tokenId != "wrap.near" ? (
+                        <img
+                          src={tokenIcons[ite.tokenId]}
+                          key={ite.tokenId + ind}
+                        />
+                      ) : (
+                        <NearIcon />
+                      )
                     ) : (
-                      <NearIcon />
+                      <img src={ite.icon} key={ite.tokenId + ind} />
                     );
                   })}
                 </div>
@@ -53,9 +64,13 @@ export default function PoolRow({
                   {item.token_symbols.join("-")}
                 </span>
                 {/* dangerous */}
-                {pureIdList.includes(item.token_account_ids[0].tokenId) && (
+                {checkIsHighRisk(pureIdList, item).risk && (
                   <span className="mr-1">
-                    <DangerousIcon />
+                    <Tips
+                      msg={checkIsHighRisk(pureIdList, item).tips || ""}
+                      extraStyles={"w-50"}
+                      OhterIcon={DangerousIcon}
+                    />
                   </span>
                 )}
                 {/* tag */}

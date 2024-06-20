@@ -6,10 +6,35 @@ import { FarmBoost, Seed } from "./farm";
 import { scientificNotationToString, toPrecision } from "../utils/numbers";
 import { getTokens } from "./tokens_static";
 import _ from "lodash";
+import {
+  CrossIconEmpty,
+  CrossIconFull,
+  CrossIconLarge,
+  CrossIconLittle,
+  CrossIconMiddle,
+} from "@/components/farm/icon/FarmBoost";
 
 const { REF_UNI_V3_SWAP_CONTRACT_ID, boostBlackList } = getConfig();
 
 export const CONSTANT_D = 1.0001;
+
+export interface UserLiquidityInfo {
+  lpt_id?: string;
+  owner_id?: string;
+  pool_id: string;
+  left_point: number;
+  right_point: number;
+  amount: string;
+  unclaimed_fee_x?: string;
+  unclaimed_fee_y?: string;
+  mft_id?: string;
+  v_liquidity?: string;
+  part_farm_ratio?: string;
+  unfarm_part_amount?: string;
+  status_in_other_seed?: string;
+  less_than_min_deposit?: boolean;
+  farmList?: FarmBoost[];
+}
 
 export const TOKEN_LIST_FOR_RATE = [
   "USDC.e",
@@ -19,6 +44,16 @@ export const TOKEN_LIST_FOR_RATE = [
   "DAI",
   "USDt",
 ];
+
+export function openUrl(url: string) {
+  const newTab = window.open();
+  if (newTab) {
+    newTab.opener = null;
+    newTab.location = url;
+  } else {
+    console.log("无法打开新窗口");
+  }
+}
 
 export function getXAmount_per_point_by_Lx(L: string, point: number) {
   const xAmount = new BigNumber(L)
@@ -340,4 +375,82 @@ export function displayNumberToAppropriateDecimals(num: string | number) {
   } else {
     return toPrecision(scientificNotationToString(num.toString()), 0);
   }
+}
+
+export function mint_liquidity(liquidity: UserLiquidityInfo, seed_id: string) {
+  const { amount } = liquidity;
+  const [left_point, right_point] = get_valid_range(liquidity, seed_id);
+  if (+right_point > +left_point) {
+    const temp_valid = +right_point - +left_point;
+    const mint_amount = new BigNumber(Math.pow(temp_valid, 2))
+      .multipliedBy(amount)
+      .dividedBy(Math.pow(10, 6))
+      .toFixed(0, 1);
+    return mint_amount;
+  }
+  return "0";
+}
+
+export function get_valid_range(liquidity: UserLiquidityInfo, seed_id: string) {
+  const { left_point, right_point } = liquidity;
+  const [fixRange, dcl_pool_id, seed_left_point, seed_right_point] = seed_id
+    .split("@")[1]
+    .split("&");
+  const max_left_point = Math.max(+left_point, +seed_left_point);
+  const min_right_point = Math.min(+right_point, +seed_right_point);
+  return [max_left_point, min_right_point];
+}
+
+export function get_intersection_radio({
+  left_point_liquidity,
+  right_point_liquidity,
+  left_point_seed,
+  right_point_seed,
+}: {
+  left_point_liquidity: string | number;
+  right_point_liquidity: string | number;
+  left_point_seed: string | number;
+  right_point_seed: string | number;
+}) {
+  let percent;
+  const max_left_point = Math.max(+left_point_liquidity, +left_point_seed);
+  const min_right_point = Math.min(+right_point_liquidity, +right_point_seed);
+  if (min_right_point > max_left_point) {
+    const range_cross = new BigNumber(min_right_point).minus(max_left_point);
+    const range_seed = new BigNumber(right_point_seed).minus(left_point_seed);
+    const range_user = new BigNumber(right_point_liquidity).minus(
+      left_point_liquidity
+    );
+    let range_denominator = range_seed;
+    if (
+      left_point_liquidity <= left_point_seed &&
+      right_point_liquidity >= right_point_seed
+    ) {
+      range_denominator = range_user;
+    }
+    percent = range_cross
+      .dividedBy(range_denominator)
+      .multipliedBy(100)
+      .toFixed();
+  } else {
+    percent = "0";
+  }
+  return percent;
+}
+
+export function get_intersection_icon_by_radio(radio: string): any {
+  const p = new BigNumber(radio || "0");
+  let icon;
+  if (p.isEqualTo(0)) {
+    icon = CrossIconEmpty;
+  } else if (p.isLessThan(20)) {
+    icon = CrossIconLittle;
+  } else if (p.isLessThan(60)) {
+    icon = CrossIconMiddle;
+  } else if (p.isLessThan(100)) {
+    icon = CrossIconLarge;
+  } else {
+    icon = CrossIconFull;
+  }
+  return icon;
 }

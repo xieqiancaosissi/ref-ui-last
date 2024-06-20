@@ -34,6 +34,7 @@ const CustomTooltip = ({
       place={place}
       setIsOpen={setIsOpen}
       style={style}
+      arrowColor="transparent"
     >
       {children}
     </ReactTooltip>

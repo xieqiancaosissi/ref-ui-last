@@ -177,3 +177,15 @@ export const executeFarmMultipleTransactions = async (
 ) => {
   return executeMultipleTransactions(transactions, callbackUrl);
 };
+
+export async function refFiViewFunction({
+  methodName,
+  args,
+}: RefFiViewFunctionOptions) {
+  const account = await getAccount();
+  return account.viewFunction({
+    contractId: REF_FI_CONTRACT_ID,
+    methodName,
+    args,
+  });
+}

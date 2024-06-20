@@ -50,6 +50,7 @@ export const parsePoolsByTokens = (pools: Pool[]): IPoolsByTokens[] => {
     update_time: moment().unix(),
     Dex: pool.Dex,
     pairAdd: pool.pairAdd,
+    tvl: pool.tvl,
   }));
   return poolsByTokens;
 };

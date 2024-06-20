@@ -14,7 +14,6 @@ const estimateSwap = async ({
   tokenIn,
   tokenOut,
   amountIn,
-  loadingTrigger,
   supportLedger,
 }: EstimateSwapOptions): Promise<{
   estimates: EstimateSwapView[];
@@ -54,9 +53,11 @@ const estimateSwap = async ({
   if (supportLedger) {
     return { estimates: supportLedgerRes, tag };
   }
-
-  const orpools = await getRefPoolsByTokens();
-
+  // TODO ONLY FOR TEST
+  // const orpools = await getRefPoolsByTokens();
+  const orpools = (await getRefPoolsByTokens()).filter(
+    (pool) => +(pool.tvl || 0) >= 1
+  );
   let res;
   let smartRouteV2OutputEstimate;
 
@@ -113,7 +114,6 @@ const estimateSwap = async ({
   if (!res?.length) {
     throwNoPoolError();
   }
-
   return { estimates: res, tag };
 };
 export default estimateSwap;

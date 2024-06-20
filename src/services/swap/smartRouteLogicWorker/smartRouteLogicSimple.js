@@ -3,11 +3,15 @@
 ////////////////////////////////////////////////////////////////////////////
 import Big from "big.js";
 
-import * as CONSTANTS from "../../constants";
-import db from "../../store/RefDatabase";
-import metadataDefaults from "../../utils/metadata";
+import { NEAR_META_DATA } from "../../../utils/nearMetaData";
+import db from "../../../db/RefDatabase";
+import metadataDefaults from "../../../utils/tokenIconConfig";
 
-const { NEAR_META_DATA, WRAP_NEAR_CONTRACT_ID } = CONSTANTS;
+const WRAP_NEAR_CONTRACT_ID = ["pub-testnet", "testnet"].includes(
+  process.env.NEXT_PUBLIC_NEAR_ENV
+)
+  ? "wrap.testnet"
+  : "wrap.near";
 
 Big.RM = 0;
 Big.DP = 40;
@@ -1620,7 +1624,7 @@ function* yenFromPy(g, source, target) {
 function getKShortestPaths(g, source, target, k, maxPathLength = 3) {
   const paths = [];
   if (maxPathLength < 2) {
-    var maxPathLength = 2;
+    maxPathLength = 2;
   }
   const gen = yenFromPy(g, source, target);
   for (let n = 1; n <= k; n++) {

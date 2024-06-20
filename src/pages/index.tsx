@@ -11,11 +11,13 @@ import SwapDetail from "../components/swap/SwapDetail";
 import swapStyles from "../components/swap/swap.module.css";
 import { fetchPoolsAndCacheData } from "@/services/swap/swap";
 import { POOL_REFRESH_INTERVAL } from "@/utils/constant";
+import useSwap from "@/hooks/useSwap";
 import {
   useSwapStore,
   usePersistSwapStore,
   IPersistSwapStore,
 } from "@/stores/swap";
+import { toPrecision } from "@/utils/numbers";
 const SwapButton = dynamic(() => import("../components/swap/SwapButton"), {
   ssr: false,
 });
@@ -33,6 +35,8 @@ export default function Swap(props: any) {
   const persistSwapStore = usePersistSwapStore() as IPersistSwapStore;
   const tokenIn = swapStore.getTokenIn();
   const tokenOut = swapStore.getTokenOut();
+  const tokenOutAmount = swapStore.getTokenOutAmount();
+  useSwap();
   useEffect(() => {
     const id = setInterval(reloadPools, POOL_REFRESH_INTERVAL);
     return () => {
@@ -90,7 +94,13 @@ export default function Swap(props: any) {
           <div className="flex items-center justify-center rounded w-7 h-7 cursor-pointer text-gray-50 hover:text-white  bg-dark-60 hover:bg-dark-10 -my-3.5 relative z-10 border-2 border-dark-10">
             <SWitchButton onClick={onSwitch} />
           </div>
-          <Input disable token={tokenOut} isOut className="mt-0.5" />
+          <Input
+            disable
+            token={tokenOut}
+            amountOut={toPrecision(tokenOutAmount, 8)}
+            isOut
+            className="mt-0.5"
+          />
         </div>
         {/* high price tip */}
         <div className="flexBetween rounded border border-red-10 border-opacity-45 bg-red-10 bg-opacity-10 text-xs text-red-10 p-2 mt-4 hidden">

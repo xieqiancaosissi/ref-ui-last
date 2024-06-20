@@ -328,9 +328,8 @@ class RefDatabase extends Dexie {
   }
   public async queryStablePoolById(stablePoolId: string) {
     const stablePool = (
-      await this.stablePools.where("id").equals(stablePoolId).toArray()
+      await this.stablePools.where("id").equals(Number(stablePoolId)).toArray()
     )[0];
-
     const { update_time, ...poolInfo } = stablePool;
     return poolInfo;
   }

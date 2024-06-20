@@ -8,7 +8,7 @@ export interface PoolRPCView {
   pool_kind: string;
   update_time?: number;
   token_symbols?: string[];
-  tvl?: number;
+  tvl?: string;
 }
 
 export interface Pool {
@@ -18,7 +18,7 @@ export interface Pool {
   shareSupply: string;
   fee: number;
   pool_kind: string;
-  tvl?: number;
+  tvl?: string;
   partialAmountIn?: string;
   rates?: {
     [id: string]: string;
@@ -39,6 +39,7 @@ export interface IPoolsByTokens {
   pool_kind: string;
   Dex?: string;
   pairAdd?: string;
+  tvl?: string;
 }
 export interface StablePool {
   id: number;
@@ -116,12 +117,7 @@ export interface EstimateSwapOptions {
   tokenIn: TokenMetadata;
   tokenOut: TokenMetadata;
   amountIn: string;
-  setLoadingData?: (loading: boolean) => void;
-  loadingTrigger?: boolean;
-  setLoadingTrigger?: (loadingTrigger: boolean) => void;
   supportLedger: boolean;
-  setSwapsToDoTri?: (todos: EstimateSwapView[]) => void;
-  setSwapsToDoRef?: (todos: EstimateSwapView[]) => void;
 }
 
 export interface EstimateSwapParams {

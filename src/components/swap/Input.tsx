@@ -20,10 +20,11 @@ interface IInputProps {
   token: ITokenMetadata;
   isIn?: boolean;
   isOut?: boolean;
+  amountOut?: string;
 }
 const { WRAP_NEAR_CONTRACT_ID } = getConfig();
 export default function Input(props: IInputProps) {
-  const { className, disable, token, isIn, isOut } = props;
+  const { className, disable, token, isIn, isOut, amountOut } = props;
   const [amount, setAmount] = useState<string>("");
   const [showNearTip, setShowNearTip] = useState<boolean>(false);
   const [allTokenPrices, setAllTokenPrices] = useState<
@@ -96,7 +97,7 @@ export default function Input(props: IInputProps) {
           type="number"
           placeholder="0.0"
           disabled={disable}
-          value={amount}
+          value={isOut ? amountOut : amount}
           className="flex-grow w-1 bg-transparent outline-none font-bold text-white text-2xl"
           onChange={changeAmount}
         />

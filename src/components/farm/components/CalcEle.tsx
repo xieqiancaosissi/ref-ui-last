@@ -60,8 +60,8 @@ export function CalcEle(props: {
   const { farmList: farms, pool } = seed;
   const poolId = pool?.id != null ? pool.id.toString() : "";
   const DECIMALS = new Set(STABLE_POOL_IDS || []).has(poolId)
-      ? LP_STABLE_TOKEN_DECIMALS
-      : LP_TOKEN_DECIMALS;  
+    ? LP_STABLE_TOKEN_DECIMALS
+    : LP_TOKEN_DECIMALS;
   useEffect(() => {
     get_all_date_list();
     getLoveTokenBalance();
@@ -168,31 +168,33 @@ export function CalcEle(props: {
       // get ROI
       if (lpTokenNumAmount && lpTokenNumAmount !== "0") {
         if (pool) {
-        const { shares_total_supply, tvl } = pool;
-        const DECIMALS = new Set(STABLE_POOL_IDS || []).has(pool.id?.toString())
-          ? LP_STABLE_TOKEN_DECIMALS
-          : LP_TOKEN_DECIMALS;
-        const totalShares = Number(
-          toReadableNumber(DECIMALS, shares_total_supply)
-        );
-        const shareUsd = new BigNumber(lpTokenNumAmount)
-          .multipliedBy(tvl)
-          .dividedBy(totalShares)
-          .toFixed();
-        let aprActual = new BigNumber(tokenTotalPriceActual)
-          .dividedBy(shareUsd)
-          .multipliedBy(100);
-        let aprDisplay;
-        if (new BigNumber("0.001").isGreaterThan(aprActual)) {
-          aprDisplay = "<0.001%";
+          const { shares_total_supply, tvl } = pool;
+          const DECIMALS = new Set(STABLE_POOL_IDS || []).has(
+            pool.id?.toString()
+          )
+            ? LP_STABLE_TOKEN_DECIMALS
+            : LP_TOKEN_DECIMALS;
+          const totalShares = Number(
+            toReadableNumber(DECIMALS, shares_total_supply)
+          );
+          const shareUsd = new BigNumber(lpTokenNumAmount)
+            .multipliedBy(tvl)
+            .dividedBy(totalShares)
+            .toFixed();
+          let aprActual = new BigNumber(tokenTotalPriceActual)
+            .dividedBy(shareUsd)
+            .multipliedBy(100);
+          let aprDisplay;
+          if (new BigNumber("0.001").isGreaterThan(aprActual)) {
+            aprDisplay = "<0.001%";
+          } else {
+            aprDisplay = aprActual.toFixed(3, 1) + "%";
+          }
+          setROI(aprDisplay);
         } else {
-          aprDisplay = aprActual.toFixed(3, 1) + "%";
+          setROI("- %");
         }
-        setROI(aprDisplay);
-      } else {
-        setROI("- %");
       }
-    }
     };
     handleRewards();
   }, [lpTokenNumAmount, selecteDate, accountType, amount]);

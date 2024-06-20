@@ -58,9 +58,10 @@ export function CalcEle(props: {
   const [loveTokenBalance, setLoveTokenBalance] = useState<string>("0");
   const [amount, setAmount] = useState("");
   const { farmList: farms, pool } = seed;
-  const DECIMALS = new Set(STABLE_POOL_IDS || []).has(pool.id?.toString())
-    ? LP_STABLE_TOKEN_DECIMALS
-    : LP_TOKEN_DECIMALS;
+  const poolId = pool?.id != null ? pool.id.toString() : "";
+  const DECIMALS = new Set(STABLE_POOL_IDS || []).has(poolId)
+      ? LP_STABLE_TOKEN_DECIMALS
+      : LP_TOKEN_DECIMALS;  
   useEffect(() => {
     get_all_date_list();
     getLoveTokenBalance();
@@ -166,6 +167,7 @@ export function CalcEle(props: {
       setRewardData(rewardsTemp);
       // get ROI
       if (lpTokenNumAmount && lpTokenNumAmount !== "0") {
+        if (pool) {
         const { shares_total_supply, tvl } = pool;
         const DECIMALS = new Set(STABLE_POOL_IDS || []).has(pool.id?.toString())
           ? LP_STABLE_TOKEN_DECIMALS
@@ -190,8 +192,8 @@ export function CalcEle(props: {
       } else {
         setROI("- %");
       }
+    }
     };
-
     handleRewards();
   }, [lpTokenNumAmount, selecteDate, accountType, amount]);
 
@@ -352,9 +354,7 @@ export function CalcEle(props: {
                 </label>
                 <div className="relative flex flex-col flex-grow">
                   <span className="absolute text-xs text-primaryText right-0 -top-5">
-                    <label className="mr-1">
-                      + balance :
-                    </label>
+                    <label className="mr-1">+ balance :</label>
                     {toPrecision(loveTokenBalance, 6)}
                   </span>
                   <div className="flex justify-between items-center h-9 px-3 bg-black bg-opacity-20 rounded-lg">

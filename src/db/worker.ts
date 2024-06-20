@@ -3,13 +3,19 @@ import db, { FarmDexie } from "./RefDatabase";
 import { getAuthenticationHeaders } from "../services/signature";
 import { TokenMetadata } from "../services/ft-contract";
 import { Seed, FarmBoost } from "../services/farm";
-import { PoolRPCView } from "../services/api";
+import { PoolRPCView } from "../interfaces/swap";
 import { PoolInfo } from "../services/swapV3";
+import { parsePool } from "../services/swap/swapUtils";
+import { STABLE_LP_TOKEN_DECIMALS } from "../utils/constant";
+import { toNonDivisibleNumber } from "../utils/numbers";
+import { isRatedPool } from "../services/swap/swapUtils";
 
 let config: any = {};
+let ALL_STABLE_POOL_IDS: string[] = [];
 onmessage = (event) => {
-  if (event?.data?.config) {
+  if (event?.data?.config && event?.data?.ALL_STABLE_POOL_IDS) {
     config = event?.data?.config;
+    ALL_STABLE_POOL_IDS = event?.data?.ALL_STABLE_POOL_IDS;
     runWorker();
   }
 };
@@ -27,7 +33,6 @@ const runWorker = () => {
     headers: {},
     ...config,
   });
-
   const getTokens = async () => {
     return await fetch(config.indexerUrl + "/list-token", {
       method: "GET",
@@ -41,7 +46,6 @@ const runWorker = () => {
         return tokens;
       });
   };
-
   const cacheTokens = async () => {
     const tokens = await getTokens();
     const tokenArr = Object.keys(tokens).map((key) => ({
@@ -61,7 +65,6 @@ const runWorker = () => {
       }))
     );
   };
-
   const contractView = ({
     methodName,
     args = {},
@@ -81,13 +84,37 @@ const runWorker = () => {
       })
       .then(({ result }: any) => JSON.parse(Buffer.from(result).toString()));
   };
+  const getStablePool = async (pool_id: number) => {
+    if (isRatedPool(pool_id)) {
+      const pool_info = await contractView({
+        contract: REF_FI_CONTRACT_ID,
+        methodName: "get_rated_pool",
+        args: { pool_id },
+      });
+      return {
+        ...pool_info,
+        id: pool_id,
+      };
+    }
+    const pool_info = await contractView({
+      contract: REF_FI_CONTRACT_ID,
+      methodName: "get_stable_pool",
+      args: { pool_id },
+    });
+    return {
+      ...pool_info,
+      id: pool_id,
+      rates: pool_info.c_amounts.map((i: any) =>
+        toNonDivisibleNumber(STABLE_LP_TOKEN_DECIMALS, "1")
+      ),
+    };
+  };
   const get_list_seeds_info = async () => {
     return contractView({
       methodName: "list_seeds_info",
       contract: REF_FARM_BOOST_CONTRACT_ID,
     });
   };
-
   const listPools = async () => {
     const res = await contractView({
       methodName: "list_pools",
@@ -96,7 +123,6 @@ const runWorker = () => {
 
     return res.filter((p: any) => !DCL_POOL_BLACK_LIST.includes(p.pool_id));
   };
-
   const get_list_seed_farms = async (seed_id: string) => {
     return contractView({
       methodName: "list_seed_farms",
@@ -213,19 +239,32 @@ const runWorker = () => {
     const tokenPriceList = await res.json();
     db.cacheTokenPrices(tokenPriceList);
   };
-  const cacheTopPools = async (): Promise<any> => {
-    const listTopPools = await fetch(config.indexerUrl + "/list-top-pools", {
-      method: "GET",
-      headers: {
-        "Content-type": "application/json; charset=UTF-8",
-        ...getAuthenticationHeaders("/list-top-pools"),
-      },
-    }).then((res) => res.json());
-    db.cacheTopPools(listTopPools);
+  const cacheTopPools = async () => {
+    const topPools: PoolRPCView[] = await fetch(
+      config.indexerUrl + "/list-top-pools",
+      {
+        method: "GET",
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+          ...getAuthenticationHeaders("/list-top-pools"),
+        },
+      }
+    ).then((res) => res.json());
+    db.cacheTopPools(topPools);
+    const pools = topPools.map((p) => parsePool(p, p.id));
+    db.cachePoolsByTokens(pools);
+  };
+  const cacheStablePools = async () => {
+    const pending = ALL_STABLE_POOL_IDS.map((pool_id) =>
+      getStablePool(+pool_id)
+    );
+    const stablePools = await Promise.all(pending);
+    db.cacheStablePools(stablePools);
   };
 
   cacheTokens();
   cacheTopPools();
+  cacheStablePools();
   cacheBoost_Seed_Farms_Pools();
   cacheTokenPrices();
 };

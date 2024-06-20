@@ -1,21 +1,18 @@
 import Dexie from "dexie";
 import _ from "lodash";
 import moment from "moment";
-import { PoolRPCView } from "../services/api";
-import { FarmBoost, Seed } from "../services/farm";
+import {
+  PoolRPCView,
+  Pool,
+  IPoolsByTokens,
+  StablePool,
+} from "@/interfaces/swap";
+import { parsePoolsByTokens } from "@/services/swap/swapUtils";
+import { FarmBoost, Seed } from "@/services/farm";
+import { TOP_POOLS_TOKEN_REFRESH_INTERVAL } from "@/utils/constant";
 
 import getConfig from "../utils/config";
 const checkCacheSeconds = 300;
-interface Pool {
-  id: number;
-  token1Id: string;
-  token2Id: string;
-  token1Supply: string;
-  token2Supply: string;
-  fee: number;
-  shares: string;
-}
-
 interface TokenMetadata {
   id: string;
   name: string;
@@ -26,42 +23,11 @@ interface TokenMetadata {
   isUserToken?: boolean;
 }
 
-export interface PoolsTokens {
-  id: number;
-  pool_id: string;
-  token1Id: string;
-  token2Id: string;
-  token1Supply: string;
-  token2Supply: string;
-  fee: number;
-  shares: string;
-  update_time: string;
-  token0_price: string;
-  Dex?: string;
-  pairAdd?: string;
-}
 export interface FarmDexie {
   id: string;
   farm_id: string;
   pool_id: string;
   status: string;
-}
-
-export interface TopPool {
-  id: string;
-  amounts: string[];
-  amp: number;
-  farming: boolean;
-  pool_kind: string;
-  shares_total_supply: string;
-  token0_ref_price: string;
-  token_account_ids: string[];
-  token_symbols: string[];
-  total_fee: number;
-  tvl: string;
-  vol01?: { [from: string]: string };
-  vol10?: { [from: string]: string };
-  update_time: number;
 }
 
 export interface TokenPrice {
@@ -82,11 +48,12 @@ export interface BoostSeeds {
 
 class RefDatabase extends Dexie {
   public tokens: Dexie.Table<TokenMetadata>;
-  public poolsTokens: Dexie.Table<PoolsTokens>;
-  public topPools: Dexie.Table<TopPool>;
+  public poolsTokens: Dexie.Table<IPoolsByTokens>;
+  public topPools: Dexie.Table<PoolRPCView>;
   public boostFarms: Dexie.Table<FarmDexie>;
   public tokenPrices: Dexie.Table<TokenPrice>;
   public boostSeeds: Dexie.Table<BoostSeeds>;
+  public stablePools: Dexie.Table<StablePool>;
 
   public constructor() {
     super("RefDatabase");
@@ -98,6 +65,7 @@ class RefDatabase extends Dexie {
       boostFarms: "id",
       tokenPrices: "id",
       boostSeeds: "id",
+      stablePools: "id",
     });
 
     this.tokens = this.table("tokens");
@@ -106,6 +74,7 @@ class RefDatabase extends Dexie {
     this.boostFarms = this.table("boostFarms");
     this.tokenPrices = this.table("tokenPrices");
     this.boostSeeds = this.table("boostSeeds");
+    this.stablePools = this.table("stablePools");
   }
 
   public allTokens() {
@@ -126,9 +95,9 @@ class RefDatabase extends Dexie {
     return this.boostSeeds;
   }
 
-  public searchPools(args: any, pools: Pool[]): Pool[] {
+  public searchPools(args: any, pools: IPoolsByTokens[]): IPoolsByTokens[] {
     if (args.tokenName === "") return pools;
-    return _.filter(pools, (pool: Pool) => {
+    return _.filter(pools, (pool: IPoolsByTokens) => {
       return (
         _.includes(pool.token1Id, args.tokenName) ||
         _.includes(pool.token2Id, args.tokenName)
@@ -136,11 +105,11 @@ class RefDatabase extends Dexie {
     });
   }
 
-  public orderPools(args: any, pools: Pool[]): Pool[] {
+  public orderPools(args: any, pools: IPoolsByTokens[]): IPoolsByTokens[] {
     return _.orderBy(pools, [args.column], [args.order]);
   }
 
-  public paginationPools(args: any, pools: Pool[]): Pool[] {
+  public paginationPools(args: any, pools: IPoolsByTokens[]): IPoolsByTokens[] {
     return _.slice(
       pools,
       (args.page - 1) * args.perPage,
@@ -148,7 +117,7 @@ class RefDatabase extends Dexie {
     );
   }
 
-  public uniquePools(args: any, pools: Pool[]): Pool[] {
+  public uniquePools(args: any, pools: IPoolsByTokens[]): IPoolsByTokens[] {
     if (!args.uniquePairName) return pools;
     let obj: any[];
     return pools.reduce(
@@ -227,7 +196,6 @@ class RefDatabase extends Dexie {
         [item.token1Id]: item.token1Supply,
         [item.token2Id]: item.token2Supply,
       },
-      token0_ref_price: item.token0_price,
       Dex: item.Dex,
     }));
   }
@@ -251,7 +219,6 @@ class RefDatabase extends Dexie {
         [item.token1Id]: item.token1Supply,
         [item.token2Id]: item.token2Supply,
       },
-      token0_ref_price: item.token0_price,
       Dex: item.Dex,
       pairAdd: item?.pairAdd,
     }));
@@ -299,19 +266,18 @@ class RefDatabase extends Dexie {
     return [...normalItems, ...reverseItems];
   }
 
-  async queryPoolsByTokens2(tokenInId: string, tokenOutId: string) {
-    //Queries for any pools that contain either tokenInId OR tokenOutId OR both.
+  async queryPoolsByTokens2() {
     const normalItems = await this.poolsTokens.toArray();
 
     return normalItems;
   }
 
-  public async cacheTopPools(pools: any) {
+  public async cacheTopPools(pools: PoolRPCView[]) {
     await this.topPools.clear();
     await this.topPools.bulkPut(
-      pools.map((topPool: TopPool) => ({
+      pools.map((topPool: PoolRPCView) => ({
         ...topPool,
-        id: topPool.id.toString(),
+        id: topPool.id,
         update_time: moment().unix(),
         token1Id: topPool.token_account_ids[0],
         token2Id: topPool.token_account_ids[1],
@@ -326,10 +292,17 @@ class RefDatabase extends Dexie {
       pools.every(
         (pool) =>
           Number(pool.update_time) >=
-          Number(moment().unix()) -
-            Number(getConfig().TOP_POOLS_TOKEN_REFRESH_INTERVAL)
+          Number(moment().unix()) - Number(TOP_POOLS_TOKEN_REFRESH_INTERVAL)
       )
     );
+  }
+  public async cachePoolsByTokens(pools: Pool[]) {
+    await this.poolsTokens.clear();
+    const filtered_pools = pools.filter(function (pool: Pool) {
+      return pool.tokenIds.length < 3;
+    });
+    const parsed_pools = parsePoolsByTokens(filtered_pools);
+    await this.poolsTokens.bulkPut(parsed_pools);
   }
 
   public async queryTopPools() {
@@ -339,6 +312,27 @@ class RefDatabase extends Dexie {
       const { update_time, ...poolInfo } = pool;
       return poolInfo;
     });
+  }
+  public async queryTopPoolById(poolId: string) {
+    const pool = (await this.topPools.where("id").equals(poolId).toArray())[0];
+    const { update_time, ...poolInfo } = pool;
+    return poolInfo;
+  }
+  public async queryStablePools() {
+    const pools = await this.stablePools.toArray();
+
+    return pools.map((pool) => {
+      const { update_time, ...poolInfo } = pool;
+      return poolInfo;
+    });
+  }
+  public async queryStablePoolById(stablePoolId: string) {
+    const stablePool = (
+      await this.stablePools.where("id").equals(stablePoolId).toArray()
+    )[0];
+
+    const { update_time, ...poolInfo } = stablePool;
+    return poolInfo;
   }
 
   public async queryPoolsBytoken(tokenId: string) {
@@ -361,7 +355,6 @@ class RefDatabase extends Dexie {
       },
       tvl: 0,
       shareSupply: item.shares,
-      token0_ref_price: item.token0_price,
     }));
   }
   public async queryBoostFarms() {
@@ -416,6 +409,27 @@ class RefDatabase extends Dexie {
         ...boostSeed,
         update_time: moment().unix(),
       }))
+    );
+  }
+  public async cacheStablePools(pools: StablePool[]) {
+    await this.stablePools.clear();
+    await this.stablePools.bulkPut(
+      pools.map((stablePool: StablePool) => ({
+        ...stablePool,
+        id: stablePool.id,
+        update_time: moment().unix(),
+      }))
+    );
+  }
+  public async checkStablePools() {
+    const pools = await this.stablePools.limit(10).toArray();
+    return (
+      pools.length > 0 &&
+      pools.every(
+        (pool) =>
+          Number(pool.update_time) >=
+          Number(moment().unix()) - Number(TOP_POOLS_TOKEN_REFRESH_INTERVAL)
+      )
     );
   }
 }

@@ -49,7 +49,6 @@ export const useDefaultWhitelistTokens = () => {
     const tokens = metadatas.map((token: TokenMetadata) => {
       return {
         ...token,
-        isDefaultWhiteToken: true,
         ...(accountWhitelistIds.includes(token.id)
           ? { isUserToken: true }
           : {}),

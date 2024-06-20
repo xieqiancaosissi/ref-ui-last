@@ -29,7 +29,6 @@ export default function getConfig(
         REF_FARM_CONTRACT_ID: "v2.ref-farming.near",
         XREF_TOKEN_ID: "xtoken.ref-finance.near",
         REF_AIRDROP_CONTRACT_ID: "s01.ref-airdrop.near",
-        TOP_POOLS_TOKEN_REFRESH_INTERVAL: 60,
         POOL_TOKEN_REFRESH_INTERVAL: 20,
         BTC_POOL_ID: "3364",
         BTCIDS: [
@@ -131,7 +130,6 @@ export default function getConfig(
         XREF_TOKEN_ID: "xref.ref-finance.testnet",
         REF_VE_CONTRACT_ID: "v010.refve.testnet",
         REF_AIRDROP_CONTRACT_ID: "locker002.ref-dev.testnet",
-        TOP_POOLS_TOKEN_REFRESH_INTERVAL: 60,
         POOL_TOKEN_REFRESH_INTERVAL: 20,
         STABLE_POOL_ID: 218,
         STABLE_POOL_IDS: ["218", "356", "456", "494"],
@@ -204,7 +202,6 @@ export default function getConfig(
         REF_FARM_CONTRACT_ID: "farm-dev.ref-dev.testnet",
         XREF_TOKEN_ID: "xref.ref-dev.testnet",
         REF_AIRDROP_CONTRACT_ID: "locker002.ref-dev.testnet",
-        TOP_POOLS_TOKEN_REFRESH_INTERVAL: 60,
         POOL_TOKEN_REFRESH_INTERVAL: 20,
         STABLE_POOL_ID: 79,
         STABLE_POOL_IDS: ["79", "603", "604", "608"],
@@ -279,7 +276,6 @@ export default function getConfig(
         REF_FARM_CONTRACT_ID: "v2.ref-farming.near",
         XREF_TOKEN_ID: "xtoken.ref-finance.near",
         REF_AIRDROP_CONTRACT_ID: "s01.ref-airdrop.near",
-        TOP_POOLS_TOKEN_REFRESH_INTERVAL: 60,
         POOL_TOKEN_REFRESH_INTERVAL: 20,
         BTC_POOL_ID: "3364",
         BTCIDS: [

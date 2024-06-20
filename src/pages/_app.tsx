@@ -6,6 +6,7 @@ import dynamic from "next/dynamic";
 import Menu from "../components/menu";
 import { useEffect } from "react";
 import getConfig from "../utils/config";
+import { ALL_STABLE_POOL_IDS } from "@/services/swap/swapConfig";
 import "../components/common/ModalDefaultStyle";
 const Footer = dynamic(() => import("../components/footer"), { ssr: false });
 
@@ -27,6 +28,7 @@ export default function App({ Component, pageProps }: AppProps) {
     const config = getConfig();
     myWorker.postMessage({
       config,
+      ALL_STABLE_POOL_IDS,
     });
   }
   return (

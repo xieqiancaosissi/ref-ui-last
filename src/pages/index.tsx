@@ -9,7 +9,7 @@ import {
 import Input from "../components/swap/Input";
 import SwapDetail from "../components/swap/SwapDetail";
 import swapStyles from "../components/swap/swap.module.css";
-import { reloadTopPools } from "@/services/swap";
+import { fetchPoolsAndCacheData } from "@/services/swap/swap";
 import { POOL_REFRESH_INTERVAL } from "@/utils/constant";
 import {
   useSwapStore,
@@ -58,10 +58,8 @@ export default function Swap(props: any) {
   async function reloadPools() {
     if (pinLoading) return;
     setpinLoading(true);
-    const status = await reloadTopPools();
-    if (status == "success") {
-      setpinLoading(false);
-    }
+    await fetchPoolsAndCacheData();
+    setpinLoading(false);
   }
   return (
     <main className="m-auto my-20 select-none" style={{ width: "420px" }}>

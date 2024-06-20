@@ -153,7 +153,7 @@ export default function SelectTokenModal({
                         width: "26px",
                         height: "26px",
                       }}
-                      src={token.icon || ""}
+                      src={token.icon || "/images/placeholder.svg"}
                       alt=""
                     />
                     <div className="flex flex-col">

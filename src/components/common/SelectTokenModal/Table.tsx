@@ -98,7 +98,7 @@ export default function Table({
                   width: "26px",
                   height: "26px",
                 }}
-                src={token.icon || ""}
+                src={token.icon || "/images/placeholder.svg"}
                 alt=""
               />
               <span className="text-sm text-white">{token.symbol}</span>

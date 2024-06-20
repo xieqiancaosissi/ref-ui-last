@@ -1,6 +1,7 @@
 import getConfig from "../utils/config";
 import { getAuthenticationHeaders } from "../services/signature";
-import { PoolRPCView, parsePoolView } from "./api";
+import { parsePoolView } from "./api";
+import { PoolRPCView } from "@/interfaces/swap";
 const config = getConfig();
 export const currentRefPrice = async (): Promise<any> => {
   return await fetch(
@@ -99,4 +100,17 @@ export const get24hVolumes = async (
 
   const results = await Promise.all(promises);
   return results.flat();
+};
+
+export const getTopPools = async (): Promise<PoolRPCView[]> => {
+  const listTopPools = await fetch(config.indexerUrl + "/list-top-pools", {
+    method: "GET",
+    headers: {
+      "Content-type": "application/json; charset=UTF-8",
+      ...getAuthenticationHeaders("/list-top-pools"),
+    },
+  })
+    .then((res) => res.json())
+    .catch(() => []);
+  return listTopPools;
 };

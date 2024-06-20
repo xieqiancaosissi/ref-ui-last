@@ -28,6 +28,18 @@ export async function ftGetTokenMetadata(tokenId: string) {
     ...metadata,
   };
 }
+export const ftGetTokensMetadata = async (tokenIds: string[]) => {
+  const tokensMetadata = await Promise.all(
+    tokenIds.map((id: string) => ftGetTokenMetadata(id))
+  );
+
+  return tokensMetadata.reduce((pre, cur, i) => {
+    return {
+      ...pre,
+      [tokenIds[i]]: cur,
+    };
+  }, {});
+};
 
 export const getAccountNearBalance = async () => {
   const account = await getAccount();

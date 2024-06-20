@@ -55,7 +55,7 @@ export default function SelectTokenButton(props: ISelectTokenButtonProps) {
             width="20"
             height="20"
             alt=""
-            src={showToken.icon || ""}
+            src={showToken.icon || "/images/placeholder.svg"}
             style={{
               width: "20px",
               height: "20px",

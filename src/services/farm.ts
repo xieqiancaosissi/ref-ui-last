@@ -382,7 +382,7 @@ export const getBoostSeeds = async (): Promise<{
       const list: BoostSeeds[] = await db.queryBoostSeeds();
       list.forEach((s: BoostSeeds) => {
         const { id, update_time, ...info } = s;
-        const { seed, farmList, pool } = info;
+        const { seed, farmList, pool } = info as any;
         seeds.push(seed);
         farms.push(farmList);
         if (pool) {

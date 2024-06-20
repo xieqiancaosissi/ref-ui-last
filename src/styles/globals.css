@@ -80,14 +80,18 @@ input::-webkit-inner-spin-button {
 }
 
 .react-tooltip.custom-tooltip {
+  width: 148px;
   border-radius: 5px;
   border: 1px solid #414b57;
-  background: #2a3643;
+  background-color: #2a3643;
   font-size: 12px;
   z-index: 99;
-  padding: 8px 12px;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 6px 12px;
+  box-shadow: none;
+  opacity: 1;
+  transform: translateY(-6px);
 }
+
 input {
   margin: 0;
   background-color: transparent;

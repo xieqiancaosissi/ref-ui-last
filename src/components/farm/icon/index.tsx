@@ -344,3 +344,21 @@ export const VEARROW = (props: any) => {
     </svg>
   );
 };
+export const FarmPlaceholder = (props: any) => {
+  return (
+    <svg
+      {...props}
+      width="16"
+      height="16"
+      viewBox="0 0 16 16"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <circle cx="8" cy="8" r="7.5" fill="#0C171F" stroke="#9EFE01" />
+      <circle cx="8" cy="8" r="7.5" fill="#0F1A22" stroke="#26323C" />
+      <circle cx="4.44358" cy="8.00022" r="0.888889" fill="#91A2AE" />
+      <circle cx="7.99826" cy="8.00022" r="0.888889" fill="#91A2AE" />
+      <circle cx="11.553" cy="8.00022" r="0.888889" fill="#91A2AE" />
+    </svg>
+  );
+};

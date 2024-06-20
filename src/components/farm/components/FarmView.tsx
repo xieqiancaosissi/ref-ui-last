@@ -45,11 +45,11 @@ import { NEAR_META_DATA, WNEAR_META_DATA } from "../../../utils/nearMetaData";
 import { useTokens } from "../../../services/token";
 import CustomTooltip from "../../customTooltip/customTooltip";
 import CalcModelBooster from "./CalcModelBooster";
+import { FarmPlaceholder } from "../icon";
 
 const {
   REF_VE_CONTRACT_ID,
   FARM_BLACK_LIST_V2,
-  boostBlackList,
   REF_UNI_V3_SWAP_CONTRACT_ID,
   WRAP_NEAR_CONTRACT_ID,
 } = getConfig();
@@ -80,15 +80,13 @@ export function FarmView(props: {
     maxLoveShareAmount,
     all_seeds,
   } = props;
-  const { pool, seedTvl, total_seed_amount, seed_id, farmList, seed_decimal } =
-    seed;
+  const { pool, seed_id, farmList } = seed;
   const [contractId, temp_pool_id] = seed_id.split("@");
   let is_dcl_pool = false;
   if (contractId == REF_UNI_V3_SWAP_CONTRACT_ID) {
     is_dcl_pool = true;
   }
   const { getIsSignedIn } = useAccountStore();
-  const accountId = getIsSignedIn();
   const [claimLoading, setClaimLoading] = useState(false);
   const [calcVisible, setCalcVisible] = useState(false);
   const [dclCalcVisible, setDclCalcVisible] = useState(false);
@@ -224,139 +222,6 @@ export function FarmView(props: {
         : "$" + toInternationalCurrencySystem(totalPrice.toString(), 2);
     return totalPriceDisplay;
   }
-  function getAprTip() {
-    const tempList = seed.farmList;
-    const lastList: any[] = [];
-    const pending_farms: FarmBoost[] = [];
-    const no_pending_farms: FarmBoost[] = [];
-    if (!seed || !seed.pool) {
-      return "-";
-    }
-    const dayVolume = getPoolFeeApr(dayVolumeMap[seed.pool.id]);
-    const [contractId, temp_mft_id] = seed.seed_id.split("@");
-    let totalApr;
-    const baseAPR = getTotalApr(false);
-    const txt1 = "pool_fee_apr";
-    const txt2 = "reward_apr";
-    tempList?.forEach((farm: FarmBoost) => {
-      if (farm.status == "Created") {
-        pending_farms.push(farm);
-      } else {
-        no_pending_farms.push(farm);
-      }
-    });
-    if (pending_farms.length > 0) {
-      pending_farms.forEach((farm: FarmBoost) => {
-        lastList.push({
-          rewardToken: farm.token_meta_data,
-          apr: new BigNumber(farm.apr || 0)
-            .multipliedBy(100)
-            .toFixed()
-            .toString(),
-          startTime: farm.terms.start_at,
-          pending: true,
-        });
-      });
-    }
-    if (no_pending_farms.length > 0) {
-      const mergedFarms = mergeCommonRewardsFarms(
-        JSON.parse(JSON.stringify(no_pending_farms))
-      ) as FarmBoost[];
-
-      mergedFarms.forEach((farm: FarmBoost) => {
-        lastList.push({
-          rewardToken: farm.token_meta_data,
-          apr: new BigNumber(farm.apr || 0)
-            .multipliedBy(100)
-            .toFixed()
-            .toString(),
-        });
-      });
-    }
-    if (yourApr && +aprSwitchStatus == 1) {
-      totalApr = yourApr;
-    } else {
-      totalApr = baseAPR;
-    }
-    // show last display string
-    let result: string = "";
-    const pool_fee_apr_dom =
-      contractId != REF_UNI_V3_SWAP_CONTRACT_ID
-        ? `<div class="flex items-center justify-between">
-      <span class="text-xs text-navHighLightText mr-3">${txt1}</span>
-      <span class="text-sm text-white font-bold">${
-        +dayVolume > 0 ? dayVolume + "%" : "-"
-      }</span>
-    </div><div class="flex justify-end text-white text-sm font-bold ">+</div>`
-        : "";
-    result = `
-      ${pool_fee_apr_dom} 
-      <div class="flex items-center justify-between ">
-        <span class="text-xs text-navHighLightText mr-3">${txt2}</span>
-        <span class="text-sm text-white font-bold">${totalApr}</span>
-      </div>
-      `;
-    if (yourApr && +aprSwitchStatus == 1) {
-      const displayYourActualAprRate = new BigNumber(yourActualAprRate).toFixed(
-        2
-      );
-      result += `<div class="flex items-center justify-end text-xs text-farmText">
-          (${baseAPR}<span class="flex items-center ${
-        +displayYourActualAprRate == 1 ? "text-farmText" : "text-senderHot"
-      } text-xs ml-0.5">x${displayYourActualAprRate}<img src="${
-        +displayYourActualAprRate == 1
-          ? LightningBase64Grey()
-          : LightningBase64()
-      }"/></span>)
-        </div>`;
-    }
-    function display_apr(apr: string) {
-      const apr_big = new BigNumber(apr || 0);
-      if (apr_big.isEqualTo(0)) {
-        return "-";
-      } else if (apr_big.isLessThan(0.01)) {
-        return "<0.01%";
-      } else {
-        return formatWithCommas(toPrecision(apr, 2)) + "%";
-      }
-    }
-    lastList.forEach((item: any) => {
-      const { rewardToken, apr: baseApr, pending, startTime } = item;
-      const token = rewardToken;
-      let itemHtml = "";
-      let apr = baseApr;
-      if (yourApr && +aprSwitchStatus == 1 && yourActualAprRate) {
-        apr = new BigNumber(apr).multipliedBy(yourActualAprRate).toFixed();
-      }
-      if (pending) {
-        const startDate = moment.unix(startTime).format("YYYY-MM-DD");
-        const txt = "start";
-        itemHtml = `<div class="flex justify-between items-center h-8">
-            <img class="w-5 h-5 rounded-full mr-7" style="filter: grayscale(100%)" src="${
-              token.icon
-            }"/>
-            <div class="flex flex-col items-end">
-              <label class="text-xs text-farmText">${display_apr(apr)}</label>
-              <label class="text-xs text-farmText ${
-                +startTime == 0 ? "hidden" : ""
-              }">${txt}: ${startDate}</label>
-              <label class="text-xs text-farmText mt-0.5 ${
-                +startTime == 0 ? "" : "hidden"
-              }">Pending</label>
-            </div>
-        </div>`;
-      } else {
-        itemHtml = `<div class="flex justify-between items-center h-8">
-            <img class="w-5 h-5 rounded-full mr-7" src="${token.icon}"/>
-            <label class="text-xs text-navHighLightText">${display_apr(
-              apr
-            )}</label>
-        </div>`;
-      }
-      result += itemHtml;
-    });
-    return result;
-  }
   function getPoolFeeApr(dayVolume: string) {
     let result = "0";
     if (dayVolume) {
@@ -372,47 +237,6 @@ export function FarmView(props: {
       }
     }
     return result;
-  }
-  function getUnClaimTip() {
-    let resultTip = "";
-    const { farmList, seed_id } = seed;
-    const unclaimedMap = user_unclaimed_map[seed_id] || {};
-    const tokenIds = Object.keys(unclaimedMap);
-    const tempFarms: { [key: string]: boolean } = {};
-    farmList?.forEach((farm: FarmBoost) => {
-      tempFarms[farm.terms.reward_token] = true;
-    });
-    const isEnded =
-      farmList && farmList.length > 0 ? farmList[0].status == "Ended" : false;
-    tokenIds?.forEach((tokenId: string) => {
-      const token: TokenMetadata = user_unclaimed_token_meta_map[tokenId] || {};
-      // total price
-      const { id, decimals, icon } = token;
-      const amount = toReadableNumber(decimals, unclaimedMap[id] || "0");
-      // rewards number
-      let displayNum = "";
-      if (new BigNumber("0").isEqualTo(amount)) {
-        displayNum = "-";
-      } else if (new BigNumber("0.001").isGreaterThan(amount)) {
-        displayNum = "<0.001";
-      } else {
-        displayNum = new BigNumber(amount).toFixed(3, 1);
-      }
-      const txt = "ended_search";
-      const itemHtml = `<div class="flex justify-between items-center h-8 active">
-            <img class="w-5 h-5 rounded-full mr-7" src="${icon}"/>
-              <div class="flex flex-col items-end text-xs text-navHighLightText">
-              ${formatWithCommas(displayNum)}
-              ${
-                !isEnded && !tempFarms[id]
-                  ? `<span class="text-farmText text-xs">${txt}</span>`
-                  : ""
-              }
-            </div>
-          </div>`;
-      resultTip += itemHtml;
-    });
-    return resultTip;
   }
   function getRewardsPerWeekTip() {
     const tempList: FarmBoost[] = seed.farmList || [];
@@ -474,8 +298,7 @@ export function FarmView(props: {
       }
     }
     // show last display string
-    const rewards_week_txt = "rewards_week";
-    let result: string = `<div class="text-sm text-farmText pt-1">${rewards_week_txt}</div>`;
+    let result: string = `<div class="text-sm text-gray-10 frcb"><p>Rewards</p><p>Week</p></div>`;
     let itemHtml: string = "";
     lastList.forEach((item: any) => {
       const {
@@ -485,29 +308,34 @@ export function FarmView(props: {
         startTime,
       } = item;
       const token = commonRewardToken;
+      if (token.id === WRAP_NEAR_CONTRACT_ID) {
+        token.icon = NEAR_META_DATA.icon;
+        token.symbol = NEAR_META_DATA.symbol;
+        token.name = NEAR_META_DATA.name;
+      }
       const txt = "start";
       if (pending) {
         itemHtml = `<div class="flex flex-col items-end my-2">
-                        <div class="flex justify-between items-center w-full"><img class="w-5 h-5 rounded-full mr-7" style="filter: grayscale(100%)" src="${
+                        <div class="flex justify-between items-center w-full"><img class="w-4 h-4 rounded-full mr-7 border border-green-10" style="filter: grayscale(100%)" src="${
                           token.icon
                         }"/>
-                        <label class="text-xs text-farmText">${display_number(
+                        <label class="text-xs text-gray-10">${display_number(
                           commonRewardTotalRewardsPerWeek
                         )}</label>
                         </div>
   
-                        <label class="text-xs text-farmText mt-0.5 ${
+                        <label class="text-xs text-gray-10 mt-0.5 ${
                           +startTime == 0 ? "hidden" : ""
                         }">${txt}: ${moment
           .unix(startTime)
           .format("YYYY-MM-DD")}</label>
-                        <label class="text-xs text-farmText mt-0.5 ${
+                        <label class="text-xs text-gray-10 mt-0.5 ${
                           +startTime == 0 ? "" : "hidden"
                         }">Pending</label>
                       </div>`;
       } else {
-        itemHtml = `<div class="flex justify-between items-center h-8 my-2">
-                        <img class="w-5 h-5 rounded-full mr-7" src="${
+        itemHtml = `<div class="flex justify-between items-center h-5 my-2">
+                        <img class="w-4 h-4 rounded-full mr-7 border border-green-10" src="${
                           token.icon
                         }"/>
                         <label class="text-xs text-navHighLightText">${display_number(
@@ -565,100 +393,6 @@ export function FarmView(props: {
   }
   function haveUnclaimedReward() {
     if (user_unclaimed_map[seed.seed_id]) return true;
-  }
-  function goFarmDetailPage(seed: Seed) {
-    getDetailData({
-      detailData: seed,
-      tokenPriceList,
-      loveSeed,
-      all_seeds,
-    });
-    const poolId = getPoolIdBySeedId(seed.seed_id);
-    const status =
-      seed.farmList && seed.farmList.length > 0
-        ? seed.farmList[0].status === "Ended"
-          ? "e"
-          : "r"
-        : "";
-    let mft_id = poolId;
-    if (is_dcl_pool) {
-      const [contractId, temp_pool_id] = seed.seed_id.split("@");
-      const [fixRange, pool_id, left_point, right_point] =
-        temp_pool_id.split("&");
-      mft_id = `${get_pool_name(pool_id)}[${left_point}-${right_point}]`;
-    }
-    history.replace(`/v2farms/${mft_id}-${status}`);
-  }
-  function claimReward() {
-    if (claimLoading) return;
-    setClaimLoading(true);
-    claimRewardBySeed_boost(seed.seed_id)
-      // .then(() => {
-      //   window.location.reload();
-      // })
-      .catch((error) => {
-        setClaimLoading(false);
-        setError(error);
-      });
-  }
-  function getBoostMutil() {
-    if (REF_VE_CONTRACT_ID && !boostConfig) return "";
-    const { affected_seeds = {} } = boostConfig || {};
-    const { seed_id } = seed;
-    const user_seed = user_seeds_map[seed_id] || {};
-    const love_user_seed = REF_VE_CONTRACT_ID
-      ? user_seeds_map[REF_VE_CONTRACT_ID]
-      : undefined;
-    const base = affected_seeds[seed_id];
-    const hasUserStaked = Object.keys(user_seed).length;
-    if (base && loveSeed) {
-      const { free_amount = 0, locked_amount = 0 } = love_user_seed || {};
-      const totalStakeLoveAmount = toReadableNumber(
-        LOVE_TOKEN_DECIMAL,
-        new BigNumber(free_amount).plus(locked_amount).toFixed()
-      );
-      if (+totalStakeLoveAmount > 0) {
-        let result;
-        if (+totalStakeLoveAmount < 1) {
-          result = 1;
-        } else {
-          result = new BigNumber(1)
-            .plus(Math.log(+totalStakeLoveAmount) / Math.log(base))
-            .toFixed(2);
-        }
-        return (
-          <div
-            className={`absolute top-3 right-4 z-10 flex items-center justify-center px-2 py-0.5  text-xs  rounded-lg font-bold ${
-              hasUserStaked
-                ? "bg-lightGreenColor text-black"
-                : "text-farmText border border-farmText"
-            }`}
-          >
-            {`x${toPrecision(result.toString(), 2)}`}
-          </div>
-        );
-      }
-      const tip = "boostFarmTip";
-      const result: string = `<div class="text-navHighLightText text-xs w-52 text-left">${tip}</div>`;
-      return (
-        <div className="absolute flex items-center justify-center top-3 right-4 z-10 px-2 py-0.5 rounded-lg text-greyCircleColor text-xs border border-farmText">
-          <div
-            className="text-white text-right"
-            data-class="reactTip"
-            data-tooltip-id="boostFarmTipId"
-            data-place="top"
-            data-tooltip-html={result}
-          >
-            <div className="flex items-center justify-center">
-              <BoostOptIcon></BoostOptIcon>
-              boost
-            </div>
-            {/* <CustomTooltip id="boostFarmTipId" /> */}
-          </div>
-        </div>
-      );
-    }
-    return "";
   }
   function getAprUpperLimit() {
     if (!boostConfig || !maxLoveShareAmount || +maxLoveShareAmount == 0)
@@ -728,14 +462,6 @@ export function FarmView(props: {
       return "";
     }
   }
-  function switchApr(e: any) {
-    e.stopPropagation();
-    if (+aprSwitchStatus == 1) {
-      setAprSwitchStatus("2");
-    } else {
-      setAprSwitchStatus("1");
-    }
-  }
   //   const renderer = (countdown: any) => {
   //     if (countdown.completed) {
   //       return null;
@@ -751,18 +477,6 @@ export function FarmView(props: {
   //       );
   //     }
   //   };
-  function getStartTime() {
-    let start_at: any[] = [];
-    const farmList = seed.farmList;
-    farmList?.forEach(function (item) {
-      start_at.push(item.terms.start_at);
-    });
-    start_at = _.sortBy(start_at);
-    start_at = start_at.filter(function (val) {
-      return val != "0";
-    });
-    return start_at[0];
-  }
   function isInMonth() {
     const endedStatus = isEnded();
     if (endedStatus) return false;
@@ -812,69 +526,6 @@ export function FarmView(props: {
       return isInMonth();
     }
   }
-  function getForbiddenTip() {
-    const tip = "farm_stop_tip";
-    const result: string = `<div class="text-navHighLightText text-xs text-left">${tip}</div>`;
-    return result;
-  }
-  function getRange() {
-    const [fixRange, dcl_pool_id, left_point, right_point] =
-      temp_pool_id.split("&");
-    if (!pool || !pool.tokens_meta_data) {
-      throw new Error("tokens_meta_data is undefined");
-    }
-    const [token_x_metadata, token_y_metadata] = pool.tokens_meta_data;
-    const decimalRate =
-      Math.pow(10, token_x_metadata.decimals) /
-      Math.pow(10, token_y_metadata.decimals);
-    let left_price = getPriceByPoint(+left_point, decimalRate);
-    let right_price = getPriceByPoint(+right_point, decimalRate);
-    if (rate_need_to_reverse_display) {
-      const temp = left_price;
-      left_price = new BigNumber(1).dividedBy(right_price).toFixed();
-      right_price = new BigNumber(1).dividedBy(temp).toFixed();
-    }
-    const display_left_price = displayNumberToAppropriateDecimals(left_price);
-    const display_right_price = displayNumberToAppropriateDecimals(right_price);
-
-    return (
-      <div className="flex items-center">
-        <span className="text-base text-white">
-          {display_left_price} ~ {display_right_price}
-        </span>
-        <span className="text-sm text-farmText ml-2">
-          {rate_need_to_reverse_display ? (
-            <>
-              {token_x_metadata.symbol}/{token_y_metadata.symbol}
-            </>
-          ) : (
-            <>
-              {token_y_metadata.symbol}/{token_x_metadata.symbol}
-            </>
-          )}
-        </span>
-      </div>
-    );
-  }
-  function getTotalUnclaimedRewards() {
-    let totalPrice = 0;
-    unClaimedTokens?.forEach((token: TokenMetadata) => {
-      const { id, decimals } = token;
-      const num = (user_unclaimed_map[seed.seed_id] || {})[id];
-      const amount = toReadableNumber(decimals, num || "0");
-      const tokenPrice = tokenPriceList[id]?.price;
-      if (tokenPrice && tokenPrice != "N/A") {
-        totalPrice += +amount * tokenPrice;
-      }
-    });
-    if (totalPrice == 0) {
-      return "-";
-    } else if (new BigNumber("0.01").isGreaterThan(totalPrice)) {
-      return "<$0.01";
-    } else {
-      return `$${toInternationalCurrencySystem(totalPrice.toString(), 2)}`;
-    }
-  }
   function toRealSymbol(symbol: string) {
     if (!symbol) return "";
     const blackList = ["nUSDO", "nKOK"];
@@ -888,8 +539,6 @@ export function FarmView(props: {
       ? symbol.substring(1)
       : symbol;
   }
-  const isHaveUnclaimedReward = haveUnclaimedReward();
-  const aprUpLimit = getAprUpperLimit();
   const needForbidden =
     pool &&
     (FARM_BLACK_LIST_V2 || []).indexOf(
@@ -987,25 +636,57 @@ export function FarmView(props: {
               >
                 <div className="flex items-center bg-white bg-opacity-10 rounded-full p-0.5">
                   <span className="flex hover:bg-black hover:bg-opacity-20 rounded-full w-max">
-                    {getAllRewardsSymbols().map(
-                      (
-                        [id, data]: [
-                          string,
-                          { icon: string; symbol: string; name: string }
-                        ],
-                        index
-                      ) => {
-                        return (
-                          <img
-                            key={id}
-                            src={data.icon}
-                            className={`h-4 w-4 rounded-full border border-green-10 ${
-                              index != 0 ? "-ml-1" : ""
-                            }`}
-                          ></img>
-                        );
-                      }
-                    )}
+                    {getAllRewardsSymbols()
+                      .slice(0, 4)
+                      .map(([id, data], index) => {
+                        if (index === 2 && getAllRewardsSymbols().length > 4) {
+                          return (
+                            <FarmPlaceholder
+                              key="placeholder"
+                              className="-ml-1"
+                            />
+                          );
+                        } else if (
+                          index === 3 &&
+                          getAllRewardsSymbols().length > 4
+                        ) {
+                          return (
+                            <img
+                              key={
+                                getAllRewardsSymbols()[
+                                  getAllRewardsSymbols().length - 1
+                                ][0]
+                              }
+                              src={
+                                getAllRewardsSymbols()[
+                                  getAllRewardsSymbols().length - 1
+                                ][1].icon
+                              }
+                              className="h-4 w-4 rounded-full border border-green-10 -ml-1"
+                              alt={
+                                getAllRewardsSymbols()[
+                                  getAllRewardsSymbols().length - 1
+                                ][1].name
+                              }
+                            />
+                          );
+                        } else if (
+                          index < 2 ||
+                          (index === 2 && getAllRewardsSymbols().length <= 4)
+                        ) {
+                          return (
+                            <img
+                              key={id}
+                              src={data.icon}
+                              className={`h-4 w-4 rounded-full border border-green-10 ${
+                                index !== 0 ? "-ml-1" : ""
+                              }`}
+                              alt={data.name}
+                            />
+                          );
+                        }
+                        return null;
+                      })}
                   </span>
                   <span className="text-gray-10 text-xs mx-1.5">
                     {totalTvlPerWeekDisplay()}/week
@@ -1043,6 +724,7 @@ export function FarmView(props: {
         </div>
         <CustomTooltip
           id={"rewardPerWeekId" + (seed?.farmList?.[0]?.farm_id ?? "")}
+          place="bottom"
         />
       </div>
       {calcVisible ? (

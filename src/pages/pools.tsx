@@ -9,6 +9,7 @@ import Stable from "@/components/pools/stablePool/stablePool";
 import Dcl from "@/components/pools/dclPool/dcl";
 import CreatePool from "@/components/pools/createPoolModal/index";
 import _ from "lodash";
+import { useRiskTokens } from "@/hooks/useRiskTokens";
 
 export default function Farms() {
   const accountStore = useAccountStore();
@@ -41,7 +42,7 @@ export default function Farms() {
     // setSearchValue(e.target.value);
   };
 
-  const debouncedSendSearchValue = _.debounce(originalSendSearchValue, 300);
+  const debouncedSendSearchValue = _.debounce(originalSendSearchValue, 500);
 
   const sendSearchValue = (e: any) => {
     setSearchValue(e.target.value);
@@ -74,20 +75,27 @@ export default function Farms() {
     },
   ];
 
-  const componentElements = components.map(
-    ({ id, Component }) => (
-      <div
-        key={id}
-        className={`${isActive !== id ? "opacity-0 fixed" : "opacity-100"}`}
-        style={{ zIndex: isActive !== id ? -100 : undefined }}
-      >
-        <Component searchValue={searchValueToUse} />
-      </div>
-    )
+  const { pureIdList } = useRiskTokens();
 
-    // {
-    //   return isActive == id && <Component searchValue={searchValueToUse} />;
-    // }
+  const pure = pureIdList;
+  const componentElements = components.map(({ id, Component }) =>
+    //   (
+    //   <div
+    //     key={id}
+    //     className={`${isActive !== id ? "opacity-0 fixed" : "opacity-100"}`}
+    //     style={{ zIndex: isActive !== id ? -100 : undefined }}
+    //   >
+    //     <Component searchValue={searchValueToUse} pureIdList={pure} />
+    //   </div>
+    // )
+
+    {
+      return (
+        isActive == id && (
+          <Component searchValue={searchValueToUse} pureIdList={pure} />
+        )
+      );
+    }
   );
 
   return (

@@ -1,4 +1,7 @@
-import { addThousandSeparator } from "@/utils/uiNumber";
+import {
+  addThousandSeparator,
+  toInternationalCurrencySystem_number,
+} from "@/utils/uiNumber";
 
 export const timeTabList = [
   {
@@ -42,52 +45,68 @@ export const colorStop24H = [
   },
 ];
 
-export const chartsOtherConfig = {
-  yAxis: {
-    type: "value",
-    show: false,
-  },
-  tooltip: {
-    trigger: "axis",
-    backgroundColor: "transparent",
-    borderWidth: 0,
-    borderColor: "transparent",
-    position: [350, 10],
-    valueFormatter: (value: any) =>
-      "$" + addThousandSeparator(value.toFixed(2)),
-  },
-  grid: {
-    left: "-8%",
-    right: "0%",
-    bottom: "40%",
-    containLabel: true,
-  },
-  axisPointer: {
-    //
-    type: "line", //
-    axis: "y",
-    label: {
+export const chartsOtherConfig = (chartsKind: string) => {
+  return {
+    yAxis: {
+      type: "value",
       show: false,
     },
-  },
-  series: {
-    areaStyle: {
-      normal: {
-        color: {
-          type: "linear",
-          x: 0,
-          y: 0,
-          x2: 0,
-          y2: 1,
-          global: false, //
+    tooltip: {
+      trigger: "axis",
+      backgroundColor: "#141C22",
+      borderWidth: 1,
+      borderColor: "#2D343D",
+      position(pos: any, params: any, dom: any, rect: any, size: any) {
+        const posObj = { top: "10%", left: 0 };
+        posObj.left = pos[0] + [-200, 50][+(pos[0] < size.viewSize[0] / 2)];
+        return posObj;
+      },
+      formatter(params: any) {
+        let result = `<div style="display:flex;justify-content: space-between;"><span style="color:#6A7279;">${
+          chartsKind == "tvl" ? "TVL" : "Volume"
+        }:</span>$${toInternationalCurrencySystem_number(
+          params[0].value
+        )}</div>`; //
+        for (let i = 0, l = params.length; i < l; i++) {
+          result += `<div style="display:flex;justify-content: space-between;"><span style="color:#6A7279;">Date:</span> <span style="color: white"> ${params[i].axisValue}  </span></div>`;
+        }
+        const formatDom = `<div style="height: 49px; width: 143px;display:flex; flex-direction:column;justify-content: space-between;padding:0 2px;font-size:12px;font-weight: 400;font-family:SpaceGrotesk">${result}</div>`;
+        return formatDom;
+      },
+    },
+    grid: {
+      left: "-8%",
+      right: "0%",
+      bottom: "40%",
+      containLabel: true,
+    },
+    axisPointer: {
+      //
+      type: "line", //
+      axis: "y",
+      label: {
+        show: false,
+      },
+    },
+    series: {
+      areaStyle: {
+        normal: {
+          color: {
+            type: "linear",
+            x: 0,
+            y: 0,
+            x2: 0,
+            y2: 1,
+            global: false, //
+          },
+        },
+      },
+      itemStyle: {
+        normal: {
+          color: "transparent", // hover
+          opacity: 0,
         },
       },
     },
-    itemStyle: {
-      normal: {
-        color: "transparent", // hover
-        opacity: 0,
-      },
-    },
-  },
+  };
 };

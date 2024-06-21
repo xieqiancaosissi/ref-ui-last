@@ -8,11 +8,12 @@ import Tips from "@/components/common/Tips/index";
 export const TokenIconComponent = ({
   ite,
   tokenIcons,
+  pureIdList,
 }: {
   ite: any;
   tokenIcons: any;
+  pureIdList: any;
 }) => {
-  const { pureIdList } = useRiskTokens();
   const hasCustomIcon = Reflect.has(tokenIcons, ite.tokenId);
   const isNearToken = ite.tokenId === "wrap.near";
   const iconStyle = { width: "26px", height: "26px" };

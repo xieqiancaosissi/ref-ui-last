@@ -25,3 +25,41 @@
 .learnMore {
   @apply underline cursor-pointer hover:opacity-80;
 }
+
+/* hide low tvl checkbox styles */
+.customCheckbox {
+  @apply frcc cursor-default;
+}
+
+.customCheckbox input {
+  display: none;
+}
+
+.checkmark {
+  @apply inline-block bg-transparent relative rounded-sm mr-1 border border-gray-60;
+  width: 14px;
+  height: 14px;
+  vertical-align: middle;
+}
+
+.customCheckbox input:checked ~ .checkmark {
+  background-color: rgba(158, 254, 1, 1);
+  @apply border-none;
+}
+
+.checkmark::after {
+  content: "";
+  display: none;
+  @apply absolute;
+}
+
+.customCheckbox input:checked ~ .checkmark::after {
+  @apply block;
+  left: 4px;
+  top: 1px;
+  width: 6px;
+  height: 10px;
+  border: solid #000;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}

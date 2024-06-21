@@ -8,7 +8,10 @@ import {
   chartsOtherConfig,
   timeTabList,
 } from "./config";
-import { addThousandSeparator } from "@/utils/uiNumber";
+import {
+  addThousandSeparator,
+  toInternationalCurrencySystem_number,
+} from "@/utils/uiNumber";
 import { getPoolIndexTvlOR24H, getAllPoolData } from "@/services/pool";
 
 export default function Charts({
@@ -32,18 +35,18 @@ export default function Charts({
       xAxis: {
         type: "category",
         boundaryGap: false,
-        data: new Array(chartsData?.list?.length).fill(""),
+        data: chartsData?.date,
         show: false,
       },
-      yAxis: chartsOtherConfig.yAxis,
-      tooltip: Object.assign(chartsOtherConfig.tooltip, {
+      yAxis: chartsOtherConfig(type).yAxis,
+      tooltip: Object.assign(chartsOtherConfig(type).tooltip, {
         textStyle: {
           color: type == "tvl" ? "#9EFE01" : "#657EFF",
         },
       }),
-      grid: chartsOtherConfig.grid,
+      grid: chartsOtherConfig(type).grid,
       axisPointer: {
-        ...chartsOtherConfig.axisPointer,
+        ...chartsOtherConfig(type).axisPointer,
         lineStyle: {
           color: type == "tvl" ? "#9EFE01" : "#657EFF",
         },
@@ -55,7 +58,7 @@ export default function Charts({
           areaStyle: {
             normal: {
               color: {
-                ...chartsOtherConfig.series.areaStyle.normal.color,
+                ...chartsOtherConfig(type).series.areaStyle.normal.color,
                 colorStops: type == "tvl" ? colorStopTvl : colorStop24H,
               },
             },
@@ -64,7 +67,7 @@ export default function Charts({
             color: type == "tvl" ? "#9EFE01" : "#657EFF",
             width: 1,
           },
-          itemStyle: chartsOtherConfig.series.itemStyle,
+          itemStyle: chartsOtherConfig(type).series.itemStyle,
           emphasis: {
             itemStyle: {
               color: type == "tvl" ? "#9EFE01" : "#657EFF",

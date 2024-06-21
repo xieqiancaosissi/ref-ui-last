@@ -64,7 +64,7 @@ export const usePoolSearch = ({
             poolStore.setPoolListLoading(false);
           });
       },
-      300,
+      500,
       { leading: false }
     ),
     []

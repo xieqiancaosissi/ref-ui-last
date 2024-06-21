@@ -119,18 +119,27 @@ export const getPoolIndexTvlOR24H = async (type: string, day: any) => {
       high: number;
       low: number;
       list: number[];
+      date: any[];
       totalVolume: number;
     } = {
       high: resp.data.high,
       low: resp.data.low,
       list: [],
       totalVolume: 0,
+      date: [],
     };
-
+    function timestampToDateString(timestamp: any) {
+      const date = new Date(timestamp);
+      const year = date.getFullYear();
+      const month = (date.getMonth() + 1).toString().padStart(2, "0");
+      const day = date.getDate().toString().padStart(2, "0");
+      return `${year}/${month}/${day}`;
+    }
     waitExportMap.totalVolume = resp.data.list
       .reduce((accumulator: any, currentValue: any) => {
         const volume = parseFloat(currentValue.volume); //
         waitExportMap.list.push(Number(volume.toFixed(2))); //
+        waitExportMap.date.push(timestampToDateString(currentValue.time));
         return accumulator + volume; //
       }, 0)
       .toFixed(3);

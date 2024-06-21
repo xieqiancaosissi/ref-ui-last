@@ -8,8 +8,15 @@ import Pagination from "@/components/pagination/pagination";
 import { usePoolSearch } from "@/hooks/usePools";
 import HoverTip from "@/components/common/Tips/index";
 import PoolDocTips from "@/components/pools/poolDocTips/index";
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 
-export default function Classic({ searchValue }: { searchValue: string }) {
+export default function Classic({
+  searchValue,
+  pureIdList,
+}: {
+  searchValue: string;
+  pureIdList: any;
+}) {
   const [isActive, setActive] = useState("");
   const [sortMap, setSortMap] = useState({ key: "tvl", sort: "desc" });
   const [isChecked, setIsChecked] = useState(false);
@@ -18,6 +25,9 @@ export default function Classic({ searchValue }: { searchValue: string }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(100);
 
+  const handleCheckboxChange = (event: any) => {
+    setIsChecked(event.target.checked);
+  };
   const handlePageChange = (newPage: number, newSize: number) => {
     setCurrentPage(newPage);
   };
@@ -58,9 +68,28 @@ export default function Classic({ searchValue }: { searchValue: string }) {
         tips="Discretized Concentrated Liquidity (DCL) pools."
         src="https://guide.ref.finance/products/guides/liquidity-management/ref-v2-pools"
       />
-      <div className="flex flex-col items-center  w-full ">
+      <div className="flex flex-col items-center  w-full mt-8">
         {/*  */}
-
+        <div className="frc w-276 justify-between">
+          {/* head tab & hide low tvl pools*/}
+          <div className="text-xs cursor-pointer frcc"></div>
+          <div className="text-white text-xs cursor-default">
+            <label className={styles.customCheckbox}>
+              <input
+                type="checkbox"
+                checked={isChecked}
+                onChange={() => {
+                  handleCheckboxChange(event);
+                  setCurrentPage(1);
+                }}
+              />
+              <span className={styles.checkmark}></span>
+              <span className={styles.checkPlaceholder}>
+                Hide low TVL pools
+              </span>
+            </label>
+          </div>
+        </div>
         {/* pool header */}
         <header className={styles.headDiv}>
           <div>Pools</div>
@@ -94,7 +123,20 @@ export default function Classic({ searchValue }: { searchValue: string }) {
         </header>
 
         {/* pool row */}
-        <PoolRow list={poolList} loading={isLoading} />
+        {isLoading ? (
+          <SkeletonTheme
+            baseColor="rgba(33, 43, 53, 0.3)"
+            highlightColor="#2A3643"
+          >
+            <Skeleton width={1100} height={56} count={5} className="mt-4" />
+          </SkeletonTheme>
+        ) : (
+          <PoolRow
+            list={poolList}
+            loading={isLoading}
+            pureIdList={pureIdList}
+          />
+        )}
 
         {/* pagination */}
         <div className="w-276 my-4">

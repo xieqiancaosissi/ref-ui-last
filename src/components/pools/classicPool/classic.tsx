@@ -6,8 +6,15 @@ import PoolRow from "../classicPoolRow/poolRow";
 import Pagination from "@/components/pagination/pagination";
 import { usePoolSearch } from "@/hooks/usePools";
 import PoolDocTips from "@/components/pools/poolDocTips/index";
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 
-export default function Classic({ searchValue }: { searchValue: string }) {
+export default function Classic({
+  searchValue,
+  pureIdList,
+}: {
+  searchValue: string;
+  pureIdList: any;
+}) {
   const [isActive, setActive] = useState("");
   const [sortMap, setSortMap] = useState({ key: "tvl", sort: "desc" });
   const [isChecked, setIsChecked] = useState(false);
@@ -50,6 +57,7 @@ export default function Classic({ searchValue }: { searchValue: string }) {
 
   // depency change init currentpage
   useEffect(() => {
+    console.log(searchValue, "search");
     setCurrentPage(1);
   }, [sortMap.key, sortMap.sort, isChecked, isActive, searchValue]);
 
@@ -134,7 +142,20 @@ export default function Classic({ searchValue }: { searchValue: string }) {
         </header>
 
         {/* pool row */}
-        <PoolRow list={poolList} loading={isLoading} />
+        {isLoading ? (
+          <SkeletonTheme
+            baseColor="rgba(33, 43, 53, 0.3)"
+            highlightColor="#2A3643"
+          >
+            <Skeleton width={1100} height={57.5} count={5} className="mt-4" />
+          </SkeletonTheme>
+        ) : (
+          <PoolRow
+            list={poolList}
+            loading={isLoading}
+            pureIdList={pureIdList}
+          />
+        )}
 
         {/* pagination */}
         <div className="w-276 my-4">

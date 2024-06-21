@@ -45,13 +45,18 @@ import { NEAR_META_DATA, WNEAR_META_DATA } from "../../../utils/nearMetaData";
 import { useTokens } from "../../../services/token";
 import CustomTooltip from "../../customTooltip/customTooltip";
 import CalcModelBooster from "./CalcModelBooster";
-import { FarmPlaceholder } from "../icon";
+import { FarmListRewards, FarmPlaceholder } from "../icon";
+import {
+  LP_STABLE_TOKEN_DECIMALS,
+  LP_TOKEN_DECIMALS,
+} from "../../../services/m-token";
 
 const {
   REF_VE_CONTRACT_ID,
   FARM_BLACK_LIST_V2,
   REF_UNI_V3_SWAP_CONTRACT_ID,
   WRAP_NEAR_CONTRACT_ID,
+  STABLE_POOL_IDS,
 } = getConfig();
 
 export function FarmView(props: {
@@ -80,7 +85,10 @@ export function FarmView(props: {
     maxLoveShareAmount,
     all_seeds,
   } = props;
-  const { pool, seed_id, farmList } = seed;
+  const { pool, seedTvl, total_seed_amount, seed_id, farmList, seed_decimal } =
+    seed;
+  // const detailData = getDetailData();
+  // console.log(detailData)
   const [contractId, temp_pool_id] = seed_id.split("@");
   let is_dcl_pool = false;
   if (contractId == REF_UNI_V3_SWAP_CONTRACT_ID) {
@@ -97,6 +105,7 @@ export function FarmView(props: {
   const [yourActualAprRate, setYourActualAprRate] = useState("1");
   const tokens = sortTokens(seed.pool?.tokens_meta_data || []);
   const history = useHistory();
+  const [yourTvl, setYourTvl] = useState("");
   const unClaimedTokens = useTokens(
     Object.keys(user_unclaimed_map[seed_id] || {})
   );
@@ -116,6 +125,31 @@ export function FarmView(props: {
       setYourApr(yourApr);
     }
   }, [boostConfig, user_seeds_map]);
+  useEffect(() => {
+    const { free_amount, locked_amount } = user_seeds_map[seed_id] || {};
+    const yourLp = toReadableNumber(
+      seed_decimal,
+      new BigNumber(free_amount || 0).plus(locked_amount || 0).toFixed()
+    );
+    if (pool) {
+      const { tvl, id, shares_total_supply } = pool;
+      const DECIMALS = new Set(STABLE_POOL_IDS || []).has(id?.toString())
+        ? LP_STABLE_TOKEN_DECIMALS
+        : LP_TOKEN_DECIMALS;
+      const poolShares = Number(
+        toReadableNumber(DECIMALS, shares_total_supply)
+      );
+      const yourTvl =
+        poolShares == 0
+          ? 0
+          : Number(
+              toPrecision(((Number(yourLp) * tvl) / poolShares).toString(), 2)
+            );
+      if (yourTvl) {
+        setYourTvl(yourTvl.toString());
+      }
+    }
+  }, [Object.keys(user_seeds_map || {})]);
   function sortTokens(tokens: TokenMetadata[]) {
     tokens.sort((a: TokenMetadata, b: TokenMetadata) => {
       if (a.symbol === "NEAR") return 1;
@@ -384,47 +418,31 @@ export function FarmView(props: {
     }
     return pending;
   }
+  function getTotalUnclaimedRewards() {
+    let totalPrice = 0;
+    unClaimedTokens?.forEach((token: TokenMetadata) => {
+      const { id, decimals } = token;
+      const num = (user_unclaimed_map[seed.seed_id] || {})[id];
+      const amount = toReadableNumber(decimals, num || "0");
+      const tokenPrice = tokenPriceList[id]?.price;
+      if (tokenPrice && tokenPrice != "N/A") {
+        totalPrice += +amount * tokenPrice;
+      }
+    });
+    if (totalPrice == 0) {
+      return "0";
+    } else if (new BigNumber("0.01").isGreaterThan(totalPrice)) {
+      return "<$0.01";
+    } else {
+      return `$${toInternationalCurrencySystem(totalPrice.toString(), 2)}`;
+    }
+  }
   function isEnded() {
     const farms = seed.farmList;
     if (farms && farms.length > 0) {
       return farms[0].status == "Ended";
     }
     return false;
-  }
-  function haveUnclaimedReward() {
-    if (user_unclaimed_map[seed.seed_id]) return true;
-  }
-  function getAprUpperLimit() {
-    if (!boostConfig || !maxLoveShareAmount || +maxLoveShareAmount == 0)
-      return "";
-    const { affected_seeds } = boostConfig;
-    const { seed_id } = seed;
-    const base = affected_seeds?.[seed_id];
-    let rate;
-    if (+maxLoveShareAmount < 1) {
-      rate = 1;
-    } else {
-      rate = new BigNumber(1)
-        .plus(Math.log(+maxLoveShareAmount) / Math.log(base))
-        .toFixed(2);
-    }
-    const apr = getActualTotalApr();
-    let boostApr;
-    if (apr) {
-      boostApr = new BigNumber(apr).multipliedBy(rate);
-    }
-    if (boostApr && +boostApr > 0) {
-      const r = +new BigNumber(boostApr).multipliedBy(100).toFixed();
-      return (
-        <span>
-          <label className="mx-0.5">~</label>
-          <label className="gotham_bold">
-            {toPrecision(r.toString(), 2) + "%"}
-          </label>
-        </span>
-      );
-    }
-    return "";
   }
   function getYourApr() {
     if (!boostConfig) return "";
@@ -462,21 +480,6 @@ export function FarmView(props: {
       return "";
     }
   }
-  //   const renderer = (countdown: any) => {
-  //     if (countdown.completed) {
-  //       return null;
-  //     } else {
-  //       return (
-  //         <div style={{ width: "85px" }} className="whitespace-nowrap">
-  //           {countdown.days ? countdown.days + "d: " : ""}
-  //           {zeroPad(countdown.hours)}
-  //           {"h"}: {zeroPad(countdown.minutes)}
-  //           {"m"}
-  //           {countdown.days ? "" : ": " + zeroPad(countdown.seconds) + "s"}
-  //         </div>
-  //       );
-  //     }
-  //   };
   function isInMonth() {
     const endedStatus = isEnded();
     if (endedStatus) return false;
@@ -719,8 +722,25 @@ export function FarmView(props: {
           </p>
         </div>
         <div className="frcb">
-          <p className="text-gray-60 text-sm">Your stake/Reward</p>
-          <p className="text-sm frcc">-</p>
+          <p className="text-gray-60 text-sm">Your stake/Unclaimed</p>
+          <p className="text-sm frcc">
+            {Number(yourTvl) == 0
+              ? "0"
+              : "$" + toInternationalCurrencySystem(yourTvl, 2)}
+            /
+            <p
+              className={`${
+                getTotalUnclaimedRewards() === "0"
+                  ? "text-white"
+                  : "text-green-10"
+              } frcc`}
+            >
+              {getTotalUnclaimedRewards() !== "0" ? (
+                <FarmListRewards className="ml-1 mr-1" />
+              ) : null}
+              {getTotalUnclaimedRewards()}
+            </p>
+          </p>
         </div>
         <CustomTooltip
           id={"rewardPerWeekId" + (seed?.farmList?.[0]?.farm_id ?? "")}

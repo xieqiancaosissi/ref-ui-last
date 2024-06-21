@@ -11,6 +11,7 @@ import BigNumber from "bignumber.js";
 import getConfig from "@/utils/config";
 import { NEAR_META_DATA } from "@/utils/nearMetaData";
 import Withdraw from "./WithdrawModal";
+import styles from "../farm.module.css";
 
 const { WRAP_NEAR_CONTRACT_ID } = getConfig();
 
@@ -140,7 +141,7 @@ export default function WithDrawBox(props: {
         </div>
       </div>
       <div
-        className="gradient-border-container cursor-pointer"
+        className={styles.gradient_border_container}
         onClick={() => {
           showWithdrawModal();
         }}

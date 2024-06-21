@@ -1,5 +1,6 @@
 /* farm */
 .gradient_border_container {
+  cursor: pointer;
   position: relative;
   padding: 10px 20px;
   width: 137px;

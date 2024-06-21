@@ -4,7 +4,7 @@ export default function Document() {
     <Html className="dark" lang="en">
       <Head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/favicon.svg" />
         <title>REF Finance</title>
       </Head>
       <body className="dark:bg-dark-30 bg-lightWhite-20" id="root">

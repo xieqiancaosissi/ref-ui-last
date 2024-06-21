@@ -5,10 +5,14 @@ import { TokenMetadata } from "../services/ft-contract";
 import { Seed, FarmBoost } from "../services/farm";
 import { PoolRPCView } from "../interfaces/swap";
 import { PoolInfo } from "../services/swapV3";
-import { parsePool } from "../services/swap/swapUtils";
+import {
+  parsePool,
+  isRatedPool,
+  isNotStablePool,
+} from "../services/swap/swapUtils";
 import { STABLE_LP_TOKEN_DECIMALS } from "../utils/constant";
 import { toNonDivisibleNumber } from "../utils/numbers";
-import { isRatedPool } from "../services/swap/swapUtils";
+import { filterBlackListPools } from "../services/common";
 
 let config: any = {};
 let ALL_STABLE_POOL_IDS: string[] = [];
@@ -252,7 +256,9 @@ const runWorker = () => {
     ).then((res) => res.json());
     db.cacheTopPools(topPools);
     const pools = topPools.map((p) => parsePool(p, p.id));
-    db.cachePoolsByTokens(pools);
+    db.cachePoolsByTokens(
+      pools.filter(filterBlackListPools).filter((p: any) => isNotStablePool(p))
+    );
   };
   const cacheStablePools = async () => {
     const pending = ALL_STABLE_POOL_IDS.map((pool_id) =>

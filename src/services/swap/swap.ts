@@ -25,7 +25,9 @@ export const fetchPoolsAndCacheData = async (): Promise<Pool[]> => {
   } catch (error) {
     pools = await fetchPoolsRPC();
   }
-  db.cachePoolsByTokens(pools);
+  db.cachePoolsByTokens(
+    pools.filter(filterBlackListPools).filter((p: any) => isNotStablePool(p))
+  );
   return pools;
 };
 const fetchPoolsRPC = async (): Promise<Pool[]> => {

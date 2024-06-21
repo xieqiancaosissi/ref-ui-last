@@ -56,7 +56,7 @@ const estimateSwap = async ({
   // TODO ONLY FOR TEST
   // const orpools = await getRefPoolsByTokens();
   const orpools = (await getRefPoolsByTokens()).filter(
-    (pool) => +(pool.tvl || 0) >= 1
+    (pool) => +(pool.tvl || 0) >= 3
   );
   let res;
   let smartRouteV2OutputEstimate;

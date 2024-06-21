@@ -40,8 +40,8 @@ export default function InitData() {
       const CHECKED_OUT_TOKEN = gotTokenIdValidity(tokenOutId, false);
       swapStore.setTokenIn(CHECKED_IN_TOKEN);
       swapStore.setTokenOut(CHECKED_OUT_TOKEN);
-      persistSwapStore.setTokenInId(CHECKED_IN_TOKEN.id);
-      persistSwapStore.setTokenOutId(CHECKED_OUT_TOKEN.id);
+      persistSwapStore.setTokenInId(CHECKED_IN_TOKEN?.id);
+      persistSwapStore.setTokenOutId(CHECKED_OUT_TOKEN?.id);
     }
   }, [tokenInId, tokenOutId, totalDisplayTokens.length]);
 

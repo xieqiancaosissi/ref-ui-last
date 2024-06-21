@@ -23,7 +23,12 @@ export default function StablePoolRowCharts({
     // deal data
     jsonMap.amounts.map((item: any, index: number) => {
       chartsDataList.push({
-        value: Number(item),
+        value: Number(
+          item.substring(
+            0,
+            item.length - jsonMap.token_account_ids[index].decimals
+          )
+        ),
         // name use as toInternationalCurrencySystem_number result
         name: toInternationalCurrencySystem_number(
           item.substring(
@@ -33,6 +38,9 @@ export default function StablePoolRowCharts({
         ),
       });
     });
+    const totalSum = chartsDataList.reduce((accumulator: number, next: any) => {
+      return accumulator + next.value;
+    }, 0);
 
     // charts option
     const options = {
@@ -54,6 +62,7 @@ export default function StablePoolRowCharts({
               show: true,
               fontSize: 10,
               color: "#fff",
+              formatter: "{d}%",
             },
           },
           labelLine: {

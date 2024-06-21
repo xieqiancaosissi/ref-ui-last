@@ -56,7 +56,7 @@ export default function Classic({ searchValue }: { searchValue: string }) {
   return (
     <>
       <PoolDocTips
-        tips="Classic pools are based on the Uniswap v2 algorithm.Learn more"
+        tips="Classic pools are based on the Uniswap v2 algorithm."
         src="https://guide.ref.finance/products/guides/liquidity-management/classic-pools"
       />
       <div className="flex flex-col items-center  w-full mt-8">

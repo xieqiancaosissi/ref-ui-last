@@ -8,6 +8,7 @@ import Classic from "@/components/pools/classicPool/classic";
 import Stable from "@/components/pools/stablePool/stablePool";
 import Dcl from "@/components/pools/dclPool/dcl";
 import CreatePool from "@/components/pools/createPoolModal/index";
+import _ from "lodash";
 
 export default function Farms() {
   const accountStore = useAccountStore();
@@ -36,10 +37,16 @@ export default function Farms() {
   const [keyWordsType, setKeyWordsType] = useState("token");
   const [searchValue, setSearchValue] = useState("");
 
-  const sendSearchValue = (e: any) => {
-    setSearchValue(e.target.value);
+  const originalSendSearchValue = (e: any) => {
+    // setSearchValue(e.target.value);
   };
 
+  const debouncedSendSearchValue = _.debounce(originalSendSearchValue, 300);
+
+  const sendSearchValue = (e: any) => {
+    setSearchValue(e.target.value);
+    debouncedSendSearchValue(e);
+  };
   // create pool
   const [isOpen, setIsOpen] = useState<boolean>(false);
   function showModal() {
@@ -67,15 +74,21 @@ export default function Farms() {
     },
   ];
 
-  const componentElements = components.map(({ id, Component }) => (
-    <div
-      key={id}
-      className={`${isActive !== id ? "opacity-0 fixed" : "opacity-100"}`}
-      style={{ zIndex: isActive !== id ? -100 : undefined }}
-    >
-      <Component searchValue={searchValueToUse} />
-    </div>
-  ));
+  const componentElements = components.map(
+    ({ id, Component }) => (
+      <div
+        key={id}
+        className={`${isActive !== id ? "opacity-0 fixed" : "opacity-100"}`}
+        style={{ zIndex: isActive !== id ? -100 : undefined }}
+      >
+        <Component searchValue={searchValueToUse} />
+      </div>
+    )
+
+    // {
+    //   return isActive == id && <Component searchValue={searchValueToUse} />;
+    // }
+  );
 
   return (
     <div>

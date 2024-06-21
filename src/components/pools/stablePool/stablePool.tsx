@@ -65,7 +65,7 @@ export default function Classic({ searchValue }: { searchValue: string }) {
   return (
     <>
       <PoolDocTips
-        tips="Stable pools, which can contain two or more tokens, use Curve's StableSwap algorithm.Learn more"
+        tips="Stable pools, which can contain two or more tokens, use Curve's StableSwap algorithm."
         src="https://guide.ref.finance/products/guides/liquidity-management/stable-and-rated-pools"
       />
       <div className="flex flex-col items-center  w-full mt-8">

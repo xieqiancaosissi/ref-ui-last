@@ -50,6 +50,7 @@ import {
   LP_STABLE_TOKEN_DECIMALS,
   LP_TOKEN_DECIMALS,
 } from "../../../services/m-token";
+import styles from "../farm.module.css";
 
 const {
   REF_VE_CONTRACT_ID,
@@ -565,7 +566,7 @@ export function FarmView(props: {
         //   goFarmDetailPage(seed);
         // }}
         className={`relative rounded-2xl cursor-pointer bg-cardBg p-5 ${
-          isEnded() || needForbidden ? "farmEnded" : ""
+          isEnded() || needForbidden ? styles.farmEnded : ""
         }
         `}
       >

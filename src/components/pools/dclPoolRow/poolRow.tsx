@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styles from "./poolRow.module.css";
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import {
   formatPercentage,
   toInternationalCurrencySystem_usd,
@@ -22,7 +23,7 @@ export default function PoolRow({
   const { isDealed, updatedMapList } = useTokenMetadata(list);
 
   return (
-    <div className="mb-2 h-90 overflow-auto">
+    <div className="mb-2 min-h-90 overflow-auto">
       {updatedMapList.map((item, index) => {
         return (
           <div

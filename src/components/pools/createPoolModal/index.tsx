@@ -3,7 +3,7 @@ import Modal from "react-modal";
 import { CreatePoolTitle, CreatePoolClose } from "@/components/pools/icon";
 import Fee from "./createPoolFee/index";
 import TokenInput from "./createPoolInput/index";
-import { addSimpleLiquidityPool } from "@/services/pool";
+import { addSimpleLiquidityPool, findSamePools } from "@/services/pool";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 
 export default function CreatePoolModal({
@@ -37,6 +37,7 @@ export default function CreatePoolModal({
     if (!token[0] || !token[1] || createFee < 0) {
       setDisabled(true);
     } else {
+      findSamePools(token, createFee / 100);
       setDisabled(false);
     }
   }, [token[0], token[1], createFee]);
@@ -110,11 +111,11 @@ export default function CreatePoolModal({
               onClick={() => {
                 !isDisabled && createPool();
               }}
-              className={`w-full text-base font-bold frcc h-10 rounded-lg cursor-pointer 
+              className={`w-full text-base font-bold frcc h-10 rounded-lg
                 ${
                   isDisabled
-                    ? "text-gray-50 bg-gray-40 cursor-default"
-                    : "bg-createPoolLinear text-black hover:opacity-85 "
+                    ? "text-gray-50 bg-gray-40 cursor-not-allowed"
+                    : "bg-createPoolLinear text-black hover:opacity-85 cursor-pointer"
                 }
               `}
             >

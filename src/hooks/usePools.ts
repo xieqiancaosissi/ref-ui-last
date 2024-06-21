@@ -42,8 +42,8 @@ export const usePoolSearch = ({
         getSearchResult({
           type: poolType || "classic",
           sort: sortKey,
-          limit: "100",
-          offset: currentPage ? (((currentPage - 1) * 100) as any) : "0",
+          limit: "20",
+          offset: currentPage ? (((currentPage - 1) * 20) as any) : "0",
           farm: isActive == "farm",
           hide_low_pool: isChecked,
           order: sortOrder,

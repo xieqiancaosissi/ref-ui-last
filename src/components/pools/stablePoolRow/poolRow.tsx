@@ -35,7 +35,7 @@ export default function PoolRow({
   };
 
   return (
-    <div className="mb-2 h-90 overflow-y-auto overflow-x-hidden">
+    <div className="mb-2 min-h-90 overflow-y-auto overflow-x-hidden">
       {updatedMapList.map((item, index) => {
         return (
           <div

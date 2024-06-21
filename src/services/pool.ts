@@ -161,3 +161,23 @@ export const getAllPoolData = async () => {
       return res.data;
     });
 };
+
+export const findSamePools = async (
+  tokenList: Array<any>,
+  createFee: number
+) => {
+  return await fetch(
+    getConfig().tvlAnd24hUrl +
+      `/pool/same?token_list=${tokenList.join(",")}&fee=${createFee}`,
+    {
+      method: "GET",
+      headers: {
+        ...getAuthenticationHeaders("/pool/same"),
+      },
+    }
+  )
+    .then((res) => res.json())
+    .then((res) => {
+      return res.data;
+    });
+};

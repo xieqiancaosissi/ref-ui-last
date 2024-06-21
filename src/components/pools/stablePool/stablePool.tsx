@@ -168,7 +168,7 @@ export default function Classic({
         <div className="w-276 my-4">
           <Pagination
             totalItems={totalItems}
-            itemsPerPage={100}
+            itemsPerPage={20}
             onChangePage={handlePageChange}
             onPageSizeChange={handleSizeChange}
           />

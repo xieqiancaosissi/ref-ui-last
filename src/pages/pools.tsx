@@ -78,24 +78,24 @@ export default function Farms() {
   const { pureIdList } = useRiskTokens();
 
   const pure = pureIdList;
-  const componentElements = components.map(({ id, Component }) =>
-    //   (
-    //   <div
-    //     key={id}
-    //     className={`${isActive !== id ? "opacity-0 fixed" : "opacity-100"}`}
-    //     style={{ zIndex: isActive !== id ? -100 : undefined }}
-    //   >
-    //     <Component searchValue={searchValueToUse} pureIdList={pure} />
-    //   </div>
-    // )
+  const componentElements = components.map(
+    ({ id, Component }) => (
+      <div
+        key={id}
+        className={`${isActive !== id ? "opacity-0 fixed" : "opacity-100"}`}
+        style={{ zIndex: isActive !== id ? -100 : undefined }}
+      >
+        <Component searchValue={searchValueToUse} pureIdList={pure} />
+      </div>
+    )
 
-    {
-      return (
-        isActive == id && (
-          <Component searchValue={searchValueToUse} pureIdList={pure} />
-        )
-      );
-    }
+    // {
+    //   return (
+    //     isActive == id && (
+    //       <Component searchValue={searchValueToUse} pureIdList={pure} />
+    //     )
+    //   );
+    // }
   );
 
   return (
@@ -170,7 +170,7 @@ export default function Farms() {
                 className={`${poolStyle.createPoolButton} ${
                   accountId && isActive == "classic"
                     ? "bg-createPoolLinear text-black cursor-pointer hover:opacity-85"
-                    : "text-gray-50 bg-gray-40 cursor-default"
+                    : "text-gray-50 bg-gray-40 cursor-not-allowed"
                 }`}
                 onClick={() => {
                   accountId && isActive == "classic" && showModal();

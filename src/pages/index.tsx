@@ -97,7 +97,10 @@ export default function Swap(props: any) {
           <Input
             disable
             token={tokenOut}
-            amountOut={toPrecision(tokenOutAmount, 8)}
+            amountOut={toPrecision(
+              tokenOutAmount,
+              Math.min(8, tokenOut?.decimals ?? 8)
+            )}
             isOut
             className="mt-0.5"
           />

@@ -266,7 +266,7 @@ class RefDatabase extends Dexie {
     return [...normalItems, ...reverseItems];
   }
 
-  async queryPoolsByTokens2() {
+  async queryAllPoolsByTokens() {
     const normalItems = await this.poolsTokens.toArray();
 
     return normalItems;

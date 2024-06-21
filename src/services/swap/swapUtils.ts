@@ -119,7 +119,7 @@ export const getStablePoolDecimal = (id: string | number) => {
   else return STABLE_LP_TOKEN_DECIMALS;
 };
 export const getRefPoolsByTokens = async () => {
-  return await db.queryPoolsByTokens2();
+  return await db.queryAllPoolsByTokens();
 };
 export const getStablePoolInfoThisPair = ({
   tokenInId,

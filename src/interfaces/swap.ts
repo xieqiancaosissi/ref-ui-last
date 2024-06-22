@@ -118,6 +118,7 @@ export interface EstimateSwapOptions {
   tokenOut: TokenMetadata;
   amountIn: string;
   supportLedger: boolean;
+  supportLittlePools: boolean;
 }
 
 export interface EstimateSwapParams {
@@ -134,4 +135,11 @@ export interface EstimateSwapParams {
   setSwapsToDoTri?: (todos: EstimateSwapView[]) => void;
   setSwapsToDoRef?: (todos: EstimateSwapView[]) => void;
   proGetCachePool?: boolean;
+}
+
+export interface IEstimateResult {
+  swapError?: Error | undefined;
+  swapsToDo?: EstimateSwapView[] | undefined;
+  quoteDone?: boolean;
+  tag?: string;
 }

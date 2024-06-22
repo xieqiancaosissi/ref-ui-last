@@ -5,6 +5,7 @@ import { getContainPairsPools } from "./swap";
 import getOneSwapActionResult from "./getOneSwapActionResult";
 import { isStableToken, getRefPoolsByTokens, getLiquidity } from "./swapUtils";
 import getHybridStableSmart from "./getHybridStableSmart";
+import { LITTLE_POOL_TVL_BOUND } from "@/utils/constant";
 import {
   transformWorkerResult,
   createSmartRouteLogicWorker,
@@ -15,6 +16,7 @@ const estimateSwap = async ({
   tokenOut,
   amountIn,
   supportLedger,
+  supportLittlePools,
 }: EstimateSwapOptions): Promise<{
   estimates: EstimateSwapView[];
   tag: string;
@@ -53,11 +55,11 @@ const estimateSwap = async ({
   if (supportLedger) {
     return { estimates: supportLedgerRes, tag };
   }
-  // TODO ONLY FOR TEST
-  // const orpools = await getRefPoolsByTokens();
-  const orpools = (await getRefPoolsByTokens()).filter(
-    (pool) => +(pool.tvl || 0) >= 3
-  );
+  const orpools = supportLittlePools
+    ? await getRefPoolsByTokens()
+    : (await getRefPoolsByTokens()).filter(
+        (pool) => +(pool.tvl || 0) >= LITTLE_POOL_TVL_BOUND
+      );
   let res;
   let smartRouteV2OutputEstimate;
 

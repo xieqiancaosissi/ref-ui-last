@@ -12,7 +12,6 @@ import {
 import {
   BoostConfig,
   FarmBoost,
-  PoolInfo,
   PoolRPCView,
   Seed,
   UserSeedInfo,
@@ -29,6 +28,7 @@ import {
   list_seeds_info,
   getPoolIdBySeedId,
 } from "../../services/farm";
+import { IPoolDcl } from "../../interfaces/swapDcl";
 import getConfig from "../../utils/config";
 import { ftGetTokenMetadata } from "../../services/token";
 import { toPrecision, toReadableNumber } from "../../utils/numbers";
@@ -835,7 +835,7 @@ export default function FarmsPage(props: any) {
         is_dcl_pool = true;
       }
       const poolId = getPoolIdBySeedId(seed_id);
-      const pool = defultPools?.find((pool: PoolRPCView & PoolInfo) => {
+      const pool = defultPools?.find((pool: PoolRPCView & IPoolDcl) => {
         if (is_dcl_pool) {
           if (pool.pool_id == poolId) return true;
         } else {

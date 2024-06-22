@@ -9,9 +9,13 @@ import {
 import Input from "../components/swap/Input";
 import SwapDetail from "../components/swap/SwapDetail";
 import swapStyles from "../components/swap/swap.module.css";
-import { fetchPoolsAndCacheData } from "@/services/swap/swap";
+import {
+  fetchPoolsAndCacheData,
+  fetchStablePoolsAndCacheData,
+} from "@/services/swap/swap";
+import { fetchDclPoolsAndCacheData } from "@/services/swap/swapDcl";
 import { POOL_REFRESH_INTERVAL } from "@/utils/constant";
-import useSwap from "@/hooks/useSwap";
+import useMultiSwap from "@/hooks/useMultiSwap";
 import {
   useSwapStore,
   usePersistSwapStore,
@@ -36,7 +40,7 @@ export default function Swap(props: any) {
   const tokenIn = swapStore.getTokenIn();
   const tokenOut = swapStore.getTokenOut();
   const tokenOutAmount = swapStore.getTokenOutAmount();
-  useSwap();
+  useMultiSwap({ supportDclQuote: false, supportLittlePools: false });
   useEffect(() => {
     const id = setInterval(reloadPools, POOL_REFRESH_INTERVAL);
     return () => {
@@ -62,8 +66,14 @@ export default function Swap(props: any) {
   async function reloadPools() {
     if (pinLoading) return;
     setpinLoading(true);
-    await fetchPoolsAndCacheData();
-    setpinLoading(false);
+    const topPoolsPending = fetchPoolsAndCacheData();
+    const stablePoolsPending = fetchStablePoolsAndCacheData();
+    const dclPoolPending = fetchDclPoolsAndCacheData();
+    Promise.all([topPoolsPending, stablePoolsPending, dclPoolPending])
+      .catch()
+      .finally(() => {
+        setpinLoading(false);
+      });
   }
   return (
     <main className="m-auto my-20 select-none" style={{ width: "420px" }}>

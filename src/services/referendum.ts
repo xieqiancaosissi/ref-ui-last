@@ -1,5 +1,5 @@
 import { getAccountId } from "../utils/wallet";
-import { refVeViewFunction } from "../utils/near";
+import { refVeViewFunction } from "../utils/contract";
 
 export const LOVE_TOKEN_DECIMAL = 18;
 

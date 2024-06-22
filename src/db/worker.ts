@@ -4,7 +4,7 @@ import { getAuthenticationHeaders } from "../services/signature";
 import { TokenMetadata } from "../services/ft-contract";
 import { Seed, FarmBoost } from "../services/farm";
 import { PoolRPCView } from "../interfaces/swap";
-import { PoolInfo } from "../services/swapV3";
+import { IPoolDcl } from "../interfaces/swapDcl";
 import {
   parsePool,
   isRatedPool,
@@ -119,7 +119,7 @@ const runWorker = () => {
       contract: REF_FARM_BOOST_CONTRACT_ID,
     });
   };
-  const listPools = async () => {
+  const getDclPools = async () => {
     const res = await contractView({
       methodName: "list_pools",
       contract: REF_UNI_V3_SWAP_CONTRACT_ID,
@@ -166,7 +166,7 @@ const runWorker = () => {
     // get all farms
     const farmsPromiseList: Promise<any>[] = [];
     // get all dcl pools
-    const dcl_all_pools: PoolInfo[] = await listPools();
+    const dcl_all_pools: IPoolDcl[] = await getDclPools();
     const poolIds = new Set<string>();
     const dcl_poolIds = new Set<string>();
     let pools: any[] = [];
@@ -213,7 +213,7 @@ const runWorker = () => {
         if (contractId == REF_UNI_V3_SWAP_CONTRACT_ID) {
           const [fixRange, dcl_pool_id, left_point, right_point] =
             tempPoolId.split("&");
-          pool = dcl_all_pools.find((p: PoolInfo) => {
+          pool = dcl_all_pools.find((p: IPoolDcl) => {
             if (p.pool_id == dcl_pool_id) return true;
           });
         } else {
@@ -267,10 +267,15 @@ const runWorker = () => {
     const stablePools = await Promise.all(pending);
     db.cacheStablePools(stablePools);
   };
+  const cacheDclPools = async () => {
+    const dclPools = await getDclPools();
+    db.cacheDclPools(dclPools);
+  };
 
   cacheTokens();
   cacheTopPools();
   cacheStablePools();
+  cacheDclPools();
   cacheBoost_Seed_Farms_Pools();
   cacheTokenPrices();
 };

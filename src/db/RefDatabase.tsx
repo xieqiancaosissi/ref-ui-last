@@ -7,6 +7,7 @@ import {
   IPoolsByTokens,
   StablePool,
 } from "@/interfaces/swap";
+import { IPoolDcl } from "@/interfaces/swapDcl";
 import { parsePoolsByTokens } from "@/services/swap/swapUtils";
 import { FarmBoost, Seed } from "@/services/farm";
 import { TOP_POOLS_TOKEN_REFRESH_INTERVAL } from "@/utils/constant";
@@ -54,6 +55,7 @@ class RefDatabase extends Dexie {
   public tokenPrices: Dexie.Table<TokenPrice>;
   public boostSeeds: Dexie.Table<BoostSeeds>;
   public stablePools: Dexie.Table<StablePool>;
+  public dclPools: Dexie.Table<IPoolDcl & { id: string }>;
 
   public constructor() {
     super("RefDatabase");
@@ -66,6 +68,7 @@ class RefDatabase extends Dexie {
       tokenPrices: "id",
       boostSeeds: "id",
       stablePools: "id",
+      dclPools: "id",
     });
 
     this.tokens = this.table("tokens");
@@ -75,6 +78,7 @@ class RefDatabase extends Dexie {
     this.tokenPrices = this.table("tokenPrices");
     this.boostSeeds = this.table("boostSeeds");
     this.stablePools = this.table("stablePools");
+    this.dclPools = this.table("dclPools");
   }
 
   public allTokens() {
@@ -271,40 +275,6 @@ class RefDatabase extends Dexie {
 
     return normalItems;
   }
-
-  public async cacheTopPools(pools: PoolRPCView[]) {
-    await this.topPools.clear();
-    await this.topPools.bulkPut(
-      pools.map((topPool: PoolRPCView) => ({
-        ...topPool,
-        id: topPool.id,
-        update_time: moment().unix(),
-        token1Id: topPool.token_account_ids[0],
-        token2Id: topPool.token_account_ids[1],
-      }))
-    );
-  }
-
-  public async checkTopPools() {
-    const pools = await this.topPools.limit(10).toArray();
-    return (
-      pools.length > 0 &&
-      pools.every(
-        (pool) =>
-          Number(pool.update_time) >=
-          Number(moment().unix()) - Number(TOP_POOLS_TOKEN_REFRESH_INTERVAL)
-      )
-    );
-  }
-  public async cachePoolsByTokens(pools: Pool[]) {
-    await this.poolsTokens.clear();
-    const filtered_pools = pools.filter(function (pool: Pool) {
-      return pool.tokenIds.length < 3;
-    });
-    const parsed_pools = parsePoolsByTokens(filtered_pools);
-    await this.poolsTokens.bulkPut(parsed_pools);
-  }
-
   public async queryTopPools() {
     const pools = await this.topPools.toArray();
 
@@ -333,7 +303,6 @@ class RefDatabase extends Dexie {
     const { update_time, ...poolInfo } = stablePool;
     return poolInfo;
   }
-
   public async queryPoolsBytoken(tokenId: string) {
     const normalItems = await this.poolsTokens
       .where("token1Id")
@@ -366,6 +335,24 @@ class RefDatabase extends Dexie {
   public async queryBoostSeeds() {
     return await this.boostSeeds.toArray();
   }
+  public async queryDclPools() {
+    const dclPools = await this.dclPools.toArray();
+    return dclPools.map((pool) => {
+      const { update_time, id, ...dclPoolInfo } = pool;
+      return dclPoolInfo;
+    });
+  }
+  public async checkTopPools() {
+    const pools = await this.topPools.limit(10).toArray();
+    return (
+      pools.length > 0 &&
+      pools.every(
+        (pool) =>
+          Number(pool.update_time) >=
+          Number(moment().unix()) - Number(TOP_POOLS_TOKEN_REFRESH_INTERVAL)
+      )
+    );
+  }
   public async checkTokenPrices() {
     const priceList = await this.tokenPrices.limit(2).toArray();
     return (
@@ -385,6 +372,28 @@ class RefDatabase extends Dexie {
         (boostSeed) =>
           Number(boostSeed.update_time) >=
           Number(moment().unix()) - checkCacheSeconds
+      )
+    );
+  }
+  public async checkDclPools() {
+    const pools = await this.dclPools.limit(10).toArray();
+    return (
+      pools.length > 0 &&
+      pools.every(
+        (pool) =>
+          Number(pool.update_time) >=
+          Number(moment().unix()) - Number(TOP_POOLS_TOKEN_REFRESH_INTERVAL)
+      )
+    );
+  }
+  public async checkStablePools() {
+    const pools = await this.stablePools.limit(10).toArray();
+    return (
+      pools.length > 0 &&
+      pools.every(
+        (pool) =>
+          Number(pool.update_time) >=
+          Number(moment().unix()) - Number(TOP_POOLS_TOKEN_REFRESH_INTERVAL)
       )
     );
   }
@@ -410,8 +419,28 @@ class RefDatabase extends Dexie {
       }))
     );
   }
+  public async cacheTopPools(pools: PoolRPCView[]) {
+    // await this.topPools.clear();
+    await this.topPools.bulkPut(
+      pools.map((topPool: PoolRPCView) => ({
+        ...topPool,
+        id: topPool.id,
+        update_time: moment().unix(),
+        token1Id: topPool.token_account_ids[0],
+        token2Id: topPool.token_account_ids[1],
+      }))
+    );
+  }
+  public async cachePoolsByTokens(pools: Pool[]) {
+    // await this.poolsTokens.clear();
+    const filtered_pools = pools.filter(function (pool: Pool) {
+      return pool.tokenIds.length < 3;
+    });
+    const parsed_pools = parsePoolsByTokens(filtered_pools);
+    await this.poolsTokens.bulkPut(parsed_pools);
+  }
   public async cacheStablePools(pools: StablePool[]) {
-    await this.stablePools.clear();
+    // await this.stablePools.clear();
     await this.stablePools.bulkPut(
       pools.map((stablePool: StablePool) => ({
         ...stablePool,
@@ -420,17 +449,15 @@ class RefDatabase extends Dexie {
       }))
     );
   }
-  public async checkStablePools() {
-    const pools = await this.stablePools.limit(10).toArray();
-    return (
-      pools.length > 0 &&
-      pools.every(
-        (pool) =>
-          Number(pool.update_time) >=
-          Number(moment().unix()) - Number(TOP_POOLS_TOKEN_REFRESH_INTERVAL)
-      )
+  public async cacheDclPools(pools: IPoolDcl[]) {
+    // await this.dclPools.clear();
+    await this.dclPools.bulkPut(
+      pools.map((dclPool: IPoolDcl) => ({
+        ...dclPool,
+        id: dclPool.pool_id,
+        update_time: moment().unix(),
+      }))
     );
   }
 }
-
 export default new RefDatabase();

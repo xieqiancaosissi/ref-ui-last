@@ -1,5 +1,5 @@
 import getConfig from "../utils/config";
-import { refFarmBoostViewFunction } from "../utils/near";
+import { refFarmBoostViewFunction } from "../utils/contract";
 import { toPrecision, scientificNotationToString } from "../utils/numbers";
 import { BigNumber } from "bignumber.js";
 import moment from "moment";

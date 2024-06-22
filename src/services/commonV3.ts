@@ -1,6 +1,6 @@
 import BigNumber from "bignumber.js";
 import { TokenMetadata } from "./ft-contract";
-import { PoolInfo } from "./swapV3";
+import { IPoolDcl } from "../interfaces/swapDcl";
 import getConfig from "../utils/config";
 import { FarmBoost, Seed } from "./farm";
 import { scientificNotationToString, toPrecision } from "../utils/numbers";
@@ -100,7 +100,7 @@ function get_X_Y_In_CurrentPoint(
   tokenX: TokenMetadata,
   tokenY: TokenMetadata,
   L: string,
-  poolDetail: PoolInfo
+  poolDetail: IPoolDcl
 ) {
   const { liquidity, liquidity_x, current_point } = poolDetail;
 
@@ -144,7 +144,7 @@ export function get_total_value_by_liquidity_amount_dcl({
 }: {
   left_point: number;
   right_point: number;
-  poolDetail: PoolInfo;
+  poolDetail: IPoolDcl;
   amount: string;
   price_x_y: Record<string, string>;
   metadata_x_y: Record<string, TokenMetadata>;

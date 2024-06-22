@@ -1,21 +1,28 @@
-import Big from "big.js";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useDebounce } from "react-use";
 import estimateSwap from "@/services/swap/estimateSwap";
-import { ONLY_ZEROS, scientificNotationToString } from "@/utils/numbers";
-import {
-  useSwapStore,
-  usePersistSwapStore,
-  IPersistSwapStore,
-} from "@/stores/swap";
+import { IEstimateResult } from "@/interfaces/swap";
+import { usePersistSwapStore, IPersistSwapStore } from "@/stores/swap";
 import { ITokenMetadata } from "./useBalanceTokens";
-const useSwap = () => {
-  const [firstInput, setFirstInput] = useState<boolean>(true);
-  const swapStore = useSwapStore();
+const useSwap = ({
+  tokenIn,
+  tokenOut,
+  tokenInAmount,
+  firstInput,
+  setFirstInput,
+  supportLittlePools,
+}: {
+  tokenIn: ITokenMetadata;
+  tokenOut: ITokenMetadata;
+  tokenInAmount: string;
+  firstInput: boolean;
+  setFirstInput: (f: boolean) => void;
+  supportLittlePools: boolean;
+}): IEstimateResult => {
+  const [swapEstimateResult, setSwapEstimateResult] = useState<IEstimateResult>(
+    {}
+  );
   const persistSwapStore = usePersistSwapStore() as IPersistSwapStore;
-  const tokenIn = swapStore.getTokenIn();
-  const tokenOut = swapStore.getTokenOut();
-  const tokenInAmount = swapStore.getTokenInAmount();
   const smartRoute = persistSwapStore.getSmartRoute();
   useDebounce(
     () => {
@@ -27,7 +34,7 @@ const useSwap = () => {
         });
       }
     },
-    firstInput ? 0 : 300,
+    firstInput ? 100 : 300,
     [tokenIn?.id, tokenOut?.id, tokenInAmount]
   );
   async function doEstimateSwap({
@@ -39,28 +46,33 @@ const useSwap = () => {
     tokenOut: ITokenMetadata;
     tokenInAmount: string;
   }) {
-    const { estimates: estimatesRes } = await estimateSwap({
+    clear();
+    estimateSwap({
       tokenIn,
       tokenOut,
       amountIn: tokenInAmount,
       supportLedger: !smartRoute,
-    });
-    setFirstInput(false);
-    const estimates = estimatesRes.map((e) => ({
-      ...e,
-      partialAmountIn: e.pool?.partialAmountIn,
-    }));
-    if (!estimates) throw "";
-    if (tokenInAmount && !ONLY_ZEROS.test(tokenInAmount)) {
-      const expectedOut = estimates.reduce(
-        (acc, cur) =>
-          acc.plus(cur.outputToken === tokenOut.id ? cur.estimate || 0 : 0),
-        new Big(0)
-      );
-      const tokenOutAmount = scientificNotationToString(expectedOut.toString());
-      swapStore.setTokenOutAmount(tokenOutAmount);
-    }
+      supportLittlePools,
+    })
+      .then(({ estimates }) => {
+        setSwapEstimateResult({
+          swapsToDo: estimates,
+          quoteDone: true,
+          tag: `${tokenIn.id}@${tokenOut.id}@${tokenInAmount}`,
+        });
+      })
+      .catch((e) => {
+        setSwapEstimateResult({
+          swapError: e,
+          quoteDone: true,
+          tag: `${tokenIn.id}@${tokenOut.id}@${tokenInAmount}`,
+        });
+      });
   }
+  function clear() {
+    setSwapEstimateResult({});
+  }
+  return swapEstimateResult;
 };
 
 export default useSwap;

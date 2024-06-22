@@ -6,3 +6,5 @@ export const TOP_POOLS_TOKEN_REFRESH_INTERVAL = 60;
 export const FEE_DIVISOR = 10000;
 export const STABLE_LP_TOKEN_DECIMALS = 18;
 export const RATED_POOL_LP_TOKEN_DECIMALS = 24;
+export const V3_POOL_FEE_LIST = [100, 400, 2000, 10000];
+export const LITTLE_POOL_TVL_BOUND = 3;

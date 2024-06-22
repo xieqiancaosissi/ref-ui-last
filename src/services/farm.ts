@@ -4,15 +4,15 @@ import {
   REF_FARM_BOOST_CONTRACT_ID,
   REF_FI_CONTRACT_ID,
   RefFiFunctionCallOptions,
-  executeFarmMultipleTransactions,
   refFarmBoostFunctionCall,
   refFiViewFunction,
-  viewFunction,
-} from "../utils/near";
+} from "../utils/contract";
+import { executeFarmMultipleTransactions, viewFunction } from "../utils/near";
 import { getAccountId, getCurrentWallet } from "../utils/wallet";
 import { TokenMetadata, ftGetStorageBalance } from "./ft-contract";
 import { getPoolsByIds, getTokenPriceList } from "./indexer";
-import { listPools } from "./swapV3";
+import { getDclPools } from "../services/swap/swapDcl";
+import { IPoolDcl } from "../interfaces/swapDcl";
 import {
   STORAGE_TO_REGISTER_WITH_MFT,
   storageDepositAction,
@@ -43,31 +43,6 @@ export const classificationOfCoins_key = [
   "gaming",
   "nft",
 ];
-export interface PoolInfo {
-  pool_id?: string;
-  token_x?: string;
-  token_y?: string;
-  fee: number;
-  point_delta?: number;
-  current_point?: number;
-  state?: string; // running or paused
-  total_liquidity?: string;
-  liquidity?: string;
-  liquidity_x?: string;
-  max_liquidity_per_point?: string;
-  percent?: string;
-  total_x?: string;
-  total_y?: string;
-  tvl?: number;
-  token_x_metadata?: TokenMetadata;
-  token_y_metadata?: TokenMetadata;
-  total_fee_x_charged?: string;
-  total_fee_y_charged?: string;
-  top_bin_apr?: string;
-  top_bin_apr_display?: string;
-  tvlUnreal?: boolean;
-}
-
 export interface PoolRPCView {
   id: number;
   token_account_ids: string[];
@@ -115,7 +90,7 @@ export interface Seed {
   total_seed_amount: string;
   total_seed_power: string;
   farmList?: FarmBoost[];
-  pool?: PoolRPCView & PoolInfo;
+  pool?: PoolRPCView & IPoolDcl;
   seedTvl?: string;
   hidden?: boolean;
   endedFarmsIsSplit?: boolean;
@@ -123,32 +98,6 @@ export interface Seed {
   token_meta_data?: TokenMetadata;
   farmer_count: number;
 }
-
-export interface PoolInfo {
-  pool_id?: string;
-  token_x?: string;
-  token_y?: string;
-  fee: number;
-  point_delta?: number;
-  current_point?: number;
-  state?: string; // running or paused
-  total_liquidity?: string;
-  liquidity?: string;
-  liquidity_x?: string;
-  max_liquidity_per_point?: string;
-  percent?: string;
-  total_x?: string;
-  total_y?: string;
-  tvl?: number;
-  token_x_metadata?: TokenMetadata;
-  token_y_metadata?: TokenMetadata;
-  total_fee_x_charged?: string;
-  total_fee_y_charged?: string;
-  top_bin_apr?: string;
-  top_bin_apr_display?: string;
-  tvlUnreal?: boolean;
-}
-
 export interface BoostConfig {
   affected_seeds: Record<string, number>;
   booster_decimal: number;
@@ -371,12 +320,12 @@ export const list_seeds_info = async () => {
 export const getBoostSeeds = async (): Promise<{
   seeds: Seed[];
   farms: FarmBoost[][];
-  pools: PoolRPCView[] & PoolInfo[];
+  pools: PoolRPCView[] & IPoolDcl[];
 }> => {
   try {
     const seeds: Seed[] = [];
     const farms: FarmBoost[][] = [];
-    const pools: PoolRPCView[] & PoolInfo[] = [];
+    const pools: PoolRPCView[] & IPoolDcl[] = [];
     const cacheData = await db.checkBoostSeeds();
     if (cacheData) {
       const list: BoostSeeds[] = await db.queryBoostSeeds();
@@ -412,7 +361,7 @@ export const list_seed_farms = async (seed_id: string) => {
 export const getBoostSeedsFromServer = async (): Promise<{
   seeds: Seed[];
   farms: FarmBoost[][];
-  pools: PoolRPCView[] & PoolInfo[];
+  pools: PoolRPCView[] & IPoolDcl[];
 }> => {
   try {
     // get all seeds
@@ -430,7 +379,7 @@ export const getBoostSeedsFromServer = async (): Promise<{
     const poolIds = new Set<string>();
     const dcl_poolIds = new Set<string>();
     // get all dcl pools
-    const dcl_all_pools: PoolInfo[] = await listPools();
+    const dcl_all_pools: IPoolDcl[] = await getDclPools();
     let pools: any[] = [];
     const both_normalPools_dclPools: any[] = [];
     list_seeds.forEach((seed: Seed) => {
@@ -461,7 +410,7 @@ export const getBoostSeedsFromServer = async (): Promise<{
         if (contractId == REF_UNI_V3_SWAP_CONTRACT_ID) {
           const [fixRange, dcl_pool_id, left_point, right_point] =
             tempPoolId.split("&");
-          pool = dcl_all_pools.find((p: PoolInfo) => {
+          pool = dcl_all_pools.find((p: IPoolDcl) => {
             if (p.pool_id == dcl_pool_id) return true;
           });
         } else {

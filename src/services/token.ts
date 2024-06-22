@@ -1,7 +1,6 @@
-import { getAccount } from "../utils/near";
 import getConfig from "../utils/config";
 import { getAccountId } from "../utils/wallet";
-import { viewFunction } from "../utils/near";
+import { getAccount, viewFunction } from "../utils/near";
 import db from "@/db/RefDatabase";
 import { useEffect, useState } from "react";
 import { TokenMetadata } from "./ft-contract";

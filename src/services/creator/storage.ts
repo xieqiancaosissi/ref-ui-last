@@ -5,7 +5,7 @@ import {
   REF_FI_CONTRACT_ID,
   refVeViewFunction,
   REF_UNI_V3_SWAP_CONTRACT_ID,
-} from "@/utils/near";
+} from "@/utils/contract";
 import getConfig from "@/utils/config";
 
 export const STORAGE_PER_TOKEN = "0.005";

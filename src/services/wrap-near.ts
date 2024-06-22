@@ -1,4 +1,4 @@
-import { ONE_YOCTO_NEAR } from "../utils/near";
+import { ONE_YOCTO_NEAR } from "../utils/contract";
 import getConfig from "../utils/config";
 import { Transaction } from "./farm";
 import { TokenMetadata } from "./ft-contract";

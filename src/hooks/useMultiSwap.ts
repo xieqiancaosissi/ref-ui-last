@@ -8,6 +8,8 @@ import {
 import { useSwapStore } from "@/stores/swap";
 import useSwap from "./useSwap";
 import useDclSwap from "./useDclSwap";
+import { getPriceImpact, getAverageFee } from "@/services/swap/swapUtils";
+import { SwapContractType } from "@/interfaces/swap";
 const useMultiSwap = ({
   supportDclQuote = false,
   supportLittlePools = false,
@@ -20,6 +22,7 @@ const useMultiSwap = ({
   const tokenIn = swapStore.getTokenIn();
   const tokenOut = swapStore.getTokenOut();
   const tokenInAmount = swapStore.getTokenInAmount();
+  const allTokenPrices = swapStore.getAllTokenPrices();
   const { swapError, swapsToDo, quoteDone, tag } = useSwap({
     tokenIn,
     tokenOut,
@@ -57,12 +60,33 @@ const useMultiSwap = ({
       const estimates = swapsToDo.map((e) => ({
         ...e,
         partialAmountIn: e.pool?.partialAmountIn,
+        contract: "Ref_Classic" as SwapContractType,
       }));
       expectedOutV1 = estimates.reduce(
         (acc, cur) =>
           acc.plus(cur.outputToken === tokenOut.id ? cur.estimate || 0 : 0),
         new Big(0)
       );
+      const priceImpactValue = getPriceImpact({
+        estimates,
+        tokenIn,
+        tokenOut,
+        tokenOutAmount: scientificNotationToString(expectedOutV1.toString()),
+        tokenInAmount,
+        tokenPriceList: allTokenPrices,
+      });
+      const avgFee = getAverageFee({
+        estimates,
+        tokenIn,
+        tokenOut,
+        tokenInAmount,
+      });
+      const priceImpact = scientificNotationToString(
+        new Big(priceImpactValue).minus(new Big((avgFee || 0) / 100)).toString()
+      );
+      swapStore.setEstimates(estimates);
+      swapStore.setPriceImpact(priceImpact);
+      swapStore.setAvgFee(avgFee);
     }
     if (!dclSwapError && dclSwapsToDo) {
       expectedOutDcl = Big(

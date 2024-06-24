@@ -8,8 +8,6 @@ import { toPrecision } from "@/utils/numbers";
 import { formatTokenPrice } from "@/utils/uiNumber";
 import { MIN_RETAINED_NEAR_AMOUNT } from "@/utils/constant";
 import getConfig from "@/utils/config";
-import { getAllTokenPrices } from "@/services/farm";
-import { TokenPrice } from "@/db/RefDatabase";
 import { useEffect, useState } from "react";
 const SelectTokenButton = dynamic(() => import("./SelectTokenButton"), {
   ssr: false,
@@ -27,17 +25,10 @@ export default function Input(props: IInputProps) {
   const { className, disable, token, isIn, isOut, amountOut } = props;
   const [amount, setAmount] = useState<string>("");
   const [showNearTip, setShowNearTip] = useState<boolean>(false);
-  const [allTokenPrices, setAllTokenPrices] = useState<
-    Record<string, TokenPrice>
-  >({});
   const swapStore = useSwapStore();
   const tokenOutAmount = swapStore.getTokenOutAmount();
+  const allTokenPrices = swapStore.getAllTokenPrices();
   const isNEAR = token?.id == WRAP_NEAR_CONTRACT_ID && token?.symbol == "NEAR";
-  useEffect(() => {
-    getAllTokenPrices().then((res) => {
-      setAllTokenPrices(res);
-    });
-  }, []);
   useEffect(() => {
     if (isIn) {
       swapStore.setTokenInAmount(amount);

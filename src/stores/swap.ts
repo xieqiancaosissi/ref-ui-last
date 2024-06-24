@@ -1,6 +1,8 @@
 import { ITokenMetadata } from "@/hooks/useBalanceTokens";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
+import { TokenPrice } from "@/db/RefDatabase";
+import { EstimateSwapView } from "@/interfaces/swap";
 
 export interface IPersistSwapStore {
   getSmartRoute: () => boolean;
@@ -49,12 +51,24 @@ interface ISwapStore {
   setTokenInAmount: (tokenInAmount: string) => void;
   getTokenOutAmount: () => string;
   setTokenOutAmount: (tokenOutAmount: string) => void;
+  getPriceImpact: () => string;
+  setPriceImpact: (priceImpact: string) => void;
+  getAvgFee: () => number;
+  setAvgFee: (avgFee: number) => void;
+  getEstimates: () => EstimateSwapView[];
+  setEstimates: (estimates: EstimateSwapView[]) => void;
+  getAllTokenPrices: () => Record<string, TokenPrice>;
+  setAllTokenPrices: (allTokenPrices: Record<string, TokenPrice>) => void;
 }
 export const useSwapStore = create<ISwapStore>((set: any, get: any) => ({
   tokenIn: null,
   tokenOut: null,
   tokenInAmount: "",
   tokenOutAmount: "",
+  priceImpact: "",
+  avgFee: "",
+  allTokenPrices: {},
+  estimates: [],
   getTokenIn: () => get().tokenIn,
   setTokenIn: (tokenIn: ITokenMetadata) =>
     set({
@@ -69,4 +83,13 @@ export const useSwapStore = create<ISwapStore>((set: any, get: any) => ({
   setTokenInAmount: (tokenInAmount: string) => set({ tokenInAmount }),
   getTokenOutAmount: () => get().tokenOutAmount,
   setTokenOutAmount: (tokenOutAmount: string) => set({ tokenOutAmount }),
+  getPriceImpact: () => get().priceImpact,
+  setPriceImpact: (priceImpact: string) => set({ priceImpact }),
+  getAvgFee: () => get().avgFee,
+  setAvgFee: (avgFee: number) => set({ avgFee }),
+  getEstimates: () => get().estimates,
+  setEstimates: (estimates: EstimateSwapView[]) => set({ estimates }),
+  getAllTokenPrices: () => get().allTokenPrices,
+  setAllTokenPrices: (allTokenPrices: Record<string, TokenPrice>) =>
+    set({ allTokenPrices }),
 }));

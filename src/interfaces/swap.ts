@@ -143,3 +143,5 @@ export interface IEstimateResult {
   quoteDone?: boolean;
   tag?: string;
 }
+
+export type SwapMarket = "ref" | "tri" | "orderly" | undefined;

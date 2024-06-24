@@ -93,7 +93,8 @@ export const calculateFeePercent = (fee: number) => {
 };
 
 export const calculateFeeCharge = (fee: number, total: string) => {
-  return math.floor(math.evaluate(`(${fee} / ${BPS_CONVERSION}) * ${total}`));
+  const floor: any = math.floor;
+  return floor(math.evaluate(`(${fee} / ${BPS_CONVERSION}) * ${total}`), 3);
 };
 
 export const subtraction = (initialValue: string, toBeSubtract: string) => {
@@ -328,3 +329,10 @@ export const niceDecimalsExtreme = (number: string | number, precision = 2) => {
     return str;
   }
 };
+export function numberWithCommas(x: number | string) {
+  const str = typeof x === "number" ? x.toString() : x;
+
+  const parts = scientificNotationToString(str).split(".");
+  parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  return parts.join(".");
+}

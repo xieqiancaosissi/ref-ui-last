@@ -76,9 +76,11 @@ export function SWitchButton(props: any) {
   );
 }
 
-export function RedWarningIcon() {
+export function WarnIcon(props: any) {
+  // #FF4B76
   return (
     <svg
+      {...props}
       width="16"
       height="15"
       viewBox="0 0 16 15"
@@ -89,7 +91,7 @@ export function RedWarningIcon() {
         fillRule="evenodd"
         clipRule="evenodd"
         d="M6.19883 1C6.96863 -0.333333 8.89313 -0.333333 9.66293 1L15.5908 11.2674C16.3606 12.6007 15.3984 14.2674 13.8588 14.2674H2.00298C0.463383 14.2674 -0.498867 12.6007 0.270933 11.2674L6.19883 1ZM7.09652 5.50809C7.09652 5.04736 7.47002 4.67386 7.93075 4.67386C8.39148 4.67386 8.76497 5.04735 8.76497 5.50809V8.84499C8.76497 9.30572 8.39148 9.67922 7.93075 9.67922C7.47002 9.67922 7.09652 9.30572 7.09652 8.84499V5.50809ZM7.93075 10.5132C7.47002 10.5132 7.09652 10.8867 7.09652 11.3475C7.09652 11.8082 7.47002 12.1817 7.93075 12.1817C8.39148 12.1817 8.76497 11.8082 8.76497 11.3475C8.76497 10.8867 8.39148 10.5132 7.93075 10.5132Z"
-        fill="#FF4B76"
+        fill="currentColor"
       />
     </svg>
   );
@@ -110,6 +112,189 @@ export function CheckboxIcon(props: any) {
         stroke="white"
         strokeWidth="1.8"
         strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+export function RefMarketIcon(props: any) {
+  return (
+    <svg
+      {...props}
+      width="14"
+      height="14"
+      viewBox="0 0 14 14"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <rect
+        x="0.5"
+        y="0.5"
+        width="13"
+        height="13"
+        rx="1.5"
+        fill="#0F1D27"
+        stroke="#26323C"
+      />
+      <path d="M7.86719 10.544H10.6104L7.86719 7.80078V10.544Z" fill="white" />
+      <path
+        d="M10.6113 2.99988L9.01111 2.99988L10.6113 4.6001L10.6113 2.99988Z"
+        fill="#00C6A2"
+      />
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M7.98026 7.80145C7.94234 7.80145 7.90464 7.80048 7.86719 7.79856V6.07939L9.73285 4.34698C9.99637 4.70641 10.152 5.1499 10.152 5.62973C10.152 6.82914 9.17967 7.80145 7.98026 7.80145ZM9.24502 3.86409L7.86719 5.14351V3.4609C7.90464 3.45898 7.94234 3.45801 7.98026 3.45801C8.45212 3.45801 8.88883 3.60849 9.24502 3.86409Z"
+        fill="white"
+      />
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M7.63945 3.45703H5.58203V5.48823L6.50346 6.40966L7.63945 5.3548V3.45703ZM7.63945 6.29068L6.48583 7.3619L5.58203 6.45811V10.5437H7.63945V6.29068Z"
+        fill="white"
+      />
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M5.35048 3.45801H3.06445V6.40214L4.77929 4.6873L5.35048 5.25848V3.45801ZM5.35048 6.22836L4.77929 5.65718L3.06445 7.37202V10.5447H5.35048V6.22836Z"
+        fill="white"
+      />
+    </svg>
+  );
+}
+
+export function ArrowTopRightIcon(props: any) {
+  return (
+    <svg
+      {...props}
+      width="9"
+      height="9"
+      viewBox="0 0 9 9"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M2 1H8V7"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="square"
+      />
+      <path
+        d="M7.5 1.5L2 7"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="square"
+      />
+    </svg>
+  );
+}
+
+export function ArrowRightIcon(props: any) {
+  return (
+    <svg
+      {...props}
+      width="5"
+      height="10"
+      viewBox="0 0 5 10"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path d="M0.5 1L3.5 5L0.5 9" stroke="#73818B" />
+    </svg>
+  );
+}
+export function PolygonArrowIcon(props: any) {
+  return (
+    <svg
+      {...props}
+      width="6"
+      height="10"
+      viewBox="0 0 6 10"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M6 5L-4.07833e-07 9.33013L-2.92811e-08 0.669872L6 5Z"
+        fill="#6A7279"
+      />
+    </svg>
+  );
+}
+
+export function RefMarketRouteIcon(props: any) {
+  return (
+    <svg
+      {...props}
+      width={props.size || "26"}
+      height={props.size || "26"}
+      viewBox="0 0 26 26"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <rect
+        x="0.5"
+        y="0.5"
+        width="25"
+        height="25"
+        rx="6.5"
+        fill="black"
+        stroke="#424D56"
+      />
+      <path
+        d="M15.2715 19.9029H20.5079L15.2715 14.6665V19.9029Z"
+        fill="white"
+      />
+      <path
+        d="M20.502 5.49965L17.4474 5.49965L20.502 8.5542L20.502 5.49965Z"
+        fill="#00C6A2"
+      />
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M15.4956 14.6657C15.4204 14.6657 15.3457 14.6637 15.2715 14.6597V11.3813L18.8388 8.06877C19.3431 8.75537 19.641 9.60301 19.641 10.5202C19.641 12.8097 17.785 14.6657 15.4956 14.6657ZM17.9068 7.14778L15.2715 9.59488V6.38071C15.3457 6.37676 15.4204 6.37476 15.4956 6.37476C16.395 6.37476 17.2275 6.66118 17.9068 7.14778Z"
+        fill="white"
+      />
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M14.8355 6.37671H10.9082V10.2542L12.6676 12.0136L14.8355 10.0005V6.37671ZM14.8355 11.787L12.6339 13.8313L10.9082 12.1056V19.904H14.8355V11.787Z"
+        fill="white"
+      />
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M10.4672 6.37671H6.10352V11.9975L9.37701 8.72403L10.4672 9.81419V6.37671ZM10.4672 11.6655L9.37701 10.5754L6.10352 13.8489V19.904H10.4672V11.6655Z"
+        fill="white"
+      />
+    </svg>
+  );
+}
+
+export function PoolLinkIcon(props: any) {
+  return (
+    <svg
+      {...props}
+      width="20"
+      height="20"
+      viewBox="0 0 20 20"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <rect width="20" height="20" rx="4" fill="#2B3843" />
+      <rect width="20" height="20" rx="4" fill="#2B3843" />
+      <path
+        d="M5 9.16744C5 9.16744 6.2 10.5275 8.2 10.0741C9.3767 9.80741 9.8 9.62075 11.8 8.71408C13.8 7.8074 15 10.0741 15 10.0741"
+        stroke="currentColor"
+        strokeWidth="1.2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M5 6V12.3333C5 13.4379 5.89543 14.3333 7 14.3333H13C14.1046 14.3333 15 13.4379 15 12.3333V6"
+        stroke="currentColor"
+        strokeWidth="1.2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   );

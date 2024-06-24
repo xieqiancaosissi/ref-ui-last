@@ -1,12 +1,19 @@
 import moment from "moment";
+import * as math from "mathjs";
 import Big from "big.js";
-import _ from "lodash";
+import _, { sortBy } from "lodash";
 import { PoolRPCView, Pool, IPoolsByTokens } from "@/interfaces/swap";
 import { TokenMetadata } from "@/services/ft-contract";
-import { toReadableNumber } from "@/utils/numbers";
+import {
+  toReadableNumber,
+  scientificNotationToString,
+  toNonDivisibleNumber,
+  percent,
+  subtraction,
+} from "@/utils/numbers";
 import { ALL_STABLE_POOL_IDS, AllStableTokenIds } from "./swapConfig";
 import getStablePoolConfig from "@/utils/getStablePoolConfig";
-import { StablePool } from "@/interfaces/swap";
+import { StablePool, EstimateSwapView, SwapMarket } from "@/interfaces/swap";
 import {
   STABLE_LP_TOKEN_DECIMALS,
   RATED_POOL_LP_TOKEN_DECIMALS,
@@ -136,3 +143,199 @@ export const getStablePoolInfoThisPair = ({
       p.token_account_ids.includes(tokenOutId)
   );
 };
+export function separateRoutes(
+  actions: EstimateSwapView[],
+  outputToken: string
+) {
+  const res = [];
+  let curRoute = [];
+
+  for (const i in actions) {
+    curRoute.push(actions[i]);
+    if (actions[i].outputToken === outputToken) {
+      res.push(curRoute);
+      curRoute = [];
+    }
+  }
+
+  return res;
+}
+export const getPriceImpact = ({
+  estimates,
+  tokenIn,
+  tokenOut,
+  tokenInAmount,
+  tokenOutAmount,
+  tokenPriceList,
+}: {
+  estimates: EstimateSwapView[];
+  tokenInAmount: string;
+  tokenIn: TokenMetadata;
+  tokenOut: TokenMetadata;
+  tokenOutAmount: string;
+  tokenPriceList: any;
+}) => {
+  try {
+    const newPrice = new Big(tokenInAmount || "0").div(
+      new Big(tokenOutAmount || "1")
+    );
+
+    const routes = separateRoutes(estimates, tokenOut.id);
+    const priceImpactForRoutes = routes.map((estimates) => {
+      let oldPrice: Big;
+
+      const priceIn = tokenPriceList[tokenIn.id]?.price;
+      const priceOut = tokenPriceList[tokenOut.id]?.price;
+
+      if (!!priceIn && !!priceOut) {
+        oldPrice = new Big(priceOut).div(new Big(priceIn));
+
+        return newPrice.lt(oldPrice)
+          ? "0"
+          : newPrice.minus(oldPrice).div(newPrice).times(100).abs().toFixed();
+      }
+
+      const pools = estimates.map((s) => s?.pool);
+
+      oldPrice = pools.reduce((acc, pool: any, i) => {
+        const curRate = isStablePool(pool.id)
+          ? new Big(pool.rates[estimates?.[i]?.outputToken || 0]).div(
+              new Big(pool.rates[estimates?.[i]?.inputToken || 1])
+            )
+          : new Big(
+              scientificNotationToString(
+                calculateMarketPrice(
+                  pool,
+                  estimates?.[0]?.tokens?.[i],
+                  estimates?.[0]?.tokens?.[i + 1]
+                ).toString()
+              )
+            );
+
+        return acc.mul(curRate);
+      }, new Big(1));
+
+      return newPrice.lt(oldPrice)
+        ? "0"
+        : newPrice.minus(oldPrice).div(newPrice).times(100).abs().toFixed();
+    });
+    const rawRes = priceImpactForRoutes.reduce(
+      (pre, cur, i) => {
+        return pre.plus(
+          new Big(routes?.[i]?.[0]?.partialAmountIn || 0)
+            .div(new Big(toNonDivisibleNumber(tokenIn.decimals, tokenInAmount)))
+            .mul(cur)
+        );
+      },
+
+      new Big(0)
+    );
+
+    return scientificNotationToString(rawRes.toString());
+  } catch (error) {
+    return "0";
+  }
+};
+export const calculateMarketPrice = (
+  pool: Pool,
+  tokenIn: TokenMetadata | any,
+  tokenOut: TokenMetadata | any
+) => {
+  const cur_in_balance = toReadableNumber(
+    tokenIn.decimals,
+    pool.supplies[tokenIn.id]
+  );
+
+  const cur_out_balance = toReadableNumber(
+    tokenOut.decimals,
+    pool.supplies[tokenOut.id]
+  );
+
+  return math.evaluate(`(${cur_in_balance} / ${cur_out_balance})`);
+};
+export const getAverageFee = ({
+  estimates,
+  tokenIn,
+  tokenOut,
+  tokenInAmount,
+}: {
+  estimates: EstimateSwapView[];
+  tokenIn: TokenMetadata;
+  tokenOut: TokenMetadata;
+  tokenInAmount: string;
+}) => {
+  let avgFee: number = 0;
+  try {
+    const routes = separateRoutes(estimates, tokenOut.id);
+
+    routes.forEach((route) => {
+      const allocation = new Big(route[0]?.partialAmountIn || "0").div(
+        new Big(toNonDivisibleNumber(tokenIn.decimals, tokenInAmount))
+      );
+
+      const routeFee = route.reduce(
+        (acc, cur) => {
+          return acc.plus(new Big(cur?.pool?.fee || "0"));
+        },
+
+        new Big(0)
+      );
+
+      avgFee += allocation.mul(routeFee).toNumber();
+    });
+  } catch (error) {}
+  return avgFee;
+};
+
+export function getPoolAllocationPercents(pools: Pool[]) {
+  if (pools.length === 1) return ["100"];
+
+  if (pools) {
+    const partialAmounts = pools.map((pool) => {
+      return math.bignumber(pool.partialAmountIn);
+    });
+
+    const ps: string[] = new Array(partialAmounts.length).fill("0");
+
+    const sum =
+      partialAmounts.length === 1
+        ? partialAmounts[0]
+        : math.sum(...partialAmounts);
+
+    const sortedAmount = sortBy(partialAmounts, (p) => Number(p));
+
+    const minIndexes: number[] = [];
+
+    for (let k = 0; k < sortedAmount.length - 1; k++) {
+      let minIndex = -1;
+
+      for (let j = 0; j < partialAmounts.length; j++) {
+        if (partialAmounts[j].eq(sortedAmount[k]) && !minIndexes.includes(j)) {
+          minIndex = j;
+          minIndexes.push(j);
+          break;
+        }
+      }
+      const res = math
+        .round(percent(partialAmounts[minIndex].toString(), sum))
+        .toString();
+
+      if (Number(res) === 0) {
+        ps[minIndex] = "1";
+      } else {
+        ps[minIndex] = res;
+      }
+    }
+
+    const finalPIndex = ps.indexOf("0");
+
+    ps[finalPIndex] = subtraction(
+      "100",
+      ps.length === 1 ? Number(ps[0]) : math.sum(...ps.map((p) => Number(p)))
+    ).toString();
+
+    return ps;
+  } else {
+    return [];
+  }
+}

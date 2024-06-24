@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { SetIcon } from "../../components/swap/icons";
+import { SetIcon, WarnIcon } from "../../components/swap/icons";
 import { QuestionIcon } from "../../components/common/Icons";
-import { usePersistSwapStore } from "../../stores/swap";
+import { usePersistSwapStore, IPersistSwapStore } from "../../stores/swap";
 import { INIT_SLIPPAGE_VALUE } from "@/utils/constant";
 import swapStyles from "./swap.module.css";
 
@@ -10,8 +10,9 @@ export default function SetPopup() {
   const [show, setShow] = useState<boolean>();
   const [slippage, setSlippage] = useState<string>(INIT_SLIPPAGE_VALUE);
   const slippageOptions = ["0.1", "0.5", "1"];
-  const swapStore: any = usePersistSwapStore();
-  const smartRoute = swapStore.getSmartRoute();
+  const persistSwapStore: IPersistSwapStore = usePersistSwapStore();
+  const smartRoute = persistSwapStore.getSmartRoute();
+  const slippageStore = persistSwapStore.getSlippage();
   useEffect(() => {
     function handleOutsideClick(event: any) {
       const path = event.composedPath();
@@ -25,8 +26,25 @@ export default function SetPopup() {
       document.removeEventListener("click", handleOutsideClick);
     };
   }, []);
+  useEffect(() => {
+    if (!show) {
+      setSlippage(slippageStore.toString());
+    }
+  }, [show, slippageStore]);
+  const slippageStatus = useMemo(() => {
+    let status = 0; // 0: normal; 1:warn; 2: invalid
+    if (Number(slippage || 0) > 0 && Number(slippage || 0) < 100) {
+      if (Number(slippage || 0) > 1) {
+        status = 1;
+      }
+      persistSwapStore.setSlippage(+slippage);
+    } else {
+      status = 2;
+    }
+    return status;
+  }, [slippage]);
   function switchSmartRoute() {
-    swapStore.setSmartRoute(!smartRoute);
+    persistSwapStore.setSmartRoute(!smartRoute);
   }
   function switchSet() {
     setShow(!show);
@@ -35,12 +53,8 @@ export default function SetPopup() {
     setShow(false);
   }
   function onchange(e: any) {
-    setSlippage(e.target.value);
-  }
-  function onblur(e: any) {
-    if (!slippage) {
-      setSlippage(INIT_SLIPPAGE_VALUE);
-    }
+    const value = e.target.value;
+    setSlippage(value);
   }
   const variants = {
     on: { marginLeft: "16px" },
@@ -95,11 +109,27 @@ export default function SetPopup() {
                 className="w-8 bg-transparent outline-none text-right"
                 value={slippage}
                 onChange={onchange}
-                onBlur={onblur}
               />
               %
             </div>
           </div>
+          {/* Slippage Tip */}
+          {slippageStatus == 0 ? null : (
+            <div
+              className={`flex items-start gap-1  rounded px-1.5 py-1 text-xs  bg-opacity-15 mt-1.5 ${
+                slippageStatus == 1
+                  ? "bg-yellow-10 text-yellow-10"
+                  : "bg-red-10 text-red-10"
+              }`}
+            >
+              <WarnIcon className="relative top-0.5 transform scale-75 flex-shrink-0" />
+              <span>
+                {slippageStatus == 1
+                  ? "Be careful, please check the minimum you can receive"
+                  : "The slippage tolerance is invalid"}
+              </span>
+            </div>
+          )}
         </div>
         {/* Smart Route switch */}
         <div className="flexBetween">

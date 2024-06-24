@@ -16,6 +16,7 @@ import {
 import { fetchDclPoolsAndCacheData } from "@/services/swap/swapDcl";
 import { POOL_REFRESH_INTERVAL } from "@/utils/constant";
 import useMultiSwap from "@/hooks/useMultiSwap";
+import { getAllTokenPrices } from "@/services/farm";
 import {
   useSwapStore,
   usePersistSwapStore,
@@ -46,6 +47,11 @@ export default function Swap(props: any) {
     return () => {
       clearInterval(id);
     };
+  }, []);
+  useEffect(() => {
+    getAllTokenPrices().then((res) => {
+      swapStore.setAllTokenPrices(res);
+    });
   }, []);
   function onCheck() {
     setHighImpactCheck(!highImpactCheck);
@@ -101,8 +107,11 @@ export default function Swap(props: any) {
         {/* input part */}
         <div className="flex flex-col items-center mt-4">
           <Input token={tokenIn} isIn />
-          <div className="flex items-center justify-center rounded w-7 h-7 cursor-pointer text-gray-50 hover:text-white  bg-dark-60 hover:bg-dark-10 -my-3.5 relative z-10 border-2 border-dark-10">
-            <SWitchButton onClick={onSwitch} />
+          <div
+            className="flex items-center justify-center rounded w-7 h-7 cursor-pointer text-gray-50 hover:text-white  bg-dark-60 hover:bg-dark-10 -my-3.5 relative z-10 border-2 border-dark-10"
+            onClick={onSwitch}
+          >
+            <SWitchButton />
           </div>
           <Input
             disable

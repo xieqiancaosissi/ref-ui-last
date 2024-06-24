@@ -43,6 +43,9 @@ const config: Config = {
           130: "#717E8D",
           140: "#414B57",
           150: "#AFB7BD",
+          160: "#73818B",
+          170: "#373F4A",
+          180: "#7E8993",
         },
         dark: {
           10: "#1B242C",
@@ -55,6 +58,8 @@ const config: Config = {
           80: "#566069",
           45: "#16212A",
           90: "#273342",
+          100: "#414E5D",
+          110: "#424D56",
         },
         green: {
           10: "#9EFE01",
@@ -71,7 +76,7 @@ const config: Config = {
         },
         purple: {
           10: "#A199FF",
-          20:"#AA95FF"
+          20: "#AA95FF",
         },
       },
       width: {
@@ -106,6 +111,9 @@ const config: Config = {
           "radial-gradient(59.55% 113.53% at 25.15% -10.79%, rgba(250, 255, 0, 0.3) 0%, rgba(33, 43, 53, 0.09) 100%)",
         createPoolLinear: "linear-gradient(90deg, #9EFF00 1.39%, #5F9900 100%)",
       }),
+    },
+    screens: {
+      xsm: { min: "300px", max: "1023px" },
     },
   },
   plugins: [

@@ -15,9 +15,7 @@ import {
 import { ITokenMetadata } from "@/hooks/useBalanceTokens";
 import { SelectTokenContext } from "./Context";
 import { TokenMetadata } from "@/services/ft-contract";
-import { getAllTokenPrices } from "@/services/farm";
-import { TokenPrice } from "@/db/RefDatabase";
-import { toPrecision } from "@/utils/numbers";
+import { useSwapStore } from "@/stores/swap";
 import { formatTokenPrice } from "@/utils/uiNumber";
 export default function SelectTokenModal({
   isOpen,
@@ -29,21 +27,15 @@ export default function SelectTokenModal({
   onSelect: (token: ITokenMetadata) => void;
 }) {
   const [searchText, setSearchText] = useState<string>("");
-  const [allTokenPrices, setAllTokenPrices] = useState<
-    Record<string, TokenPrice>
-  >({});
   const [hoverCommonToken, setHoverCommonToken] =
     useState<TokenMetadata | null>();
   const tokenStore = useTokenStore() as ITokenStore;
   const accountTokenStore = useAccountTokenStore() as IAccountTokenStore;
+  const swapStore = useSwapStore();
   const common_tokens: ITokenMetadata[] = tokenStore.get_common_tokens();
   const defaultAccountBalances = accountTokenStore.getDefaultAccountBalances();
   const autoAccountBalances = accountTokenStore.getAutoAccountBalances();
-  useEffect(() => {
-    getAllTokenPrices().then((res) => {
-      setAllTokenPrices(res);
-    });
-  }, []);
+  const allTokenPrices = swapStore.getAllTokenPrices();
   function changeSearchText(e: any) {
     setSearchText(e.target.value);
   }

@@ -3,7 +3,7 @@
   left: 50%;
   display: none;
   transform: translateX(-50%);
-  border-color: #2D343D;
+  border-color: #2d343d;
   background-color: #101922;
 }
 .iconContainer:hover {

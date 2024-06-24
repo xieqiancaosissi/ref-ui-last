@@ -69,6 +69,10 @@ const config: Config = {
         yellow: {
           10: "#E6B401",
         },
+        purple: {
+          10: "#A199FF",
+          20:"#AA95FF"
+        },
       },
       width: {
         ...getStyleMapping(1800, 0),

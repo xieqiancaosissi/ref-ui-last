@@ -128,6 +128,12 @@ export default function Withdraw({
         e.stopPropagation();
         onRequestClose();
       }}
+      style={{
+        overlay: {
+          backdropFilter: "blur(10px)",
+          WebkitBackdropFilter: "blur(10px)",
+        },
+      }}
     >
       <div style={{ width: "430px" }} className="text-white">
         <div className="rounded-lg bg-dark-10 p-6">

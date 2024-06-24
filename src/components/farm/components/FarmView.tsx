@@ -28,7 +28,6 @@ import {
   formatWithCommas,
 } from "@/utils/numbers";
 import BigNumber from "bignumber.js";
-import { zeroPad } from "ethers/lib/utils";
 import _ from "lodash";
 import moment from "moment";
 import { useHistory } from "react-router-dom";
@@ -45,12 +44,14 @@ import { NEAR_META_DATA, WNEAR_META_DATA } from "../../../utils/nearMetaData";
 import { useTokens } from "../../../services/token";
 import CustomTooltip from "../../customTooltip/customTooltip";
 import CalcModelBooster from "./CalcModelBooster";
-import { FarmListRewards, FarmPlaceholder } from "../icon";
+import { FarmListDCLIcon, FarmListRewards, FarmPlaceholder } from "../icon";
 import {
   LP_STABLE_TOKEN_DECIMALS,
   LP_TOKEN_DECIMALS,
 } from "../../../services/m-token";
 import styles from "../farm.module.css";
+import CalcModelDcl from "./CalcModelDcl";
+import Countdown, { zeroPad } from "react-countdown";
 
 const {
   REF_VE_CONTRACT_ID,
@@ -481,6 +482,34 @@ export function FarmView(props: {
       return "";
     }
   }
+  function getStartTime() {
+    let start_at: any[] = [];
+    const farmList = seed.farmList;
+    farmList &&
+      farmList.forEach(function (item) {
+        start_at.push(item.terms.start_at);
+      });
+    start_at = _.sortBy(start_at);
+    start_at = start_at.filter(function (val) {
+      return val != "0";
+    });
+    return start_at[0];
+  }
+  const renderer = (countdown: any) => {
+    if (countdown.completed) {
+      return null;
+    } else {
+      return (
+        <div style={{ width: "85px" }} className="whitespace-nowrap">
+          {countdown.days ? countdown.days + "d: " : ""}
+          {zeroPad(countdown.hours)}
+          {"h"}: {zeroPad(countdown.minutes)}
+          {"m"}
+          {countdown.days ? "" : ": " + zeroPad(countdown.seconds) + "s"}
+        </div>
+      );
+    }
+  };
   function isInMonth() {
     const endedStatus = isEnded();
     if (endedStatus) return false;
@@ -519,6 +548,48 @@ export function FarmView(props: {
       }
     }
     return status;
+  }
+  function getRange() {
+    const [fixRange, dcl_pool_id, left_point, right_point] =
+      temp_pool_id.split("&");
+    const tokensMetaData = pool?.tokens_meta_data;
+
+    if (!tokensMetaData) {
+      return;
+    }
+
+    const [token_x_metadata, token_y_metadata] = tokensMetaData;
+    const decimalRate =
+      Math.pow(10, token_x_metadata.decimals) /
+      Math.pow(10, token_y_metadata.decimals);
+    let left_price = getPriceByPoint(+left_point, decimalRate);
+    let right_price = getPriceByPoint(+right_point, decimalRate);
+    if (rate_need_to_reverse_display) {
+      const temp = left_price;
+      left_price = new BigNumber(1).dividedBy(right_price).toFixed();
+      right_price = new BigNumber(1).dividedBy(temp).toFixed();
+    }
+    const display_left_price = displayNumberToAppropriateDecimals(left_price);
+    const display_right_price = displayNumberToAppropriateDecimals(right_price);
+
+    return (
+      <div className="flex items-center">
+        <span className="text-sm">
+          {display_left_price} ~ {display_right_price}
+        </span>
+        {/* <span className="text-sm text-farmText ml-2">
+          {rate_need_to_reverse_display ? (
+            <>
+              {token_x_metadata.symbol}/{token_y_metadata.symbol}
+            </>
+          ) : (
+            <>
+              {token_y_metadata.symbol}/{token_x_metadata.symbol}
+            </>
+          )}
+        </span> */}
+      </div>
+    );
   }
   function showNewTag() {
     if (is_dcl_pool) {
@@ -571,7 +642,7 @@ export function FarmView(props: {
         `}
       >
         <div className="frcb mb-5">
-          <div className="relative w-full h-14">
+          <div className="relative w-min h-14 flex-shrink-0">
             {tokens_sort.length === 2 ? (
               <>
                 {tokens_sort.map((token, index) => {
@@ -591,6 +662,17 @@ export function FarmView(props: {
                   );
                 })}
               </>
+            ) : tokens_sort.length === 3 ? (
+              <div className="flex">
+                {tokens_sort.map((token, index) => (
+                  <label
+                    key={token.id}
+                    className="rounded-full box-content overflow-hidden bg-cardBg w-8 h-8 border border-dark-90"
+                  >
+                    <img src={token.icon} className="w-full h-full" />
+                  </label>
+                ))}
+              </div>
             ) : (
               <div className="relative grid grid-cols-2 grid-rows-2 gap-0">
                 {tokens_sort.map((token, index) => {
@@ -600,12 +682,12 @@ export function FarmView(props: {
 
                   const marginClass =
                     index === 1
-                      ? "ml-[-34px]"
+                      ? "ml-[-2px]"
                       : index === 2
                       ? "mt-[-6px]"
                       : index === 3
-                      ? "ml-[-34px] mt-[-6px]"
-                      : "";
+                      ? "ml-[22px] mt-[-6px]"
+                      : "ml-[22px]";
 
                   return (
                     <label
@@ -621,8 +703,11 @@ export function FarmView(props: {
             )}
           </div>
 
-          <div className="flex flex-col items-end ">
-            <a href="#" className="text-base whitespace-nowrap">
+          <div className="flex flex-col items-end flex-grow ">
+            <a
+              href="#"
+              className="text-base whitespace-nowrap overflow-hidden text-ellipsis max-w-44"
+            >
               {tokens_sort.map((token, index) => {
                 const hLine = index === tokens.length - 1 ? "" : "-";
                 return `${toRealSymbol(token.symbol)}${hLine}`;
@@ -698,51 +783,113 @@ export function FarmView(props: {
                 </div>
               </div>
               {showNewTag() ? <NewTag className="ml-1"></NewTag> : null}
+              {isPending() ? (
+                <div className="flex flex-col text-purple-10 text-xs bg-purple-20 bg-opacity-20 rounded-2xl px-2 py-0.5 ml-1">
+                  <em>Coming</em>
+                  <Countdown
+                    date={moment.unix(getStartTime()).valueOf()}
+                    renderer={renderer}
+                  />
+                </div>
+              ) : is_dcl_pool ? (
+                <FarmListDCLIcon className="ml-1" />
+              ) : null}
+              {status_is_new_or_will_end() == "will end" ? (
+                <span className="text-xs text-redwarningColor bg-purple-20 bg-opacity-20 rounded-3xl px-1.5 py-1">
+                  Ending soon
+                </span>
+              ) : null}
             </div>
           </div>
         </div>
-        <div className="frcb mb-3.5">
-          <p className="text-gray-60 text-sm">Total staked</p>
-          <p className="text-sm">
-            {Number(seed.seedTvl) == 0
-              ? "-"
-              : `$${toInternationalCurrencySystem(seed.seedTvl || "", 2)}`}
-          </p>
-        </div>
-        <div className="frcb mb-3.5">
-          <p className="text-gray-60 text-sm">APR</p>
-          <p className="text-sm frcc">
-            {getTotalApr()}
-            <CalcIcon
-              onClick={(e: any) => {
-                e.stopPropagation();
-                setCalcVisible(true);
-              }}
-              className="text-farmText ml-1.5 cursor-pointer hover:text-greenColor"
-            />
-          </p>
-        </div>
-        <div className="frcb">
-          <p className="text-gray-60 text-sm">Your stake/Unclaimed</p>
-          <p className="text-sm frcc">
-            {Number(yourTvl) == 0
-              ? "0"
-              : "$" + toInternationalCurrencySystem(yourTvl, 2)}
-            /
-            <p
-              className={`${
-                getTotalUnclaimedRewards() === "0"
-                  ? "text-white"
-                  : "text-green-10"
-              } frcc`}
-            >
-              {getTotalUnclaimedRewards() !== "0" ? (
-                <FarmListRewards className="ml-1 mr-1" />
-              ) : null}
-              {getTotalUnclaimedRewards()}
-            </p>
-          </p>
-        </div>
+        {is_dcl_pool ? (
+          <>
+            <div className="frcb mb-3.5">
+              <p className="text-gray-60 text-sm">Range</p>
+              <p className="text-sm">{getRange()}</p>
+            </div>
+            <div className="frcb mb-3.5">
+              <p className="text-gray-60 text-sm">APR</p>
+              <p className="text-sm frcc">
+                {getTotalApr()}
+                <CalcIcon
+                  onClick={(e: any) => {
+                    e.stopPropagation();
+                    setDclCalcVisible(true);
+                  }}
+                  className="text-farmText ml-1.5 cursor-pointer hover:text-greenColor"
+                />
+              </p>
+            </div>
+            <div className="frcb">
+              <p className="text-gray-60 text-sm">Your stake/Unclaimed</p>
+              <p className="text-sm frcc">
+                {Number(yourTvl) == 0
+                  ? "0"
+                  : "$" + toInternationalCurrencySystem(yourTvl, 2)}
+                /
+                <p
+                  className={`${
+                    getTotalUnclaimedRewards() === "0"
+                      ? "text-white"
+                      : "text-green-10"
+                  } frcc`}
+                >
+                  {getTotalUnclaimedRewards() !== "0" ? (
+                    <FarmListRewards className="ml-1 mr-1" />
+                  ) : null}
+                  {getTotalUnclaimedRewards()}
+                </p>
+              </p>
+            </div>
+          </>
+        ) : null}
+        {!is_dcl_pool ? (
+          <>
+            <div className="frcb mb-3.5">
+              <p className="text-gray-60 text-sm">Total staked</p>
+              <p className="text-sm">
+                {Number(seed.seedTvl) == 0
+                  ? "-"
+                  : `$${toInternationalCurrencySystem(seed.seedTvl || "", 2)}`}
+              </p>
+            </div>
+            <div className="frcb mb-3.5">
+              <p className="text-gray-60 text-sm">APR</p>
+              <p className="text-sm frcc">
+                {getTotalApr()}
+                <CalcIcon
+                  onClick={(e: any) => {
+                    e.stopPropagation();
+                    setCalcVisible(true);
+                  }}
+                  className="text-farmText ml-1.5 cursor-pointer hover:text-greenColor"
+                />
+              </p>
+            </div>
+            <div className="frcb">
+              <p className="text-gray-60 text-sm">Your stake/Unclaimed</p>
+              <p className="text-sm frcc">
+                {Number(yourTvl) == 0
+                  ? "0"
+                  : "$" + toInternationalCurrencySystem(yourTvl, 2)}
+                /
+                <p
+                  className={`${
+                    getTotalUnclaimedRewards() === "0"
+                      ? "text-white"
+                      : "text-green-10"
+                  } frcc`}
+                >
+                  {getTotalUnclaimedRewards() !== "0" ? (
+                    <FarmListRewards className="ml-1 mr-1" />
+                  ) : null}
+                  {getTotalUnclaimedRewards()}
+                </p>
+              </p>
+            </div>
+          </>
+        ) : null}
         <CustomTooltip
           id={"rewardPerWeekId" + (seed?.farmList?.[0]?.farm_id ?? "")}
           place="bottom"
@@ -764,7 +911,7 @@ export function FarmView(props: {
           user_unclaimed_token_meta_map={user_unclaimed_token_meta_map}
         />
       ) : null}
-      {/* {dclCalcVisible ? (
+      {dclCalcVisible ? (
         <CalcModelDcl
           isOpen={dclCalcVisible}
           onRequestClose={(e) => {
@@ -773,18 +920,8 @@ export function FarmView(props: {
           }}
           seed={seed}
           tokenPriceList={tokenPriceList}
-          style={{
-            overlay: {
-              backdropFilter: "blur(15px)",
-              WebkitBackdropFilter: "blur(15px)",
-            },
-            content: {
-              outline: "none",
-              transform: "translate(-50%, -50%)",
-            },
-          }}
         />
-      ) : null} */}
+      ) : null}
     </>
   );
 }

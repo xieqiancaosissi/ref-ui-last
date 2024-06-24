@@ -15,7 +15,8 @@ export default function CreatePoolModal({
 }) {
   const [createFee, setCreateFee] = useState(0);
   const [token, setToken] = useState(["", ""]);
-  const [isDisabled, setDisabled] = useState(true);
+  const [isDisabled, setDisabled] = useState(false);
+  const [isSame, setSame] = useState(false);
   const [showSke, setShowSke] = useState(false);
 
   const handleFee = (e: any) => {
@@ -36,9 +37,17 @@ export default function CreatePoolModal({
   useEffect(() => {
     if (!token[0] || !token[1] || createFee < 0) {
       setDisabled(true);
+      setSame(false);
     } else {
-      findSamePools(token, createFee / 100);
-      setDisabled(false);
+      findSamePools(token, createFee / 10000).then((res) => {
+        if (res?.length > 0) {
+          setDisabled(true);
+          setSame(true);
+        } else {
+          setDisabled(false);
+          setSame(false);
+        }
+      });
     }
   }, [token[0], token[1], createFee]);
 
@@ -80,7 +89,7 @@ export default function CreatePoolModal({
             <Fee getherFee={handleFee} />
 
             {/* for tips */}
-            {isDisabled && (
+            {isSame && (
               <div
                 className="text-yellow-10 text-xs border h-11 w-100 rounded flex px-1 py-1 items-center mt-10"
                 style={{

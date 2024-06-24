@@ -42,6 +42,7 @@ export default function PoolRow({
                     ite={ite}
                     tokenIcons={tokenIcons}
                     pureIdList={pureIdList}
+                    ind={ind}
                   />
                 ))}
               </div>

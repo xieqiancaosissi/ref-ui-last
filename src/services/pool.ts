@@ -109,7 +109,7 @@ export const addSimpleLiquidityPool = async (
 export const getPoolIndexTvlOR24H = async (type: string, day: any) => {
   try {
     const url = `/v3/${type}/chart/line?day=${day}`;
-    const resp = await fetch(getConfig().tvlAnd24hUrl + url, {
+    const resp = await fetch("http://139.162.85.48:8081" + url, {
       method: "GET",
       headers: {
         "Content-type": "application/json; charset=UTF-8",
@@ -167,7 +167,7 @@ export const findSamePools = async (
   createFee: number
 ) => {
   return await fetch(
-    getConfig().tvlAnd24hUrl +
+    "http://139.162.85.48:8081" +
       `/pool/same?token_list=${tokenList.join(",")}&fee=${createFee}`,
     {
       method: "GET",

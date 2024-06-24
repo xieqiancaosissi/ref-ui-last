@@ -9,10 +9,12 @@ export const TokenIconComponent = ({
   ite,
   tokenIcons,
   pureIdList,
+  ind,
 }: {
   ite: any;
   tokenIcons: any;
   pureIdList: any;
+  ind: number;
 }) => {
   const hasCustomIcon = Reflect.has(tokenIcons, ite.tokenId);
   const isNearToken = ite.tokenId === "wrap.near";
@@ -24,9 +26,9 @@ export const TokenIconComponent = ({
         <img src={tokenIcons[ite.tokenId]} alt="" style={iconStyle} />
         {pureIdList.includes(ite.tokenId) && (
           <TknIcon
-            className="absolute z-10 scale-75"
+            className="absolute z-10"
             style={{
-              bottom: "-2px",
+              bottom: "0px",
               left: "50%",
               transform: "translateX(-50%)",
             }}
@@ -41,13 +43,13 @@ export const TokenIconComponent = ({
   }
 
   return (
-    <div className={`relative`}>
+    <div className={`relative z-${ind + 2}`}>
       <img src={ite.icon} alt="" style={iconStyle} />
       {pureIdList.includes(ite.tokenId) && (
         <TknIcon
-          className="absolute z-10 scale-75"
+          className="absolute"
           style={{
-            bottom: "-2px",
+            bottom: "0px",
             left: "50%",
             transform: "translateX(-50%)",
           }}

@@ -184,13 +184,21 @@ export default function CalcModelBooster(
     }
   }
   return (
-    <Modal {...props}>
+    <Modal
+      {...props}
+      style={{
+        overlay: {
+          backdropFilter: "blur(10px)",
+          WebkitBackdropFilter: "blur(10px)",
+        },
+      }}
+    >
       <div
         className="text-white bg-dark-10 rounded-lg p-5"
         style={{ width: "420px" }}
       >
         <div className="flex justify-between items-center">
-          <label className="text-lg">ROL Calculator</label>
+          <label className="text-lg">ROI Calculator</label>
           <div className="cursor-pointer" onClick={props.onRequestClose}>
             <ModalClose />
           </div>

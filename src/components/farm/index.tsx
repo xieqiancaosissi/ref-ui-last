@@ -111,7 +111,7 @@ export default function FarmsPage(props: any) {
   const history = useHistory();
   const [farmTypeList, setFarmTypeList] = useState([
     { id: "all", label: "All" },
-    { id: "classic", label: "Classice" },
+    { id: "classic", label: "Classic" },
     { id: "dcl", label: "DCL" },
   ]);
   const [filterTypeList, setFilterTypeList] = useState([
@@ -1244,7 +1244,7 @@ export default function FarmsPage(props: any) {
             </div>
           ) : (
             <>
-              <div className="grid grid-cols-3 gap-x-10 gap-y-6 m-auto">
+              <div className="grid xs:grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-x-10 gap-y-6 m-auto ">
                 {farm_display_List.map((seed: Seed, index: number) => {
                   return (
                     <div

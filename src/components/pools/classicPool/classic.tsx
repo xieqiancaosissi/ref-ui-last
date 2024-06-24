@@ -8,6 +8,8 @@ import { usePoolSearch } from "@/hooks/usePools";
 import PoolDocTips from "@/components/pools/poolDocTips/index";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 
+import NoContent from "@/components/common/NoContent/index";
+
 export default function Classic({
   searchValue,
   pureIdList,
@@ -25,6 +27,11 @@ export default function Classic({
 
   const handlePageChange = (newPage: number, newSize: number) => {
     setCurrentPage(newPage);
+    !isLoading &&
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
   };
   const handleSizeChange = (newSize: number) => {
     setPageSize(newSize);
@@ -142,19 +149,35 @@ export default function Classic({
         </header>
 
         {/* pool row */}
-        {isLoading ? (
+        {/* {isLoading ? (
           <SkeletonTheme
             baseColor="rgba(33, 43, 53, 0.3)"
             highlightColor="#2A3643"
           >
-            <Skeleton width={1100} height={57.5} count={5} className="mt-4" />
+            <Skeleton
+              width={1100}
+              height={56.5}
+              count={poolList.length > 0 ? poolList.length + 1 : 5}
+              className="mt-4"
+            />
           </SkeletonTheme>
-        ) : (
+        ) : poolList.length > 0 ? (
           <PoolRow
             list={poolList}
             loading={isLoading}
             pureIdList={pureIdList}
           />
+        ) : (
+          <div>暂无数据</div>
+        )} */}
+        {poolList.length > 0 ? (
+          <PoolRow
+            list={poolList}
+            loading={isLoading}
+            pureIdList={pureIdList}
+          />
+        ) : (
+          <NoContent />
         )}
 
         {/* pagination */}

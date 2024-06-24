@@ -9,6 +9,7 @@ import { usePoolSearch } from "@/hooks/usePools";
 import HoverTip from "@/components/common/Tips/index";
 import PoolDocTips from "@/components/pools/poolDocTips/index";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import NoContent from "@/components/common/NoContent";
 
 export default function Classic({
   searchValue,
@@ -30,6 +31,11 @@ export default function Classic({
   };
   const handlePageChange = (newPage: number, newSize: number) => {
     setCurrentPage(newPage);
+    !isLoading &&
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
   };
   const handleSizeChange = (newSize: number) => {
     setPageSize(newSize);
@@ -123,7 +129,7 @@ export default function Classic({
         </header>
 
         {/* pool row */}
-        {isLoading ? (
+        {/* {isLoading ? (
           <SkeletonTheme
             baseColor="rgba(33, 43, 53, 0.3)"
             highlightColor="#2A3643"
@@ -136,6 +142,16 @@ export default function Classic({
             loading={isLoading}
             pureIdList={pureIdList}
           />
+        )} */}
+
+        {poolList.length > 0 ? (
+          <PoolRow
+            list={poolList}
+            loading={isLoading}
+            pureIdList={pureIdList}
+          />
+        ) : (
+          <NoContent />
         )}
 
         {/* pagination */}

@@ -181,3 +181,21 @@ export const findSamePools = async (
       return res.data;
     });
 };
+
+export const getPoolsDetailById = async ({ pool_id }: { pool_id: string }) => {
+  return fetch(getConfig().indexerUrl + "/pool/detail?pool_id=" + pool_id, {
+    method: "GET",
+    headers: {
+      "Content-type": "application/json; charset=UTF-8",
+      ...getAuthenticationHeaders("/pool/detail"),
+    },
+  })
+    .then((res) => res.json())
+    .then((pools) => {
+      console.log(pools);
+      return pools.data;
+    })
+    .catch(() => {
+      return [];
+    });
+};

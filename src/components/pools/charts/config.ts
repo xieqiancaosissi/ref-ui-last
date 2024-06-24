@@ -76,8 +76,8 @@ export const chartsOtherConfig = (chartsKind: string) => {
     },
     grid: {
       left: "-8%",
-      right: "0%",
-      bottom: "40%",
+      right: "8%",
+      bottom: "20%",
       containLabel: true,
     },
     axisPointer: {

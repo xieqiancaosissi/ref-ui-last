@@ -41,7 +41,7 @@
 }
 
 .checkPlaceholder {
-  @apply select-none font-normal text-xs;
+  @apply select-none font-normal text-sm;
 }
 
 /* pool head */

@@ -1,5 +1,5 @@
 .tab {
-  @apply w-13 h-6 flex items-center justify-center ml-2 rounded;
+  @apply w-13 h-6 flex items-center justify-center ml-2 rounded text-sm;
 }
 
 /* hide low tvl checkbox styles */
@@ -41,7 +41,7 @@
 }
 
 .checkPlaceholder {
-  @apply select-none font-normal text-xs;
+  @apply select-none font-normal text-sm;
 }
 
 /* pool head */

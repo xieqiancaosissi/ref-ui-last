@@ -10,6 +10,7 @@ import { useTokenMetadata, checkIsHighRisk } from "@/hooks/usePools";
 import { NearIcon, DangerousIcon, TknIcon } from "@/components/pools/icon";
 import tokenIcons from "@/utils/tokenIconConfig";
 import Tips from "@/components/common/Tips/index";
+import HoverTooltip from "@/components/common/HoverToolTip";
 import { TokenIconComponent } from "@/components/pools/TokenIconWithTkn/index";
 
 export default function PoolRow({
@@ -58,11 +59,11 @@ export default function PoolRow({
               {/* dangerous */}
               {checkIsHighRisk(pureIdList, item).risk && (
                 <span className="mr-1">
-                  <Tips
-                    msg={checkIsHighRisk(pureIdList, item).tips || ""}
-                    extraStyles={"w-50"}
-                    OhterIcon={DangerousIcon}
-                  />
+                  <HoverTooltip
+                    tooltipText={checkIsHighRisk(pureIdList, item).tips || ""}
+                  >
+                    <DangerousIcon />
+                  </HoverTooltip>
                 </span>
               )}
 

@@ -24,6 +24,10 @@
   @apply border-none w-40 bg-transparent outline-none caret-white mr-1 ml-1 text-white text-sm;
 }
 
+.filterSeacrhInputContainer:hover {
+  @apply border border-green-10;
+}
+
 .createPoolButton {
   @apply frcc text-sm font-bold  rounded-md ml-3  h-9 w-29;
 }

@@ -91,14 +91,13 @@ export const usePoolSearch = ({
 export const useTokenMetadata = (list: Array<any>) => {
   const [isDealed, setIsDealed] = useState(false);
   const [updatedMapList, setUpdatedList] = useState<Array<any>>([]);
-
   useEffect(() => {
     let updatedList = [...list];
     setIsDealed(false);
 
     Promise.all(
       list.flatMap((item) =>
-        item.token_account_ids.map((tokenId: string) =>
+        item?.token_account_ids.map((tokenId: string) =>
           ftGetTokenMetadata(tokenId)
         )
       )

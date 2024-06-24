@@ -1,11 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import tokenIcons from "@/utils/tokenIconConfig";
 import { getPoolsDetailById } from "@/services/pool";
+import { TokenIconComponent } from "@/components/pools/TokenIconWithTkn/index";
+import { useRiskTokens } from "@/hooks/useRiskTokens";
+import { useTokenMetadata } from "@/hooks/usePools";
+import styles from "./style.module.css";
+import TokenDetail from "@/components/pools/detail/classic/tokenDetail";
+import { CollectStar } from "@/components/pools/icon";
 
 export default function ClassicPoolDetail() {
   const router = useRouter();
   const poolId = router.query.id || "";
-  const [poolDetail, setPoolDetail] = useState(null);
+  const [poolDetail, setPoolDetail] = useState<any>(null);
+  const [isCollect, setIsCollect] = useState(false);
+
   useEffect(() => {
     // poolId && console.log(poolId, "router");
     if (poolId) {
@@ -14,13 +23,21 @@ export default function ClassicPoolDetail() {
       });
     }
   }, [poolId]);
+
+  //   useEffect(() => {
+  //     console.log(updatedMapList, "updatedMapList");
+  //   }, [updatedMapList]);
   return (
-    <div className="w-270">
+    <div className="w-full fccc h-full">
       {/* return */}
-      <div></div>
+      <div className="w-270 cursor-pointer text-base text-gray-60 mb-3 mt-8">{`<  Pools`}</div>
 
       {/* title */}
-      <div></div>
+      <div>
+        {poolDetail && <TokenDetail {...poolDetail}></TokenDetail>}
+        {poolDetail && <span>{poolDetail.token_symbols.join("-")}</span>}
+        <CollectStar isCollect={isCollect} />
+      </div>
       {/* main */}
       <div>
         {/* left */}

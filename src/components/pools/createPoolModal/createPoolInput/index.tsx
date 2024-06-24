@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import SelectTokenModal from "@/components/common/SelectTokenModal/Index";
 import { ArrowDownIcon } from "@/components/swap/icons";
 import { ITokenMetadata } from "@/hooks/useBalanceTokens";
-
+import HoverTooltip from "@/components/common/HoverToolTip";
 export default function PoolInput({
   title,
   index,
@@ -34,7 +34,7 @@ export default function PoolInput({
       <div className="flex flex-col items-start w-48 mb-2" onClick={showModal}>
         <h2 className="text-gray-50 text-sm font-normal mb-3">{title}</h2>
         <div className="w-full h-16 rounded bg-dark-60 flex items-center justify-between border border-transparent px-4 hover:border-green-10">
-          <div className="frcc">
+          <div className="w-80 frcc">
             {selectToken?.icon ? (
               <img
                 src={selectToken?.icon}
@@ -42,11 +42,17 @@ export default function PoolInput({
                 className="w-6 h-6 rounded-full"
               />
             ) : (
-              <div className="w-6 h-6 rounded-full bg-dark-40 "></div>
+              <div className="w-6 h-6 rounded-full bg-dark-40 shrink-0"></div>
             )}
-            <span className="text-base font-medium text-white ml-2">
-              {selectToken?.symbol}
-            </span>
+            <div className="text-base font-medium text-white ml-2 w-full">
+              {selectToken && selectToken?.symbol?.length > 11 ? (
+                <HoverTooltip tooltipText={selectToken?.symbol}>
+                  {selectToken?.symbol.substring(0, 10) + "..."}
+                </HoverTooltip>
+              ) : (
+                selectToken?.symbol
+              )}
+            </div>
           </div>
           <ArrowDownIcon className={"text-gray-50"} />
         </div>

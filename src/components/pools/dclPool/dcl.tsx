@@ -90,7 +90,7 @@ export default function Classic({
                 }}
               />
               <span className={styles.checkmark}></span>
-              <span className={styles.checkPlaceholder}>
+              <span className={`${styles.checkPlaceholder} text-sm`}>
                 Hide low TVL pools
               </span>
             </label>

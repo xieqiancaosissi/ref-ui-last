@@ -456,7 +456,7 @@ function CalcEle() {
     if (+lp_amount > 0 && +lp_value > 0) {
       const { farmList, total_seed_power, total_seed_amount, seed_decimal } =
         seed;
-      if (!farmList) return "-";    
+      if (!farmList) return "-";
       // get lp percent
       const total_seed_power_readble = new BigNumber(total_seed_amount)
         .shiftedBy(-seed_decimal)

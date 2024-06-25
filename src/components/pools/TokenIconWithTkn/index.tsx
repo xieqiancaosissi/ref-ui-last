@@ -1,9 +1,5 @@
 import React from "react";
-import styles from "./index.module.css";
 import { NearIcon, DangerousIcon, TknIcon } from "@/components/pools/icon";
-import { useRiskTokens } from "@/hooks/useRiskTokens";
-import tokenIcons from "@/utils/tokenIconConfig";
-import Tips from "@/components/common/Tips/index";
 
 export const TokenIconComponent = ({
   ite,

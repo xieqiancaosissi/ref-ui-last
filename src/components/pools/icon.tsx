@@ -618,6 +618,7 @@ export function CollectStar(props: any) {
         viewBox="0 0 16 15"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
+        {...props}
       >
         {props.isCollect ? (
           <path
@@ -632,5 +633,53 @@ export function CollectStar(props: any) {
         )}
       </svg>
     </div>
+  );
+}
+
+export function SplitRectangleIcon(props: any) {
+  return (
+    <svg
+      width="1"
+      height="24"
+      viewBox="0 0 1 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <rect width="1" height="24" fill="#6A7279" fillOpacity="0.3" />
+    </svg>
+  );
+}
+
+export function ExchangeIcon(props: any) {
+  return (
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 14 14"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <rect width="14.002" height="14.002" rx="3" fill="#0F1A22" />
+      <rect
+        x="0.6"
+        y="0.6"
+        width="12.802"
+        height="12.802"
+        rx="2.4"
+        stroke="#91A2AE"
+        strokeOpacity="0.2"
+        strokeWidth="1.2"
+      />
+      <path
+        d="M10.0716 6.06489H3.7166C3.43015 6.06489 3.1984 5.8588 3.1984 5.60406C3.1984 5.34933 3.43015 5.14324 3.7166 5.14324H8.81355L7.96427 4.388C7.76131 4.20751 7.76131 3.91565 7.96427 3.73644C8.16723 3.55595 8.49543 3.55595 8.69695 3.73644L10.384 5.2354C10.5092 5.31989 10.5898 5.45302 10.5898 5.60406C10.5898 5.8588 10.3581 6.06489 10.0716 6.06489Z"
+        fill="#91A2AE"
+      />
+      <path
+        d="M3.71742 8.03619H10.0725C10.3589 8.03619 10.5907 8.24228 10.5907 8.49701C10.5907 8.75174 10.3589 8.95784 10.0725 8.95784H4.97551L5.82479 9.71308C6.02776 9.89357 6.02776 10.1854 5.82479 10.3646C5.62183 10.5451 5.29363 10.5451 5.09211 10.3646L3.40506 8.86567C3.27983 8.78119 3.19922 8.64806 3.19922 8.49701C3.19922 8.24228 3.43097 8.03619 3.71742 8.03619Z"
+        fill="#91A2AE"
+      />
+    </svg>
   );
 }

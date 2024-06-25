@@ -5,14 +5,15 @@ import {
   FarmBoost,
   getVeSeedShare,
 } from "@/services/farm";
-import { FarmDetailsPoolIcon } from "../icon";
+import { FarmDetailsPoolIcon, QuestionMark } from "../icon";
 import { TokenMetadata } from "@/services/ft-contract";
-import { sort_tokens_by_base } from "@/services/commonV3";
+import { getEffectiveFarmList, sort_tokens_by_base } from "@/services/commonV3";
 import { useTokens } from "@/stores/token";
 import { useRouter } from "next/router";
 import { WRAP_NEAR_CONTRACT_ID } from "@/services/wrap-near";
 import { NEAR_META_DATA } from "@/utils/nearMetaData";
 import {
+  formatWithCommas,
   toInternationalCurrencySystem,
   toPrecision,
   toReadableNumber,
@@ -22,6 +23,10 @@ import BigNumber from "bignumber.js";
 import { LOVE_TOKEN_DECIMAL } from "@/services/referendum";
 import getConfig from "@/utils/config";
 import { get24hVolumes } from "@/services/indexer";
+import { CalcIcon } from "../icon/FarmBoost";
+import CalcModelBooster from "./CalcModelBooster";
+import CustomTooltip from "@/components/customTooltip/customTooltip";
+import moment from "moment";
 
 const ONLY_ZEROS = /^0*\.?0*$/;
 const {
@@ -63,6 +68,7 @@ export default function FarmsDetail(props: {
   const [dayVolume, setDayVolume] = useState("");
   const [yourActualAprRate, setYourActualAprRate] = useState("1");
   const [maxLoveShareAmount, setMaxLoveShareAmount] = useState<string>("0");
+  const [calcVisible, setCalcVisible] = useState(false);
   const aprUpLimit = getAprUpperLimit();
   function sortTokens(tokens: TokenMetadata[]) {
     tokens.sort((a: TokenMetadata, b: TokenMetadata) => {
@@ -272,6 +278,196 @@ export default function FarmsDetail(props: {
     }
     return "";
   }
+  function mergeCommonRewardsFarms(farms: FarmBoost[]) {
+    const tempMap: Record<string, FarmBoost> = {};
+    farms.forEach((farm: FarmBoost) => {
+      const { reward_token, daily_reward } = farm.terms;
+      const preMergedfarms: FarmBoost = tempMap[reward_token];
+      if (preMergedfarms) {
+        if (farm.apr) {
+          preMergedfarms.apr = new BigNumber(preMergedfarms.apr || "0")
+            .plus(farm.apr)
+            .toFixed()
+            .toString();
+        }
+        preMergedfarms.terms.daily_reward = new BigNumber(
+          preMergedfarms.terms.daily_reward
+        )
+          .plus(daily_reward)
+          .toFixed();
+      } else {
+        tempMap[reward_token] = farm;
+      }
+    });
+    return Object.values(tempMap);
+  }
+  function getRewardsPerWeekTip() {
+    const tempList: FarmBoost[] = detailData.farmList || [];
+    const lastList: any[] = [];
+    const pending_farms: FarmBoost[] = [];
+    const no_pending_farms: FarmBoost[] = [];
+    tempList.forEach((farm: FarmBoost) => {
+      if (farm.status == "Created") {
+        pending_farms.push(farm);
+      } else {
+        no_pending_farms.push(farm);
+      }
+    });
+    if (pending_farms.length > 0) {
+      pending_farms.forEach((farm: FarmBoost) => {
+        const { decimals } = farm.token_meta_data || { decimals: 0 };
+        const weekAmount = toReadableNumber(
+          decimals,
+          new BigNumber(farm.terms.daily_reward).multipliedBy(7).toFixed()
+        );
+        lastList.push({
+          commonRewardToken: farm.token_meta_data,
+          commonRewardTotalRewardsPerWeek: weekAmount,
+          startTime: farm.terms.start_at,
+          pending: true,
+        });
+      });
+    }
+    if (no_pending_farms.length > 0) {
+      const mergedFarms = mergeCommonRewardsFarms(
+        JSON.parse(JSON.stringify(no_pending_farms))
+      );
+      mergedFarms.forEach((farm: FarmBoost) => {
+        const { decimals } = farm.token_meta_data || { decimals: 0 };
+        const weekAmount = toReadableNumber(
+          decimals,
+          new BigNumber(farm.terms.daily_reward).multipliedBy(7).toFixed()
+        );
+        lastList.push({
+          commonRewardToken: farm.token_meta_data,
+          commonRewardTotalRewardsPerWeek: weekAmount,
+        });
+      });
+    }
+    function display_number(value: string | number) {
+      if (!value) return value;
+      const [whole, decimals] = value.toString().split(".");
+      const whole_format = formatWithCommas(whole);
+      if (+whole < 1 && decimals) {
+        return whole_format + "." + decimals;
+      } else {
+        return whole_format;
+      }
+    }
+    // show last display string
+    const rewards_week_txt = "rewards_week";
+    let result: string = `<div class="text-sm text-gray-10 frcb"><p>Rewards</p><p>Week</p></div>`;
+    let itemHtml: string = "";
+    lastList.forEach((item: any) => {
+      const {
+        commonRewardToken,
+        commonRewardTotalRewardsPerWeek,
+        pending,
+        startTime,
+      } = item;
+      const token = commonRewardToken;
+      if (token.id === WRAP_NEAR_CONTRACT_ID) {
+        token.icon = NEAR_META_DATA.icon;
+        token.symbol = NEAR_META_DATA.symbol;
+        token.name = NEAR_META_DATA.name;
+      }
+      const txt = "start";
+      if (pending) {
+        itemHtml = `<div class="flex flex-col items-end my-2">
+                        <div class="flex justify-between items-center w-full"><img class="w-4 h-4 rounded-full mr-7 border border-green-10" style="filter: grayscale(100%)" src="${
+                          token.icon
+                        }"/>
+                        <label class="text-xs text-gray-10">${display_number(
+                          commonRewardTotalRewardsPerWeek
+                        )}</label>
+                        </div>
+  
+                        <label class="text-xs text-gray-10 mt-0.5 ${
+                          +startTime == 0 ? "hidden" : ""
+                        }">${txt}: ${moment
+          .unix(startTime)
+          .format("YYYY-MM-DD")}</label>
+                        <label class="text-xs text-gray-10 mt-0.5 ${
+                          +startTime == 0 ? "" : "hidden"
+                        }">Pending</label>
+                      </div>`;
+      } else {
+        itemHtml = `<div class="flex justify-between items-center h-5 my-2">
+                        <img class="w-4 h-4 rounded-full mr-7 border border-green-10" src="${
+                          token.icon
+                        }"/>
+                        <label class="text-xs text-navHighLightText">${display_number(
+                          commonRewardTotalRewardsPerWeek
+                        )}</label>
+                      </div>`;
+      }
+
+      result += itemHtml;
+    });
+    return result;
+  }
+  function totalTvlPerWeekDisplay() {
+    const farms = detailData.farmList || [];
+    const rewardTokenIconMap: Record<string, string> = {};
+    let totalPrice = 0;
+    const effectiveFarms = getEffectiveFarmList(farms);
+    farms &&
+      farms.forEach((farm: FarmBoost) => {
+        const { id, icon } = farm.token_meta_data || { id: "", icon: "" };
+        rewardTokenIconMap[id] = icon;
+      });
+    effectiveFarms.forEach((farm: FarmBoost) => {
+      const { id, decimals } = farm.token_meta_data || { id: "", decimals: 0 };
+      const { daily_reward } = farm.terms;
+      const tokenPrice = tokenPriceList[id]?.price;
+      if (tokenPrice && tokenPrice != "N/A") {
+        const tokenAmount = toReadableNumber(decimals, daily_reward);
+        totalPrice += +new BigNumber(tokenAmount)
+          .multipliedBy(tokenPrice)
+          .toFixed();
+      }
+    });
+    totalPrice = +new BigNumber(totalPrice).multipliedBy(7).toFixed();
+    const totalPriceDisplay =
+      totalPrice == 0
+        ? "-"
+        : "$" + toInternationalCurrencySystem(totalPrice.toString(), 2);
+    return (
+      <>
+        {totalPriceDisplay}
+        {detailData?.farmList && detailData.farmList[0] && (
+          <div
+            className="text-white text-right ml-1.5"
+            data-class="reactTip"
+            data-tooltip-id={"rewardPerWeekId" + detailData.farmList[0].farm_id}
+            data-place="top"
+            data-tooltip-html={getRewardsPerWeekTip()}
+          >
+            <div className="flex items-center">
+              {Object.entries(rewardTokenIconMap).map(([id, icon], index) => {
+                if (id === WRAP_NEAR_CONTRACT_ID) {
+                  icon = NEAR_META_DATA.icon;
+                }
+                return (
+                  <img
+                    src={icon}
+                    key={index}
+                    className={`w-4 h-4 rounded-full border border-primaryGreen ${
+                      index !== 0 ? "-ml-1" : ""
+                    }`}
+                  ></img>
+                );
+              })}
+            </div>
+
+            <CustomTooltip
+              id={"rewardPerWeekId" + detailData.farmList[0].farm_id}
+            />
+          </div>
+        )}
+      </>
+    );
+  }
   return (
     <main className="dark:text-white">
       {/* title */}
@@ -313,8 +509,11 @@ export default function FarmsDetail(props: {
               </div>
               <div className="pr-6 text-sm relative w-max mr-6">
                 <div className="border-r border-gray-50 border-opacity-30 absolute right-0 top-1/4 h-1/2 w-0" />
-                <p className="text-gray-50 mb-1">APR</p>
-                <p>
+                <p className="text-gray-50 mb-1 flex items-center">
+                  APR
+                  <QuestionMark className="ml-1.5"></QuestionMark>
+                </p>
+                <p className="frcc">
                   {yourApr ? (
                     <div className="flex flex-col items-end justify-center">
                       <label className="text-white">{yourApr}</label>
@@ -325,24 +524,50 @@ export default function FarmsDetail(props: {
                     </div>
                   ) : (
                     <>
-                      <label
-                        className={`${aprUpLimit ? "text-xs" : "text-base"}`}
-                      >
-                        {getTotalApr()}
-                      </label>
+                      <label className="text-sm">{getTotalApr()}</label>
                       {aprUpLimit}
                     </>
                   )}
+                  <CalcIcon
+                    onClick={(e: any) => {
+                      e.stopPropagation();
+                      setCalcVisible(true);
+                    }}
+                    className="text-gray-60 ml-1.5 cursor-pointer hover:text-primaryGreen"
+                  />
                 </p>
               </div>
               <div className="pr-6 text-sm relative w-max">
-                <p className="text-gray-50 mb-1">Rewards per week</p>
-                <p>$140.14</p>
+                <p className="text-gray-50 mb-1 flex items-center">
+                  Rewards per week{" "}
+                  <QuestionMark className="ml-1.5"></QuestionMark>
+                </p>
+                <p className="flex items-center"> {totalTvlPerWeekDisplay()}</p>
               </div>
             </div>
           </div>
         </div>
       </div>
+      {/* content */}
+      <div className="w-3/5 pt-16 m-auto">
+        <div className="ml-32">details</div>
+      </div>
+      {calcVisible ? (
+        <CalcModelBooster
+          isOpen={calcVisible}
+          onRequestClose={(e) => {
+            e.stopPropagation();
+            setCalcVisible(false);
+          }}
+          seed={detailData}
+          tokenPriceList={tokenPriceList}
+          loveSeed={loveSeed}
+          boostConfig={boostConfig}
+          user_seeds_map={user_seeds_map}
+          user_unclaimed_map={user_unclaimed_map}
+          user_unclaimed_token_meta_map={user_unclaimed_token_meta_map}
+        />
+      ) : null}
     </main>
   );
 }

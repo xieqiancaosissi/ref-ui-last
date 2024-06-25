@@ -170,7 +170,10 @@ export default function Swap(props: any) {
         ) : null}
 
         {/* submit button */}
-        <SwapButton isHighImpact={isHighImpact} highImpactCheck={highImpactCheck} />
+        <SwapButton
+          isHighImpact={isHighImpact}
+          highImpactCheck={highImpactCheck}
+        />
       </div>
       {/* detail */}
       <SwapDetail />

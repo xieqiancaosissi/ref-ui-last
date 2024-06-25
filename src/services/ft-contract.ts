@@ -28,59 +28,8 @@ export interface TokenMetadata {
 export const ftGetStorageBalance = async (
   tokenId: string
 ): Promise<any | null> => {
-  if (configV2.NO_REQUIRED_REGISTRATION_TOKEN_IDS.includes(tokenId)) {
-    const r = await native_usdc_has_upgrated(tokenId);
-    if (r) {
-      return ftViewFunction(tokenId, {
-        methodName: "storage_balance_of",
-        args: { account_id: getAccountId() },
-      });
-    } else {
-      return check_registration(tokenId).then((is_registration) => {
-        if (is_registration) {
-          return new Promise((resove) => {
-            resove({ available: "1", total: "1" });
-          });
-        } else {
-          return new Promise((resove) => {
-            resove(null);
-          });
-        }
-      });
-    }
-  }
   return ftViewFunction(tokenId, {
     methodName: "storage_balance_of",
-    args: { account_id: getAccountId() },
-  });
-};
-
-export const native_usdc_has_upgrated = async (tokenId: string) => {
-  try {
-    await ftViewFunction(tokenId, {
-      methodName: "storage_balance_of",
-      args: { account_id: getAccountId() },
-    });
-    return true;
-  } catch (error) {
-    await check_registration(tokenId).then((is_registration) => {
-      if (is_registration) {
-        return new Promise((resove) => {
-          resove({ available: "1", total: "1" });
-        });
-      } else {
-        return new Promise((resove) => {
-          resove(null);
-        });
-      }
-    });
-    return false;
-  }
-};
-
-export const check_registration = (tokenId: string): Promise<any | null> => {
-  return ftViewFunction(tokenId, {
-    methodName: "check_registration",
     args: { account_id: getAccountId() },
   });
 };

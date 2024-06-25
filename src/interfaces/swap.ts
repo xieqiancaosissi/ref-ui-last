@@ -1,4 +1,5 @@
 import { TokenMetadata } from "@/services/ft-contract";
+import { RefFiFunctionCallOptions } from "@/utils/contract";
 export interface PoolRPCView {
   id: number;
   token_account_ids: string[];
@@ -145,3 +146,22 @@ export interface IEstimateResult {
 }
 
 export type SwapMarket = "ref" | "tri" | "orderly" | undefined;
+export interface SwapOptions {
+  swapsToDo: EstimateSwapView[];
+  tokenIn: TokenMetadata;
+  tokenOut: TokenMetadata;
+  amountIn: string;
+  slippageTolerance: number;
+  swapMarket?: SwapMarket;
+}
+export interface Transaction {
+  receiverId: string;
+  functionCalls: RefFiFunctionCallOptions[];
+}
+
+export type IButtonStatus =
+  | "loading"
+  | "unLogin"
+  | "available"
+  | "insufficient"
+  | "disabled";

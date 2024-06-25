@@ -336,3 +336,12 @@ export function numberWithCommas(x: number | string) {
   parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   return parts.join(".");
 }
+
+export const round = (decimals: number, minAmountOut: string) => {
+  return Number.isInteger(Number(minAmountOut))
+    ? minAmountOut
+    : Math.ceil(
+        Math.round(Number(minAmountOut) * Math.pow(10, decimals)) /
+          Math.pow(10, decimals)
+      ).toString();
+};

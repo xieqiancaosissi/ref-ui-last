@@ -1,6 +1,7 @@
 import moment from "moment";
 import * as math from "mathjs";
 import Big from "big.js";
+import BigNumber from "bignumber.js";
 import _, { sortBy } from "lodash";
 import { PoolRPCView, Pool, IPoolsByTokens } from "@/interfaces/swap";
 import { TokenMetadata } from "@/services/ft-contract";
@@ -10,6 +11,7 @@ import {
   toNonDivisibleNumber,
   percent,
   subtraction,
+  toPrecision,
 } from "@/utils/numbers";
 import { ALL_STABLE_POOL_IDS, AllStableTokenIds } from "./swapConfig";
 import getStablePoolConfig from "@/utils/getStablePoolConfig";
@@ -19,6 +21,10 @@ import {
   RATED_POOL_LP_TOKEN_DECIMALS,
 } from "@/utils/constant";
 import db from "@/db/RefDatabase";
+import { ITokenMetadata } from "@/hooks/useBalanceTokens";
+import { MIN_RETAINED_NEAR_AMOUNT } from "@/utils/constant";
+import getConfig from "@/utils/config";
+const { WRAP_NEAR_CONTRACT_ID } = getConfig();
 const { RATED_POOLS_IDS } = getStablePoolConfig();
 export const parsePool = (pool: PoolRPCView, id: number): Pool => ({
   id: Number(id >= 0 ? id : pool.id),
@@ -338,4 +344,15 @@ export function getPoolAllocationPercents(pools: Pool[]) {
   } else {
     return [];
   }
+}
+export function getMax(token: ITokenMetadata): string {
+  const isNEAR = token?.id == WRAP_NEAR_CONTRACT_ID && token?.symbol == "NEAR";
+  const { balance } = token || {};
+  let max = balance || "0";
+  if (isNEAR) {
+    const minusDiff = Big(balance || 0).minus(MIN_RETAINED_NEAR_AMOUNT);
+    max = minusDiff.gt(0) ? minusDiff.toFixed() : "0";
+  }
+  const result = toPrecision(max, 12);
+  return result;
 }

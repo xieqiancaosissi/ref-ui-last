@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
 import {
@@ -14,7 +14,10 @@ import {
   fetchStablePoolsAndCacheData,
 } from "@/services/swap/swap";
 import { fetchDclPoolsAndCacheData } from "@/services/swap/swapDcl";
-import { POOL_REFRESH_INTERVAL } from "@/utils/constant";
+import {
+  POOL_REFRESH_INTERVAL,
+  PRICE_IMPACT_RED_VALUE,
+} from "@/utils/constant";
 import useMultiSwap from "@/hooks/useMultiSwap";
 import { getAllTokenPrices } from "@/services/farm";
 import {
@@ -23,6 +26,7 @@ import {
   IPersistSwapStore,
 } from "@/stores/swap";
 import { toPrecision } from "@/utils/numbers";
+import GetPriceImpact from "@/components/swap/GetPriceImpact";
 const SwapButton = dynamic(() => import("../components/swap/SwapButton"), {
   ssr: false,
 });
@@ -34,6 +38,7 @@ const InitData = dynamic(() => import("../components/swap/InitData"), {
 });
 
 export default function Swap(props: any) {
+  const [isHighImpact, setIsHighImpact] = useState<boolean>(false);
   const [highImpactCheck, setHighImpactCheck] = useState<boolean>(false);
   const [pinLoading, setpinLoading] = useState<boolean>(false);
   const swapStore = useSwapStore();
@@ -41,6 +46,8 @@ export default function Swap(props: any) {
   const tokenIn = swapStore.getTokenIn();
   const tokenOut = swapStore.getTokenOut();
   const tokenOutAmount = swapStore.getTokenOutAmount();
+  const priceImpact = swapStore.getPriceImpact();
+  const tokenInAmount = swapStore.getTokenInAmount();
   useMultiSwap({ supportDclQuote: false, supportLittlePools: false });
   useEffect(() => {
     const id = setInterval(reloadPools, POOL_REFRESH_INTERVAL);
@@ -53,6 +60,20 @@ export default function Swap(props: any) {
       swapStore.setAllTokenPrices(res);
     });
   }, []);
+  useEffect(() => {
+    if (Number(priceImpact || 0) > PRICE_IMPACT_RED_VALUE) {
+      setIsHighImpact(true);
+    } else {
+      setIsHighImpact(false);
+    }
+  }, [priceImpact]);
+  const priceImpactDisplay = useMemo(() => {
+    try {
+      return GetPriceImpact(priceImpact, tokenInAmount);
+    } catch (error) {
+      return null;
+    }
+  }, [priceImpact, tokenInAmount]);
   function onCheck() {
     setHighImpactCheck(!highImpactCheck);
   }
@@ -125,23 +146,31 @@ export default function Swap(props: any) {
           />
         </div>
         {/* high price tip */}
-        <div className="flexBetween rounded border border-red-10 border-opacity-45 bg-red-10 bg-opacity-10 text-xs text-red-10 p-2 mt-4 hidden">
-          <div className="flex items-center gap-2">
-            <div
-              className={`flex items-center justify-center rounded-sm border border-red-10 cursor-pointer ${
-                highImpactCheck ? "bg-red-10" : ""
-              }`}
-              style={{ width: "14px", height: "14px" }}
-              onClick={onCheck}
-            >
-              <CheckboxIcon className={`${highImpactCheck ? "" : "hidden"}`} />
+        {isHighImpact ? (
+          <div className="flexBetween rounded border border-red-10 border-opacity-45 bg-red-10 bg-opacity-10 text-xs text-red-10 p-2 mt-4">
+            <div className="flex items-center gap-2">
+              <div
+                className={`flex items-center justify-center rounded-sm border border-red-10 cursor-pointer ${
+                  highImpactCheck ? "bg-red-10" : ""
+                }`}
+                style={{ width: "14px", height: "14px" }}
+                onClick={onCheck}
+              >
+                <CheckboxIcon
+                  className={`${highImpactCheck ? "" : "hidden"}`}
+                />
+              </div>
+              I accept the price impact
             </div>
-            I accept the price impact
+            <span className="flex items-center gap-1 font-bold">
+              {priceImpactDisplay}
+              {tokenIn.symbol}
+            </span>
           </div>
-          <span className="font-bold">-3% / -1.990 ABR</span>
-        </div>
+        ) : null}
+
         {/* submit button */}
-        <SwapButton />
+        <SwapButton isHighImpact={isHighImpact} highImpactCheck={highImpactCheck} />
       </div>
       {/* detail */}
       <SwapDetail />

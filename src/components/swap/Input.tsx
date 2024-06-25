@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { useEffect, useState } from "react";
 import Big from "big.js";
 import { twMerge } from "tailwind-merge";
 import dynamic from "next/dynamic";
@@ -6,9 +7,9 @@ import { ITokenMetadata } from "@/hooks/useBalanceTokens";
 import { useSwapStore } from "@/stores/swap";
 import { toPrecision } from "@/utils/numbers";
 import { formatTokenPrice } from "@/utils/uiNumber";
-import { MIN_RETAINED_NEAR_AMOUNT } from "@/utils/constant";
 import getConfig from "@/utils/config";
-import { useEffect, useState } from "react";
+import { getMax } from "@/services/swap/swapUtils";
+
 const SelectTokenButton = dynamic(() => import("./SelectTokenButton"), {
   ssr: false,
 });
@@ -59,14 +60,6 @@ export default function Input(props: IInputProps) {
     if (token) {
       setAmount(getMax(token));
     }
-  }
-  function getMax(token: ITokenMetadata): string {
-    const { balance } = token;
-    if (isNEAR) {
-      const minusDiff = Big(balance || 0).minus(MIN_RETAINED_NEAR_AMOUNT);
-      return minusDiff.gt(0) ? minusDiff.toFixed() : "0";
-    }
-    return balance || "";
   }
   function getTokenValue() {
     return formatTokenPrice(

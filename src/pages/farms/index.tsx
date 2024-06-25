@@ -1,8 +1,11 @@
 import React, { useState } from "react";
-import { Seed, BoostConfig, UserSeedInfo } from "../services/farm";
+import { Seed, BoostConfig, UserSeedInfo } from "../../services/farm";
 import FarmsPage from "@/components/farm";
+import FarmsDetail from "@/components/farm/components/FarmsDetail";
+import { useRouter } from "next/router";
 
 export default function FarmsBoosterPage(props: any) {
+  const router = useRouter();
   const [detailData, setDetailData] = useState<Seed | null>(null);
   const [tokenPriceList, setTokenPriceList] = useState<any | null>(null);
   const [loveSeed, setLoveSeed] = useState<Seed | null>(null);
@@ -15,7 +18,7 @@ export default function FarmsBoosterPage(props: any) {
   const [user_data_loading, set_user_data_loading] = useState(true);
   const [dayVolumeMap, setDayVolumeMap] = useState<Record<string, any>>({});
   const [all_seeds, set_all_seeds] = useState<Seed[]>([]);
-  const paramId = decodeURIComponent(props?.match?.params.id || "");
+  const paramId = router.query.id || "";
   const is_dcl = paramId.indexOf("<>") > -1 || paramId.indexOf("|") > -1;
 
   const getDetailData_user_data = (data: {
@@ -78,6 +81,18 @@ export default function FarmsBoosterPage(props: any) {
         getDetailData_boost_config={getDetailData_boost_config}
         getDayVolumeMap={getDayVolumeMap}
       ></FarmsPage>
+      {showDetailPage ? (
+        <FarmsDetail
+          detailData={detailData}
+          tokenPriceList={tokenPriceList}
+          emptyDetailData={emptyDetailData}
+          boostConfig={boostConfig || ({} as BoostConfig)}
+          loveSeed={loveSeed || ({} as Seed)}
+          user_data={user_data}
+          user_data_loading={user_data_loading}
+          dayVolumeMap={dayVolumeMap}
+        ></FarmsDetail>
+      ) : null}
     </>
   );
 }

@@ -1092,7 +1092,7 @@ export default function FarmsPage(props: any) {
     }
   }
   return (
-    <main className="dark:text-white">
+    <main className={`dark:text-white ${getUrlParams() ? "hidden" : ""}`}>
       {/* title */}
       <div className="bg-farmTitleBg fccc w-full pt-12 pb-1.5">
         <WithDrawBox

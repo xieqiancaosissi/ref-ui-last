@@ -52,6 +52,7 @@ import {
 import styles from "../farm.module.css";
 import CalcModelDcl from "./CalcModelDcl";
 import Countdown, { zeroPad } from "react-countdown";
+import { useRouter } from "next/router";
 
 const {
   REF_VE_CONTRACT_ID,
@@ -107,6 +108,7 @@ export function FarmView(props: {
   const [yourActualAprRate, setYourActualAprRate] = useState("1");
   const tokens = sortTokens(seed.pool?.tokens_meta_data || []);
   const history = useHistory();
+  const router = useRouter();
   const [yourTvl, setYourTvl] = useState("");
   const unClaimedTokens = useTokens(
     Object.keys(user_unclaimed_map[seed_id] || {})
@@ -630,12 +632,31 @@ export function FarmView(props: {
     return token;
   });
   const tokens_sort: TokenMetadata[] = sort_tokens_by_base(preprocessedTokens);
+  function goFarmDetailPage(seed: Seed) {
+    getDetailData({
+      detailData: seed,
+      tokenPriceList,
+      loveSeed,
+      all_seeds,
+    });
+    const poolId = getPoolIdBySeedId(seed.seed_id);
+    const status =
+      seed.farmList && seed.farmList[0].status == "Ended" ? "e" : "r";
+    let mft_id = poolId;
+    if (is_dcl_pool) {
+      const [contractId, temp_pool_id] = seed.seed_id.split("@");
+      const [fixRange, pool_id, left_point, right_point] =
+        temp_pool_id.split("&");
+      mft_id = `${get_pool_name(pool_id)}[${left_point}-${right_point}]`;
+    }
+    router.push(`/farms/${mft_id}-${status}`);
+  }
   return (
     <>
       <div
-        // onClick={() => {
-        //   goFarmDetailPage(seed);
-        // }}
+        onClick={() => {
+          goFarmDetailPage(seed);
+        }}
         className={`relative rounded-2xl cursor-pointer bg-cardBg p-5 ${
           isEnded() || needForbidden ? styles.farmEnded : ""
         }

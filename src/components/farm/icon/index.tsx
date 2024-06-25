@@ -418,3 +418,31 @@ export const FarmListDCLIcon = (props: any) => {
     </svg>
   );
 };
+
+export const FarmDetailsPoolIcon = (props: any) => {
+  return (
+    <svg
+      {...props}
+      width="12"
+      height="10"
+      viewBox="0 0 12 10"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M1 4.16744C1 4.16744 2.2 5.5275 4.2 5.07415C5.3767 4.80741 5.8 4.62075 7.8 3.71408C9.8 2.8074 11 5.07415 11 5.07415"
+        stroke="#91A2AE"
+        strokeWidth="1.2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M1 1V7.33333C1 8.4379 1.89543 9.33333 3 9.33333H9C10.1046 9.33333 11 8.4379 11 7.33333V1"
+        stroke="#91A2AE"
+        strokeWidth="1.2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+};

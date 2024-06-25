@@ -1244,7 +1244,7 @@ export default function FarmsPage(props: any) {
             </div>
           ) : (
             <>
-              <div className="grid xs:grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-x-10 gap-y-6 m-auto ">
+              <div className="grid grid-cols-2 xs:grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-6 m-auto ">
                 {farm_display_List.map((seed: Seed, index: number) => {
                   return (
                     <div

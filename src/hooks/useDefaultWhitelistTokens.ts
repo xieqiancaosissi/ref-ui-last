@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
 import { TokenMetadata } from "../services/ft-contract";
-import getConfigV2 from "../utils/configV2";
-import { useTokenStore, useAccountTokenStore } from "../stores/token";
+import {
+  useTokenStore,
+  useAccountTokenStore,
+  ITokenStore,
+  IAccountTokenStore,
+} from "../stores/token";
 import { useAccountStore } from "../stores/account";
 import {
   getGlobalWhitelist,
@@ -12,22 +16,25 @@ export const useDefaultWhitelistTokens = () => {
   const [whiteListTokens, setWhiteListTokens] = useState<TokenMetadata[]>([]);
   const [globalWhitelistIds, setGlobalWhitelistIds] = useState<string[]>([]);
   const [accountWhitelistIds, setAccountWhitelistIds] = useState<string[]>([]);
-  const tokenStore: any = useTokenStore();
-  const accountTokenStore: any = useAccountTokenStore();
+  const tokenStore = useTokenStore() as ITokenStore;
+  const accountTokenStore = useAccountTokenStore() as IAccountTokenStore;
   const accountStore = useAccountStore();
   const accountId = accountStore.getAccountId();
   const walletLoading = accountStore.walletLoading;
   useEffect(() => {
     getGlobalWhitelistTokens();
   }, []);
+  /* update cache logic (account whitelist) start */
   useEffect(() => {
-    if (accountId) {
-      getAccountWhitelistTokens();
-    }
-    if (!walletLoading && !accountId) {
-      clearAccountWhitelistTokens();
+    if (!walletLoading) {
+      if (!accountId) {
+        clearAccountWhitelistTokens();
+      } else {
+        getAccountWhitelistTokens();
+      }
     }
   }, [accountId, walletLoading]);
+  /* update cache logic (account whitelist) end */
   useEffect(() => {
     getWhitelistTokens();
   }, [globalWhitelistIds.length, accountWhitelistIds.length]);
@@ -57,25 +64,27 @@ export const useDefaultWhitelistTokens = () => {
     return tokens;
   }
   async function getGlobalWhitelistTokens() {
-    const storeList = tokenStore.get_whitelisted_tokens();
+    const storeList = tokenStore.get_global_whitelisted_tokens_ids();
     getGlobalWhitelist().then((globalWhitelistIds) => {
-      tokenStore.set_whitelisted_tokens(globalWhitelistIds);
+      tokenStore.set_global_whitelisted_tokens_ids(globalWhitelistIds);
       setGlobalWhitelistIds(globalWhitelistIds);
     });
-    if (storeList.length > 0) {
+    if (storeList?.length > 0) {
       setGlobalWhitelistIds(storeList);
     }
   }
   async function getAccountWhitelistTokens() {
-    const storeList = accountTokenStore.get_user_whitelisted_tokens();
+    const storeList = accountTokenStore.get_user_whitelisted_tokens_ids();
     getAccountWhitelist().then((accountWhitelistIds) => {
-      accountTokenStore.set_user_whitelisted_tokens(accountWhitelistIds);
+      accountTokenStore.set_user_whitelisted_tokens_ids(accountWhitelistIds);
       setAccountWhitelistIds(accountWhitelistIds);
     });
-    setAccountWhitelistIds(storeList);
+    if (storeList?.length > 0) {
+      setAccountWhitelistIds(storeList);
+    }
   }
   async function clearAccountWhitelistTokens() {
-    accountTokenStore.set_user_whitelisted_tokens([]);
+    accountTokenStore.set_user_whitelisted_tokens_ids([]);
     setAccountWhitelistIds([]);
   }
   return whiteListTokens;

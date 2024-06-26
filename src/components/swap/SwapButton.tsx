@@ -35,6 +35,7 @@ export default function SwapButton({
     walletLoading,
     isHighImpact,
     highImpactCheck,
+    accountId,
   ]);
   function doSwap() {
     setSwapLoading(true);
@@ -56,8 +57,8 @@ export default function SwapButton({
       status = "unLogin";
     } else if (
       accountId &&
-      tokenIn.id &&
-      tokenOut.id &&
+      tokenIn?.id &&
+      tokenOut?.id &&
       Number(amountIn || 0) > 0
     ) {
       if (!availableAmountIn) {

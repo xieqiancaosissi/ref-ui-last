@@ -37,7 +37,7 @@ export default function AssetTable() {
       }
     },
     0,
-    [searchText, defaultDisplayTokens, autoDisplayTokens]
+    [searchText, defaultDisplayTokens?.length, autoDisplayTokens?.length]
   );
   function sortBalance() {
     if (sort == "asc") {

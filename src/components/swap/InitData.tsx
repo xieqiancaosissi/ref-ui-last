@@ -1,6 +1,4 @@
-import React, { useEffect, useMemo } from "react";
-import { useRouter } from "next/router";
-import { useDeepCompareEffect } from "react-use";
+import { useEffect, useMemo } from "react";
 import { useSelectTokens } from "@/hooks/useSelectTokens";
 import getConfigV2 from "@/utils/configV2";
 import getConfig from "@/utils/config";
@@ -43,7 +41,7 @@ export default function InitData() {
       persistSwapStore.setTokenInId(CHECKED_IN_TOKEN?.id);
       persistSwapStore.setTokenOutId(CHECKED_OUT_TOKEN?.id);
     }
-  }, [tokenInId, tokenOutId, totalDisplayTokens.length]);
+  }, [tokenInId, tokenOutId, JSON.stringify(totalDisplayTokens || [])]);
 
   function getTokenId({
     idFromStore,

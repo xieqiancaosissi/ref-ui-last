@@ -69,6 +69,7 @@ export default function Table({
       common_tokens.push(token);
       tokenStore.set_common_tokens(common_tokens);
     }
+    tokenStore.set_common_tokens_is_edited(true);
   }
   function isCollected(token: TokenMetadata) {
     const finded = common_tokens.find(

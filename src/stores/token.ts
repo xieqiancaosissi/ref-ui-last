@@ -1,50 +1,54 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { ITokenMetadata } from "../hooks/useBalanceTokens";
-import { TokenMetadata } from "../services/ft-contract";
-import { ftGetTokenMetadata } from "../services/token";
-import { useState, useEffect } from "react";
 export type ITokenStore = {
-  get_whitelisted_tokens: () => string[];
-  set_whitelisted_tokens: (whitelisted_tokens: ITokenMetadata[]) => void;
+  get_global_whitelisted_tokens_ids: () => string[];
+  set_global_whitelisted_tokens_ids: (whitelisted_tokens_ids: string[]) => void;
   get_auto_whitelisted_postfix: () => string[];
   set_auto_whitelisted_postfix: (auto_whitelisted_postfix: string[]) => void;
   get_common_tokens: () => ITokenMetadata[];
   set_common_tokens: (common_tokens: ITokenMetadata[]) => void;
-  get_is_edited_common_tokens: () => boolean;
-  set_is_edited_common_tokens: (is_edited_common_tokens: boolean) => void;
+  get_common_tokens_is_edited: () => boolean;
+  set_common_tokens_is_edited: (common_tokens_is_edited: boolean) => void;
 };
 export type IAccountTokenStore = {
-  get_user_whitelisted_tokens: () => string[];
-  set_user_whitelisted_tokens: (user_whitelisted_tokens: string[]) => void;
-  getDefaultAccountBalances: () => ITokenMetadata[];
-  setDefaultAccountBalances: (defaultAccountBalances: ITokenMetadata[]) => void;
-  getAutoAccountBalances: () => ITokenMetadata[];
-  setAutoAccountBalances: (autoAccountBalances: ITokenMetadata[]) => void;
+  get_user_whitelisted_tokens_ids: () => string[];
+  set_user_whitelisted_tokens_ids: (
+    user_whitelisted_tokens_ids: string[]
+  ) => void;
+  getDefaultAccountTokens: () => ITokenMetadata[];
+  setDefaultAccountTokens: (defaultAccountTokens: ITokenMetadata[]) => void;
+  getAutoAccountTokens: () => ITokenMetadata[];
+  setAutoAccountTokens: (autoAccountTokens: ITokenMetadata[]) => void;
 };
-
+export type IAccountBalanceStore = {
+  getDefaultBalancesLoading: () => boolean;
+  setDefaultBalancesLoading: (defaultBalancesLoading: boolean) => void;
+  getAutoBalancesLoading: () => boolean;
+  setAutoBalancesLoading: (autoBalancesLoading: boolean) => void;
+};
 export const useTokenStore = create(
   persist(
     (set, get: any) => ({
-      whitelisted_tokens: [],
+      global_whitelisted_tokens_ids: [],
       auto_whitelisted_postfix: [],
       common_tokens: [],
-      is_edited_common_tokens: false,
-      get_whitelisted_tokens: () => get().whitelisted_tokens,
-      set_whitelisted_tokens: (whitelisted_tokens: string[]) =>
-        set({ whitelisted_tokens }),
+      common_tokens_is_edited: false,
+      get_global_whitelisted_tokens_ids: () => get().whitelisted_tokens_ids,
+      set_global_whitelisted_tokens_ids: (whitelisted_tokens_ids: string[]) =>
+        set({ whitelisted_tokens_ids }),
       get_auto_whitelisted_postfix: () => get().auto_whitelisted_postfix,
       set_auto_whitelisted_postfix: (auto_whitelisted_postfix: string[]) =>
         set({ auto_whitelisted_postfix }),
       get_common_tokens: () => get().common_tokens,
       set_common_tokens: (common_tokens: ITokenMetadata[]) =>
         set({ common_tokens }),
-      get_is_edited_common_tokens: () => get().is_edited_common_tokens,
-      set_is_edited_common_tokens: (is_edited_common_tokens: boolean) =>
-        set({ is_edited_common_tokens }),
+      get_common_tokens_is_edited: () => get().common_tokens_is_edited,
+      set_common_tokens_is_edited: (common_tokens_is_edited: boolean) =>
+        set({ common_tokens_is_edited }),
     }),
     {
-      name: "_cached_whitelisted_tokens",
+      name: "_cached_whitelisted_tokens_ids",
       version: 0.1,
       storage: createJSONStorage(() => localStorage),
     }
@@ -53,18 +57,19 @@ export const useTokenStore = create(
 export const useAccountTokenStore = create(
   persist(
     (set, get: any) => ({
-      user_whitelisted_tokens: [],
-      defaultAccountBalances: [],
-      autoAccountBalances: [],
-      get_user_whitelisted_tokens: () => get().user_whitelisted_tokens,
-      set_user_whitelisted_tokens: (user_whitelisted_tokens: string[]) =>
-        set({ user_whitelisted_tokens }),
-      getDefaultAccountBalances: () => get().defaultAccountBalances,
-      setDefaultAccountBalances: (defaultAccountBalances: ITokenMetadata[]) =>
-        set({ defaultAccountBalances }),
-      getAutoAccountBalances: () => get().autoAccountBalances,
-      setAutoAccountBalances: (autoAccountBalances: ITokenMetadata[]) =>
-        set({ autoAccountBalances }),
+      user_whitelisted_tokens_ids: [],
+      defaultAccountTokens: [],
+      autoAccountTokens: [],
+      get_user_whitelisted_tokens_ids: () => get().user_whitelisted_tokens_ids,
+      set_user_whitelisted_tokens_ids: (
+        user_whitelisted_tokens_ids: string[]
+      ) => set({ user_whitelisted_tokens_ids }),
+      getDefaultAccountTokens: () => get().defaultAccountTokens,
+      setDefaultAccountTokens: (defaultAccountTokens: ITokenMetadata[]) =>
+        set({ defaultAccountTokens }),
+      getAutoAccountTokens: () => get().autoAccountTokens,
+      setAutoAccountTokens: (autoAccountTokens: ITokenMetadata[]) =>
+        set({ autoAccountTokens }),
     }),
     {
       name: "_cached_account_tokens",
@@ -73,19 +78,15 @@ export const useAccountTokenStore = create(
     }
   )
 );
-
-export const useTokens = (ids: string[] = [], curTokens?: TokenMetadata[]) => {
-  const [tokens, setTokens] = useState<TokenMetadata[]>();
-
-  useEffect(() => {
-    if (curTokens && curTokens.length > 0) {
-      setTokens(curTokens);
-      return;
-    }
-    Promise.all<TokenMetadata>(ids.map((id) => ftGetTokenMetadata(id))).then(
-      setTokens
-    );
-  }, [ids.join("")]);
-
-  return tokens;
-};
+export const useAccountBalanceStore = create<IAccountBalanceStore>(
+  (set: any, get: any) => ({
+    defaultBalancesLoading: true,
+    autoBalancesLoading: true,
+    getDefaultBalancesLoading: () => get().defaultBalancesLoading,
+    setDefaultBalancesLoading: (defaultBalancesLoading: boolean) =>
+      set({ defaultBalancesLoading }),
+    getAutoBalancesLoading: () => get().autoBalancesLoading,
+    setAutoBalancesLoading: (autoBalancesLoading: boolean) =>
+      set({ autoBalancesLoading }),
+  })
+);

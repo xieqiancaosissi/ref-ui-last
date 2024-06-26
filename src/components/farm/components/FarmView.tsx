@@ -41,7 +41,7 @@ import {
 } from "../icon/FarmBoost";
 import getConfig from "../../../utils/config";
 import { NEAR_META_DATA, WNEAR_META_DATA } from "../../../utils/nearMetaData";
-import { useTokens } from "../../../services/token";
+import useTokens from "@/hooks/useTokens";
 import CustomTooltip from "../../customTooltip/customTooltip";
 import CalcModelBooster from "./CalcModelBooster";
 import { FarmListDCLIcon, FarmListRewards, FarmPlaceholder } from "../icon";

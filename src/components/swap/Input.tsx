@@ -5,12 +5,16 @@ import { twMerge } from "tailwind-merge";
 import dynamic from "next/dynamic";
 import { ITokenMetadata } from "@/hooks/useBalanceTokens";
 import { useSwapStore } from "@/stores/swap";
+import { useAccountTokenStore, IAccountTokenStore } from "@/stores/token";
 import { toPrecision } from "@/utils/numbers";
 import { formatTokenPrice } from "@/utils/uiNumber";
 import getConfig from "@/utils/config";
 import { getMax } from "@/services/swap/swapUtils";
 
 const SelectTokenButton = dynamic(() => import("./SelectTokenButton"), {
+  ssr: false,
+});
+const SelectTokenBalance = dynamic(() => import("./SelectTokenBalance"), {
   ssr: false,
 });
 interface IInputProps {
@@ -30,6 +34,8 @@ export default function Input(props: IInputProps) {
   const tokenOutAmount = swapStore.getTokenOutAmount();
   const allTokenPrices = swapStore.getAllTokenPrices();
   const isNEAR = token?.id == WRAP_NEAR_CONTRACT_ID && token?.symbol == "NEAR";
+  const accountTokenStore = useAccountTokenStore() as IAccountTokenStore;
+  // const loading = accountTokenStore.getDefaultBalancesLoading();
   useEffect(() => {
     if (isIn) {
       swapStore.setTokenInAmount(amount);
@@ -91,14 +97,11 @@ export default function Input(props: IInputProps) {
         <span>{getTokenValue()}</span>
         <div className="flex items-center gap-0.5">
           Balance:
-          <span
-            onClick={() => {
-              if (isIn) setMaxAmount();
-            }}
-            className={`${isIn ? "underline cursor-pointer" : ""}`}
-          >
-            {toPrecision(token?.balance || "0", 3)}
-          </span>
+          <SelectTokenBalance
+            isIn={isIn}
+            setMaxAmount={setMaxAmount}
+            token={token}
+          />
         </div>
       </div>
       {/* near validation error tip */}

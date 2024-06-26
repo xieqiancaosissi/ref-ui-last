@@ -1,4 +1,4 @@
-import React, { useState, createContext, useEffect } from "react";
+import React, { useState } from "react";
 import Modal from "react-modal";
 import Image from "next/image";
 import { isMobile } from "../../../utils/device";
@@ -33,8 +33,8 @@ export default function SelectTokenModal({
   const accountTokenStore = useAccountTokenStore() as IAccountTokenStore;
   const swapStore = useSwapStore();
   const common_tokens: ITokenMetadata[] = tokenStore.get_common_tokens();
-  const defaultAccountBalances = accountTokenStore.getDefaultAccountBalances();
-  const autoAccountBalances = accountTokenStore.getAutoAccountBalances();
+  const defaultAccountBalances = accountTokenStore.getDefaultAccountTokens();
+  const autoAccountBalances = accountTokenStore.getAutoAccountTokens();
   const allTokenPrices = swapStore.getAllTokenPrices();
   function changeSearchText(e: any) {
     setSearchText(e.target.value);
@@ -48,6 +48,7 @@ export default function SelectTokenModal({
         (token) => !(token.id == t.id && token.symbol == t.symbol)
       )
     );
+    tokenStore.set_common_tokens_is_edited(true);
   }
   function getTokenWithBalance(token: ITokenMetadata) {
     const tokenFromDefault = defaultAccountBalances?.find(

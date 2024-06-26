@@ -2,11 +2,10 @@ import { useEffect, useState } from "react";
 import { TokenMetadata } from "../services/ft-contract";
 import { useDefaultWhitelistTokens } from "./useDefaultWhitelistTokens";
 import { useAutoWhitelistTokens } from "./useAutoWhitelistTokens";
-import { useAutoWhitelistedPostfix } from "../hooks/useAutoWhitelistedPostfix";
 import getConfig from "../utils/config";
 import getConfigV2 from "../utils/configV2";
 import { NEAR_META_DATA, WNEAR_META_DATA } from "../utils/nearMetaData";
-import { useTokenStore } from "../stores/token";
+import { useTokenStore, ITokenStore } from "../stores/token";
 const { WRAP_NEAR_CONTRACT_ID } = getConfig();
 const { HIDDEN_TOKEN_LIST } = getConfigV2();
 interface ISelectTokens {
@@ -16,27 +15,27 @@ interface ISelectTokens {
   tokensLoading: boolean;
 }
 export const useSelectTokens = (): ISelectTokens => {
-  const [selectTokens, setSelectTokens] = useState<ISelectTokens | any>({
+  const [selectTokens, setSelectTokens] = useState<ISelectTokens>({
     defaultList: [],
     autoList: [],
     totalList: [],
     tokensLoading: true,
   });
   const whitelistToken = useDefaultWhitelistTokens();
-  const autoWhitelistToken = useAutoWhitelistTokens(whitelistToken);
-  const autoWhitelistedPostfix = useAutoWhitelistedPostfix();
-  const tokenStore: any = useTokenStore();
+  const { autoWhitelistedPostfix, autoWhitelistTokens } =
+    useAutoWhitelistTokens(whitelistToken);
+  const tokenStore = useTokenStore() as ITokenStore;
   useEffect(() => {
     if (
       whitelistToken.length > 0 &&
-      autoWhitelistToken.length > 0 &&
+      autoWhitelistTokens.length > 0 &&
       autoWhitelistedPostfix.length > 0
     ) {
       getSelectTokens();
     }
   }, [
     whitelistToken.length,
-    autoWhitelistToken.length,
+    autoWhitelistTokens.length,
     autoWhitelistedPostfix.length,
   ]);
   async function getSelectTokens() {
@@ -52,7 +51,7 @@ export const useSelectTokens = (): ISelectTokens => {
       }
       return token;
     });
-    const autoList = autoWhitelistToken.map((token) => {
+    const autoList = autoWhitelistTokens.map((token) => {
       return {
         ...token,
         isRisk: true,
@@ -63,7 +62,7 @@ export const useSelectTokens = (): ISelectTokens => {
     // init common tokens
     if (
       tokenStore.get_common_tokens().length === 0 &&
-      !tokenStore.get_is_edited_common_tokens()
+      !tokenStore.get_common_tokens_is_edited()
     ) {
       const { INIT_COMMON_TOKEN_IDS } = getConfigV2();
       const init_common_tokens = defaultList.filter(

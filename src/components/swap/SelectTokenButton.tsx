@@ -34,7 +34,7 @@ export default function SelectTokenButton(props: ISelectTokenButtonProps) {
         persistSwapStore.setTokenOutId(selectToken?.id);
       }
     }
-  }, [selectToken?.id]);
+  }, [selectToken?.id, selectToken?.symbol]);
   function showModal() {
     setIsOpen(true);
   }

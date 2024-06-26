@@ -22,7 +22,7 @@ import {
   toInternationalCurrencySystem,
 } from "../../../utils/numbers";
 import { isMobile } from "../../../utils/device";
-import { useTokens } from "../../../stores/token";
+import useTokens from "@/hooks/useTokens";
 import getConfig from "../../../utils/config";
 import { TokenMetadata, unWrapToken } from "../../../services/ft-contract";
 import { LightningIcon, BoostOptIcon } from "../icon/FarmBoost";

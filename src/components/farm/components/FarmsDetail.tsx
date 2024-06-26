@@ -8,7 +8,7 @@ import {
 import { FarmDetailsPoolIcon, QuestionMark } from "../icon";
 import { TokenMetadata } from "@/services/ft-contract";
 import { getEffectiveFarmList, sort_tokens_by_base } from "@/services/commonV3";
-import { useTokens } from "@/stores/token";
+import useTokens from "@/hooks/useTokens";
 import { useRouter } from "next/router";
 import { WRAP_NEAR_CONTRACT_ID } from "@/services/wrap-near";
 import { NEAR_META_DATA } from "@/utils/nearMetaData";

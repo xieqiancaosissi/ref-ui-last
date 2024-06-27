@@ -7,11 +7,14 @@ import {
   IAccountTokenStore,
 } from "../stores/token";
 import { useAccountStore } from "../stores/account";
+import getConfigV2 from "../utils/configV2";
 import {
   getGlobalWhitelist,
   getAccountWhitelist,
   ftGetTokenMetadata,
 } from "../services/token";
+const configV2 = getConfigV2();
+const { HIDDEN_TOKEN_LIST } = configV2;
 export const useDefaultWhitelistTokens = () => {
   const [whiteListTokens, setWhiteListTokens] = useState<TokenMetadata[]>([]);
   const [globalWhitelistIds, setGlobalWhitelistIds] = useState<string[]>([]);
@@ -21,19 +24,20 @@ export const useDefaultWhitelistTokens = () => {
   const accountStore = useAccountStore();
   const accountId = accountStore.getAccountId();
   const walletLoading = accountStore.walletLoading;
+  const owner = accountTokenStore.getOwner();
   useEffect(() => {
     getGlobalWhitelistTokens();
   }, []);
   /* update cache logic (account whitelist) start */
   useEffect(() => {
     if (!walletLoading) {
-      if (!accountId) {
+      if (!accountId || accountId !== owner) {
         clearAccountWhitelistTokens();
       } else {
         getAccountWhitelistTokens();
       }
     }
-  }, [accountId, walletLoading]);
+  }, [accountId, owner, walletLoading]);
   /* update cache logic (account whitelist) end */
   useEffect(() => {
     getWhitelistTokens();
@@ -50,9 +54,9 @@ export const useDefaultWhitelistTokens = () => {
     tokenIds: string[],
     accountWhitelistIds: string[]
   ) {
-    const metadatas = await Promise.all(
-      tokenIds.map((tokenId) => ftGetTokenMetadata(tokenId))
-    );
+    const metadatas = (
+      await Promise.all(tokenIds.map((tokenId) => ftGetTokenMetadata(tokenId)))
+    ).filter((_) => _);
     const tokens = metadatas.map((token: TokenMetadata) => {
       return {
         ...token,
@@ -66,8 +70,11 @@ export const useDefaultWhitelistTokens = () => {
   async function getGlobalWhitelistTokens() {
     const storeList = tokenStore.get_global_whitelisted_tokens_ids();
     getGlobalWhitelist().then((globalWhitelistIds) => {
-      tokenStore.set_global_whitelisted_tokens_ids(globalWhitelistIds);
-      setGlobalWhitelistIds(globalWhitelistIds);
+      const availableIds = globalWhitelistIds.filter(
+        (id) => !HIDDEN_TOKEN_LIST.includes(id)
+      );
+      tokenStore.set_global_whitelisted_tokens_ids(availableIds);
+      setGlobalWhitelistIds(availableIds);
     });
     if (storeList?.length > 0) {
       setGlobalWhitelistIds(storeList);
@@ -85,6 +92,7 @@ export const useDefaultWhitelistTokens = () => {
   }
   async function clearAccountWhitelistTokens() {
     accountTokenStore.set_user_whitelisted_tokens_ids([]);
+    accountTokenStore.setOwner(accountId);
     setAccountWhitelistIds([]);
   }
   return whiteListTokens;

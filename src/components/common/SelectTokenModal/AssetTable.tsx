@@ -3,26 +3,24 @@ import { useDebounce } from "react-use";
 import _ from "lodash";
 import { SolidArrowDownIcon } from "./Icons";
 import { useSelectTokens } from "../../../hooks/useSelectTokens";
-import {
-  useDefaultBalanceTokens,
-  useAutoBalanceTokens,
-  ITokenMetadata,
-} from "../../../hooks/useBalanceTokens";
+import { ITokenMetadata } from "../../../hooks/useBalanceTokens";
 import Table from "./Table";
 import { SelectTokenContext } from "./Context";
 import { TokenMetadata } from "@/services/ft-contract";
+import { useAccountTokenStore, IAccountTokenStore } from "@/stores/token";
 export default function AssetTable() {
   const [sort, setSort] = useState<"asc" | "desc">("desc");
   const [tab, setTab] = useState<"default" | "tkn">("default");
-  const { defaultList = [], autoList = [], tokensLoading } = useSelectTokens();
+  const { tokensLoading } = useSelectTokens();
   const [defaultSearchResult, setDefaultSearchResult] = useState<
     ITokenMetadata[]
   >([]);
   const [autoSearchResult, setAutoSearchResult] = useState<ITokenMetadata[]>(
     []
   );
-  const defaultDisplayTokens = useDefaultBalanceTokens(defaultList);
-  const autoDisplayTokens = useAutoBalanceTokens(autoList);
+  const accountTokenStore = useAccountTokenStore() as IAccountTokenStore;
+  const defaultDisplayTokens = accountTokenStore.getDefaultAccountTokens();
+  const autoDisplayTokens = accountTokenStore.getAutoAccountTokens();
   const { searchText } = useContext(SelectTokenContext);
   useDebounce(
     () => {

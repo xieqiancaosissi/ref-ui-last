@@ -7,7 +7,8 @@ import {
   refFarmBoostFunctionCall,
   refFiViewFunction,
 } from "../utils/contract";
-import { executeFarmMultipleTransactions, viewFunction } from "../utils/near";
+import { viewFunction } from "../utils/near";
+import { executeFarmMultipleTransactions } from "../utils/contract";
 import { getAccountId, getCurrentWallet } from "../utils/wallet";
 import { TokenMetadata, ftGetStorageBalance } from "./ft-contract";
 import { getPoolsByIds, getTokenPriceList } from "./indexer";

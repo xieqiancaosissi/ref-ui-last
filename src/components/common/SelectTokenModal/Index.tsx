@@ -138,9 +138,9 @@ export default function SelectTokenModal({
                       onRequestClose();
                     }}
                   >
-                    <Image
-                      width="26"
-                      height="26"
+                    <img
+                      // width="26"
+                      // height="26"
                       className="rounded-full"
                       style={{
                         width: "26px",

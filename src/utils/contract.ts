@@ -116,3 +116,9 @@ export const nearDepositTransaction = (amount: string) => {
 
   return transaction;
 };
+export const executeFarmMultipleTransactions = async (
+  transactions: Transaction[],
+  callbackUrl?: string
+) => {
+  return executeMultipleTransactions(transactions, callbackUrl);
+};

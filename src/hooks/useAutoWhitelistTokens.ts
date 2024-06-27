@@ -7,21 +7,30 @@ export const useAutoWhitelistTokens = (whitelistToken: TokenMetadata[]) => {
   const [autoWhitelistTokens, setAutoWhitelistTokens] = useState<
     TokenMetadata[]
   >([]);
+  const [allTokens, setAllTokens] = useState<TokenMetadata[]>([]);
   const autoWhitelistedPostfix = useAutoWhitelistedPostfix();
   useEffect(() => {
-    if (whitelistToken.length > 0 && autoWhitelistedPostfix.length > 0) {
+    getAllTokens().then((res) => {
+      setAllTokens(res);
+    });
+  }, []);
+  useEffect(() => {
+    if (
+      whitelistToken.length > 0 &&
+      autoWhitelistedPostfix &&
+      allTokens.length
+    ) {
       getAutoWhitelistedTokens();
     }
-  }, [whitelistToken.length, autoWhitelistedPostfix.length]);
+  }, [whitelistToken.length, autoWhitelistedPostfix?.length, allTokens.length]);
   async function getAutoWhitelistedTokens() {
-    const all_ref_tokens = await getAllTokens();
     const white_list_token_map: Record<string, TokenMetadata> =
       whitelistToken.reduce((sum, cur) => {
         return { ...sum, [cur.id]: cur };
       }, {});
-    const auto_whitelisted_tokens = all_ref_tokens.filter(
+    const auto_whitelisted_tokens = allTokens.filter(
       (token: TokenMetadata) =>
-        autoWhitelistedPostfix.some((p) => token.id.includes(p)) &&
+        autoWhitelistedPostfix?.some((p) => token.id.includes(p)) &&
         !white_list_token_map[token.id]
     );
     setAutoWhitelistTokens(auto_whitelisted_tokens);

@@ -4,6 +4,7 @@ import { CreatePoolTitle, CreatePoolClose } from "@/components/pools/icon";
 import Fee from "./createPoolFee/index";
 import TokenInput from "./createPoolInput/index";
 import { addSimpleLiquidityPool, findSamePools } from "@/services/pool";
+import InitData from "@/components/swap/InitData";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 
 export default function CreatePoolModal({
@@ -67,6 +68,8 @@ export default function CreatePoolModal({
       }}
     >
       <div className="w-108">
+        {/* for select token modal */}
+        <InitData />
         {/* create pool title */}
         <div className="h-13 px-4 flex items-center justify-between">
           <CreatePoolTitle />

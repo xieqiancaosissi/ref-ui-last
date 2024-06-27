@@ -6,7 +6,7 @@ import { toReadableNumber } from "@/utils/numbers";
 import {
   useAccountTokenStore,
   IAccountTokenStore,
-  useAccountBalanceStore,
+  useAccountBalanceTokenStore,
 } from "../stores/token";
 
 export interface ITokenMetadata extends TokenMetadata {
@@ -19,19 +19,23 @@ export const useBalanceTokens = (
 ) => {
   const [balanceTokens, setBalanceTokens] = useState<ITokenMetadata[]>([]);
   const accountStore = useAccountStore();
+  const accountTokenStore = useAccountTokenStore() as IAccountTokenStore;
   const accountId = accountStore.getAccountId();
   const walletLoading = accountStore.getWalletLoading();
+  const owner = accountTokenStore.getOwner();
   /* update cache logic (tokens with balances) start */
   useEffect(() => {
     if (tokens?.length > 0 && !walletLoading) {
       if (!accountId) {
         setBalancesLoading(false);
         setBalanceTokens(tokens);
+      } else if (accountId !== owner) {
+        setBalanceTokens(tokens);
       } else {
         getBalanceTokens();
       }
     }
-  }, [tokens?.length, accountId, walletLoading]);
+  }, [tokens?.length, accountId, walletLoading, owner]);
   /* update cache logic (tokens with balances) end */
   async function getBalanceTokens() {
     setBalancesLoading(true);
@@ -55,12 +59,12 @@ export const useBalanceTokens = (
 export function useDefaultBalanceTokens(defaultList: TokenMetadata[]) {
   const [list, setList] = useState<ITokenMetadata[]>([]);
   const accountTokenStore = useAccountTokenStore() as IAccountTokenStore;
-  const accountBalanceStore = useAccountBalanceStore();
+  const accountBalanceTokenStore = useAccountBalanceTokenStore();
   const defaultAccountBalancesStore =
     accountTokenStore.getDefaultAccountTokens();
   const defaultAccountBalancesServer = useBalanceTokens(
     defaultList,
-    accountBalanceStore.setDefaultBalancesLoading
+    accountBalanceTokenStore.setDefaultBalancesLoading
   );
   useEffect(() => {
     if (defaultAccountBalancesStore.length > 0) {
@@ -82,7 +86,7 @@ export function useDefaultBalanceTokens(defaultList: TokenMetadata[]) {
 export function useAutoBalanceTokens(autoList: TokenMetadata[]) {
   const [list, setList] = useState<ITokenMetadata[]>([]);
   const accountTokenStore = useAccountTokenStore() as IAccountTokenStore;
-  const accountBalanceStore = useAccountBalanceStore();
+  const accountBalanceStore = useAccountBalanceTokenStore();
   const autoAccountBalancesStore = accountTokenStore.getAutoAccountTokens();
   const autoAccountBalancesServer = useBalanceTokens(
     autoList,

@@ -4,8 +4,9 @@ import BN from "bn.js";
 import { getCurrentWallet } from "../utils/wallet";
 import { Transaction } from "../interfaces/wallet";
 import getConfig from "../utils/config";
+import { getSelectedWalletId } from "../utils/wallet";
 const config = getConfig();
-
+const webWalletIds = ["my-near-wallet", "mintbase-wallet"];
 export const executeMultipleTransactions = async (
   transactions: Transaction[],
   callbackUrl?: string
@@ -29,17 +30,21 @@ export const executeMultipleTransactions = async (
       }),
     });
   });
-
+  const selectedWalletId = getSelectedWalletId();
   return (await getCurrentWallet())
     .signAndSendTransactions({
       transactions: wstransactions,
       callbackUrl,
     })
     .then(() => {
-      console.log();
+      if (!webWalletIds.includes(selectedWalletId)) {
+        window.location.reload();
+      }
     })
     .catch((e: Error) => {
-      console.log();
+      if (!webWalletIds.includes(selectedWalletId)) {
+        window.location.reload();
+      }
     });
 };
 
@@ -84,12 +89,6 @@ export async function viewFunction(viewArg: {
   const account = await getAccount();
   return await account.viewFunction(viewArg);
 }
-export const executeFarmMultipleTransactions = async (
-  transactions: Transaction[],
-  callbackUrl?: string
-) => {
-  return executeMultipleTransactions(transactions, callbackUrl);
-};
 /***************************Do not insert other functions in this file (Lily and Luk)e*******************************/
 /***************************Do not insert other functions in this file (Lily and Luk)e*******************************/
 /***************************Do not insert other functions in this file (Lily and Luk)e*******************************/

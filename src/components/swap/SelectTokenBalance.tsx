@@ -1,6 +1,6 @@
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import { toPrecision } from "@/utils/numbers";
-import { useAccountBalanceStore } from "@/stores/token";
+import { useAccountBalanceTokenStore } from "@/stores/token";
 import { ITokenMetadata } from "@/hooks/useBalanceTokens";
 
 interface ISelectTokenBalanceProps {
@@ -10,9 +10,10 @@ interface ISelectTokenBalanceProps {
 }
 export default function SelectTokenBalance(props: ISelectTokenBalanceProps) {
   const { isIn, setMaxAmount, token } = props;
-  const accountBalanceStore = useAccountBalanceStore();
-  const defaultBalanceLoading = accountBalanceStore.getDefaultBalancesLoading();
-  const autoBalanceLoading = accountBalanceStore.getAutoBalancesLoading();
+  const accountBalanceTokenStore = useAccountBalanceTokenStore();
+  const defaultBalanceLoading =
+    accountBalanceTokenStore.getDefaultBalancesLoading();
+  const autoBalanceLoading = accountBalanceTokenStore.getAutoBalancesLoading();
   return (
     <>
       {defaultBalanceLoading || autoBalanceLoading ? (

@@ -91,9 +91,9 @@ export default function Table({
             }}
           >
             <div className="flex items-center gap-2.5">
-              <Image
-                width="26"
-                height="26"
+              <img
+                // width="26"
+                // height="26"
                 className="rounded-full border border-gray-110 flex-shrink-0"
                 style={{
                   width: "26px",

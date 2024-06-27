@@ -6,6 +6,9 @@ export function getSelector() {
 export async function getCurrentWallet(): Promise<Wallet> {
   return await window.selector?.wallet();
 }
+export function getSelectedWalletId(): string {
+  return window.selector?.store?.getState()?.selectedWalletId ?? "";
+}
 export function getAccountId() {
   return window.accountId;
 }

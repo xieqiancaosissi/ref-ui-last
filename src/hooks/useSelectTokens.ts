@@ -26,23 +26,19 @@ export const useSelectTokens = (): ISelectTokens => {
     useAutoWhitelistTokens(whitelistToken);
   const tokenStore = useTokenStore() as ITokenStore;
   useEffect(() => {
-    if (
-      whitelistToken.length > 0 &&
-      autoWhitelistTokens.length > 0 &&
-      autoWhitelistedPostfix.length > 0
-    ) {
+    if (whitelistToken.length > 0 && autoWhitelistedPostfix) {
       getSelectTokens();
     }
   }, [
     whitelistToken.length,
     autoWhitelistTokens.length,
-    autoWhitelistedPostfix.length,
+    autoWhitelistedPostfix?.length,
   ]);
   async function getSelectTokens() {
     const defaultList = whitelistToken.map((token) => {
       if (
         token.isUserToken &&
-        autoWhitelistedPostfix.some((p) => token.id.includes(p))
+        autoWhitelistedPostfix?.some((p) => token.id.includes(p))
       ) {
         return {
           ...token,
@@ -58,7 +54,9 @@ export const useSelectTokens = (): ISelectTokens => {
       };
     });
     const wnearToken = getWnearToken(defaultList);
-    defaultList.push(wnearToken);
+    if (wnearToken) {
+      defaultList.push(wnearToken);
+    }
     // init common tokens
     if (
       tokenStore.get_common_tokens().length === 0 &&
@@ -89,6 +87,7 @@ export const useSelectTokens = (): ISelectTokens => {
     const NEAR = tokens.filter(
       (token) => token.id === WRAP_NEAR_CONTRACT_ID
     )[0];
+    if (!NEAR) return;
     const wnearToken = JSON.parse(JSON.stringify(NEAR));
     wnearToken.icon = WNEAR_META_DATA.icon;
     wnearToken.symbol = WNEAR_META_DATA.symbol;

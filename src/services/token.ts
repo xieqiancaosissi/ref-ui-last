@@ -8,18 +8,22 @@ import { TokenMetadata } from "./ft-contract";
 export async function ftGetTokenMetadata(tokenId: string) {
   let metadata: any = await db.allTokens().where({ id: tokenId }).first();
   if (!metadata) {
-    metadata = await viewFunction({
-      contractId: tokenId,
-      methodName: "ft_metadata",
-      args: {},
-    });
-    await db.allTokens().put({
-      id: tokenId,
-      name: metadata.name,
-      symbol: metadata.symbol,
-      decimals: metadata.decimals,
-      icon: metadata.icon,
-    });
+    try {
+      metadata = await viewFunction({
+        contractId: tokenId,
+        methodName: "ft_metadata",
+        args: {},
+      });
+      await db.allTokens().put({
+        id: tokenId,
+        name: metadata.name,
+        symbol: metadata.symbol,
+        decimals: metadata.decimals,
+        icon: metadata.icon,
+      });
+    } catch (error) {
+      return null;
+    }
   }
 
   return {

@@ -20,6 +20,8 @@ export type IAccountTokenStore = {
   setDefaultAccountTokens: (defaultAccountTokens: ITokenMetadata[]) => void;
   getAutoAccountTokens: () => ITokenMetadata[];
   setAutoAccountTokens: (autoAccountTokens: ITokenMetadata[]) => void;
+  getOwner: () => string;
+  setOwner: (owner: string) => void;
 };
 export type IAccountBalanceStore = {
   getDefaultBalancesLoading: () => boolean;
@@ -60,6 +62,7 @@ export const useAccountTokenStore = create(
       user_whitelisted_tokens_ids: [],
       defaultAccountTokens: [],
       autoAccountTokens: [],
+      owner: "",
       get_user_whitelisted_tokens_ids: () => get().user_whitelisted_tokens_ids,
       set_user_whitelisted_tokens_ids: (
         user_whitelisted_tokens_ids: string[]
@@ -70,6 +73,8 @@ export const useAccountTokenStore = create(
       getAutoAccountTokens: () => get().autoAccountTokens,
       setAutoAccountTokens: (autoAccountTokens: ITokenMetadata[]) =>
         set({ autoAccountTokens }),
+      getOwner: () => get().owner,
+      setOwner: (owner: string) => set({ owner }),
     }),
     {
       name: "_cached_account_tokens",
@@ -78,7 +83,7 @@ export const useAccountTokenStore = create(
     }
   )
 );
-export const useAccountBalanceStore = create<IAccountBalanceStore>(
+export const useAccountBalanceTokenStore = create<IAccountBalanceStore>(
   (set: any, get: any) => ({
     defaultBalancesLoading: true,
     autoBalancesLoading: true,

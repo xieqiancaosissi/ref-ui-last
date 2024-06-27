@@ -73,9 +73,9 @@ export default function SwapDetail() {
   const poolFeeDisplay = useMemo(() => {
     try {
       return `${toPrecision(
-        calculateFeePercent(avgFee).toString(),
+        calculateFeePercent(+avgFee).toString(),
         2
-      )}% / ${calculateFeeCharge(avgFee, tokenInAmount)} ${tokenIn.symbol}`;
+      )}% / ${calculateFeeCharge(+avgFee, tokenInAmount)} ${tokenIn.symbol}`;
     } catch (error) {
       return null;
     }

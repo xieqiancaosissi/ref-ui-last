@@ -4,6 +4,8 @@ import {
   toRealSymbol,
   FarmBoost,
   getVeSeedShare,
+  mftGetBalance,
+  getMftTokenId,
 } from "@/services/farm";
 import { FarmDetailsPoolIcon, QuestionMark } from "../icon";
 import { TokenMetadata } from "@/services/ft-contract";
@@ -27,6 +29,12 @@ import { CalcIcon } from "../icon/FarmBoost";
 import CalcModelBooster from "./CalcModelBooster";
 import CustomTooltip from "@/components/customTooltip/customTooltip";
 import moment from "moment";
+import { useAccountStore } from "@/stores/account";
+import {
+  LP_STABLE_TOKEN_DECIMALS,
+  LP_TOKEN_DECIMALS,
+} from "@/services/m-token";
+import UserStakeBlock from "./FarmsDetailClaim";
 
 const ONLY_ZEROS = /^0*\.?0*$/;
 const {
@@ -70,6 +78,10 @@ export default function FarmsDetail(props: {
   const [maxLoveShareAmount, setMaxLoveShareAmount] = useState<string>("0");
   const [calcVisible, setCalcVisible] = useState(false);
   const aprUpLimit = getAprUpperLimit();
+  const [lpBalance, setLpBalance] = useState("");
+  const [showAddLiquidityEntry, setShowAddLiquidityEntry] = useState(false);
+  const accountStore = useAccountStore();
+  const isSignedIn = accountStore.isSignedIn;
   function sortTokens(tokens: TokenMetadata[]) {
     tokens.sort((a: TokenMetadata, b: TokenMetadata) => {
       if (a.symbol === "NEAR") return 1;
@@ -78,6 +90,10 @@ export default function FarmsDetail(props: {
     });
     return tokens;
   }
+  useEffect(() => {
+    getStakeBalance();
+  }, [Object.keys(user_seeds_map).length, user_data_loading]);
+
   useEffect(() => {
     const yourApr = getYourApr();
     if (yourApr) {
@@ -301,6 +317,38 @@ export default function FarmsDetail(props: {
     });
     return Object.values(tempMap);
   }
+  const getStakeBalance = async () => {
+    if (!isSignedIn) {
+      setShowAddLiquidityEntry(false);
+    } else {
+      const poolId = pool?.id;
+      if (!poolId) {
+        console.error("Pool ID is undefined");
+        return;
+      }
+
+      const b = await mftGetBalance(getMftTokenId(poolId.toString()));
+      if (new Set(STABLE_POOL_IDS || []).has(poolId.toString())) {
+        setLpBalance(toReadableNumber(LP_STABLE_TOKEN_DECIMALS, b));
+      } else {
+        setLpBalance(toReadableNumber(LP_TOKEN_DECIMALS, b));
+      }
+
+      const farmList = detailData?.farmList;
+      if (!farmList || farmList.length === 0) {
+        console.error("Farm list is undefined or empty");
+        return;
+      }
+
+      const isEnded = farmList[0].status === "Ended";
+      if (isEnded) {
+        setShowAddLiquidityEntry(false);
+      } else {
+        const userSeed = user_seeds_map[detailData.seed_id];
+        setShowAddLiquidityEntry(!Number(b) && !userSeed && !user_data_loading);
+      }
+    }
+  };
   function getRewardsPerWeekTip() {
     const tempList: FarmBoost[] = detailData.farmList || [];
     const lastList: any[] = [];
@@ -468,6 +516,37 @@ export default function FarmsDetail(props: {
       </>
     );
   }
+  function getBoostMutil() {
+    if (REF_VE_CONTRACT_ID && !boostConfig) return "";
+    const { affected_seeds = {} } = boostConfig || {};
+    const { seed_id } = detailData;
+    if (!REF_VE_CONTRACT_ID) {
+      return "";
+    }
+    const love_user_seed = user_seeds_map[REF_VE_CONTRACT_ID];
+    const base = affected_seeds[seed_id];
+    if (base && loveSeed) {
+      const { free_amount = 0, locked_amount = 0 } = love_user_seed || {};
+      const totalStakeLoveAmount = toReadableNumber(
+        LOVE_TOKEN_DECIMAL,
+        new BigNumber(free_amount).plus(locked_amount).toFixed()
+      );
+      if (+totalStakeLoveAmount > 0) {
+        let result;
+        if (+totalStakeLoveAmount < 1) {
+          result = 1;
+        } else {
+          result = new BigNumber(1)
+            .plus(Math.log(+totalStakeLoveAmount) / Math.log(base))
+            .toFixed(2);
+        }
+        return result;
+      }
+      return "";
+    }
+    return "";
+  }
+  const radio = getBoostMutil();
   return (
     <main className="dark:text-white">
       {/* title */}
@@ -550,7 +629,23 @@ export default function FarmsDetail(props: {
       </div>
       {/* content */}
       <div className="w-3/5 pt-16 m-auto">
-        <div className="ml-32">details</div>
+        <div className="ml-32 flex">
+          <div className="flex-1 mr-2.5">
+            <UserStakeBlock
+              detailData={detailData}
+              tokenPriceList={tokenPriceList}
+              lpBalance={lpBalance}
+              loveSeed={loveSeed}
+              boostConfig={boostConfig}
+              user_seeds_map={user_seeds_map}
+              user_unclaimed_map={user_unclaimed_map}
+              user_unclaimed_token_meta_map={user_unclaimed_token_meta_map}
+              user_data_loading={user_data_loading}
+              radio={radio}
+            ></UserStakeBlock>
+          </div>
+          <div className="flex-1">Stake</div>
+        </div>
       </div>
       {calcVisible ? (
         <CalcModelBooster

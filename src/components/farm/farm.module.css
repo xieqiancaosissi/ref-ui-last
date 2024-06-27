@@ -59,7 +59,7 @@
   filter: initial;
 }
 .gradient_text {
-  background: linear-gradient(90deg, #FFFFFF 0%, #91A2AE 100%);
+  background: linear-gradient(90deg, #ffffff 0%, #91a2ae 100%);
   -webkit-background-clip: text;
   color: transparent;
 }

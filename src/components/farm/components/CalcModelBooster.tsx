@@ -255,7 +255,9 @@ export default function CalcModelBooster(
             <label
               onClick={showMaxLp}
               style={{ zoom: 0.8 }}
-              className={"text-sm text-gray-50 cursor-pointer underline hover:text-primaryGreen"}
+              className={
+                "text-sm text-gray-50 cursor-pointer underline hover:text-primaryGreen"
+              }
             >
               MAX
             </label>

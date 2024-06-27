@@ -138,3 +138,14 @@ export const formatTokenPrice = (v: string | number, precision = 2) => {
     return `$${toPrecision(decimal.toFixed(), precision)}`;
   }
 };
+
+export const formatNumber = (v: string | number, decimal?: number) => {
+  const big = Big(v || 0);
+  if (big.eq(0)) {
+    return "0";
+  } else if (big.lt(0.001)) {
+    return "<0.001";
+  } else {
+    return big.toFixed(decimal || 3, 1);
+  }
+};

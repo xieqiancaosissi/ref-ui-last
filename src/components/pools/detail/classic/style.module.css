@@ -11,3 +11,74 @@
 .tokenImgContainer > :last-child {
   transform: translateX(-4px);
 }
+
+
+
+.chartsFilterPoolType {
+  @apply text-xs cursor-pointer border border-gray-100 rounded w-38 h-9 frcc relative;
+  z-index: 10;
+  top: 36px;
+}
+
+.chartsContent {
+  width:100%;
+  @apply flex items-start h-140 overflow-hidden;
+}
+
+.triangleDown {  
+  width: 0;  
+  height: 0;  
+  border-left: 4px solid transparent;  
+  border-right: 4px solid transparent;  
+  border-top: 6px solid #566069;  
+}
+
+.triangleUp {  
+  width: 0;  
+  height: 0;  
+  border-left: 4px solid transparent;  
+  border-right: 4px solid transparent;  
+  border-bottom: 6px solid #fff;  
+}
+
+
+/* my lockingdetails */
+.hoverTooltipContainer {
+  position: relative;
+  display: inline-block;
+}
+
+.hoverTooltipOverlocking {
+  position: absolute;
+  z-index: 1000;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-25%);
+  @apply absolute border  p-0.5 rounded-lg text-xs  text-gray-10;
+  border-color: #2d343d;
+  background-color: #2A3643;
+  width: 8rem;
+}
+
+
+@keyframes fadeInOut {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.loadingDots {
+  display: inline-block;
+  margin-left: 0.5rem;
+  font-size: 1rem;
+}
+
+.loadingDots::after {
+  content: '...';
+  color: #73818B;
+  animation: fadeInOut 1s infinite;
+}

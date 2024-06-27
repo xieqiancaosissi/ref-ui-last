@@ -21,9 +21,8 @@ export default function PoolRow({
   pureIdList: any;
 }) {
   const { isDealed, updatedMapList } = useTokenMetadata(list);
-
   return (
-    <div className="mb-2 min-h-90 overflow-auto">
+    <div className="mb-2 min-h-90 overflow-auto hover:cursor-pointer">
       {updatedMapList.map((item, index) => {
         return (
           <div

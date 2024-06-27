@@ -114,3 +114,14 @@ export const getTopPools = async (): Promise<PoolRPCView[]> => {
     .catch(() => []);
   return listTopPools;
 };
+
+export const getTxId = async (receipt_id: string) => {
+  return await fetch(config.txIdApiUrl + `/v1/search/?keyword=${receipt_id}`)
+    .then(async (res) => {
+      const data = await res.json();
+      return data;
+    })
+    .catch(() => {
+      return [];
+    });
+};

@@ -101,6 +101,18 @@ export async function refFiViewFunction({
     args,
   });
 }
+export async function lockerViewFunction({
+  methodName,
+  args,
+}: RefFiViewFunctionOptions) {
+  const account = await getAccount();
+  return account.viewFunction({
+    contractId: config.REF_TOKEN_LOCKER_CONTRACT_ID,
+    methodName,
+    args,
+  });
+}
+
 export const nearDepositTransaction = (amount: string) => {
   const transaction: Transaction = {
     receiverId: config.WRAP_NEAR_CONTRACT_ID,

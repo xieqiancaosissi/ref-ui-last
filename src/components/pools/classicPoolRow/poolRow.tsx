@@ -27,7 +27,7 @@ export default function PoolRow({
     router.push(`/pool/classic/${item.id}`);
   };
   return (
-    <div className="mb-2 min-h-90 overflow-auto">
+    <div className="mb-2 min-h-90 overflow-auto hover:cursor-pointer">
       {updatedMapList.map((item, index) => {
         return (
           <div

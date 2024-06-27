@@ -3,8 +3,17 @@ import { getAuthenticationHeaders } from "../services/signature";
 import { ftGetStorageBalance } from "./ft-contract";
 import { storageDepositForFTAction } from "./creator/storage";
 import { executeMultipleTransactions } from "./createPoolFn";
+import { refFiViewFunction } from "../utils/contract";
+import { getAccountId } from "../utils/wallet";
+import moment from "moment";
 
 const { REF_FI_CONTRACT_ID } = getConfig();
+
+const genUrlParams = (props: Record<string, string | number>) => {
+  return Object.keys(props)
+    .map((key) => key + "=" + props[key])
+    .join("&");
+};
 
 export const getSearchResult = async ({
   type = "classic",
@@ -197,5 +206,93 @@ export const getPoolsDetailById = async ({ pool_id }: { pool_id: string }) => {
     })
     .catch(() => {
       return [];
+    });
+};
+
+export const getSharesInPool = (id: number): Promise<string> => {
+  return refFiViewFunction({
+    methodName: "get_pool_shares",
+    args: {
+      pool_id: id,
+      account_id: getAccountId(),
+    },
+  });
+};
+
+const parsePoolTxTimeStamp = (ts: string) => {
+  return moment(Math.floor(Number(ts) / 1000000)).format("YYYY-MM-DD HH:mm:ss");
+};
+
+export interface ClassicPoolSwapTransaction {
+  token_in: string;
+  token_out: string;
+  swap_in: string;
+  swap_out: string;
+  timestamp: string;
+  tx_id: string;
+  receipt_id: string;
+}
+
+export const getClassicPoolSwapRecentTransaction = async (props: {
+  pool_id: string | number;
+}) => {
+  const paramString = genUrlParams(props);
+
+  return await fetch(
+    getConfig().indexerUrl + `/get-recent-transaction-swap?${paramString}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+        ...getAuthenticationHeaders("/get-recent-transaction-swap"),
+      },
+    }
+  )
+    .then((res) => res.json())
+    .then((res: ClassicPoolSwapTransaction[]) => {
+      return res.map((tx) => {
+        return {
+          ...tx,
+          timestamp: parsePoolTxTimeStamp(tx.timestamp),
+        };
+      });
+    });
+};
+
+export interface ClassicPoolLiquidtyRecentTransaction {
+  method_name: string;
+  timestamp: string;
+  token_in: string;
+  token_out: string;
+  amount_in: string;
+  amount_out: string;
+  tx_id: string;
+  shares?: string;
+  pool_id?: string;
+  amounts?: string;
+  receipt_id: string;
+}
+
+export const getClassicPoolLiquidtyRecentTransaction = async (props: {
+  pool_id: string | number;
+}) => {
+  const paramString = genUrlParams(props);
+
+  return await fetch(
+    getConfig().indexerUrl + `/get-recent-transaction-liquidity?${paramString}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+        ...getAuthenticationHeaders("/get-recent-transaction-liquidity"),
+      },
+    }
+  )
+    .then((res) => res.json())
+    .then((res: ClassicPoolLiquidtyRecentTransaction[]) => {
+      return res.map((t) => ({
+        ...t,
+        timestamp: parsePoolTxTimeStamp(t.timestamp),
+      }));
     });
 };

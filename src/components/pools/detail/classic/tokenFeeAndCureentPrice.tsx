@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { SplitRectangleIcon, ExchangeIcon } from "@/components/pools/icon";
-import { getAllTokenPrices } from "@/services/farm";
+import {
+  formatPercentage,
+  toInternationalCurrencySystem_usd,
+} from "@/utils/uiNumber";
 
 export default function TokenFeeAndCureentPrice({
   poolDetail,
@@ -20,35 +23,47 @@ export default function TokenFeeAndCureentPrice({
     <div className="flex items-center text-white h-10 justify-around ml-9">
       <div className="text-sm">
         <h3 className="text-gray-50 font-normal">Fee</h3>
-        <p>{poolDetail.total_fee * 100}%</p>
+        <p>{formatPercentage(poolDetail?.total_fee * 100)}</p>
       </div>
       <SplitRectangleIcon className="mx-7" />
       <div className="text-sm min-w-45">
         <h3 className="text-gray-50 font-normal">Current Price</h3>
         <p>
+          {/* dom render in html formatter above: 1 Near($5.2) = 7Ref */}
           <span className="mr-1">1</span>
-          {poolDetail.token_symbols[currentSort[0]] == "wNEAR"
+          {/* token left name */}
+          {poolDetail?.token_symbols[currentSort[0]] == "wNEAR"
             ? "NEAR"
-            : poolDetail.token_symbols[currentSort[0]]}
-          <span className="text-gray-50 font-normal">{`($${
-            Math.ceil(
-              tokenPriceList[poolDetail.token_account_ids[currentSort[0]]]
-                .price * 100
-            ) / 100
-          })`}</span>
+            : poolDetail?.token_symbols[currentSort[0]]}
+          {/* usd price */}
+          {tokenPriceList &&
+            tokenPriceList[poolDetail.token_account_ids[currentSort[0]]] && (
+              <span className="text-gray-50 font-normal">
+                (
+                {toInternationalCurrencySystem_usd(
+                  tokenPriceList[poolDetail.token_account_ids[currentSort[0]]]
+                    .price
+                )}
+                )
+              </span>
+            )}
           <span className="mx-1">=</span>
-          <span className="mr-1">
-            {Math.ceil(
-              (tokenPriceList[poolDetail.token_account_ids[currentSort[0]]]
-                .price /
-                tokenPriceList[poolDetail.token_account_ids[currentSort[1]]]
-                  .price) *
-                100
-            ) / 100}
-          </span>
-          {poolDetail.token_symbols[currentSort[1]] == "wNEAR"
+          {/* token right amount */}
+          {tokenPriceList[poolDetail?.token_account_ids[currentSort[0]]] && (
+            <span className="mr-1">
+              {Math.ceil(
+                (tokenPriceList[poolDetail?.token_account_ids[currentSort[0]]]
+                  .price /
+                  tokenPriceList[poolDetail?.token_account_ids[currentSort[1]]]
+                    .price) *
+                  100
+              ) / 100}
+            </span>
+          )}
+          {/* token right name */}
+          {poolDetail?.token_symbols[currentSort[1]] == "wNEAR"
             ? "NEAR"
-            : poolDetail.token_symbols[currentSort[1]]}
+            : poolDetail?.token_symbols[currentSort[1]]}
         </p>
       </div>
       <ExchangeIcon

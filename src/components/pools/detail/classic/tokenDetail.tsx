@@ -1,19 +1,21 @@
-import React, { useEffect, useState } from "react";
-import { useRouter } from "next/router";
+import React from "react";
 import tokenIcons from "@/utils/tokenIconConfig";
-import { getPoolsDetailById } from "@/services/pool";
 import { TokenIconComponent } from "@/components/pools/TokenIconWithTkn/index";
 import { useRiskTokens } from "@/hooks/useRiskTokens";
-import { useTokenMetadata } from "@/hooks/usePools";
 import styles from "./style.module.css";
 
-export default function TokenDetail(poolDetail: any) {
-  const { updatedMapList } = useTokenMetadata([poolDetail]);
+export default function TokenDetail({
+  poolDetail,
+  updatedMapList,
+}: {
+  poolDetail: any;
+  updatedMapList: any;
+}) {
   const { pureIdList } = useRiskTokens();
 
   return (
     <div>
-      {updatedMapList.map((item, index) => {
+      {updatedMapList.map((item: any, index: any) => {
         return (
           <div
             className={styles.tokenImgContainer}

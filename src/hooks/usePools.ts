@@ -1,9 +1,14 @@
 import { useState, useEffect, useCallback } from "react";
 import { usePoolStore } from "@/stores/pool";
-import { getSearchResult } from "@/services/pool";
+import {
+  getSearchResult,
+  getClassicPoolSwapRecentTransaction,
+  getClassicPoolLiquidtyRecentTransaction,
+} from "@/services/pool";
 import { ftGetTokenMetadata } from "@/services/token";
 
 import _ from "lodash";
+import { symbol } from "d3";
 //
 type UsePoolSearchProps = {
   isChecked: boolean;
@@ -109,11 +114,31 @@ export const useTokenMetadata = (list: Array<any>) => {
 
         updatedList = updatedList.map((item) => ({
           ...item,
-          token_account_ids: item.token_account_ids.map((tokenId: string) => ({
-            tokenId,
-            icon: metadataMap.get(tokenId)?.icon,
-            decimals: metadataMap.get(tokenId)?.decimals,
-          })),
+          token_account_ids: item.token_account_ids.map(
+            (tokenId: string, index: number) => ({
+              tokenId,
+              id: tokenId,
+              icon: metadataMap.get(tokenId)?.icon,
+              decimals: metadataMap.get(tokenId)?.decimals,
+              symbol:
+                item.token_symbols[index] == "wNEAR"
+                  ? "NEAR"
+                  : item?.token_symbols[index],
+            })
+          ),
+          supplies: item.amounts
+            ? item.amounts.reduce(
+                (
+                  acc: { [tokenId: string]: string },
+                  amount: string,
+                  i: number
+                ) => {
+                  acc[item.token_account_ids[i]] = amount;
+                  return acc;
+                },
+                {}
+              )
+            : {},
           token_symbols: item.token_symbols.map((item: string) => {
             return item == "wNEAR" ? "NEAR" : item;
           }),
@@ -161,4 +186,26 @@ export const checkIsHighRisk = (pureIdList: any, arr: any) => {
       risk: false,
     };
   }
+};
+
+export const useClassicPoolTransaction = ({
+  pool_id,
+}: {
+  pool_id: string | number;
+}) => {
+  const [swapRecent, setSwapRecent] = useState<any[]>([]);
+
+  const [lqRecent, setLqRecent] = useState<any[]>([]);
+
+  useEffect(() => {
+    getClassicPoolSwapRecentTransaction({
+      pool_id,
+    }).then(setSwapRecent);
+
+    getClassicPoolLiquidtyRecentTransaction({
+      pool_id,
+    }).then(setLqRecent);
+  }, []);
+
+  return { swapTransaction: swapRecent, liquidityTransactions: lqRecent };
 };

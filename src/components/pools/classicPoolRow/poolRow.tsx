@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Router, { useRouter } from "next/router";
 import styles from "./poolRow.module.css";
+import { StartWatchList } from "@/components/pools/icon";
 import {
   formatPercentage,
   toInternationalCurrencySystem_usd,
@@ -11,7 +12,7 @@ import { NearIcon, DangerousIcon, TknIcon } from "@/components/pools/icon";
 import tokenIcons from "@/utils/tokenIconConfig";
 import HoverTooltip from "@/components/common/HoverToolTip";
 import { TokenIconComponent } from "@/components/pools/TokenIconWithTkn/index";
-
+import { useWatchList } from "@/hooks/useWatchlist";
 export default function PoolRow({
   list,
   loading,
@@ -26,6 +27,7 @@ export default function PoolRow({
   const toDetail = (item: any) => {
     router.push(`/pool/classic/${item.id}`);
   };
+  const { watchListId } = useWatchList();
   return (
     <div className="mb-2 min-h-90 overflow-auto hover:cursor-pointer">
       {updatedMapList.map((item, index) => {
@@ -55,6 +57,10 @@ export default function PoolRow({
               <span className={styles.symbol}>
                 {item.token_symbols.join("-")}
               </span>
+              {/* is collect */}
+              {watchListId.includes(item.id) && (
+                <StartWatchList className="mr-2" />
+              )}
               {/* dangerous */}
               {checkIsHighRisk(pureIdList, item).risk && (
                 <span className="mr-2 frcc">

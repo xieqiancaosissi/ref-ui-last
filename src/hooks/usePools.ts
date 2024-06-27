@@ -8,7 +8,6 @@ import {
 import { ftGetTokenMetadata } from "@/services/token";
 
 import _ from "lodash";
-import { symbol } from "d3";
 //
 type UsePoolSearchProps = {
   isChecked: boolean;
@@ -96,6 +95,7 @@ export const usePoolSearch = ({
 export const useTokenMetadata = (list: Array<any>) => {
   const [isDealed, setIsDealed] = useState(false);
   const [updatedMapList, setUpdatedList] = useState<Array<any>>([]);
+
   useEffect(() => {
     let updatedList = [...list];
     setIsDealed(false);
@@ -109,7 +109,7 @@ export const useTokenMetadata = (list: Array<any>) => {
     )
       .then((metadataResults) => {
         const metadataMap = new Map(
-          metadataResults.map((metadata) => [metadata.id, metadata])
+          metadataResults.map((metadata) => [metadata?.id, metadata])
         );
 
         updatedList = updatedList.map((item) => ({

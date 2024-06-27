@@ -53,7 +53,12 @@ const MyLockingDetailTip = ({
   function TokenIconComponent({ ite }: { ite: any }) {
     const hasCustomIcon = Reflect.has(tokenIcons, ite.tokenId);
     const isNearToken = ite.tokenId === "wrap.near";
-    const iconStyle = { width: "26px", height: "26px", borderRadius: "50%" };
+    const iconStyle = {
+      width: "18px",
+      height: "18px",
+      borderRadius: "50%",
+      border: "1px solid #9EFE01",
+    };
 
     if (hasCustomIcon && !isNearToken) {
       return (

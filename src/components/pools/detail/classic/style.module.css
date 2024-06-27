@@ -51,10 +51,10 @@
   top: 100%;
   left: 50%;
   transform: translateX(-25%);
-  @apply absolute border  p-0.5 rounded-lg text-xs  text-gray-10;
-  border-color: #2d343d;
+  @apply absolute border  p-3 rounded-lg text-sm border-gray-140  text-white w-37 font-normal;
+  border-color: #414B57;
   background-color: #2a3643;
-  width: 8rem;
+  
 }
 
 @keyframes fadeInOut {

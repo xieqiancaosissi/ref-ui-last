@@ -4,7 +4,10 @@ import { isMobile } from "@/utils/device";
 import { toNonDivisibleNumber, toReadableNumber } from "@/utils/numbers";
 import { formatWithCommas_number } from "@/utils/uiNumber";
 import { lock_lp } from "@/services/lplock";
+import RangeSlider from "./RangeSlider";
 import Modal from "react-modal";
+import { LockLpTitleIcon, LpModalCloseIcon } from "@/components/pools/icon";
+import { LockIcon } from "@/components/pools/icon";
 function LockedModal(props: any) {
   const {
     isOpen,
@@ -78,7 +81,93 @@ function LockedModal(props: any) {
           transform: "translate(-50%, -50%)",
         },
       }}
-    ></Modal>
+    >
+      <div className="w-108 min-h-110 rounded-lg bg-dark-10 px-4 py-5">
+        {/* title */}
+        <div className="flex items-center justify-between">
+          <LockLpTitleIcon />
+          <LpModalCloseIcon className="cursor-pointer" />
+        </div>
+
+        <div className="flex items-center justify-between text-sm mt-7 text-gray-60">
+          <span>Balance</span>
+          <span>{formatWithCommas_number(balance)}</span>
+        </div>
+        {/*  */}
+        <div
+          className="flex items-center justify-between px-3 rounded-lg mt-4 "
+          style={{ height: "65px", background: "rgba(0,0,0,.2)" }}
+        >
+          <input
+            type="number"
+            placeholder="0.0"
+            value={amount}
+            onChange={({ target }) => changeAmount(target.value)}
+            className="text-white text-xl focus:outline-none appearance-none leading-tight px-2.5 w-full"
+          ></input>
+          <div className="flex items-center flex-shrink-0 bg-primaryText bg-opacity-10 rounded-full p-1">
+            {tokens?.map((token: any) => {
+              return (
+                <img
+                  key={token.id}
+                  src={token.icon}
+                  className="w-7 h-7 rounded-full"
+                />
+              );
+            })}
+          </div>
+        </div>
+        {/*  */}
+        <div className="px-3">
+          <RangeSlider
+            setAmount={setAmount}
+            balance={balance}
+            sliderAmount={sliderAmount}
+            setSliderAmount={setSliderAmount}
+          />
+        </div>
+        {/* Lock Period */}
+        <div className="mt-20">
+          <div className="text-sm mt-7 text-gray-60">Lock Period</div>
+          <div
+            className="flex items-center justify-between px-3 rounded-lg mt-4 "
+            style={{ height: "65px", background: "rgba(0,0,0,.2)" }}
+          >
+            <input
+              type="number"
+              placeholder="0"
+              value={months}
+              onChange={({ target }) => changeMonths(target.value)}
+              className="text-white text-xl focus:outline-none appearance-none leading-tight px-2.5 w-full"
+            ></input>
+            <span className="text-base text-gray-60">Months</span>
+          </div>
+        </div>
+
+        <div
+          className={`flex items-start gap-2 mt-4 ${
+            isInValidMonths ? "" : "hidden"
+          }`}
+        >
+          <p className="text-xs text-orange-400">
+            The new unlock time must be longer than the old unlock time
+          </p>
+        </div>
+
+        <div
+          onClick={disabled ? () => console.log("") : openConfirmModal}
+          color="#fff"
+          className={`flex-shrink-0 mt-6 h-12 text-center text-sm text-white focus:outline-none font-semibold ${
+            disabled ? "opacity-40 cursor-not-allowed" : ""
+          }`}
+        >
+          <div className="flex items-center justify-center gap-2 text-base">
+            <LockIcon></LockIcon>
+            Lock
+          </div>
+        </div>
+      </div>
+    </Modal>
   );
 }
 

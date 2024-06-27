@@ -46,6 +46,12 @@ export interface BoostSeeds {
   pool: PoolRPCView;
   update_time?: number;
 }
+export interface WatchList {
+  id: string;
+  account: string;
+  pool_id: string;
+  update_time: number;
+}
 
 class RefDatabase extends Dexie {
   public tokens: Dexie.Table<TokenMetadata>;
@@ -56,6 +62,7 @@ class RefDatabase extends Dexie {
   public boostSeeds: Dexie.Table<BoostSeeds>;
   public stablePools: Dexie.Table<StablePool>;
   public dclPools: Dexie.Table<IPoolDcl & { id: string }>;
+  public watchList: Dexie.Table<WatchList>;
 
   public constructor() {
     super("RefDatabase");
@@ -69,6 +76,7 @@ class RefDatabase extends Dexie {
       boostSeeds: "id",
       stablePools: "id",
       dclPools: "id",
+      watchList: "id, account, pool_id, update_time",
     });
 
     this.tokens = this.table("tokens");
@@ -79,6 +87,10 @@ class RefDatabase extends Dexie {
     this.boostSeeds = this.table("boostSeeds");
     this.stablePools = this.table("stablePools");
     this.dclPools = this.table("dclPools");
+    this.watchList = this.table("watchList");
+  }
+  public allWatchList() {
+    return this.watchList;
   }
 
   public allTokens() {

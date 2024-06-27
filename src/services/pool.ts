@@ -6,6 +6,7 @@ import { executeMultipleTransactions } from "./createPoolFn";
 import { refFiViewFunction } from "../utils/contract";
 import { getAccountId } from "../utils/wallet";
 import moment from "moment";
+import db from "@/db/RefDatabase";
 
 const { REF_FI_CONTRACT_ID } = getConfig();
 
@@ -295,4 +296,61 @@ export const getClassicPoolLiquidtyRecentTransaction = async (props: {
         timestamp: parsePoolTxTimeStamp(t.timestamp),
       }));
     });
+};
+
+export const getAllWatchListFromDb = async ({
+  account = getAccountId()?.toString(),
+}: {
+  account?: string;
+}) => {
+  if (account) {
+    return await db
+      .allWatchList()
+      .where({
+        account,
+      })
+      .toArray();
+  } else {
+    return [];
+  }
+};
+
+export const getWatchListFromDb = async ({
+  pool_id,
+  account = getAccountId(),
+}: {
+  pool_id: string;
+  account?: string;
+}) => {
+  return await db
+    .allWatchList()
+    .where({
+      pool_id,
+      account,
+    })
+    .toArray();
+};
+
+export const addPoolToWatchList = async ({
+  pool_id,
+  account = getAccountId(),
+}: {
+  pool_id: string;
+  account?: string;
+}) => {
+  return await db.watchList.put({
+    id: account + "-" + pool_id,
+    pool_id,
+    account,
+    update_time: new Date().getTime(),
+  });
+};
+export const removePoolFromWatchList = async ({
+  pool_id,
+  account = getAccountId(),
+}: {
+  pool_id: string;
+  account?: string;
+}) => {
+  return await db.watchList.delete(account + "-" + pool_id);
 };

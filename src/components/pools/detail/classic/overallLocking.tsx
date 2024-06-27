@@ -339,6 +339,10 @@ export default function OverallLocking(props: any) {
           isOpen={isLockedOpen}
           onRequestClose={closeLockedModal}
           is_mft_registered={is_mft_registered}
+          userShares={shares}
+          lockedData={lp_locked_list[accountId]}
+          pool={poolDetail}
+          tokens={updatedMapList[0].token_account_ids}
         />
       )}
       {isUnLockedOpen && (

@@ -11,6 +11,11 @@ import OverallLocking from "@/components/pools/detail/classic/overallLocking";
 import PoolComposition from "@/components/pools/detail/classic/PoolComposition";
 import { useTokenMetadata } from "@/hooks/usePools";
 import RecentTransaction from "@/components/pools/detail/classic/RecentTransaction";
+import {
+  addPoolToWatchList,
+  removePoolFromWatchList,
+  getWatchListFromDb,
+} from "@/services/pool";
 
 export default function ClassicPoolDetail() {
   const router = useRouter();
@@ -30,6 +35,10 @@ export default function ClassicPoolDetail() {
       getPoolsDetailById({ pool_id: poolId as any }).then((res) => {
         setPoolDetail(res);
       });
+
+      getWatchListFromDb({ pool_id: poolId.toString() }).then((watchlist) => {
+        setIsCollect(watchlist.length > 0);
+      });
     }
   }, [poolId]);
 
@@ -40,6 +49,11 @@ export default function ClassicPoolDetail() {
   }, []);
 
   const collectPool = () => {
+    if (isCollect) {
+      removePoolFromWatchList({ pool_id: poolId.toString() });
+    } else {
+      addPoolToWatchList({ pool_id: poolId.toString() });
+    }
     setIsCollect((previos) => !previos);
   };
 

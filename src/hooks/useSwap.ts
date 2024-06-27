@@ -2,8 +2,13 @@ import { useState } from "react";
 import { useDebounce } from "react-use";
 import estimateSwap from "@/services/swap/estimateSwap";
 import { IEstimateResult } from "@/interfaces/swap";
-import { usePersistSwapStore, IPersistSwapStore } from "@/stores/swap";
+import {
+  usePersistSwapStore,
+  IPersistSwapStore,
+  useSwapStore,
+} from "@/stores/swap";
 import { ITokenMetadata } from "./useBalanceTokens";
+import { getTokenUIId, is_near_wnear_swap } from "@/services/swap/swapUtils";
 const useSwap = ({
   tokenIn,
   tokenOut,
@@ -24,9 +29,22 @@ const useSwap = ({
   );
   const persistSwapStore = usePersistSwapStore() as IPersistSwapStore;
   const smartRoute = persistSwapStore.getSmartRoute();
+  const swapStore = useSwapStore();
   useDebounce(
     () => {
-      if (tokenIn?.id && tokenOut?.id && Number(tokenInAmount) > 0) {
+      if (is_near_wnear_swap(tokenIn, tokenOut) && Number(tokenInAmount) > 0) {
+        clear();
+        setSwapEstimateResult({
+          is_near_wnear_swap: true,
+          quoteDone: true,
+          tag: `${tokenIn.id}@${tokenOut.id}@${tokenInAmount}`,
+        });
+      } else if (
+        tokenIn?.id &&
+        tokenOut?.id &&
+        tokenIn?.id !== tokenOut?.id &&
+        Number(tokenInAmount) > 0
+      ) {
         doEstimateSwap({
           tokenIn,
           tokenOut,
@@ -35,7 +53,7 @@ const useSwap = ({
       }
     },
     firstInput ? 100 : 300,
-    [tokenIn?.id, tokenOut?.id, tokenInAmount]
+    [getTokenUIId(tokenIn), getTokenUIId(tokenOut), tokenInAmount]
   );
   async function doEstimateSwap({
     tokenIn,
@@ -71,6 +89,9 @@ const useSwap = ({
   }
   function clear() {
     setSwapEstimateResult({});
+    swapStore.setAvgFee("");
+    swapStore.setPriceImpact("");
+    swapStore.setEstimates([]);
   }
   return swapEstimateResult;
 };

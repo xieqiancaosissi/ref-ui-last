@@ -23,7 +23,7 @@ const useMultiSwap = ({
   const tokenOut = swapStore.getTokenOut();
   const tokenInAmount = swapStore.getTokenInAmount();
   const allTokenPrices = swapStore.getAllTokenPrices();
-  const { swapError, swapsToDo, quoteDone, tag } = useSwap({
+  const { swapError, swapsToDo, quoteDone, tag, is_near_wnear_swap } = useSwap({
     tokenIn,
     tokenOut,
     tokenInAmount,
@@ -51,9 +51,17 @@ const useMultiSwap = ({
     tokenInAmount,
     JSON.stringify(swapsToDo || []),
     JSON.stringify(dclSwapsToDo || {}),
+    is_near_wnear_swap,
     tag,
   ]);
   async function doMultiEstimate() {
+    if (is_near_wnear_swap) {
+      const tokenOutAmount = scientificNotationToString(
+        tokenInAmount.toString()
+      );
+      swapStore.setTokenOutAmount(tokenOutAmount);
+      return;
+    }
     let expectedOutV1 = Big(0);
     let expectedOutDcl = Big(0);
     if (!swapError && swapsToDo) {

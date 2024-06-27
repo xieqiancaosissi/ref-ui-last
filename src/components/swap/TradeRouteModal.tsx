@@ -91,7 +91,7 @@ export default function TradeRouteModal({
                                   ? getV3PoolId(
                                       tokenIn.id,
                                       tokenOut.id,
-                                      avgFee * 100
+                                      +avgFee * 100
                                     )
                                   : route[i].contract === "Ref_Classic"
                                   ? Number(route[i].pool?.id)

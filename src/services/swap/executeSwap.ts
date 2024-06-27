@@ -7,8 +7,9 @@ import { getAccountId } from "@/utils/wallet";
 import getConfig from "@/utils/config";
 import { ftGetStorageBalance } from "@/services/ft-contract";
 import { STORAGE_TO_REGISTER_WITH_MFT } from "@/utils/constant";
-import { nearDepositTransaction } from "@/utils/contract";
-const { WRAP_NEAR_CONTRACT_ID, REF_FI_CONTRACT_ID } = getConfig();
+import { nearDepositTransaction } from "@/services/wrap-near";
+import { getTokenUIId } from "@/services/swap/swapUtils";
+const { REF_FI_CONTRACT_ID } = getConfig();
 const swap = async ({
   tokenIn,
   tokenOut,
@@ -124,7 +125,9 @@ const nearInstantSwap = async ({
           msg: JSON.stringify({
             force: 0,
             actions: actionsList,
-            ...(tokenOut.symbol == "NEAR" ? { skip_unwrap_near: false } : {}),
+            ...(getTokenUIId(tokenOut) == "near"
+              ? { skip_unwrap_near: false }
+              : {}),
           }),
         },
         gas: "180000000000000",
@@ -133,7 +136,7 @@ const nearInstantSwap = async ({
     ],
   });
 
-  if (tokenIn.id === WRAP_NEAR_CONTRACT_ID && tokenIn?.symbol == "NEAR") {
+  if (getTokenUIId(tokenIn) == "near") {
     transactions.unshift(nearDepositTransaction(amountIn));
   }
   return executeMultipleTransactions(transactions);

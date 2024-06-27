@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { TokenMetadata } from "../services/ft-contract";
 import { ftGetBalance } from "../services/token";
+import { getTokenUIId } from "../services/swap/swapUtils";
 import { useAccountStore } from "../stores/account";
 import { toReadableNumber } from "@/utils/numbers";
 import {
@@ -31,6 +32,7 @@ export const useBalanceTokens = (
         setBalanceTokens(tokens);
       } else if (accountId !== owner) {
         setBalanceTokens(tokens);
+        accountTokenStore.setOwner(accountId);
       } else {
         getBalanceTokens();
       }
@@ -40,7 +42,7 @@ export const useBalanceTokens = (
   async function getBalanceTokens() {
     setBalancesLoading(true);
     const balancesPending = tokens.map((token: TokenMetadata) => {
-      return ftGetBalance(token.symbol == "NEAR" ? "NEAR" : token.id);
+      return ftGetBalance(getTokenUIId(token) == "near" ? "NEAR" : token.id);
     });
     const balances = await Promise.all(balancesPending);
     const tokensWithBalance = tokens.map((token: TokenMetadata, index) => {

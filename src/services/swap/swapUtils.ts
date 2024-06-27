@@ -1,7 +1,6 @@
 import moment from "moment";
 import * as math from "mathjs";
 import Big from "big.js";
-import BigNumber from "bignumber.js";
 import _, { sortBy } from "lodash";
 import { PoolRPCView, Pool, IPoolsByTokens } from "@/interfaces/swap";
 import { TokenMetadata } from "@/services/ft-contract";
@@ -345,14 +344,32 @@ export function getPoolAllocationPercents(pools: Pool[]) {
     return [];
   }
 }
-export function getMax(token: ITokenMetadata): string {
-  const isNEAR = token?.id == WRAP_NEAR_CONTRACT_ID && token?.symbol == "NEAR";
+export function getMax(token: ITokenMetadata, decimals?: number): string {
+  const isNEAR = getTokenUIId(token) == "near";
   const { balance } = token || {};
   let max = balance || "0";
   if (isNEAR) {
     const minusDiff = Big(balance || 0).minus(MIN_RETAINED_NEAR_AMOUNT);
     max = minusDiff.gt(0) ? minusDiff.toFixed() : "0";
   }
-  const result = toPrecision(max, 12);
+  const result = toPrecision(max, decimals ?? 12);
   return result;
+}
+export function getTokenUIId(token?: ITokenMetadata) {
+  if (token?.id == WRAP_NEAR_CONTRACT_ID && token?.symbol == "NEAR") {
+    return "near";
+  }
+  return token?.id ?? "";
+}
+
+export function is_near_wnear_swap(
+  tokenA: ITokenMetadata,
+  tokenB: ITokenMetadata
+): boolean {
+  const tokenA_id = getTokenUIId(tokenA);
+  const tokenB_id = getTokenUIId(tokenB);
+  return (
+    (tokenA_id == "near" && tokenB_id == WRAP_NEAR_CONTRACT_ID) ||
+    (tokenA_id == WRAP_NEAR_CONTRACT_ID && tokenB_id == "near")
+  );
 }

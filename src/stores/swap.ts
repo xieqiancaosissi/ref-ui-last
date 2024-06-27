@@ -53,8 +53,8 @@ interface ISwapStore {
   setTokenOutAmount: (tokenOutAmount: string) => void;
   getPriceImpact: () => string;
   setPriceImpact: (priceImpact: string) => void;
-  getAvgFee: () => number;
-  setAvgFee: (avgFee: number) => void;
+  getAvgFee: () => string | number;
+  setAvgFee: (avgFee: string | number) => void;
   getEstimates: () => EstimateSwapView[];
   setEstimates: (estimates: EstimateSwapView[]) => void;
   getAllTokenPrices: () => Record<string, TokenPrice>;
@@ -86,7 +86,7 @@ export const useSwapStore = create<ISwapStore>((set: any, get: any) => ({
   getPriceImpact: () => get().priceImpact,
   setPriceImpact: (priceImpact: string) => set({ priceImpact }),
   getAvgFee: () => get().avgFee,
-  setAvgFee: (avgFee: number) => set({ avgFee }),
+  setAvgFee: (avgFee: string | number) => set({ avgFee }),
   getEstimates: () => get().estimates,
   setEstimates: (estimates: EstimateSwapView[]) => set({ estimates }),
   getAllTokenPrices: () => get().allTokenPrices,

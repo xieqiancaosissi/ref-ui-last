@@ -3,6 +3,7 @@ import { viewFunction } from "@/utils/near";
 import getConfigV2 from "@/utils/configV2";
 import getConfig from "@/utils/config";
 import { nearMetadata } from "./wrap-near";
+import { refFiViewFunction } from "@/utils/contract";
 const configV2 = getConfigV2();
 export interface TokenMetadata {
   id: string;
@@ -31,6 +32,13 @@ export const ftGetStorageBalance = async (
   return ftViewFunction(tokenId, {
     methodName: "storage_balance_of",
     args: { account_id: getAccountId() },
+  });
+};
+
+export const currentStorageBalance = (accountId: string): Promise<any> => {
+  return refFiViewFunction({
+    methodName: "storage_balance_of",
+    args: { account_id: accountId },
   });
 };
 

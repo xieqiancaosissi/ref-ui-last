@@ -95,6 +95,8 @@ const useMultiSwap = ({
       swapStore.setEstimates(estimates);
       swapStore.setPriceImpact(priceImpact);
       swapStore.setAvgFee(avgFee);
+    } else if (swapError) {
+      swapStore.setSwapError(swapError);
     }
     if (!dclSwapError && dclSwapsToDo) {
       expectedOutDcl = Big(

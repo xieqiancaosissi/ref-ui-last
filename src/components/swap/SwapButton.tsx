@@ -29,6 +29,7 @@ export default function SwapButton({
   const tokenIn = swapStore.getTokenIn();
   const tokenOut = swapStore.getTokenOut();
   const amountIn = swapStore.getTokenInAmount();
+  const amountOut = swapStore.getTokenOutAmount();
   const slippageTolerance = persistSwapStore.getSlippage();
   const isnearwnearSwap = is_near_wnear_swap(tokenIn, tokenOut);
   const decimals = isnearwnearSwap ? 24 : undefined;
@@ -38,6 +39,7 @@ export default function SwapButton({
     getTokenUIId(tokenIn),
     getTokenUIId(tokenOut),
     amountIn,
+    amountOut,
     slippageTolerance,
     walletLoading,
     isHighImpact,
@@ -74,7 +76,8 @@ export default function SwapButton({
       accountId &&
       tokenIn?.id &&
       tokenOut?.id &&
-      Number(amountIn || 0) > 0
+      Number(amountIn || 0) > 0 &&
+      Number(amountOut || 0) > 0
     ) {
       if (!availableAmountIn) {
         status = "insufficient";

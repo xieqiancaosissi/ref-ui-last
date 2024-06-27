@@ -1,15 +1,18 @@
-import React, { useContext, useMemo, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import _ from "lodash";
 import Big from "big.js";
 import Image from "next/image";
-import { CollectIcon, EmptyIcon } from "./Icons";
+import { CollectIcon, EmptyIcon, RiskIcon } from "./Icons";
 import { ITokenMetadata } from "../../../hooks/useBalanceTokens";
 import { useAccountStore } from "../../../stores/account";
 import { toPrecision } from "../../../utils/numbers";
 import { ButtonTextWrapper } from "../Button";
-import { useTokenStore } from "../../../stores/token";
+import { useTokenStore, ITokenStore } from "../../../stores/token";
+import { useSwapStore } from "../../../stores/swap";
 import { SelectTokenContext } from "./Context";
 import { TokenMetadata } from "@/services/ft-contract";
+import registerTokenAndExchange from "@/services/swap/registerToken";
+
 type ISort = "asc" | "desc";
 export default function Table({
   tokens,
@@ -25,10 +28,13 @@ export default function Table({
   enableAddToken?: boolean;
 }) {
   const [addTokenLoading, setAddTokenLoading] = useState<boolean>(false);
-  const { onSelect, onRequestClose } = useContext(SelectTokenContext);
-  const tokenStore: any = useTokenStore();
+  const { onSelect, onRequestClose, searchText, setAddTokenError } =
+    useContext(SelectTokenContext);
+  const tokenStore = useTokenStore() as ITokenStore;
   const common_tokens = tokenStore.get_common_tokens();
   const accountStore = useAccountStore();
+  const swapStore = useSwapStore();
+  const allTokenPrices = swapStore.getAllTokenPrices();
   const isSignedIn = accountStore.isSignedIn;
   const empty = useMemo(() => {
     if (!tokensLoading && tokens.length == 0) {
@@ -57,6 +63,10 @@ export default function Table({
   }
   function addToken() {
     setAddTokenLoading(true);
+    registerTokenAndExchange(searchText).catch(() => {
+      setAddTokenError(true);
+      setAddTokenLoading(false);
+    });
   }
   function addOrDeletCommonToken(token: ITokenMetadata) {
     const yes = isCollected(token);
@@ -84,25 +94,54 @@ export default function Table({
           <div
             className={`flexBetween hover:bg-gray-40 rounded-md pl-2 pr-1.5 cursor-pointer`}
             key={token.id + token.name}
-            style={{ height: "42px" }}
+            style={{ height: "46px" }}
             onClick={() => {
               onSelect(token);
               onRequestClose();
             }}
           >
             <div className="flex items-center gap-2.5">
-              <img
-                // width="26"
-                // height="26"
-                className="rounded-full border border-gray-110 flex-shrink-0"
+              <div
+                className="flex justify-center relative overflow-hidden rounded-full border border-gray-110"
                 style={{
                   width: "26px",
                   height: "26px",
                 }}
-                src={token.icon || "/images/placeholder.svg"}
-                alt=""
-              />
-              <span className="text-sm text-white">{token.symbol}</span>
+              >
+                <img
+                  className="flex-shrink-0"
+                  src={token.icon || "/images/placeholder.svg"}
+                  alt=""
+                />
+                {token.isRisk ? (
+                  <span
+                    className="italic text-white bg-black bg-opacity-70 absolute bottom-0"
+                    style={{ width: "26px", height: "10px" }}
+                  >
+                    <label
+                      className="text-sm block transform scale-50 relative font-extrabold"
+                      style={{ top: "-5px", left: "-1px" }}
+                    >
+                      TKN
+                    </label>
+                  </span>
+                ) : null}
+              </div>
+              <div className="flex flex-col gap-0.5">
+                <div className="flex items-center gap-1.5">
+                  <span className="text-sm text-white">{token.symbol}</span>
+                  {token.isRisk ? <RiskIcon /> : null}
+                </div>
+                <span className="text-xs text-gray-60">
+                  $
+                  {toPrecision(
+                    allTokenPrices[token.id]?.price || "0",
+                    2,
+                    false,
+                    false
+                  )}
+                </span>
+              </div>
             </div>
             <div className="flex items-center gap-2 text-sm text-white">
               <span>{displayBalance(token.balance || "0")}</span>
@@ -130,7 +169,7 @@ export default function Table({
           >
             No token found
           </span>
-          {enableAddToken ? (
+          {enableAddToken && isSignedIn ? (
             <div
               className="flex items-center justify-center bg-greenGradient rounded mt-4 text-black font-bold text-base cursor-pointer mb-5"
               style={{ height: "42px", width: "290px" }}

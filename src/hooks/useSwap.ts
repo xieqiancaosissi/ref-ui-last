@@ -53,7 +53,7 @@ const useSwap = ({
       }
     },
     firstInput ? 100 : 300,
-    [getTokenUIId(tokenIn), getTokenUIId(tokenOut), tokenInAmount]
+    [getTokenUIId(tokenIn), getTokenUIId(tokenOut), tokenInAmount, smartRoute]
   );
   async function doEstimateSwap({
     tokenIn,
@@ -64,7 +64,6 @@ const useSwap = ({
     tokenOut: ITokenMetadata;
     tokenInAmount: string;
   }) {
-    clear();
     estimateSwap({
       tokenIn,
       tokenOut,
@@ -73,6 +72,7 @@ const useSwap = ({
       supportLittlePools,
     })
       .then(({ estimates }) => {
+        clearError();
         setSwapEstimateResult({
           swapsToDo: estimates,
           quoteDone: true,
@@ -80,6 +80,7 @@ const useSwap = ({
         });
       })
       .catch((e) => {
+        clear();
         setSwapEstimateResult({
           swapError: e,
           quoteDone: true,
@@ -92,6 +93,9 @@ const useSwap = ({
     swapStore.setAvgFee("");
     swapStore.setPriceImpact("");
     swapStore.setEstimates([]);
+  }
+  function clearError() {
+    swapStore.setSwapError(undefined);
   }
   return swapEstimateResult;
 };

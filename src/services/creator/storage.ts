@@ -3,7 +3,7 @@ import { getAccountId } from "@/utils/wallet";
 import {
   RefFiFunctionCallOptions,
   REF_FI_CONTRACT_ID,
-  refVeViewFunction,
+  refFiViewFunction,
   REF_UNI_V3_SWAP_CONTRACT_ID,
 } from "@/utils/contract";
 import getConfig from "@/utils/config";
@@ -55,7 +55,7 @@ export const storageDepositForMFTAction = () =>
   });
 
 export const needDepositStorage = async (accountId = getAccountId()) => {
-  const storage = await refVeViewFunction({
+  const storage = await refFiViewFunction({
     methodName: "get_user_storage_state",
     args: { account_id: accountId },
   });

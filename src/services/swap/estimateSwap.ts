@@ -26,11 +26,11 @@ const estimateSwap = async ({
   const tag = `${tokenIn.id}-${parsedAmountIn}-${tokenOut.id}`;
 
   if (ONLY_ZEROS.test(parsedAmountIn))
-    throw new Error(`${amountIn} is_not_a_valid_swap_amount`);
+    throw new Error(`${amountIn} is not a valid swap amount`);
 
   const throwNoPoolError = () => {
     throw new Error(
-      `no_pool_available_to_make_a_swap_from ${tokenIn?.symbol} -> ${tokenOut?.symbol} for_the_amount ${amountIn} no_pool_eng_for_chinese`
+      `No pool available to make a swap from ${tokenIn?.symbol} -> ${tokenOut?.symbol} for the amount ${amountIn}`
     );
   };
 

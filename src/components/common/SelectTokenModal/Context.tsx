@@ -6,10 +6,12 @@ export interface ISelectTokenContext {
   onSelect: (token: ITokenMetadata) => void;
   searchText: string;
   allTokenPrices: Record<string, TokenPrice>;
+  setAddTokenError: (error: any) => void;
 }
 export const SelectTokenContext = createContext<ISelectTokenContext>({
   onRequestClose: () => ({}),
   onSelect: () => ({}),
   searchText: "",
   allTokenPrices: {},
+  setAddTokenError: () => ({}),
 });

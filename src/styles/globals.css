@@ -87,7 +87,7 @@ input[type="number"] {
 
 /* custom-tooltip */
 .react-tooltip.custom-tooltip {
-  width: 148px;
+  /* width: 148px;  The width cannot be set dead*/
   border-radius: 5px;
   border: 1px solid #414b57;
   background-color: #2a3643;

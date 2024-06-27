@@ -34,6 +34,7 @@ export default function Input(props: IInputProps) {
   const allTokenPrices = swapStore.getAllTokenPrices();
   const isNEAR = getTokenUIId(token) == "near";
   const decimals = isnearwnearSwap && isIn && !isNEAR ? 24 : undefined;
+  const symbolsArr = ["e", "E", "+", "-"];
   useEffect(() => {
     if (isIn) {
       swapStore.setTokenInAmount(amount);
@@ -88,6 +89,7 @@ export default function Input(props: IInputProps) {
           value={isOut ? amountOut : amount}
           className="flex-grow w-1 bg-transparent outline-none font-bold text-white text-2xl"
           onChange={changeAmount}
+          onKeyDown={(e) => symbolsArr.includes(e.key) && e.preventDefault()}
         />
         <SelectTokenButton isIn={isIn} isOut={isOut} />
       </div>

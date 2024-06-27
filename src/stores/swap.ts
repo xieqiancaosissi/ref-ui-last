@@ -59,6 +59,8 @@ interface ISwapStore {
   setEstimates: (estimates: EstimateSwapView[]) => void;
   getAllTokenPrices: () => Record<string, TokenPrice>;
   setAllTokenPrices: (allTokenPrices: Record<string, TokenPrice>) => void;
+  getSwapError: () => Error | undefined;
+  setSwapError: (swapError: Error | undefined) => void;
 }
 export const useSwapStore = create<ISwapStore>((set: any, get: any) => ({
   tokenIn: null,
@@ -69,6 +71,7 @@ export const useSwapStore = create<ISwapStore>((set: any, get: any) => ({
   avgFee: "",
   allTokenPrices: {},
   estimates: [],
+  swapError: undefined,
   getTokenIn: () => get().tokenIn,
   setTokenIn: (tokenIn: ITokenMetadata) =>
     set({
@@ -92,4 +95,6 @@ export const useSwapStore = create<ISwapStore>((set: any, get: any) => ({
   getAllTokenPrices: () => get().allTokenPrices,
   setAllTokenPrices: (allTokenPrices: Record<string, TokenPrice>) =>
     set({ allTokenPrices }),
+  getSwapError: () => get().swapError,
+  setSwapError: (swapError: Error | undefined) => set({ swapError }),
 }));

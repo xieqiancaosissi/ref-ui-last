@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
 import Image from "next/image";
 import { isMobile } from "../../../utils/device";
@@ -27,6 +27,7 @@ export default function SelectTokenModal({
   onSelect: (token: ITokenMetadata) => void;
 }) {
   const [searchText, setSearchText] = useState<string>("");
+  const [addTokenError, setAddTokenError] = useState<boolean>(false);
   const [hoverCommonToken, setHoverCommonToken] =
     useState<TokenMetadata | null>();
   const tokenStore = useTokenStore() as ITokenStore;
@@ -36,6 +37,9 @@ export default function SelectTokenModal({
   const defaultAccountBalances = accountTokenStore.getDefaultAccountTokens();
   const autoAccountBalances = accountTokenStore.getAutoAccountTokens();
   const allTokenPrices = swapStore.getAllTokenPrices();
+  useEffect(() => {
+    setAddTokenError(false);
+  }, [searchText]);
   function changeSearchText(e: any) {
     setSearchText(e.target.value);
   }
@@ -92,6 +96,7 @@ export default function SelectTokenModal({
             onSelect,
             searchText,
             allTokenPrices,
+            setAddTokenError,
           }}
         >
           {/* search box */}
@@ -113,12 +118,23 @@ export default function SelectTokenModal({
               className={`cursor-pointer ${searchText ? "" : "hidden"}`}
             />
           </div>
+          {/* register token error tip  */}
+          {addTokenError ? (
+            <div className="text-red-10 text-sm pl-7 mt-1.5">
+              The token address was invalid
+            </div>
+          ) : null}
+
           <div
             className={`overflow-y-auto px-6 mt-2 pt-2 ${Styles.card}`}
             style={{ height: "400px" }}
           >
             {/* common tokens */}
-            <div className="flex items-center gap-2 flex-wrap">
+            <div
+              className={`flex items-center gap-2 flex-wrap ${
+                searchText ? "hidden" : ""
+              }`}
+            >
               {common_tokens.map((token) => {
                 return (
                   <div

@@ -1,5 +1,6 @@
 import { useEffect, useState, useMemo } from "react";
 import dynamic from "next/dynamic";
+import Big from "big.js";
 import { motion } from "framer-motion";
 import {
   RefreshIcon,
@@ -28,6 +29,7 @@ import {
 import { toPrecision } from "@/utils/numbers";
 import GetPriceImpact from "@/components/swap/GetPriceImpact";
 import { getTokenUIId, is_near_wnear_swap } from "@/services/swap/swapUtils";
+import { WarnIcon } from "@/components/swap/icons";
 const SwapButton = dynamic(() => import("../components/swap/SwapButton"), {
   ssr: false,
 });
@@ -49,6 +51,7 @@ export default function Swap() {
   const tokenOutAmount = swapStore.getTokenOutAmount();
   const priceImpact = swapStore.getPriceImpact();
   const tokenInAmount = swapStore.getTokenInAmount();
+  const swapError = swapStore.getSwapError();
   const isnearwnearSwap = is_near_wnear_swap(tokenIn, tokenOut);
   useMultiSwap({ supportDclQuote: false, supportLittlePools: false });
   useEffect(() => {
@@ -69,6 +72,15 @@ export default function Swap() {
       setIsHighImpact(false);
     }
   }, [priceImpact]);
+  const showSwapDetail = useMemo(() => {
+    return (
+      tokenIn?.id &&
+      tokenOut?.id &&
+      tokenIn?.id !== tokenOut?.id &&
+      !swapError?.message &&
+      Big(tokenInAmount || 0).gt(0)
+    );
+  }, [tokenIn?.id, tokenOut?.id, tokenInAmount, swapError?.message]);
   const priceImpactDisplay = useMemo(() => {
     try {
       return GetPriceImpact(priceImpact, tokenInAmount);
@@ -104,8 +116,9 @@ export default function Swap() {
         setpinLoading(false);
       });
   }
+  // select-none
   return (
-    <main className="m-auto my-20 select-none" style={{ width: "420px" }}>
+    <main className="m-auto my-20" style={{ width: "420px" }}>
       <InitData />
       <div className="rounded-lg bg-dark-10 p-4">
         {/* set */}
@@ -151,6 +164,14 @@ export default function Swap() {
             className="mt-0.5"
           />
         </div>
+        {/* swapError tip */}
+        {swapError ? (
+          <div className="flex items-start gap-2 rounded px-3 py-1 text-sm  bg-opacity-15 mt-3 bg-yellow-10 text-yellow-10">
+            <WarnIcon className="relative top-1  flex-shrink-0" />
+            <span>{swapError?.message}</span>
+          </div>
+        ) : null}
+
         {/* high price tip */}
         {isHighImpact ? (
           <div className="flexBetween rounded border border-red-10 border-opacity-45 bg-red-10 bg-opacity-10 text-xs text-red-10 p-2 mt-4">
@@ -182,7 +203,7 @@ export default function Swap() {
         />
       </div>
       {/* detail */}
-      {!isnearwnearSwap ? <SwapDetail /> : null}
+      {showSwapDetail ? <SwapDetail /> : null}
     </main>
   );
 }

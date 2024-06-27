@@ -211,11 +211,11 @@ export default function CalcModelBooster(
               </span>
             </div>
             <span
-              className="flex items-center cursor-pointer whitespace-nowrap underline"
+              className="flex items-center cursor-pointer whitespace-nowrap underline hover:text-primaryGreen"
               // onClick={goPool}
             >
               Get LP Tokens
-              <VEARROW className="ml-1.5 text-primaryGreen"></VEARROW>
+              <VEARROW className="ml-1.5"></VEARROW>
             </span>
           </div>
           <div className="mt-4">
@@ -255,7 +255,9 @@ export default function CalcModelBooster(
             <label
               onClick={showMaxLp}
               style={{ zoom: 0.8 }}
-              className={"text-sm cursor-pointer underline text-primaryGreen"}
+              className={
+                "text-sm text-gray-50 cursor-pointer underline hover:text-primaryGreen"
+              }
             >
               MAX
             </label>

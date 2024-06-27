@@ -24,6 +24,7 @@ import {
   toReadableNumber,
 } from "../utils/numbers";
 import BigNumber from "bignumber.js";
+import { Near, keyStores } from "near-api-js";
 
 const config = getConfig();
 const {
@@ -596,4 +597,26 @@ export const handleNumber = (number: string) => {
     result = new BigNumber(left).toFixed() + right;
   }
   return result;
+};
+
+const near = new Near({
+  keyStore: new keyStores.InMemoryKeyStore(),
+  headers: {},
+  ...config,
+});
+
+export const getServerTime = async () => {
+  const result = await near.connection.provider
+    .block({
+      finality: "final",
+    })
+    .catch(() => {
+      return {
+        header: {
+          timestamp: new Date().getTime() * 100000,
+        },
+      };
+    });
+  const timestamp = result?.header?.timestamp;
+  return timestamp;
 };

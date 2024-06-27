@@ -6,6 +6,7 @@ import {
   getVeSeedShare,
   mftGetBalance,
   getMftTokenId,
+  getServerTime,
 } from "@/services/farm";
 import { FarmDetailsPoolIcon, QuestionMark } from "../icon";
 import { TokenMetadata } from "@/services/ft-contract";
@@ -35,6 +36,7 @@ import {
   LP_TOKEN_DECIMALS,
 } from "@/services/m-token";
 import UserStakeBlock from "./FarmsDetailClaim";
+import FarmsDetailStake from "./FarmsDetailStake";
 
 const ONLY_ZEROS = /^0*\.?0*$/;
 const {
@@ -80,6 +82,7 @@ export default function FarmsDetail(props: {
   const aprUpLimit = getAprUpperLimit();
   const [lpBalance, setLpBalance] = useState("");
   const [showAddLiquidityEntry, setShowAddLiquidityEntry] = useState(false);
+  const [serverTime, setServerTime] = useState<number>();
   const accountStore = useAccountStore();
   const isSignedIn = accountStore.isSignedIn;
   function sortTokens(tokens: TokenMetadata[]) {
@@ -103,6 +106,9 @@ export default function FarmsDetail(props: {
   useEffect(() => {
     getPoolFee();
     get_ve_seed_share();
+  }, []);
+  useEffect(() => {
+    get_server_time();
   }, []);
   async function get_ve_seed_share() {
     const result = await getVeSeedShare();
@@ -546,6 +552,10 @@ export default function FarmsDetail(props: {
     }
     return "";
   }
+  const get_server_time = async () => {
+    const timestamp = await getServerTime();
+    setServerTime(timestamp);
+  };
   const radio = getBoostMutil();
   return (
     <main className="dark:text-white">
@@ -644,7 +654,22 @@ export default function FarmsDetail(props: {
               radio={radio}
             ></UserStakeBlock>
           </div>
-          <div className="flex-1">Stake</div>
+          <div className="flex-1">
+            <FarmsDetailStake
+              detailData={detailData}
+              tokenPriceList={tokenPriceList}
+              stakeType="free"
+              serverTime={serverTime ?? 0}
+              lpBalance={lpBalance}
+              loveSeed={loveSeed}
+              boostConfig={boostConfig}
+              user_seeds_map={user_seeds_map}
+              user_unclaimed_map={user_unclaimed_map}
+              user_unclaimed_token_meta_map={user_unclaimed_token_meta_map}
+              user_data_loading={user_data_loading}
+              radio={radio}
+            ></FarmsDetailStake>
+          </div>
         </div>
       </div>
       {calcVisible ? (

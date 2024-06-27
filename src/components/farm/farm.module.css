@@ -58,3 +58,8 @@
 .farmEnded .active img {
   filter: initial;
 }
+.gradient_text {
+  background: linear-gradient(90deg, #FFFFFF 0%, #91A2AE 100%);
+  -webkit-background-clip: text;
+  color: transparent;
+}

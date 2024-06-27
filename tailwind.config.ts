@@ -27,6 +27,8 @@ const config: Config = {
         poolTabBgOpacity15: "rgba(126, 138, 147, 0.15)",
         farmApyColor: "#FAFF00",
         farmTagBg: "rgba(250, 255, 0, 0.11)",
+        error: "#FF4B76",
+        warn: "#FFB018",
         gray: {
           10: "#91A2AE",
           20: "#212B35",
@@ -113,11 +115,11 @@ const config: Config = {
       }),
     },
     screens: {
-      xs: { min: '300px', max: '600px' },
-      sm: '769px',
-      md: { min: '600px', max: '1023px' },
-      lg: { min: '1024px' },
-      xl: { min: '1280px' },
+      xs: { min: "300px", max: "600px" },
+      sm: "769px",
+      md: { min: "600px", max: "1023px" },
+      lg: { min: "1024px" },
+      xl: { min: "1280px" },
     },
   },
   plugins: [

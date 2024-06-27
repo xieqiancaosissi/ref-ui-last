@@ -1,6 +1,12 @@
 import CustomTooltip from "@/components/customTooltip/customTooltip";
 import useTokens from "@/hooks/useTokens";
-import { Seed, BoostConfig, UserSeedInfo, FarmBoost, claimRewardBySeed_boost } from "@/services/farm";
+import {
+  Seed,
+  BoostConfig,
+  UserSeedInfo,
+  FarmBoost,
+  claimRewardBySeed_boost,
+} from "@/services/farm";
 import { TokenMetadata } from "@/services/ft-contract";
 import {
   LP_STABLE_TOKEN_DECIMALS,
@@ -281,7 +287,7 @@ export default function UserStakeBlock(props: {
           </div>
         </div>
       </div>
-      <div className="bg-dark-10 rounded-md p-5 mb-2.5">
+      <div className="bg-dark-10 rounded-md p-5">
         <p className="flex items-center text-gray-50 text-sm mb-1.5">
           Unclaimed rewards <QuestionMark className="ml-1.5"></QuestionMark>
         </p>
@@ -296,7 +302,8 @@ export default function UserStakeBlock(props: {
               onClick={(e) => {
                 e.stopPropagation();
                 claimReward();
-              }}>
+              }}
+            >
               Claim
             </div>
           ) : null}

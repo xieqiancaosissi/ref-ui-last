@@ -143,6 +143,7 @@ export interface IEstimateResult {
   swapsToDo?: EstimateSwapView[] | undefined;
   quoteDone?: boolean;
   tag?: string;
+  is_near_wnear_swap?: boolean;
 }
 
 export type SwapMarket = "ref" | "tri" | "orderly" | undefined;
@@ -153,6 +154,11 @@ export interface SwapOptions {
   amountIn: string;
   slippageTolerance: number;
   swapMarket?: SwapMarket;
+}
+export interface nearSwapOptions {
+  tokenIn: TokenMetadata;
+  tokenOut: TokenMetadata;
+  amountIn: string;
 }
 export interface Transaction {
   receiverId: string;

@@ -27,6 +27,7 @@ import {
 } from "@/stores/swap";
 import { toPrecision } from "@/utils/numbers";
 import GetPriceImpact from "@/components/swap/GetPriceImpact";
+import { getTokenUIId, is_near_wnear_swap } from "@/services/swap/swapUtils";
 const SwapButton = dynamic(() => import("../components/swap/SwapButton"), {
   ssr: false,
 });
@@ -37,7 +38,7 @@ const InitData = dynamic(() => import("../components/swap/InitData"), {
   ssr: false,
 });
 
-export default function Swap(props: any) {
+export default function Swap() {
   const [isHighImpact, setIsHighImpact] = useState<boolean>(false);
   const [highImpactCheck, setHighImpactCheck] = useState<boolean>(false);
   const [pinLoading, setpinLoading] = useState<boolean>(false);
@@ -48,6 +49,7 @@ export default function Swap(props: any) {
   const tokenOutAmount = swapStore.getTokenOutAmount();
   const priceImpact = swapStore.getPriceImpact();
   const tokenInAmount = swapStore.getTokenInAmount();
+  const isnearwnearSwap = is_near_wnear_swap(tokenIn, tokenOut);
   useMultiSwap({ supportDclQuote: false, supportLittlePools: false });
   useEffect(() => {
     const id = setInterval(reloadPools, POOL_REFRESH_INTERVAL);
@@ -80,8 +82,8 @@ export default function Swap(props: any) {
   function onSwitch() {
     swapStore.setTokenIn(tokenOut);
     swapStore.setTokenOut(tokenIn);
-    persistSwapStore.setTokenInId(tokenOut?.id);
-    persistSwapStore.setTokenOutId(tokenIn?.id);
+    persistSwapStore.setTokenInId(getTokenUIId(tokenOut));
+    persistSwapStore.setTokenOutId(getTokenUIId(tokenIn));
   }
   const variants = {
     static: { transform: "rotate(0deg)" },
@@ -127,7 +129,7 @@ export default function Swap(props: any) {
         </div>
         {/* input part */}
         <div className="flex flex-col items-center mt-4">
-          <Input token={tokenIn} isIn />
+          <Input token={tokenIn} isnearwnearSwap={isnearwnearSwap} isIn />
           <div
             className="flex items-center justify-center rounded w-7 h-7 cursor-pointer text-gray-50 hover:text-white  bg-dark-60 hover:bg-dark-10 -my-3.5 relative z-10 border-2 border-dark-10"
             onClick={onSwitch}
@@ -137,10 +139,14 @@ export default function Swap(props: any) {
           <Input
             disable
             token={tokenOut}
-            amountOut={toPrecision(
-              tokenOutAmount,
-              Math.min(8, tokenOut?.decimals ?? 8)
-            )}
+            amountOut={
+              isnearwnearSwap
+                ? toPrecision(tokenOutAmount, 24)
+                : toPrecision(
+                    tokenOutAmount,
+                    Math.min(8, tokenOut?.decimals ?? 8)
+                  )
+            }
             isOut
             className="mt-0.5"
           />
@@ -176,7 +182,7 @@ export default function Swap(props: any) {
         />
       </div>
       {/* detail */}
-      <SwapDetail />
+      {!isnearwnearSwap ? <SwapDetail /> : null}
     </main>
   );
 }

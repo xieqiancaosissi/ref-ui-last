@@ -80,7 +80,7 @@ export default function SelectTokenModal({
       >
         {/* title */}
         <div className="flexBetween px-6">
-          <span className="text-lg text-white font-bold">Selected a Token</span>
+          <span className="text-lg text-white font-bold">Select a Token</span>
           <CloseIcon
             className="text-dark-80 hover:text-white cursor-pointer"
             onClick={onRequestClose}

@@ -4,6 +4,7 @@ import SelectTokenModal from "../../components/common/SelectTokenModal/Index";
 import { ArrowDownIcon } from "../../components/swap/icons";
 import { useEffect, useState } from "react";
 import { ITokenMetadata } from "@/hooks/useBalanceTokens";
+import { getTokenUIId } from "@/services/swap/swapUtils";
 import {
   usePersistSwapStore,
   useSwapStore,
@@ -28,13 +29,13 @@ export default function SelectTokenButton(props: ISelectTokenButtonProps) {
     if (selectToken?.id) {
       if (isIn) {
         swapStore.setTokenIn(selectToken);
-        persistSwapStore.setTokenInId(selectToken?.id);
+        persistSwapStore.setTokenInId(getTokenUIId(selectToken));
       } else if (isOut) {
         swapStore.setTokenOut(selectToken);
-        persistSwapStore.setTokenOutId(selectToken?.id);
+        persistSwapStore.setTokenOutId(getTokenUIId(selectToken));
       }
     }
-  }, [selectToken?.id, selectToken?.symbol]);
+  }, [getTokenUIId(selectToken)]);
   function showModal() {
     setIsOpen(true);
   }

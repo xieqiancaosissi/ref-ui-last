@@ -6,6 +6,7 @@ import getConfig from "../utils/config";
 import getConfigV2 from "../utils/configV2";
 import { NEAR_META_DATA, WNEAR_META_DATA } from "../utils/nearMetaData";
 import { useTokenStore, ITokenStore } from "../stores/token";
+import { getTokenUIId } from "../services/swap/swapUtils";
 const { WRAP_NEAR_CONTRACT_ID } = getConfig();
 const { HIDDEN_TOKEN_LIST } = getConfigV2();
 interface ISelectTokens {
@@ -65,7 +66,8 @@ export const useSelectTokens = (): ISelectTokens => {
       const { INIT_COMMON_TOKEN_IDS } = getConfigV2();
       const init_common_tokens = defaultList.filter(
         (token) =>
-          token.symbol == "NEAR" || INIT_COMMON_TOKEN_IDS.includes(token.id)
+          getTokenUIId(token) == "near" ||
+          INIT_COMMON_TOKEN_IDS.includes(token.id)
       );
       tokenStore.set_common_tokens(init_common_tokens);
     }

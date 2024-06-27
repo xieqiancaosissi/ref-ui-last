@@ -5,10 +5,8 @@ import { twMerge } from "tailwind-merge";
 import dynamic from "next/dynamic";
 import { ITokenMetadata } from "@/hooks/useBalanceTokens";
 import { useSwapStore } from "@/stores/swap";
-import { useAccountTokenStore, IAccountTokenStore } from "@/stores/token";
-import { toPrecision } from "@/utils/numbers";
+import { getTokenUIId } from "@/services/swap/swapUtils";
 import { formatTokenPrice } from "@/utils/uiNumber";
-import getConfig from "@/utils/config";
 import { getMax } from "@/services/swap/swapUtils";
 
 const SelectTokenButton = dynamic(() => import("./SelectTokenButton"), {
@@ -24,18 +22,18 @@ interface IInputProps {
   isIn?: boolean;
   isOut?: boolean;
   amountOut?: string;
+  isnearwnearSwap?: boolean;
 }
-const { WRAP_NEAR_CONTRACT_ID } = getConfig();
 export default function Input(props: IInputProps) {
-  const { className, disable, token, isIn, isOut, amountOut } = props;
+  const { className, disable, token, isIn, isOut, amountOut, isnearwnearSwap } =
+    props;
   const [amount, setAmount] = useState<string>("");
   const [showNearTip, setShowNearTip] = useState<boolean>(false);
   const swapStore = useSwapStore();
   const tokenOutAmount = swapStore.getTokenOutAmount();
   const allTokenPrices = swapStore.getAllTokenPrices();
-  const isNEAR = token?.id == WRAP_NEAR_CONTRACT_ID && token?.symbol == "NEAR";
-  const accountTokenStore = useAccountTokenStore() as IAccountTokenStore;
-  // const loading = accountTokenStore.getDefaultBalancesLoading();
+  const isNEAR = getTokenUIId(token) == "near";
+  const decimals = isnearwnearSwap && isIn && !isNEAR ? 24 : undefined;
   useEffect(() => {
     if (isIn) {
       swapStore.setTokenInAmount(amount);
@@ -52,7 +50,7 @@ export default function Input(props: IInputProps) {
       isIn &&
       token?.id &&
       isNEAR &&
-      Big(amount).gt(getMax(token))
+      Big(amount).gt(getMax(token, decimals))
     ) {
       setShowNearTip(true);
     } else {
@@ -64,7 +62,7 @@ export default function Input(props: IInputProps) {
   }
   function setMaxAmount() {
     if (token) {
-      setAmount(getMax(token));
+      setAmount(getMax(token, decimals));
     }
   }
   function getTokenValue() {

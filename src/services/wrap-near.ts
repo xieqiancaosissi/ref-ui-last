@@ -31,3 +31,19 @@ export const nearWithdrawTransaction = (amount: string) => {
   };
   return transaction;
 };
+
+export const nearDepositTransaction = (amount: string) => {
+  const transaction: Transaction = {
+    receiverId: WRAP_NEAR_CONTRACT_ID,
+    functionCalls: [
+      {
+        methodName: "near_deposit",
+        args: {},
+        gas: "50000000000000",
+        amount,
+      },
+    ],
+  };
+
+  return transaction;
+};

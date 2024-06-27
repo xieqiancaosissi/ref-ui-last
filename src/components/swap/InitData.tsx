@@ -3,6 +3,7 @@ import { useSelectTokens } from "@/hooks/useSelectTokens";
 import getConfigV2 from "@/utils/configV2";
 import getConfig from "@/utils/config";
 import { usePersistSwapStore, useSwapStore } from "@/stores/swap";
+import { getTokenUIId } from "@/services/swap/swapUtils";
 import {
   useDefaultBalanceTokens,
   useAutoBalanceTokens,
@@ -38,8 +39,8 @@ export default function InitData() {
       const CHECKED_OUT_TOKEN = gotTokenIdValidity(tokenOutId, false);
       swapStore.setTokenIn(CHECKED_IN_TOKEN);
       swapStore.setTokenOut(CHECKED_OUT_TOKEN);
-      persistSwapStore.setTokenInId(CHECKED_IN_TOKEN?.id);
-      persistSwapStore.setTokenOutId(CHECKED_OUT_TOKEN?.id);
+      persistSwapStore.setTokenInId(getTokenUIId(CHECKED_IN_TOKEN));
+      persistSwapStore.setTokenOutId(getTokenUIId(CHECKED_OUT_TOKEN));
     }
   }, [tokenInId, tokenOutId, JSON.stringify(totalDisplayTokens || [])]);
 
@@ -56,8 +57,7 @@ export default function InitData() {
   }
   function gotTokenIdValidity(tokenId: string, isIn: boolean) {
     const nearToken = totalDisplayTokens.find(
-      (token: ITokenMetadata) =>
-        token.id === WRAP_NEAR_CONTRACT_ID && token.symbol == "NEAR"
+      (token: ITokenMetadata) => getTokenUIId(token) == "near"
     );
     const refToken = totalDisplayTokens.find(
       (token: ITokenMetadata) => token.id === INIT_SWAP_PAIRS[1]
@@ -66,7 +66,8 @@ export default function InitData() {
       return nearToken as ITokenMetadata;
     } else {
       let token = totalDisplayTokens.find(
-        (token: ITokenMetadata) => token.id === tokenId
+        (token: ITokenMetadata) =>
+          token.id === tokenId && token.symbol !== "NEAR"
       );
       if (!token) {
         token = isIn ? nearToken : refToken;

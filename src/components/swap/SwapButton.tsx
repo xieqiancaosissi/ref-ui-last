@@ -4,8 +4,13 @@ import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import { useAccountStore } from "@/stores/account";
 import { ButtonTextWrapper } from "@/components/common/Button";
 import swap from "@/services/swap/executeSwap";
+import nearSwap from "@/services/swap/executeNearSwap";
 import { usePersistSwapStore, useSwapStore } from "@/stores/swap";
-import { getMax } from "@/services/swap/swapUtils";
+import {
+  getMax,
+  is_near_wnear_swap,
+  getTokenUIId,
+} from "@/services/swap/swapUtils";
 import { IButtonStatus } from "@/interfaces/swap";
 
 export default function SwapButton({
@@ -25,32 +30,42 @@ export default function SwapButton({
   const tokenOut = swapStore.getTokenOut();
   const amountIn = swapStore.getTokenInAmount();
   const slippageTolerance = persistSwapStore.getSlippage();
+  const isnearwnearSwap = is_near_wnear_swap(tokenIn, tokenOut);
+  const decimals = isnearwnearSwap ? 24 : undefined;
   const buttonStatus = useMemo(() => {
     return getButtonStatus();
   }, [
-    tokenIn?.id,
-    tokenOut?.id,
+    getTokenUIId(tokenIn),
+    getTokenUIId(tokenOut),
     amountIn,
     slippageTolerance,
     walletLoading,
     isHighImpact,
     highImpactCheck,
     accountId,
+    isnearwnearSwap,
   ]);
   function doSwap() {
     setSwapLoading(true);
-    const estimates = swapStore.getEstimates();
-    swap({
-      tokenIn,
-      tokenOut,
-      swapsToDo: estimates,
-      slippageTolerance,
-      amountIn,
-    });
+    if (isnearwnearSwap) {
+      nearSwap({
+        tokenIn,
+        tokenOut,
+        amountIn,
+      });
+    } else {
+      swap({
+        tokenIn,
+        tokenOut,
+        swapsToDo: swapStore.getEstimates(),
+        slippageTolerance,
+        amountIn,
+      });
+    }
   }
   function getButtonStatus(): IButtonStatus {
     let status: IButtonStatus = "loading";
-    const availableAmountIn = Big(amountIn || 0).lte(getMax(tokenIn));
+    const availableAmountIn = Big(amountIn || 0).lte(getMax(tokenIn, decimals));
     if (walletLoading) {
       status = "loading";
     } else if (!walletLoading && !accountId) {
@@ -63,7 +78,7 @@ export default function SwapButton({
     ) {
       if (!availableAmountIn) {
         status = "insufficient";
-      } else if (isHighImpact && !highImpactCheck) {
+      } else if (isHighImpact && !highImpactCheck && !isnearwnearSwap) {
         status = "disabled";
       } else {
         status = "available";

@@ -1246,3 +1246,20 @@ export const ArrowDownHollow = (props: any) => {
     </svg>
   );
 };
+
+export const FarmDetailsWarn = (props: any) => {
+  return (
+    <svg
+      {...props}
+      width="16"
+      height="16"
+      viewBox="0 0 16 16"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <circle cx="8" cy="8" r="6.6" stroke="#7E8A93" strokeWidth="1.2" />
+      <path d="M7.30078 4H8.7L8.50078 9H7.50078L7.30078 4Z" fill="#7E8A93" />
+      <circle cx="8" cy="11" r="1" fill="#7E8A93" />
+    </svg>
+  );
+};

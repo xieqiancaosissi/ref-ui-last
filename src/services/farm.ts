@@ -137,6 +137,12 @@ interface StakeOptions {
   msg?: string;
 }
 
+interface UnStakeOptions {
+  seed_id: string;
+  unlock_amount: string;
+  withdraw_amount: string;
+}
+
 export const frontConfigBoost: FrontConfigBoost = {
   "4514": 102,
   "4179": 101,
@@ -657,6 +663,40 @@ export const stake_boost = async ({
           },
           amount: ONE_YOCTO_NEAR,
           gas: "180000000000000",
+        },
+      ],
+    },
+  ];
+
+  const neededStorage = await checkTokenNeedsStorageDeposit_boost();
+  if (neededStorage) {
+    transactions.unshift({
+      receiverId: REF_FARM_BOOST_CONTRACT_ID,
+      functionCalls: [storageDepositAction({ amount: neededStorage })],
+    });
+  }
+
+  return executeFarmMultipleTransactions(transactions);
+};
+
+export const unStake_boost = async ({
+  seed_id,
+  unlock_amount,
+  withdraw_amount,
+}: UnStakeOptions) => {
+  const transactions: Transaction[] = [
+    {
+      receiverId: REF_FARM_BOOST_CONTRACT_ID,
+      functionCalls: [
+        {
+          methodName: "unlock_and_withdraw_seed",
+          args: {
+            seed_id,
+            unlock_amount,
+            withdraw_amount,
+          },
+          amount: ONE_YOCTO_NEAR,
+          gas: "200000000000000",
         },
       ],
     },

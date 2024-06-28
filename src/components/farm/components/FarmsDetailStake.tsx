@@ -5,6 +5,7 @@ import {
   stake_boost,
   getMftTokenId,
   get_config,
+  unStake_boost,
 } from "@/services/farm";
 import { useEffect, useState } from "react";
 import styles from "../farm.module.css";
@@ -23,6 +24,7 @@ import Alert from "@/components/alert/Alert";
 import { ButtonTextWrapper } from "@/components/common/Button";
 import {
   ArrowDownHollow,
+  FarmDetailsWarn,
   GoldLevel1,
   GoldLevel2,
   GoldLevel3,
@@ -87,6 +89,7 @@ export default function FarmsDetailStake(props: {
   const [selectedLockData, setSelectedLockData] = useState<Lock | null>(null);
   const [lockDataList, setLockDataList] = useState<Lock[]>([]);
   const [stakeLoading, setStakeLoading] = useState(false);
+  const [unStakeLoading, setUnStakeLoading] = useState(false);
   const [showCalc, setShowCalc] = useState(false);
   const [amount, setAmount] = useState(
     stakeType == "freeToLock" ? freeAmount : ""
@@ -190,6 +193,14 @@ export default function FarmsDetailStake(props: {
     } else {
       setStakeLoading(false);
     }
+  }
+  function operationUnStake() {
+    setUnStakeLoading(true);
+    unStake_boost({
+      seed_id,
+      unlock_amount: "0",
+      withdraw_amount: toNonDivisibleNumber(DECIMALS, amount),
+    });
   }
   return (
     <div className="bg-dark-10 rounded-md px-5 pt-5 mb-2.5 h-full">
@@ -306,7 +317,49 @@ export default function FarmsDetailStake(props: {
 
       {activeTab === "Unstake" && (
         <div>
-          <h2 className="text-xl mb-4">Unstake your tokens</h2>
+          <div className="flex justify-between items-center h-16 px-3 bg-dark-60 rounded-lg">
+            <input
+              type="number"
+              inputMode="decimal"
+              placeholder="0"
+              value={amount}
+              onChange={({ target }) => changeAmount(target.value)}
+              className="text-white text-lg focus:outline-non appearance-none leading-tight"
+            ></input>
+            <div className="flex items-center ml-2">
+              <span
+                onClick={() => {
+                  changeAmount(lpBalance);
+                }}
+                className={`text-sm text-gray-50 underline cursor-pointer hover:text-primaryGreen`}
+              >
+                Max
+              </span>
+            </div>
+          </div>
+          <div className="mt-2.5 text-sm mb-6 frcb">
+            <p className="text-gray-10 ml-1">Lp Tokens</p>
+            <p> {toPrecision(lpBalance, 6)}</p>
+          </div>
+          <div
+            onClick={operationUnStake}
+            className={`w-full h-11 frcc rounded paceGrotesk-Bold text-base ${
+              isDisabled
+                ? "cursor-not-allowed bg-gray-40 text-gray-50"
+                : "text-green-10 border border-green-10 cursor-pointer"
+            }`}
+          >
+            <ButtonTextWrapper
+              loading={unStakeLoading}
+              Text={() => <>Unstake</>}
+            />
+          </div>
+          <div className="mt-5 flex items-center">
+            <FarmDetailsWarn />
+            <p className="ml-1.5 text-gray-10 text-sm">
+              Staking or unstaking will automatically claim your rewards.
+            </p>
+          </div>
         </div>
       )}
     </div>

@@ -638,7 +638,7 @@ export default function FarmsDetail(props: {
         </div>
       </div>
       {/* content */}
-      <div className="w-3/5 pt-16 m-auto">
+      <div className="w-3/5 pt-16 m-auto pb-8">
         <div className="ml-32 flex">
           <div className="flex-1 mr-2.5">
             <UserStakeBlock

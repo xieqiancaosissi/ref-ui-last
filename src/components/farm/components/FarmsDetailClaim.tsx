@@ -26,6 +26,7 @@ import { FarmDetailsUnion, QuestionMark } from "../icon";
 import { LightningIcon } from "../icon/FarmBoost";
 import { useAccountStore } from "@/stores/account";
 import getConfig from "@/utils/config";
+import { ButtonTextWrapper } from "@/components/common/Button";
 
 const {
   STABLE_POOL_IDS,
@@ -69,6 +70,7 @@ export default function UserStakeBlock(props: {
   } = user_seeds_map[seed_id] || {};
   const accountStore = useAccountStore();
   const isSignedIn = accountStore.isSignedIn;
+  const [claimLoading, setClaimLoading] = useState(false);
   const DECIMALS =
     pool && new Set(STABLE_POOL_IDS || []).has(pool.id?.toString())
       ? LP_STABLE_TOKEN_DECIMALS
@@ -249,7 +251,16 @@ export default function UserStakeBlock(props: {
     return getTotalUnclaimedRewards();
   }, [user_unclaimed_map[seed_id]]);
   function claimReward() {
-    claimRewardBySeed_boost(detailData.seed_id);
+    if (claimLoading) return;
+    setClaimLoading(true);
+    claimRewardBySeed_boost(detailData.seed_id)
+      // .then(() => {
+      //   window.location.reload();
+      // })
+      .catch((error) => {
+        setClaimLoading(false);
+        // setError(error);
+      });
   }
   return (
     <>
@@ -304,7 +315,10 @@ export default function UserStakeBlock(props: {
                 claimReward();
               }}
             >
-              Claim
+              <ButtonTextWrapper
+                loading={claimLoading}
+                Text={() => <>Claim</>}
+              />
             </div>
           ) : null}
         </div>

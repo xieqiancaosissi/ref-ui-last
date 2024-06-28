@@ -1,5 +1,12 @@
-import { Seed, BoostConfig, UserSeedInfo } from "@/services/farm";
-import { useState } from "react";
+import {
+  Seed,
+  BoostConfig,
+  UserSeedInfo,
+  stake_boost,
+  getMftTokenId,
+  get_config,
+} from "@/services/farm";
+import { useEffect, useState } from "react";
 import styles from "../farm.module.css";
 import {
   LP_STABLE_TOKEN_DECIMALS,
@@ -13,6 +20,16 @@ import {
 import getConfig from "@/utils/config";
 import BigNumber from "bignumber.js";
 import Alert from "@/components/alert/Alert";
+import { ButtonTextWrapper } from "@/components/common/Button";
+import {
+  ArrowDownHollow,
+  GoldLevel1,
+  GoldLevel2,
+  GoldLevel3,
+  GoldLevel4,
+} from "../icon";
+import { CalcEle } from "./CalcEle";
+import { CalcIcon } from "../icon/FarmBoost";
 
 const {
   STABLE_POOL_IDS,
@@ -67,11 +84,65 @@ export default function FarmsDetailStake(props: {
   } = user_seeds_map[seed_id] || {};
   const freeAmount = toReadableNumber(DECIMALS, free_amount);
   const lockedAmount = toReadableNumber(DECIMALS, locked_amount);
+  const [selectedLockData, setSelectedLockData] = useState<Lock | null>(null);
+  const [lockDataList, setLockDataList] = useState<Lock[]>([]);
+  const [stakeLoading, setStakeLoading] = useState(false);
+  const [showCalc, setShowCalc] = useState(false);
   const [amount, setAmount] = useState(
     stakeType == "freeToLock" ? freeAmount : ""
   );
   const [activeTab, setActiveTab] = useState("Stake");
   const [amountAvailableCheck, setAmountAvailableCheck] = useState(true);
+  useEffect(() => {
+    if (stakeType !== "free") {
+      const goldList = [
+        <GoldLevel1 key="1" />,
+        <GoldLevel2 key="2" />,
+        <GoldLevel3 key="3" />,
+        <GoldLevel4 key="4" />,
+      ];
+      const lockable_duration_month = [1, 3, 6, 12];
+      const lockable_duration_second = lockable_duration_month.map(
+        (duration: number, index: number) => {
+          return {
+            second: duration * 2592000,
+            month: duration,
+            icon: goldList[index],
+          };
+        }
+      );
+      let restTime_sec = 0;
+      const user_seed = user_seeds_map[seed_id];
+      if (user_seed.unlock_timestamp) {
+        restTime_sec = new BigNumber(user_seed.unlock_timestamp)
+          .minus(serverTime)
+          .dividedBy(1000000000)
+          .toNumber();
+      }
+      get_config().then((config) => {
+        const list: any = [];
+        const { maximum_locking_duration_sec, max_locking_multiplier } = config;
+        lockable_duration_second.forEach(
+          (item: { second: number; month: number; icon: any }, index) => {
+            if (
+              item.second >= Math.max(min_locking_duration_sec, restTime_sec) &&
+              item.second <= maximum_locking_duration_sec
+            ) {
+              const locking_multiplier =
+                ((max_locking_multiplier - 10000) * item.second) /
+                (maximum_locking_duration_sec * 10000);
+              list.push({
+                ...item,
+                multiplier: locking_multiplier,
+              });
+            }
+          }
+        );
+        setLockDataList(list);
+        setSelectedLockData(list[0]);
+      });
+    }
+  }, [stakeType]);
   function changeAmount(value: string) {
     setAmount(value);
     // check
@@ -87,8 +158,41 @@ export default function FarmsDetailStake(props: {
       return toPrecision(lpBalance || "0", 3);
     }
   }
+  const isDisabled =
+    !amount ||
+    !amountAvailableCheck ||
+    new BigNumber(amount).isLessThanOrEqualTo(0) ||
+    (stakeType !== "free" &&
+      min_locking_duration_sec > 0 &&
+      FARM_LOCK_SWITCH != 0);
+  function operationStake() {
+    setStakeLoading(true);
+    let msg = "";
+    if (
+      stakeType == "free" ||
+      min_locking_duration_sec == 0 ||
+      FARM_LOCK_SWITCH == 0
+    ) {
+      msg = JSON.stringify("Free");
+    } else if (stakeType === "lock" && selectedLockData) {
+      msg = JSON.stringify({
+        Lock: {
+          duration_sec: selectedLockData.second,
+        },
+      });
+    }
+    if (pool && pool.id) {
+      stake_boost({
+        token_id: getMftTokenId(pool.id.toString()),
+        amount: toNonDivisibleNumber(DECIMALS, amount),
+        msg,
+      });
+    } else {
+      setStakeLoading(false);
+    }
+  }
   return (
-    <div className="bg-dark-10 rounded-md p-5 mb-2.5 h-full">
+    <div className="bg-dark-10 rounded-md px-5 pt-5 mb-2.5 h-full">
       <div className="flex items-center mb-4">
         <button
           className={`text-lg pr-5 ${
@@ -147,6 +251,56 @@ export default function FarmsDetailStake(props: {
             {displayLpBalance()}
             <span className="text-gray-10 ml-1">available to stake</span>
           </div>
+          <div
+            onClick={operationStake}
+            className={`w-full h-11 frcc rounded paceGrotesk-Bold text-base ${
+              isDisabled
+                ? "cursor-not-allowed bg-gray-40 text-gray-50"
+                : "bg-greenGradient text-black cursor-pointer"
+            }`}
+          >
+            <ButtonTextWrapper loading={stakeLoading} Text={() => <>Stake</>} />
+          </div>
+          <div className="mt-5">
+            <div
+              className="flex items-center justify-between mb-4 cursor-pointer"
+              onClick={() => {
+                setShowCalc(!showCalc);
+              }}
+            >
+              <div className="frcc">
+                <CalcIcon />
+                <label className="text-sm text-gray-10 ml-3 mr-4  cursor-pointer">
+                  ROI Calculator
+                </label>
+              </div>
+              <div
+                className={
+                  "cursor-pointer " +
+                  (showCalc
+                    ? "transform rotate-180 text-white"
+                    : "text-gray-10")
+                }
+                onClick={() => setShowCalc(!showCalc)}
+              >
+                <ArrowDownHollow />
+              </div>
+            </div>
+            {showCalc ? (
+              <div className={"w-full"}>
+                <CalcEle
+                  seed={detailData}
+                  tokenPriceList={tokenPriceList}
+                  lpTokenNumAmount={amount}
+                  loveSeed={loveSeed}
+                  boostConfig={boostConfig}
+                  user_seeds_map={user_seeds_map}
+                  user_unclaimed_map={user_unclaimed_map}
+                  user_unclaimed_token_meta_map={user_unclaimed_token_meta_map}
+                ></CalcEle>
+              </div>
+            ) : null}
+          </div>
         </div>
       )}
 
@@ -157,4 +311,11 @@ export default function FarmsDetailStake(props: {
       )}
     </div>
   );
+}
+
+interface Lock {
+  second: number;
+  month: number;
+  icon: any;
+  multiplier: number;
 }

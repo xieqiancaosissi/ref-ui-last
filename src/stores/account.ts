@@ -1,3 +1,4 @@
+import { refFarmBoostViewFunction } from "@/utils/contract";
 import { create } from "zustand";
 
 type IAccountStore = {
@@ -26,3 +27,17 @@ export const useAccountStore = create<IAccountStore>((set, get) => ({
     set({ walletLoading });
   },
 }));
+
+export interface AccountStorageView {
+  total: string;
+  available: string;
+}
+
+export const currentStorageBalanceOfFarm_boost = (
+  accountId: string
+): Promise<AccountStorageView> => {
+  return refFarmBoostViewFunction({
+    methodName: "storage_balance_of",
+    args: { account_id: accountId },
+  });
+};

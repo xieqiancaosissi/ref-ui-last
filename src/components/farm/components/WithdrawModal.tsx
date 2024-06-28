@@ -13,6 +13,7 @@ import {
   toReadableNumber,
 } from "../../../utils/numbers";
 import { toRealSymbol, withdrawAllReward_boost } from "../../../services/farm";
+import { ButtonTextWrapper } from "@/components/common/Button";
 
 export default function Withdraw({
   isOpen,
@@ -25,6 +26,7 @@ export default function Withdraw({
 }) {
   const [selectAll, setSelectAll] = useState(false);
   const [checkedList, setCheckedList] = useState<Record<string, any>>({});
+  const [withdrawLoading, setWithdrawLoading] = useState<boolean>(false);
   const withdrawNumber = 4;
   function clickCheckBox(tokenId: string) {
     if (checkedList[tokenId]) {
@@ -119,6 +121,7 @@ export default function Withdraw({
       : "$-";
   }
   async function doWithDraw() {
+    setWithdrawLoading(true);
     withdrawAllReward_boost(checkedList);
   }
   return (
@@ -260,7 +263,10 @@ export default function Withdraw({
                 : "bg-greenGradientDark text-black cursor-pointer"
             }`}
           >
-            Withdraw
+            <ButtonTextWrapper
+              loading={withdrawLoading}
+              Text={() => <>Withdraw</>}
+            />
           </div>
         </div>
       </div>

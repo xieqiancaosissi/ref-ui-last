@@ -8,6 +8,7 @@ import {
 } from "@/utils/numbers";
 import { useRouter } from "next/router";
 import { usePersistSwapStore } from "@/stores/swap";
+import { getTokenUIId } from "@/services/swap/swapUtils";
 
 export default function PoolComposition(props: any) {
   const { poolDetail, tokenPriceList, updatedMapList } = props;
@@ -15,8 +16,8 @@ export default function PoolComposition(props: any) {
   const persistSwapStore = usePersistSwapStore();
   const router = useRouter();
   const toSwap = (tokenList: any) => {
-    persistSwapStore.setTokenInId(tokenList[0].id);
-    persistSwapStore.setTokenOutId(tokenList[1].id);
+    persistSwapStore.setTokenInId(getTokenUIId(tokenList[0].id));
+    persistSwapStore.setTokenOutId(getTokenUIId(tokenList[1].id));
     router.push("/");
   };
 

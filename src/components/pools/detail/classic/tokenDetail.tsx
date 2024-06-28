@@ -21,7 +21,7 @@ export default function TokenDetail({
             className={styles.tokenImgContainer}
             key={"poolTokendetail_" + index}
           >
-            {item.token_account_ids.map((ite: any, ind: number) => (
+            {item?.token_account_ids?.map((ite: any, ind: number) => (
               <TokenIconComponent
                 key={ite.tokenId + ind}
                 ite={ite}

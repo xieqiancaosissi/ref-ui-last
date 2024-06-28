@@ -16,6 +16,7 @@ import {
   removePoolFromWatchList,
   getWatchListFromDb,
 } from "@/services/pool";
+import NoLiquidity from "@/components/pools/detail/liquidity/NoLiquidity";
 
 export default function ClassicPoolDetail() {
   const router = useRouter();
@@ -66,17 +67,15 @@ export default function ClassicPoolDetail() {
 
       {/* title */}
       <div className="w-270 flex items-center">
-        {poolDetail && (
+        {poolDetail && updatedMapList?.length > 0 && (
           <>
-            <TokenDetail
-              {...poolDetail}
-              updatedMapList={updatedMapList}
-            ></TokenDetail>
+            <TokenDetail {...poolDetail} updatedMapList={updatedMapList} />
             <span className=" text-2xl text-white font-bold ml-1 mr-2">
               {poolDetail?.token_symbols
                 ?.map((item: any) => (item == "wNEAR" ? (item = "NEAR") : item))
                 .join("-")}
             </span>
+
             {/* farm tag */}
             {poolDetail.is_farm && (
               <div
@@ -85,11 +84,14 @@ export default function ClassicPoolDetail() {
                 Farms
               </div>
             )}
+
+            {/* watchlist */}
             <CollectStar
               iscollect={isCollect.toString()}
               className="cursor-pointer"
               onClick={() => collectPool()}
             />
+
             {/* fee */}
             <TokenFeeAndCureentPrice
               poolDetail={poolDetail}
@@ -105,16 +107,17 @@ export default function ClassicPoolDetail() {
         <div className="w-183">
           {/* charts */}
           <div className="min-h-135">
-            {poolId && (
-              <TvlAndVolumeCharts poolId={poolId}></TvlAndVolumeCharts>
-            )}
+            {poolDetail && <TvlAndVolumeCharts poolId={poolId} />}
           </div>
+
           {/* tvl & Overall locking */}
           <div className="-mt-20">
-            <OverallLocking
-              poolDetail={poolDetail}
-              updatedMapList={updatedMapList}
-            />
+            {poolDetail && updatedMapList?.length > 0 && (
+              <OverallLocking
+                poolDetail={poolDetail}
+                updatedMapList={updatedMapList}
+              />
+            )}
           </div>
 
           {/* Pool composition */}
@@ -122,7 +125,7 @@ export default function ClassicPoolDetail() {
             <h3 className="mt-12 mb-4 text-lg text-gray-50 font-bold">
               Pool Composition
             </h3>
-            {poolDetail && (
+            {poolDetail && updatedMapList?.length > 0 && (
               <PoolComposition
                 poolDetail={poolDetail}
                 tokenPriceList={tokenPriceList}
@@ -137,7 +140,7 @@ export default function ClassicPoolDetail() {
               <span className="text-lg text-gray-50 font-bold">
                 Recent Transaction
               </span>
-              <div className="flex items-center">
+              <div className="flex items-center mr-0.5">
                 {TransactionTabList.map((item, index) => {
                   return (
                     <div
@@ -156,18 +159,20 @@ export default function ClassicPoolDetail() {
               </div>
             </div>
             {/*  */}
-            {poolId && updatedMapList?.length > 0 && (
+            {poolDetail && updatedMapList?.length > 0 && (
               <RecentTransaction
                 activeTab={transactionActive}
                 poolId={poolId}
                 updatedMapList={updatedMapList}
-              ></RecentTransaction>
+              />
             )}
           </div>
         </div>
 
         {/* right liquidity */}
-        <div className="w-80"></div>
+        <div className="w-80 ml-auto pt-12">
+          <NoLiquidity />
+        </div>
       </div>
     </div>
   );

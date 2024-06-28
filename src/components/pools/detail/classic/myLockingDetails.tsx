@@ -94,10 +94,10 @@ const MyLockingDetailTip = ({
                 key={"poolTokendetail_" + index}
                 className="flex flex-col justify-center"
               >
-                {item.token_account_ids.map((ite: any, ind: number) => (
+                {item?.token_account_ids?.map((ite: any, ind: number) => (
                   <div key={"tkn" + ind} className="flex items-center p-1">
                     {TokenIconComponent({ ite })}
-                    <div className="mx-1 w-10">{item.token_symbols[ind]}</div>
+                    <div className="mx-1 w-10">{item?.token_symbols[ind]}</div>
                     <span className="ml-auto">
                       {ind == 0 && tokenA_amount}
                       {ind == 1 && tokenB_amount}

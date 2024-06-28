@@ -47,7 +47,7 @@ export default function PoolRow({
             {/* pools---first child */}
             <div className="flex items-center">
               <div className={styles.tokenImgContainer}>
-                {item.token_account_ids.map((ite: any, ind: number) => {
+                {item?.token_account_ids?.map((ite: any, ind: number) => {
                   // if tokenid in tokenIcons
                   return Reflect.has(tokenIcons, ite.tokenId) ? (
                     // if token is near use new icon
@@ -107,7 +107,7 @@ export default function PoolRow({
 
                 {/* tvl token amounts */}
                 <div className={styles.tokenCharts}>
-                  {item.token_account_ids.map((ite: any, ind: number) => {
+                  {item?.token_account_ids?.map((ite: any, ind: number) => {
                     return (
                       <div
                         key={ite + ind}

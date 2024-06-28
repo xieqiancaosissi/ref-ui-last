@@ -43,7 +43,7 @@ export default function PoolRow({
             <div className="flex items-center">
               {/*render token icon */}
               <div className={styles.tokenImgContainer}>
-                {item.token_account_ids.map((ite: any, ind: number) => (
+                {item?.token_account_ids?.map((ite: any, ind: number) => (
                   <TokenIconComponent
                     key={ite.tokenId + ind}
                     ite={ite}

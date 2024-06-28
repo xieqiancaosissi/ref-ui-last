@@ -56,6 +56,9 @@ export default function OverallLocking(props: any) {
   const [isUnLockedOpen, setIsUnLockedOpen] = useState<boolean>(false);
   const [fold, setFold] = useState<boolean>(true);
   const [shares, setShares] = useState("");
+
+  const [lockButtonDisabled, setLockButtonDisabled] = useState(true);
+  const [unLockButtonDisabled, setUnLockButtonDisabled] = useState(true);
   //
   const [your_locked_percent, your_unLocked_time, your_locked_balance] =
     useMemo(() => {
@@ -115,15 +118,12 @@ export default function OverallLocking(props: any) {
       displayPercent,
     };
   }
+  //
   useEffect(() => {
     init();
   }, [poolDetail]);
 
-  const [lockButtonDisabled, setLockButtonDisabled] = useState(true);
-  const [unLockButtonDisabled, setUnLockButtonDisabled] = useState(true);
-
   useEffect(() => {
-    console.log(shares, "sss");
     if (shares) setLockButtonDisabled(Big(shares || 0).lte(0));
   }, [shares]);
 
@@ -175,7 +175,7 @@ export default function OverallLocking(props: any) {
                 </h3>
                 <p className="text-lg font-bold">
                   {item.value == "apy"
-                    ? format_apy(poolDetail.apy * 100)
+                    ? format_apy(poolDetail.apy)
                     : toInternationalCurrencySystem_usd(poolDetail[item.value])}
                   {/* farm apy */}
                   {item.value == "apy" && poolDetail.farm_apy && (
@@ -334,6 +334,7 @@ export default function OverallLocking(props: any) {
           </div>
         )}
       </div>
+      {/*  */}
       {isLockedOpen && (
         <LockedModal
           isOpen={isLockedOpen}
@@ -349,6 +350,11 @@ export default function OverallLocking(props: any) {
         <UnLockedModal
           isOpen={isUnLockedOpen}
           onRequestClose={closeUnLockedModal}
+          is_mft_registered={is_mft_registered}
+          userShares={shares}
+          lockedData={lp_locked_list[accountId]}
+          pool={poolDetail}
+          tokens={updatedMapList[0].token_account_ids}
         />
       )}
     </div>

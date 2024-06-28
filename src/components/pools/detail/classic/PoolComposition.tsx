@@ -68,7 +68,7 @@ export default function PoolComposition(props: any) {
       {/* pair */}
       <div>
         {updatedMapList.map((item: any, index: number) => {
-          return item.token_account_ids.map((ite: any, ind: number) => {
+          return item?.token_account_ids?.map((ite: any, ind: number) => {
             const tokenAmount = toReadableNumber(
               ite.decimals,
               item.supplies[ite.tokenId]

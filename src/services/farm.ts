@@ -1,6 +1,7 @@
 import getConfig from "@/utils/config";
 import db, { BoostSeeds, TokenPrice } from "../db/RefDatabase";
 import {
+  ONE_YOCTO_NEAR,
   REF_FARM_BOOST_CONTRACT_ID,
   REF_FI_CONTRACT_ID,
   RefFiFunctionCallOptions,
@@ -25,6 +26,7 @@ import {
 } from "../utils/numbers";
 import BigNumber from "bignumber.js";
 import { Near, keyStores } from "near-api-js";
+import { currentStorageBalanceOfFarm_boost } from "@/stores/account";
 
 const config = getConfig();
 const {
@@ -128,6 +130,11 @@ export interface MonthData {
   day: number;
   second: number;
   rate?: number;
+}
+interface StakeOptions {
+  token_id?: string;
+  amount: string;
+  msg?: string;
 }
 
 export const frontConfigBoost: FrontConfigBoost = {
@@ -619,4 +626,49 @@ export const getServerTime = async () => {
     });
   const timestamp = result?.header?.timestamp;
   return timestamp;
+};
+
+export const checkTokenNeedsStorageDeposit_boost = async () => {
+  let storageNeeded;
+  const balance = await currentStorageBalanceOfFarm_boost(getAccountId());
+
+  if (!balance) {
+    storageNeeded = "0.1";
+  }
+  return storageNeeded;
+};
+
+export const stake_boost = async ({
+  token_id,
+  amount,
+  msg = "",
+}: StakeOptions) => {
+  const transactions: Transaction[] = [
+    {
+      receiverId: REF_FI_CONTRACT_ID,
+      functionCalls: [
+        {
+          methodName: "mft_transfer_call",
+          args: {
+            receiver_id: REF_FARM_BOOST_CONTRACT_ID,
+            token_id,
+            amount,
+            msg,
+          },
+          amount: ONE_YOCTO_NEAR,
+          gas: "180000000000000",
+        },
+      ],
+    },
+  ];
+
+  const neededStorage = await checkTokenNeedsStorageDeposit_boost();
+  if (neededStorage) {
+    transactions.unshift({
+      receiverId: REF_FARM_BOOST_CONTRACT_ID,
+      functionCalls: [storageDepositAction({ amount: neededStorage })],
+    });
+  }
+
+  return executeFarmMultipleTransactions(transactions);
 };

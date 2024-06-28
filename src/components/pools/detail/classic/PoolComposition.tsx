@@ -15,8 +15,8 @@ export default function PoolComposition(props: any) {
   const persistSwapStore = usePersistSwapStore();
   const router = useRouter();
   const toSwap = (tokenList: any) => {
-    persistSwapStore.setTokenInId(tokenList[0]);
-    persistSwapStore.setTokenOutId(tokenList[1]);
+    persistSwapStore.setTokenInId(tokenList[0].id);
+    persistSwapStore.setTokenOutId(tokenList[1].id);
     router.push("/");
   };
 

@@ -4,7 +4,10 @@ import { toPrecision, toReadableNumber } from "@/utils/numbers";
 import { unlock_lp } from "@/services/lplock";
 import Modal from "react-modal";
 import { UnLockLpTitleIcon, LpModalCloseIcon } from "@/components/pools/icon";
-import { UnlockWithoutCircleBlack } from "@/components/pools/icon";
+import {
+  UnlockWithoutCircleBlack,
+  LpUnlockWithDivIcon,
+} from "@/components/pools/icon";
 import tokenIcons from "@/utils/tokenIconConfig";
 import { useRiskTokens } from "@/hooks/useRiskTokens";
 import { TokenIconComponent } from "@/components/pools/TokenIconWithTkn/index";
@@ -62,8 +65,11 @@ function UnLockedModal(props: any) {
           className="flex items-center justify-between px-3 rounded-lg mt-4 "
           style={{ height: "65px", background: "rgba(0,0,0,.2)" }}
         >
-          <div className="text-white text-xl focus:outline-none appearance-none leading-tight px-2.5 w-full">
-            <span className="text-white gotham_bold text-2xl">{balance}</span>
+          <div className="text-white text-xl focus:outline-none appearance-none leading-tight px-2.5 w-full flex items-center">
+            <span className="text-white gotham_bold text-2xl mr-2">
+              {balance}
+            </span>
+            <LpUnlockWithDivIcon />
           </div>
           <div
             className={`flex items-center flex-shrink-0 bg-primaryText bg-opacity-10 rounded-full p-1 ${styles.tokenImgContainer}`}

@@ -36,20 +36,19 @@ export default function TokenFeeAndCureentPrice({
             ? "NEAR"
             : poolDetail?.token_symbols[currentSort[0]]}
           {/* usd price */}
-          {tokenPriceList &&
-            tokenPriceList[poolDetail.token_account_ids[currentSort[0]]] && (
-              <span className="text-gray-50 font-normal">
-                (
-                {toInternationalCurrencySystem_usd(
-                  tokenPriceList[poolDetail.token_account_ids[currentSort[0]]]
-                    .price
-                )}
-                )
-              </span>
-            )}
+          {tokenPriceList && poolDetail && (
+            <span className="text-gray-50 font-normal">
+              (
+              {toInternationalCurrencySystem_usd(
+                tokenPriceList[poolDetail.token_account_ids[currentSort[0]]]
+                  .price
+              )}
+              )
+            </span>
+          )}
           <span className="mx-1">=</span>
           {/* token right amount */}
-          {tokenPriceList[poolDetail?.token_account_ids[currentSort[0]]] && (
+          {tokenPriceList && poolDetail && (
             <span className="mr-1">
               {Math.ceil(
                 (tokenPriceList[poolDetail?.token_account_ids[currentSort[0]]]

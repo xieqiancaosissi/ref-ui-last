@@ -7,6 +7,7 @@ import {
   RefFiFunctionCallOptions,
   refFarmBoostFunctionCall,
   refFiViewFunction,
+  refSwapV3ViewFunction,
 } from "../utils/contract";
 import { viewFunction } from "../utils/near";
 import { executeFarmMultipleTransactions } from "../utils/contract";
@@ -27,6 +28,8 @@ import {
 import BigNumber from "bignumber.js";
 import { Near, keyStores } from "near-api-js";
 import { currentStorageBalanceOfFarm_boost } from "@/stores/account";
+import { UserLiquidityInfo } from "./commonV3";
+import Big from "big.js";
 
 const config = getConfig();
 const {
@@ -141,6 +144,14 @@ interface UnStakeOptions {
   seed_id: string;
   unlock_amount: string;
   withdraw_amount: string;
+}
+
+export interface IStakeInfo {
+  liquidities: UserLiquidityInfo[];
+  total_v_liquidity?: string;
+  withdraw_amount?: string;
+  canStake?: boolean;
+  seed_id?: string;
 }
 
 export const frontConfigBoost: FrontConfigBoost = {
@@ -702,6 +713,251 @@ export const unStake_boost = async ({
     },
   ];
 
+  const neededStorage = await checkTokenNeedsStorageDeposit_boost();
+  if (neededStorage) {
+    transactions.unshift({
+      receiverId: REF_FARM_BOOST_CONTRACT_ID,
+      functionCalls: [storageDepositAction({ amount: neededStorage })],
+    });
+  }
+
+  return executeFarmMultipleTransactions(transactions);
+};
+
+export const list_liquidities = async () => {
+  const res = await refSwapV3ViewFunction({
+    methodName: "list_liquidities",
+    args: {
+      account_id: getAccountId(),
+    },
+  });
+
+  return res.filter(
+    (item: any) => !getConfig().DCL_POOL_BLACK_LIST.includes(item.pool_id)
+  );
+};
+
+export const dcl_mft_balance_of = (token_id: string) => {
+  return refSwapV3ViewFunction({
+    methodName: "mft_balance_of",
+    args: {
+      token_id,
+      account_id: getAccountId(),
+    },
+  });
+};
+
+function liquidity_is_in_other_seed(seed_id: string, mft_id: string) {
+  const [contractId, temp_pool_id] = seed_id.split("@");
+  const [fixRange_s, pool_id_s, left_point_s, right_point_s] =
+    temp_pool_id.split("&");
+  const [fixRange_l, pool_id_l, left_point_l, right_point_l] =
+    mft_id.split("&");
+  const is_in_other_seed =
+    left_point_s != left_point_l || right_point_s != right_point_l;
+  return is_in_other_seed;
+}
+
+export const batch_stake_boost_nft = async ({
+  liquidities,
+  total_v_liquidity,
+  withdraw_amount,
+  seed_id,
+}: IStakeInfo) => {
+  let need_split = false;
+  const selectedWalletId = window.selector?.store?.getState()?.selectedWalletId;
+  if (selectedWalletId == "ledger") {
+    need_split = true;
+  }
+  const max_length = 2;
+  if (!seed_id) {
+    return;
+  }
+  const [contractId, temp_pool_id] = seed_id.split("@");
+  const [fixRange, dcl_pool_id, left_point, right_point] =
+    temp_pool_id.split("&");
+  const transactions: Transaction[] = [];
+  const mint_infos: any[] = [];
+  if (!withdraw_amount) {
+    return;
+  }
+  liquidities.forEach((l: UserLiquidityInfo) => {
+    const { lpt_id, mft_id } = l;
+    const functionCalls = [];
+    if (!mft_id) {
+      mint_infos.push([lpt_id, JSON.parse(fixRange)]);
+    } else if (liquidity_is_in_other_seed(seed_id, mft_id)) {
+      functionCalls.push(
+        {
+          methodName: "burn_v_liquidity",
+          args: {
+            lpt_id,
+          },
+          gas: "60000000000000",
+        },
+        {
+          methodName: "mint_v_liquidity",
+          args: {
+            lpt_id,
+            dcl_farming_type: JSON.parse(fixRange),
+          },
+          gas: "60000000000000",
+        }
+      );
+    } else if (Big(withdraw_amount).gt(0)) {
+      transactions.push({
+        receiverId: REF_FARM_BOOST_CONTRACT_ID,
+        functionCalls: [
+          {
+            methodName: "unlock_and_withdraw_seed",
+            args: {
+              seed_id,
+              unlock_amount: "0",
+              withdraw_amount,
+            },
+            amount: ONE_YOCTO_NEAR,
+            gas: "200000000000000",
+          },
+        ],
+      });
+    }
+    if (functionCalls.length > 0) {
+      transactions.push({
+        receiverId: REF_UNI_V3_SWAP_CONTRACT_ID,
+        functionCalls,
+      });
+    }
+  });
+  if (mint_infos.length) {
+    if (need_split) {
+      const num = Math.ceil(mint_infos.length / max_length);
+      for (let i = 0; i < num; i++) {
+        const startIndex = i * max_length;
+        const endIndex = startIndex + max_length;
+        const mint_infos_i = mint_infos.slice(startIndex, endIndex);
+        transactions.push({
+          receiverId: REF_UNI_V3_SWAP_CONTRACT_ID,
+          functionCalls: [
+            {
+              methodName: "batch_mint_v_liquidity",
+              args: { mint_infos: mint_infos_i },
+              gas: "200000000000000",
+            },
+          ],
+        });
+      }
+    } else {
+      transactions.push({
+        receiverId: REF_UNI_V3_SWAP_CONTRACT_ID,
+        functionCalls: [
+          {
+            methodName: "batch_mint_v_liquidity",
+            args: { mint_infos },
+            gas: "200000000000000",
+          },
+        ],
+      });
+    }
+  }
+  transactions.push({
+    receiverId: REF_UNI_V3_SWAP_CONTRACT_ID,
+    functionCalls: [
+      {
+        methodName: "mft_transfer_call",
+        args: {
+          receiver_id: REF_FARM_BOOST_CONTRACT_ID,
+          token_id: `:${temp_pool_id}`,
+          amount: total_v_liquidity,
+          msg: JSON.stringify("Free"),
+        },
+        amount: ONE_YOCTO_NEAR,
+        gas: "180000000000000",
+      },
+    ],
+  });
+  const neededStorage = await checkTokenNeedsStorageDeposit_boost();
+  if (neededStorage) {
+    transactions.unshift({
+      receiverId: REF_FARM_BOOST_CONTRACT_ID,
+      functionCalls: [storageDepositAction({ amount: neededStorage })],
+    });
+  }
+  return executeFarmMultipleTransactions(transactions);
+};
+
+export const batch_unStake_boost_nft = async ({
+  seed_id,
+  withdraw_amount,
+  liquidities,
+}: IStakeInfo) => {
+  let need_split = false;
+  const max_length = 2;
+  const selectedWalletId = window.selector?.store?.getState()?.selectedWalletId;
+  if (selectedWalletId == "ledger") {
+    need_split = true;
+  }
+  const transactions: Transaction[] = [];
+  if (
+    withdraw_amount !== undefined &&
+    new BigNumber(withdraw_amount).isGreaterThan("0")
+  ) {
+    transactions.push({
+      receiverId: REF_FARM_BOOST_CONTRACT_ID,
+      functionCalls: [
+        {
+          methodName: "unlock_and_withdraw_seed",
+          args: {
+            seed_id,
+            unlock_amount: "0",
+            withdraw_amount,
+          },
+          amount: ONE_YOCTO_NEAR,
+          gas: "200000000000000",
+        },
+      ],
+    });
+  }
+  const lpt_ids: string[] = [];
+  liquidities.forEach((l: UserLiquidityInfo) => {
+    if (l.lpt_id !== undefined) {
+      lpt_ids.push(l.lpt_id);
+    }
+  });
+  if (lpt_ids.length) {
+    if (need_split) {
+      const num = Math.ceil(lpt_ids.length / max_length);
+      for (let i = 0; i < num; i++) {
+        const startIndex = i * max_length;
+        const endIndex = startIndex + max_length;
+        const lpt_ids_i = lpt_ids.slice(startIndex, endIndex);
+        transactions.push({
+          receiverId: REF_UNI_V3_SWAP_CONTRACT_ID,
+          functionCalls: [
+            {
+              methodName: "batch_burn_v_liquidity",
+              args: {
+                lpt_ids: lpt_ids_i,
+              },
+              gas: "250000000000000",
+            },
+          ],
+        });
+      }
+    } else {
+      transactions.push({
+        receiverId: REF_UNI_V3_SWAP_CONTRACT_ID,
+        functionCalls: [
+          {
+            methodName: "batch_burn_v_liquidity",
+            args: {
+              lpt_ids,
+            },
+            gas: "250000000000000",
+          },
+        ],
+      });
+    }
+  }
   const neededStorage = await checkTokenNeedsStorageDeposit_boost();
   if (neededStorage) {
     transactions.unshift({

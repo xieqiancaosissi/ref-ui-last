@@ -3,6 +3,7 @@ import { Seed, BoostConfig, UserSeedInfo } from "../../services/farm";
 import FarmsPage from "@/components/farm";
 import FarmsDetail from "@/components/farm/components/FarmsDetail";
 import { useRouter } from "next/router";
+import FarmsDclDetail from "@/components/farm/components/FarmsDclDetail";
 
 export default function FarmsBoosterPage(props: any) {
   const router = useRouter();
@@ -92,6 +93,19 @@ export default function FarmsBoosterPage(props: any) {
           user_data_loading={user_data_loading}
           dayVolumeMap={dayVolumeMap}
         ></FarmsDetail>
+      ) : null}
+      {showDclDetailPage ? (
+        <FarmsDclDetail
+          detailData={detailData}
+          tokenPriceList={tokenPriceList}
+          emptyDetailData={emptyDetailData}
+          boostConfig={boostConfig || ({} as BoostConfig)}
+          loveSeed={loveSeed || ({} as Seed)}
+          user_data={user_data}
+          user_data_loading={user_data_loading}
+          dayVolumeMap={dayVolumeMap}
+          all_seeds={all_seeds}
+        ></FarmsDclDetail>
       ) : null}
     </>
   );

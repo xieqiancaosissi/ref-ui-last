@@ -263,7 +263,11 @@ export default function FarmsDetailStake(props: {
             <span className="text-gray-10 ml-1">available to stake</span>
           </div>
           <div
-            onClick={operationStake}
+            onClick={() => {
+              if (!isDisabled) {
+                operationStake();
+              }
+            }}
             className={`w-full h-11 frcc rounded paceGrotesk-Bold text-base ${
               isDisabled
                 ? "cursor-not-allowed bg-gray-40 text-gray-50"
@@ -342,7 +346,11 @@ export default function FarmsDetailStake(props: {
             <p> {toPrecision(lpBalance, 6)}</p>
           </div>
           <div
-            onClick={operationUnStake}
+            onClick={() => {
+              if (!isDisabled) {
+                operationUnStake();
+              }
+            }}
             className={`w-full h-11 frcc rounded paceGrotesk-Bold text-base ${
               isDisabled
                 ? "cursor-not-allowed bg-gray-40 text-gray-50"

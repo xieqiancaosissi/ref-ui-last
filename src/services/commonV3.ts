@@ -454,3 +454,119 @@ export function get_intersection_icon_by_radio(radio: string): any {
   }
   return icon;
 }
+
+export function allocation_rule_liquidities({
+  list,
+  user_seed_amount,
+  seed,
+}: {
+  list: UserLiquidityInfo[];
+  user_seed_amount: string;
+  seed: Seed;
+}) {
+  const { seed_id, min_deposit } = seed;
+  const [contractId, temp_pool_id] = seed_id.split("@");
+  const [fixRange, pool_id, left_point_s, right_point_s] =
+    temp_pool_id.split("&");
+  const matched_liquidities = list.filter((liquidity: UserLiquidityInfo) => {
+    if (liquidity.pool_id == pool_id) return true;
+  });
+  const temp_farming: UserLiquidityInfo[] = [];
+  let temp_free: UserLiquidityInfo[] = [];
+  const temp_unavailable: UserLiquidityInfo[] = [];
+  matched_liquidities.forEach((liquidity: UserLiquidityInfo) => {
+    const [left_point, right_point] = get_valid_range(liquidity, seed_id);
+    const { mft_id, amount } = liquidity;
+    const inRange = right_point > left_point;
+    if (!mft_id) {
+      temp_unavailable.push(liquidity);
+      return;
+    }
+    const [fixRange_l, pool_id_l, left_point_l, right_point_l] =
+      mft_id.split("&");
+    const amount_is_little = new BigNumber(amount).isLessThan(1000000);
+    if (inRange && mft_id) {
+      if (left_point_l != left_point_s || right_point_l != right_point_s) {
+        temp_unavailable.push(liquidity);
+      } else {
+        temp_farming.push(liquidity);
+      }
+    } else if (!inRange || (!mft_id && amount_is_little)) {
+      temp_unavailable.push(liquidity);
+    } else {
+      temp_free.push(liquidity);
+    }
+  });
+  // sort by mft amount for temp_farming
+  temp_farming.sort((b: UserLiquidityInfo, a: UserLiquidityInfo) => {
+    const mint_amount_b = b.v_liquidity
+      ? new BigNumber(b.v_liquidity)
+      : new BigNumber(0);
+    const mint_amount_a = a.v_liquidity
+      ? new BigNumber(a.v_liquidity)
+      : new BigNumber(0);
+    return mint_amount_a.minus(mint_amount_b).toNumber();
+  });
+  // allocation for temp_farming
+  let user_seed_amount_remained = user_seed_amount;
+  temp_farming.forEach((liquidity: UserLiquidityInfo) => {
+    const v_liquidity = liquidity.v_liquidity;
+    if (v_liquidity === undefined) {
+      return;
+    }
+    const v_liquidity_big = new BigNumber(v_liquidity);
+    const user_seed_amount_remained_big = new BigNumber(
+      user_seed_amount_remained
+    );
+    if (v_liquidity_big.isLessThanOrEqualTo(user_seed_amount_remained)) {
+      liquidity.part_farm_ratio = "100";
+      user_seed_amount_remained = user_seed_amount_remained_big
+        .minus(v_liquidity)
+        .toFixed();
+    } else if (user_seed_amount_remained_big.isEqualTo(0)) {
+      liquidity.part_farm_ratio = "0";
+    } else {
+      const percent = user_seed_amount_remained_big
+        .dividedBy(v_liquidity)
+        .multipliedBy(100)
+        .toFixed();
+      liquidity.part_farm_ratio = percent;
+      liquidity.unfarm_part_amount = v_liquidity_big
+        .minus(user_seed_amount_remained)
+        .toFixed();
+      user_seed_amount_remained = "0";
+    }
+  });
+  // Group together
+  const temp_farming_final: UserLiquidityInfo[] = [];
+  const temp_unFarming = temp_farming.filter((liquidity: UserLiquidityInfo) => {
+    const { part_farm_ratio, unfarm_part_amount } = liquidity;
+    if (part_farm_ratio == "0") return true;
+    temp_farming_final.push(liquidity);
+  });
+  const temp_free_final: UserLiquidityInfo[] = [];
+  temp_free = temp_unFarming.concat(temp_free);
+  // const temp_too_little_in_free: UserLiquidityInfo[] = temp_free.filter(
+  //   (liquidity: UserLiquidityInfo) => {
+  //     const v_liquidity = mint_liquidity(liquidity, seed_id);
+  //     if (new BigNumber(v_liquidity).isLessThan(min_deposit)) {
+  //       liquidity.less_than_min_deposit = true;
+  //       return true;
+  //     }
+  //     temp_free_final.push(liquidity);
+  //   }
+  // );
+  const temp_too_little_in_free: UserLiquidityInfo[] = temp_free.filter(
+    (liquidity: UserLiquidityInfo) => {
+      // too little to mint
+      const { amount } = liquidity;
+      const amount_is_little = new BigNumber(amount).isLessThan(1000000);
+      if (amount_is_little) return true;
+      temp_free_final.push(liquidity);
+    }
+  );
+  const temp_unavailable_final: UserLiquidityInfo[] = temp_unavailable.concat(
+    temp_too_little_in_free
+  );
+  return [temp_farming_final, temp_free_final, temp_unavailable_final];
+}

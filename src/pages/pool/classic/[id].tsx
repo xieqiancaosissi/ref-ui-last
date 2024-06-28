@@ -11,11 +11,7 @@ import OverallLocking from "@/components/pools/detail/classic/overallLocking";
 import PoolComposition from "@/components/pools/detail/classic/PoolComposition";
 import { useTokenMetadata } from "@/hooks/usePools";
 import RecentTransaction from "@/components/pools/detail/classic/RecentTransaction";
-import {
-  addPoolToWatchList,
-  removePoolFromWatchList,
-  getWatchListFromDb,
-} from "@/services/pool";
+import { addPoolToWatchList, removePoolFromWatchList } from "@/services/pool";
 import NoLiquidity from "@/components/pools/detail/liquidity/NoLiquidity";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import NoContent from "@/components/common/NoContent";
@@ -24,7 +20,7 @@ import { useWatchList } from "@/hooks/useWatchlist";
 export default function ClassicPoolDetail() {
   const router = useRouter();
   const poolId = router.query.id || "";
-  const { currentwatchListId } = useWatchList();
+  const { currentwatchListId, accountId } = useWatchList();
   const [poolDetail, setPoolDetail] = useState<any>(null);
   const [isCollect, setIsCollect] = useState(false);
   const [tokenPriceList, setTokenPriceList] = useState<any>(null);
@@ -54,6 +50,7 @@ export default function ClassicPoolDetail() {
   }, []);
 
   const collectPool = () => {
+    if (!accountId) window.modal.show();
     if (isCollect) {
       removePoolFromWatchList({ pool_id: poolId.toString() });
     } else {
@@ -92,7 +89,7 @@ export default function ClassicPoolDetail() {
 
             {/* watchlist */}
             <CollectStar
-              iscollect={isCollect.toString()}
+              iscollect={!accountId ? "false" : isCollect.toString()}
               className="cursor-pointer"
               onClick={() => collectPool()}
             />

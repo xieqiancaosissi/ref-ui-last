@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { getAllWatchListFromDb } from "@/services/pool";
-import { getAccountId } from "@/utils/wallet";
 import db from "@/db/RefDatabase";
 import { useAccountStore } from "@/stores/account";
 export const useWatchList = () => {
@@ -33,5 +32,5 @@ export const useWatchList = () => {
       setIdList(id);
     });
   }, [accountId]);
-  return { watchListId, currentwatchListId };
+  return { watchListId, currentwatchListId, accountId };
 };

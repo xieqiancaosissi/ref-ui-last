@@ -17,10 +17,14 @@ import {
   getWatchListFromDb,
 } from "@/services/pool";
 import NoLiquidity from "@/components/pools/detail/liquidity/NoLiquidity";
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import NoContent from "@/components/common/NoContent";
+import { useWatchList } from "@/hooks/useWatchlist";
 
 export default function ClassicPoolDetail() {
   const router = useRouter();
   const poolId = router.query.id || "";
+  const { currentwatchListId } = useWatchList();
   const [poolDetail, setPoolDetail] = useState<any>(null);
   const [isCollect, setIsCollect] = useState(false);
   const [tokenPriceList, setTokenPriceList] = useState<any>(null);
@@ -37,11 +41,11 @@ export default function ClassicPoolDetail() {
         setPoolDetail(res);
       });
 
-      getWatchListFromDb({ pool_id: poolId.toString() }).then((watchlist) => {
-        setIsCollect(watchlist.length > 0);
-      });
+      if (currentwatchListId.length > 0) {
+        setIsCollect(currentwatchListId.includes(poolId));
+      }
     }
-  }, [poolId]);
+  }, [poolId, currentwatchListId]);
 
   useEffect(() => {
     getAllTokenPrices().then((res) => {
@@ -66,10 +70,11 @@ export default function ClassicPoolDetail() {
       </div>
 
       {/* title */}
-      <div className="w-270 flex items-center">
+      <div className="w-270 min-h-10 flex items-center">
         {poolDetail && updatedMapList?.length > 0 && (
           <>
             <TokenDetail {...poolDetail} updatedMapList={updatedMapList} />
+            {/*  */}
             <span className=" text-2xl text-white font-bold ml-1 mr-2">
               {poolDetail?.token_symbols
                 ?.map((item: any) => (item == "wNEAR" ? (item = "NEAR") : item))
@@ -107,7 +112,11 @@ export default function ClassicPoolDetail() {
         <div className="w-183">
           {/* charts */}
           <div className="min-h-135">
-            {poolDetail && <TvlAndVolumeCharts poolId={poolId} />}
+            {poolDetail ? (
+              <TvlAndVolumeCharts poolId={poolId} />
+            ) : (
+              <NoContent tips="Charts is Loading..." h="h-90" />
+            )}
           </div>
 
           {/* tvl & Overall locking */}
@@ -125,12 +134,19 @@ export default function ClassicPoolDetail() {
             <h3 className="mt-12 mb-4 text-lg text-gray-50 font-bold">
               Pool Composition
             </h3>
-            {poolDetail && updatedMapList?.length > 0 && (
+            {poolDetail && updatedMapList?.length > 0 ? (
               <PoolComposition
                 poolDetail={poolDetail}
                 tokenPriceList={tokenPriceList}
                 updatedMapList={updatedMapList}
               />
+            ) : (
+              <SkeletonTheme
+                baseColor="rgba(106, 114, 121, 0.3)"
+                highlightColor="#9eff00"
+              >
+                <Skeleton width={732} height={60} count={2} />
+              </SkeletonTheme>
             )}
           </div>
 

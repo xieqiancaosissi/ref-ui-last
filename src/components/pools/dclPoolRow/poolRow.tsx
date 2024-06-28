@@ -34,7 +34,7 @@ export default function PoolRow({
             {/* tokens */}
             <div className="flex items-center">
               <div className={styles.tokenImgContainer}>
-                {item.token_account_ids.map((ite: any, ind: number) => {
+                {item?.token_account_ids?.map((ite: any, ind: number) => {
                   // if tokenid in tokenIcons
                   return Reflect.has(tokenIcons, ite.tokenId) ? (
                     // if token is near use new icon

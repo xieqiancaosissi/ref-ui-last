@@ -102,7 +102,7 @@ export const useTokenMetadata = (list: Array<any>) => {
 
     Promise.all(
       list.flatMap((item) =>
-        item?.token_account_ids.map((tokenId: string) =>
+        item?.token_account_ids?.map((tokenId: string) =>
           ftGetTokenMetadata(tokenId)
         )
       )
@@ -114,19 +114,19 @@ export const useTokenMetadata = (list: Array<any>) => {
 
         updatedList = updatedList.map((item) => ({
           ...item,
-          token_account_ids: item.token_account_ids.map(
+          token_account_ids: item?.token_account_ids?.map(
             (tokenId: string, index: number) => ({
               tokenId,
               id: tokenId,
               icon: metadataMap.get(tokenId)?.icon,
               decimals: metadataMap.get(tokenId)?.decimals,
               symbol:
-                item.token_symbols[index] == "wNEAR"
+                item?.token_symbols[index] == "wNEAR"
                   ? "NEAR"
                   : item?.token_symbols[index],
             })
           ),
-          supplies: item.amounts
+          supplies: item?.amounts
             ? item.amounts.reduce(
                 (
                   acc: { [tokenId: string]: string },
@@ -139,7 +139,7 @@ export const useTokenMetadata = (list: Array<any>) => {
                 {}
               )
             : {},
-          token_symbols: item.token_symbols.map((item: string) => {
+          token_symbols: item?.token_symbols.map((item: string) => {
             return item == "wNEAR" ? "NEAR" : item;
           }),
         }));
@@ -159,7 +159,7 @@ export const useTokenMetadata = (list: Array<any>) => {
 
 export const checkIsHighRisk = (pureIdList: any, arr: any) => {
   const returnMap: any = [];
-  arr.token_account_ids.map((item: any, index: number) => {
+  arr.token_account_ids?.map((item: any, index: number) => {
     if (pureIdList.includes(item.tokenId)) {
       const waitpushIte = item;
       Object.assign(waitpushIte, {

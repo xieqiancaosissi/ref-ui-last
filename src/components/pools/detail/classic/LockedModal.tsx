@@ -7,7 +7,13 @@ import { lock_lp } from "@/services/lplock";
 import RangeSlider from "./RangeSlider";
 import Modal from "react-modal";
 import { LockLpTitleIcon, LpModalCloseIcon } from "@/components/pools/icon";
-import { LockIcon } from "@/components/pools/icon";
+import { LockWithoutCircleBlack } from "@/components/pools/icon";
+import LockedConfirmModal from "./LockedConfirmModal";
+import tokenIcons from "@/utils/tokenIconConfig";
+import { useRiskTokens } from "@/hooks/useRiskTokens";
+import { TokenIconComponent } from "@/components/pools/TokenIconWithTkn/index";
+import styles from "./style.module.css";
+
 function LockedModal(props: any) {
   const {
     isOpen,
@@ -18,6 +24,7 @@ function LockedModal(props: any) {
     pool,
     tokens,
   } = props;
+  const { pureIdList } = useRiskTokens();
   const [sliderAmount, setSliderAmount] = useState<string>("0");
   const [amount, setAmount] = useState<string>("");
   const [months, setMonths] = useState<string | number>("");
@@ -86,7 +93,10 @@ function LockedModal(props: any) {
         {/* title */}
         <div className="flex items-center justify-between">
           <LockLpTitleIcon />
-          <LpModalCloseIcon className="cursor-pointer" />
+          <LpModalCloseIcon
+            className="cursor-pointer"
+            onClick={onRequestClose}
+          />
         </div>
 
         <div className="flex items-center justify-between text-sm mt-7 text-gray-60">
@@ -105,16 +115,18 @@ function LockedModal(props: any) {
             onChange={({ target }) => changeAmount(target.value)}
             className="text-white text-xl focus:outline-none appearance-none leading-tight px-2.5 w-full"
           ></input>
-          <div className="flex items-center flex-shrink-0 bg-primaryText bg-opacity-10 rounded-full p-1">
-            {tokens?.map((token: any) => {
-              return (
-                <img
-                  key={token.id}
-                  src={token.icon}
-                  className="w-7 h-7 rounded-full"
-                />
-              );
-            })}
+          <div
+            className={`flex items-center flex-shrink-0 bg-primaryText bg-opacity-10 rounded-full p-1 ${styles.tokenImgContainer}`}
+          >
+            {tokens?.map((ite: any, ind: number) => (
+              <TokenIconComponent
+                key={ite.tokenId + ind}
+                ite={ite}
+                tokenIcons={tokenIcons}
+                pureIdList={pureIdList}
+                ind={ind}
+              />
+            ))}
           </div>
         </div>
         {/*  */}
@@ -149,7 +161,7 @@ function LockedModal(props: any) {
             isInValidMonths ? "" : "hidden"
           }`}
         >
-          <p className="text-xs text-orange-400">
+          <p className="text-xs text-gray-60">
             The new unlock time must be longer than the old unlock time
           </p>
         </div>
@@ -158,14 +170,22 @@ function LockedModal(props: any) {
           onClick={disabled ? () => console.log("") : openConfirmModal}
           color="#fff"
           className={`flex-shrink-0 mt-6 h-12 text-center text-sm text-white focus:outline-none font-semibold ${
-            disabled ? "opacity-40 cursor-not-allowed" : ""
+            disabled ? "opacity-40 cursor-not-allowed" : "cursor-pointer"
           }`}
         >
-          <div className="flex items-center justify-center gap-2 text-base">
-            <LockIcon></LockIcon>
-            Lock
+          <div className="poolBtnStyle">
+            <LockWithoutCircleBlack />
+            <span className="ml-2">Lock</span>
           </div>
         </div>
+        {isConfirmOpen && (
+          <LockedConfirmModal
+            isOpen={isConfirmOpen}
+            onRequestClose={closeConfirmModal}
+            months={months}
+            onLock={lock}
+          />
+        )}
       </div>
     </Modal>
   );

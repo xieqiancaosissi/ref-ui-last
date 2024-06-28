@@ -29,6 +29,7 @@ const config: Config = {
         farmTagBg: "rgba(250, 255, 0, 0.11)",
         error: "#FF4B76",
         warn: "#FFB018",
+        modalGrayBg: "#1D2932",
         gray: {
           10: "#91A2AE",
           20: "#212B35",
@@ -125,6 +126,20 @@ const config: Config = {
   plugins: [
     plugin(function ({ addUtilities }: { addUtilities: any }) {
       addUtilities({
+        ".poolBtnStyle": {
+          // @apply frcc font-bold text-base text-black w-full h-11 rounded-md bg-greenGradient cursor-pointer
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "center",
+          alignItems: "center",
+          fontWeight: "700",
+          fontSize: "16px",
+          color: "#000",
+          width: "100%",
+          height: "44px",
+          borderRadius: "6px",
+          background: "linear-gradient(90deg, #9EFF00 0%, #5F9900 100%)",
+        },
         ".frc": {
           display: "flex",
           flexDirection: "row",

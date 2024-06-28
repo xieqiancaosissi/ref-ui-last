@@ -5,6 +5,7 @@ import { QuestionIcon } from "../../components/common/Icons";
 import { usePersistSwapStore, IPersistSwapStore } from "../../stores/swap";
 import { INIT_SLIPPAGE_VALUE } from "@/utils/constant";
 import swapStyles from "./swap.module.css";
+import CustomTooltip from "@/components/customTooltip/customTooltip";
 
 export default function SetPopup() {
   const [show, setShow] = useState<boolean>();
@@ -55,6 +56,13 @@ export default function SetPopup() {
   function onchange(e: any) {
     const value = e.target.value;
     setSlippage(value);
+  }
+  function smartTip() {
+    return `
+    <div class="text-gray-110 text-xs text-left break-all w-62">
+    By design, Ledger cannot handle large transactions (i.e. Auto Router: trade across multiple pools at once) because of its memory limitation. When activated, the 'Support Ledger' option will limit transactions to their simplest form (to the detriment of potential optimal prices found by our Auto Router), so transactions of a reasonable size can be signed.
+    </div>
+    `;
   }
   const variants = {
     on: { marginLeft: "16px" },
@@ -135,7 +143,16 @@ export default function SetPopup() {
         <div className="flexBetween">
           <div className="flexBetween gap-1">
             <span className="text-sm text-gray-50">Disable Smart Route</span>
-            <QuestionIcon className=" text-gray-10 hover:text-white cursor-pointer" />
+            <div
+              className="text-white text-right"
+              data-class="reactTip"
+              data-tooltip-id="smartTipId"
+              data-place="top"
+              data-tooltip-html={smartTip()}
+            >
+              <QuestionIcon className="text-gray-10 hover:text-white cursor-pointer" />
+              <CustomTooltip id="smartTipId" />
+            </div>
           </div>
           <div
             className={`flex items-center relative h-4 rounded-2xl cursor-pointer p-px w-8 ${

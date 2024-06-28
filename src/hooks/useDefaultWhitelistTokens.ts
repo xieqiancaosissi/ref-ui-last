@@ -34,7 +34,7 @@ export const useDefaultWhitelistTokens = () => {
       if (!accountId || accountId !== owner) {
         clearAccountWhitelistTokens();
       } else {
-        getAccountWhitelistTokens();
+        getAccountWhitelistTokenIds();
       }
     }
   }, [accountId, owner, walletLoading]);
@@ -80,7 +80,7 @@ export const useDefaultWhitelistTokens = () => {
       setGlobalWhitelistIds(storeList);
     }
   }
-  async function getAccountWhitelistTokens() {
+  async function getAccountWhitelistTokenIds() {
     const storeList = accountTokenStore.get_user_whitelisted_tokens_ids();
     getAccountWhitelist().then((accountWhitelistIds) => {
       accountTokenStore.set_user_whitelisted_tokens_ids(accountWhitelistIds);

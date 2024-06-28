@@ -18,7 +18,7 @@ export const useAutoWhitelistTokens = (whitelistToken: TokenMetadata[]) => {
     if (
       whitelistToken.length > 0 &&
       autoWhitelistedPostfix &&
-      allTokens.length
+      allTokens.length > 0
     ) {
       getAutoWhitelistedTokens();
     }

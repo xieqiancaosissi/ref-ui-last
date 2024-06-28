@@ -28,7 +28,10 @@
   height: 0;
   border-left: 4px solid transparent;
   border-right: 4px solid transparent;
-  border-top: 6px solid #566069;
+  border-top: 5px solid #566069;
+}
+.triangleWrapper:hover .triangleDown {
+  border-top: 5px solid #fff;
 }
 
 .triangleUp {
@@ -36,7 +39,7 @@
   height: 0;
   border-left: 4px solid transparent;
   border-right: 4px solid transparent;
-  border-bottom: 6px solid #fff;
+  border-bottom: 5px solid #fff;
 }
 
 /* my lockingdetails */

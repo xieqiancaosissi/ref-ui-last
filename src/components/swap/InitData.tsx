@@ -1,7 +1,6 @@
 import { useEffect, useMemo } from "react";
 import { useSelectTokens } from "@/hooks/useSelectTokens";
 import getConfigV2 from "@/utils/configV2";
-import getConfig from "@/utils/config";
 import { usePersistSwapStore, useSwapStore } from "@/stores/swap";
 import { getTokenUIId } from "@/services/swap/swapUtils";
 import {
@@ -10,9 +9,7 @@ import {
   ITokenMetadata,
 } from "../../hooks/useBalanceTokens";
 const configV2 = getConfigV2();
-const config = getConfig();
 const { INIT_SWAP_PAIRS } = configV2;
-const { WRAP_NEAR_CONTRACT_ID } = config;
 export default function InitData() {
   const { defaultList = [], autoList = [] } = useSelectTokens();
   const defaultDisplayTokens = useDefaultBalanceTokens(defaultList);

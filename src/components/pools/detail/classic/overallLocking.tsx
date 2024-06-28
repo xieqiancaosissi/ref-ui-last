@@ -203,7 +203,7 @@ export default function OverallLocking(props: any) {
               <span>Overall locking</span>
               <div className="pt-1 ml-1">
                 <HoverTooltip tooltipText="" isOverlocking={true}>
-                  <ExclamationIcon />
+                  <ExclamationIcon className="opacity-40 hover:opacity-100" />
                 </HoverTooltip>
               </div>
             </h3>
@@ -220,7 +220,7 @@ export default function OverallLocking(props: any) {
             </p>
           </div>
           <div
-            className="text-right border border-gray-60 w-6 h-6 rounded-md frcc cursor-pointer"
+            className={`text-right border border-gray-60 w-5 h-5 rounded-md frcc cursor-pointer ${styles.triangleWrapper}`}
             onClick={() => {
               setIsHidden(!isHidden);
             }}

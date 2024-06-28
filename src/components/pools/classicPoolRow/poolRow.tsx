@@ -27,7 +27,14 @@ export default function PoolRow({
   const toDetail = (item: any) => {
     router.push(`/pool/classic/${item.id}`);
   };
-  const { watchListId } = useWatchList();
+  const { currentwatchListId } = useWatchList();
+  const [renderStarList, setRenderStarList] = useState<any>([]);
+  useEffect(() => {
+    if (currentwatchListId.length > 0) {
+      setRenderStarList(currentwatchListId);
+    }
+  }, [currentwatchListId]);
+
   return (
     <div className="mb-2 min-h-90 overflow-auto hover:cursor-pointer">
       {updatedMapList.map((item, index) => {
@@ -58,7 +65,7 @@ export default function PoolRow({
                 {item.token_symbols.join("-")}
               </span>
               {/* is collect */}
-              {watchListId.includes(item.id) && (
+              {renderStarList.includes(item.id.toString()) && (
                 <StartWatchList className="mr-2" />
               )}
               {/* dangerous */}

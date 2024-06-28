@@ -15,7 +15,6 @@ import {
   TxLeftArrow,
   BlinkIcon,
 } from "../../icon";
-import { HiOutlineExternalLink } from "@react-icons/all-files/hi/HiOutlineExternalLink";
 import styles from "./style.module.css";
 import Big from "big.js";
 
@@ -97,15 +96,6 @@ export default function RecentTransaction(props: any) {
         ? "<0.01"
         : numberWithCommas(toPrecision(swapOutAmount, 6));
 
-    const txLink = (
-      <a
-        rel="noopener  noreferrer nofollow "
-        className=" hover:underline ml-2"
-        target="_blank"
-      >
-        <HiOutlineExternalLink className=""></HiOutlineExternalLink>
-      </a>
-    );
     return (
       <div
         key={tx.receipt_id + index}

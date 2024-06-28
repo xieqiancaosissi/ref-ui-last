@@ -295,6 +295,13 @@ class RefDatabase extends Dexie {
       return poolInfo;
     });
   }
+
+  public async queryWatchList() {
+    const pools = await this.watchList.toArray();
+
+    return pools;
+  }
+
   public async queryTopPoolById(poolId: string) {
     const pool = (await this.topPools.where("id").equals(poolId).toArray())[0];
     const { update_time, ...poolInfo } = pool;

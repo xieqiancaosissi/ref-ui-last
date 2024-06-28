@@ -11,16 +11,16 @@ import OverallLocking from "@/components/pools/detail/classic/overallLocking";
 import PoolComposition from "@/components/pools/detail/classic/PoolComposition";
 import { useTokenMetadata } from "@/hooks/usePools";
 import RecentTransaction from "@/components/pools/detail/classic/RecentTransaction";
-import {
-  addPoolToWatchList,
-  removePoolFromWatchList,
-  getWatchListFromDb,
-} from "@/services/pool";
+import { addPoolToWatchList, removePoolFromWatchList } from "@/services/pool";
 import NoLiquidity from "@/components/pools/detail/liquidity/NoLiquidity";
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import NoContent from "@/components/common/NoContent";
+import { useWatchList } from "@/hooks/useWatchlist";
 
 export default function ClassicPoolDetail() {
   const router = useRouter();
   const poolId = router.query.id || "";
+  const { currentwatchListId, accountId } = useWatchList();
   const [poolDetail, setPoolDetail] = useState<any>(null);
   const [isCollect, setIsCollect] = useState(false);
   const [tokenPriceList, setTokenPriceList] = useState<any>(null);
@@ -37,11 +37,11 @@ export default function ClassicPoolDetail() {
         setPoolDetail(res);
       });
 
-      getWatchListFromDb({ pool_id: poolId.toString() }).then((watchlist) => {
-        setIsCollect(watchlist.length > 0);
-      });
+      if (currentwatchListId.length > 0) {
+        setIsCollect(currentwatchListId.includes(poolId));
+      }
     }
-  }, [poolId]);
+  }, [poolId, currentwatchListId]);
 
   useEffect(() => {
     getAllTokenPrices().then((res) => {
@@ -50,6 +50,7 @@ export default function ClassicPoolDetail() {
   }, []);
 
   const collectPool = () => {
+    if (!accountId) window.modal.show();
     if (isCollect) {
       removePoolFromWatchList({ pool_id: poolId.toString() });
     } else {
@@ -61,15 +62,16 @@ export default function ClassicPoolDetail() {
   return (
     <div className="w-full fccc h-full">
       {/* return */}
-      <div className="w-270 cursor-pointer text-base text-gray-60 mb-3 mt-8">
+      <div className="w-270 cursor-pointer text-base text-gray-60 mb-3 mt-8 hover:text-white">
         <span onClick={() => router.push("/pools")}>{`<  Pools`}</span>
       </div>
 
       {/* title */}
-      <div className="w-270 flex items-center">
+      <div className="w-270 min-h-10 flex items-center">
         {poolDetail && updatedMapList?.length > 0 && (
           <>
             <TokenDetail {...poolDetail} updatedMapList={updatedMapList} />
+            {/*  */}
             <span className=" text-2xl text-white font-bold ml-1 mr-2">
               {poolDetail?.token_symbols
                 ?.map((item: any) => (item == "wNEAR" ? (item = "NEAR") : item))
@@ -87,7 +89,7 @@ export default function ClassicPoolDetail() {
 
             {/* watchlist */}
             <CollectStar
-              iscollect={isCollect.toString()}
+              iscollect={!accountId ? "false" : isCollect.toString()}
               className="cursor-pointer"
               onClick={() => collectPool()}
             />
@@ -107,7 +109,11 @@ export default function ClassicPoolDetail() {
         <div className="w-183">
           {/* charts */}
           <div className="min-h-135">
-            {poolDetail && <TvlAndVolumeCharts poolId={poolId} />}
+            {poolDetail ? (
+              <TvlAndVolumeCharts poolId={poolId} />
+            ) : (
+              <NoContent tips="Charts is Loading..." h="h-90" />
+            )}
           </div>
 
           {/* tvl & Overall locking */}
@@ -125,12 +131,19 @@ export default function ClassicPoolDetail() {
             <h3 className="mt-12 mb-4 text-lg text-gray-50 font-bold">
               Pool Composition
             </h3>
-            {poolDetail && updatedMapList?.length > 0 && (
+            {poolDetail && updatedMapList?.length > 0 ? (
               <PoolComposition
                 poolDetail={poolDetail}
                 tokenPriceList={tokenPriceList}
                 updatedMapList={updatedMapList}
               />
+            ) : (
+              <SkeletonTheme
+                baseColor="rgba(106, 114, 121, 0.3)"
+                highlightColor="#9eff00"
+              >
+                <Skeleton width={732} height={60} count={2} />
+              </SkeletonTheme>
             )}
           </div>
 
@@ -146,7 +159,7 @@ export default function ClassicPoolDetail() {
                     <div
                       key={item.key + "_" + index}
                       onClick={() => setTransactionActive(item.key)}
-                      className={`cursor-pointer border border-gray-40 frcc text-sm font-medium px-2 py-1 rounded ${
+                      className={`cursor-pointer border border-gray-40 frcc text-sm font-medium px-2 py-1 rounded hover:text-white ${
                         item.key == transactionActive
                           ? "text-white bg-gray-40"
                           : "text-gray-60 bg-transparent"

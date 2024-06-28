@@ -62,7 +62,7 @@ export default function ClassicPoolDetail() {
   return (
     <div className="w-full fccc h-full">
       {/* return */}
-      <div className="w-270 cursor-pointer text-base text-gray-60 mb-3 mt-8">
+      <div className="w-270 cursor-pointer text-base text-gray-60 mb-3 mt-8 hover:text-white">
         <span onClick={() => router.push("/pools")}>{`<  Pools`}</span>
       </div>
 
@@ -159,7 +159,7 @@ export default function ClassicPoolDetail() {
                     <div
                       key={item.key + "_" + index}
                       onClick={() => setTransactionActive(item.key)}
-                      className={`cursor-pointer border border-gray-40 frcc text-sm font-medium px-2 py-1 rounded ${
+                      className={`cursor-pointer border border-gray-40 frcc text-sm font-medium px-2 py-1 rounded hover:text-white ${
                         item.key == transactionActive
                           ? "text-white bg-gray-40"
                           : "text-gray-60 bg-transparent"

@@ -49,19 +49,17 @@ export default function TokenFeeAndCureentPrice({
             )}
           <span className="mx-1">=</span>
           {/* token right amount */}
-          {tokenPriceList.length > 0 &&
-            tokenPriceList[poolDetail?.token_account_ids[currentSort[0]]] && (
-              <span className="mr-1">
-                {Math.ceil(
-                  (tokenPriceList[poolDetail?.token_account_ids[currentSort[0]]]
-                    .price /
-                    tokenPriceList[
-                      poolDetail?.token_account_ids[currentSort[1]]
-                    ].price) *
-                    100
-                ) / 100}
-              </span>
-            )}
+          {tokenPriceList[poolDetail?.token_account_ids[currentSort[0]]] && (
+            <span className="mr-1">
+              {Math.ceil(
+                (tokenPriceList[poolDetail?.token_account_ids[currentSort[0]]]
+                  .price /
+                  tokenPriceList[poolDetail?.token_account_ids[currentSort[1]]]
+                    .price) *
+                  100
+              ) / 100}
+            </span>
+          )}
           {/* token right name */}
           {poolDetail?.token_symbols[currentSort[1]] == "wNEAR"
             ? "NEAR"
@@ -69,7 +67,7 @@ export default function TokenFeeAndCureentPrice({
         </p>
       </div>
       <ExchangeIcon
-        className="mt-auto ml-1 mb-1 cursor-pointer"
+        className="mt-auto ml-1 mb-1 cursor-pointer opacity-40 hover:opacity-100"
         onClick={() => exchange()}
       />
     </div>

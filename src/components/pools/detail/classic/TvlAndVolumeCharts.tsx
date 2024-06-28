@@ -42,7 +42,7 @@ export default function TvlAndVolumeCharts(props: any) {
                       ? "text-white bg-gray-100 rounded"
                       : "text-gray-60"
                   }
-                   w-18 h-8 frcc text-sm 
+                   w-18 h-8 frcc text-sm hover:text-white 
                 `}
               onClick={() => {
                 setActive(item.key);

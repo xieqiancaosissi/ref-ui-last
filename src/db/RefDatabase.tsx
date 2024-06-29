@@ -61,6 +61,7 @@ class RefDatabase extends Dexie {
   public tokenPrices: Dexie.Table<TokenPrice>;
   public boostSeeds: Dexie.Table<BoostSeeds>;
   public stablePools: Dexie.Table<StablePool>;
+  public stableBaseDataPools: Dexie.Table<PoolRPCView>;
   public dclPools: Dexie.Table<IPoolDcl & { id: string }>;
   public watchList: Dexie.Table<WatchList>;
 
@@ -75,6 +76,7 @@ class RefDatabase extends Dexie {
       tokenPrices: "id",
       boostSeeds: "id",
       stablePools: "id",
+      stableBaseDataPools: "id",
       dclPools: "id",
       watchList: "id, account, pool_id, update_time",
     });
@@ -86,6 +88,7 @@ class RefDatabase extends Dexie {
     this.tokenPrices = this.table("tokenPrices");
     this.boostSeeds = this.table("boostSeeds");
     this.stablePools = this.table("stablePools");
+    this.stableBaseDataPools = this.table("stableBaseDataPools");
     this.dclPools = this.table("dclPools");
     this.watchList = this.table("watchList");
   }
@@ -307,8 +310,23 @@ class RefDatabase extends Dexie {
     const { update_time, ...poolInfo } = pool;
     return poolInfo;
   }
+  public async queryStableBaseDataPoolById(poolId: string) {
+    const pool = (
+      await this.stableBaseDataPools.where("id").equals(poolId).toArray()
+    )[0];
+    const { update_time, ...poolInfo } = pool;
+    return poolInfo;
+  }
   public async queryStablePools() {
     const pools = await this.stablePools.toArray();
+
+    return pools.map((pool) => {
+      const { update_time, ...poolInfo } = pool;
+      return poolInfo;
+    });
+  }
+  public async queryStableBaseDataPools() {
+    const pools = await this.stableBaseDataPools.toArray();
 
     return pools.map((pool) => {
       const { update_time, ...poolInfo } = pool;
@@ -416,6 +434,17 @@ class RefDatabase extends Dexie {
       )
     );
   }
+  public async checkStableBaseDataPools() {
+    const pools = await this.stableBaseDataPools.limit(10).toArray();
+    return (
+      pools.length > 0 &&
+      pools.every(
+        (pool) =>
+          Number(pool.update_time) >=
+          Number(moment().unix()) - Number(TOP_POOLS_TOKEN_REFRESH_INTERVAL)
+      )
+    );
+  }
   public async cacheTokenPrices(tokenPriceMap: Record<string, TokenPrice>) {
     // await this.tokenPrices.clear();
     const cacheData: TokenPrice[] = [];
@@ -439,7 +468,7 @@ class RefDatabase extends Dexie {
     );
   }
   public async cacheTopPools(pools: PoolRPCView[]) {
-    // await this.topPools.clear();
+    await this.topPools.clear();
     await this.topPools.bulkPut(
       pools.map((topPool: PoolRPCView) => ({
         ...topPool,
@@ -459,7 +488,7 @@ class RefDatabase extends Dexie {
     await this.poolsTokens.bulkPut(parsed_pools);
   }
   public async cacheStablePools(pools: StablePool[]) {
-    // await this.stablePools.clear();
+    await this.stablePools.clear();
     await this.stablePools.bulkPut(
       pools.map((stablePool: StablePool) => ({
         ...stablePool,
@@ -468,8 +497,18 @@ class RefDatabase extends Dexie {
       }))
     );
   }
+  public async cacheStableBaseDataPools(pools: PoolRPCView[]) {
+    await this.stableBaseDataPools.clear();
+    await this.stableBaseDataPools.bulkPut(
+      pools.map((stablePool: PoolRPCView) => ({
+        ...stablePool,
+        id: stablePool.id,
+        update_time: moment().unix(),
+      }))
+    );
+  }
   public async cacheDclPools(pools: IPoolDcl[]) {
-    // await this.dclPools.clear();
+    await this.dclPools.clear();
     await this.dclPools.bulkPut(
       pools.map((dclPool: IPoolDcl) => ({
         ...dclPool,

@@ -36,10 +36,10 @@ export default function AssetTable() {
   }
   function filterFun(token: TokenMetadata) {
     const condition1 = token.symbol
-      .toLocaleLowerCase()
+      ?.toLocaleLowerCase()
       .includes(searchText.toLocaleLowerCase());
     const condition2 =
-      token.id.toLocaleLowerCase() == searchText.toLocaleLowerCase();
+      token.id?.toLocaleLowerCase() == searchText.toLocaleLowerCase();
     return condition1 || condition2;
   }
   function tknTip() {

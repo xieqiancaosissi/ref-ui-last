@@ -113,6 +113,17 @@ const runWorker = () => {
       ),
     };
   };
+  const getPool = async (pool_id: number) => {
+    const pool_info = await contractView({
+      contract: REF_FI_CONTRACT_ID,
+      methodName: "get_pool",
+      args: { pool_id },
+    });
+    return {
+      ...pool_info,
+      id: pool_id,
+    };
+  };
   const get_list_seeds_info = async () => {
     return contractView({
       methodName: "list_seeds_info",
@@ -267,6 +278,11 @@ const runWorker = () => {
     const stablePools = await Promise.all(pending);
     db.cacheStablePools(stablePools);
   };
+  const cacheStableBaseDataPools = async () => {
+    const pending = ALL_STABLE_POOL_IDS.map((pool_id) => getPool(+pool_id));
+    const stablePools = await Promise.all(pending);
+    db.cacheStableBaseDataPools(stablePools);
+  };
   const cacheDclPools = async () => {
     const dclPools = await getDclPools();
     db.cacheDclPools(dclPools);
@@ -275,6 +291,7 @@ const runWorker = () => {
   cacheTokens();
   cacheTopPools();
   cacheStablePools();
+  cacheStableBaseDataPools();
   cacheDclPools();
   cacheBoost_Seed_Farms_Pools();
   cacheTokenPrices();

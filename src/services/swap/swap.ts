@@ -87,7 +87,8 @@ export const getContainPairsPools = async ({
     });
   return containPairsPools;
 };
-export const getPool = async (id: number): Promise<Pool> => {
+// TODO issue
+export const getPool = async (id: number): Promise<PoolRPCView> => {
   return viewFunction({
     contractId: REF_FI_CONTRACT_ID,
     methodName: "get_pool",
@@ -124,25 +125,33 @@ export const getStablePool = async (pool_id: number): Promise<StablePool> => {
 };
 export const fetchStablePoolsAndCacheData = async (): Promise<StablePool[]> => {
   const pending = ALL_STABLE_POOL_IDS.map((pool_id) => getStablePool(+pool_id));
+  const stableBaseDataPools = await Promise.all(pending);
+  db.cacheStablePools(stableBaseDataPools);
+  return stableBaseDataPools;
+};
+export const fetchStableBaseDataPoolsAndCacheData = async (): Promise<
+  PoolRPCView[]
+> => {
+  const pending = ALL_STABLE_POOL_IDS.map((pool_id) => getPool(+pool_id));
   const stablePools = await Promise.all(pending);
-  db.cacheStablePools(stablePools);
+  db.cacheStableBaseDataPools(stablePools);
   return stablePools;
 };
 export const getAllStablePoolsFromCache = async () => {
   const stableIsLatest = await db.checkStablePools();
-  const poolIsLatest = await db.checkTopPools();
-  let topPools, stablePools;
-  if (poolIsLatest) {
-    topPools = await db.queryTopPools();
+  const stableBaseDataIsLatest = await db.checkStableBaseDataPools();
+  let stableBaseDataPools, stablePools;
+  if (stableBaseDataIsLatest) {
+    stableBaseDataPools = await db.queryStableBaseDataPools();
   } else {
-    topPools = await fetchPoolsAndCacheData();
+    stableBaseDataPools = await fetchStableBaseDataPoolsAndCacheData();
   }
   if (stableIsLatest) {
     stablePools = await db.queryStablePools();
   } else {
     stablePools = await fetchStablePoolsAndCacheData();
   }
-  const topPoolsMap: Record<string, PoolRPCView> = topPools.reduce(
+  const topPoolsMap: Record<string, PoolRPCView> = stableBaseDataPools.reduce(
     (acc, cur) => {
       return {
         ...acc,
@@ -197,18 +206,21 @@ export const getAllStablePoolsFromCache = async () => {
 export const getStablePoolFromCache = async (
   stable_pool_id: string
 ): Promise<[Pool, StablePool]> => {
-  const stableIsLatest = await db.checkStablePools();
-  const poolIsLatest = await db.checkTopPools();
+  const stableIdsLatest = await db.checkStablePools();
+  const stableBaseDataIdsLatest = await db.checkStableBaseDataPools();
   let stablePool, stablePoolInfo;
-  if (poolIsLatest) {
+  if (stableBaseDataIdsLatest) {
     stablePool = parsePool(
-      await db.queryTopPoolById(stable_pool_id),
+      await db.queryStableBaseDataPoolById(stable_pool_id),
       +stable_pool_id
     );
   } else {
-    stablePool = await getPool(Number(stable_pool_id));
+    stablePool = parsePool(
+      await getPool(Number(stable_pool_id)),
+      +stable_pool_id
+    );
   }
-  if (stableIsLatest) {
+  if (stableIdsLatest) {
     stablePoolInfo = await db.queryStablePoolById(stable_pool_id);
   } else {
     stablePoolInfo = await getStablePool(Number(stable_pool_id));

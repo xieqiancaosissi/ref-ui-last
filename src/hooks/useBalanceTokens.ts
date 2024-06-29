@@ -24,7 +24,6 @@ export const useBalanceTokens = (
   const accountId = accountStore.getAccountId();
   const walletLoading = accountStore.getWalletLoading();
   const owner = accountTokenStore.getOwner();
-  /* update cache logic (tokens with balances) start */
   useEffect(() => {
     if (tokens?.length > 0 && !walletLoading) {
       if (!accountId) {
@@ -38,7 +37,6 @@ export const useBalanceTokens = (
       }
     }
   }, [JSON.stringify(tokens || []), accountId, walletLoading, owner]);
-  /* update cache logic (tokens with balances) end */
   async function getBalanceTokens() {
     setBalancesLoading(true);
     const balancesPending = tokens.map((token: TokenMetadata) => {

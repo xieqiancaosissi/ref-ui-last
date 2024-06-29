@@ -1,8 +1,7 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useMemo } from "react";
 import { useDebounce } from "react-use";
 import _ from "lodash";
 import { SolidArrowDownIcon } from "./Icons";
-import { useSelectTokens } from "../../../hooks/useSelectTokens";
 import { ITokenMetadata } from "../../../hooks/useBalanceTokens";
 import Table from "./Table";
 import { SelectTokenContext } from "./Context";
@@ -13,32 +12,19 @@ import { QuestionIcon } from "../Icons";
 export default function AssetTable() {
   const [sort, setSort] = useState<"asc" | "desc">("desc");
   const [tab, setTab] = useState<"default" | "tkn">("default");
-  const { tokensLoading } = useSelectTokens();
-  const [defaultSearchResult, setDefaultSearchResult] = useState<
-    ITokenMetadata[]
-  >([]);
-  const [autoSearchResult, setAutoSearchResult] = useState<ITokenMetadata[]>(
-    []
-  );
   const accountTokenStore = useAccountTokenStore() as IAccountTokenStore;
   const defaultDisplayTokens = accountTokenStore.getDefaultAccountTokens();
   const autoDisplayTokens = accountTokenStore.getAutoAccountTokens();
   const { searchText } = useContext(SelectTokenContext);
-  useDebounce(
-    () => {
-      if (searchText) {
-        const defaultSearchResult = defaultDisplayTokens.filter(filterFun);
-        const autoSearchResult = autoDisplayTokens.filter(filterFun);
-        setDefaultSearchResult(defaultSearchResult);
-        setAutoSearchResult(autoSearchResult);
-      } else {
-        setDefaultSearchResult([]);
-        setAutoSearchResult([]);
-      }
-    },
-    0,
-    [searchText, defaultDisplayTokens?.length, autoDisplayTokens?.length]
-  );
+  const [defaultTokens, autoTokens] = useMemo(() => {
+    if (searchText) {
+      const defaultSearchResult = defaultDisplayTokens.filter(filterFun);
+      const autoSearchResult = autoDisplayTokens.filter(filterFun);
+      return [defaultSearchResult, autoSearchResult];
+    } else {
+      return [defaultDisplayTokens, autoDisplayTokens];
+    }
+  }, [searchText]);
   function sortBalance() {
     if (sort == "asc") {
       setSort("desc");
@@ -110,19 +96,13 @@ export default function AssetTable() {
       <div className={`flex flex-col gap-1 mt-2`}>
         {/* Default */}
         <Table
-          tokensLoading={tokensLoading}
-          tokens={searchText ? defaultSearchResult : defaultDisplayTokens}
+          tokens={defaultTokens}
           sort={sort}
           enableAddToken
           hidden={tab !== "default"}
         />
         {/* TKN */}
-        <Table
-          tokensLoading={tokensLoading}
-          tokens={searchText ? autoSearchResult : autoDisplayTokens}
-          sort={sort}
-          hidden={tab !== "tkn"}
-        />
+        <Table tokens={autoTokens} sort={sort} hidden={tab !== "tkn"} />
       </div>
     </div>
   );

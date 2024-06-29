@@ -18,13 +18,11 @@ export default function Table({
   tokens,
   sort,
   hidden,
-  tokensLoading,
   enableAddToken,
 }: {
   tokens: ITokenMetadata[];
   sort: ISort;
   hidden: boolean;
-  tokensLoading: boolean;
   enableAddToken?: boolean;
 }) {
   const [addTokenLoading, setAddTokenLoading] = useState<boolean>(false);
@@ -37,11 +35,11 @@ export default function Table({
   const allTokenPrices = swapStore.getAllTokenPrices();
   const isSignedIn = accountStore.isSignedIn;
   const empty = useMemo(() => {
-    if (!tokensLoading && tokens.length == 0) {
+    if (tokens?.length == 0) {
       return true;
     }
     return false;
-  }, [tokensLoading, tokens]);
+  }, [tokens?.length]);
   function displayBalance(balance: string) {
     const result = isSignedIn
       ? 0 < Number(balance) && Number(balance) < 0.001
@@ -89,7 +87,7 @@ export default function Table({
   }
   return (
     <div className={`${hidden ? "hidden" : ""}`}>
-      {tokens.sort(sortBy).map((token) => {
+      {tokens?.sort(sortBy).map((token) => {
         return (
           <div
             className={`flexBetween hover:bg-gray-40 rounded-md pl-2 pr-1.5 cursor-pointer`}

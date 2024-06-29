@@ -31,8 +31,8 @@ export const useSelectTokens = (): ISelectTokens => {
       getSelectTokens();
     }
   }, [
-    whitelistToken.length,
-    autoWhitelistTokens.length,
+    JSON.stringify(whitelistToken || []),
+    JSON.stringify(autoWhitelistTokens || []),
     autoWhitelistedPostfix?.length,
   ]);
   async function getSelectTokens() {

@@ -1,8 +1,6 @@
 import React, { useState, useContext, useMemo } from "react";
-import { useDebounce } from "react-use";
 import _ from "lodash";
 import { SolidArrowDownIcon } from "./Icons";
-import { ITokenMetadata } from "../../../hooks/useBalanceTokens";
 import Table from "./Table";
 import { SelectTokenContext } from "./Context";
 import { TokenMetadata } from "@/services/ft-contract";
@@ -24,7 +22,11 @@ export default function AssetTable() {
     } else {
       return [defaultDisplayTokens, autoDisplayTokens];
     }
-  }, [searchText]);
+  }, [
+    searchText,
+    JSON.stringify(defaultDisplayTokens || []),
+    JSON.stringify(autoDisplayTokens || []),
+  ]);
   function sortBalance() {
     if (sort == "asc") {
       setSort("desc");

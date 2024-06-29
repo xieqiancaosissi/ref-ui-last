@@ -37,7 +37,7 @@ export const useBalanceTokens = (
         getBalanceTokens();
       }
     }
-  }, [tokens?.length, accountId, walletLoading, owner]);
+  }, [JSON.stringify(tokens || []), accountId, walletLoading, owner]);
   /* update cache logic (tokens with balances) end */
   async function getBalanceTokens() {
     setBalancesLoading(true);

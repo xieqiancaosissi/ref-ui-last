@@ -29,7 +29,6 @@ export default function TradeRouteModal({
     estimates,
     estimates[estimates.length - 1].outputToken ?? ""
   );
-  console.log("88888888888-identicalRoutes", identicalRoutes);
   const percents = useMemo(() => {
     try {
       const pools = identicalRoutes

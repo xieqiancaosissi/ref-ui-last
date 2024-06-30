@@ -9,6 +9,9 @@ import getConfig from "../utils/config";
 import { ALL_STABLE_POOL_IDS } from "@/services/swap/swapConfig";
 import "../components/common/ModalDefaultStyle";
 const Footer = dynamic(() => import("../components/footer"), { ssr: false });
+const ToastContainerEle = dynamic(() => import("../components/common/Toast"), {
+  ssr: false,
+});
 
 export default function App({ Component, pageProps }: AppProps) {
   useEffect(() => {
@@ -39,6 +42,7 @@ export default function App({ Component, pageProps }: AppProps) {
           <Component {...pageProps} />
         </div>
         <Footer />
+        <ToastContainerEle />
       </div>
     </IntlProvider>
   );

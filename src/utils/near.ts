@@ -5,6 +5,12 @@ import { getCurrentWallet } from "../utils/wallet";
 import { Transaction } from "../interfaces/wallet";
 import getConfig from "../utils/config";
 import { getSelectedWalletId } from "../utils/wallet";
+import {
+  addQueryParams,
+  TRANSACTION_WALLET_TYPE,
+  extraWalletsError,
+  walletsRejectError,
+} from "../utils/transactionsPopup";
 const config = getConfig();
 const webWalletIds = ["my-near-wallet", "mintbase-wallet"];
 export const executeMultipleTransactions = async (
@@ -36,12 +42,34 @@ export const executeMultipleTransactions = async (
       transactions: wstransactions,
       callbackUrl,
     })
-    .then(() => {
+    .then((res) => {
+      if (!res) return;
       if (!webWalletIds.includes(selectedWalletId)) {
-        window.location.reload();
+        const transactionHashes = (Array.isArray(res) ? res : [res])?.map(
+          (r) => r.transaction.hash
+        );
+        const parsedTransactionHashes = transactionHashes?.join(",");
+        const newHref = addQueryParams(
+          window.location.origin + window.location.pathname,
+          {
+            [TRANSACTION_WALLET_TYPE.WalletSelector]: parsedTransactionHashes,
+          }
+        );
+
+        window.location.href = newHref;
       }
     })
     .catch((e: Error) => {
+      if (extraWalletsError.includes(e.message)) {
+        return;
+      }
+
+      if (
+        !walletsRejectError.includes(e.message) &&
+        !extraWalletsError.includes(e.message)
+      ) {
+        sessionStorage.setItem("WALLETS_TX_ERROR", e.message);
+      }
       if (!webWalletIds.includes(selectedWalletId)) {
         window.location.reload();
       }

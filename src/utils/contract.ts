@@ -1,10 +1,12 @@
 import Big from "big.js";
 import { utils } from "near-api-js";
+import { JsonRpcProvider } from "near-api-js/lib/providers";
 import { Transaction } from "../interfaces/wallet";
 import getConfig from "../utils/config";
 import { STORAGE_TO_REGISTER_WITH_MFT } from "../utils/constant";
 import { getAccount, executeMultipleTransactions } from "./near";
 import { getAccountId } from "./wallet";
+import { getNear } from "./near";
 import { UserStorageDetail } from "@/interfaces/swapDcl";
 
 const config = getConfig();
@@ -193,4 +195,11 @@ export const get_user_storage_detail = async ({ size }: { size: number }) => {
   }
 
   return utils.format.formatNearAmount(deposit_fee.toFixed(0));
+};
+export const checkTransaction = async (txHash: string) => {
+  const near = await getNear();
+  return (near.connection.provider as JsonRpcProvider).sendJsonRpc(
+    "EXPERIMENTAL_tx_status",
+    [txHash, getAccountId()]
+  );
 };

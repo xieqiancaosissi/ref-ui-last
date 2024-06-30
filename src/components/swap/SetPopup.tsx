@@ -9,11 +9,13 @@ import CustomTooltip from "@/components/customTooltip/customTooltip";
 
 export default function SetPopup() {
   const [show, setShow] = useState<boolean>();
-  const [slippage, setSlippage] = useState<string>(INIT_SLIPPAGE_VALUE);
   const slippageOptions = ["0.1", "0.5", "1"];
   const persistSwapStore: IPersistSwapStore = usePersistSwapStore();
   const smartRoute = persistSwapStore.getSmartRoute();
   const slippageStore = persistSwapStore.getSlippage();
+  const [slippage, setSlippage] = useState<string>(
+    slippageStore ? slippageStore.toString() : INIT_SLIPPAGE_VALUE
+  );
   useEffect(() => {
     function handleOutsideClick(event: any) {
       const path = event.composedPath();

@@ -39,6 +39,9 @@ const SetPopup = dynamic(() => import("../components/swap/SetPopup"), {
 const InitData = dynamic(() => import("../components/swap/InitData"), {
   ssr: false,
 });
+const SwapPopup = dynamic(() => import("@/components/common/SwapPopup"), {
+  ssr: false,
+});
 
 export default function Swap() {
   const [isHighImpact, setIsHighImpact] = useState<boolean>(false);
@@ -120,6 +123,7 @@ export default function Swap() {
   return (
     <main className="m-auto my-20" style={{ width: "420px" }}>
       <InitData />
+      <SwapPopup />
       <div className="rounded-lg bg-dark-10 p-4">
         {/* set */}
         <div className="flex items-center justify-between">

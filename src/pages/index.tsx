@@ -30,6 +30,9 @@ import { toPrecision } from "@/utils/numbers";
 import GetPriceImpact from "@/components/swap/GetPriceImpact";
 import { getTokenUIId, is_near_wnear_swap } from "@/services/swap/swapUtils";
 import { WarnIcon } from "@/components/swap/icons";
+import SkyWardModal from "@/components/swap/SkyWardModal";
+import getConfigV2 from "@/utils/configV2";
+const configV2 = getConfigV2();
 const SwapButton = dynamic(() => import("../components/swap/SwapButton"), {
   ssr: false,
 });
@@ -47,6 +50,7 @@ export default function Swap() {
   const [isHighImpact, setIsHighImpact] = useState<boolean>(false);
   const [highImpactCheck, setHighImpactCheck] = useState<boolean>(false);
   const [pinLoading, setpinLoading] = useState<boolean>(false);
+  const [showSkywardTip, setShowSkywardTip] = useState<boolean>(false);
   const swapStore = useSwapStore();
   const persistSwapStore = usePersistSwapStore() as IPersistSwapStore;
   const tokenIn = swapStore.getTokenIn();
@@ -68,6 +72,14 @@ export default function Swap() {
       swapStore.setAllTokenPrices(res);
     });
   }, []);
+  useEffect(() => {
+    if (
+      tokenIn?.id == configV2.SKYWARDID ||
+      tokenOut?.id == configV2.SKYWARDID
+    ) {
+      setShowSkywardTip(true);
+    }
+  }, [tokenIn?.id, tokenOut?.id]);
   useEffect(() => {
     if (Number(priceImpact || 0) > PRICE_IMPACT_RED_VALUE) {
       setIsHighImpact(true);
@@ -208,6 +220,15 @@ export default function Swap() {
       </div>
       {/* detail */}
       {showSwapDetail ? <SwapDetail /> : null}
+      {/* skyward modal */}
+      {showSkywardTip && (
+        <SkyWardModal
+          onRequestClose={() => {
+            setShowSkywardTip(false);
+          }}
+          isOpen={showSkywardTip}
+        />
+      )}
     </main>
   );
 }

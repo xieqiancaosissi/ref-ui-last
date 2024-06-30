@@ -17,6 +17,7 @@ export default function getConfigV2(
           "dac17f958d2ee523a2206206994597c13d831ec7.factory.bridge.near",
         ],
         INIT_SWAP_PAIRS: ["near", "token.v2.ref-finance.near"],
+        SKYWARDID: "token.skyward.near",
       };
     case "pub-testnet":
       return {
@@ -36,6 +37,7 @@ export default function getConfigV2(
           "usdt.fakes.testnet",
         ],
         INIT_SWAP_PAIRS: ["near", "ref.fakes.testnet"],
+        SKYWARDID: "skyward.fakes.testnet",
       };
     case "testnet":
       return {
@@ -53,6 +55,7 @@ export default function getConfigV2(
           "usdt.fakes.testnet",
         ],
         INIT_SWAP_PAIRS: ["near", "ref.fakes.testnet"],
+        SKYWARDID: "skyward.fakes.testnet",
       };
     default:
       return {
@@ -68,6 +71,7 @@ export default function getConfigV2(
           "dac17f958d2ee523a2206206994597c13d831ec7.factory.bridge.near",
         ],
         INIT_SWAP_PAIRS: ["near", "token.v2.ref-finance.near"],
+        SKYWARDID: "token.skyward.near",
       };
   }
 }

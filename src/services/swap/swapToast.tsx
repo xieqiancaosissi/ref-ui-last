@@ -30,10 +30,7 @@ const swapToast = (txHash: string) => {
       closeOnClick: true,
       hideProgressBar: false,
       closeButton: (
-        <CloseIcon
-          className=" text-dark-80 hover:text-white"
-          style={{ transform: "scale(0.85)" }}
-        />
+        <CloseIcon className=" text-dark-80 hover:text-white" size="12" />
       ),
       progressStyle: {
         background: "#9DFD01",

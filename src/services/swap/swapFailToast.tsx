@@ -21,10 +21,10 @@ const swapFailToast = (txHash: string, errorType?: string) => {
       </span>
 
       <div
-        className="flex items-center gap-2 text-gray-60"
+        className="flex flex-col gap-0.5 text-gray-60"
         style={{ paddingLeft: "26px" }}
       >
-        <span className="whitespace-nowrap">Type {errorType}.</span>
+        <span>Type {errorType}.</span>
         <span
           className="underline decoration-1 hover:text-white"
           style={{

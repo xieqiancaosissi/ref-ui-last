@@ -1,5 +1,5 @@
 import { SwapOptions, Transaction } from "@/interfaces/swap";
-import { ONE_YOCTO_NEAR } from "@/utils/contract";
+import { ONE_YOCTO_NEAR, registerAccountOnToken } from "@/utils/contract";
 import { TokenMetadata } from "@/services/ft-contract";
 import { toNonDivisibleNumber, percentLess, round } from "@/utils/numbers";
 import { executeMultipleTransactions } from "@/utils/near";
@@ -43,17 +43,7 @@ const nearInstantSwap = async ({
     if (tokenRegistered === null) {
       transactions.push({
         receiverId: token.id,
-        functionCalls: [
-          {
-            methodName: "storage_deposit",
-            args: {
-              registration_only: true,
-              account_id: accountId,
-            },
-            gas: "30000000000000",
-            amount: STORAGE_TO_REGISTER_WITH_MFT,
-          },
-        ],
+        functionCalls: [registerAccountOnToken()],
       });
     }
   };

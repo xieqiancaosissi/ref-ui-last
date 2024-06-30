@@ -5,7 +5,10 @@ import { useAccountStore } from "@/stores/account";
 import { ButtonTextWrapper } from "@/components/common/Button";
 import swap from "@/services/swap/executeSwap";
 import nearSwap from "@/services/swap/executeNearSwap";
+import dclSwap from "@/services/swap/executeDclSwap";
 import { usePersistSwapStore, useSwapStore } from "@/stores/swap";
+import { toReadableNumber, percentLess } from "@/utils/numbers";
+import { getV3PoolId } from "@/services/swap/swapDclUtils";
 import {
   getMax,
   is_near_wnear_swap,
@@ -30,6 +33,8 @@ export default function SwapButton({
   const tokenOut = swapStore.getTokenOut();
   const amountIn = swapStore.getTokenInAmount();
   const amountOut = swapStore.getTokenOutAmount();
+  const estimatesDcl = swapStore.getEstimatesDcl();
+  const best = swapStore.getBest();
   const slippageTolerance = persistSwapStore.getSlippage();
   const isnearwnearSwap = is_near_wnear_swap(tokenIn, tokenOut);
   const decimals = isnearwnearSwap ? 24 : undefined;
@@ -55,13 +60,30 @@ export default function SwapButton({
         tokenOut,
         amountIn,
       });
-    } else {
+    } else if (best == "v1") {
       swap({
         tokenIn,
         tokenOut,
         swapsToDo: swapStore.getEstimates(),
         slippageTolerance,
         amountIn,
+      });
+    } else if (best == "v3") {
+      const bestFee = Number(estimatesDcl?.tag?.split("|")?.[1] ?? 0);
+      dclSwap({
+        Swap: {
+          pool_ids: [getV3PoolId(tokenIn.id, tokenOut.id, bestFee)],
+          min_output_amount: percentLess(
+            slippageTolerance,
+            estimatesDcl?.amount as string
+          ),
+        },
+        swapInfo: {
+          tokenA: tokenIn,
+          tokenB: tokenOut,
+          amountA: amountIn,
+          amountB: toReadableNumber(tokenOut.decimals, estimatesDcl?.amount),
+        },
       });
     }
   }

@@ -20,13 +20,17 @@ export const fetchDclPoolsAndCacheData = async () => {
   return dclPools;
 };
 
-export const getAllDclPools = async () => {
+export const getAllDclPoolsFromCache = async (): Promise<IPoolDcl[]> => {
   const isLatest = await db.checkDclPools();
   if (isLatest) {
     return await db.queryDclPools();
   } else {
     return await fetchDclPoolsAndCacheData();
   }
+};
+export const getDclPoolByIdFromCache = async (dcl_pool_id: string) => {
+  const allDclPools = await getAllDclPoolsFromCache();
+  return allDclPools.find((dclPool) => dclPool.pool_id == dcl_pool_id);
 };
 export const quote = async ({
   pool_ids,

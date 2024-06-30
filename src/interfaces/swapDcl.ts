@@ -5,8 +5,8 @@ export interface IPoolDcl {
   token_x?: string;
   token_y?: string;
   fee: number;
-  point_delta?: number;
-  current_point?: number;
+  point_delta: number;
+  current_point: number;
   state?: string; // running or paused
   total_liquidity?: string;
   liquidity?: string;
@@ -43,4 +43,36 @@ export interface IEstimateResult {
   dclSwapsToDo?: IEstimateDclSwapView | undefined;
   dclQuoteDone?: boolean;
   dclTag?: string;
+  dclPool?: IPoolDcl;
+  dclFee?: string;
+}
+export interface SwapInfo {
+  tokenA: TokenMetadata;
+  tokenB: TokenMetadata;
+  amountA: string;
+  amountB: string;
+}
+
+export interface IV3Swap {
+  swapInfo: SwapInfo;
+  Swap?: {
+    pool_ids: string[];
+    min_output_amount: string;
+  };
+  SwapByOutput?: {
+    pool_ids: string[];
+    output_amount: string;
+  };
+  LimitOrderWithSwap?: {
+    pool_id: string;
+  };
+}
+export interface UserStorageDetail {
+  max_slots: number;
+  cur_order_slots: number;
+  cur_liquidity_slots: number;
+  locked_near: string;
+  storage_for_asset: string;
+  slot_price: string;
+  sponsor_id: string;
 }

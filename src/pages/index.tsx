@@ -53,7 +53,7 @@ export default function Swap() {
   const tokenInAmount = swapStore.getTokenInAmount();
   const swapError = swapStore.getSwapError();
   const isnearwnearSwap = is_near_wnear_swap(tokenIn, tokenOut);
-  useMultiSwap({ supportDclQuote: false, supportLittlePools: true });
+  useMultiSwap({ supportDclQuote: true, hideLowTvlPools: true });
   useEffect(() => {
     const id = setInterval(reloadPools, POOL_REFRESH_INTERVAL);
     return () => {

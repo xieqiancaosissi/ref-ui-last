@@ -1,6 +1,11 @@
+import Big from "big.js";
+import { utils } from "near-api-js";
 import { Transaction } from "../interfaces/wallet";
 import getConfig from "../utils/config";
+import { STORAGE_TO_REGISTER_WITH_MFT } from "../utils/constant";
 import { getAccount, executeMultipleTransactions } from "./near";
+import { getAccountId } from "./wallet";
+import { UserStorageDetail } from "@/interfaces/swapDcl";
 
 const config = getConfig();
 export const REF_FARM_BOOST_CONTRACT_ID = config.REF_FARM_BOOST_CONTRACT_ID;
@@ -132,4 +137,60 @@ export const executeFarmMultipleTransactions = async (
   callbackUrl?: string
 ) => {
   return executeMultipleTransactions(transactions, callbackUrl);
+};
+
+export const registerAccountOnToken = () => {
+  return {
+    methodName: "storage_deposit",
+    args: {
+      registration_only: true,
+      account_id: getAccountId(),
+    },
+    gas: "30000000000000",
+    amount: STORAGE_TO_REGISTER_WITH_MFT,
+  };
+};
+
+export const get_user_storage_detail = async ({ size }: { size: number }) => {
+  const user_id = getAccountId();
+
+  let deposit_fee = new Big(0);
+
+  if (!user_id) {
+    alert("sign in first");
+    return;
+  }
+
+  const detail: UserStorageDetail = await refSwapV3ViewFunction({
+    methodName: "get_user_storage_detail",
+    args: {
+      user_id,
+    },
+  });
+  // first register
+  if (!detail) {
+    return "0.5";
+  }
+  const {
+    max_slots,
+    cur_order_slots,
+    cur_liquidity_slots,
+    locked_near,
+    storage_for_asset,
+    slot_price,
+  } = detail;
+
+  if (size + cur_liquidity_slots + cur_order_slots > max_slots) {
+    const need_num = size + cur_liquidity_slots + cur_order_slots - max_slots;
+    const need_num_final = Math.max(need_num, 10);
+    deposit_fee = deposit_fee.plus(new Big(slot_price).mul(need_num_final));
+    if (user_id !== detail.sponsor_id) {
+      deposit_fee = deposit_fee.plus(new Big(detail.locked_near));
+    }
+  }
+  if (deposit_fee.eq(0)) {
+    return "";
+  }
+
+  return utils.format.formatNearAmount(deposit_fee.toFixed(0));
 };

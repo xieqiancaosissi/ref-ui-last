@@ -87,13 +87,16 @@ export const getContainPairsPools = async ({
     });
   return containPairsPools;
 };
-// TODO issue
 export const getPool = async (id: number): Promise<PoolRPCView> => {
-  return viewFunction({
+  const pool_info = await viewFunction({
     contractId: REF_FI_CONTRACT_ID,
     methodName: "get_pool",
     args: { pool_id: id },
   });
+  return {
+    ...pool_info,
+    id,
+  };
 };
 export const getStablePool = async (pool_id: number): Promise<StablePool> => {
   if (isRatedPool(pool_id)) {

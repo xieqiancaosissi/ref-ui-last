@@ -5,6 +5,7 @@ import { getAccountId } from "@/utils/wallet";
 import { ftGetStorageBalance } from "@/services/ft-contract";
 import { STORAGE_TO_REGISTER_WITH_MFT } from "@/utils/constant";
 import { getTokenUIId } from "@/services/swap/swapUtils";
+import { registerAccountOnToken } from "@/utils/contract";
 import {
   nearDepositTransaction,
   nearWithdrawTransaction,
@@ -22,17 +23,7 @@ const nearSwap = async ({ tokenIn, tokenOut, amountIn }: nearSwapOptions) => {
     if (tokenRegistered === null) {
       transactions.push({
         receiverId: token.id,
-        functionCalls: [
-          {
-            methodName: "storage_deposit",
-            args: {
-              registration_only: true,
-              account_id: accountId,
-            },
-            gas: "30000000000000",
-            amount: STORAGE_TO_REGISTER_WITH_MFT,
-          },
-        ],
+        functionCalls: [registerAccountOnToken()],
       });
     }
   };

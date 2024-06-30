@@ -50,7 +50,6 @@ const useDclSwap = ({
     tokenOut: ITokenMetadata;
     tokenInAmount: string;
   }) {
-    clear();
     estimateDclSwap({
       tokenIn,
       tokenOut,
@@ -66,12 +65,10 @@ const useDclSwap = ({
       .catch((e) => {
         setDclSwapEstimateResult({
           dclSwapError: e,
+          dclQuoteDone: true,
           dclTag: `${tokenIn.id}@${tokenOut.id}@${tokenInAmount}`,
         });
       });
-  }
-  function clear() {
-    setDclSwapEstimateResult({});
   }
   return dclSwapEstimateResult;
 };

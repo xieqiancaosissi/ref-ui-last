@@ -4,7 +4,7 @@ import {
   EstimateDclSwapView,
   IEstimateDclSwapView,
 } from "@/interfaces/swapDcl";
-import { getAllDclPools, getQuote } from "./swapDcl";
+import { getAllDclPoolsFromCache, getQuote } from "./swapDcl";
 import { V3_POOL_FEE_LIST } from "@/utils/constant";
 import { tagValidator } from "./swapDclUtils";
 
@@ -13,7 +13,7 @@ const estimateDclSwap = async ({
   tokenOut,
   amountIn,
 }: EstimateDclSwapOptions): Promise<IEstimateDclSwapView> => {
-  const allDCLPools = await getAllDclPools();
+  const allDCLPools = await getAllDclPoolsFromCache();
   const estimates: EstimateDclSwapView[] = await Promise.all(
     V3_POOL_FEE_LIST.map((fee) =>
       getQuote({

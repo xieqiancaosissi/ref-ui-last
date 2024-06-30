@@ -119,7 +119,7 @@ export interface EstimateSwapOptions {
   tokenOut: TokenMetadata;
   amountIn: string;
   supportLedger: boolean;
-  supportLittlePools: boolean;
+  hideLowTvlPools: boolean;
 }
 
 export interface EstimateSwapParams {
@@ -171,3 +171,5 @@ export type IButtonStatus =
   | "available"
   | "insufficient"
   | "disabled";
+
+export type IBest = "v1" | "v3" | "";

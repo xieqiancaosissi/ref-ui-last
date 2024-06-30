@@ -25,6 +25,7 @@ export default function TradeRouteModal({
   const avgFee = swapStore.getAvgFee();
   const tokenIn = swapStore.getTokenIn();
   const tokenOut = swapStore.getTokenOut();
+  const best = swapStore.getBest();
   const identicalRoutes = separateRoutes(
     estimates,
     estimates[estimates.length - 1].outputToken ?? ""
@@ -39,7 +40,7 @@ export default function TradeRouteModal({
       if (identicalRoutes.length === 0) return ["100"];
       else return identicalRoutes.map((r) => r[0].percent);
     }
-  }, [JSON.stringify(identicalRoutes || [])]);
+  }, [JSON.stringify(identicalRoutes || []), best]);
   return (
     <Modal
       isOpen={isOpen}
@@ -66,10 +67,53 @@ export default function TradeRouteModal({
           <Token icon={tokenIn.icon} size="26" />
           <LeftBracket size={identicalRoutes.length} />
           <div className="w-full mx-2 xsm:overflow-x-auto relative">
-            {identicalRoutes.map((route, j) => {
-              return (
-                <div key={j} className="relative flexBetween my-3 ">
-                  <span className="text-xs text-gray-180">{percents[j]}%</span>
+            {best == "v1" ? (
+              <>
+                {identicalRoutes.map((route, j) => {
+                  return (
+                    <div key={j} className="relative flexBetween my-3 ">
+                      <span className="text-xs text-gray-180">
+                        {percents[j]}%
+                      </span>
+                      {/* background line */}
+                      <div
+                        className="absolute border border-dashed left-8 opacity-30 border-gray-60 w-full"
+                        style={{
+                          width: "calc(100% - 32px)",
+                        }}
+                      ></div>
+                      {/* pools have passed  */}
+                      <div className="flex items-center">
+                        {route[0].tokens
+                          ?.slice(1, route[0].tokens.length)
+                          .map((t, i) => {
+                            return (
+                              <>
+                                <TradeRouteHub
+                                  poolId={Number(route[i].pool?.id)}
+                                  token={t}
+                                  contract="Ref_Classic"
+                                />
+                                {t.id !==
+                                  route[0].tokens?.[route[0].tokens.length - 1]
+                                    ?.id && (
+                                  <div className="relative mx-3 z-10">
+                                    <PolygonArrowIcon />
+                                  </div>
+                                )}
+                              </>
+                            );
+                          })}
+                      </div>
+                      <PolygonArrowIcon />
+                    </div>
+                  );
+                })}
+              </>
+            ) : (
+              <>
+                <div className="relative flexBetween my-3">
+                  <span className="text-xs text-gray-180">100%</span>
                   {/* background line */}
                   <div
                     className="absolute border border-dashed left-8 opacity-30 border-gray-60 w-full"
@@ -79,42 +123,21 @@ export default function TradeRouteModal({
                   ></div>
                   {/* pools have passed  */}
                   <div className="flex items-center">
-                    {route[0].tokens
-                      ?.slice(1, route[0].tokens.length)
-                      .map((t, i) => {
-                        return (
-                          <>
-                            <TradeRouteHub
-                              poolId={
-                                route[i].contract === "Ref_DCL"
-                                  ? getV3PoolId(
-                                      tokenIn.id,
-                                      tokenOut.id,
-                                      +avgFee * 100
-                                    )
-                                  : route[i].contract === "Ref_Classic"
-                                  ? Number(route[i].pool?.id)
-                                  : undefined
-                              }
-                              token={t}
-                              contract={route[i].contract}
-                            />
-                            {t.id !==
-                              route[0].tokens?.[route[0].tokens.length - 1]
-                                ?.id && (
-                              <div className="relative mx-3 z-10">
-                                <PolygonArrowIcon />
-                              </div>
-                            )}
-                          </>
-                        );
-                      })}
+                    <TradeRouteHub
+                      poolId={getV3PoolId(
+                        tokenIn.id,
+                        tokenOut.id,
+                        +avgFee * 100
+                      )}
+                      token={tokenOut}
+                      contract="Ref_DCL"
+                    />
                   </div>
-
                   <PolygonArrowIcon />
                 </div>
-              );
-            })}
+              </>
+            )}
+            {}
           </div>
           <RightBracket size={identicalRoutes.length} />
           <Token icon={tokenOut.icon} size="26" />

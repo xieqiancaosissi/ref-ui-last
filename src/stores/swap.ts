@@ -2,7 +2,8 @@ import { ITokenMetadata } from "@/hooks/useBalanceTokens";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { TokenPrice } from "@/db/RefDatabase";
-import { EstimateSwapView } from "@/interfaces/swap";
+import { EstimateSwapView, IBest } from "@/interfaces/swap";
+import { IEstimateDclSwapView } from "@/interfaces/swapDcl";
 
 export interface IPersistSwapStore {
   getSmartRoute: () => boolean;
@@ -61,6 +62,10 @@ interface ISwapStore {
   setAllTokenPrices: (allTokenPrices: Record<string, TokenPrice>) => void;
   getSwapError: () => Error | undefined;
   setSwapError: (swapError: Error | undefined) => void;
+  getEstimatesDcl: () => IEstimateDclSwapView;
+  setEstimatesDcl: (estimatesDcl: IEstimateDclSwapView | undefined) => void;
+  getBest: () => IBest;
+  setBest: (best: IBest) => void;
 }
 export const useSwapStore = create<ISwapStore>((set: any, get: any) => ({
   tokenIn: null,
@@ -71,6 +76,8 @@ export const useSwapStore = create<ISwapStore>((set: any, get: any) => ({
   avgFee: "",
   allTokenPrices: {},
   estimates: [],
+  estimatesDcl: {},
+  best: "",
   swapError: undefined,
   getTokenIn: () => get().tokenIn,
   setTokenIn: (tokenIn: ITokenMetadata) =>
@@ -97,4 +104,9 @@ export const useSwapStore = create<ISwapStore>((set: any, get: any) => ({
     set({ allTokenPrices }),
   getSwapError: () => get().swapError,
   setSwapError: (swapError: Error | undefined) => set({ swapError }),
+  getEstimatesDcl: () => get().estimatesDcl,
+  setEstimatesDcl: (estimatesDcl: IEstimateDclSwapView | undefined) =>
+    set({ estimatesDcl }),
+  getBest: () => get().best,
+  setBest: (best: IBest) => set({ best }),
 }));

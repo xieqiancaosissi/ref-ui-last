@@ -16,7 +16,7 @@ const estimateSwap = async ({
   tokenOut,
   amountIn,
   supportLedger,
-  supportLittlePools,
+  hideLowTvlPools,
 }: EstimateSwapOptions): Promise<{
   estimates: EstimateSwapView[];
   tag: string;
@@ -41,7 +41,6 @@ const estimateSwap = async ({
   containPairsPools = containPairsPools.filter((p: any) => {
     return getLiquidity(p, tokenIn, tokenOut) > 0;
   });
-
   const { supportLedgerRes } = await getOneSwapActionResult({
     poolsOneSwap: containPairsPools,
     supportLedger,
@@ -55,11 +54,11 @@ const estimateSwap = async ({
   if (supportLedger) {
     return { estimates: supportLedgerRes, tag };
   }
-  const orpools = supportLittlePools
-    ? await getRefPoolsByTokens()
-    : (await getRefPoolsByTokens()).filter(
+  const orpools = hideLowTvlPools
+    ? (await getRefPoolsByTokens()).filter(
         (pool) => +(pool.tvl || 0) >= LOW_POOL_TVL_BOUND
-      );
+      )
+    : await getRefPoolsByTokens();
   let res;
   let smartRouteV2OutputEstimate;
 

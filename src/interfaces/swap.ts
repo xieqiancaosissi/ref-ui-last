@@ -166,7 +166,7 @@ export interface Transaction {
 }
 
 export type IButtonStatus =
-  | "loading"
+  | "walletLoading"
   | "unLogin"
   | "available"
   | "insufficient"

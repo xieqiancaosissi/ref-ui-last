@@ -1,6 +1,7 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import dynamic from "next/dynamic";
 import Big from "big.js";
+import _ from "lodash";
 import { motion } from "framer-motion";
 import {
   RefreshIcon,
@@ -13,6 +14,7 @@ import swapStyles from "../components/swap/swap.module.css";
 import {
   fetchPoolsAndCacheData,
   fetchStablePoolsAndCacheData,
+  fetchStableBaseDataPoolsAndCacheData,
 } from "@/services/swap/swap";
 import { fetchDclPoolsAndCacheData } from "@/services/swap/swapDcl";
 import {
@@ -60,13 +62,19 @@ export default function Swap() {
   const tokenInAmount = swapStore.getTokenInAmount();
   const swapError = swapStore.getSwapError();
   const isnearwnearSwap = is_near_wnear_swap(tokenIn, tokenOut);
-  useMultiSwap({ supportDclQuote: true, hideLowTvlPools: true });
+  useMultiSwap({ supportDclQuote: true, hideLowTvlPools: false });
   useEffect(() => {
     const id = setInterval(reloadPools, POOL_REFRESH_INTERVAL);
     return () => {
       clearInterval(id);
     };
   }, []);
+  const debounceReloadPools = useCallback(
+    _.debounce(() => {
+      reloadPools();
+    }, 500),
+    []
+  );
   useEffect(() => {
     getAllTokenPrices().then((res) => {
       swapStore.setAllTokenPrices(res);
@@ -89,6 +97,24 @@ export default function Swap() {
       setIsHighImpact(false);
     }
   }, [priceImpact]);
+  useEffect(() => {
+    if (
+      Number(tokenInAmount || 0) == 0 ||
+      (tokenIn?.id == tokenOut?.id && !isnearwnearSwap)
+    ) {
+      swapStore.setTokenOutAmount("");
+      swapStore.setAvgFee("");
+      swapStore.setBest("");
+      swapStore.setPriceImpact("");
+      swapStore.setEstimates([]);
+      swapStore.setEstimatesDcl(undefined);
+      swapStore.setEstimating(false);
+      swapStore.setTrigger(false);
+      setIsHighImpact(false);
+      setHighImpactCheck(false);
+      swapStore.setSwapError(undefined);
+    }
+  }, [tokenInAmount, tokenIn?.id, tokenOut?.id, isnearwnearSwap]);
   const showSwapDetail = useMemo(() => {
     return (
       tokenIn?.id &&
@@ -127,10 +153,19 @@ export default function Swap() {
     const topPoolsPending = fetchPoolsAndCacheData();
     const stablePoolsPending = fetchStablePoolsAndCacheData();
     const dclPoolPending = fetchDclPoolsAndCacheData();
-    Promise.all([topPoolsPending, stablePoolsPending, dclPoolPending])
+    const stableBaseDataPoolsPending = fetchStableBaseDataPoolsAndCacheData();
+    Promise.all([
+      topPoolsPending,
+      stablePoolsPending,
+      dclPoolPending,
+      stableBaseDataPoolsPending,
+    ])
       .catch()
       .finally(() => {
         setpinLoading(false);
+        if (!swapError) {
+          swapStore.setTrigger(true);
+        }
       });
   }
   // select-none
@@ -145,7 +180,7 @@ export default function Swap() {
           <div className="flex items-center gap-2 z-20">
             <span
               className={swapStyles.swapControlButton}
-              onClick={reloadPools}
+              onClick={debounceReloadPools}
             >
               {pinLoading ? (
                 <motion.span variants={variants} animate="spin">

@@ -48,6 +48,12 @@ export default function TradeRouteModal({
         e.stopPropagation();
         onRequestClose();
       }}
+      style={{
+        overlay: {
+          backdropFilter: "blur(15px)",
+          WebkitBackdropFilter: "blur(15px)",
+        },
+      }}
     >
       <div
         style={{ width: "680px" }}

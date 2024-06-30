@@ -66,6 +66,10 @@ interface ISwapStore {
   setEstimatesDcl: (estimatesDcl: IEstimateDclSwapView | undefined) => void;
   getBest: () => IBest;
   setBest: (best: IBest) => void;
+  getEstimating: () => boolean;
+  setEstimating: (estimating: boolean) => void;
+  getTrigger: () => boolean;
+  setTrigger: (trigger: boolean) => void;
 }
 export const useSwapStore = create<ISwapStore>((set: any, get: any) => ({
   tokenIn: null,
@@ -79,6 +83,8 @@ export const useSwapStore = create<ISwapStore>((set: any, get: any) => ({
   estimatesDcl: {},
   best: "",
   swapError: undefined,
+  estimating: false,
+  trigger: false,
   getTokenIn: () => get().tokenIn,
   setTokenIn: (tokenIn: ITokenMetadata) =>
     set({
@@ -109,4 +115,8 @@ export const useSwapStore = create<ISwapStore>((set: any, get: any) => ({
     set({ estimatesDcl }),
   getBest: () => get().best,
   setBest: (best: IBest) => set({ best }),
+  getEstimating: () => get().estimating,
+  setEstimating: (estimating: boolean) => set({ estimating }),
+  getTrigger: () => get().trigger,
+  setTrigger: (trigger: boolean) => set({ trigger }),
 }));

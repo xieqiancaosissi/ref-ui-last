@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Big from "big.js";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import { useAccountStore } from "@/stores/account";
@@ -34,6 +34,8 @@ export default function SwapButton({
   const amountIn = swapStore.getTokenInAmount();
   const amountOut = swapStore.getTokenOutAmount();
   const estimatesDcl = swapStore.getEstimatesDcl();
+  const estimating = swapStore.getEstimating();
+  const swapError = swapStore.getSwapError();
   const best = swapStore.getBest();
   const slippageTolerance = persistSwapStore.getSlippage();
   const isnearwnearSwap = is_near_wnear_swap(tokenIn, tokenOut);
@@ -50,8 +52,12 @@ export default function SwapButton({
     isHighImpact,
     highImpactCheck,
     accountId,
+    swapError?.message,
     isnearwnearSwap,
   ]);
+  const loading = useMemo(() => {
+    return swapLoading || estimating;
+  }, [swapLoading, estimating]);
   function doSwap() {
     setSwapLoading(true);
     if (isnearwnearSwap) {
@@ -88,26 +94,25 @@ export default function SwapButton({
     }
   }
   function getButtonStatus(): IButtonStatus {
-    let status: IButtonStatus = "loading";
+    let status: IButtonStatus = "walletLoading";
     const availableAmountIn = Big(amountIn || 0).lte(getMax(tokenIn, decimals));
     if (walletLoading) {
-      status = "loading";
+      status = "walletLoading";
     } else if (!walletLoading && !accountId) {
       status = "unLogin";
+    } else if ((isHighImpact && !highImpactCheck) || swapError?.message) {
+      status = "disabled";
+    } else if (accountId && Number(amountIn || 0) > 0 && !availableAmountIn) {
+      status = "insufficient";
+    } else if (tokenIn?.id == tokenOut.id && !isnearwnearSwap) {
+      status = "disabled";
     } else if (
       accountId &&
       tokenIn?.id &&
       tokenOut?.id &&
-      Number(amountIn || 0) > 0 &&
-      Number(amountOut || 0) > 0
+      Number(amountIn || 0) > 0
     ) {
-      if (!availableAmountIn) {
-        status = "insufficient";
-      } else if (isHighImpact && !highImpactCheck && !isnearwnearSwap) {
-        status = "disabled";
-      } else {
-        status = "available";
-      }
+      status = "available";
     } else {
       status = "disabled";
     }
@@ -115,7 +120,7 @@ export default function SwapButton({
   }
   return (
     <>
-      {buttonStatus == "loading" ? (
+      {buttonStatus == "walletLoading" ? (
         <SkeletonTheme baseColor="#2A3643" highlightColor="#9EFF00">
           <Skeleton height={42} className="mt-4" />
         </SkeletonTheme>
@@ -131,7 +136,7 @@ export default function SwapButton({
           Connect Wallet
         </div>
       ) : null}
-      {buttonStatus == "insufficient" ? (
+      {buttonStatus == "insufficient" && !loading ? (
         <div
           className="flex items-center justify-center bg-gray-40 rounded mt-4 text-gray-50 font-bold text-base cursor-not-allowed"
           style={{ height: "42px" }}
@@ -139,7 +144,7 @@ export default function SwapButton({
           Insufficient Balance
         </div>
       ) : null}
-      {buttonStatus == "disabled" ? (
+      {buttonStatus == "disabled" && !loading ? (
         <div
           className="flex items-center justify-center bg-gray-40 rounded mt-4 text-gray-50 font-bold text-base cursor-not-allowed"
           style={{ height: "42px" }}
@@ -147,13 +152,19 @@ export default function SwapButton({
           Swap
         </div>
       ) : null}
-      {buttonStatus == "available" ? (
+      {buttonStatus == "available" || loading ? (
         <div
-          className="flex items-center justify-center bg-greenGradient rounded mt-4 text-black font-bold text-base cursor-pointer"
+          className={`flex items-center justify-center bg-greenGradient rounded mt-4 text-black font-bold text-base ${
+            loading ? "opacity-40 cursor-not-allowed" : "cursor-pointer"
+          }`}
           style={{ height: "42px" }}
-          onClick={doSwap}
+          onClick={() => {
+            if (!loading) {
+              doSwap();
+            }
+          }}
         >
-          <ButtonTextWrapper loading={swapLoading} Text={() => <>Swap</>} />
+          <ButtonTextWrapper loading={loading} Text={() => <>Swap</>} />
         </div>
       ) : null}
     </>

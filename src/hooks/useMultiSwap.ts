@@ -45,6 +45,7 @@ const useMultiSwap = ({
   });
   useEffect(() => {
     if (quoteDone && dclQuoteDone && validator()) {
+      swapStore.setEstimating(false);
       doMultiEstimate();
     }
   }, [
@@ -62,6 +63,8 @@ const useMultiSwap = ({
     dclSwapError,
   ]);
   async function doMultiEstimate() {
+    swapStore.setSwapError(undefined);
+    swapStore.setPriceImpact("");
     if (is_near_wnear_swap) {
       const tokenOutAmount = scientificNotationToString(
         tokenInAmount.toString()
@@ -92,13 +95,10 @@ const useMultiSwap = ({
         )
       );
       swapStore.setEstimatesDcl(dclSwapsToDo);
-      swapStore.setSwapError(undefined);
     }
     if (swapError && (dclSwapError || !dclSwapsToDo)) {
       swapStore.setSwapError(swapError);
       return;
-    } else {
-      swapStore.setSwapError(undefined);
     }
     if (tokenInAmount && !ONLY_ZEROS.test(tokenInAmount)) {
       let expectedOut;

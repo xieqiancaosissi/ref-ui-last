@@ -42,7 +42,7 @@ const useDclSwap = ({
       dclTag: `${tokenIn.id}@${tokenOut.id}@${tokenInAmount}`,
     });
     if (tokenIn?.id && tokenOut?.id && Number(tokenInAmount) > 0) {
-      if (is_near_wnear_swap(tokenIn, tokenOut)) {
+      if (tokenIn?.id == tokenOut?.id) {
         setFirstInput(false);
         setDclSwapEstimateResult({
           dclQuoteDone: true,

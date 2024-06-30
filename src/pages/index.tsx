@@ -73,13 +73,15 @@ export default function Swap() {
     });
   }, []);
   useEffect(() => {
-    if (
-      tokenIn?.id == configV2.SKYWARDID ||
-      tokenOut?.id == configV2.SKYWARDID
-    ) {
+    if (tokenIn?.id == configV2.SKYWARDID) {
       setShowSkywardTip(true);
     }
-  }, [tokenIn?.id, tokenOut?.id]);
+  }, [tokenIn?.id]);
+  useEffect(() => {
+    if (tokenOut?.id == configV2.SKYWARDID) {
+      setShowSkywardTip(true);
+    }
+  }, [tokenOut?.id]);
   useEffect(() => {
     if (Number(priceImpact || 0) > PRICE_IMPACT_RED_VALUE) {
       setIsHighImpact(true);

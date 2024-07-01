@@ -298,7 +298,7 @@ export default function UserStakeBlock(props: {
           </div>
         </div>
       </div>
-      <div className="bg-dark-10 rounded-md p-5">
+      <div className="bg-dark-10 rounded-md p-5" style={{ height: "108px" }}>
         <p className="flex items-center text-gray-50 text-sm mb-1.5">
           Unclaimed rewards <QuestionMark className="ml-1.5"></QuestionMark>
         </p>

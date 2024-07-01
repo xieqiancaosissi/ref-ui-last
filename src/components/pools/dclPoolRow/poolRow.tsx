@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styles from "./poolRow.module.css";
+import Router, { useRouter } from "next/router";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import {
   formatPercentage,
@@ -21,6 +22,10 @@ export default function PoolRow({
   pureIdList: any;
 }) {
   const { isDealed, updatedMapList } = useTokenMetadata(list);
+  const router = useRouter();
+  const toDetail = (item: any) => {
+    router.push(`/pool/dcl/${item.id}`);
+  };
   return (
     <div className="mb-2 min-h-90 overflow-auto hover:cursor-pointer">
       {updatedMapList.map((item, index) => {
@@ -30,6 +35,7 @@ export default function PoolRow({
             className={`${styles.poolContainer} ${
               item.is_farm ? styles.isfarm : styles.notfarm
             }`}
+            onClick={() => toDetail(item)}
           >
             {/* tokens */}
             <div className="flex items-center">

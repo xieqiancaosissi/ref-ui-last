@@ -1,0 +1,26 @@
+import React, { useState, useEffect } from "react";
+import { SplitRectangleIcon, ExchangeIcon } from "@/components/pools/icon";
+import {
+  formatPercentage,
+  toInternationalCurrencySystem_usd,
+} from "@/utils/uiNumber";
+
+export default function TokenFeeAndCureentPrice({
+  poolDetail,
+}: {
+  poolDetail: any;
+}) {
+  const [currentSort, setCurrenSort] = useState([0, 1]);
+
+  //
+  return (
+    <div className="flex items-center text-white h-10 justify-around ml-9">
+      <div className="text-sm">
+        <h3 className="text-gray-50 font-normal">Fee</h3>
+        <p>{formatPercentage(poolDetail?.total_fee * 100)}</p>
+      </div>
+      <SplitRectangleIcon className="mx-7" />
+      <div className="text-sm min-w-45"></div>
+    </div>
+  );
+}

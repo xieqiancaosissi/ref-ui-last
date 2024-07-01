@@ -968,3 +968,25 @@ export const batch_unStake_boost_nft = async ({
 
   return executeFarmMultipleTransactions(transactions);
 };
+
+export const getBoostTokenPrices = async (): Promise<
+  Record<string, TokenPrice>
+> => {
+  try {
+    let tokenPrices: Record<string, TokenPrice> = {};
+    const cacheData = await db.checkTokenPrices();
+    if (cacheData) {
+      const list: TokenPrice[] = await db.queryTokenPrices();
+      list.forEach((price: TokenPrice) => {
+        const { id, update_time, ...priceInfo } = price;
+        tokenPrices[id || ""] = priceInfo;
+      });
+      getBoostTokenPricesFromServer();
+    } else {
+      tokenPrices = await getBoostTokenPricesFromServer();
+    }
+    return tokenPrices;
+  } catch (error) {
+    return {};
+  }
+};

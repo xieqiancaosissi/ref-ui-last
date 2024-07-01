@@ -13,6 +13,7 @@ const config = getConfig();
 export const REF_FARM_BOOST_CONTRACT_ID = config.REF_FARM_BOOST_CONTRACT_ID;
 export const REF_FI_CONTRACT_ID = config.REF_FI_CONTRACT_ID;
 export const REF_UNI_V3_SWAP_CONTRACT_ID = config.REF_UNI_V3_SWAP_CONTRACT_ID;
+export const REF_UNI_SWAP_CONTRACT_ID = config.REF_UNI_SWAP_CONTRACT_ID;
 export const REF_VE_CONTRACT_ID = config.REF_VE_CONTRACT_ID;
 
 export const ONE_YOCTO_NEAR = "0.000000000000000000000001";
@@ -55,6 +56,22 @@ export async function refSwapV3ViewFunction({
   const account = await getAccount();
   return account.viewFunction({
     contractId: REF_UNI_V3_SWAP_CONTRACT_ID,
+    methodName,
+    args,
+  });
+}
+
+export async function refSwapV3OldVersionViewFunction({
+  methodName,
+  args,
+}: {
+  contractId?: string;
+  methodName: string;
+  args?: object;
+}) {
+  const account = await getAccount();
+  return account.viewFunction({
+    contractId: REF_UNI_SWAP_CONTRACT_ID,
     methodName,
     args,
   });
@@ -203,3 +220,40 @@ export const checkTransaction = async (txHash: string) => {
     [txHash, getAccountId()]
   );
 };
+const REF_FARM_CONTRACT_ID = getConfig().REF_FARM_CONTRACT_ID;
+export async function refFarmViewFunction({
+  methodName,
+  args,
+}: RefFiViewFunctionOptions) {
+  const account = await getAccount();
+  return account.viewFunction({
+    contractId: REF_FARM_CONTRACT_ID,
+    methodName,
+    args,
+  });
+}
+
+export async function refMeMeFarmViewFunction({
+  methodName,
+  args,
+}: RefFiViewFunctionOptions) {
+  const account = await getAccount();
+  return account.viewFunction({
+    contractId: getConfig().REF_MEME_FARM_CONTRACT_ID,
+    methodName,
+    args,
+  });
+}
+
+export async function xrefMeMeFarmViewFunction({
+  contractId,
+  methodName,
+  args,
+}: RefFiViewFunctionOptions) {
+  const account = await getAccount();
+  return account.viewFunction({
+    contractId: contractId || "",
+    methodName,
+    args,
+  });
+}

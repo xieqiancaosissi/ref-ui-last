@@ -3,6 +3,12 @@ import { getAuthenticationHeaders } from "../services/signature";
 import { parsePoolView } from "./api";
 import { PoolRPCView } from "@/interfaces/swap";
 const config = getConfig();
+
+const genUrlParams = (props: Record<string, string | number>) => {
+  return Object.keys(props)
+    .map((key) => key + "=" + props[key])
+    .join("&");
+};
 export const currentRefPrice = async (): Promise<any> => {
   return await fetch(
     getConfig().indexerUrl +
@@ -124,4 +130,75 @@ export const getTxId = async (receipt_id: string) => {
     .catch(() => {
       return [];
     });
+};
+
+export const getDclPoolPoints = async (
+  pool_id: string,
+  bin: number,
+  start_point: number,
+  end_point: number
+) => {
+  return await fetch(
+    config.indexerUrl +
+      `/get-dcl-points?pool_id=${pool_id}&slot_number=${bin}&start_point=${start_point}&end_point=${end_point}`,
+    {
+      headers: getAuthenticationHeaders("/get-dcl-points"),
+    }
+  )
+    .then(async (res) => {
+      const data = await res.json();
+      return data;
+    })
+    .catch(() => {
+      return {};
+    });
+};
+export const getDclUserPoints = async (
+  pool_id: string,
+  bin: number,
+  account_id: string
+) => {
+  return await fetch(
+    config.indexerUrl +
+      `/get-dcl-points-by-account?pool_id=${pool_id}&slot_number=${bin}&account_id=${account_id}`,
+    {
+      headers: getAuthenticationHeaders("/get-dcl-points-by-account"),
+    }
+  )
+    .then(async (res) => {
+      const data = await res.json();
+      return data;
+    })
+    .catch(() => {
+      return [];
+    });
+};
+
+export interface DCLPoolFee {
+  total_fee: string;
+  total_liquidity: string;
+}
+
+export const getDCLAccountFee = async (props: {
+  pool_id: string | number;
+  account_id: string | number;
+}): Promise<DCLPoolFee> => {
+  const paramString = genUrlParams(props);
+  try {
+    return await fetch(
+      config.indexerUrl + `/get-fee-by-account?${paramString}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+          ...getAuthenticationHeaders("/get-fee-by-account"),
+        },
+      }
+    ).then((res) => res.json());
+  } catch (error) {
+    return {
+      total_fee: "",
+      total_liquidity: "",
+    };
+  }
 };

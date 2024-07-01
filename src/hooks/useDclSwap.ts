@@ -37,11 +37,11 @@ const useDclSwap = ({
     }
   }, [trigger]);
   function dclEstimateWrap() {
-    setDclSwapEstimateResult({
-      dclQuoteDone: false,
-      dclTag: `${tokenIn.id}@${tokenOut.id}@${tokenInAmount}`,
-    });
     if (tokenIn?.id && tokenOut?.id && Number(tokenInAmount) > 0) {
+      setDclSwapEstimateResult({
+        dclQuoteDone: false,
+        dclTag: `${tokenIn.id}@${tokenOut.id}@${tokenInAmount}`,
+      });
       if (tokenIn?.id == tokenOut?.id) {
         setFirstInput(false);
         setDclSwapEstimateResult({

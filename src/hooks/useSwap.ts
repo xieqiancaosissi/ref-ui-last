@@ -45,10 +45,12 @@ const useSwap = ({
     }
   }, [trigger]);
   function estimateWrap() {
-    setSwapEstimateResult({
-      quoteDone: false,
-      tag: `${tokenIn.id}@${tokenOut.id}@${tokenInAmount}`,
-    });
+    if (tokenIn?.id && tokenOut?.id && Number(tokenInAmount) > 0) {
+      setSwapEstimateResult({
+        quoteDone: false,
+        tag: `${tokenIn?.id}@${tokenOut?.id}@${tokenInAmount}`,
+      });
+    }
     if (is_near_wnear_swap(tokenIn, tokenOut) && Number(tokenInAmount) > 0) {
       setSwapEstimateResult({
         is_near_wnear_swap: true,

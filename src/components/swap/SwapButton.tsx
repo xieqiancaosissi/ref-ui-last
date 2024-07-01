@@ -125,7 +125,7 @@ export default function SwapButton({
           <Skeleton height={42} className="mt-4" />
         </SkeletonTheme>
       ) : null}
-      {buttonStatus == "unLogin" ? (
+      {buttonStatus == "unLogin" && !loading ? (
         <div
           className="flex items-center justify-center bg-greenGradient rounded mt-4 text-black font-bold text-base cursor-pointer"
           style={{ height: "42px" }}

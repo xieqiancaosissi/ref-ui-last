@@ -15,7 +15,7 @@ import { TOKEN_LIST_FOR_RATE } from "@/services/commonV3";
 
 export default function TvlAndVolumeCharts(props: any) {
   const [rateDirection, setRateDirection] = useState(true);
-  const [isActive, setActive] = useState("liquidity");
+  const [isActive, setActive] = useState("tvl");
   const [isFinished, setIsFinished] = useState(false);
   const { poolDetail, tokenPriceList } = props;
   const { monthTVLById, xTvl, yTvl } = useV3MonthTVL(poolDetail.id);
@@ -154,7 +154,7 @@ export default function TvlAndVolumeCharts(props: any) {
       </div>
 
       {/* charts */}
-      {
+      {isFinished && (
         <div className={styles.chartsContent} ref={refDom}>
           {isActive == "tvl" && poolDetail.id && (
             <TVlCharts {...{ poolId: poolDetail.id, xTvl, yTvl }} />
@@ -174,7 +174,7 @@ export default function TvlAndVolumeCharts(props: any) {
             ></DclChart>
           )}
         </div>
-      }
+      )}
     </div>
   );
 }
@@ -241,7 +241,7 @@ export function TVlCharts(props: any) {
         },
       },
       grid: {
-        left: "-8%",
+        left: "-6%",
         right: "2%",
         bottom: "20%",
         containLabel: true,
@@ -380,7 +380,7 @@ export function VolumeCharts(props: any) {
         },
       },
       grid: {
-        left: "-8%",
+        left: "-6%",
         right: "2%",
         bottom: "20%",
         containLabel: true,

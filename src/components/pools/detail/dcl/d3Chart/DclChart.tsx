@@ -879,6 +879,7 @@ export default function DclChart({
   }) {
     const { current_point } = pool;
     const { colors } = getConfig();
+
     d3.select(`${randomId} .bars_liquidity`)
       .selectAll("rect")
       .data(data)
@@ -886,7 +887,9 @@ export default function DclChart({
       .transition()
       .attr("width", function (d) {
         return (
-          scale(Big(d.price_r).toNumber()) - scale(Big(d.price_l).toNumber())
+          scale(Big(d.price_r).toNumber()) -
+          scale(Big(d.price_l).toNumber()) -
+          1
         );
       })
       .attr("height", function (d) {
@@ -899,12 +902,12 @@ export default function DclChart({
       .attr("y", function (d) {
         return wholeBarHeight - get_final_bar_height(scaleBar(+d.liquidity));
       })
-      .attr("rx", 2)
+      .attr("rx", 1)
       .attr("fill", function (d) {
         if (reverse) {
-          return +d.point_r >= current_point ? colors[1] : colors[0];
+          return +d.point_r >= current_point ? "#2E9CFF" : "#7E8A93";
         } else {
-          return +d.point_l >= current_point ? colors[1] : colors[0];
+          return +d.point_l >= current_point ? "#2E9CFF" : "#7E8A93";
         }
       });
   }
@@ -926,7 +929,9 @@ export default function DclChart({
       .transition()
       .attr("width", function (d) {
         return (
-          scale(Big(d.price_r).toNumber()) - scale(Big(d.price_l).toNumber())
+          scale(Big(d.price_r).toNumber()) -
+          scale(Big(d.price_l).toNumber()) -
+          1
         );
       })
       .attr("height", function (d) {
@@ -939,18 +944,22 @@ export default function DclChart({
         return (
           wholeBarHeight -
           get_final_bar_height(scaleBar(+d.liquidity)) -
-          get_final_bar_height(scaleBar(+d.order_liquidity))
+          get_final_bar_height(scaleBar(+d.order_liquidity)) -
+          1
         );
       })
-      .attr("rx", 2)
+      .attr("rx", 1)
       .attr("fill", function (d) {
         if (reverse) {
-          return +d.point_r >= current_point ? colors[1] : colors[0];
+          return +d.point_r >= current_point
+            ? "rgba(46, 156, 255, 0.3)"
+            : "rgba(255, 255, 255, 0.3)";
         } else {
-          return +d.point_l >= current_point ? colors[1] : colors[0];
+          return +d.point_l >= current_point
+            ? "rgba(46, 156, 255, 0.3)"
+            : "rgba(255, 255, 255, 0.3)";
         }
-      })
-      .attr("opacity", "0.7");
+      });
   }
   function get_final_bar_height(h: number) {
     if (Big(h || 0).lt(min_bar_height) && Big(h || 0).gt(0))
@@ -990,7 +999,7 @@ export default function DclChart({
       .data(data)
       .join("rect")
       .on("mousemove", function (e, d) {
-        d3.select(this).attr("fill", "rgba(255,255,255,0.1)");
+        d3.select(this).attr("fill", "rgba(158, 255, 0, 0.1)");
         hoverBox(e, d);
       })
       .on("mouseleave", function (e, d) {
@@ -1000,7 +1009,9 @@ export default function DclChart({
       .transition()
       .attr("width", function (d) {
         return (
-          scale(Big(d.price_r).toNumber()) - scale(Big(d.price_l).toNumber())
+          scale(Big(d.price_r).toNumber()) -
+          scale(Big(d.price_l).toNumber()) -
+          1
         );
       })
       .attr("height", function (d) {
@@ -1012,7 +1023,7 @@ export default function DclChart({
       .attr("y", function (d) {
         return 0;
       })
-      .attr("rx", 2)
+      .attr("rx", 1)
       .attr("fill", "transparent");
   }
   function draw_background_bars_user({
@@ -1055,7 +1066,7 @@ export default function DclChart({
           whole_bars_background_padding
         );
       })
-      .attr("rx", 4)
+      .attr("rx", 1)
       .attr("fill", "transparent");
   }
   function draw_background_bars_for_select_area({
@@ -1105,7 +1116,7 @@ export default function DclChart({
           whole_bars_background_padding
         );
       })
-      .attr("rx", 4)
+      .attr("rx", 1)
       .attr("fill", "rgba(255,255,255,0.1)");
   }
   function draw_current_bar({ scale }: { scale: Function }) {
@@ -1549,7 +1560,7 @@ export default function DclChart({
         </div> */}
         </div>
         <svg width={svgWidth} height={svgHeight}>
-          <g transform={`translate(-20, 0)`}>
+          <g transform={`translate(0, 0)`} width={svgWidth} height={svgHeight}>
             <g className="bars_order"></g>
             <g className="bars_liquidity"></g>
             <g className="bars_background"></g>
@@ -1569,7 +1580,7 @@ export default function DclChart({
                   width={percentBoxWidth}
                   height="22"
                   fill="#172631"
-                  rx="4"
+                  rx="1"
                 ></rect>
                 <text
                   x="22"
@@ -1613,7 +1624,7 @@ export default function DclChart({
                   width={percentBoxWidth}
                   height="22"
                   fill="#172631"
-                  rx="4"
+                  rx="1"
                 ></rect>
                 <text
                   x="22"
@@ -1694,15 +1705,18 @@ export default function DclChart({
           </g>
         </svg>
         {/* show hover box then hover on the bin */}
-        <div className="overBox xsm:w-full lg:absolute rounded-xl bg-chartHoverBoxBg border border-assetsBorder px-3 py-2 xsm:hidden xsm:mt-4 lg:invisible z-10">
+        <div
+          className="overBox w-75 min-h-48 flex flex-col lg:fixed rounded-xl bg-modalGrayBg  p-4 xsm:hidden xsm:mt-4 lg:invisible"
+          style={{ zIndex: 9999999 }}
+        >
           <div className="flex items-center justify-between my-2">
-            <span className="text-xs text-white">APR(24h)</span>
+            <span className="text-xs text-gray-60">APR(24h)</span>
             <span className="text-xs text-white gotham_bold">
               {binDetail?.feeApr}
             </span>
           </div>
           <div className="flex items-center justify-between my-2">
-            <span className="text-xs text-white mr-10">Price</span>
+            <span className="text-xs text-gray-60 mr-10">Price</span>
             <span className="text-xs text-white gotham_bold">
               {reverse ? (
                 <>
@@ -1722,7 +1736,7 @@ export default function DclChart({
           {binDetail?.token_x_amount ? (
             <>
               <div className="flex items-center justify-between my-2">
-                <span className="text-xs text-white">
+                <span className="text-xs text-gray-60">
                   {pool?.token_x_metadata?.symbol} Amount
                 </span>
                 <span className="text-xs text-white gotham_bold">
@@ -1737,10 +1751,10 @@ export default function DclChart({
                       width: "10px",
                       height: "10px",
                       borderRadius: "3px",
-                      backgroundColor: `${binDetail?.colors[1]}`,
+                      backgroundColor: `rgba(46, 156, 255, 1)`,
                     }}
                   ></span>
-                  <span className="text-xs text-white">in Liquidity</span>
+                  <span className="text-xs text-gray-60">in Liquidity</span>
                 </div>
                 <span className="text-xs text-white gotham_bold">
                   {binDetail.token_x_amount_in_liquidity}
@@ -1754,10 +1768,10 @@ export default function DclChart({
                       width: "10px",
                       height: "10px",
                       borderRadius: "3px",
-                      backgroundColor: `${binDetail?.colors[1]}`,
+                      backgroundColor: `rgba(46, 156, 255, 1)`,
                     }}
                   ></span>
-                  <span className="text-xs text-white">in Limit Orders</span>
+                  <span className="text-xs text-gray-60">in Limit Orders</span>
                 </div>
                 <span className="text-xs text-white gotham_bold">
                   {binDetail.token_x_amount_in_order}
@@ -1768,7 +1782,7 @@ export default function DclChart({
           {binDetail?.token_y_amount ? (
             <>
               <div className="flex items-center justify-between my-2">
-                <span className="text-xs text-white">
+                <span className="text-xs text-gray-60">
                   {pool?.token_y_metadata?.symbol} Amount
                 </span>
                 <span className="text-xs text-white gotham_bold">
@@ -1783,10 +1797,10 @@ export default function DclChart({
                       width: "10px",
                       height: "10px",
                       borderRadius: "3px",
-                      backgroundColor: `${binDetail?.colors[0]}`,
+                      backgroundColor: `rgba(255, 255, 255, 0.3)`,
                     }}
                   ></span>
-                  <span className="text-xs text-white">in Liquidity</span>
+                  <span className="text-xs text-gray-60">in Liquidity</span>
                 </div>
                 <span className="text-xs text-white gotham_bold">
                   {binDetail.token_y_amount_in_liquidity}
@@ -1800,10 +1814,10 @@ export default function DclChart({
                       width: "10px",
                       height: "10px",
                       borderRadius: "3px",
-                      backgroundColor: `${binDetail?.colors[0]}`,
+                      backgroundColor: `rgba(255, 255, 255, 0.3)`,
                     }}
                   ></span>
-                  <span className="text-xs text-white">in Limit Orders</span>
+                  <span className="text-xs text-gray-60">in Limit Orders</span>
                 </div>
                 <span className="text-xs text-white gotham_bold">
                   {binDetail.token_y_amount_in_order}
@@ -1858,9 +1872,9 @@ export default function DclChart({
           </div>
         </div>
         {/* current price area */}
-        <div className="currentLine flex flex-col items-center absolute left-0 pointer-events-none">
+        {/* <div className="currentLine flex flex-col items-center absolute left-0 pointer-events-none">
           <div
-            className="border border-white border-dashed"
+            className="border border-green-10 border-dashed"
             style={{ height: svgHeight + "px" }}
           ></div>
           <div
@@ -1895,7 +1909,7 @@ export default function DclChart({
               </span>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
       {!chartDataListDone && (
         <div

@@ -74,6 +74,10 @@ export default function TvlAndVolumeCharts(props: any) {
     }
   }, [monthVolumeById]);
 
+  function switchRate() {
+    setRateDirection(!rateDirection);
+  }
+
   return (
     <div>
       {/* tab bar */}
@@ -105,7 +109,10 @@ export default function TvlAndVolumeCharts(props: any) {
           <p className="frcc">
             <ExchangeIcon
               className="mt-auto mr-1 mb-1 cursor-pointer opacity-40 hover:opacity-100"
-              onClick={() => exchange()}
+              onClick={() => {
+                exchange();
+                switchRate();
+              }}
             />
             {/* dom render in html formatter above: 1 Near($5.2) = 7Ref */}
             <span className="mr-1">1</span>

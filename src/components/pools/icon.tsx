@@ -1003,7 +1003,7 @@ export const DCLIcon = (props: any) => {
 };
 
 export const BlueCircleLoading = (props: any) => {
-  const { className } = props;
+  const { className, color } = props;
   return (
     <svg
       className={`rotateInfinite ${className}`}
@@ -1018,7 +1018,7 @@ export const BlueCircleLoading = (props: any) => {
       <path
         stroke="none"
         d="M10 50A40 40 0 0 0 90 50A40 42 0 0 1 10 50"
-        fill="#10B981"
+        fill={color ? color : "#9EFE01"}
       ></path>{" "}
     </svg>
   );

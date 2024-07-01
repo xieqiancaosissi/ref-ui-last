@@ -14,6 +14,8 @@ import {
 } from "@/utils/uiNumber";
 import { getPoolIndexTvlOR24H, getAllPoolData } from "@/services/pool";
 
+import { BlueCircleLoading } from "../icon";
+
 export default function Charts({
   title,
   type,
@@ -142,6 +144,19 @@ export default function Charts({
           }}
         ></div>
       </div>
+      {!chartsData && (
+        <div
+          className="frcc absolute bottom-10"
+          style={{
+            left: "50%",
+            transform: "translateX(-50%)",
+          }}
+        >
+          <BlueCircleLoading
+            color={type == "tvl" ? "#9EFE01" : "#657EFF"}
+          ></BlueCircleLoading>
+        </div>
+      )}
     </div>
   );
 }

@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import * as charts from "echarts";
 import styles from "./style.module.css";
-import { useMonthTVL, useMonthVolume } from "@/hooks/usePoolDetailCharts";
+import { useV3MonthTVL, useV3MonthVolume } from "@/hooks/usePoolDetailCharts";
 import LiquidityCharts from "./LiquidityCharts";
 import {
   toInternationalCurrencySystem_number,
@@ -18,8 +18,8 @@ export default function TvlAndVolumeCharts(props: any) {
   const [isActive, setActive] = useState("liquidity");
   const [isFinished, setIsFinished] = useState(false);
   const { poolDetail, tokenPriceList } = props;
-  const { monthTVLById, xTvl, yTvl } = useMonthTVL(poolDetail.id);
-  const { monthVolumeById, xMonth, yMonth } = useMonthVolume(poolDetail.id);
+  const { monthTVLById, xTvl, yTvl } = useV3MonthTVL(poolDetail.id);
+  const { monthVolumeById, xMonth, yMonth } = useV3MonthVolume(poolDetail.id);
   const refDom: any = useRef(null);
   const [currentSort, setCurrenSort] = useState([0, 1]);
   const svgDefaultWidth = isMobile()

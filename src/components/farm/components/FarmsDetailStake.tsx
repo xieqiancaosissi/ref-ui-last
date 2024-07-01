@@ -203,7 +203,7 @@ export default function FarmsDetailStake(props: {
     });
   }
   return (
-    <div className="bg-dark-10 rounded-md px-5 pt-5 mb-2.5 h-full">
+    <div className="bg-dark-10 rounded-md p-5">
       <div className="flex items-center mb-4">
         <button
           className={`text-lg pr-5 ${
@@ -278,7 +278,7 @@ export default function FarmsDetailStake(props: {
           </div>
           <div className="mt-5">
             <div
-              className="flex items-center justify-between mb-4 cursor-pointer"
+              className="flex items-center justify-between mb-2 cursor-pointer"
               onClick={() => {
                 setShowCalc(!showCalc);
               }}
@@ -362,7 +362,7 @@ export default function FarmsDetailStake(props: {
               Text={() => <>Unstake</>}
             />
           </div>
-          <div className="mt-5 flex items-center">
+          <div className="mt-5 flex items-center mb-2">
             <FarmDetailsWarn />
             <p className="ml-1.5 text-gray-10 text-sm">
               Staking or unstaking will automatically claim your rewards.

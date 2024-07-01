@@ -113,6 +113,7 @@ const config: Config = {
         farmItemBg:
           "radial-gradient(59.55% 113.53% at 25.15% -10.79%, rgba(250, 255, 0, 0.3) 0%, rgba(33, 43, 53, 0.09) 100%)",
         createPoolLinear: "linear-gradient(90deg, #9EFF00 1.39%, #5F9900 100%)",
+        AddLiquidityBg: "linear-gradient(90deg, #8BE100 0%, #0099A3 100%)",
       }),
     },
     screens: {
@@ -175,6 +176,9 @@ const config: Config = {
           flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
+        },
+        ".blur-2": {
+          filter: "blur(2px)",
         },
       });
     }),

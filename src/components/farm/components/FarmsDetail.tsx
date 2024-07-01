@@ -37,6 +37,7 @@ import {
 } from "@/services/m-token";
 import UserStakeBlock from "./FarmsDetailClaim";
 import FarmsDetailStake from "./FarmsDetailStake";
+import { getPoolsDetailById } from "@/services/pool";
 
 const ONLY_ZEROS = /^0*\.?0*$/;
 const {
@@ -640,7 +641,7 @@ export default function FarmsDetail(props: {
       {/* content */}
       <div className="w-3/5 pt-16 m-auto pb-8">
         <div className="ml-32 flex">
-          <div className="flex-1 mr-2.5">
+          <div className="flex-1 mr-2.5 h-full">
             <UserStakeBlock
               detailData={detailData}
               tokenPriceList={tokenPriceList}
@@ -654,21 +655,29 @@ export default function FarmsDetail(props: {
               radio={radio}
             ></UserStakeBlock>
           </div>
-          <div className="flex-1">
-            <FarmsDetailStake
-              detailData={detailData}
-              tokenPriceList={tokenPriceList}
-              stakeType="free"
-              serverTime={serverTime ?? 0}
-              lpBalance={lpBalance}
-              loveSeed={loveSeed}
-              boostConfig={boostConfig}
-              user_seeds_map={user_seeds_map}
-              user_unclaimed_map={user_unclaimed_map}
-              user_unclaimed_token_meta_map={user_unclaimed_token_meta_map}
-              user_data_loading={user_data_loading}
-              radio={radio}
-            ></FarmsDetailStake>
+          <div className="relative flex-1 h-full">
+            {showAddLiquidityEntry ? (
+              <AddLiquidityEntryBar
+                detailData={detailData}
+                showAddLiquidityEntry={showAddLiquidityEntry}
+              ></AddLiquidityEntryBar>
+            ) : null}
+            <div className={`h-full ${showAddLiquidityEntry ? "blur-2" : ""}`}>
+              <FarmsDetailStake
+                detailData={detailData}
+                tokenPriceList={tokenPriceList}
+                stakeType="free"
+                serverTime={serverTime ?? 0}
+                lpBalance={lpBalance}
+                loveSeed={loveSeed}
+                boostConfig={boostConfig}
+                user_seeds_map={user_seeds_map}
+                user_unclaimed_map={user_unclaimed_map}
+                user_unclaimed_token_meta_map={user_unclaimed_token_meta_map}
+                user_data_loading={user_data_loading}
+                radio={radio}
+              ></FarmsDetailStake>
+            </div>
           </div>
         </div>
       </div>
@@ -689,5 +698,61 @@ export default function FarmsDetail(props: {
         />
       ) : null}
     </main>
+  );
+}
+
+type Pool = {
+  token_account_ids: string[];
+};
+function AddLiquidityEntryBar(props: {
+  detailData: Seed;
+  showAddLiquidityEntry: any;
+}) {
+  const { detailData, showAddLiquidityEntry } = props;
+  const [addLiquidityModalVisible, setAddLiquidityModalVisible] =
+    useState(false);
+  const poolA = detailData.pool;
+  const poolId = poolA?.id;
+  const [pool, setPool] = useState<Pool | null>(null);
+  const [tokens, setTokens] = useState<TokenMetadata[]>([]);
+  const [addLiquidityButtonLoading, setAddLiquidityButtonLoading] =
+    useState(true);
+
+  useEffect(() => {
+    if (poolId) {
+      getPoolsDetailById({ pool_id: poolId as any }).then((res) => {
+        setPool(res.data);
+      });
+    }
+  }, [poolId]);
+  const fetchedTokens = useTokens(pool?.token_account_ids || []);
+  useEffect(() => {
+    if (fetchedTokens) {
+      setTokens(fetchedTokens);
+      setAddLiquidityButtonLoading(!(fetchedTokens.length > 0 && pool));
+    }
+  }, [pool]);
+
+  const needForbidden =
+    (FARM_BLACK_LIST_V2 || []).indexOf(poolId?.toString() || "") > -1;
+  if (!showAddLiquidityEntry || needForbidden) return null;
+
+  return (
+    <div
+      className="absolute inset-0 bg-dark-45 bg-opacity-70 flex flex-col items-center justify-center z-50 border rounded-lg px-12"
+      style={{
+        border: "1px solid",
+        borderImageSource: "linear-gradient(180deg, #00D1FF 0%, #9EFE01 100%)",
+        borderImageSlice: "1",
+      }}
+    >
+      <p className="text-base mb-6">
+        You need LP tokens to stake into the corresponding farm. First, add
+        liquidity to the pool to get LP tokens.
+      </p>
+      <div className="text-base frcc h-12 bg-AddLiquidityBg rounded w-72">
+        Add Liquidity
+      </div>
+    </div>
   );
 }

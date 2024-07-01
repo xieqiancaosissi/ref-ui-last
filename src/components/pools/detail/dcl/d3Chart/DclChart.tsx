@@ -986,7 +986,7 @@ export default function DclChart({
       .data(data)
       .join("rect")
       .on("mousemove", function (e, d) {
-        d3.select(this).attr("fill", "rgba(158, 255, 0, 0.1)");
+        d3.select(this).attr("fill", "rgba(255, 255, 255, 0.1)");
         hoverBox(e, d);
       })
       .on("mouseleave", function (e, d) {

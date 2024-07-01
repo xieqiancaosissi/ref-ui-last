@@ -99,15 +99,7 @@ export const useDefaultWhitelistTokens = () => {
     const metadatas = (
       await Promise.all(tokenIds.map((tokenId) => ftGetTokenMetadata(tokenId)))
     ).filter((_) => _);
-    const tokens = metadatas.map((token: TokenMetadata) => {
-      return {
-        ...token,
-        ...(accountWhitelistIds.includes(token.id)
-          ? { isUserToken: true }
-          : {}),
-      };
-    });
-    return tokens;
+    return metadatas;
   }
   async function setGlobalWhitelistTokenIds() {
     const globalWhitelist = await getGlobalWhitelist();
@@ -123,5 +115,9 @@ export const useDefaultWhitelistTokens = () => {
     accountTokenStore.setOwner(accountId);
     setAccountWhitelistIds(accountWhitelist || []);
   }
-  return whiteListTokens;
+  return {
+    whiteListTokens,
+    globalWhitelistIds,
+    accountWhitelistIds,
+  };
 };

@@ -22,23 +22,23 @@ export const useSelectTokens = (): ISelectTokens => {
     totalList: [],
     tokensLoading: true,
   });
-  const whitelistToken = useDefaultWhitelistTokens();
+  const { whiteListTokens, globalWhitelistIds } = useDefaultWhitelistTokens();
   const { autoWhitelistedPostfix, autoWhitelistTokens } =
-    useAutoWhitelistTokens(whitelistToken);
+    useAutoWhitelistTokens(whiteListTokens);
   const tokenStore = useTokenStore() as ITokenStore;
   useEffect(() => {
-    if (whitelistToken.length > 0 && autoWhitelistedPostfix) {
+    if (whiteListTokens.length > 0 && autoWhitelistedPostfix) {
       getSelectTokens();
     }
   }, [
-    JSON.stringify(whitelistToken || []),
+    JSON.stringify(whiteListTokens || []),
     JSON.stringify(autoWhitelistTokens || []),
     autoWhitelistedPostfix?.length,
   ]);
   async function getSelectTokens() {
-    const defaultList = whitelistToken.map((token) => {
+    const defaultList = whiteListTokens.map((token) => {
       if (
-        token.isUserToken &&
+        !globalWhitelistIds.includes(token.id) &&
         autoWhitelistedPostfix?.some((p) => token.id.includes(p))
       ) {
         return {

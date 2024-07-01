@@ -21,7 +21,6 @@ interface TokenMetadata {
   decimals: number;
   icon: string;
   isRisk?: boolean;
-  isUserToken?: boolean;
 }
 
 export interface FarmDexie {

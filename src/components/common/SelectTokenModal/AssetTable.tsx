@@ -56,7 +56,7 @@ export default function AssetTable() {
         <div className="flex items-stretch border border-gray-100 rounded-md h-6 text-xs">
           <span
             className={`flexBetween cursor-pointer rounded-tl rounded-bl px-1.5 ${
-              tab == "default" ? "bg-gray-100" : ""
+              tab == "default" ? "bg-gray-100 text-white" : ""
             }`}
             onClick={() => {
               setTab("default");
@@ -66,7 +66,7 @@ export default function AssetTable() {
           </span>
           <div
             className={`flexBetween rounded-tr rounded-br gap-1 cursor-pointer px-1.5 ${
-              tab == "tkn" ? "bg-gray-100" : ""
+              tab == "tkn" ? "bg-gray-100 text-white" : ""
             }`}
             onClick={() => {
               setTab("tkn");

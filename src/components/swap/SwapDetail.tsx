@@ -35,6 +35,10 @@ export default function SwapDetail() {
   const [fromSymbol, toSymbol, fromPrice, rate] = useMemo(() => {
     if (Big(tokenInAmount || 0).gt(0) && Big(tokenOutAmount || 0).gt(0)) {
       let fromSymbol, toSymbol, fromPrice, rate;
+      const d_out = toPrecision(
+        tokenOutAmount,
+        Math.min(8, tokenOut?.decimals ?? 8)
+      );
       if (isRevert) {
         fromSymbol = tokenIn.symbol;
         toSymbol = tokenOut.symbol;
@@ -42,7 +46,7 @@ export default function SwapDetail() {
           allTokenPrices[tokenIn.id]?.price || "0",
           2
         );
-        rate = getRate(tokenOutAmount, tokenInAmount);
+        rate = getRate(d_out, tokenInAmount);
       } else {
         fromSymbol = tokenOut.symbol;
         toSymbol = tokenIn.symbol;
@@ -50,7 +54,7 @@ export default function SwapDetail() {
           allTokenPrices[tokenOut.id]?.price || "0",
           2
         );
-        rate = getRate(tokenInAmount, tokenOutAmount);
+        rate = getRate(tokenInAmount, d_out);
       }
       return [fromSymbol, toSymbol, fromPrice, rate];
     }

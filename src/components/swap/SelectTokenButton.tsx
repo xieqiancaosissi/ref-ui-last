@@ -52,17 +52,32 @@ export default function SelectTokenButton(props: ISelectTokenButtonProps) {
           className="flex items-center cursor-pointer flex-shrink-0"
           onClick={showModal}
         >
-          <Image
-            width="20"
-            height="20"
-            alt=""
-            src={showToken.icon || "/images/placeholder.svg"}
+          <div
+            className="flex justify-center relative overflow-hidden rounded-full border border-gray-110"
             style={{
-              width: "20px",
-              height: "20px",
+              width: "24px",
+              height: "24px",
             }}
-            className="rounded-full border border-gray-110"
-          />
+          >
+            <img
+              className="flex-shrink-0 w-6 h-6"
+              src={showToken.icon || "/images/placeholder.svg"}
+              alt=""
+            />
+            {showToken.isRisk ? (
+              <span
+                className="italic text-white bg-black bg-opacity-70 absolute bottom-0"
+                style={{ width: "24px", height: "10px" }}
+              >
+                <label
+                  className="text-sm block transform scale-50 relative font-extrabold"
+                  style={{ top: "-5px", left: "-1px" }}
+                >
+                  TKN
+                </label>
+              </span>
+            ) : null}
+          </div>
           <span className="text-white font-bold text-base ml-1.5 mr-2.5 ">
             {showToken.symbol}
           </span>

@@ -22,7 +22,7 @@ const TradeRouteHub = ({
   }
   return (
     <div
-      className="flex flex-col justify-center relative z-10 text-gray-180 text-xs rounded-md px-2.5 py-1 border border-gray-170 bg-dark-60"
+      className="flex flex-col justify-center relative z-10 text-gray-180 text-xs rounded-md px-2.5 py-1 border border-gray-170 bg-dark-60 hover:bg-gray-20"
       style={{
         height: "60px",
       }}

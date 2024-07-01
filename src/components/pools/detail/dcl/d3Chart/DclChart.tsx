@@ -113,19 +113,6 @@ export default function DclChart({
     timer: "",
   });
 
-  // console.log(
-  //   pool,
-  //   price_range,
-  //   chartDataList,
-  //   binDetail,
-  //   dragLeftPoint,
-  //   dragRightPoint,
-  //   zoom
-  // );
-
-  // price_range   x轴  等分10份
-  // 中间位置
-
   const dragBarWidth = 28;
   const radiusDragBarWidth = 20;
   const percentBoxWidth = 44;
@@ -205,12 +192,12 @@ export default function DclChart({
   }, [newlyAddedLiquidities, user_liquidities]);
   useEffect(() => {
     if (
-      isValid(dragLeftPoint) &&
+      isValid(dragLeftPoint as any) &&
       !appearanceConfig.controlHidden &&
       drawChartDone
     ) {
       const scale = scaleAxis();
-      const newPoint = dragLeftPoint;
+      const newPoint: any = dragLeftPoint;
       let newPrice;
       if (reverse) {
         newPrice = reverse_price(get_price_by_point(newPoint));
@@ -259,7 +246,7 @@ export default function DclChart({
       drawChartDone
     ) {
       const scale = scaleAxis();
-      const newPoint = dragRightPoint;
+      const newPoint: any = dragRightPoint;
       let newPrice = reverse_price(get_price_by_point(newPoint));
       if (reverse) {
         newPrice = reverse_price(get_price_by_point(newPoint));
@@ -319,7 +306,7 @@ export default function DclChart({
     if (!config.controlHidden && pool_id && drawChartDone) {
       bind_radius_mode_bar_event();
     }
-  }, [config.controlHidden, drawChartDone, price_range, pool_id, radius]);
+  }, [config?.controlHidden, drawChartDone, price_range, pool_id, radius]);
 
   // draw remove area for user
   useEffect(() => {
@@ -352,8 +339,8 @@ export default function DclChart({
       pool_id,
       account_id: accountId,
     });
-    const price_x = tokenPriceList[token_x_metadata.id]?.price || 0;
-    const price_y = tokenPriceList[token_y_metadata.id]?.price || 0;
+    const price_x = (tokenPriceList as any)[token_x_metadata.id]?.price || 0;
+    const price_y = (tokenPriceList as any)[token_y_metadata.id]?.price || 0;
 
     const points: number[] = [];
     let total_x_amount = Big(0);
@@ -718,10 +705,10 @@ export default function DclChart({
   }
   function process_back_end_data_in_range() {
     const { bin: bin_final } = getConfig();
-    const { point_delta } = pool;
+    const { point_delta }: any = pool;
     const list =
       chartType == "USER" ? chartDataList : getChartDataListInRange();
-    const data: IChartData[] = list?.map((o: IChartData) => {
+    const data: IChartData[] | any = list?.map((o: IChartData) => {
       const { point } = o;
       let price_l, price_r, point_l, point_r;
       if (reverse) {
@@ -774,8 +761,8 @@ export default function DclChart({
       order_y,
       fee,
       total_liquidity,
-    } = d;
-    const { colors } = getConfig();
+    }: any = d;
+    const { colors }: any = getConfig();
 
     const total_token_x = Big(token_x).plus(order_x);
     const total_token_y = Big(token_y).plus(order_y);
@@ -877,7 +864,7 @@ export default function DclChart({
     scale: Function;
     scaleBar: Function;
   }) {
-    const { current_point } = pool;
+    const { current_point }: any = pool;
     const { colors } = getConfig();
 
     d3.select(`${randomId} .bars_liquidity`)
@@ -885,7 +872,7 @@ export default function DclChart({
       .data(data)
       .join("rect")
       .transition()
-      .attr("width", function (d) {
+      .attr("width", function (d: any) {
         return (
           scale(Big(d.price_r).toNumber()) -
           scale(Big(d.price_l).toNumber()) -
@@ -895,7 +882,7 @@ export default function DclChart({
       .attr("height", function (d) {
         return get_final_bar_height(scaleBar(+d.liquidity));
       })
-      .attr("x", function (d) {
+      .attr("x", function (d: any) {
         // console.log(Big(d.price_l).toNumber(), "x", d.price_l);
         return scale(Big(d.price_l).toNumber());
       })
@@ -903,7 +890,7 @@ export default function DclChart({
         return wholeBarHeight - get_final_bar_height(scaleBar(+d.liquidity));
       })
       .attr("rx", 1)
-      .attr("fill", function (d) {
+      .attr("fill", function (d: any) {
         if (reverse) {
           return +d.point_r >= current_point ? "#2E9CFF" : "#7E8A93";
         } else {
@@ -921,26 +908,26 @@ export default function DclChart({
     scaleBar: Function;
   }) {
     const { colors } = getConfig();
-    const { current_point } = pool;
+    const { current_point }: any = pool;
     d3.select(`${randomId} .bars_order`)
       .selectAll("rect")
       .data(data)
       .join("rect")
       .transition()
-      .attr("width", function (d) {
+      .attr("width", function (d: any) {
         return (
           scale(Big(d.price_r).toNumber()) -
           scale(Big(d.price_l).toNumber()) -
           1
         );
       })
-      .attr("height", function (d) {
+      .attr("height", function (d: any) {
         return get_final_bar_height(scaleBar(+d.order_liquidity));
       })
-      .attr("x", function (d) {
+      .attr("x", function (d: any) {
         return scale(Big(d.price_l).toNumber());
       })
-      .attr("y", function (d) {
+      .attr("y", function (d: any) {
         return (
           wholeBarHeight -
           get_final_bar_height(scaleBar(+d.liquidity)) -
@@ -949,7 +936,7 @@ export default function DclChart({
         );
       })
       .attr("rx", 1)
-      .attr("fill", function (d) {
+      .attr("fill", function (d: any) {
         if (reverse) {
           return +d.point_r >= current_point
             ? "rgba(46, 156, 255, 0.3)"
@@ -1007,7 +994,7 @@ export default function DclChart({
         LeaveBox(e, d);
       })
       .transition()
-      .attr("width", function (d) {
+      .attr("width", function (d: any) {
         return (
           scale(Big(d.price_r).toNumber()) -
           scale(Big(d.price_l).toNumber()) -
@@ -1017,7 +1004,7 @@ export default function DclChart({
       .attr("height", function (d) {
         return wholeBarHeight;
       })
-      .attr("x", function (d) {
+      .attr("x", function (d: any) {
         return scale(Big(d.price_l).toNumber());
       })
       .attr("y", function (d) {
@@ -1079,7 +1066,7 @@ export default function DclChart({
     const { sortP, sortY } = get_price_and_liquidity_range();
     const min_bin_price = sortP[0];
     const max_bin_price = sortP[sortP.length - 1];
-    const { fromLeft, fromRight, all, point } = removeParams;
+    const { fromLeft, fromRight, all, point }: any = removeParams;
     let remove_to_price: string;
     if (reverse) {
       remove_to_price = reverse_price(get_price_by_point(point));
@@ -1096,7 +1083,7 @@ export default function DclChart({
         } else if (fromRight) {
           return scale(max_bin_price) - scale(remove_to_price);
         }
-      })
+      } as any)
       .attr("height", function () {
         return (
           scaleBar(sortY[sortY.length - 1]) + whole_bars_background_padding
@@ -1184,7 +1171,7 @@ export default function DclChart({
       .select("text")
       .text(`${diffPrices(price_l)}%`)
       .attr("fill", "white");
-    const dragLeft = d3.drag().on("drag", function (e) {
+    const dragLeft: any = d3.drag().on("drag", function (e) {
       const rightX = Number(
         d3
           .select(`${randomId} .drag-right`)
@@ -1247,7 +1234,7 @@ export default function DclChart({
       .select("text")
       .text(`${diffPrices(price_r)}%`)
       .attr("fill", "white");
-    const dragRight = d3.drag().on("drag", (e) => {
+    const dragRight: any = d3.drag().on("drag", (e) => {
       const leftX = Number(
         d3
           .select(`${randomId} .drag-left`)
@@ -1287,7 +1274,7 @@ export default function DclChart({
   }
   function bind_radius_mode_bar_event() {
     const scale: any = scaleAxis();
-    const dragTarget = d3.drag().on("drag", (e) => {
+    const dragTarget: any = d3.drag().on("drag", (e) => {
       let p;
       const drag_price = scale.invert(e.x);
       if (reverse) {
@@ -1853,9 +1840,9 @@ export default function DclChart({
             <span className="text-xs text-white mr-10">Position</span>
             <span className="text-xs text-white gotham_bold">
               {user_liquidities_detail?.total_x_amount}{" "}
-              {pool?.token_x_metadata.symbol} +{" "}
+              {pool?.token_x_metadata?.symbol} +{" "}
               {user_liquidities_detail?.total_y_amount}{" "}
-              {pool?.token_y_metadata.symbol}
+              {pool?.token_y_metadata?.symbol}
             </span>
           </div>
           <div className="flex items-center justify-between my-2">

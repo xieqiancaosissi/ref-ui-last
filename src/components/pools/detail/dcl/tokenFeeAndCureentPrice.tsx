@@ -10,8 +10,6 @@ export default function TokenFeeAndCureentPrice({
 }: {
   poolDetail: any;
 }) {
-  const [currentSort, setCurrenSort] = useState([0, 1]);
-
   //
   return (
     <div className="flex items-center text-white h-10 justify-around ml-9">
@@ -20,7 +18,10 @@ export default function TokenFeeAndCureentPrice({
         <p>{formatPercentage(poolDetail?.total_fee * 100)}</p>
       </div>
       <SplitRectangleIcon className="mx-7" />
-      <div className="text-sm min-w-45"></div>
+      <div className="text-sm min-w-45">
+        <h3 className="text-gray-50 font-normal">Top Bin APR(24h)</h3>
+        <p>{formatPercentage(poolDetail?.apy)}</p>
+      </div>
     </div>
   );
 }

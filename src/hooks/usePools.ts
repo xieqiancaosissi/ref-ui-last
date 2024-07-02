@@ -6,7 +6,14 @@ import {
   getClassicPoolLiquidtyRecentTransaction,
 } from "@/services/pool";
 import { ftGetTokenMetadata } from "@/services/token";
-
+import {
+  DCLPoolSwapTransaction,
+  DCLPoolLiquidtyRecentTransaction,
+  LimitOrderRecentTransaction,
+  getDCLPoolSwapRecentTransaction,
+  getDCLPoolLiquidtyRecentTransaction,
+  getLimitOrderRecentTransaction,
+} from "@/services/indexer";
 import _ from "lodash";
 //
 type UsePoolSearchProps = {
@@ -208,4 +215,39 @@ export const useClassicPoolTransaction = ({
   }, []);
 
   return { swapTransaction: swapRecent, liquidityTransactions: lqRecent };
+};
+
+export const useDCLPoolTransaction = ({
+  pool_id,
+}: {
+  pool_id: string | number;
+}) => {
+  const [swapRecent, setSwapRecent] = useState<DCLPoolSwapTransaction[]>([]);
+
+  const [lqRecent, setLqRecent] = useState<DCLPoolLiquidtyRecentTransaction[]>(
+    []
+  );
+
+  const [limitOrderRecent, setLimitOrderRecent] = useState<
+    LimitOrderRecentTransaction[]
+  >([]);
+
+  useEffect(() => {
+    getDCLPoolSwapRecentTransaction({
+      pool_id,
+    }).then(setSwapRecent);
+
+    getDCLPoolLiquidtyRecentTransaction({
+      pool_id,
+    }).then(setLqRecent);
+
+    getLimitOrderRecentTransaction({
+      pool_id,
+    }).then(setLimitOrderRecent);
+  }, []);
+  return {
+    swapTransactions: swapRecent,
+    liquidityTransactions: lqRecent,
+    limitOrderTransactions: limitOrderRecent,
+  };
 };

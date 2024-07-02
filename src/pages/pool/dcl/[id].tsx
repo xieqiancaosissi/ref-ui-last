@@ -16,12 +16,19 @@ import NoLiquidity from "@/components/pools/detail/liquidity/NoLiquidity";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import NoContent from "@/components/common/NoContent";
 import { useWatchList } from "@/hooks/useWatchlist";
+import { PoolInfo, get_pool } from "@/services/swapV3";
+import { ftGetTokensMetadata } from "@/services/token";
+import BigNumber from "bignumber.js";
+import { toReadableNumber } from "@/utils/numbers";
 
 export default function DCLPoolDetail() {
   const router = useRouter();
   const poolId = router.query.id || "";
   const { currentwatchListId, accountId } = useWatchList();
   const [poolDetail, setPoolDetail] = useState<any>(null);
+  const [poolDetailV3, setPoolDetailV3] = useState<PoolInfo | any>(null);
+  const [tokens, setTokens] = useState([]);
+
   const [isCollect, setIsCollect] = useState(false);
   const [tokenPriceList, setTokenPriceList] = useState<any>(null);
   const { updatedMapList } = useTokenMetadata([poolDetail]);
@@ -50,6 +57,12 @@ export default function DCLPoolDetail() {
     });
   }, []);
 
+  useEffect(() => {
+    if (poolDetail) {
+      get_pool_detail();
+    }
+  }, [poolDetail]);
+
   const collectPool = () => {
     if (!accountId) window.modal.show();
     if (isCollect) {
@@ -60,6 +73,60 @@ export default function DCLPoolDetail() {
     setIsCollect((previos) => !previos);
   };
 
+  async function get_pool_detail() {
+    const detail: PoolInfo | any = await get_pool(poolDetail.id);
+    if (detail) {
+      const { token_x, token_y } = detail;
+      const metaData: Record<string, any> = await ftGetTokensMetadata([
+        token_x,
+        token_y,
+      ]);
+      detail.token_x_metadata = metaData[token_x];
+      detail.token_y_metadata = metaData[token_y];
+      setPoolDetailV3(detail);
+    }
+  }
+
+  useEffect(() => {
+    if (poolDetailV3?.token_x) {
+      const {
+        token_x,
+        token_y,
+        total_x,
+        total_y,
+        token_x_metadata,
+        token_y_metadata,
+        total_fee_x_charged,
+        total_fee_y_charged,
+      } = poolDetailV3;
+      const pricex = tokenPriceList[token_x]?.price || 0;
+      const pricey = tokenPriceList[token_y]?.price || 0;
+      const totalX = new BigNumber(total_x)
+        .minus(total_fee_x_charged)
+        .toFixed();
+      const totalY = new BigNumber(total_y)
+        .minus(total_fee_y_charged)
+        .toFixed();
+      const amountx = toReadableNumber(token_x_metadata.decimals, totalX);
+      const amounty = toReadableNumber(token_y_metadata.decimals, totalY);
+      const tvlx = Number(amountx) * Number(pricex);
+      const tvly = Number(amounty) * Number(pricey);
+      const temp_list: any = [];
+      const temp_tokenx = {
+        meta: token_x_metadata,
+        amount: amountx,
+        tvl: tvlx,
+      };
+      const temp_tokeny = {
+        meta: token_y_metadata,
+        amount: amounty,
+        tvl: tvly,
+      };
+      temp_list.push(temp_tokenx, temp_tokeny);
+      setTokens(temp_list);
+      console.log(temp_list, "temp");
+    }
+  }, [poolDetailV3]);
   return (
     <div className="w-full fccc h-full">
       {/* return */}
@@ -130,11 +197,12 @@ export default function DCLPoolDetail() {
             <h3 className="mt-12 mb-4 text-lg text-gray-50 font-bold">
               Pool Composition
             </h3>
-            {poolDetail && updatedMapList?.length > 0 ? (
+            {poolDetail && tokens.length > 0 && updatedMapList?.length > 0 ? (
               <PoolComposition
                 poolDetail={poolDetail}
                 tokenPriceList={tokenPriceList}
                 updatedMapList={updatedMapList}
+                tokens={tokens}
               />
             ) : (
               <SkeletonTheme
@@ -171,11 +239,12 @@ export default function DCLPoolDetail() {
               </div>
             </div>
             {/*  */}
-            {poolDetail && updatedMapList?.length > 0 && (
+            {poolDetail && tokens.length > 0 && updatedMapList?.length > 0 && (
               <RecentTransaction
                 activeTab={transactionActive}
                 poolId={poolId}
                 updatedMapList={updatedMapList}
+                tokens={tokens.map((t: any) => t.meta)}
               />
             )}
           </div>

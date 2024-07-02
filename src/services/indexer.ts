@@ -2,6 +2,7 @@ import getConfig from "../utils/config";
 import { getAuthenticationHeaders } from "../services/signature";
 import { parsePoolView } from "./api";
 import { PoolRPCView } from "@/interfaces/swap";
+import moment from "moment";
 const config = getConfig();
 
 const genUrlParams = (props: Record<string, string | number>) => {
@@ -201,4 +202,125 @@ export const getDCLAccountFee = async (props: {
       total_liquidity: "",
     };
   }
+};
+
+export interface DCLPoolSwapTransaction {
+  token_in: string;
+  token_out: string;
+  amount_in: string;
+  amount_out: string;
+  timestamp: string;
+  tx_id: string;
+  receipt_id: string;
+}
+
+export const getDCLPoolSwapRecentTransaction = async (props: {
+  pool_id: string | number;
+}) => {
+  const paramString = genUrlParams(props);
+
+  return await fetch(
+    config.indexerUrl + `/get-recent-transaction-dcl-swap?${paramString}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+        ...getAuthenticationHeaders("/get-recent-transaction-dcl-swap"),
+      },
+    }
+  )
+    .then((res) => res.json())
+    .then((res: DCLPoolSwapTransaction[]) => {
+      return res.map((t) => ({
+        ...t,
+        timestamp: parsePoolTxTimeStamp(t.timestamp),
+      }));
+    });
+};
+
+const parsePoolTxTimeStamp = (ts: string) => {
+  return moment(Math.floor(Number(ts) / 1000000)).format("YYYY-MM-DD HH:mm:ss");
+};
+
+export interface DCLPoolLiquidtyRecentTransaction {
+  method_name: string;
+  amount_x: string;
+  amount_y: string;
+  timestamp: string;
+  tx_id: string;
+  receipt_id: string;
+}
+
+export const getDCLPoolLiquidtyRecentTransaction = async (props: {
+  pool_id: string | number;
+}) => {
+  const paramString = genUrlParams(props);
+
+  return await fetch(
+    config.indexerUrl + `/get-recent-transaction-dcl-liquidity?${paramString}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+        ...getAuthenticationHeaders("/get-recent-transaction-dcl-liquidity"),
+      },
+    }
+  )
+    .then((res) => res.json())
+    .then((res: DCLPoolLiquidtyRecentTransaction[]) => {
+      return res.map((t) => ({
+        ...t,
+        timestamp: parsePoolTxTimeStamp(t.timestamp),
+      }));
+    });
+};
+
+export interface LimitOrderRecentTransaction {
+  method_name: string;
+  timestamp: string;
+  amount: string;
+  tx_id: string;
+  point: string;
+  sell_token: string;
+  receipt_id: string;
+}
+
+export const getLimitOrderRecentTransaction = async (props: {
+  pool_id: string | number;
+}) => {
+  const paramString = genUrlParams(props);
+
+  return await fetch(
+    config.indexerUrl + `/get-recent-transaction-limit-order?${paramString}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+        ...getAuthenticationHeaders("/get-recent-transaction-limit-order"),
+      },
+    }
+  )
+    .then((res) => res.json())
+    .then((res: LimitOrderRecentTransaction[]) => {
+      return res.map((t) => ({
+        ...t,
+        timestamp: parsePoolTxTimeStamp(t.timestamp),
+      }));
+    });
+};
+
+export interface DCLPoolFee {
+  total_fee: string;
+  total_liquidity: string;
+}
+
+export const getDCLTopBinFee = async (props: {
+  pool_id: string;
+  bin: number;
+  start_point: number;
+  end_point: number;
+}): Promise<DCLPoolFee> => {
+  const { pool_id, bin, start_point, end_point } = props;
+  const result = await getDclPoolPoints(pool_id, bin, start_point, end_point);
+  return result?.top_bin_fee_data;
 };

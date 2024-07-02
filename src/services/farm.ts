@@ -540,6 +540,7 @@ export const toRealSymbol = (symbol: string) => {
   if (!symbol) return symbol;
 
   if (symbol === "nWETH" || symbol === "WETH") return "wETH";
+  if (symbol === "wNEAR") return "NEAR";
   if (blackList.includes(symbol)) return symbol;
   return symbol?.charAt(0) === "n" &&
     symbol.charAt(1) === symbol.charAt(1).toUpperCase()

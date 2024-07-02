@@ -1,26 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import tokenIcons from "@/utils/tokenIconConfig";
 import { NearIcon } from "@/components/pools/icon";
-import {
-  toReadableNumber,
-  toInternationalCurrencySystem,
-  multiply,
-} from "@/utils/numbers";
+import { toInternationalCurrencySystem } from "@/utils/numbers";
 import { useRouter } from "next/router";
 import { usePersistSwapStore } from "@/stores/swap";
 import { getTokenUIId } from "@/services/swap/swapUtils";
-import { get_pool } from "@/services/swapV3";
-import { ftGetTokensMetadata } from "@/services/token";
-import { PoolInfo } from "@/services/swapV3";
-import BigNumber from "bignumber.js";
 import { TokenLinks } from "./tokenLinksConfig";
 import { FiArrowUpRight } from "react-icons/fi";
 import { openUrl } from "@/services/commonV3";
 import HoverTooltip from "@/components/common/HoverToolTip";
 
 export default function PoolComposition(props: any) {
-  const { poolDetail, tokenPriceList, updatedMapList } = props;
-  const [poolDetailV3, setPoolDetail] = useState<PoolInfo | any>(null);
+  const { tokenPriceList, tokens } = props;
   const title = ["Pair", "Amount", "Price"];
   const persistSwapStore = usePersistSwapStore();
   const router = useRouter();
@@ -29,20 +20,6 @@ export default function PoolComposition(props: any) {
     persistSwapStore.setTokenOutId(getTokenUIId(tokens[1].meta));
     router.push("/");
   };
-
-  async function get_pool_detail() {
-    const detail: PoolInfo | any = await get_pool(poolDetail.id);
-    if (detail) {
-      const { token_x, token_y } = detail;
-      const metaData: Record<string, any> = await ftGetTokensMetadata([
-        token_x,
-        token_y,
-      ]);
-      detail.token_x_metadata = metaData[token_x];
-      detail.token_y_metadata = metaData[token_y];
-      setPoolDetail(detail);
-    }
-  }
 
   function TokenIconComponent({ ite }: { ite: any }) {
     const hasCustomIcon = Reflect.has(tokenIcons, ite.id);
@@ -68,57 +45,6 @@ export default function PoolComposition(props: any) {
     );
   }
 
-  useEffect(() => {
-    get_pool_detail();
-  }, [poolDetail.id]);
-
-  const [tokens, setTokens] = useState([]);
-  useEffect(() => {
-    if (poolDetailV3?.token_x) {
-      const {
-        token_x,
-        token_y,
-        total_x,
-        total_y,
-        token_x_metadata,
-        token_y_metadata,
-        total_fee_x_charged,
-        total_fee_y_charged,
-      } = poolDetailV3;
-      const pricex = tokenPriceList[token_x]?.price || 0;
-      const pricey = tokenPriceList[token_y]?.price || 0;
-      const totalX = new BigNumber(total_x)
-        .minus(total_fee_x_charged)
-        .toFixed();
-      const totalY = new BigNumber(total_y)
-        .minus(total_fee_y_charged)
-        .toFixed();
-      const amountx = toReadableNumber(token_x_metadata.decimals, totalX);
-      const amounty = toReadableNumber(token_y_metadata.decimals, totalY);
-      const tvlx = Number(amountx) * Number(pricex);
-      const tvly = Number(amounty) * Number(pricey);
-      const temp_list: any = [];
-      const temp_tokenx = {
-        meta: token_x_metadata,
-        amount: amountx,
-        tvl: tvlx,
-      };
-      const temp_tokeny = {
-        meta: token_y_metadata,
-        amount: amounty,
-        tvl: tvly,
-      };
-      temp_list.push(temp_tokenx, temp_tokeny);
-      setTokens(temp_list);
-      console.log(temp_list, "temp");
-    }
-  }, [poolDetailV3]);
-
-  function valueOfNearTokenTip() {
-    const tip = "2333";
-    const result: string = `<div class="text-navHighLightText text-xs text-left font-normal">${tip}</div>`;
-    return result;
-  }
   function displayAmount(amount: string) {
     if (+amount == 0) {
       return "0";

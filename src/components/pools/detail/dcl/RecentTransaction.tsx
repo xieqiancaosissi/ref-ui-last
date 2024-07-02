@@ -1,11 +1,10 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useClassicPoolTransaction } from "@/hooks/usePools";
+import { useDCLPoolTransaction } from "@/hooks/usePools";
 import {
   toReadableNumber,
   numberWithCommas,
   toPrecision,
 } from "@/utils/numbers";
-import { formatNumber } from "@/utils/uiNumber";
 import { toRealSymbol } from "@/services/farm";
 import getConfig from "@/utils/config";
 import { getTxId } from "@/services/indexer";
@@ -17,13 +16,15 @@ import {
 } from "../../icon";
 import styles from "./style.module.css";
 import Big from "big.js";
+import { sort_tokens_by_base, reverse_price } from "@/services/commonV3";
+import { pointToPrice } from "@/services/swapV3";
 
 export default function RecentTransaction(props: any) {
-  const { activeTab, poolId, updatedMapList } = props;
-  const [title, setTitle] = useState<any>([]);
-  const { swapTransaction, liquidityTransactions } = useClassicPoolTransaction({
-    pool_id: poolId,
-  });
+  const { activeTab, poolId, updatedMapList, tokens } = props;
+  const [title, setTitle] = useState<any>([{ colSpan: "", key: "" }]);
+
+  const { swapTransactions, liquidityTransactions, limitOrderTransactions } =
+    useDCLPoolTransaction({ pool_id: poolId });
 
   const [loadingStates, setLoadingStates] = useState<any>({});
   const [hoveredTx, setHoveredTx] = useState(null);
@@ -67,13 +68,60 @@ export default function RecentTransaction(props: any) {
     let titleList;
     switch (activeTab) {
       case "swap":
-        titleList = ["From", "To", "Time"];
+        titleList = [
+          {
+            key: "From",
+            colSpan: "col-span-3",
+          },
+          {
+            key: "To",
+            colSpan: "col-span-3",
+          },
+          {
+            key: "Time",
+            colSpan: "col-span-3",
+          },
+        ];
         break;
       case "liquidity":
-        titleList = ["Operate", "Amount", "Time"];
+        titleList = [
+          {
+            key: "Operate",
+            colSpan: "col-span-2",
+          },
+          {
+            key: "Amount",
+            colSpan: "col-span-4",
+          },
+          {
+            key: "Time",
+            colSpan: "col-span-3",
+          },
+        ];
         break;
       case "order":
-        titleList = ["Action", "From", "To", "Price", "Time"];
+        titleList = [
+          {
+            key: "Action",
+            colSpan: "col-span-2",
+          },
+          {
+            key: "From",
+            colSpan: "col-span-2",
+          },
+          {
+            key: "To",
+            colSpan: "col-span-2",
+          },
+          {
+            key: "Price",
+            colSpan: "col-span-3",
+          },
+          {
+            key: "Time",
+            colSpan: "col-span-3",
+          },
+        ];
         break;
       default:
         break;
@@ -83,30 +131,22 @@ export default function RecentTransaction(props: any) {
   }, [activeTab]);
 
   // swap
-  const renderSwapTransactions = swapTransaction.map((tx, index) => {
-    const swapIn = updatedMapList[0].token_account_ids.find(
-      (t: any) => t.id === tx.token_in
-    );
-
-    const swapOut = updatedMapList[0].token_account_ids.find(
-      (t: any) => t.id === tx.token_out
-    );
-
+  const renderSwapTransactions = swapTransactions.map((tx, index) => {
+    const swapIn = tokens.find((t: any) => t.id === tx.token_in);
+    const swapOut = tokens.find((t: any) => t.id === tx.token_out);
     if (!swapIn || !swapOut) return null;
-
-    const swapInAmount = toReadableNumber(swapIn.decimals, tx.swap_in);
+    const swapInAmount = toReadableNumber(swapIn.decimals, tx.amount_in);
     const displayInAmount =
       Number(swapInAmount) < 0.01
         ? "<0.01"
         : numberWithCommas(toPrecision(swapInAmount, 6));
 
-    const swapOutAmount = toReadableNumber(swapOut.decimals, tx.swap_out);
+    const swapOutAmount = toReadableNumber(swapOut.decimals, tx.amount_out);
 
     const displayOutAmount =
       Number(swapOutAmount) < 0.01
         ? "<0.01"
         : numberWithCommas(toPrecision(swapOutAmount, 6));
-
     return (
       <div
         key={tx.receipt_id + index}
@@ -225,27 +265,31 @@ export default function RecentTransaction(props: any) {
   });
 
   const renderLiquidityTransactions = liquidityTransactions.map((tx, index) => {
-    const { amounts } = tx;
-    const renderTokens: any[] = [];
-    const amountsObj: any[] = JSON.parse(amounts.replace(/\'/g, '"'));
-    amountsObj.forEach((amount: string, index) => {
-      if (Big(amount || 0).gt(0)) {
-        renderTokens.push({
-          token: updatedMapList[0].token_account_ids[index],
-          amount: toReadableNumber(
-            updatedMapList[0].token_account_ids[index].decimals,
-            amountsObj[index]
-          ),
-        });
-      }
-    });
+    const swapIn = tokens[0];
+
+    const swapOut = tokens[1];
+
+    if (!swapIn || !swapOut) return null;
+
+    const AmountIn = toReadableNumber(swapIn.decimals, tx.amount_x);
+    const displayInAmount =
+      Number(AmountIn) < 0.01 && Number(AmountIn) > 0
+        ? "<0.01"
+        : numberWithCommas(toPrecision(AmountIn, 6));
+
+    const AmountOut = toReadableNumber(swapOut.decimals, tx.amount_y);
+
+    const displayOutAmount =
+      Number(AmountOut) < 0.01 && Number(AmountOut) > 0
+        ? "<0.01"
+        : numberWithCommas(toPrecision(AmountOut, 6));
 
     return (
       <div
         key={tx.receipt_id + index}
         className={`text-sm grid grid-cols-9 hover:bg-poolRecentHover my-3`}
       >
-        <div className="col-span-3">
+        <div className="col-span-2">
           <span className="text-white">
             {tx.method_name.toLowerCase().indexOf("add") > -1 && "Add"}
 
@@ -253,23 +297,32 @@ export default function RecentTransaction(props: any) {
           </span>
         </div>
 
-        <div className={` col-span-3`}>
-          {renderTokens.map((renderToken, index) => {
-            return (
-              <>
-                <span className="text-white" title={renderToken.amount}>
-                  {formatNumber(renderToken.amount)}
-                </span>
+        <div className={` col-span-4`}>
+          {Big(AmountIn || 0).gt(0) ? (
+            <>
+              <span className="text-white" title={AmountIn}>
+                {displayInAmount}
+              </span>
 
-                <span className="ml-1 text-gray-60">
-                  {toRealSymbol(renderToken.token.symbol)}
-                </span>
-                {index !== renderTokens.length - 1 ? (
-                  <span className="mx-1 text-white">+</span>
-                ) : null}
-              </>
-            );
-          })}
+              <span className="ml-1  text-gray-60">
+                {toRealSymbol(swapIn.symbol)}
+              </span>
+            </>
+          ) : null}
+          {Big(AmountIn || 0).gt(0) && Big(AmountOut || 0).gt(0) ? (
+            <span className="mx-1 text-white">+</span>
+          ) : null}
+          {Big(AmountOut || 0).gt(0) ? (
+            <>
+              {" "}
+              <span className="text-white" title={AmountOut}>
+                {displayOutAmount}
+              </span>
+              <span className="ml-1 text-gray-60">
+                {toRealSymbol(swapOut.symbol)}
+              </span>
+            </>
+          ) : null}
         </div>
 
         <div className={`col-span-3 relative `}>
@@ -368,6 +421,190 @@ export default function RecentTransaction(props: any) {
 
   // liquidity
 
+  const renderLimitOrderTransactions = limitOrderTransactions.map(
+    (tx, index) => {
+      const swapIn = tokens.find((t: any) => t.id === tx.sell_token);
+
+      const swapOut = tokens.find((t: any) => t.id !== tx.sell_token);
+
+      if (!swapIn || !swapOut) return null;
+      let reverse = false;
+      const sort_tokens = sort_tokens_by_base([swapIn, swapOut]);
+      if (sort_tokens[0].id !== swapIn.id) {
+        reverse = true;
+      }
+
+      const AmountIn = toReadableNumber(swapIn.decimals, tx.amount);
+      const displayInAmount =
+        Number(AmountIn) < 0.01
+          ? "<0.01"
+          : numberWithCommas(toPrecision(AmountIn, 3));
+
+      const price = pointToPrice({
+        tokenA: swapIn,
+        tokenB: swapOut,
+        point:
+          swapIn.id === poolId.split("|")[0]
+            ? Number(tx.point)
+            : -Number(tx.point),
+      });
+      const AmountOut = new Big(AmountIn).mul(price).toFixed();
+
+      const displayOutAmount =
+        Number(AmountOut) < 0.01
+          ? "<0.01"
+          : numberWithCommas(toPrecision(AmountOut, 3));
+
+      const display_price = reverse ? reverse_price(price) : price;
+      return (
+        <div
+          key={tx.receipt_id + index}
+          className={`text-sm grid grid-cols-12 hover:bg-poolRecentHover my-3`}
+        >
+          <div className="col-span-2">
+            <span className="text-white">
+              {tx.method_name.toLowerCase().indexOf("cancelled") > -1 &&
+                "Cancel"}
+
+              {tx.method_name.toLowerCase().indexOf("add") > -1 && "Place"}
+            </span>
+          </div>
+
+          <div className="col-span-2">
+            <span className="text-white mr-1" title={AmountIn}>
+              {displayInAmount}
+            </span>
+
+            <span className="text-gray-60">{toRealSymbol(swapIn.symbol)}</span>
+          </div>
+
+          <div className="col-span-2">
+            <div className="frcs flex-wrap">
+              <span className="text-white mr-1" title={AmountOut}>
+                {displayOutAmount}
+              </span>
+
+              <span className="text-gray-60">
+                {toRealSymbol(swapOut.symbol)}
+              </span>
+            </div>
+          </div>
+
+          <div className="col-span-3">
+            <div className="frcs flex-wrap">
+              <span className="text-white mr-1" title={price}>
+                {numberWithCommas(toPrecision(display_price, 4))}
+              </span>
+
+              <span className="text-gray-60">
+                {toRealSymbol(sort_tokens?.[1]?.symbol)}/
+                {toRealSymbol(sort_tokens?.[0]?.symbol)}
+              </span>
+            </div>
+          </div>
+
+          <div className="col-span-3 relative ">
+            <span
+              key={tx.receipt_id}
+              className="inline-flex items-center cursor-pointer"
+              onMouseEnter={() => handleMouseEnter(tx.receipt_id)}
+              onMouseLeave={handleMouseLeave}
+            >
+              {loadingStates[tx.receipt_id] ? (
+                <div className="hover:underline cursor-pointer text-gray-60 min-w-36">
+                  {tx.timestamp}
+                  <span className={styles.loadingDots}></span>
+                </div>
+              ) : (
+                <>
+                  <span className="hover:underline cursor-pointer text-gray-60 min-w-36">
+                    {tx.timestamp}
+                  </span>
+                  <BlinkIcon className="opacity-40 hover:opacity-100 ml-2"></BlinkIcon>
+                </>
+              )}
+              {hoveredTx === tx.receipt_id && (
+                <div className="bg-dark-70 w-41 h-25 absolute top-6 -right-2 bg-poolDetaileTxBgColor  p-2 shadow-lg rounded z-50">
+                  <div className="flex flex-col">
+                    <div
+                      className="mb-2 px-3 py-2 hover:bg-dark-10 text-white rounded-md flex items-center"
+                      onMouseEnter={(e) => {
+                        const arrow = e.currentTarget.querySelector(
+                          ".arrow"
+                        ) as HTMLElement;
+                        if (arrow) {
+                          arrow.style.display = "block";
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        const arrow = e.currentTarget.querySelector(
+                          ".arrow"
+                        ) as HTMLElement;
+                        if (arrow) {
+                          arrow.style.display = "none";
+                        }
+                      }}
+                      onClick={() =>
+                        handleTxClick(
+                          tx.receipt_id,
+                          `${getConfig().explorerUrl}/txns`
+                        )
+                      }
+                    >
+                      <NearblocksIcon />
+                      <p className="ml-2">nearblocks</p>
+                      <div className="ml-3 arrow" style={{ display: "none" }}>
+                        <TxLeftArrow />
+                      </div>
+                    </div>
+                    <div
+                      className="px-3 py-2 hover:bg-dark-10 text-white rounded-md flex items-center"
+                      onMouseEnter={(e) => {
+                        const arrow = e.currentTarget.querySelector(
+                          ".arrow"
+                        ) as HTMLElement;
+                        if (arrow) {
+                          arrow.style.display = "block";
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        const arrow = e.currentTarget.querySelector(
+                          ".arrow"
+                        ) as HTMLElement;
+                        if (arrow) {
+                          arrow.style.display = "none";
+                        }
+                      }}
+                      onClick={() =>
+                        handleTxClick(
+                          tx.receipt_id,
+                          `${getConfig().pikespeakUrl}/transaction-viewer`
+                        )
+                      }
+                    >
+                      <PikespeakIcon />
+                      <p className="ml-2">Pikespeak...</p>
+                      <div className="ml-3 arrow" style={{ display: "none" }}>
+                        <TxLeftArrow />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </span>
+          </div>
+        </div>
+      );
+    }
+  );
+
+  const renderTransactions =
+    activeTab === "swap"
+      ? renderSwapTransactions
+      : activeTab === "liquidity"
+      ? renderLiquidityTransactions
+      : renderLimitOrderTransactions;
+
   return (
     <div
       className="w-183 max-h-106 rounded-md p-4 overflow-auto"
@@ -380,26 +617,18 @@ export default function RecentTransaction(props: any) {
           activeTab == "order" ? "grid-cols-12" : "grid-cols-9"
         } select-none`}
       >
-        {title.map((item: string, index: number) => {
+        {title.map((item: any, index: number) => {
           return (
             <span
               key={item + "_" + index}
-              className={`${
-                activeTab == "order"
-                  ? item == "Time"
-                    ? "col-span-3"
-                    : "col-span-2"
-                  : "col-span-3"
-              } text-gray-60 text-sm`}
+              className={`${item.colSpan} text-gray-60 text-sm`}
             >
-              {item}
+              {item.key}
             </span>
           );
         })}
       </div>
-      {activeTab == "swap"
-        ? renderSwapTransactions
-        : renderLiquidityTransactions}
+      {renderTransactions}
     </div>
   );
 }

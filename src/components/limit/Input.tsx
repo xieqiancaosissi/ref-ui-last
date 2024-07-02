@@ -67,9 +67,9 @@ export default function Input(props: IInputProps) {
     }
   }
   function getTokenValue() {
-    return formatTokenPrice(
-      new Big(amount || 0).mul(allTokenPrices[token?.id]?.price || 0).toFixed()
-    );
+    // return formatTokenPrice(
+    //   new Big(amount || 0).mul(allTokenPrices[token?.id]?.price || 0).toFixed()
+    // );
   }
   return (
     <div
@@ -94,14 +94,14 @@ export default function Input(props: IInputProps) {
         <SelectDclPoolButton />
       </div>
       <div className="flex items-center justify-between w-full text-sm text-gray-50 mt-2.5">
-        <span>{getTokenValue()}</span>
+        {/* <span>{getTokenValue()}</span> */}
         <div className="flex items-center gap-0.5">
           Balance:
-          <SelectTokenBalance
+          {/* <SelectTokenBalance
             isIn={isIn}
             setMaxAmount={setMaxAmount}
             token={token}
-          />
+          /> */}
         </div>
       </div>
       {/* near validation error tip */}

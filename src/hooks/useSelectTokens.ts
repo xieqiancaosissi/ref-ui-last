@@ -27,13 +27,18 @@ export const useSelectTokens = (): ISelectTokens => {
     useAutoWhitelistTokens(whiteListTokens);
   const tokenStore = useTokenStore() as ITokenStore;
   useEffect(() => {
-    if (whiteListTokens.length > 0 && autoWhitelistedPostfix) {
+    if (
+      whiteListTokens.length > 0 &&
+      autoWhitelistedPostfix &&
+      globalWhitelistIds.length > 0
+    ) {
       getSelectTokens();
     }
   }, [
     JSON.stringify(whiteListTokens || []),
     JSON.stringify(autoWhitelistTokens || []),
     autoWhitelistedPostfix?.length,
+    globalWhitelistIds.length,
   ]);
   async function getSelectTokens() {
     const defaultList = whiteListTokens.map((token) => {

@@ -38,7 +38,7 @@ export function menuData(): IMenu[] {
           id: "limit",
           label: "Limit",
           icon: <LimitIcon />,
-          path: "",
+          path: "/limit",
         },
         {
           id: "orderbook",

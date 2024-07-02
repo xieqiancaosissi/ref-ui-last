@@ -176,7 +176,9 @@ export default function Swap() {
       <div className="rounded-lg bg-dark-10 p-4">
         {/* set */}
         <div className="flex items-center justify-between">
-          <span className="text-white font-bold text-xl">Swap</span>
+          <span className="font-bold text-xl bg-textWhiteGradient bg-clip-text text-transparent">
+            Swap
+          </span>
           <div className="flex items-center gap-2 z-20">
             <span
               className={swapStyles.swapControlButton}

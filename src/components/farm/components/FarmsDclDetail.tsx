@@ -975,75 +975,91 @@ export default function FarmsDclDetail(props: {
       </div>
       {/* content */}
       <div className="w-3/5 pt-16 m-auto pb-8">
-        <div className="ml-80 bg-dark-10 rounded-md p-5 mb-2.5 w-2/5">
-          <div className="flex items-center mb-8">
-            <button
-              className={`text-lg pr-5 ${
-                activeTab === "Stake" ? styles.gradient_text : "text-gray-500"
-              }`}
-              onClick={() => setActiveTab("Stake")}
-            >
-              Stake
-            </button>
-            <div className="h-4 bg-gray-50" style={{ width: "2px" }} />
-            <button
-              className={`text-lg pl-5 ${
-                activeTab === "Unstake" ? styles.gradient_text : "text-gray-500"
-              }`}
-              onClick={() => setActiveTab("Unstake")}
-            >
-              Unstake
-            </button>
-          </div>
-          <p className="text-gray-50 text-sm mb-1.5">Available</p>
-          <p className="text-2xl mb-11">{yp_unFarm_value}</p>
-          {activeTab === "Stake" && (
-            <>
-              {!isEnded ? (
-                <div
-                  onClick={() => {
-                    if (!stakeDisabled) {
-                      batchStakeNFT();
-                    }
-                  }}
-                  className={` w-full h-11 frcc rounded paceGrotesk-Bold text-base  ${
-                    stakeDisabled
-                      ? "cursor-not-allowed bg-gray-40 text-gray-50"
-                      : "bg-greenGradient text-black cursor-pointer"
-                  }`}
-                >
-                  <ButtonTextWrapper
-                    loading={nft_stake_loading}
-                    Text={() => <>Stake</>}
-                  />
-                </div>
-              ) : null}
-            </>
-          )}
+        <div className="relative ml-80 bg-dark-10 rounded-md p-5 mb-2.5 w-2/5">
+          <AddLiquidityEntryBar
+            detailData={detailData}
+            isEnded={isEnded}
+            loading={listLiquiditiesLoading}
+            inFarimg={listLiquidities_inFarimg}
+            unFarimg={listLiquidities_unFarimg}
+            unavailable={listLiquidities_unavailable}
+          ></AddLiquidityEntryBar>
+          <div
+            className={`h-full ${
+              listLiquiditiesLoading || isEnded ? "" : "blur-2"
+            }`}
+          >
+            <div className="flex items-center mb-8">
+              <button
+                className={`text-lg pr-5 ${
+                  activeTab === "Stake" ? styles.gradient_text : "text-gray-500"
+                }`}
+                onClick={() => setActiveTab("Stake")}
+              >
+                Stake
+              </button>
+              <div className="h-4 bg-gray-50" style={{ width: "2px" }} />
+              <button
+                className={`text-lg pl-5 ${
+                  activeTab === "Unstake"
+                    ? styles.gradient_text
+                    : "text-gray-500"
+                }`}
+                onClick={() => setActiveTab("Unstake")}
+              >
+                Unstake
+              </button>
+            </div>
+            <p className="text-gray-50 text-sm mb-1.5">Available</p>
+            <p className="text-2xl mb-11">{yp_unFarm_value}</p>
+            {activeTab === "Stake" && (
+              <>
+                {!isEnded ? (
+                  <div
+                    onClick={() => {
+                      if (!stakeDisabled) {
+                        batchStakeNFT();
+                      }
+                    }}
+                    className={` w-full h-11 frcc rounded paceGrotesk-Bold text-base  ${
+                      stakeDisabled
+                        ? "cursor-not-allowed bg-gray-40 text-gray-50"
+                        : "bg-greenGradient text-black cursor-pointer"
+                    }`}
+                  >
+                    <ButtonTextWrapper
+                      loading={nft_stake_loading}
+                      Text={() => <>Stake</>}
+                    />
+                  </div>
+                ) : null}
+              </>
+            )}
 
-          {activeTab === "Unstake" && (
-            <>
-              {canUnStake ? (
-                <div
-                  onClick={() => {
-                    if (!nft_unStake_loading) {
-                      batchUnStakeNFT();
-                    }
-                  }}
-                  className={` w-full h-11 frcc rounded paceGrotesk-Bold text-base  ${
-                    nft_unStake_loading
-                      ? "cursor-not-allowed bg-gray-40 text-gray-50"
-                      : "text-green-10 border border-green-10 cursor-pointer"
-                  }`}
-                >
-                  <ButtonTextWrapper
-                    loading={nft_unStake_loading}
-                    Text={() => <>Unstake</>}
-                  />
-                </div>
-              ) : null}
-            </>
-          )}
+            {activeTab === "Unstake" && (
+              <>
+                {canUnStake ? (
+                  <div
+                    onClick={() => {
+                      if (!nft_unStake_loading) {
+                        batchUnStakeNFT();
+                      }
+                    }}
+                    className={` w-full h-11 frcc rounded paceGrotesk-Bold text-base  ${
+                      nft_unStake_loading
+                        ? "cursor-not-allowed bg-gray-40 text-gray-50"
+                        : "text-green-10 border border-green-10 cursor-pointer"
+                    }`}
+                  >
+                    <ButtonTextWrapper
+                      loading={nft_unStake_loading}
+                      Text={() => <>Unstake</>}
+                    />
+                  </div>
+                ) : null}
+              </>
+            )}
+          </div>
         </div>
         <div className="ml-80 bg-dark-10 rounded-md p-5  w-2/5">
           <p className="flex items-center text-gray-50 text-sm mb-1.5">
@@ -1072,5 +1088,44 @@ export default function FarmsDclDetail(props: {
         </div>
       </div>
     </main>
+  );
+}
+
+function AddLiquidityEntryBar(props: {
+  loading: boolean;
+  inFarimg: UserLiquidityInfo[];
+  unFarimg: UserLiquidityInfo[];
+  unavailable: UserLiquidityInfo[];
+  detailData: Seed;
+  isEnded: boolean;
+}) {
+  let tip: any;
+  const { loading, inFarimg, unFarimg, unavailable, detailData, isEnded } =
+    props;
+  if (!loading && inFarimg.length == 0 && unFarimg.length == 0) {
+    // if (unavailable.length == 0) {
+    //   tip = <FormattedMessage id="add_lp_tokens_tip" />;
+    // } else {
+    //   tip =
+    //     'The price range of your liquidity is out of reward range. Please add liquidity within reward range.';
+    // }
+    tip =
+      "You don't have liquidity during the farm reward range, click 'Add Liquidity' to start farming.";
+  }
+  if (loading || !tip || isEnded) return null;
+  return (
+    <div
+      className="absolute inset-0 bg-dark-45 bg-opacity-70 flex flex-col items-center justify-center z-50 border rounded-lg px-12"
+      style={{
+        border: "1px solid",
+        borderImageSource: "linear-gradient(180deg, #00D1FF 0%, #9EFE01 100%)",
+        borderImageSlice: "1",
+      }}
+    >
+      <p className="text-base mb-6 text-center">{tip}</p>
+      <div className="text-base frcc h-12 bg-AddLiquidityBg rounded w-72">
+        Add Liquidity
+      </div>
+    </div>
   );
 }

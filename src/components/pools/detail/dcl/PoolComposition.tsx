@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import tokenIcons from "@/utils/tokenIconConfig";
 import { NearIcon } from "@/components/pools/icon";
 import {
@@ -9,27 +9,50 @@ import {
 import { useRouter } from "next/router";
 import { usePersistSwapStore } from "@/stores/swap";
 import { getTokenUIId } from "@/services/swap/swapUtils";
+import { get_pool } from "@/services/swapV3";
+import { ftGetTokensMetadata } from "@/services/token";
+import { PoolInfo } from "@/services/swapV3";
+import BigNumber from "bignumber.js";
+import { TokenLinks } from "./tokenLinksConfig";
+import { FiArrowUpRight } from "react-icons/fi";
+import { openUrl } from "@/services/commonV3";
+import HoverTooltip from "@/components/common/HoverToolTip";
 
 export default function PoolComposition(props: any) {
   const { poolDetail, tokenPriceList, updatedMapList } = props;
+  const [poolDetailV3, setPoolDetail] = useState<PoolInfo | any>(null);
   const title = ["Pair", "Amount", "Price"];
   const persistSwapStore = usePersistSwapStore();
   const router = useRouter();
-  const toSwap = (tokenList: any) => {
-    persistSwapStore.setTokenInId(getTokenUIId(tokenList[0].id));
-    persistSwapStore.setTokenOutId(getTokenUIId(tokenList[1].id));
+  const toSwap = (tokens: any) => {
+    persistSwapStore.setTokenInId(getTokenUIId(tokens[0].meta));
+    persistSwapStore.setTokenOutId(getTokenUIId(tokens[1].meta));
     router.push("/");
   };
 
+  async function get_pool_detail() {
+    const detail: PoolInfo | any = await get_pool(poolDetail.id);
+    if (detail) {
+      const { token_x, token_y } = detail;
+      const metaData: Record<string, any> = await ftGetTokensMetadata([
+        token_x,
+        token_y,
+      ]);
+      detail.token_x_metadata = metaData[token_x];
+      detail.token_y_metadata = metaData[token_y];
+      setPoolDetail(detail);
+    }
+  }
+
   function TokenIconComponent({ ite }: { ite: any }) {
-    const hasCustomIcon = Reflect.has(tokenIcons, ite.tokenId);
-    const isNearToken = ite.tokenId === "wrap.near";
+    const hasCustomIcon = Reflect.has(tokenIcons, ite.id);
+    const isNearToken = ite.id === "wrap.near";
     const iconStyle = { width: "26px", height: "26px", borderRadius: "50%" };
 
     if (hasCustomIcon && !isNearToken) {
       return (
         <div className={`relative`}>
-          <img src={tokenIcons[ite.tokenId]} alt="" style={iconStyle} />
+          <img src={tokenIcons[ite.id]} alt="" style={iconStyle} />
         </div>
       );
     }
@@ -44,6 +67,80 @@ export default function PoolComposition(props: any) {
       </div>
     );
   }
+
+  useEffect(() => {
+    get_pool_detail();
+  }, [poolDetail.id]);
+
+  const [tokens, setTokens] = useState([]);
+  useEffect(() => {
+    if (poolDetailV3?.token_x) {
+      const {
+        token_x,
+        token_y,
+        total_x,
+        total_y,
+        token_x_metadata,
+        token_y_metadata,
+        total_fee_x_charged,
+        total_fee_y_charged,
+      } = poolDetailV3;
+      const pricex = tokenPriceList[token_x]?.price || 0;
+      const pricey = tokenPriceList[token_y]?.price || 0;
+      const totalX = new BigNumber(total_x)
+        .minus(total_fee_x_charged)
+        .toFixed();
+      const totalY = new BigNumber(total_y)
+        .minus(total_fee_y_charged)
+        .toFixed();
+      const amountx = toReadableNumber(token_x_metadata.decimals, totalX);
+      const amounty = toReadableNumber(token_y_metadata.decimals, totalY);
+      const tvlx = Number(amountx) * Number(pricex);
+      const tvly = Number(amounty) * Number(pricey);
+      const temp_list: any = [];
+      const temp_tokenx = {
+        meta: token_x_metadata,
+        amount: amountx,
+        tvl: tvlx,
+      };
+      const temp_tokeny = {
+        meta: token_y_metadata,
+        amount: amounty,
+        tvl: tvly,
+      };
+      temp_list.push(temp_tokenx, temp_tokeny);
+      setTokens(temp_list);
+      console.log(temp_list, "temp");
+    }
+  }, [poolDetailV3]);
+
+  function valueOfNearTokenTip() {
+    const tip = "2333";
+    const result: string = `<div class="text-navHighLightText text-xs text-left font-normal">${tip}</div>`;
+    return result;
+  }
+  function displayAmount(amount: string) {
+    if (+amount == 0) {
+      return "0";
+    } else if (+amount < 0.01) {
+      return "< 0.01";
+    } else {
+      return toInternationalCurrencySystem(amount.toString(), 2);
+    }
+  }
+  function displayTvl(token: any) {
+    const { tvl } = token;
+    if (+tvl == 0 && !tokenPriceList[token.meta.id]?.price) {
+      return "$ -";
+    } else if (+tvl == 0) {
+      return "$0";
+    } else if (+tvl < 0.01) {
+      return "< $0.01";
+    } else {
+      return "$" + toInternationalCurrencySystem(tvl.toString(), 2);
+    }
+  }
+
   return (
     <div
       className="w-183 min-h-42 rounded-md p-4"
@@ -68,54 +165,54 @@ export default function PoolComposition(props: any) {
       </div>
       {/* pair */}
       <div>
-        {updatedMapList.map((item: any, index: number) => {
-          return item?.token_account_ids?.map((ite: any, ind: number) => {
-            const tokenAmount = toReadableNumber(
-              ite.decimals,
-              item.supplies[ite.tokenId]
-            );
-            const price = tokenPriceList?.[ite.tokenId]?.price;
-            return (
-              <div
-                className="grid grid-cols-11 my-3 hover:opacity-90"
-                key={ite.tokenId + ind}
-              >
-                {/* token */}
-                <div className="col-span-5 flex items-center">
-                  {TokenIconComponent({ ite })}
-                  <div className="ml-3">
-                    <h4 className="text-base text-white font-medium">
-                      {item.token_symbols[ind]}
-                    </h4>
-                    <p
-                      className="text-xs text-gray-60 underline cursor-pointer"
-                      title={ite.tokenId}
-                      onClick={() => toSwap(item.token_account_ids)}
-                    >
-                      {ite.tokenId.length > 30
-                        ? ite.tokenId.substring(0, 30) + "..."
-                        : ite.tokenId}
-                    </p>
-                  </div>
-                </div>
-                {/* amounts */}
-                <div className="col-span-3 flex items-center text-sm text-white font-normal">
-                  {+tokenAmount > 0 && +tokenAmount < 0.01
-                    ? "< 0.01"
-                    : toInternationalCurrencySystem(tokenAmount, 2)}
-                </div>
-                {/* price */}
-                <div className="col-span-3 flex items-center text-sm text-white font-normal">
-                  {!!price
-                    ? `$${toInternationalCurrencySystem(
-                        multiply(price, tokenAmount),
-                        2
-                      )}`
-                    : null}
+        {tokens.map((item: any, index: number) => {
+          return (
+            <div
+              className="grid grid-cols-11 my-3 hover:opacity-90"
+              key={item.meta.id + index}
+            >
+              {/* token */}
+              <div className="col-span-5 flex items-center">
+                {TokenIconComponent({ ite: item.meta })}
+                <div className="ml-3">
+                  <h4 className="text-base text-white font-medium flex items-center">
+                    {item.meta.symbol == "wNEAR" ? "NEAR" : item.meta.symbol}
+                    {(TokenLinks as any)[item.meta.symbol] ? (
+                      <HoverTooltip tooltipText={"AwesomeNear Verified Token"}>
+                        <a
+                          className=""
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            openUrl((TokenLinks as any)[item.meta.symbol]);
+                          }}
+                        >
+                          <FiArrowUpRight className="text-primaryText hover:text-green-10 cursor-pointer" />
+                        </a>
+                        {/* <CustomTooltip id={"nearVerifiedId1" + i} /> */}
+                      </HoverTooltip>
+                    ) : null}
+                  </h4>
+                  <p
+                    className="text-xs text-gray-60 underline cursor-pointer"
+                    title={item.meta.id}
+                    onClick={() => toSwap(tokens)}
+                  >
+                    {item.meta.id.length > 30
+                      ? item.meta.id.substring(0, 30) + "..."
+                      : item.meta.id}
+                  </p>
                 </div>
               </div>
-            );
-          });
+              {/* amounts */}
+              <div className="col-span-3 flex items-center text-sm text-white font-normal">
+                {displayAmount(item.amount)}
+              </div>
+              {/* price */}
+              <div className="col-span-3 flex items-center text-sm text-white font-normal">
+                {displayTvl(item)}
+              </div>
+            </div>
+          );
         })}
       </div>
     </div>

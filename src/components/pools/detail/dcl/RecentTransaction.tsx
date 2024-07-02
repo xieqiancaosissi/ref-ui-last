@@ -64,11 +64,22 @@ export default function RecentTransaction(props: any) {
     }
   }
   useEffect(() => {
-    setTitle(
-      activeTab == "swap"
-        ? ["From", "To", "Time"]
-        : ["Operate", "Amount", "Time"]
-    );
+    let titleList;
+    switch (activeTab) {
+      case "swap":
+        titleList = ["From", "To", "Time"];
+        break;
+      case "liquidity":
+        titleList = ["Operate", "Amount", "Time"];
+        break;
+      case "order":
+        titleList = ["Action", "From", "To", "Price", "Time"];
+        break;
+      default:
+        break;
+    }
+
+    setTitle(titleList);
   }, [activeTab]);
 
   // swap
@@ -364,12 +375,22 @@ export default function RecentTransaction(props: any) {
         background: "rgba(33, 43, 53, 0.2)",
       }}
     >
-      <div className="grid grid-cols-9 select-none">
+      <div
+        className={`grid ${
+          activeTab == "order" ? "grid-cols-12" : "grid-cols-9"
+        } select-none`}
+      >
         {title.map((item: string, index: number) => {
           return (
             <span
               key={item + "_" + index}
-              className="col-span-3 text-gray-60 text-sm"
+              className={`${
+                activeTab == "order"
+                  ? item == "Time"
+                    ? "col-span-3"
+                    : "col-span-2"
+                  : "col-span-3"
+              } text-gray-60 text-sm`}
             >
               {item}
             </span>

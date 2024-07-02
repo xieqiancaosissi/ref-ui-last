@@ -28,6 +28,7 @@ export default function DCLPoolDetail() {
   const TransactionTabList = [
     { key: "swap", value: "Swap" },
     { key: "liquidity", value: "Liquidity" },
+    { key: "order", value: "Limit Order" },
   ];
   const [transactionActive, setTransactionActive] = useState("swap");
   //
@@ -161,7 +162,7 @@ export default function DCLPoolDetail() {
                         item.key == transactionActive
                           ? "text-white bg-gray-40"
                           : "text-gray-60 bg-transparent"
-                      } ${index == 0 ? "mr-2" : ""}`}
+                      } ${index == 1 ? "mx-2" : ""}`}
                     >
                       {item.value}
                     </div>

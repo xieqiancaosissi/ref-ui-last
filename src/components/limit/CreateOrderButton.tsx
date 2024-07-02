@@ -16,13 +16,7 @@ import {
 } from "@/services/swap/swapUtils";
 import { IButtonStatus } from "@/interfaces/swap";
 
-export default function SwapButton({
-  isHighImpact,
-  highImpactCheck,
-}: {
-  isHighImpact: boolean;
-  highImpactCheck: boolean;
-}) {
+export default function CreateOrderButton() {
   const [swapLoading, setSwapLoading] = useState<boolean>(false);
   const accountStore = useAccountStore();
   const swapStore = useSwapStore();
@@ -49,8 +43,6 @@ export default function SwapButton({
     amountOut,
     slippageTolerance,
     walletLoading,
-    isHighImpact,
-    highImpactCheck,
     accountId,
     swapError?.message,
     isnearwnearSwap,
@@ -100,8 +92,6 @@ export default function SwapButton({
       status = "walletLoading";
     } else if (!walletLoading && !accountId) {
       status = "unLogin";
-    } else if ((isHighImpact && !highImpactCheck) || swapError?.message) {
-      status = "disabled";
     } else if (accountId && Number(amountIn || 0) > 0 && !availableAmountIn) {
       status = "insufficient";
     } else if (tokenIn?.id == tokenOut?.id && !isnearwnearSwap) {
@@ -149,7 +139,7 @@ export default function SwapButton({
           className="flex items-center justify-center bg-gray-40 rounded mt-4 text-gray-50 font-bold text-base cursor-not-allowed"
           style={{ height: "42px" }}
         >
-          Swap
+          Create Order
         </div>
       ) : null}
       {buttonStatus == "available" || loading ? (

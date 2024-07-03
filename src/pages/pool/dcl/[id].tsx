@@ -20,10 +20,12 @@ import { PoolInfo, get_pool } from "@/services/swapV3";
 import { ftGetTokensMetadata } from "@/services/token";
 import BigNumber from "bignumber.js";
 import { toReadableNumber } from "@/utils/numbers";
+import { usePoolStore } from "@/stores/pool";
 
 export default function DCLPoolDetail() {
   const router = useRouter();
   const poolId = router.query.id || "";
+  const poolStore = usePoolStore();
   const { currentwatchListId, accountId } = useWatchList();
   const [poolDetail, setPoolDetail] = useState<any>(null);
   const [poolDetailV3, setPoolDetailV3] = useState<PoolInfo | any>(null);
@@ -55,6 +57,7 @@ export default function DCLPoolDetail() {
     getAllTokenPrices().then((res) => {
       setTokenPriceList(res);
     });
+    poolStore.setPoolActiveTab("dcl");
   }, []);
 
   useEffect(() => {

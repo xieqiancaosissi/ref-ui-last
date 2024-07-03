@@ -1702,7 +1702,7 @@ export default function DclChart({
         </svg>
         {/* show hover box then hover on the bin */}
         <div
-          className="overBox w-75 min-h-48 flex flex-col lg:fixed rounded-xl bg-modalGrayBg  p-4 xsm:hidden xsm:mt-4 lg:invisible"
+          className="overBox w-75 min-h-48 flex flex-col lg:absolute rounded-xl bg-modalGrayBg  p-4 xsm:hidden xsm:mt-4 lg:invisible"
           style={{ zIndex: 9999999 }}
         >
           <div className="flex items-center justify-between my-2">

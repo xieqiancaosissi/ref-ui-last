@@ -16,10 +16,12 @@ import NoLiquidity from "@/components/pools/detail/liquidity/NoLiquidity";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import NoContent from "@/components/common/NoContent";
 import { useWatchList } from "@/hooks/useWatchlist";
+import { usePoolStore } from "@/stores/pool";
 
 export default function ClassicPoolDetail() {
   const router = useRouter();
   const poolId = router.query.id || "";
+  const poolStore = usePoolStore();
   const { currentwatchListId, accountId } = useWatchList();
   const [poolDetail, setPoolDetail] = useState<any>(null);
   const [isCollect, setIsCollect] = useState(false);
@@ -47,6 +49,7 @@ export default function ClassicPoolDetail() {
     getAllTokenPrices().then((res) => {
       setTokenPriceList(res);
     });
+    poolStore.setPoolActiveTab("classic");
   }, []);
 
   const collectPool = () => {

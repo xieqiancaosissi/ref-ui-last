@@ -12,7 +12,7 @@ import HoverTooltip from "@/components/common/HoverToolTip";
 
 export default function PoolComposition(props: any) {
   const { tokenPriceList, tokens } = props;
-  const title = ["Pair", "Amount", "Price"];
+  const title = ["Pair", "Amount", "Value"];
   const persistSwapStore = usePersistSwapStore();
   const router = useRouter();
   const toSwap = (tokens: any) => {

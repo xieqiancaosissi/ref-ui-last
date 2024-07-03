@@ -10,12 +10,13 @@ import Dcl from "@/components/pools/dclPool/dcl";
 import CreatePool from "@/components/pools/createPoolModal/index";
 import _ from "lodash";
 import { useRiskTokens } from "@/hooks/useRiskTokens";
+import { usePoolStore } from "@/stores/pool";
 
 export default function Farms() {
   const accountStore = useAccountStore();
   const accountId = accountStore.getAccountId();
-
-  const [isActive, setActive] = useState("classic");
+  const poolStore = usePoolStore();
+  const [isActive, setActive] = useState(poolStore.poolActiveTab);
   const poolTypeList = [
     {
       key: "classic",

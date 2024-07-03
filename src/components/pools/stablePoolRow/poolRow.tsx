@@ -9,6 +9,7 @@ import { useTokenMetadata } from "@/hooks/usePools";
 import { NearIcon, NearIconMini } from "@/components/pools/icon";
 import StablePoolRowCharts from "@/components/pools/stablePoolRowCharts/index";
 import tokenIcons from "@/utils/tokenIconConfig";
+import { useRouter } from "next/router";
 
 export default function PoolRow({
   list,
@@ -20,7 +21,10 @@ export default function PoolRow({
   pureIdList: any;
 }) {
   const { isDealed, updatedMapList } = useTokenMetadata(list);
-
+  const router = useRouter();
+  const toDetail = (item: any) => {
+    router.push(`/pool/stable/${item.id}`);
+  };
   const [legendJson, setLegendJson] = useState<any>({
     item: null,
     ind: 0,
@@ -43,6 +47,7 @@ export default function PoolRow({
             className={`${styles.poolContainer} ${
               item.is_farm ? styles.isfarm : styles.notfarm
             }`}
+            onClick={() => toDetail(item)}
           >
             {/* pools---first child */}
             <div className="flex items-center">
@@ -149,11 +154,13 @@ export default function PoolRow({
 
               {/* pie charts */}
               <div className={styles.stableCharts}>
-                <StablePoolRowCharts
-                  jsonMap={item}
-                  legendJson={legendJson}
-                  highlight={legendJson.id === item.id}
-                />
+                {item.id && (
+                  <StablePoolRowCharts
+                    jsonMap={item}
+                    legendJson={legendJson}
+                    highlight={legendJson.id === item.id}
+                  />
+                )}
               </div>
             </div>
 

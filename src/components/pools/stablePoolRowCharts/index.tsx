@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import * as charts from "echarts";
 import {
   formatPercentage,
@@ -16,13 +16,14 @@ export default function StablePoolRowCharts({
   jsonMap: any;
 }) {
   const chartRef = useRef(null);
-  const chartsDataList: any = [];
+  const [chartsDataList, setChartDataList]: any = useState([]);
 
   useEffect(() => {
     const chartInstance = charts.init(chartRef.current);
     // deal data
+    const waitSetList: any = [];
     jsonMap.amounts.map((item: any, index: number) => {
-      chartsDataList.push({
+      waitSetList.push({
         value: Number(
           item.substring(
             0,
@@ -38,9 +39,11 @@ export default function StablePoolRowCharts({
         ),
       });
     });
-    const totalSum = chartsDataList.reduce((accumulator: number, next: any) => {
-      return accumulator + next.value;
-    }, 0);
+
+    // const totalSum = chartsDataList.reduce((accumulator: number, next: any) => {
+    //   return accumulator + next.value;
+    // }, 0);
+    setChartDataList(waitSetList);
 
     // charts option
     const options = {
@@ -72,7 +75,7 @@ export default function StablePoolRowCharts({
             borderRadius: 1,
           },
           padAngle: 5,
-          data: chartsDataList,
+          data: waitSetList,
         },
       ],
     };

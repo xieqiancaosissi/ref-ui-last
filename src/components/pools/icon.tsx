@@ -1023,3 +1023,54 @@ export const BlueCircleLoading = (props: any) => {
     </svg>
   );
 };
+
+export const StableFarmIcon = (props: any) => {
+  return (
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 14 14"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M7 9.96599C5.44488 3.79692 0 5.11901 0 5.11901C0.4375 6.44095 0.4375 10.407 7 9.96599Z"
+        fill="#FAFF00"
+      />
+      <path
+        d="M7 10C4.5 3 10.918 0 10.918 0C11.1685 2.6233 13.857 6.96283 7 10Z"
+        fill="#FAFF00"
+      />
+      <path
+        d="M7 9.5C7.16667 10.3333 7.4 12.2 7 13"
+        stroke="#FAFF00"
+        strokeLinecap="square"
+      />
+    </svg>
+  );
+};
+
+export const AddLiquidityIcon = (props: any) => {
+  return (
+    <svg
+      width="9"
+      height="10"
+      viewBox="0 0 9 10"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M4.2974 7.96637L4.17892 4.93065C4.10829 3.12099 5.2839 1.49753 7.02526 1V1"
+        stroke="black"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+      <path
+        d="M1.32812 5.84741L4.29479 8.39027L7.26146 5.84741"
+        stroke="black"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+};

@@ -67,7 +67,7 @@ export default function RecentTransaction(props: any) {
     setTitle(
       activeTab == "swap"
         ? ["From", "To", "Time"]
-        : ["Operate", "Amount", "Time"]
+        : ["Action", "Amount", "Time"]
     );
   }, [activeTab]);
 

@@ -40,6 +40,16 @@ export default function Menu() {
     setTwoLevelMenuId(item.id);
     router.push(item.path);
   }
+
+  // for stable detail css style
+  const [extraBack, setExtraBack] = useState("transparent");
+  useEffect(() => {
+    setExtraBack("transparent");
+    if (router.route.indexOf("pool/stable") != -1) {
+      setExtraBack("rgba(33, 43, 53, 0.4)");
+    }
+  }, [router]);
+
   return (
     <div>
       {/* one level menu */}
@@ -87,7 +97,10 @@ export default function Menu() {
           className={`flex items-center justify-center relative gap-6 ${
             twoLevelMenuShow ? "" : "hidden"
           }`}
-          style={{ height: "50px" }}
+          style={{
+            height: "50px",
+            background: extraBack,
+          }}
         >
           {oneLevelData.children.map((item) => {
             return (

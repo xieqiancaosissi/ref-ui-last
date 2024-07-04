@@ -5,6 +5,8 @@ import db from "@/db/RefDatabase";
 import { useEffect, useState } from "react";
 import { TokenMetadata } from "./ft-contract";
 
+const FRAX_ID = "853d955acef822db058eb8505911ed77f175b99e.factory.bridge.near";
+
 export async function ftGetTokenMetadata(tokenId: string) {
   let metadata: any = await db.allTokens().where({ id: tokenId }).first();
   if (!metadata) {
@@ -24,6 +26,10 @@ export async function ftGetTokenMetadata(tokenId: string) {
     } catch (error) {
       return null;
     }
+  }
+
+  if (metadata.id === FRAX_ID) {
+    metadata.icon = "https://assets.ref.finance/images/FRAX_coin.svg";
   }
 
   return {

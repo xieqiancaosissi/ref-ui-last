@@ -49,6 +49,7 @@ import { FarmView } from "./components/FarmView";
 import SelectBox from "./components/SelectBox";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import WithDrawBox from "./components/WithDrawBox";
+import NoContent from "../common/NoContent";
 
 const {
   REF_VE_CONTRACT_ID,
@@ -1242,6 +1243,8 @@ export default function FarmsPage(props: any) {
                 <Skeleton width={356} height={200} count={2} className="mt-4" />
               </SkeletonTheme>
             </div>
+          ) : farm_display_List.length === 0 ? (
+            <NoContent />
           ) : (
             <>
               <div className="grid grid-cols-2 xs:grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-6 m-auto ">

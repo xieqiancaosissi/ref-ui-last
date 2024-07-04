@@ -883,7 +883,7 @@ export function FarmView(props: {
                   onClick={(e: any) => {
                     e.stopPropagation();
                     setCalcVisible(true);
-                  }}
+                  }} 
                   className="text-farmText ml-1.5 cursor-pointer hover:text-greenColor"
                 />
               </p>

@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { usePoolStore } from "@/stores/pool";
+import { useAccountStore } from "@/stores/account";
 import {
   getSearchResult,
   getClassicPoolSwapRecentTransaction,
@@ -14,6 +15,9 @@ import {
   getDCLPoolLiquidtyRecentTransaction,
   getLimitOrderRecentTransaction,
 } from "@/services/indexer";
+import { getPoolDetails } from "@/services/pool_detail";
+import { getSharesInPool } from "@/services/pool";
+import { getStakedListByAccountId } from "@/services/farm";
 import _ from "lodash";
 //
 type UsePoolSearchProps = {
@@ -249,5 +253,47 @@ export const useDCLPoolTransaction = ({
     swapTransactions: swapRecent,
     liquidityTransactions: lqRecent,
     limitOrderTransactions: limitOrderRecent,
+  };
+};
+
+// get stable shares
+
+export const usePool = (id: number | string) => {
+  const accountStore = useAccountStore();
+
+  const isSignedIn = accountStore.isSignedIn;
+
+  const [pool, setPool] = useState<any>();
+  const [shares, setShares] = useState<string>("0");
+  const [stakeList, setStakeList] = useState<Record<string, string>>({});
+  const [v2StakeList, setV2StakeList] = useState<Record<string, string>>({});
+
+  const [finalStakeList, setFinalStakeList] = useState<Record<string, string>>(
+    {}
+  );
+
+  useEffect(() => {
+    getPoolDetails(Number(id)).then(setPool);
+    getSharesInPool(Number(id))
+      .then(setShares)
+      .catch(() => setShares);
+
+    getStakedListByAccountId({})
+      .then(({ stakedList, finalStakeList, v2StakedList }) => {
+        setStakeList(stakedList);
+        setV2StakeList(v2StakedList);
+        setFinalStakeList(finalStakeList);
+      })
+      .catch((err: any) => {
+        console.log(err);
+      });
+  }, [id, isSignedIn]);
+
+  return {
+    pool,
+    shares,
+    stakeList,
+    v2StakeList,
+    finalStakeList,
   };
 };

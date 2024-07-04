@@ -35,7 +35,7 @@ export default function StablePoolRowCharts(props: any) {
     const chartInstanceNew = charts.init(chartRef.current);
     const waitSetList: any = updatedMapList;
     const chartsData: any = [];
-    setSumToken(0);
+    let sumToken = 0;
     waitSetList?.length > 0 &&
       waitSetList.map((item: any, index: number) => {
         item?.token_account_ids?.map((ite: any, ind: number) => {
@@ -43,7 +43,7 @@ export default function StablePoolRowCharts(props: any) {
             ite.decimals,
             item.supplies[ite.tokenId]
           );
-          setSumToken((previous) => +tokenAmount + previous);
+          sumToken += +tokenAmount;
           chartsData.push({
             name: ite.symbol,
             value: tokenAmount,
@@ -90,6 +90,7 @@ export default function StablePoolRowCharts(props: any) {
           });
         });
       });
+    setSumToken(sumToken);
     // charts option
     const options = {
       tooltip: {
@@ -128,7 +129,7 @@ export default function StablePoolRowCharts(props: any) {
     return () => {
       chartInstanceNew.dispose();
     };
-  }, [poolDetail]);
+  }, [poolDetail, updatedMapList]);
 
   //
   let utilisationDisplay;

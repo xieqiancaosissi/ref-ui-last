@@ -8,7 +8,9 @@ import {
   refFarmBoostFunctionCall,
   refFiViewFunction,
   refSwapV3ViewFunction,
+  refFarmViewFunction,
 } from "../utils/contract";
+import { scientificNotationToString } from "../utils/numbers";
 import { viewFunction } from "../utils/near";
 import { executeFarmMultipleTransactions } from "../utils/contract";
 import { getAccountId, getCurrentWallet } from "../utils/wallet";
@@ -990,4 +992,40 @@ export const getBoostTokenPrices = async (): Promise<
   } catch (error) {
     return {};
   }
+};
+
+export const getStakedListByAccountId = async ({
+  accountId = getAccountId(),
+}) => {
+  const [stakedList, v2StakedList] = await Promise.all([
+    refFarmViewFunction({
+      methodName: "list_user_seeds",
+      args: { account_id: accountId },
+    }),
+    list_farmer_seeds().then((res) => {
+      Object.keys(res).forEach((seed) => {
+        res[seed] = scientificNotationToString(
+          new Big(res[seed]?.free_amount || 0)
+            .plus(new Big(res[seed]?.locked_amount || 0))
+            .toString()
+        );
+      });
+
+      return res;
+    }),
+  ]);
+  const finalStakeSeedList = new Array(
+    ...new Set(Object.keys(stakedList).concat(Object.keys(v2StakedList)))
+  );
+
+  const finalStakeList: any = {};
+  finalStakeSeedList.forEach((seed) => {
+    finalStakeList[seed] = scientificNotationToString(
+      new BigNumber(stakedList[seed] || 0)
+        .plus(new BigNumber(v2StakedList[seed] || 0))
+        .toString()
+    );
+  });
+
+  return { finalStakeList, v2StakedList, stakedList };
 };

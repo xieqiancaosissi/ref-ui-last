@@ -2,12 +2,40 @@ import React from "react";
 import { FiArrowUpRight } from "react-icons/fi";
 import { StableFarmIcon } from "../../icon";
 import HoverTip from "@/components/common/Tips";
-export default function ShareAndFarm() {
+import { usePool } from "@/hooks/usePools";
+import { useAccountStore } from "@/stores/account";
+import { toRoundedReadableNumber } from "@/utils/numbers";
+import { getStablePoolDecimal } from "@/services/swap/swapUtils";
+import { scientificNotationToString } from "@/utils/numbers";
+import {
+  useCanFarmV1,
+  useCanFarmV2,
+  useYourliquidity,
+} from "@/hooks/useStableShares";
+import { ShareInFarmV2 } from "./ShareInFarm";
+import ShareNumber from "./ShareNumber";
+export default function ShareAndFarm(props: any) {
+  const { poolDetail } = props;
+  const { shares } = usePool(poolDetail.id);
+  const accountStore = useAccountStore();
+  const { farmCount: countV1, endedFarmCount: endedFarmCountV1 } = useCanFarmV1(
+    poolDetail.id,
+    true
+  );
+
+  const { farmCount: countV2, endedFarmCount: endedFarmCountV2 } = useCanFarmV2(
+    poolDetail.id,
+    true
+  );
+  const { farmStakeV1, farmStakeV2, userTotalShare } = useYourliquidity(
+    poolDetail.id
+  );
+
   return (
     <div className="my-5 w-270 flex justify-between items-center">
       {/* left */}
       <div className="text-gray-60 text-sm font-normal flex">
-        {/*  */}
+        {/* get share */}
         <div className="frcc">
           <HoverTip
             msg={"Shares available / Total shares"}
@@ -15,18 +43,27 @@ export default function ShareAndFarm() {
           />
           <span>Shares</span>
           <p className="ml-2">
-            <span className="text-white">478</span> / <span>2456.09</span>
+            <ShareNumber id={poolDetail.id} />
           </p>
         </div>
 
         <div className="frcc ml-10">
-          <StableFarmIcon />
-          <span className="text-white ml-1 mr-2">0.8%</span>
-          <span>In</span>
-          <span className=" underline cursor-pointer mx-1 hover:text-white">
-            Classic Farms
-          </span>
-          <FiArrowUpRight className="hover:text-green-10" />
+          {countV1 > endedFarmCountV1 || Number(farmStakeV1) > 0 ? (
+            <ShareInFarmV2
+              farmStake={farmStakeV1}
+              userTotalShare={userTotalShare}
+              version={"Legacy"}
+            />
+          ) : null}
+          {countV2 > endedFarmCountV2 || Number(farmStakeV2) > 0 ? (
+            <ShareInFarmV2
+              farmStake={farmStakeV2}
+              userTotalShare={userTotalShare}
+              version={"Classic"}
+              poolId={poolDetail.id}
+              onlyEndedFarm={endedFarmCountV2 === countV2}
+            />
+          ) : null}
         </div>
       </div>
       {/* right liquidity button */}

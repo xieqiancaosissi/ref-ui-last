@@ -106,15 +106,17 @@ export default function StablePoolDetail() {
         </div>
 
         {/* share and liquidity action */}
-        {poolDetail && <ShareAndFarm />}
+        {poolDetail && <ShareAndFarm poolDetail={poolDetail} />}
       </div>
       {/* main */}
       <div className="fccc w-270 mt-2">
-        <PieEcharts
-          poolDetail={poolDetail}
-          tokenPriceList={tokenPriceList}
-          updatedMapList={updatedMapList}
-        />
+        {poolDetail && updatedMapList?.length > 0 && (
+          <PieEcharts
+            poolDetail={poolDetail}
+            tokenPriceList={tokenPriceList}
+            updatedMapList={updatedMapList}
+          />
+        )}
 
         {/* Recent Transaction */}
         <div className="mb-10">

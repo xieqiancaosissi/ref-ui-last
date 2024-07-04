@@ -408,7 +408,7 @@ export default function RecentTransaction(props: any) {
 
   return (
     <div
-      className="w-183 max-h-106 rounded-md p-4 overflow-auto"
+      className="w-215 max-h-106 rounded-md p-4 overflow-auto"
       style={{
         background: "rgba(33, 43, 53, 0.2)",
       }}

@@ -5,8 +5,6 @@ import styles from "./style.module.css";
 import TokenDetail from "@/components/pools/detail/stable/tokenDetail";
 import { CollectStar } from "@/components/pools/icon";
 import { getAllTokenPrices } from "@/services/farm";
-import OverallLocking from "@/components/pools/detail/stable/overallLocking";
-import PoolComposition from "@/components/pools/detail/stable/PoolComposition";
 import { useTokenMetadata } from "@/hooks/usePools";
 import RecentTransaction from "@/components/pools/detail/stable/RecentTransaction";
 import { addPoolToWatchList, removePoolFromWatchList } from "@/services/pool";
@@ -15,7 +13,6 @@ import NoContent from "@/components/common/NoContent";
 import { useWatchList } from "@/hooks/useWatchlist";
 import { usePoolStore } from "@/stores/pool";
 import ShareAndFarm from "@/components/pools/detail/stable/ShareAndFarm";
-import PieDetail from "@/components/pools/detail/stable/PieDetail";
 import PieEcharts from "@/components/pools/detail/stable/PieEcharts";
 
 export default function StablePoolDetail() {
@@ -113,47 +110,15 @@ export default function StablePoolDetail() {
       </div>
       {/* main */}
       <div className="fccc w-270 mt-2">
-        <div className="frcc w-full">
-          <PieEcharts
-            poolDetail={poolDetail}
-            tokenPriceList={tokenPriceList}
-            updatedMapList={updatedMapList}
-          ></PieEcharts>
-        </div>
-        {/* tvl & Overall locking */}
-        <div className="mt-20">
-          {poolDetail && updatedMapList?.length > 0 && (
-            <OverallLocking
-              poolDetail={poolDetail}
-              updatedMapList={updatedMapList}
-            />
-          )}
-        </div>
-
-        {/* Pool composition */}
-        <div>
-          <h3 className="mt-12 mb-4 text-lg text-gray-50 font-bold">
-            Pool Composition
-          </h3>
-          {poolDetail && updatedMapList?.length > 0 ? (
-            <PoolComposition
-              poolDetail={poolDetail}
-              tokenPriceList={tokenPriceList}
-              updatedMapList={updatedMapList}
-            />
-          ) : (
-            <SkeletonTheme
-              baseColor="rgba(106, 114, 121, 0.3)"
-              highlightColor="#9eff00"
-            >
-              <Skeleton width={732} height={60} count={2} />
-            </SkeletonTheme>
-          )}
-        </div>
+        <PieEcharts
+          poolDetail={poolDetail}
+          tokenPriceList={tokenPriceList}
+          updatedMapList={updatedMapList}
+        />
 
         {/* Recent Transaction */}
-        <div>
-          <div className="mt-12 mb-4 flex justify-between">
+        <div className="mb-10">
+          <div className="mb-4 flex justify-between">
             <span className="text-lg text-gray-50 font-bold">
               Recent Transaction
             </span>

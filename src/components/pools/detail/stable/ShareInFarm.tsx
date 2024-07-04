@@ -1,19 +1,7 @@
 import React, { useState } from "react";
-import {
-  percent,
-  percentLess,
-  percentOf,
-  subtraction,
-  toInternationalCurrencySystem,
-  toNonDivisibleNumber,
-  toPrecision,
-  toReadableNumber,
-  toRoundedReadableNumber,
-} from "@/utils/numbers";
+import { percent, toPrecision } from "@/utils/numbers";
 import { FormattedMessage, useIntl } from "react-intl";
 import BigNumber from "bignumber.js";
-import { Link } from "react-router-dom";
-import { isMobile } from "@/utils/device";
 import { useRouter } from "next/router";
 import { StableFarmIcon } from "../../icon";
 import { FiArrowUpRight } from "react-icons/fi";
@@ -127,24 +115,14 @@ export const ShareInFarmV2 = ({
   return (
     <div className="frcc ml-10">
       {/* <FarmDot inFarm={Number(farmShare) > 0} className="mr-1" /> */}
-
-      {/* <StableFarmIcon />
-          <span className="text-white ml-1 mr-2">0.8%</span>
-          <span>In</span>
-          <span className=" underline cursor-pointer mx-1 hover:text-white">
-            Classic Farms
-          </span>
-          <FiArrowUpRight className="hover:text-green-10" /> */}
-
       <StableFarmIcon />
       <div className="self-start whitespace-nowrap flex items-center">
         <span className="text-white ml-1 mr-2">
-          {" "}
           {`${
             Number(farmSharePercent) < 0.1 && Number(farmSharePercent) > 0
               ? "< 0.1"
               : toPrecision(farmSharePercent, 2, false, false)
-          }% `}{" "}
+          }% `}
         </span>
         <span>In</span>
         <div

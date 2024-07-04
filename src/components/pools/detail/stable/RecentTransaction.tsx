@@ -88,16 +88,6 @@ export default function RecentTransaction(props: any) {
         ];
         break;
       case "liquidity":
-        // let container = ["col-span-2", "col-span-4", "col-span-3"];
-        // if (updatedMapList[0].token_account_ids.length == 3) {
-        //   container = ["col-span-1", "col-span-5", "col-span-3"];
-        //   setContainerWidth(["col-span-1", "col-span-5", "col-span-3"]);
-        // }
-        // if (updatedMapList[0].token_account_ids.length == 4) {
-        //   container = ["col-span-1", "col-span-5", "col-span-3"];
-        //   setContainerWidth(["col-span-1", "col-span-5", "col-span-3"]);
-        // }
-
         titleList = [
           {
             key: "Action",

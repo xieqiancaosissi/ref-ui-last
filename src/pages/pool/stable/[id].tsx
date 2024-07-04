@@ -12,7 +12,7 @@ import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import NoContent from "@/components/common/NoContent";
 import { useWatchList } from "@/hooks/useWatchlist";
 import { usePoolStore } from "@/stores/pool";
-import ShareAndFarm from "@/components/pools/detail/stable/ShareAndFarm";
+import ShareContainer from "@/components/pools/detail/stable/ShareContainer";
 import PieEcharts from "@/components/pools/detail/stable/PieEcharts";
 
 export default function StablePoolDetail() {
@@ -106,21 +106,23 @@ export default function StablePoolDetail() {
         </div>
 
         {/* share and liquidity action */}
-        {poolDetail && <ShareAndFarm poolDetail={poolDetail} />}
+        {poolDetail && <ShareContainer poolDetail={poolDetail} />}
       </div>
       {/* main */}
       <div className="fccc w-270 mt-2">
-        {poolDetail && updatedMapList?.length > 0 && (
+        {poolDetail && updatedMapList?.length > 0 ? (
           <PieEcharts
             poolDetail={poolDetail}
             tokenPriceList={tokenPriceList}
             updatedMapList={updatedMapList}
           />
+        ) : (
+          <NoContent tips="Charts is Loading..." h="h-90" />
         )}
 
         {/* Recent Transaction */}
         <div className="mb-10">
-          <div className="mb-4 flex justify-between">
+          <div className="mb-4 flex justify-between w-215">
             <span className="text-lg text-gray-50 font-bold">
               Recent Transaction
             </span>
@@ -143,12 +145,19 @@ export default function StablePoolDetail() {
             </div>
           </div>
           {/*  */}
-          {poolDetail && updatedMapList?.length > 0 && (
+          {poolDetail && updatedMapList?.length > 0 ? (
             <RecentTransaction
               activeTab={transactionActive}
               poolId={poolId}
               updatedMapList={updatedMapList}
             />
+          ) : (
+            <SkeletonTheme
+              baseColor="rgba(33, 43, 53, 0.3)"
+              highlightColor="rgba(33, 43, 53, 0.4)"
+            >
+              <Skeleton width={860} height={50} count={10}></Skeleton>
+            </SkeletonTheme>
           )}
         </div>
       </div>

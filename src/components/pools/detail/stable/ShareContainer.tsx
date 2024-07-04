@@ -1,12 +1,5 @@
 import React from "react";
-import { FiArrowUpRight } from "react-icons/fi";
-import { StableFarmIcon } from "../../icon";
 import HoverTip from "@/components/common/Tips";
-import { usePool } from "@/hooks/usePools";
-import { useAccountStore } from "@/stores/account";
-import { toRoundedReadableNumber } from "@/utils/numbers";
-import { getStablePoolDecimal } from "@/services/swap/swapUtils";
-import { scientificNotationToString } from "@/utils/numbers";
 import {
   useCanFarmV1,
   useCanFarmV2,
@@ -14,10 +7,9 @@ import {
 } from "@/hooks/useStableShares";
 import { ShareInFarmV2 } from "./ShareInFarm";
 import ShareNumber from "./ShareNumber";
-export default function ShareAndFarm(props: any) {
+
+export default function ShareContainer(props: any) {
   const { poolDetail } = props;
-  const { shares } = usePool(poolDetail.id);
-  const accountStore = useAccountStore();
   const { farmCount: countV1, endedFarmCount: endedFarmCountV1 } = useCanFarmV1(
     poolDetail.id,
     true

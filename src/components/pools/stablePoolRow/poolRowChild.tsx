@@ -5,22 +5,18 @@ import {
   toInternationalCurrencySystem_usd,
   toInternationalCurrencySystem_number,
 } from "@/utils/uiNumber";
-import { useTokenMetadata } from "@/hooks/usePools";
 import { NearIcon, NearIconMini } from "@/components/pools/icon";
 import StablePoolRowCharts from "@/components/pools/stablePoolRowCharts/index";
 import tokenIcons from "@/utils/tokenIconConfig";
 import { useRouter } from "next/router";
-import ShareNumber from "../detail/stable/ShareNumber";
 import { formatePoolData } from "../detail/stable/FormatterPool";
 import { useYourliquidity } from "@/hooks/useStableShares";
-import { useAccountStore } from "@/stores/account";
 
 export default function PoolRow(props: any) {
   const { item, index } = props;
   const router = useRouter();
-  const accountStore = useAccountStore();
-  const isSignedIn = accountStore.isSignedIn;
   const { userTotalShare } = useYourliquidity(item.id);
+  const formatePool = formatePoolData(item, userTotalShare);
   const toDetail = (item: any) => {
     router.push(`/pool/stable/${item.id}`);
   };
@@ -164,17 +160,9 @@ export default function PoolRow(props: any) {
             <div>
               <div className="frcc">
                 <span className=" text-gray-60">Shares:</span>
-                <span className="mx-2">
-                  {
-                    formatePoolData(item, userTotalShare, isSignedIn)
-                      .displayMyShareAmount
-                  }
-                </span>
+                <span className="mx-2">{formatePool.displayMyShareAmount}</span>
                 <span className="text-gray-60">
-                  {
-                    formatePoolData(item, userTotalShare, isSignedIn)
-                      .displaySharePercent
-                  }
+                  {formatePool.displaySharePercent}
                 </span>
               </div>
               <div className="frcc">

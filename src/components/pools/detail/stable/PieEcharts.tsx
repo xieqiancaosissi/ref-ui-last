@@ -129,7 +129,7 @@ export default function StablePoolRowCharts(props: any) {
     return () => {
       chartInstanceNew.dispose();
     };
-  }, [poolDetail, updatedMapList]);
+  }, [poolDetail]);
 
   //
   let utilisationDisplay;

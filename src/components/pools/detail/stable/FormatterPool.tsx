@@ -4,11 +4,10 @@ import { toPrecision, toReadableNumber } from "@/utils/numbers";
 import { percent } from "@/utils/numbers";
 import { getStablePoolDecimal } from "@/services/swap/swapUtils";
 import BigNumber from "bignumber.js";
-export function formatePoolData(
-  pool: any,
-  userTotalShare: any,
-  isSignedIn: boolean
-) {
+import { getAccountId } from "@/utils/wallet";
+export function formatePoolData(pool: any, userTotalShare: any) {
+  const isSignedIn = getAccountId();
+
   const parsedUsertotalShare = scientificNotationToString(
     userTotalShare.toString()
   );

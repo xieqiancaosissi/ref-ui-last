@@ -1,5 +1,5 @@
-import React from 'react';
-import Big from 'big.js';
+import React from "react";
+import Big from "big.js";
 
 export function PointInputComponent({
   handlePriceToAppropriatePoint,
@@ -21,7 +21,7 @@ export function PointInputComponent({
         placeholder="0.0"
         step="any"
         className={`text-base font-gothamBold mx-2 text-left xsm:text-right ${
-          disbaled ? 'text-primaryText' : 'text-white'
+          disbaled ? "text-primaryText" : "text-white"
         }`}
         onBlur={() => {
           setInputStatus(false);
@@ -39,7 +39,7 @@ export function PointInputComponent({
           setInputStatus(true);
           const inputPrice = target.value;
           if (Big(target.value || 0).lt(0)) {
-            setCustomPrice('0');
+            setCustomPrice("0");
           } else {
             setCustomPrice(inputPrice);
           }

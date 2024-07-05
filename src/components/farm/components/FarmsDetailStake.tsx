@@ -202,22 +202,26 @@ export default function FarmsDetailStake(props: {
       withdraw_amount: toNonDivisibleNumber(DECIMALS, amount),
     });
   }
+  const isEnded = detailData?.farmList?.[0]?.status == "Ended";
   return (
     <div className="bg-dark-10 rounded-md p-5">
       <div className="flex items-center mb-4">
         <button
           className={`text-lg pr-5 ${
             activeTab === "Stake" ? styles.gradient_text : "text-gray-500"
-          }`}
+          } ${isEnded ? "hidden" : ""}`}
           onClick={() => setActiveTab("Stake")}
         >
           Stake
         </button>
-        <div className="h-4 bg-gray-50" style={{ width: "2px" }} />
+        <div
+          className={`h-4 bg-gray-50 ${Number(freeAmount) > 0 ? "" : "hidden"}`}
+          style={{ width: "2px" }}
+        />
         <button
           className={`text-lg pl-5 ${
             activeTab === "Unstake" ? styles.gradient_text : "text-gray-500"
-          }`}
+          }  ${Number(freeAmount) > 0 ? "" : "hidden"}`}
           onClick={() => setActiveTab("Unstake")}
         >
           Unstake

@@ -93,8 +93,7 @@ export const get24hVolumes = async (
   for (let i = 0; i < numBatches; i++) {
     const batchIds = pool_ids.slice(i * batchSize, (i + 1) * batchSize);
     const promise = fetch(
-      config.sodakiApiUrl +
-        `/poollist/${batchIds.join("|")}/rolling24hvolume/sum`,
+      config.newSodakiApiUrl + `/poollist/${batchIds.join("|")}/24hvolume/sum`,
       {
         method: "GET",
       }

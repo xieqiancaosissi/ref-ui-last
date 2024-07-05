@@ -1074,3 +1074,68 @@ export const AddLiquidityIcon = (props: any) => {
     </svg>
   );
 };
+
+export const RemoveLiquidityIcon = (props: any) => {
+  return (
+    <svg
+      width="9"
+      height="10"
+      viewBox="0 0 9 10"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M4.2974 7.96637L4.17892 4.93065C4.10829 3.12099 5.2839 1.49753 7.02526 1V1"
+        stroke="black"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+      <path
+        d="M1.32812 5.84741L4.29479 8.39027L7.26146 5.84741"
+        stroke="black"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+};
+
+export const ArrowDownV3 = (props: any) => {
+  return (
+    <svg
+      {...props}
+      width="11"
+      height="7"
+      viewBox="0 0 11 7"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M1 1L5.5 5L10 1"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+};
+
+export const SelectArrowIcon = (props: any) => {
+  return (
+    <svg
+      {...props}
+      width="11"
+      height="7"
+      viewBox="0 0 11 7"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M1 1L5.401 5L9.57143 1"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+};

@@ -1,7 +1,10 @@
+import { useEffect } from "react";
+import { useRouter } from "next/router";
 import BigNumber from "bignumber.js";
 import { TokenMetadata } from "./ft-contract";
 import { IPoolDcl } from "../interfaces/swapDcl";
 import getConfig from "../utils/config";
+import { getURLInfo } from "@/utils/transactionsPopup";
 import { FarmBoost, Seed } from "./farm";
 import {
   scientificNotationToString,
@@ -26,12 +29,33 @@ import {
   IChartData,
 } from "@/components/pools/detail/dcl/d3Chart/interfaces";
 import Big from "big.js";
+import { useAccountStore } from "@/stores/account";
+import { checkTransaction } from "@/utils/contract";
 
 const { REF_UNI_V3_SWAP_CONTRACT_ID, boostBlackList } = getConfig();
 
 export const CONSTANT_D = 1.0001;
 export const POINTLEFTRANGE = -800000;
 export const POINTRIGHTRANGE = 800000;
+export const DEFAULTSELECTEDFEE = 2000;
+export const FEELIST = [
+  {
+    fee: 100,
+    text: "Best for very stable pairs",
+  },
+  {
+    fee: 400,
+    text: "Best for stable pairs",
+  },
+  {
+    fee: 2000,
+    text: "Best for most pairs",
+  },
+  {
+    fee: 10000,
+    text: "Best for rare pairs",
+  },
+];
 /**
  * caculate point by price
  * @param pointDelta
@@ -1396,4 +1420,78 @@ export function get_total_earned_fee({
     total_earned_fee_y_amount: total_earned_fee_y?.toFixed(),
     total_fee_earned_money: total_fee_earned,
   };
+}
+
+export function useAddLiquidityUrlHandle() {
+  const router = useRouter();
+  const accountStore = useAccountStore();
+  const isSignedIn = accountStore.isSignedIn;
+  const { txHash } = getURLInfo();
+  useEffect(() => {
+    if (txHash && isSignedIn) {
+      checkTransaction(txHash).then((res: any) => {
+        const { transaction, status, receipts, receipts_outcome } = res;
+        const successValueNormal: string | undefined = status?.SuccessValue;
+        const successValueNeth: string | undefined =
+          receipts_outcome?.[1]?.outcome?.status?.SuccessValue;
+        const isNeth =
+          transaction?.actions?.[0]?.FunctionCall?.method_name === "execute";
+        const methodNameNeth =
+          receipts?.[0]?.receipt?.Action?.actions?.[0]?.FunctionCall
+            ?.method_name;
+        const methodNameNormal =
+          transaction?.actions[0]?.FunctionCall?.method_name;
+        const methodName = isNeth ? methodNameNeth : methodNameNormal;
+        const successValue = isNeth ? successValueNeth : successValueNormal;
+        let returnValue: any;
+        if (successValue) {
+          const buff = Buffer.from(successValue, "base64");
+          const v = buff.toString("ascii");
+          returnValue = v.substring(1, v.length - 1);
+        }
+        let pool_info: string[] = [];
+        if (methodName == "add_liquidity") {
+          pool_info = returnValue.split("|");
+        } else if (methodName == "batch_add_liquidity") {
+          pool_info = returnValue.replace(/\"/g, "").split(",")[0]?.split("|");
+        }
+        if (pool_info.length) {
+          const [tokenX, tokenY, id] = pool_info;
+          const [fee] = id.split("#");
+          const pool_name = get_pool_name(`${tokenX}|${tokenY}|${fee}`);
+          // router.replace("/pools/" + `${pool_name}`);
+          router.replace("/pools");
+        }
+      });
+    }
+  }, [txHash, isSignedIn]);
+}
+
+/**
+ * caculate bin point by price
+ * @param pointDelta
+ * @param price
+ * @param decimalRate tokenY/tokenX
+ * @returns
+ */
+export function getBinPointByPrice(
+  pointDelta: number,
+  price: string,
+  decimalRate: number,
+  slotNumber: number
+) {
+  const point = Math.log(+price * decimalRate) / Math.log(CONSTANT_D);
+  const point_int = Math.round(point);
+  const point_int_bin = getBinPointByPoint(pointDelta, slotNumber, point_int);
+  return point_int_bin;
+}
+
+export function getSlotPointByPoint(pointDelta: number, point: number) {
+  const point_int_slot = Math.round(point / pointDelta) * pointDelta;
+  if (point_int_slot < POINTLEFTRANGE) {
+    return POINTLEFTRANGE;
+  } else if (point_int_slot > POINTRIGHTRANGE) {
+    return 800000;
+  }
+  return point_int_slot;
 }

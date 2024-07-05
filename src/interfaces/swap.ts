@@ -26,6 +26,7 @@ export interface Pool {
   };
   Dex?: string;
   pairAdd?: string;
+  token0_ref_price?: string;
 }
 
 export interface IPoolsByTokens {

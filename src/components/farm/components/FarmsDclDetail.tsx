@@ -976,19 +976,18 @@ export default function FarmsDclDetail(props: {
       {/* content */}
       <div className="w-3/5 pt-16 m-auto pb-8">
         <div className="relative ml-80 bg-dark-10 rounded-md p-5 mb-2.5 w-2/5">
-          <AddLiquidityEntryBar
+          {/* <AddLiquidityEntryBar
             detailData={detailData}
             isEnded={isEnded}
             loading={listLiquiditiesLoading}
             inFarimg={listLiquidities_inFarimg}
             unFarimg={listLiquidities_unFarimg}
             unavailable={listLiquidities_unavailable}
-          ></AddLiquidityEntryBar>
-          <div
-            className={`h-full ${
+          ></AddLiquidityEntryBar> */}
+          {/* ${
               listLiquiditiesLoading || isEnded ? "" : "blur-2"
-            }`}
-          >
+            } */}
+          <div className={`h-full`}>
             <div className="flex items-center mb-8">
               <button
                 className={`text-lg pr-5 ${
@@ -1091,41 +1090,41 @@ export default function FarmsDclDetail(props: {
   );
 }
 
-function AddLiquidityEntryBar(props: {
-  loading: boolean;
-  inFarimg: UserLiquidityInfo[];
-  unFarimg: UserLiquidityInfo[];
-  unavailable: UserLiquidityInfo[];
-  detailData: Seed;
-  isEnded: boolean;
-}) {
-  let tip: any;
-  const { loading, inFarimg, unFarimg, unavailable, detailData, isEnded } =
-    props;
-  if (!loading && inFarimg.length == 0 && unFarimg.length == 0) {
-    // if (unavailable.length == 0) {
-    //   tip = <FormattedMessage id="add_lp_tokens_tip" />;
-    // } else {
-    //   tip =
-    //     'The price range of your liquidity is out of reward range. Please add liquidity within reward range.';
-    // }
-    tip =
-      "You don't have liquidity during the farm reward range, click 'Add Liquidity' to start farming.";
-  }
-  if (loading || !tip || isEnded) return null;
-  return (
-    <div
-      className="absolute inset-0 bg-dark-45 bg-opacity-70 flex flex-col items-center justify-center z-50 border rounded-lg px-12"
-      style={{
-        border: "1px solid",
-        borderImageSource: "linear-gradient(180deg, #00D1FF 0%, #9EFE01 100%)",
-        borderImageSlice: "1",
-      }}
-    >
-      <p className="text-base mb-6 text-center">{tip}</p>
-      <div className="text-base frcc h-12 bg-AddLiquidityBg rounded w-72">
-        Add Liquidity
-      </div>
-    </div>
-  );
-}
+// function AddLiquidityEntryBar(props: {
+//   loading: boolean;
+//   inFarimg: UserLiquidityInfo[];
+//   unFarimg: UserLiquidityInfo[];
+//   unavailable: UserLiquidityInfo[];
+//   detailData: Seed;
+//   isEnded: boolean;
+// }) {
+//   let tip: any;
+//   const { loading, inFarimg, unFarimg, unavailable, detailData, isEnded } =
+//     props;
+//   if (!loading && inFarimg.length == 0 && unFarimg.length == 0) {
+//     // if (unavailable.length == 0) {
+//     //   tip = <FormattedMessage id="add_lp_tokens_tip" />;
+//     // } else {
+//     //   tip =
+//     //     'The price range of your liquidity is out of reward range. Please add liquidity within reward range.';
+//     // }
+//     tip =
+//       "You don't have liquidity during the farm reward range, click 'Add Liquidity' to start farming.";
+//   }
+//   if (loading || !tip || isEnded) return null;
+//   return (
+//     <div
+//       className="absolute inset-0 bg-dark-45 bg-opacity-70 flex flex-col items-center justify-center z-50 border rounded-lg px-12"
+//       style={{
+//         border: "1px solid",
+//         borderImageSource: "linear-gradient(180deg, #00D1FF 0%, #9EFE01 100%)",
+//         borderImageSlice: "1",
+//       }}
+//     >
+//       <p className="text-base mb-6 text-center">{tip}</p>
+//       <div className="text-base frcc h-12 bg-AddLiquidityBg rounded w-72">
+//         Add Liquidity
+//       </div>
+//     </div>
+//   );
+// }

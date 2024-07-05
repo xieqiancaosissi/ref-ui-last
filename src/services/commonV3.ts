@@ -552,12 +552,9 @@ export function allocation_rule_liquidities({
     const [left_point, right_point] = get_valid_range(liquidity, seed_id);
     const { mft_id, amount } = liquidity;
     const inRange = right_point > left_point;
-    if (!mft_id) {
-      temp_unavailable.push(liquidity);
-      return;
-    }
-    const [fixRange_l, pool_id_l, left_point_l, right_point_l] =
-      mft_id.split("&");
+    const [fixRange_l, pool_id_l, left_point_l, right_point_l] = mft_id
+      ? mft_id.split("&")
+      : [undefined, undefined, undefined, undefined];
     const amount_is_little = new BigNumber(amount).isLessThan(1000000);
     if (inRange && mft_id) {
       if (left_point_l != left_point_s || right_point_l != right_point_s) {
@@ -573,21 +570,14 @@ export function allocation_rule_liquidities({
   });
   // sort by mft amount for temp_farming
   temp_farming.sort((b: UserLiquidityInfo, a: UserLiquidityInfo) => {
-    const mint_amount_b = b.v_liquidity
-      ? new BigNumber(b.v_liquidity)
-      : new BigNumber(0);
-    const mint_amount_a = a.v_liquidity
-      ? new BigNumber(a.v_liquidity)
-      : new BigNumber(0);
-    return mint_amount_a.minus(mint_amount_b).toNumber();
+    const mint_amount_b = b.v_liquidity || "0";
+    const mint_amount_a = a.v_liquidity || "0";
+    return new BigNumber(mint_amount_a).minus(mint_amount_b).toNumber();
   });
   // allocation for temp_farming
   let user_seed_amount_remained = user_seed_amount;
   temp_farming.forEach((liquidity: UserLiquidityInfo) => {
-    const v_liquidity = liquidity.v_liquidity;
-    if (v_liquidity === undefined) {
-      return;
-    }
+    const v_liquidity = liquidity.v_liquidity || "0";
     const v_liquidity_big = new BigNumber(v_liquidity);
     const user_seed_amount_remained_big = new BigNumber(
       user_seed_amount_remained

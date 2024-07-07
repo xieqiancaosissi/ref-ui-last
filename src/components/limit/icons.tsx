@@ -19,3 +19,67 @@ export function SwitchIcon(props: any) {
     </svg>
   );
 }
+
+export function SubIcon(props: any) {
+  return (
+    <svg
+      {...props}
+      width="20"
+      height="20"
+      viewBox="0 0 20 20"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <rect
+        x="1"
+        y="1"
+        width="18"
+        height="18"
+        rx="4"
+        stroke="#2D343D"
+        strokeWidth="1.2"
+      />
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M5 10.0925C5 9.59132 5.3334 9.18506 5.74468 9.18506H14.2553C14.6666 9.18506 15 9.59132 15 10.0925C15 10.5936 14.6666 10.9999 14.2553 10.9999H5.74468C5.3334 10.9999 5 10.5936 5 10.0925Z"
+        fill="#7E8A93"
+      />
+    </svg>
+  );
+}
+
+export function AddIcon(props: any) {
+  return (
+    <svg
+      {...props}
+      width="20"
+      height="20"
+      viewBox="0 0 20 20"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <rect
+        x="1"
+        y="1"
+        width="18"
+        height="18"
+        rx="4"
+        stroke="#2D343D"
+        strokeWidth="1.2"
+      />
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M5 10.0925C5 9.59132 5.3334 9.18506 5.74468 9.18506H14.2553C14.6666 9.18506 15 9.59132 15 10.0925C15 10.5936 14.6666 10.9999 14.2553 10.9999H5.74468C5.3334 10.9999 5 10.5936 5 10.0925Z"
+        fill="#7E8A93"
+      />
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M10.0008 5.09277C10.5019 5.09277 10.9082 5.42618 10.9082 5.83745L10.9082 14.3481C10.9082 14.7594 10.5019 15.0928 10.0008 15.0928C9.49965 15.0928 9.09339 14.7594 9.09339 14.3481L9.09339 5.83745C9.09339 5.42618 9.49965 5.09277 10.0008 5.09277Z"
+        fill="#7E8A93"
+      />
+    </svg>
+  );
+}

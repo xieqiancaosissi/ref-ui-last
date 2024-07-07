@@ -344,7 +344,7 @@ export function getPoolAllocationPercents(pools: Pool[]) {
     return [];
   }
 }
-export function getMax(token: ITokenMetadata, decimals?: number): string {
+export function getMax(token: ITokenMetadata, precision?: number): string {
   const isNEAR = getTokenUIId(token) == "near";
   const { balance } = token || {};
   let max = balance || "0";
@@ -352,7 +352,7 @@ export function getMax(token: ITokenMetadata, decimals?: number): string {
     const minusDiff = Big(balance || 0).minus(MIN_RETAINED_NEAR_AMOUNT);
     max = minusDiff.gt(0) ? minusDiff.toFixed() : "0";
   }
-  const result = toPrecision(max, decimals ?? 12);
+  const result = toPrecision(max, precision ?? 12);
   return result;
 }
 export function getTokenUIId(token?: ITokenMetadata) {

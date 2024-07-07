@@ -33,7 +33,7 @@ export default function Input(props: IInputProps) {
   const tokenOutAmount = swapStore.getTokenOutAmount();
   const allTokenPrices = swapStore.getAllTokenPrices();
   const isNEAR = getTokenUIId(token) == "near";
-  const decimals = isnearwnearSwap && isIn && !isNEAR ? 24 : undefined;
+  const precision = isnearwnearSwap && isIn && !isNEAR ? 24 : undefined;
   const symbolsArr = ["e", "E", "+", "-"];
   useEffect(() => {
     if (isIn) {
@@ -51,7 +51,7 @@ export default function Input(props: IInputProps) {
       isIn &&
       token?.id &&
       isNEAR &&
-      Big(amount).gt(getMax(token, decimals))
+      Big(amount).gt(getMax(token, precision))
     ) {
       setShowNearTip(true);
     } else {
@@ -63,7 +63,7 @@ export default function Input(props: IInputProps) {
   }
   function setMaxAmount() {
     if (token) {
-      setAmount(getMax(token, decimals));
+      setAmount(getMax(token, precision));
     }
   }
   function getTokenValue() {

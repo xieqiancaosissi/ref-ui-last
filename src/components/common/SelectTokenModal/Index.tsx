@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
-import Image from "next/image";
 import { isMobile } from "../../../utils/device";
 import { CloseIcon, SearchIcon } from "../Icons";
 import { CloseButttonIcon } from "./Icons";
 import AssetTable from "./AssetTable";
-import Styles from "./modal.module.css";
 import {
   useTokenStore,
   useAccountTokenStore,
@@ -126,7 +124,7 @@ export default function SelectTokenModal({
           ) : null}
 
           <div
-            className={`overflow-y-auto px-6 mt-2 pt-2 ${Styles.card}`}
+            className={`overflow-y-auto px-6 mt-2 pt-2 thinGrayscrollBar`}
             style={{ height: "400px" }}
           >
             {/* common tokens */}

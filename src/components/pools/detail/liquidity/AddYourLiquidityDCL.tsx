@@ -5,7 +5,7 @@ import { useAccountStore } from "@/stores/account";
 import { FormattedMessage } from "react-intl";
 import { useHistory } from "react-router-dom";
 import { useTriTokens } from "@/hooks/useTriTokens";
-import { useSelectTokens } from "@/hooks/useSelectTokens";
+import useSelectTokens from "@/hooks/useSelectTokens";
 import { useTriTokenIdsOnRef } from "@/services/aurora";
 import { TokenMetadata } from "@/services/ft-contract";
 import { ftGetBalance, ftGetTokenMetadata } from "@/services/token";

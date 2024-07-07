@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { useSelectTokens } from "./useSelectTokens";
+import useSelectTokens from "./useSelectTokens";
 
 export const useRiskTokens = () => {
   const { totalList } = useSelectTokens();

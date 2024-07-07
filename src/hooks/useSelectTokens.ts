@@ -15,7 +15,7 @@ interface ISelectTokens {
   totalList: TokenMetadata[];
   tokensLoading: boolean;
 }
-export const useSelectTokens = (): ISelectTokens => {
+const useSelectTokens = (): ISelectTokens => {
   const [selectTokens, setSelectTokens] = useState<ISelectTokens>({
     defaultList: [],
     autoList: [],
@@ -106,3 +106,4 @@ export const useSelectTokens = (): ISelectTokens => {
   }
   return selectTokens;
 };
+export default useSelectTokens;

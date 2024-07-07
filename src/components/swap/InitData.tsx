@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from "react";
-import { useSelectTokens } from "@/hooks/useSelectTokens";
+import useSelectTokens from "@/hooks/useSelectTokens";
 import getConfigV2 from "@/utils/configV2";
 import { usePersistSwapStore, useSwapStore } from "@/stores/swap";
 import { getTokenUIId } from "@/services/swap/swapUtils";

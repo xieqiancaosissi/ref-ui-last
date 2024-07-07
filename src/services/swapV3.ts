@@ -1687,12 +1687,12 @@ export const dcl_mft_balance_of = (token_id: string) => {
 };
 
 export interface PoolInfo {
-  pool_id?: string;
+  pool_id: string;
   token_x?: string;
   token_y?: string;
   fee: number;
-  point_delta?: number;
-  current_point?: number;
+  point_delta: number;
+  current_point: number;
   state?: string; // running or paused
   total_liquidity?: string;
   liquidity?: string;

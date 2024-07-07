@@ -15,7 +15,31 @@ interface ISelectTokenBalanceProps {
   isIn?: boolean;
 }
 export default function SelectTokenBalance(props: ISelectTokenBalanceProps) {
-  const loading = true;
+  const { isIn, setMaxAmount, token } = props;
+  const { accountId, walletLoading } = useAccountStore();
+  const accountBalanceTokenStore = useAccountBalanceTokenStore();
+  const accountTokenStore = useAccountTokenStore() as IAccountTokenStore;
+  const owner = accountTokenStore.getOwner();
+  const defaultBalanceLoading =
+    accountBalanceTokenStore.getDefaultBalancesLoading();
+  const autoBalanceLoading = accountBalanceTokenStore.getAutoBalancesLoading();
+  const loading = useMemo(() => {
+    if (walletLoading) return true;
+    if (
+      !walletLoading &&
+      accountId &&
+      accountId !== owner &&
+      (defaultBalanceLoading || autoBalanceLoading)
+    )
+      return true;
+    return false;
+  }, [
+    walletLoading,
+    accountId,
+    owner,
+    defaultBalanceLoading,
+    autoBalanceLoading,
+  ]);
   return (
     <>
       {loading ? (
@@ -28,12 +52,11 @@ export default function SelectTokenBalance(props: ISelectTokenBalanceProps) {
       ) : (
         <span
           onClick={() => {
-            // if (isIn) setMaxAmount();
+            if (isIn) setMaxAmount();
           }}
-          // className={`${isIn ? "underline cursor-pointer" : ""}`}
+          className={`${isIn ? "underline cursor-pointer" : ""}`}
         >
-          {/* {toPrecision(token?.balance || "0", 3)} */}
-          3.44
+          {toPrecision(token?.balance || "0", 3)}
         </span>
       )}
     </>

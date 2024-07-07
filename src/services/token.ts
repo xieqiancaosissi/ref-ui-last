@@ -2,15 +2,27 @@ import getConfig from "../utils/config";
 import { getAccountId } from "../utils/wallet";
 import { getAccount, viewFunction } from "../utils/near";
 import db from "@/db/RefDatabase";
-import { useEffect, useState } from "react";
-import { TokenMetadata } from "./ft-contract";
+import metadataDefaults from "@/utils/tokenIconConfig";
+import { NEAR_META_DATA } from "@/utils/nearMetaData";
+const { WRAP_NEAR_CONTRACT_ID } = getConfig();
 
+const BANANA_ID = "berryclub.ek.near";
+const CHEDDAR_ID = "token.cheddar.near";
+const CUCUMBER_ID = "farm.berryclub.ek.near";
+const HAPI_ID = "d9c2d319cd7e6177336b0a9c93c21cb48d84fb54.factory.bridge.near";
+const WOO_ID = "4691937a7508860f876c9c0a2a617e7d9e945d4b.factory.bridge.near";
+const SOL_ID = "sol.token.a11bd.near";
 const FRAX_ID = "853d955acef822db058eb8505911ed77f175b99e.factory.bridge.near";
-
-export async function ftGetTokenMetadata(tokenId: string) {
-  let metadata: any = await db.allTokens().where({ id: tokenId }).first();
-  if (!metadata) {
-    try {
+const BLACKDRAGON_ID = "blackdragon.tkn.near";
+const SOL_NATIVE_ID = "22.contract.portalbridge.near";
+const BABY_BLACKDRAGON_ID = "babyblackdragon.tkn.near";
+export async function ftGetTokenMetadata(
+  tokenId: string,
+  accountPage?: boolean
+) {
+  try {
+    let metadata: any = await db.allTokens().where({ id: tokenId }).first();
+    if (!metadata) {
       metadata = await viewFunction({
         contractId: tokenId,
         methodName: "ft_metadata",
@@ -23,19 +35,50 @@ export async function ftGetTokenMetadata(tokenId: string) {
         decimals: metadata.decimals,
         icon: metadata.icon,
       });
-    } catch (error) {
-      return null;
     }
+    if (metadata.id === WRAP_NEAR_CONTRACT_ID) {
+      if (accountPage)
+        return {
+          ...metadata,
+          icon: metadataDefaults[WRAP_NEAR_CONTRACT_ID],
+        };
+      return {
+        ...metadata,
+        icon: NEAR_META_DATA.icon,
+        symbol: "NEAR",
+      };
+    } else if (
+      !metadata.icon ||
+      metadata.id === BANANA_ID ||
+      metadata.id === CHEDDAR_ID ||
+      metadata.id === CUCUMBER_ID ||
+      metadata.id === HAPI_ID ||
+      metadata.id === WOO_ID ||
+      metadata.id === WRAP_NEAR_CONTRACT_ID ||
+      metadata.id === SOL_ID ||
+      metadata.id === BLACKDRAGON_ID ||
+      metadata.id === FRAX_ID ||
+      metadata.id === SOL_NATIVE_ID ||
+      metadata.id === BABY_BLACKDRAGON_ID
+    ) {
+      metadata.icon = metadataDefaults[tokenId];
+      if (metadata.id === SOL_ID) {
+        metadata.symbol = "SOL.Allbridge";
+      }
+    }
+    return {
+      id: tokenId,
+      ...metadata,
+    };
+  } catch (err) {
+    return {
+      id: tokenId,
+      name: tokenId,
+      symbol: tokenId?.split(".")[0].slice(0, 8),
+      decimals: 6,
+      icon: null,
+    };
   }
-
-  if (metadata.id === FRAX_ID) {
-    metadata.icon = "https://assets.ref.finance/images/FRAX_coin.svg";
-  }
-
-  return {
-    id: tokenId,
-    ...metadata,
-  };
 }
 export const ftGetTokensMetadata = async (tokenIds: string[]) => {
   const tokensMetadata = await Promise.all(

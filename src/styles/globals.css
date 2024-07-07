@@ -54,6 +54,7 @@ input::-webkit-inner-spin-button {
 ::-webkit-scrollbar-track {
   box-shadow: inset 0 0 6px rgba(0, 0, 0, 0);
   background: rgba(33, 43, 53, 0.1);
+  background: rgba(33, 43, 53, 0.1);
   border-radius: 2px;
 }
 

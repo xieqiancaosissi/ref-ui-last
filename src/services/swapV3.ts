@@ -121,6 +121,8 @@ export const feeToPointDelta = (fee: number) => {
       return 40;
     case 10000:
       return 200;
+    default:
+      return 0;
   }
 };
 

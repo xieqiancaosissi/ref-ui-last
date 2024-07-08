@@ -4,10 +4,16 @@ import { twMerge } from "tailwind-merge";
 import dynamic from "next/dynamic";
 import { ITokenMetadata } from "@/hooks/useBalanceTokens";
 import { useSwapStore } from "@/stores/swap";
-import { useLimitStore } from "@/stores/limitOrder";
+import { toPrecision } from "@/utils/numbers";
+import {
+  useLimitStore,
+  usePersistLimitStore,
+  IPersistLimitStore,
+} from "@/stores/limitOrder";
 import { getTokenUIId } from "@/services/swap/swapUtils";
 import { formatTokenPrice } from "@/utils/uiNumber";
 import { getMax } from "@/services/swap/swapUtils";
+import { regularizedPrice } from "@/services/swapV3";
 
 const SelectDclPoolButton = dynamic(() => import("./SelectDclPoolButton"), {
   ssr: false,
@@ -27,21 +33,17 @@ export default function Input(props: IInputProps) {
   const [showNearTip, setShowNearTip] = useState<boolean>(false);
   const swapStore = useSwapStore();
   const limitStore = useLimitStore();
-  const tokenOutAmount = limitStore.getTokenOutAmount();
+  const persistLimitStore = usePersistLimitStore() as IPersistLimitStore;
+  const rate = limitStore.getRate();
+  const tokenIn = limitStore.getTokenIn();
+  const tokenOut = limitStore.getTokenOut();
+  const dclPool = persistLimitStore.getDclPool();
   const tokenInAmount = limitStore.getTokenInAmount();
+  const tokenOutAmount = limitStore.getTokenOutAmount();
+  const isLock = limitStore.getLock();
   const allTokenPrices = swapStore.getAllTokenPrices();
   const isNEAR = getTokenUIId(token) == "near";
   const symbolsArr = ["e", "E", "+", "-"];
-  useEffect(() => {
-    if (isIn) {
-      limitStore.setTokenInAmount(amount);
-    }
-  }, [amount, isIn]);
-  useEffect(() => {
-    if (isOut) {
-      limitStore.setTokenOutAmount(amount);
-    }
-  }, [amount, isOut]);
   useEffect(() => {
     if (
       amount &&
@@ -56,7 +58,13 @@ export default function Input(props: IInputProps) {
     }
   }, [amount, isIn, token?.id]);
   function changeAmount(e: any) {
-    setAmount(e.target.value);
+    const amount = e.target.value;
+    if (isIn) {
+      limitStore.setTokenInAmount(amount);
+    } else {
+      limitStore.setTokenOutAmount(amount);
+    }
+    setAmount(amount);
   }
   function setMaxAmount() {
     if (token) {
@@ -68,6 +76,17 @@ export default function Input(props: IInputProps) {
       new Big(amount || 0).mul(allTokenPrices[token?.id]?.price || 0).toFixed()
     );
   }
+  function onBlurEvent() {
+    if (isOut) {
+      const regularizedRate = regularizedPrice(
+        rate,
+        tokenIn,
+        tokenOut,
+        dclPool.fee
+      );
+      limitStore.setRate(toPrecision(regularizedRate, 8, false, false));
+    }
+  }
   return (
     <div
       className={twMerge(
@@ -75,7 +94,10 @@ export default function Input(props: IInputProps) {
         className
       )}
     >
-      <div className="flex items-center justify-between w-full gap-2">
+      <span className="text-sm text-gray-50 self-start">
+        {isIn ? "Selling" : "Buying"}
+      </span>
+      <div className="flex items-center justify-between w-full gap-2 mt-2">
         <input
           step="any"
           type="number"
@@ -84,6 +106,7 @@ export default function Input(props: IInputProps) {
           className="flex-grow w-1 bg-transparent outline-none font-bold text-white text-2xl"
           onChange={changeAmount}
           onKeyDown={(e) => symbolsArr.includes(e.key) && e.preventDefault()}
+          onBlur={onBlurEvent}
         />
         <SelectDclPoolButton isIn={isIn} isOut={isOut} />
       </div>

@@ -15,6 +15,8 @@ import {
   useLimitStore,
 } from "@/stores/limitOrder";
 import { getAllTokenPrices } from "@/services/farm";
+import { SWitchButton } from "../components/swap/icons";
+import Interaction from "../components/limit/Interaction";
 const CreateOrderButton = dynamic(
   () => import("@/components/limit/CreateOrderButton"),
   { ssr: false }
@@ -41,13 +43,25 @@ export default function LimitOrderPage() {
     }
   }, [allPools?.length]);
   useEffect(() => {
-    if (allDclPools && !dclPool) {
-      persistLimitStore.setDclPool(allDclPools[0]);
+    if (allDclPools) {
+      if (!dclPool) {
+        persistLimitStore.setDclPool(allDclPools[0]);
+      } else {
+        const latestDclPool = allDclPools.find(
+          (p) => p.pool_id == dclPool.pool_id
+        );
+        if (latestDclPool) {
+          persistLimitStore.setDclPool(latestDclPool);
+        } else {
+          persistLimitStore.setDclPool(allDclPools[0]);
+        }
+      }
     }
   }, [allDclPools?.length, dclPool?.pool_id]);
   function onSwitch() {
     limitStore.setTokenIn(tokenOut);
     limitStore.setTokenOut(tokenIn);
+    limitStore.setTokenInAmount("1");
   }
   return (
     <main className="flex justify-center mt-6 gap-5">
@@ -57,37 +71,38 @@ export default function LimitOrderPage() {
         style={{ width: "850px" }}
       ></div>
       {/* create order container */}
-      <div className="" style={{ width: "420px" }}>
+      <div
+        className="rounded-lg bg-dark-10 p-3.5 mt-2"
+        style={{ width: "420px" }}
+      >
         <span className="font-bold text-xl bg-textWhiteGradient bg-clip-text text-transparent">
           Limit Order
         </span>
-        <div className="rounded-lg bg-dark-10 p-3.5 mt-2">
-          <span className="text-sm text-gray-50">Selling</span>
-          <Input className="mt-2.5" token={tokenIn} isIn />
-          <div className="flex items-stretch gap-0.5 mt-0.5">
-            <RateContainer />
-            <FeeTiers />
-          </div>
+        <div className="flex flex-col items-center mt-4">
+          <Input token={tokenIn} isIn />
           <div
-            className="flex items-center justify-center rounded border border-gray-50 border-opacity-20 cursor-pointer text-gray-50 hover:text-white my-4"
-            style={{ height: "30px" }}
+            className="flex items-center justify-center rounded w-7 h-7 cursor-pointer text-gray-50 hover:text-white  bg-dark-60 hover:bg-dark-10 relative z-10 border-2 border-dark-10"
             onClick={onSwitch}
+            style={{
+              marginTop: "-13px",
+              marginBottom: "-13px",
+            }}
           >
-            <SwitchIcon />
+            <SWitchButton />
           </div>
-          <span className="text-sm text-gray-50">Buying</span>
-          <Input className="mt-2.5" token={tokenOut} isOut />
-          <CreateOrderButton />
         </div>
+        <Input token={tokenOut} isOut />
+        <div className="flex items-stretch gap-0.5 mt-0.5">
+          <RateContainer />
+          <FeeTiers />
+        </div>
+        <p className="text-xs text-gray-10 text-center mt-6">
+          Your price is automatically set to the closest price slot
+        </p>
+        <CreateOrderButton />
       </div>
+      {/*  */}
+      <Interaction />
     </main>
   );
-}
-// SSR
-export function getServerSideProps(context: any) {
-  return {
-    props: {
-      data: "testdata",
-    },
-  };
 }

@@ -11,6 +11,10 @@ interface ILimitStore {
   setTokenInAmount: (tokenInAmount: string) => void;
   getTokenOutAmount: () => string;
   setTokenOutAmount: (tokenOutAmount: string) => void;
+  getRate: () => string;
+  setRate: (rate: string) => void;
+  getLock: () => boolean;
+  setLock: (lock: boolean) => void;
 }
 export interface IPersistLimitStore {
   getDclPool: () => IPoolDcl;
@@ -39,8 +43,10 @@ export const usePersistLimitStore = create(
 export const useLimitStore = create<ILimitStore>((set: any, get: any) => ({
   tokenIn: null,
   tokenOut: null,
-  tokenInAmount: "",
+  tokenInAmount: "1",
   tokenOutAmount: "",
+  rate: "",
+  lock: false,
   getTokenIn: () => get().tokenIn,
   setTokenIn: (tokenIn: ITokenMetadata) =>
     set({
@@ -55,4 +61,8 @@ export const useLimitStore = create<ILimitStore>((set: any, get: any) => ({
   setTokenInAmount: (tokenInAmount: string) => set({ tokenInAmount }),
   getTokenOutAmount: () => get().tokenOutAmount,
   setTokenOutAmount: (tokenOutAmount: string) => set({ tokenOutAmount }),
+  getRate: () => get().rate,
+  setRate: (rate: string) => set({ rate }),
+  getLock: () => get().lock,
+  setLock: (lock: boolean) => set({ lock }),
 }));

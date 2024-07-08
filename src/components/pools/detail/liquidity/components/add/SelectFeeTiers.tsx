@@ -33,11 +33,8 @@ export function SelectFeeTiers() {
     <div
       className={`flex items-center justify-between mt-6 mb-7 xsm:px-4 xsm:mt-0 xsm:mb-3 xsm:w-full`}
     >
-      <div className="text-white text-sm xsm:text-base xsm:font-gothamBold">
-        <FormattedMessage
-          id="select_fee_tiers"
-          defaultMessage={"Select Fee Tiers"}
-        ></FormattedMessage>
+      <div className="text-gray-60 text-sm xsm:text-base xsm:font-bold">
+        Select Fee Tiers
       </div>
 
       <div className="frcs gap-2">

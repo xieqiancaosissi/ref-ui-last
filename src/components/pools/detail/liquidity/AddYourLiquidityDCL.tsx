@@ -1,12 +1,13 @@
 //@ts-nocheck
 import React, { useState, useContext, useEffect, createContext } from "react";
+import { useRouter } from "next/router";
 import { useAccountStore } from "@/stores/account";
 // import { ReturnIcon, WarningIcon } from "src/components/icon/V3";
 import { FormattedMessage } from "react-intl";
 import { useHistory } from "react-router-dom";
-import { useTriTokens } from "@/hooks/useTriTokens";
+// import { useTriTokens } from "@/hooks/useTriTokens";
 import useSelectTokens from "@/hooks/useSelectTokens";
-import { useTriTokenIdsOnRef } from "@/services/aurora";
+// import { useTriTokenIdsOnRef } from "@/services/aurora";
 import { TokenMetadata } from "@/services/ft-contract";
 import { ftGetBalance, ftGetTokenMetadata } from "@/services/token";
 import { getBoostTokenPrices } from "@/services/farm";
@@ -63,6 +64,7 @@ import { FeeTipDcl } from "./components/add/FeeTip";
 
 export const LiquidityProviderData = createContext(null);
 export default function AddYourLiquidityPageV3() {
+  const router = useRouter();
   const [tokenX, setTokenX] = useState<TokenMetadata | any>(null);
   const [tokenY, setTokenY] = useState<TokenMetadata | any>(null);
   const [tokenXAmount, setTokenXAmount] = useState("");
@@ -108,9 +110,9 @@ export default function AddYourLiquidityPageV3() {
   const isSignedIn = accoutStore.isSignedIn;
   const nearBalance = useDepositableBalance("NEAR");
   const history = useHistory();
-  const triTokenIds = useTriTokenIdsOnRef();
+  // const triTokenIds = useTriTokenIdsOnRef();
   const { totalList: refTokens } = useSelectTokens();
-  const triTokens = useTriTokens();
+  // const triTokens = useTriTokens();
   const OPEN_CREATE_POOL_ENTRY = false;
   const mobileDevice = isMobile();
 
@@ -166,7 +168,7 @@ export default function AddYourLiquidityPageV3() {
     if (currentSelectedPool && tokenX && tokenY) {
       const { fee } = currentSelectedPool;
       const link = get_pool_name(`${tokenX.id}|${tokenY.id}|${fee}`);
-      history.replace(`#${link}`);
+      if (router.query.id != link) router.replace(`#${link}`);
     }
   }, [currentSelectedPool, tokenX, tokenY]);
 
@@ -357,13 +359,13 @@ export default function AddYourLiquidityPageV3() {
   }
   async function get_init_pool() {
     let tokenx_id, tokeny_id, pool_fee;
-    const hash = decodeURIComponent(location.hash);
+    const hash = router.query.id || decodeURIComponent(location.hash);
     if (hash.indexOf("<>") > -1) {
       // new link
-      [tokenx_id, tokeny_id, pool_fee] = get_pool_id(hash.slice(1)).split("|");
+      [tokenx_id, tokeny_id, pool_fee] = get_pool_id(hash).split("|");
     } else {
       // old link
-      [tokenx_id, tokeny_id, pool_fee] = hash.slice(1).split("|");
+      [tokenx_id, tokeny_id, pool_fee] = hash.split("|");
     }
     if (tokenx_id && tokeny_id && pool_fee) {
       const tokenx = await ftGetTokenMetadata(tokenx_id);
@@ -384,12 +386,13 @@ export default function AddYourLiquidityPageV3() {
     }
   }
   function searchPools() {
-    const hash = decodeURIComponent(location.hash);
+    const hash = router.query.id || decodeURIComponent(location.hash);
     let url_fee;
+    console.log(hash, "hash");
     if (hash.indexOf("<>") > -1) {
-      url_fee = +get_pool_id(hash.slice(1)).split("|")[2];
+      url_fee = +get_pool_id(hash).split("|")[2];
     } else {
-      url_fee = +hash.slice(1).split("|")[2];
+      url_fee = +hash.split("|")[2];
     }
     const currentPoolsMap = {};
     if (listPool.length > 0 && tokenX && tokenY) {
@@ -1809,7 +1812,7 @@ export default function AddYourLiquidityPageV3() {
       }
     }
   }
-  if (!refTokens || !triTokens || !triTokenIds) return <BlueCircleLoading />;
+  if (!refTokens) return <BlueCircleLoading />;
   return (
     <LiquidityProviderData.Provider
       value={
@@ -1878,7 +1881,7 @@ export default function AddYourLiquidityPageV3() {
       }
     >
       <div
-        style={{ width: mobileDevice ? "" : "1020px" }}
+        style={{ width: mobileDevice ? "" : "979px" }}
         className="relative flex flex-col  lg:w-4/5 2xl:w-3/5 xs:w-full md:w-full xsm:px-0 m-auto text-white rounded-2xl "
       >
         {/* head */}
@@ -1900,7 +1903,7 @@ export default function AddYourLiquidityPageV3() {
         </div> */}
 
         {/* content */}
-        <div className="relative z-10 py-5 px-7 xsm:px-0 rounded-2xl lg:bg-swapCardGradient">
+        <div className="relative z-10 py-5 px-7 xsm:px-0 rounded-2xl lg:bg-dark-10">
           <div className="flex items-start justify-between xs:flex-col md:flex-col">
             {/* only mobile */}
             {mobileDevice ? (
@@ -1930,12 +1933,7 @@ export default function AddYourLiquidityPageV3() {
             >
               {!mobileDevice ? (
                 <div className="flex items-center justify-between xsm:mt-4">
-                  <div className="text-white text-sm">
-                    <FormattedMessage
-                      id="select_token_pair"
-                      defaultMessage={"Select Token Pair"}
-                    ></FormattedMessage>
-                  </div>
+                  <div className="text-gray-60 text-sm">Select Token Pair</div>
 
                   <SelectTokenDCL
                     selectTokenIn={(token) => {
@@ -1948,7 +1946,7 @@ export default function AddYourLiquidityPageV3() {
                     className="pt-6  absolute top-5 outline-none   right-0    xs:text-white xs:font-bold xs:fixed xs:bottom-0 xs:w-full "
                     selected={
                       <div
-                        className={` text-sm rounded-lg frcc cursor-pointer p-3 bg-v3SwapGray bg-opacity-10 ${
+                        className={` text-sm rounded-lg frcc cursor-pointer p-3 bg-gray-60 bg-opacity-10 ${
                           selectHover ? "text-white" : "text-primaryText"
                         }`}
                         onMouseEnter={() => {
@@ -1979,7 +1977,7 @@ export default function AddYourLiquidityPageV3() {
                 </div>
               ) : null}
               {mobileDevice ? (
-                <div className={`text-base text-white font-gothamBold`}>
+                <div className={`text-base text-white font-bold`}>
                   Input Token Amount
                 </div>
               ) : null}
@@ -2015,11 +2013,8 @@ export default function AddYourLiquidityPageV3() {
                 </div>
               ) : null}
               {!mobileDevice ? <SelectFeeTiers /> : null}
-              <div className="text-sm mb-2.5 text-white xsm:text-base xsm:font-gothamBold xsm:mt-6">
-                <FormattedMessage
-                  id="choose_liquidity_shape"
-                  defaultMessage={"Choose Liquidity Shape"}
-                ></FormattedMessage>
+              <div className="text-sm mb-2.5 text-gray-60 xsm:text-base xsm:font-bold xsm:mt-6">
+                Choose Liquidity Shape
               </div>
 
               <div className="frcb xsm:gap-2">
@@ -2089,11 +2084,8 @@ export default function AddYourLiquidityPageV3() {
               {/* user chart part */}
               <div className="lg:mt-4 xsm:mt-8">
                 <div className="flex items-center justify-between">
-                  <div className="text-sm text-white xsm:text-base xsm:font-gothamBold">
-                    <FormattedMessage
-                      id="Simulate_liquidity_distribution"
-                      defaultMessage={"Simulate Liquidity Distribution"}
-                    ></FormattedMessage>
+                  <div className="text-sm text-gray-60 xsm:text-base xsm:font-bold">
+                    Simulate Liquidity Distribution
                   </div>
                   <div
                     onClick={generate_new_user_chart}

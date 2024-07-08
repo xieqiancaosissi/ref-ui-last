@@ -21,6 +21,7 @@ import { ftGetTokensMetadata } from "@/services/token";
 import BigNumber from "bignumber.js";
 import { toReadableNumber } from "@/utils/numbers";
 import { usePoolStore } from "@/stores/pool";
+import { get_pool_name } from "@/services/commonV3";
 
 export default function DCLPoolDetail() {
   const router = useRouter();
@@ -130,6 +131,13 @@ export default function DCLPoolDetail() {
       console.log(temp_list, "temp");
     }
   }, [poolDetailV3]);
+
+  // add liquidity
+
+  const addLiquidity = () => {
+    const pool_name = get_pool_name(poolDetail.id);
+    router.push(`/liquidity/${pool_name}`);
+  };
   return (
     <div className="w-full fccc h-full">
       {/* return */}
@@ -255,9 +263,12 @@ export default function DCLPoolDetail() {
 
         {/* right liquidity */}
         <div className="w-80 ml-auto pt-12">
-          <NoLiquidity />
+          <NoLiquidity add={() => addLiquidity} />
         </div>
       </div>
+
+      {/* dcl add liquidity */}
+      {/* <AddYourLiquidityPageV3></AddYourLiquidityPageV3> */}
     </div>
   );
 }

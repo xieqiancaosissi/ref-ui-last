@@ -17,8 +17,8 @@ import { toPrecision } from "@/utils/numbers";
 import { isMobile } from "@/utils/device";
 import { FormattedMessage } from "react-intl";
 import DclChart from "../../../dcl/d3Chart/DclChart";
-import { PointInputComponent } from "./PointInputComponent";
-import { IntegerInputComponent } from "./IntegerInputComponent";
+// import { PointInputComponent } from "./PointInputComponent";
+// import { IntegerInputComponent } from "./IntegerInputComponent";
 
 export function PointsComponent() {
   const {
@@ -319,24 +319,20 @@ export function PointsComponent() {
   return (
     <div className={`w-full xs:w-full md:w-full flex flex-col self-stretch`}>
       {/* chart area */}
-      <div
-        className={`xsm:bg-mobileOrderListBg xsm:py-2.5 xsm:px-4  ${
-          show_chart ? "" : "hidden"
-        }`}
-      >
+      <div className={`xsm:py-2.5 xsm:px-4  ${show_chart ? "" : "hidden"}`}>
         <div
           className="flex justify-center relative mb-5 mt-24 pt-4"
           style={{ height: is_mobile ? "auto" : "270px" }}
         >
-          <div className="absolute left-0 -top-24 inline-flex items-center justify-between bg-detailCardBg rounded-lg border border-dclTabBorderColor p-0.5">
+          <div className="absolute left-0 -top-24 inline-flex items-center justify-between bg-dark-10 rounded-lg border border-gray-100 p-0.5">
             <span
               onClick={() => {
                 setChartTab("liquidity");
               }}
-              className={`w-20 frcc text-xs gotham_bold px-3 py-1.5 rounded-md cursor-pointer ${
+              className={`w-20 frcc text-xs font-bold px-3 py-1.5 rounded-md cursor-pointer ${
                 chartTab == "liquidity"
-                  ? "text-black bg-gradientFromHover"
-                  : "text-primaryText"
+                  ? "text-white bg-gray-100"
+                  : "text-gray-60"
               }`}
             >
               Liquidity
@@ -344,10 +340,8 @@ export function PointsComponent() {
             <span
               className={`w-20 frcc ${
                 isSignedIn ? "cursor-pointer" : "cursor-not-allowed"
-              } text-xs gotham_bold px-3 py-1.5 rounded-md ${
-                chartTab == "yours"
-                  ? "text-black bg-gradientFromHover"
-                  : "text-primaryText"
+              } text-xs font-bold px-3 py-1.5 rounded-md ${
+                chartTab == "yours" ? "text-white bg-gray-100" : "text-gray-60"
               }`}
               onClick={() => {
                 if (isSignedIn) {
@@ -464,7 +458,7 @@ export function PointsComponent() {
                 defaultMessage="Target Price"
               ></FormattedMessage>
             </span>
-            <PointInputComponent
+            {/* <PointInputComponent
               handlePriceToAppropriatePoint={
                 handleTargetPriceToAppropriatePoint
               }
@@ -475,7 +469,7 @@ export function PointsComponent() {
               getPrice={getTargetPrice}
               setPoint={setTargetPoint}
               point={targetPoint}
-            />
+            /> */}
           </div>
 
           {/* radius input box */}
@@ -490,11 +484,11 @@ export function PointsComponent() {
                 defaultMessage="Radius"
               ></FormattedMessage>
             </span>
-            <IntegerInputComponent
+            {/* <IntegerInputComponent
               value={radius}
               setValue={setRadius}
               triggerByValue={changeRadius}
-            />
+            /> */}
           </div>
 
           {/* min price input box */}
@@ -509,7 +503,7 @@ export function PointsComponent() {
                 defaultMessage="Min Price"
               ></FormattedMessage>
             </span>
-            <PointInputComponent
+            {/* <PointInputComponent
               handlePriceToAppropriatePoint={(price: string) => {
                 if (pair_is_reverse) {
                   return get_bin_point_by_price(reverse_price(price));
@@ -525,7 +519,7 @@ export function PointsComponent() {
               setInputStatus={setLeftInputStatus}
               setPoint={setLeftPoint}
               point={leftPoint}
-            ></PointInputComponent>
+            ></PointInputComponent> */}
           </div>
 
           {/* max price input box */}
@@ -540,7 +534,7 @@ export function PointsComponent() {
                 defaultMessage="Max Price"
               ></FormattedMessage>
             </span>
-            <PointInputComponent
+            {/* <PointInputComponent
               handlePriceToAppropriatePoint={(price: string) => {
                 if (pair_is_reverse) {
                   return get_bin_point_by_price(reverse_price(price));
@@ -556,7 +550,7 @@ export function PointsComponent() {
               setPoint={setRightPoint}
               point={rightPoint}
               disbaled={priceRangeMode === "by_radius"}
-            ></PointInputComponent>
+            ></PointInputComponent> */}
           </div>
 
           {/* bin number input box */}
@@ -571,12 +565,12 @@ export function PointsComponent() {
                 defaultMessage="Bin amount"
               ></FormattedMessage>
             </span>
-            <IntegerInputComponent
+            {/* <IntegerInputComponent
               value={binNumber}
               setValue={setBinNumber}
               triggerByValue={changeBin}
               disabled={priceRangeMode === "by_radius"}
-            />
+            /> */}
           </div>
         </div>
         {/* tip in foot */}

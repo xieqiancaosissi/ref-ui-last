@@ -2030,18 +2030,19 @@ export default function AddYourLiquidityPageV3() {
                     return (
                       <div
                         key={index + "_" + Math.random()}
-                        className={`flex xsm:flex-grow flex-col  rounded-xl items-center border justify-center ${
-                          disabled ? "opacity-40" : "cursor-pointer"
+                        className={`flex xsm:flex-grow flex-col  rounded-xl items-center border  justify-center py-3 ${
+                          disabled ? "opacity-40" : "cursor-pointer "
                         } ${
                           (index === 0 && liquidityShape === "Spot") ||
                           (index === 1 && liquidityShape === "Curve") ||
                           (index === 2 && liquidityShape === "BidAsk")
-                            ? " border-senderHot bg-senderHot bg-opacity-10"
-                            : "border-limitOrderFeeTiersBorderColor"
-                        }  gap-2.5`}
+                            ? " border-green-10"
+                            : "border-transparent"
+                        }`}
                         style={{
                           width: mobileDevice ? "10px" : "127px",
                           height: "70px",
+                          background: "#161D23",
                         }}
                         onClick={(e) => {
                           e.preventDefault();
@@ -2054,27 +2055,10 @@ export default function AddYourLiquidityPageV3() {
                         }}
                       >
                         <Shape />
-
-                        <span className="text-white text-xs font-gothamBold">
-                          {index === 0 && (
-                            <FormattedMessage
-                              id="uniform"
-                              defaultMessage={"Uniform"}
-                            ></FormattedMessage>
-                          )}
-                          {index === 1 && (
-                            <FormattedMessage
-                              id="curve"
-                              defaultMessage={"Normal"}
-                            ></FormattedMessage>
-                          )}
-
-                          {index === 2 && (
-                            <FormattedMessage
-                              id="bid_ask"
-                              defaultMessage={"Skewed"}
-                            ></FormattedMessage>
-                          )}
+                        <span className="text-gray-60 text-sm font-bold mt-1">
+                          {index === 0 && <span>Uniform</span>}
+                          {index === 1 && <span>Normal</span>}
+                          {index === 2 && <span>Skewed</span>}
                         </span>
                       </div>
                     );

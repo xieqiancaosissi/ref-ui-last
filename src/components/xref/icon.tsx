@@ -289,3 +289,23 @@ export function XrefSymbol(props: any) {
     </svg>
   );
 }
+
+export function XrefArrow(props: any) {
+  return (
+    <svg
+      {...props}
+      width="12"
+      height="6"
+      viewBox="0 0 12 6"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M0 0H2.91667L5.70711 2.87868L8.53304 -1.54972e-06L11.4142 0L5.70711 5.70711L0 0Z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}

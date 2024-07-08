@@ -1,5 +1,10 @@
 import CustomTooltip from "@/components/customTooltip/customTooltip";
-import { XrefLogo, XrefSmallLogo, XrefTitle } from "@/components/xref/icon";
+import {
+  XrefArrow,
+  XrefLogo,
+  XrefSmallLogo,
+  XrefTitle,
+} from "@/components/xref/icon";
 import {
   formatWithCommas,
   toPrecision,
@@ -13,6 +18,7 @@ import { ftGetBalance, ftGetTokenMetadata } from "@/services/token";
 import getConfig from "@/utils/config";
 import { XREF_TOKEN_DECIMALS, getPrice, metadata } from "@/services/xref";
 import { InputView } from "@/components/xref/InputView";
+import { QuestionMark } from "@/components/farm/icon";
 
 const {
   XREF_TOKEN_ID,
@@ -30,6 +36,7 @@ export default function XrefPage(props: any) {
   const [xrefMetaData, setXrefMetaData] = useState<XrefMetaData | null>(null);
   const [totalDataArray, setTotalDataArray] = useState<string[]>([]);
   const [rate, setRate] = useState<string | null>(null);
+  const [showDetails, setShowDetails] = useState(false);
   const { getIsSignedIn } = useAccountStore();
   const isSignedIn = getIsSignedIn();
   const displayBalance = (max: string | null) => {
@@ -204,6 +211,35 @@ export default function XrefPage(props: any) {
   const switchTab = (tab: number) => {
     setTab(tab);
   };
+  const toggleDetails = () => {
+    setShowDetails(!showDetails);
+  };
+  const analysisText: any = {
+    first: {
+      title: "Number of Unique Stakers",
+    },
+    second: {
+      title: "Revenue Shared with xREF Holders",
+      tipContent:
+        "This number corresponds to the cumulative shared trading fee revenue to xREF holders. It is equal to 75% of the total platform fee revenue. It will differ from the actual REF token buyback amount due to price fluctuations.",
+      unit: "REF",
+    },
+    third: {
+      title: "Total REF Staked",
+      unit: "REF",
+    },
+    fourth: {
+      title: "Total xREF Minted",
+      unit: "xREF",
+    },
+    fifth: {
+      title: "Cumulative REF Buyback",
+      unit: "REF",
+    },
+    sixth: {
+      title: "Yearly Revenue Booster",
+    },
+  };
   return (
     <div style={pageStyle} className="text-white">
       <div className="w-4/12 m-auto flex flex-col items-center">
@@ -288,6 +324,52 @@ export default function XrefPage(props: any) {
             rate={rate}
             hidden={tab != 1 ? "hidden" : ""}
           ></InputView>
+          <div className="mt-6 frcb text-sm text-gray-10 ">
+            <p>Details</p>
+            <XrefArrow
+              className={`cursor-pointer ${
+                showDetails ? "text-primaryGreen transform rotate-180" : ""
+              }`}
+              onClick={toggleDetails}
+            />
+          </div>
+          {showDetails ? (
+            <div className="border border-gray-50 rounded px-3 py-4 mt-1.5 text-sm text-gray-50 mb-12">
+              {Object.values(analysisText).map((value, index: number) => {
+                const item = value as AnalysisTextItem;
+                return (
+                  <div className="frcb mb-2.5" key={index}>
+                    <p>
+                      {item.title}
+                      {item.tipContent ? (
+                        <>
+                          <span
+                            className="relative top-0.5 inline-block ml-1"
+                            data-type="info"
+                            data-place="right"
+                            data-multiline={true}
+                            data-class="reactTip"
+                            data-tooltip-html={item.tipContent}
+                            data-tooltip-id="yourRewardsId"
+                          >
+                            <QuestionMark />
+                          </span>
+                          <CustomTooltip
+                            style={{ width: "25%" }}
+                            id="yourRewardsId"
+                          />
+                        </>
+                      ) : null}
+                    </p>
+                    <div className="frcc">
+                      <p className="text-white">{totalDataArray[index]}</p>
+                      <p className="ml-1.5">{item.unit}</p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          ) : null}
         </div>
       </div>
     </div>
@@ -298,7 +380,7 @@ const pageStyle = {
   backgroundImage: `url('https://assets.ref.finance/images/XrefBg.png')`,
   backgroundSize: "cover",
   backgroundPosition: "center",
-  height: "100vh",
+  height: "100%",
   margin: "-50px 0 0 0",
   padding: "90px 0 0 0",
 };
@@ -316,4 +398,10 @@ export interface XrefMetaData {
   reward_genesis_time_in_sec: number;
   reward_per_sec: string;
   account_number: number;
+}
+
+interface AnalysisTextItem {
+  title: any;
+  tipContent: any;
+  unit: any;
 }

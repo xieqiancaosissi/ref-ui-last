@@ -400,11 +400,7 @@ export function PointsComponent() {
         {/* price range mode area */}
         <div className="frcb">
           <div className="text-white flex flex-col text-sm xsm:text-base font-gothamBold">
-            <FormattedMessage
-              id="set_price_range"
-              defaultMessage="Set Price Range"
-            />
-
+            Set Price Range
             <span className="text-xs font-gotham text-primaryText">
               {getPair()}
             </span>

@@ -20,26 +20,24 @@ export function NoDataComponent() {
         }`}
       >
         <div className="relative mb-5 mt-24 pt-px" style={{ height: "270px" }}>
-          <div className="absolute left-0 -top-24 inline-flex items-center justify-between bg-detailCardBg rounded-lg border border-dclTabBorderColor p-0.5">
+          <div className="absolute left-0 -top-24 inline-flex items-center justify-between bg-dark-10 rounded-lg border border-gray-100 p-0.5">
             <span
               onClick={() => {
                 setChartTab("liquidity");
               }}
-              className={`w-20 frcc text-xs gotham_bold px-3 py-1.5 rounded-md cursor-pointer ${
+              className={`w-20 frcc text-xs font-bold px-3 py-1.5 rounded-md cursor-pointer ${
                 chartTab == "liquidity"
-                  ? "text-black bg-gradientFromHover"
-                  : "text-primaryText"
+                  ? "text-white bg-gray-100"
+                  : "text-gray-60"
               }`}
             >
               Liquidity
             </span>
             <span
-              className={`w-20 frcc text-xs gotham_bold px-3 py-1.5 rounded-md ${
+              className={`w-20 frcc ${
                 isSignedIn ? "cursor-pointer" : "cursor-not-allowed"
-              } ${
-                chartTab == "yours"
-                  ? "text-black bg-gradientFromHover"
-                  : "text-primaryText"
+              } text-xs font-bold px-3 py-1.5 rounded-md ${
+                chartTab == "yours" ? "text-white bg-gray-100" : "text-gray-60"
               }`}
               onClick={() => {
                 if (isSignedIn) {
@@ -56,15 +54,11 @@ export function NoDataComponent() {
         </div>
       </div>
       {/* set price range area */}
-      <div className="lg:border lg:border-limitOrderFeeTiersBorderColor lg:rounded-xl p-4 xsm:mb-3">
+      <div className="lg:rounded-xl p-4 xsm:mb-3">
         {/* price range mode area */}
         <div className="frcb">
           <div className="text-white flex flex-col text-sm ">
-            <FormattedMessage
-              id="set_price_range"
-              defaultMessage="Set Price Range"
-            />
-
+            Set Price Range
             <span className="text-xs font-gotham text-primaryText"></span>
           </div>
 

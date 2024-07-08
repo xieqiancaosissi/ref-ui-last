@@ -1882,7 +1882,7 @@ export default function AddYourLiquidityPageV3() {
     >
       <div
         style={{ width: mobileDevice ? "" : "1080px" }}
-        className="relative flex flex-col  2xl:w-3/5 xs:w-full md:w-full xsm:px-0 m-auto text-white rounded-2xl "
+        className="flex flex-col  2xl:w-3/5 xs:w-full md:w-full xsm:px-0 m-auto text-white rounded-2xl mt-10"
       >
         {/* head */}
         {/* <div

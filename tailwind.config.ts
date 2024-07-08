@@ -30,6 +30,7 @@ const config: Config = {
         error: "#FF4B76",
         warn: "#FFB018",
         modalGrayBg: "#1D2932",
+        whiteOpacity: "rgba(255, 255, 255, 0.4)",
         gray: {
           10: "#91A2AE",
           20: "#212B35",
@@ -49,6 +50,7 @@ const config: Config = {
           160: "#73818B",
           170: "#373F4A",
           180: "#7E8993",
+          190: "#A7B8C8",
         },
         dark: {
           10: "#1B242C",
@@ -63,6 +65,8 @@ const config: Config = {
           90: "#273342",
           100: "#414E5D",
           110: "#424D56",
+          120: "#001818",
+          130: "#000F0F",
         },
         green: {
           10: "#9EFE01",

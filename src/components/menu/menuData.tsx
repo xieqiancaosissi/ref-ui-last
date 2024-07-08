@@ -74,7 +74,7 @@ export function menuData(): IMenu[] {
           id: "stake",
           label: "Stake",
           icon: <StakeIcon />,
-          path: "",
+          path: "/xref",
         },
       ],
     },

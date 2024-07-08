@@ -396,7 +396,7 @@ export function PointsComponent() {
         </div>
       </div>
       {/* set price range area */}
-      <div className="lg:border lg:border-limitOrderFeeTiersBorderColor lg:rounded-xl p-4">
+      <div className="lg:rounded-xl p-4">
         {/* price range mode area */}
         <div className="frcb">
           <div className="text-white flex flex-col text-sm xsm:text-base font-gothamBold">

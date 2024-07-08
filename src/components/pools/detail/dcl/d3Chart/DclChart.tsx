@@ -1575,7 +1575,7 @@ export default function DclChart({
                 <rect
                   width={percentBoxWidth}
                   height="22"
-                  fill="#172631"
+                  fill="transparent"
                   rx="1"
                 ></rect>
                 <text
@@ -1590,24 +1590,24 @@ export default function DclChart({
                 <rect width={dragBarWidth} height="253" opacity="0"></rect>
                 <path
                   d="M15 245L15 -3.69549e-06"
-                  stroke="#00FFD1"
+                  stroke="#9EFE01"
                   strokeWidth="1.6"
                 />
                 <path
                   d="M1 242C1 240.343 2.34315 239 4 239H15V253H4C2.34315 253 1 251.657 1 250V242Z"
                   fill="#1C272E"
-                  stroke="#00FFD1"
+                  stroke="#9EFE01"
                   strokeWidth="1.6"
                 />
                 <path
                   d="M5.30798 248.034H10.9917"
-                  stroke="#00FFD1"
+                  stroke="#9EFE01"
                   strokeWidth="1.6"
                   strokeLinecap="round"
                 />
                 <path
                   d="M5.30798 244.444H10.9917"
-                  stroke="#00FFD1"
+                  stroke="#9EFE01"
                   strokeWidth="1.6"
                   strokeLinecap="round"
                 />
@@ -1619,7 +1619,7 @@ export default function DclChart({
                 <rect
                   width={percentBoxWidth}
                   height="22"
-                  fill="#172631"
+                  fill="transparent"
                   rx="1"
                 ></rect>
                 <text
@@ -1639,24 +1639,24 @@ export default function DclChart({
                 ></rect>
                 <path
                   d="M1 245L0.999989 -3.69549e-06"
-                  stroke="#00FFD1"
+                  stroke="#9EFE01"
                   strokeWidth="1.6"
                 />
                 <path
                   d="M15 242C15 240.343 13.6569 239 12 239H1V253H12C13.6569 253 15 251.657 15 250V242Z"
                   fill="#1C272E"
-                  stroke="#00FFD1"
+                  stroke="#9EFE01"
                   strokeWidth="1.6"
                 />
                 <path
                   d="M10.6921 248.034H5.00838"
-                  stroke="#00FFD1"
+                  stroke="#9EFE01"
                   strokeWidth="1.6"
                   strokeLinecap="round"
                 />
                 <path
                   d="M10.6921 244.444H5.00838"
-                  stroke="#00FFD1"
+                  stroke="#9EFE01"
                   strokeWidth="1.6"
                   strokeLinecap="round"
                 />
@@ -1664,7 +1664,10 @@ export default function DclChart({
             </g>
             {/* overlap area between drag left and drag right */}
             <g className="overlap" pointerEvents="none">
-              <rect height={wholeBarHeight} fill="rgba(255,255,255,0.2)"></rect>
+              <rect
+                height={wholeBarHeight}
+                fill="rgba(158, 255, 0, 0.04)"
+              ></rect>
             </g>
             {/*  show bar in radius mode */}
             <g className="radiusBar">
@@ -1676,24 +1679,24 @@ export default function DclChart({
               ></rect>
               <path
                 d="M8 245L7.99999 -3.69549e-06"
-                stroke="#00FFD1"
+                stroke="#9EFE01"
                 strokeWidth="1.6"
               />
               <path
                 d="M1 239C1 237.343 2.34315 236 4 236H12C13.6569 236 15 237.343 15 239V247C15 248.657 13.6569 250 12 250H4C2.34315 250 1 248.657 1 247V239Z"
                 fill="#1C272E"
-                stroke="#00FFD1"
+                stroke="#9EFE01"
                 strokeWidth="1.6"
               />
               <path
                 d="M5.30811 245.034H10.9919"
-                stroke="#00FFD1"
+                stroke="#9EFE01"
                 strokeWidth="1.6"
                 strokeLinecap="round"
               />
               <path
                 d="M5.30811 241.444H10.9919"
-                stroke="#00FFD1"
+                stroke="#9EFE01"
                 strokeWidth="1.6"
                 strokeLinecap="round"
               />
@@ -1868,21 +1871,24 @@ export default function DclChart({
           </div>
         </div>
         {/* current price area */}
-        {/* <div className="currentLine flex flex-col items-center absolute left-0 pointer-events-none">
+        <div className="currentLine flex flex-col items-center absolute left-0 pointer-events-none z-0">
           <div
-            className="border border-green-10 border-dashed"
+            className="border border-white border-dashed"
             style={{ height: svgHeight + "px" }}
           ></div>
           <div
-            className={`currentLineDetail top-0 left-0 bg-senderHot rounded-lg p-2 absolute transform -translate-x-1/2 -translate-y-full flex flex-col ${
+            className={`currentLineDetail top-0 left-0  rounded-lg p-2 absolute transform -translate-x-1/2 -translate-y-full flex flex-col ${
               reverse ? "flex-col-reverse" : ""
             }`}
+            style={{
+              background: "rgba(0, 0, 0, 0.2)",
+            }}
           >
             <div className="flex items-center justify-between mb-0.5">
-              <span className="text-xs text-black mr-3">
+              <span className="text-xs text-gray-60 mr-3">
                 {pool?.token_x_metadata?.symbol}:{" "}
               </span>
-              <span className="text-xs text-black">
+              <span className="text-xs text-white">
                 <label className="gotham_bold mr-1">
                   {reverse
                     ? get_current_price_by_token_y()
@@ -1892,10 +1898,10 @@ export default function DclChart({
               </span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-xs text-black mr-3">
+              <span className="text-xs text-gray-60 mr-3">
                 {pool?.token_y_metadata?.symbol}:{" "}
               </span>
-              <span className="text-xs text-black">
+              <span className="text-xs text-white">
                 <label className="gotham_bold mr-1">
                   {reverse
                     ? get_current_price_by_token_x()
@@ -1905,7 +1911,7 @@ export default function DclChart({
               </span>
             </div>
           </div>
-        </div> */}
+        </div>
       </div>
       {!chartDataListDone && (
         <div

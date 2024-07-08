@@ -94,7 +94,7 @@ export default function Menu() {
         //     twoLevelMenuShow ? "" : "hidden"
         //   }`}
         <div
-          className={`flex items-center justify-center relative gap-6 ${
+          className={`flex items-center justify-center relative gap-6 z-50 ${
             twoLevelMenuShow ? "" : "hidden"
           }`}
           style={{

@@ -94,12 +94,14 @@ export default function Menu() {
         //     twoLevelMenuShow ? "" : "hidden"
         //   }`}
         <div
-          className={`flex items-center justify-center relative gap-6 z-50 ${
+          className={`flex items-center justify-center relative gap-6 z-40 ${
             twoLevelMenuShow ? "" : "hidden"
           }`}
           style={{
             height: "50px",
             background: extraBack,
+            width: "60%",
+            margin: "0 auto",
           }}
         >
           {oneLevelData.children.map((item) => {

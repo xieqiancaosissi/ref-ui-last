@@ -17,8 +17,8 @@ import { toPrecision } from "@/utils/numbers";
 import { isMobile } from "@/utils/device";
 import { FormattedMessage } from "react-intl";
 import DclChart from "../../../dcl/d3Chart/DclChart";
-// import { PointInputComponent } from "./PointInputComponent";
-// import { IntegerInputComponent } from "./IntegerInputComponent";
+import { PointInputComponent } from "./PointInputComponent";
+import { IntegerInputComponent } from "./IntegerInputComponent";
 
 export function PointsComponent() {
   const {
@@ -401,42 +401,36 @@ export function PointsComponent() {
         <div className="frcb">
           <div className="text-white flex flex-col text-sm xsm:text-base font-gothamBold">
             Set Price Range
-            <span className="text-xs font-gotham text-primaryText">
+            <span className="text-xs font-gotham text-gray-60">
               {getPair()}
             </span>
           </div>
 
-          <div className="rounded-lg p-1 border frcs text-xs text-primaryText border-v3borderColor">
+          <div className="rounded p-0.5 border frcs text-xs text-primaryText border-gray-90">
             <span
               className={`whitespace-nowrap min-w-20 px-3 py-1.5 rounded-md cursor-pointer ${
                 priceRangeMode === "by_range"
-                  ? "text-white bg-proTabBgColor"
-                  : ""
+                  ? "text-white bg-gray-120"
+                  : "text-gray-60"
               }`}
               onClick={() => {
                 setPriceRangeMode("by_range");
               }}
             >
-              <FormattedMessage
-                id="by_range"
-                defaultMessage={"By range"}
-              ></FormattedMessage>
+              By range
             </span>
             <span
               className={`whitespace-nowrap min-w-20 px-3 py-1.5 rounded-md cursor-pointer ${
                 priceRangeMode === "by_radius"
-                  ? "text-white bg-proTabBgColor"
-                  : ""
+                  ? "text-white bg-gray-120"
+                  : "text-gray-60"
               }`}
               onClick={() => {
                 setPriceRangeMode("by_radius");
                 changeRadius(radius);
               }}
             >
-              <FormattedMessage
-                id="by_radius"
-                defaultMessage={"By Radius"}
-              ></FormattedMessage>
+              By Radius
             </span>
           </div>
         </div>
@@ -454,7 +448,7 @@ export function PointsComponent() {
                 defaultMessage="Target Price"
               ></FormattedMessage>
             </span>
-            {/* <PointInputComponent
+            <PointInputComponent
               handlePriceToAppropriatePoint={
                 handleTargetPriceToAppropriatePoint
               }
@@ -465,7 +459,7 @@ export function PointsComponent() {
               getPrice={getTargetPrice}
               setPoint={setTargetPoint}
               point={targetPoint}
-            /> */}
+            />
           </div>
 
           {/* radius input box */}
@@ -480,11 +474,11 @@ export function PointsComponent() {
                 defaultMessage="Radius"
               ></FormattedMessage>
             </span>
-            {/* <IntegerInputComponent
+            <IntegerInputComponent
               value={radius}
               setValue={setRadius}
               triggerByValue={changeRadius}
-            /> */}
+            />
           </div>
 
           {/* min price input box */}
@@ -494,12 +488,9 @@ export function PointsComponent() {
             }`}
           >
             <span className="text-sm text-primaryText xs:text-xs md:text-xs whitespace-nowrap">
-              <FormattedMessage
-                id="min_price"
-                defaultMessage="Min Price"
-              ></FormattedMessage>
+              Min Price
             </span>
-            {/* <PointInputComponent
+            <PointInputComponent
               handlePriceToAppropriatePoint={(price: string) => {
                 if (pair_is_reverse) {
                   return get_bin_point_by_price(reverse_price(price));
@@ -515,7 +506,7 @@ export function PointsComponent() {
               setInputStatus={setLeftInputStatus}
               setPoint={setLeftPoint}
               point={leftPoint}
-            ></PointInputComponent> */}
+            ></PointInputComponent>
           </div>
 
           {/* max price input box */}
@@ -530,7 +521,7 @@ export function PointsComponent() {
                 defaultMessage="Max Price"
               ></FormattedMessage>
             </span>
-            {/* <PointInputComponent
+            <PointInputComponent
               handlePriceToAppropriatePoint={(price: string) => {
                 if (pair_is_reverse) {
                   return get_bin_point_by_price(reverse_price(price));
@@ -546,7 +537,7 @@ export function PointsComponent() {
               setPoint={setRightPoint}
               point={rightPoint}
               disbaled={priceRangeMode === "by_radius"}
-            ></PointInputComponent> */}
+            ></PointInputComponent>
           </div>
 
           {/* bin number input box */}
@@ -561,12 +552,12 @@ export function PointsComponent() {
                 defaultMessage="Bin amount"
               ></FormattedMessage>
             </span>
-            {/* <IntegerInputComponent
+            <IntegerInputComponent
               value={binNumber}
               setValue={setBinNumber}
               triggerByValue={changeBin}
               disabled={priceRangeMode === "by_radius"}
-            /> */}
+            />
           </div>
         </div>
         {/* tip in foot */}

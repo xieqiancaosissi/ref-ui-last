@@ -75,7 +75,7 @@ export function SelectFeeTiers() {
                 }}
               >
                 <div className="text-sm text-white font-gothamBold">
-                  <FormattedMessage id="fee_Tiers" defaultMessage="Fee Tiers" />
+                  Fee Tiers
                 </div>
                 <div
                   className={`lg:items-stretch lg:justify-between xsm:grid-cols-2 xsm:gap-1.5 mt-5 xsm:mt-2.5 lg:flex xsm:grid`}

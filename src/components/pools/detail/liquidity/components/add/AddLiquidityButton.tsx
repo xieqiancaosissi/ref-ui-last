@@ -93,64 +93,35 @@ export function AddLiquidityButton() {
       : String(Number(balance) - 0.5);
   }
   function getButtonText() {
-    let txt: any = (
-      <FormattedMessage id="add_liquidity" defaultMessage="Add Liquidity" />
-    );
+    let txt: any = <span>Add Liquidity</span>;
     if (!currentSelectedPool?.pool_id) {
-      txt = <FormattedMessage id="no_pool" defaultMessage="No Pool" />;
+      txt = <span>No Pool</span>;
     } else if (invalidRange) {
-      txt = (
-        <FormattedMessage id="update_range" defaultMessage="Update Range" />
-      );
+      txt = <span>Update Range</span>;
     } else if (onlyAddXToken && +tokenXAmount == 0) {
-      txt = (
-        <FormattedMessage
-          id="input_amount"
-          defaultMessage="Input Amount"
-        ></FormattedMessage>
-      );
+      txt = <span>Input Amount</span>;
     } else if (onlyAddYToken && +tokenYAmount == 0) {
-      txt = (
-        <FormattedMessage
-          id="input_amount"
-          defaultMessage="Input Amount"
-        ></FormattedMessage>
-      );
+      txt = <span>Input Amount</span>;
     } else if (
       !onlyAddXToken &&
       !onlyAddYToken &&
       (+tokenXAmount == 0 || +tokenYAmount == 0)
     ) {
-      txt = (
-        <FormattedMessage
-          id="input_amount"
-          defaultMessage="Input Amount"
-        ></FormattedMessage>
-      );
+      txt = <span>Input Amount</span>;
     } else if (
       +tokenXAmount > 0 &&
       new BigNumber(tokenXAmount).isGreaterThan(
         getMax(tokenX, tokenXBalanceFromNear)
       )
     ) {
-      txt = (
-        <FormattedMessage
-          id="not_enough_balance"
-          defaultMessage="Not Enough Balance"
-        />
-      );
+      txt = <span>Not Enough Balance</span>;
     } else if (
       +tokenYAmount > 0 &&
       new BigNumber(tokenYAmount).isGreaterThan(
         getMax(tokenY, tokenYBalanceFromNear)
       )
     ) {
-      txt = (
-        <FormattedMessage
-          id="not_enough_balance"
-          defaultMessage="Not Enough Balance"
-        />
-      );
+      txt = <span>Not Enough Balance</span>;
     }
     return txt;
   }

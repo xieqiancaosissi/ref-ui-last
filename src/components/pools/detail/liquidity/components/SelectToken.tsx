@@ -93,7 +93,7 @@ export function SelectTokenDCL({
           !!globalWhiteList.find((t: any) => t.id === token_y_metadata.id)
         );
       }),
-    [globalWhiteList]
+    [globalWhiteList, allPools?.length]
   );
 
   const renderList = renderPools?.map((p) => {
@@ -102,7 +102,7 @@ export function SelectTokenDCL({
     return (
       <div
         key={p.pool_id}
-        className="flex items-center text-sm xs:text-base min-w-max px-1.5 bg-opacity-90 py-3 rounded-lg hover:bg-dclSelectTokenHover cursor-pointer"
+        className="flex items-center text-sm xs:text-base min-w-max px-1.5 bg-opacity-90 py-3 bg-dark-10 rounded-lg hover:bg-gray-60 cursor-pointer"
         onClick={() => {
           handleSelect(p);
           setHoverSelectToken(false);
@@ -201,18 +201,15 @@ export function SelectTokenDCL({
             ></div>
           )}
           <div
-            className="border border-menuMoreBoxBorderColor overflow-auto xs:absolute xs:w-full xs:bottom-0 xs:pb-8 xs:rounded-2xl rounded-lg bg-selectBoxBgColor px-2 py-3 "
+            className="border border-gray-10 overflow-auto xs:absolute xs:w-full xs:bottom-0 xs:pb-8 xs:rounded-2xl rounded-lg bg-dark-10 px-2 py-3 "
             style={{
               zIndex: mobileDevice ? 300 : "",
               maxHeight: mobileDevice ? `${48 * 10 + 78}px` : "",
               minHeight: mobileDevice ? `${48 * 5 + 78}px` : "",
             }}
           >
-            <div className="text-sm text-primaryText xs:text-white xs:text-base  ml-1.5   pb-2">
-              {intl.formatMessage({
-                id: "instrument",
-                defaultMessage: "Instrument",
-              })}
+            <div className="text-sm text-gray-60 xs:text-white xs:text-base  ml-1.5   pb-2">
+              Instrument
             </div>
             {renderList}
           </div>

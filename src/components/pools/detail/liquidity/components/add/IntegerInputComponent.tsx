@@ -31,7 +31,7 @@ export function IntegerInputComponent({
       <input
         type="text"
         className={`text-base font-gothamBold mx-2 text-left xsm:text-right ${
-          disabled ? "text-primaryText" : "text-white"
+          disabled ? "text-gray-60" : "text-white"
         }`}
         disabled={disabled}
         value={value}

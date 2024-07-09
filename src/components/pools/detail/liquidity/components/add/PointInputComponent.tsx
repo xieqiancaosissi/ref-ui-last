@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Big from "big.js";
 
 export function PointInputComponent({
@@ -15,13 +15,13 @@ export function PointInputComponent({
   disbaled,
 }: any) {
   return (
-    <div className="flex items-center justify-between xsm:flex-grow">
+    <div className={`flex items-center justify-between xsm:flex-grow`}>
       <input
         type="number"
         placeholder="0.0"
         step="any"
-        className={`text-base font-gothamBold mx-2 text-left xsm:text-right ${
-          disbaled ? "text-primaryText" : "text-white"
+        className={`text-base font-bold mx-2 text-left xsm:text-right ${
+          disbaled ? "text-gray-60" : "text-white"
         }`}
         onBlur={() => {
           setInputStatus(false);

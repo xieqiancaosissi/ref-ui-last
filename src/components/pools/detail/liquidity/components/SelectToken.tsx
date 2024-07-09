@@ -102,7 +102,7 @@ export function SelectTokenDCL({
     return (
       <div
         key={p.pool_id}
-        className="flex items-center text-sm xs:text-base min-w-max px-1.5 bg-opacity-90 py-3 bg-dark-10 rounded-lg hover:bg-gray-60 cursor-pointer"
+        className="flex items-center text-sm xs:text-base min-w-max px-1.5 bg-opacity-90 py-3 bg-dark-10 rounded-lg hover:bg-gray-100 cursor-pointer"
         onClick={() => {
           handleSelect(p);
           setHoverSelectToken(false);
@@ -201,7 +201,7 @@ export function SelectTokenDCL({
             ></div>
           )}
           <div
-            className="border border-gray-10 overflow-auto xs:absolute xs:w-full xs:bottom-0 xs:pb-8 xs:rounded-2xl rounded-lg bg-dark-10 px-2 py-3 "
+            className="border border-gray-100 overflow-auto xs:absolute xs:w-full xs:bottom-0 xs:pb-8 xs:rounded-2xl rounded-lg bg-dark-10 px-2 py-3 "
             style={{
               zIndex: mobileDevice ? 300 : "",
               maxHeight: mobileDevice ? `${48 * 10 + 78}px` : "",

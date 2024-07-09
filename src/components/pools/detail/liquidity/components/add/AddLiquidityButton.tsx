@@ -165,21 +165,27 @@ export function AddLiquidityButton() {
       : addLiquidityForCurveAndBidAskMode;
 
   return (
-    <div
-      className={`w-full xs:w-full md:w-full flex flex-col justify-between self-stretch mt-5`}
-    >
+    <div className={`w-full fccc  mt-5 poolBtnStyle cursor-pointer rounded`}>
       {isSignedIn ? (
         <div
           color="#fff"
-          className={`w-full h-12 text-center text-base text-white focus:outline-none ${
-            isAddLiquidityDisabled ? "opacity-40" : ""
-          } ${isAddLiquidityDisabled ? "cursor-not-allowed" : ""}`}
+          className={`w-full h-12 fccc rounded  focus:outline-none ${
+            isAddLiquidityDisabled
+              ? "bg-gray-40 cursor-not-allowed text-gray-60"
+              : ""
+          }`}
           onClick={add_lp_func}
         >
-          <div>{getButtonText()}</div>
+          {getButtonText()}
         </div>
       ) : (
-        <div>链接钱包</div>
+        <div
+          onClick={() => {
+            window.modal.show();
+          }}
+        >
+          Connect Wallet
+        </div>
       )}
     </div>
   );

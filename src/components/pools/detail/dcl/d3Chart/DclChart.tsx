@@ -1704,10 +1704,7 @@ export default function DclChart({
           </g>
         </svg>
         {/* show hover box then hover on the bin */}
-        <div
-          className="overBox w-75 min-h-48 flex flex-col lg:absolute rounded-xl bg-modalGrayBg  p-4 xsm:hidden xsm:mt-4 lg:invisible"
-          style={{ zIndex: 9999999 }}
-        >
+        <div className="overBox w-75 min-h-48 flex flex-col lg:absolute rounded-xl bg-modalGrayBg  p-4 xsm:hidden xsm:mt-4 z-10 lg:invisible">
           <div className="flex items-center justify-between my-2">
             <span className="text-xs text-gray-60">APR(24h)</span>
             <span className="text-xs text-white gotham_bold">
@@ -1825,15 +1822,15 @@ export default function DclChart({
             </>
           ) : null}
         </div>
-        <div className="wholeOverBox xsm:w-full lg:absolute rounded-xl bg-chartHoverBoxBg border border-assetsBorder px-3 py-2 z-10  xsm:hidden xsm:mt-4 lg:invisible">
+        <div className="wholeOverBox xsm:w-full lg:absolute rounded-xl bg-modalGrayBg px-3 py-2 z-10  xsm:hidden xsm:mt-4 lg:invisible">
           <div className="flex items-center justify-between my-2">
-            <span className="text-xs text-white">Your Liquidity</span>
+            <span className="text-xs text-gray-60">Your Liquidity</span>
             <span className="text-xs text-white gotham_bold">
               {user_liquidities_detail?.total_value || "-"}
             </span>
           </div>
           <div className="flex items-center justify-between my-2">
-            <span className="text-xs text-white mr-10">Price Range</span>
+            <span className="text-xs text-gray-60 mr-10">Price Range</span>
             <span className="flex items-center text-xs text-white gotham_bold">
               {user_liquidities_detail?.min_price} -{" "}
               {user_liquidities_detail?.max_price}
@@ -1849,7 +1846,7 @@ export default function DclChart({
             </span>
           </div>
           <div className="flex items-center justify-between my-2">
-            <span className="text-xs text-white mr-10">Position</span>
+            <span className="text-xs text-gray-60 mr-10">Position</span>
             <span className="text-xs text-white gotham_bold">
               {user_liquidities_detail?.total_x_amount}{" "}
               {pool?.token_x_metadata?.symbol} +{" "}
@@ -1858,13 +1855,13 @@ export default function DclChart({
             </span>
           </div>
           <div className="flex items-center justify-between my-2">
-            <span className="text-xs text-white mr-10">APR(24h)</span>
+            <span className="text-xs text-gray-60 mr-10">APR(24h)</span>
             <span className="text-xs text-white gotham_bold">
               {user_liquidities_detail?.apr_24 || "-"}
             </span>
           </div>
           <div className="flex items-center justify-between my-2">
-            <span className="text-xs text-white mr-10">Total Earned Fee</span>
+            <span className="text-xs text-gray-60 mr-10">Total Earned Fee</span>
             <span className="text-xs text-white gotham_bold">
               {user_liquidities_detail?.total_earned_fee || "-"}
             </span>
@@ -1877,7 +1874,7 @@ export default function DclChart({
             style={{ height: svgHeight + "px" }}
           ></div>
           <div
-            className={`currentLineDetail top-0 left-0  rounded-lg p-2 absolute transform -translate-x-1/2 -translate-y-full flex flex-col ${
+            className={`currentLineDetail top-0 left-0 w-43 h-15 rounded-lg p-2.5 absolute transform -translate-x-1/2 -translate-y-full flex flex-col justify-between ${
               reverse ? "flex-col-reverse" : ""
             }`}
             style={{

@@ -5,9 +5,7 @@ import { useAccountStore } from "@/stores/account";
 // import { ReturnIcon, WarningIcon } from "src/components/icon/V3";
 import { FormattedMessage } from "react-intl";
 import { useHistory } from "react-router-dom";
-// import { useTriTokens } from "@/hooks/useTriTokens";
 import useSelectTokens from "@/hooks/useSelectTokens";
-// import { useTriTokenIdsOnRef } from "@/services/aurora";
 import { TokenMetadata } from "@/services/ft-contract";
 import { ftGetBalance, ftGetTokenMetadata } from "@/services/token";
 import { getBoostTokenPrices } from "@/services/farm";
@@ -86,7 +84,7 @@ export default function AddYourLiquidityPageV3() {
   const [tokenXBalanceFromNear, setTokenXBalanceFromNear] = useState<string>();
   const [tokenYBalanceFromNear, setTokenYBalanceFromNear] = useState<string>();
 
-  const [selectHover, setSelectHover] = useState(false);
+  const [selectHover, setSelectHover] = useState(true);
 
   const [binNumber, setBinNumber] = useState();
   const [liquidityShape, setLiquidityShape] = useState<LiquidityShape>("Spot");
@@ -110,9 +108,7 @@ export default function AddYourLiquidityPageV3() {
   const isSignedIn = accoutStore.isSignedIn;
   const nearBalance = useDepositableBalance("NEAR");
   const history = useHistory();
-  // const triTokenIds = useTriTokenIdsOnRef();
   const { totalList: refTokens } = useSelectTokens();
-  // const triTokens = useTriTokens();
   const OPEN_CREATE_POOL_ENTRY = false;
   const mobileDevice = isMobile();
 
@@ -1943,7 +1939,7 @@ export default function AddYourLiquidityPageV3() {
                       setTokenY(token);
                     }}
                     notNeedSortToken={true}
-                    className="pt-6  absolute top-5 outline-none   right-0    xs:text-white xs:font-bold xs:fixed xs:bottom-0 xs:w-full "
+                    className="pt-6  absolute top-5 outline-none  z-20  right-0 text-white    xs:text-white xs:font-bold xs:fixed xs:bottom-0 xs:w-full "
                     selected={
                       <div
                         className={` text-sm rounded-lg frcc cursor-pointer p-3 bg-gray-60 bg-opacity-10 ${

@@ -5,7 +5,13 @@ import { Tooltip } from "react-tooltip";
 import "react-loading-skeleton/dist/skeleton.css";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { motion } from "framer-motion";
-import { DownArrowIcon, CopyIcon, DisconnectIcon, ChangeIcon, KeyIcon } from "./icons";
+import {
+  DownArrowIcon,
+  CopyIcon,
+  DisconnectIcon,
+  ChangeIcon,
+  KeyIcon,
+} from "./icons";
 import { useAccountStore } from "../../stores/account";
 import { getCurrentWallet, getSelector } from "../../utils/wallet";
 import type { Wallet } from "@near-wallet-selector/core";
@@ -173,7 +179,7 @@ export default function WalletConnect() {
                       </p>
                     </div>
                     <div className="flex gap-4">
-                    <KeyIcon
+                      <KeyIcon
                         onClick={showWalletSelector}
                         className={swapStyles.controlButton}
                       />

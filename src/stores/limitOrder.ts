@@ -1,8 +1,13 @@
+import Big from "big.js";
 import { ITokenMetadata } from "@/hooks/useBalanceTokens";
 import { IPoolDcl } from "@/interfaces/swapDcl";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-interface ILimitStore {
+import { getAmountOut } from "@/services/limit/limitUtils";
+import { toPrecision } from "@/utils/numbers";
+import { get_pool } from "@/services/swapV3";
+import { fillDclPool } from "@/services/limit/limitUtils";
+export interface ILimitStore {
   getTokenIn: () => ITokenMetadata;
   setTokenIn: (token: ITokenMetadata) => void;
   getTokenOut: () => ITokenMetadata;
@@ -15,6 +20,50 @@ interface ILimitStore {
   setRate: (rate: string) => void;
   getLock: () => boolean;
   setLock: (lock: boolean) => void;
+  getMarketRate: () => string;
+  setMarketRate: (marketRate: string) => void;
+  getPoolFetchLoading: () => boolean;
+  setPoolFetchLoading: (poolFetchLoading: boolean) => void;
+  onAmountInChangeTrigger: ({
+    amount,
+    limitStore,
+    rate,
+  }: {
+    amount: string;
+    limitStore: ILimitStore;
+    rate: string;
+  }) => void;
+  onRateChangeTrigger: ({
+    amount,
+    tokenInAmount,
+    limitStore,
+  }: {
+    amount: string;
+    tokenInAmount: string;
+    limitStore: ILimitStore;
+  }) => void;
+  onAmountOutChangeTrigger: ({
+    amount,
+    isLock,
+    rate,
+    tokenInAmount,
+    limitStore,
+  }: {
+    amount: string;
+    isLock: boolean;
+    rate: string;
+    tokenInAmount: string;
+    limitStore: ILimitStore;
+  }) => void;
+  onFetchPool: ({
+    limitStore,
+    dclPool,
+    persistLimitStore,
+  }: {
+    limitStore: ILimitStore;
+    dclPool: IPoolDcl;
+    persistLimitStore: IPersistLimitStore;
+  }) => void;
 }
 export interface IPersistLimitStore {
   getDclPool: () => IPoolDcl;
@@ -39,14 +88,96 @@ export const usePersistLimitStore = create(
     }
   )
 );
-
 export const useLimitStore = create<ILimitStore>((set: any, get: any) => ({
   tokenIn: null,
   tokenOut: null,
   tokenInAmount: "1",
   tokenOutAmount: "",
   rate: "",
+  marketRate: "",
   lock: false,
+  poolFetchLoading: false,
+  onAmountInChangeTrigger: ({
+    amount,
+    rate,
+    limitStore,
+  }: {
+    amount: string;
+    limitStore: ILimitStore;
+    rate: string;
+  }) => {
+    limitStore.setTokenInAmount(amount);
+    if (Big(amount || 0).lte(0)) {
+      limitStore.setTokenOutAmount("0");
+    } else {
+      getAmountOut({ rate, tokenInAmount: amount, limitStore });
+    }
+  },
+  onRateChangeTrigger: ({
+    amount,
+    tokenInAmount,
+    limitStore,
+  }: {
+    amount: string;
+    tokenInAmount: string;
+    limitStore: ILimitStore;
+  }) => {
+    limitStore.setRate(amount);
+    if (Big(amount || 0).lte(0)) {
+      limitStore.setTokenOutAmount("0");
+    } else {
+      getAmountOut({ rate: amount, tokenInAmount, limitStore });
+    }
+  },
+  onAmountOutChangeTrigger: ({
+    amount,
+    isLock,
+    rate,
+    tokenInAmount,
+    limitStore,
+  }: {
+    amount: string;
+    isLock: boolean;
+    rate: string;
+    tokenInAmount: string;
+    limitStore: ILimitStore;
+  }) => {
+    limitStore.setTokenOutAmount(amount);
+    if (isLock) {
+      if (Big(rate || 0).gt(0)) {
+        const newAmountIn = new Big(amount || 0).div(rate).toFixed();
+        limitStore.setTokenInAmount(toPrecision(newAmountIn, 8, false, false));
+      }
+    } else {
+      if (Big(tokenInAmount || 0).gt(0)) {
+        const newRate = toPrecision(
+          new Big(amount || "0").div(tokenInAmount).toFixed(),
+          8
+        );
+        limitStore.setRate(newRate);
+      }
+    }
+  },
+  onFetchPool: async ({
+    limitStore,
+    dclPool,
+    persistLimitStore,
+  }: {
+    limitStore: ILimitStore;
+    dclPool: IPoolDcl;
+    persistLimitStore: IPersistLimitStore;
+  }) => {
+    limitStore.setPoolFetchLoading(true);
+    const latest_pool = await get_pool(dclPool.pool_id)
+      .catch()
+      .finally(() => {
+        limitStore.setPoolFetchLoading(false);
+      });
+    if (latest_pool) {
+      const filledPool = await fillDclPool(latest_pool);
+      persistLimitStore.setDclPool(filledPool);
+    }
+  },
   getTokenIn: () => get().tokenIn,
   setTokenIn: (tokenIn: ITokenMetadata) =>
     set({
@@ -65,4 +196,11 @@ export const useLimitStore = create<ILimitStore>((set: any, get: any) => ({
   setRate: (rate: string) => set({ rate }),
   getLock: () => get().lock,
   setLock: (lock: boolean) => set({ lock }),
+  getMarketRate: () => get().marketRate,
+  setMarketRate: (marketRate: string) => set({ marketRate }),
+  getPoolFetchLoading: () => get().poolFetchLoading,
+  setPoolFetchLoading: (poolFetchLoading: boolean) =>
+    set({
+      poolFetchLoading,
+    }),
 }));

@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 import dynamic from "next/dynamic";
+import { motion } from "framer-motion";
 import _ from "lodash";
 import Input from "@/components/limit/Input";
-import { SwitchIcon } from "@/components/limit/icons";
 import { useAllPoolsV2 } from "@/hooks/usePools";
 import useSelectTokens from "@/hooks/useSelectTokens";
 import { useDefaultBalanceTokens } from "@/hooks/useBalanceTokens";
@@ -16,7 +16,8 @@ import {
 } from "@/stores/limitOrder";
 import { getAllTokenPrices } from "@/services/farm";
 import { SWitchButton } from "../components/swap/icons";
-import Interaction from "../components/limit/Interaction";
+import { RefreshIcon } from "../components/limit/icons";
+import Init from "../components/limit/Init";
 const CreateOrderButton = dynamic(
   () => import("@/components/limit/CreateOrderButton"),
   { ssr: false }
@@ -32,6 +33,7 @@ export default function LimitOrderPage() {
   const swapStore = useSwapStore();
   const tokenIn = limitStore.getTokenIn();
   const tokenOut = limitStore.getTokenOut();
+  const poolFetchLoading = limitStore.getPoolFetchLoading();
   useEffect(() => {
     getAllTokenPrices().then((res) => {
       swapStore.setAllTokenPrices(res);
@@ -63,8 +65,25 @@ export default function LimitOrderPage() {
     limitStore.setTokenOut(tokenIn);
     limitStore.setTokenInAmount("1");
   }
+  async function fetchPool() {
+    limitStore.onFetchPool({
+      limitStore,
+      dclPool,
+      persistLimitStore,
+    });
+  }
+
+  const variants = {
+    stop: { transform: "rotate(0deg)" },
+    spin: {
+      transform: "rotate(360deg)",
+      transition: { duration: 1, repeat: Infinity, ease: "linear" },
+    },
+  };
   return (
     <main className="flex justify-center mt-6 gap-5">
+      {/* init */}
+      <Init />
       {/* charts and records container */}
       <div
         className="border border-gray-30 rounded-lg"
@@ -75,9 +94,20 @@ export default function LimitOrderPage() {
         className="rounded-lg bg-dark-10 p-3.5 mt-2"
         style={{ width: "420px" }}
       >
-        <span className="font-bold text-xl bg-textWhiteGradient bg-clip-text text-transparent">
-          Limit Order
-        </span>
+        <div className="flexBetween px-px">
+          <span className="font-bold text-xl bg-textWhiteGradient bg-clip-text text-transparent">
+            Limit Order
+          </span>
+          <div className="flex items-center justify-center w-5 h-5 cursor-pointer rounded border border-gray-10 border-opacity-20">
+            {poolFetchLoading ? (
+              <motion.div variants={variants} animate="spin">
+                <RefreshIcon className="text-white" />
+              </motion.div>
+            ) : (
+              <RefreshIcon onClick={fetchPool} className="text-gray-60" />
+            )}
+          </div>
+        </div>
         <div className="flex flex-col items-center mt-4">
           <Input token={tokenIn} isIn />
           <div
@@ -101,8 +131,6 @@ export default function LimitOrderPage() {
         </p>
         <CreateOrderButton />
       </div>
-      {/*  */}
-      <Interaction />
     </main>
   );
 }

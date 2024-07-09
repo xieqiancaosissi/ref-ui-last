@@ -81,6 +81,7 @@ const config: Config = {
         },
         red: {
           10: "#FF4B76",
+          20: "#FF6A8E",
         },
         yellow: {
           10: "#E6B401",

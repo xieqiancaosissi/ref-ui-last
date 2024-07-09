@@ -16,22 +16,57 @@ import NoLiquidity from "@/components/pools/detail/liquidity/NoLiquidity";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import NoContent from "@/components/common/NoContent";
 import { useWatchList } from "@/hooks/useWatchlist";
-import { PoolInfo, get_pool } from "@/services/swapV3";
+import {
+  PoolInfo,
+  get_pool,
+  list_liquidities,
+  get_liquidity,
+} from "@/services/swapV3";
 import { ftGetTokensMetadata } from "@/services/token";
 import BigNumber from "bignumber.js";
 import { toReadableNumber } from "@/utils/numbers";
 import { usePoolStore } from "@/stores/pool";
-import { get_pool_name } from "@/services/commonV3";
+import {
+  get_pool_name,
+  allocation_rule_liquidities,
+  get_matched_seeds_for_dcl_pool,
+  UserLiquidityInfo,
+  get_all_seeds,
+} from "@/services/commonV3";
+import { isMobile } from "@/utils/device";
+import { useAccountStore } from "@/stores/account";
+import { list_farmer_seeds, get_seed } from "@/services/farm";
+import { Seed } from "@/services/farm";
+import getConfig from "@/utils/config";
+import dynamic from "next/dynamic";
+
+const YourLiquidityBox = dynamic(
+  () =>
+    import(
+      "@/components/pools/detail/liquidity/dclYourLiquidity/YourLiquidity"
+    ),
+  {
+    ssr: false,
+  }
+);
+
+const { REF_UNI_V3_SWAP_CONTRACT_ID } = getConfig();
 
 export default function DCLPoolDetail() {
   const router = useRouter();
+  const accountStore = useAccountStore();
   const poolId = router.query.id || "";
   const poolStore = usePoolStore();
   const { currentwatchListId, accountId } = useWatchList();
   const [poolDetail, setPoolDetail] = useState<any>(null);
   const [poolDetailV3, setPoolDetailV3] = useState<PoolInfo | any>(null);
   const [tokens, setTokens] = useState([]);
+  const [user_liquidities, set_user_liquidities] =
+    useState<UserLiquidityInfo[]>();
 
+  const [matched_seeds, set_matched_seeds] = useState<Seed[]>([]);
+
+  const [sole_seed, set_sole_seed] = useState<Seed>();
   const [isCollect, setIsCollect] = useState(false);
   const [tokenPriceList, setTokenPriceList] = useState<any>(null);
   const { updatedMapList } = useTokenMetadata([poolDetail]);
@@ -138,6 +173,76 @@ export default function DCLPoolDetail() {
     const pool_name = get_pool_name(poolDetail.id);
     router.push(`/liquidity/${pool_name}`);
   };
+
+  async function get_matched_seeds() {
+    const all_seeds = await get_all_seeds();
+    const matched_seeds = get_matched_seeds_for_dcl_pool({
+      seeds: all_seeds,
+      pool_id: poolId.toString(),
+    });
+    const target = matched_seeds[0];
+    if (target) {
+      set_sole_seed(target);
+      set_matched_seeds(matched_seeds);
+    }
+  }
+
+  async function get_user_list_liquidities() {
+    if (!accountStore.isSignedIn) return;
+    let user_liquiditys_in_pool: UserLiquidityInfo[] = [];
+    const liquidities = await list_liquidities();
+    user_liquiditys_in_pool = liquidities.filter(
+      (liquidity: UserLiquidityInfo) => {
+        const { lpt_id }: any = liquidity;
+        const pool_id = lpt_id.split("#")[0];
+        if (pool_id == router.query.id) return true;
+      }
+    );
+    const liquiditiesPromise = user_liquiditys_in_pool.map(
+      (liquidity: UserLiquidityInfo) => {
+        return get_liquidity((liquidity as any).lpt_id);
+      }
+    );
+    const user_liqudities_final = await Promise.all(liquiditiesPromise);
+    // get user seeds
+    if (user_liqudities_final.length > 0) {
+      const user_seeds_map = await list_farmer_seeds();
+      const target_seed_ids = Object.keys(user_seeds_map).filter(
+        (seed_id: string) => {
+          const [contractId, mft_id] = seed_id.split("@");
+          if (contractId == REF_UNI_V3_SWAP_CONTRACT_ID) {
+            const [fixRange, pool_id, left_point, right_point] =
+              mft_id.split("&");
+            return pool_id == router.query.id;
+          }
+        }
+      );
+      if (target_seed_ids.length > 0) {
+        const seedsPromise = target_seed_ids.map((seed_id: string) => {
+          return get_seed(seed_id);
+        });
+        const target_seeds = await Promise.all(seedsPromise);
+        target_seeds.forEach((seed: Seed) => {
+          const { free_amount, locked_amount } = user_seeds_map[seed.seed_id];
+          const user_seed_amount = new BigNumber(free_amount)
+            .plus(locked_amount)
+            .toFixed();
+          allocation_rule_liquidities({
+            list: user_liqudities_final,
+            user_seed_amount,
+            seed,
+          });
+        });
+      }
+    }
+    set_user_liquidities(user_liqudities_final);
+  }
+
+  useEffect(() => {
+    get_user_list_liquidities();
+    get_matched_seeds();
+  }, []);
+
   return (
     <div className="w-full fccc h-full">
       {/* return */}
@@ -263,7 +368,33 @@ export default function DCLPoolDetail() {
 
         {/* right liquidity */}
         <div className="w-80 ml-auto pt-12">
-          <NoLiquidity add={() => addLiquidity} />
+          {!isMobile() && poolDetailV3 ? (
+            !accountStore.isSignedIn ||
+            (user_liquidities && user_liquidities.length == 0) ? (
+              <NoLiquidity add={() => addLiquidity} />
+            ) : (
+              <>
+                <YourLiquidityBox
+                  poolDetail={poolDetailV3}
+                  tokenPriceList={tokenPriceList}
+                  liquidities={user_liquidities || []}
+                  matched_seeds={matched_seeds}
+                ></YourLiquidityBox>
+                {/* <UnclaimedFeesBox
+                  poolDetail={poolDetail}
+                  tokenPriceList={tokenPriceList}
+                  liquidities={user_liquidities}
+                ></UnclaimedFeesBox> */}
+              </>
+            )
+          ) : null}
+          {/* {!isMobile ? (
+            <RelatedFarmsBox
+              poolDetail={poolDetail}
+              tokenPriceList={tokenPriceList}
+              sole_seed={sole_seed}
+            ></RelatedFarmsBox>
+          ) : null} */}
         </div>
       </div>
 

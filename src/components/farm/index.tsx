@@ -854,7 +854,7 @@ export default function FarmsPage(props: any) {
         }
       }
       const promise_token_meta_data: Promise<any>[] = [];
-      token_ids.forEach(async (tokenId: string) => {
+      token_ids?.forEach(async (tokenId: string) => {
         promise_token_meta_data.push(ftGetTokenMetadata(tokenId));
       });
       const tokens_meta_data = await Promise.all(promise_token_meta_data);

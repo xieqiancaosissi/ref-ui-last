@@ -1029,3 +1029,10 @@ export const getStakedListByAccountId = async ({
 
   return { finalStakeList, v2StakedList, stakedList };
 };
+
+export const get_seed = async (seed_id: string) => {
+  return await refFarmBoostViewFunction({
+    methodName: "get_seed",
+    args: { seed_id },
+  });
+};

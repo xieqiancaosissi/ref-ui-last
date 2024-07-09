@@ -31,6 +31,13 @@ import {
 import Big from "big.js";
 import { useAccountStore } from "@/stores/account";
 import { checkTransaction } from "@/utils/contract";
+import {
+  getBoostSeeds,
+  PoolRPCView,
+  getBoostTokenPrices,
+  getPoolIdBySeedId,
+} from "./farm";
+import { ftGetTokenMetadata } from "./token";
 
 const { REF_UNI_V3_SWAP_CONTRACT_ID, boostBlackList } = getConfig();
 
@@ -1484,4 +1491,250 @@ export function getSlotPointByPoint(pointDelta: number, point: number) {
     return 800000;
   }
   return point_int_slot;
+}
+
+export async function get_all_seeds() {
+  let list_seeds: Seed[];
+  let list_farm: FarmBoost[][];
+  const result = await getBoostSeeds();
+  const { seeds, farms, pools: cachePools } = result;
+  list_seeds = seeds;
+  list_farm = farms;
+  const pools: PoolRPCView[] = cachePools;
+  // filter Love Seed
+  list_seeds.filter((seed: Seed) => {
+    if (seed.seed_id.indexOf("@") > -1) return true;
+  });
+  // filter black farms
+  const temp_list_farm: FarmBoost[][] = [];
+  list_farm.forEach((farmList: FarmBoost[]) => {
+    let temp_farmList: FarmBoost[] = [];
+    temp_farmList = farmList.filter((farm: FarmBoost) => {
+      const id = farm?.farm_id?.split("@")[1];
+      if (boostBlackList.indexOf(id) == -1) {
+        return true;
+      }
+    });
+    temp_list_farm.push(temp_farmList);
+  });
+  list_farm = temp_list_farm;
+  // filter no farm seed
+  const new_list_seeds: any[] = [];
+  list_farm.forEach((farmList: FarmBoost[], index: number) => {
+    if (farmList?.length > 0) {
+      new_list_seeds.push({
+        ...list_seeds[index],
+        farmList,
+      });
+    }
+  });
+
+  list_seeds = new_list_seeds;
+  // get all token prices
+  const tokenPriceList = await getBoostTokenPrices();
+  const list = await getFarmDataList({
+    list_seeds,
+    list_farm,
+    tokenPriceList,
+    pools,
+  });
+  return list;
+}
+
+async function getFarmDataList(initData: any) {
+  const { list_seeds, tokenPriceList, pools } = initData;
+  const promise_new_list_seeds = list_seeds.map(async (newSeed: Seed) => {
+    const {
+      seed_id,
+      farmList,
+      total_seed_amount,
+      total_seed_power,
+      seed_decimal,
+    }: any = newSeed;
+    const [contractId, temp_pool_id] = seed_id.split("@");
+    let is_dcl_pool = false;
+    if (contractId == REF_UNI_V3_SWAP_CONTRACT_ID) {
+      is_dcl_pool = true;
+    }
+    const poolId = getPoolIdBySeedId(seed_id);
+    const pool = pools.find((pool: PoolRPCView & PoolInfo) => {
+      if (is_dcl_pool) {
+        if (pool.pool_id == poolId) return true;
+      } else {
+        if (+pool.id == +poolId) return true;
+      }
+    });
+    let token_ids: string[] = [];
+    if (is_dcl_pool) {
+      const [token_x, token_y, fee] = poolId.split("|");
+      token_ids.push(token_x, token_y);
+    } else {
+      const { token_account_ids } = pool || {};
+      token_ids = token_account_ids;
+    }
+    const promise_token_meta_data: Promise<any>[] = [];
+    token_ids.forEach(async (tokenId: string) => {
+      promise_token_meta_data.push(ftGetTokenMetadata(tokenId));
+    });
+    const tokens_meta_data = await Promise.all(promise_token_meta_data);
+    pool.tokens_meta_data = tokens_meta_data;
+    const promise_farm_meta_data = farmList.map(async (farm: FarmBoost) => {
+      const tokenId = farm.terms.reward_token;
+      const tokenMetadata = await ftGetTokenMetadata(tokenId);
+      farm.token_meta_data = tokenMetadata;
+      return farm;
+    });
+    await Promise.all(promise_farm_meta_data);
+    // get seed tvl
+    const DECIMALS = seed_decimal;
+    const seedTotalStakedAmount = toReadableNumber(DECIMALS, total_seed_amount);
+    let single_lp_value = "0";
+    if (is_dcl_pool) {
+      const [fixRange, dcl_pool_id, left_point, right_point] =
+        temp_pool_id.split("&");
+      const [token_x, token_y] = dcl_pool_id.split("|");
+      const [token_x_meta, token_y_meta] = tokens_meta_data;
+      const price_x = tokenPriceList[token_x]?.price || "0";
+      const price_y = tokenPriceList[token_y]?.price || "0";
+      const temp_valid = +right_point - +left_point;
+      const range_square = Math.pow(temp_valid, 2);
+      const amount = new BigNumber(Math.pow(10, 12))
+        .dividedBy(range_square)
+        .toFixed();
+      single_lp_value = get_total_value_by_liquidity_amount_dcl({
+        left_point: +left_point,
+        right_point: +right_point,
+        amount,
+        poolDetail: pool,
+        price_x_y: { [token_x]: price_x, [token_y]: price_y },
+        metadata_x_y: { [token_x]: token_x_meta, [token_y]: token_y_meta },
+      });
+    } else {
+      const { tvl, id, shares_total_supply } = pool;
+      const poolShares = Number(
+        toReadableNumber(DECIMALS, shares_total_supply)
+      );
+      if (poolShares == 0) {
+        single_lp_value = "0";
+      } else {
+        single_lp_value = (tvl / poolShares).toString();
+      }
+    }
+    const seedTotalStakedPower = toReadableNumber(DECIMALS, total_seed_power);
+    const seedTvl = new BigNumber(seedTotalStakedAmount)
+      .multipliedBy(single_lp_value)
+      .toFixed();
+    const seedPowerTvl = new BigNumber(seedTotalStakedPower)
+      .multipliedBy(single_lp_value)
+      .toFixed();
+    // get apr per farm
+    farmList?.forEach((farm: FarmBoost) => {
+      const { token_meta_data }: any = farm;
+      const { daily_reward, reward_token } = farm.terms;
+      const readableNumber = toReadableNumber(
+        token_meta_data.decimals,
+        daily_reward
+      );
+      const reward_token_price = Number(
+        tokenPriceList[reward_token]?.price || 0
+      );
+      const apr =
+        +seedPowerTvl == 0
+          ? "0"
+          : new BigNumber(readableNumber)
+              .multipliedBy(365)
+              .multipliedBy(reward_token_price)
+              .dividedBy(seedPowerTvl)
+              .toFixed();
+      const baseApr =
+        +seedTvl == 0
+          ? "0"
+          : new BigNumber(readableNumber)
+              .multipliedBy(365)
+              .multipliedBy(reward_token_price)
+              .dividedBy(seedTvl)
+              .toFixed();
+
+      farm.apr = apr;
+      farm.baseApr = baseApr;
+    });
+    newSeed.pool = pool;
+    newSeed.seedTvl = seedTvl || "0";
+  });
+  await Promise.all(promise_new_list_seeds);
+  // split ended farms
+  const ended_split_list_seeds: Seed[] = [];
+  list_seeds.forEach((seed: Seed) => {
+    const { farmList }: any = seed;
+    const endedList = farmList.filter((farm: FarmBoost) => {
+      if (farm.status == "Ended") return true;
+    });
+    const noEndedList = farmList.filter((farm: FarmBoost) => {
+      if (farm.status != "Ended") return true;
+    });
+    if (endedList.length > 0 && noEndedList.length > 0) {
+      seed.farmList = noEndedList;
+      const endedSeed = JSON.parse(JSON.stringify(seed));
+      endedSeed.farmList = endedList;
+      endedSeed.endedFarmsIsSplit = true;
+      ended_split_list_seeds.push(endedSeed);
+    }
+  });
+  const total_list_seeds = list_seeds.concat(ended_split_list_seeds);
+  return total_list_seeds;
+}
+
+export function get_token_amount_in_user_liquidities({
+  user_liquidities,
+  pool,
+  token_x_metadata,
+  token_y_metadata,
+}: {
+  user_liquidities: UserLiquidityInfo[];
+  pool: PoolInfo;
+  token_x_metadata: TokenMetadata;
+  token_y_metadata: TokenMetadata;
+}) {
+  let total_x_amount = Big(0);
+  let total_y_amount = Big(0);
+  const list = divide_liquidities_into_bins_user({
+    liquidities: user_liquidities,
+    slot_number_in_a_bin: 1,
+    tokenX: token_x_metadata,
+    tokenY: token_y_metadata,
+    poolDetail: pool,
+  });
+
+  list.forEach((l: IChartData) => {
+    const { token_x, token_y } = l;
+    total_x_amount = total_x_amount.plus(token_x);
+    total_y_amount = total_y_amount.plus(token_y);
+  });
+  return [total_x_amount.toFixed(), total_y_amount.toFixed()];
+}
+
+export function findRangeIntersection(arr: number[][]) {
+  if (!Array.isArray(arr) || arr.length === 0) {
+    return [];
+  }
+
+  arr.sort((a, b) => a[0] - b[0]);
+
+  const intersection = [arr[0]];
+
+  for (let i = 1; i < arr.length; i++) {
+    const current = arr[i];
+    const [currentStart, currentEnd] = current;
+    const [prevStart, prevEnd] = intersection[intersection.length - 1];
+
+    if (currentStart > prevEnd) {
+      intersection.push(current);
+    } else {
+      const start = Math.min(currentStart, prevStart);
+      const end = Math.max(currentEnd, prevEnd);
+      intersection[intersection.length - 1] = [start, end];
+    }
+  }
+
+  return intersection;
 }

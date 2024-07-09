@@ -129,7 +129,7 @@ export function InputView(props: any) {
               Balance: <span title={max}>{displayBalance(max)}</span>
               {max && (
                 <div
-                  className={`frcc ml-2 underline cursor-pointer ${
+                  className={`frcc ml-2 underline cursor-pointer hover:text-primaryGreen ${
                     amount == max ? "text-primaryGreen" : ""
                   }`}
                   onClick={handleMaxClick}

@@ -327,8 +327,8 @@ export default function XrefPage(props: any) {
           <div className="mt-6 frcb text-sm text-gray-10 ">
             <p>Details</p>
             <XrefArrow
-              className={`cursor-pointer ${
-                showDetails ? "text-primaryGreen transform rotate-180" : ""
+              className={`cursor-pointer hover:text-primaryGreen ${
+                showDetails ? " transform rotate-180" : ""
               }`}
               onClick={toggleDetails}
             />

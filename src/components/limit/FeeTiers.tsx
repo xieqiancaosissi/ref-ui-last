@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import CustomTooltip from "@/components/customTooltip/customTooltip";
 import { TipIcon, SelectedIcon } from "./icons";
 import { ArrowDownIcon } from "../../components/swap/icons";
 import { V3_POOL_FEE_LIST } from "@/services/swapV3";
@@ -42,13 +43,29 @@ export default function FeeTiers(props: any) {
   function switchStatus() {
     setShowFeeTiers(!showFeeTiers);
   }
+  function feeTip() {
+    return `
+    <div class="text-gray-110 text-xs text-left break-all w-62">
+      Please note: when the order is filled by instant swap, you will be a liquidity taker. Meanwhile, no fee will be charged when you are a liquidit maker.
+    </div>
+    `;
+  }
   return (
     <div className="bg-dark-60 rounded border border-transparent hover:border-green-10 p-3.5">
       <div className="flex items-center gap-1">
         <span className="text-sm text-gray-50 whitespace-nowrap">
           Fee Tiers
         </span>
-        <TipIcon className="text-gray-10 hover:text-white flex-shrink-0 cursor-pointer" />
+        <div
+          className="text-white text-right"
+          data-class="reactTip"
+          data-tooltip-id="feeTipId"
+          data-place="top"
+          data-tooltip-html={feeTip()}
+        >
+          <TipIcon className="text-gray-10 hover:text-white flex-shrink-0 cursor-pointer" />
+          <CustomTooltip id="feeTipId" />
+        </div>
       </div>
       <div
         className="relative flexBetween mt-2.5 cursor-pointer"

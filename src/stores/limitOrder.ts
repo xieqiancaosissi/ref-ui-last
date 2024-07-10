@@ -28,6 +28,8 @@ export interface ILimitStore {
   setMarketRate: (marketRate: string) => void;
   getPoolFetchLoading: () => boolean;
   setPoolFetchLoading: (poolFetchLoading: boolean) => void;
+  getRateDiff: () => string;
+  setRateDiff: (rateDiff: string) => void;
   onAmountInChangeTrigger: ({
     amount,
     limitStore,
@@ -101,6 +103,7 @@ export const useLimitStore = create<ILimitStore>((set: any, get: any) => ({
   marketRate: "",
   lock: false,
   poolFetchLoading: false,
+  rateDiff: "",
   onAmountInChangeTrigger: ({
     amount,
     rate,
@@ -208,5 +211,10 @@ export const useLimitStore = create<ILimitStore>((set: any, get: any) => ({
   setPoolFetchLoading: (poolFetchLoading: boolean) =>
     set({
       poolFetchLoading,
+    }),
+  getRateDiff: () => get().rateDiff,
+  setRateDiff: (rateDiff: string) =>
+    set({
+      rateDiff,
     }),
 }));

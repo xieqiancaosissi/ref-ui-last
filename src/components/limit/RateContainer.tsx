@@ -1,5 +1,6 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import Big from "big.js";
+import CustomTooltip from "@/components/customTooltip/customTooltip";
 import { SubIcon, AddIcon, UnLockIcon, LockIcon } from "./icons";
 import {
   useLimitStore,
@@ -24,6 +25,12 @@ export default function RateContainer() {
     if (Number(rate) > 0 && Number(marketRate) > 0) {
       if (Big(rate).eq(marketRate)) return null;
       const rateDiff = new Big(rate).minus(marketRate).div(marketRate).mul(100);
+      const displayRateDiff = rateDiff.gt(1000)
+        ? ">1000"
+        : rateDiff.lt(-1000)
+        ? "<-1000"
+        : rateDiff.toFixed(2, 0);
+      limitStore.setRateDiff(rateDiff.toFixed());
       return (
         <span
           className={`${
@@ -34,12 +41,7 @@ export default function RateContainer() {
               : "text-yellow-10"
           }`}
         >
-          (
-          {rateDiff.gt(1000)
-            ? ">1000"
-            : rateDiff.lt(-1000)
-            ? "<-1000"
-            : rateDiff.toFixed(2, 0)}
+          ({displayRateDiff}
           %)
         </span>
       );
@@ -119,6 +121,14 @@ export default function RateContainer() {
       persistLimitStore,
     });
   }
+  function lockTip() {
+    return `
+    <div class="text-gray-110 text-xs text-left break-all w-62">
+    Lock the rate field to get your buy amount automatically adjusted when
+          changing your sell amount.
+    </div>
+    `;
+  }
   return (
     <div className="bg-dark-60 rounded border border-transparent hover:border-green-10 p-3.5 text-sm text-gray-50">
       <div className="flexBetween">
@@ -151,17 +161,27 @@ export default function RateContainer() {
           <span>USDC.e</span>
         </div>
         <div className="flex items-center gap-1">
-          {isLock ? (
-            <LockIcon
-              className="cursor-pointer text-primaryGreen hover:text-white"
-              onClick={onUnLock}
-            />
-          ) : (
-            <UnLockIcon
-              className="cursor-pointer text-gray-60 hover:text-white"
-              onClick={onLock}
-            />
-          )}
+          <div
+            className="text-white text-right"
+            data-class="reactTip"
+            data-tooltip-id="lockTipId"
+            data-place="top"
+            data-tooltip-html={lockTip()}
+          >
+            {isLock ? (
+              <LockIcon
+                className="cursor-pointer text-primaryGreen hover:text-white"
+                onClick={onUnLock}
+              />
+            ) : (
+              <UnLockIcon
+                className="cursor-pointer text-gray-60 hover:text-white"
+                onClick={onLock}
+              />
+            )}
+            <CustomTooltip id="lockTipId" />
+          </div>
+
           <AddIcon
             onClick={addOneSlot}
             className="cursor-pointer text-gray-60 hover:text-white"

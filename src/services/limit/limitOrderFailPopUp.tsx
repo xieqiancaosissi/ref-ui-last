@@ -1,20 +1,25 @@
 import { toast } from "react-toastify";
 import getConfig from "@/utils/config";
-import { CloseIcon, PopSuccessfulIcon } from "@/components/common/Icons";
-const swapToast = (txHash: string) => {
+import { CloseIcon, PopFailedIcon } from "@/components/common/Icons";
+const LimitOrderFailPopUp = (txHash: string) => {
   toast(
     <a
-      className="text-white w-full h-full pl-1.5 text-base flex flex-col"
+      className="text-error w-full h-full pl-1.5 py-1 flex flex-col text-sm"
       href={`${getConfig().explorerUrl}/txns/${txHash}`}
       target="_blank"
       rel="noopener noreferrer nofollow"
+      style={{
+        lineHeight: "20px",
+      }}
     >
-      <div className="flex items-center">
-        <span className="mr-2.5 ">
-          <PopSuccessfulIcon />
+      <span className="flex items-center text-white text-base">
+        <span className="mr-2.5">
+          <PopFailedIcon />
         </span>
-        <span className="mr-1">Swap successfully.</span>
-      </div>
+
+        <span>Limit order creation fails.</span>
+      </span>
+
       <span
         className="underline decoration-1 text-gray-60 hover:text-white"
         style={{
@@ -26,23 +31,22 @@ const swapToast = (txHash: string) => {
       </span>
     </a>,
     {
-      autoClose: 8000,
+      autoClose: false,
       closeOnClick: true,
       hideProgressBar: false,
       closeButton: (
-        <CloseIcon className=" text-dark-80 hover:text-white" size="12" />
+        <CloseIcon size="12" className=" text-dark-80 hover:text-white" />
       ),
       progressStyle: {
-        background: "#9DFD01",
+        background: "#FF4B76",
         borderRadius: "8px",
       },
       style: {
         background: "rgba(151, 151, 151, 0.2)",
         boxShadow: "0px 0px 10px 10px rgba(0, 0, 0, 0.15)",
         borderRadius: "8px",
-        minHeight: "0px",
       },
     }
   );
 };
-export default swapToast;
+export default LimitOrderFailPopUp;

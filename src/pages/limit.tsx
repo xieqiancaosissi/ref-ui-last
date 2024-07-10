@@ -24,6 +24,12 @@ const CreateOrderButton = dynamic(
 const FeeTiers = dynamic(() => import("@/components/limit/FeeTiers"), {
   ssr: false,
 });
+const LimitOrderPopup = dynamic(
+  () => import("@/components/common/LimitOrderPopup"),
+  {
+    ssr: false,
+  }
+);
 export default function LimitOrderPage() {
   const { defaultList = [] } = useSelectTokens();
   useDefaultBalanceTokens(defaultList);
@@ -84,6 +90,8 @@ export default function LimitOrderPage() {
   };
   return (
     <main className="flex justify-center mt-6 gap-5">
+      {/* popup */}
+      <LimitOrderPopup />
       {/* init */}
       <Init />
       {/* charts and records container */}

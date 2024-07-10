@@ -150,9 +150,6 @@ export const priceToPoint = ({
   fee: number;
 }) => {
   const decimal_price_A_by_B = new Big(amountB).div(amountA);
-  const undecimal_price_A_by_B = decimal_price_A_by_B
-    .times(new Big(10).pow(tokenB.decimals))
-    .div(new Big(10).pow(tokenA.decimals));
 
   const pointDelta = feeToPointDelta(fee);
 

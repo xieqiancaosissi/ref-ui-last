@@ -9,6 +9,8 @@ Modal.defaultStyles = {
     backgroundColor: "rgba(0, 0, 0, 0.7)",
     zIndex: 100,
     outline: "none",
+    backdropFilter: "blur(10px)",
+    WebkitBackdropFilter: "blur(10px)",
   },
   content: {
     position: "absolute",

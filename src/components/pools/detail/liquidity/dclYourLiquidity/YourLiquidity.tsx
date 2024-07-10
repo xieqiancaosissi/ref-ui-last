@@ -132,6 +132,7 @@ export default function YourLiquidityBox(props: {
       Object.keys(tokenPriceList).length
     ) {
       get_24_apr_and_fee();
+      get_tokens_amount_liquidities();
     }
   }, [poolDetail, tokenPriceList.length, liquidities.length]);
 
@@ -300,15 +301,24 @@ export default function YourLiquidityBox(props: {
   }
 
   function getTotalLiquditiesTvl() {
-    const [total_x, total_y] = get_tokens_amount_liquidities();
-    const price_x = tokenPriceList[token_x_metadata.id]?.price || 0;
-    const price_y = tokenPriceList[token_y_metadata.id]?.price || 0;
-    const total_x_value = Big(price_x).mul(total_x);
-    const total_y_value = Big(price_y).mul(total_y);
-    const total_value = total_x_value.plus(total_y_value).toFixed();
-    const total_value_display = formatWithCommas_usd(total_value);
-    return total_value_display;
+    const { total_x, total_y } = amountLiquidity;
+    if (total_x) {
+      const price_x = tokenPriceList[token_x_metadata.id]?.price || 0;
+      const price_y = tokenPriceList[token_y_metadata.id]?.price || 0;
+      const total_x_value = Big(price_x).mul(total_x);
+      const total_y_value = Big(price_y).mul(total_y);
+      const total_value = total_x_value.plus(total_y_value).toFixed();
+      const total_value_display = formatWithCommas_usd(total_value);
+      return total_value_display;
+    } else {
+      return 0;
+    }
   }
+
+  const [amountLiquidity, setAmountLiquidity] = useState({
+    total_x: "",
+    total_y: "",
+  });
 
   function get_tokens_amount_liquidities() {
     const [total_x, total_y] = get_token_amount_in_user_liquidities({
@@ -317,11 +327,15 @@ export default function YourLiquidityBox(props: {
       token_x_metadata,
       token_y_metadata,
     });
-    return [total_x, total_y];
+    setAmountLiquidity({
+      total_x,
+      total_y,
+    });
+    // return [total_x, total_y];
   }
 
   function getTotalTokenAmount() {
-    const [total_x, total_y] = get_tokens_amount_liquidities();
+    const { total_x, total_y } = amountLiquidity;
     let display_total_x = "0";
     let display_total_y = "0";
     if (+total_x == 0) {
@@ -630,7 +644,7 @@ export default function YourLiquidityBox(props: {
             transform: "translate(-50%, -50%)",
           },
         }}
-      ></SelectLiquidityBox>
+      />
     </div>
   );
 }

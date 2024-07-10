@@ -1,3 +1,4 @@
+import { isMobile } from "@/utils/device";
 export const LiquidityEmptyIcon = (props: any) => {
   return (
     <svg
@@ -480,6 +481,133 @@ export const WarningIcon = (props: any) => {
         d="M11.1274 6.07879C11.1317 6.04034 11.1339 6.0013 11.1339 5.96175C11.1339 5.36616 10.6336 4.88335 10.0164 4.88335C9.39924 4.88335 8.89893 5.36616 8.89893 5.96175C8.89893 5.96298 8.89893 5.9642 8.89894 5.96543H8.89547L9.1473 11.1058C9.14727 11.1086 9.14726 11.1114 9.14726 11.1141C9.14726 11.5774 9.53639 11.9529 10.0164 11.9529C10.4964 11.9529 10.8855 11.5774 10.8855 11.1141C10.8855 11.1065 10.8854 11.0989 10.8852 11.0913L11.1274 6.07879ZM7.2833 2.47745C8.76956 0.0286533 11.1824 0.0339056 12.6655 2.47745L19.3081 13.4219C20.7943 15.8707 19.6164 17.8559 16.6693 17.8559H3.27955C0.335916 17.8559 -0.842329 15.8655 0.640741 13.4219L7.2833 2.47745ZM10.0164 15.4277C10.6336 15.4277 11.1339 14.9449 11.1339 14.3493C11.1339 13.7537 10.6336 13.2709 10.0164 13.2709C9.39924 13.2709 8.89893 13.7537 8.89893 14.3493C8.89893 14.9449 9.39924 15.4277 10.0164 15.4277Z"
         fill="#DE9450"
       />
+    </svg>
+  );
+};
+
+export const Fire = (props: any) => {
+  return (
+    <svg
+      {...props}
+      width="12"
+      height="14"
+      viewBox="0 0 12 14"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M4.57796 0.367675C4.35716 1.05452 3.75595 2.28874 2.12094 3.92562C-0.699681 6.75295 -1.07348 11.3076 3.26035 13.5473C3.61615 13.7311 3.91316 13.6179 4.13636 13.3909C4.87436 12.6416 5.19477 11.5422 5.09877 10.0938C5.07177 9.69465 5.25477 9.59078 5.61717 9.86388C6.64498 10.6377 7.31578 11.8299 7.31578 13.1114C7.31578 13.5473 7.49519 13.7778 7.91339 13.699C10.677 13.1779 14.0448 9.32409 10.4154 3.68111C10.1982 3.394 9.8772 3.394 9.8826 3.78848C9.88861 4.27283 9.8316 4.75602 9.7122 5.22636C9.63 5.55315 9.3138 5.54849 9.2394 5.22636C8.787 3.2662 7.52939 1.60015 5.46597 0.225287C4.90916 -0.145271 4.70696 -0.0314774 4.57796 0.368259V0.367675Z"
+        fill="url(#paint0_linear_2166_3579)"
+      />
+      <defs>
+        <linearGradient
+          id="paint0_linear_2166_3579"
+          x1="0"
+          y1="13.7143"
+          x2="12"
+          y2="13.7143"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stopColor="#FFD278" />
+          <stop offset="1" stopColor="#FF9900" />
+        </linearGradient>
+      </defs>
+    </svg>
+  );
+};
+
+export const FarmBoardInDetailPool = (props: any) => {
+  return (
+    <svg
+      width={!isMobile() ? "100%" : "340"}
+      height={!isMobile() ? "105" : "105"}
+      viewBox={`0 0 340 ${!isMobile() ? "92" : "100"}`}
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <rect
+        x="1"
+        y="1"
+        width={!isMobile() ? "338" : "300"}
+        height={!isMobile() ? "90" : "100"}
+        rx="11"
+        fill="url(#paint0_radial_2166_3074)"
+        stroke="url(#paint1_linear_2166_3074)"
+        strokeWidth="2"
+      />
+      <defs>
+        <radialGradient
+          id="paint0_radial_2166_3074"
+          cx="0"
+          cy="0"
+          r="1"
+          gradientUnits="userSpaceOnUse"
+          gradientTransform="translate(86.8785 26.5) rotate(33.0988) scale(137.342 152.301)"
+        >
+          <stop stopColor="#0E3E48" />
+          <stop offset="1" stopColor="#001320" />
+        </radialGradient>
+        <linearGradient
+          id="paint1_linear_2166_3074"
+          x1="0"
+          y1="92"
+          x2="340"
+          y2="92"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stopColor="#00C6A2" />
+          <stop offset="1" stopColor="#7F43FF" />
+        </linearGradient>
+      </defs>
+    </svg>
+  );
+};
+
+export const FarmBoardInDetailDCLPool = (props: any) => {
+  return (
+    <svg
+      width={!isMobile() ? "100%" : "390"}
+      height={!isMobile() ? "105" : "105"}
+      viewBox={`0 0 390 100`}
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <rect
+        x="1"
+        y="1"
+        width={!isMobile() ? "calc(100% - 5px)" : "380"}
+        height={"100"}
+        rx="11"
+        fill="url(#paint0_radial_2166_3074)"
+        stroke="url(#paint1_linear_2166_3074)"
+        strokeWidth="2"
+      />
+      <defs>
+        <radialGradient
+          id="paint0_radial_2166_3074"
+          cx="0"
+          cy="0"
+          r="1"
+          gradientUnits="userSpaceOnUse"
+          gradientTransform="translate(86.8785 26.5) rotate(33.0988) scale(137.342 152.301)"
+        >
+          <stop stopColor="#0E3E48" />
+          <stop offset="1" stopColor="#001320" />
+        </radialGradient>
+        <linearGradient
+          id="paint1_linear_2166_3074"
+          x1="0"
+          y1="92"
+          x2="340"
+          y2="92"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stopColor="#00C6A2" />
+          <stop offset="1" stopColor="#7F43FF" />
+        </linearGradient>
+      </defs>
     </svg>
   );
 };

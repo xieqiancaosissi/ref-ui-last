@@ -135,3 +135,62 @@ input[type="range"].lock-bar::-webkit-slider-thumb {
   animation: spin 1s linear infinite;
   transform-origin: center;
 }
+
+
+
+/* slider start*/
+.multi-slider {
+  height: 22px;
+}
+
+.multi-slider .thumb {
+  width: 22px;
+  height: 22px;
+  cursor: pointer;
+  border: 1px solid #1d2932;
+  outline: none;
+  background: #9eff00;
+}
+.multi-slider.disabled .thumb-0,
+.multi-slider.disabled .track-1 {
+  visibility: hidden;
+}
+.multi-slider .track-0 {
+  height: 10px;
+  top: 6px;
+  background-color: #9eff00;
+}
+.multi-slider .track-1 {
+  height: 10px;
+  top: 6px;
+  background-color: #121e27;
+}
+
+.multi-slider-double {
+  height: 22px;
+}
+.multi-slider-double .thumb {
+  width: 22px;
+  height: 22px;
+  cursor: pointer;
+  border: 1px solid #1d2932;
+  outline: none;
+  background: #9eff00;
+}
+
+.multi-slider-double .track-0 {
+  height: 10px;
+  top: 6px;
+  background-color: #121e27;
+}
+.multi-slider-double .track-1 {
+  height: 10px;
+  top: 6px;
+  background-color: #9eff00;
+}
+.multi-slider-double .track-2 {
+  height: 10px;
+  top: 6px;
+  background-color: black;
+}
+/* slider end*/

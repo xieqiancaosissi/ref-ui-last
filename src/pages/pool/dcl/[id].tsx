@@ -39,6 +39,8 @@ import { list_farmer_seeds, get_seed } from "@/services/farm";
 import { Seed } from "@/services/farm";
 import getConfig from "@/utils/config";
 import dynamic from "next/dynamic";
+import { UnclaimedFeesBox } from "@/components/pools/detail/liquidity/UnclaimedFeesBox";
+import { RelatedFarmsBox } from "@/components/pools/detail/liquidity/RelatedFarmsBox";
 
 const YourLiquidityBox = dynamic(
   () =>
@@ -55,14 +57,16 @@ const { REF_UNI_V3_SWAP_CONTRACT_ID } = getConfig();
 export default function DCLPoolDetail() {
   const router = useRouter();
   const accountStore = useAccountStore();
+  const isSignedIn = accountStore.getIsSignedIn();
   const poolId = router.query.id || "";
   const poolStore = usePoolStore();
   const { currentwatchListId, accountId } = useWatchList();
   const [poolDetail, setPoolDetail] = useState<any>(null);
   const [poolDetailV3, setPoolDetailV3] = useState<PoolInfo | any>(null);
   const [tokens, setTokens] = useState([]);
-  const [user_liquidities, set_user_liquidities] =
-    useState<UserLiquidityInfo[]>();
+  const [user_liquidities, set_user_liquidities] = useState<
+    UserLiquidityInfo[]
+  >([]);
 
   const [matched_seeds, set_matched_seeds] = useState<Seed[]>([]);
 
@@ -187,8 +191,9 @@ export default function DCLPoolDetail() {
     }
   }
 
+  const [showSkection, setShowSkection] = useState(false);
   async function get_user_list_liquidities() {
-    if (!accountStore.isSignedIn) return;
+    setShowSkection(true);
     let user_liquiditys_in_pool: UserLiquidityInfo[] = [];
     const liquidities = await list_liquidities();
     user_liquiditys_in_pool = liquidities.filter(
@@ -204,6 +209,7 @@ export default function DCLPoolDetail() {
       }
     );
     const user_liqudities_final = await Promise.all(liquiditiesPromise);
+
     // get user seeds
     if (user_liqudities_final.length > 0) {
       const user_seeds_map = await list_farmer_seeds();
@@ -236,12 +242,18 @@ export default function DCLPoolDetail() {
       }
     }
     set_user_liquidities(user_liqudities_final);
+    setShowSkection(false);
   }
 
   useEffect(() => {
-    get_user_list_liquidities();
     get_matched_seeds();
   }, []);
+
+  //
+  useEffect(() => {
+    if (!isSignedIn) return;
+    get_user_list_liquidities();
+  }, [isSignedIn]);
 
   return (
     <div className="w-full fccc h-full">
@@ -331,7 +343,7 @@ export default function DCLPoolDetail() {
           </div>
 
           {/* Recent Transaction */}
-          <div>
+          <div className="mb-8">
             <div className="mt-12 mb-4 flex justify-between">
               <span className="text-lg text-gray-50 font-bold">
                 Recent Transaction
@@ -368,33 +380,32 @@ export default function DCLPoolDetail() {
 
         {/* right liquidity */}
         <div className="w-80 ml-auto pt-12">
-          {!isMobile() && poolDetailV3 ? (
-            !accountStore.isSignedIn ||
-            (user_liquidities && user_liquidities.length == 0) ? (
-              <NoLiquidity add={() => addLiquidity} />
-            ) : (
+          {user_liquidities.length == 0 ? (
+            <NoLiquidity add={() => addLiquidity} isLoading={showSkection} />
+          ) : (
+            poolDetailV3?.token_x && (
               <>
                 <YourLiquidityBox
                   poolDetail={poolDetailV3}
                   tokenPriceList={tokenPriceList}
-                  liquidities={user_liquidities || []}
+                  liquidities={user_liquidities}
                   matched_seeds={matched_seeds}
-                ></YourLiquidityBox>
-                {/* <UnclaimedFeesBox
-                  poolDetail={poolDetail}
+                />
+                <UnclaimedFeesBox
+                  poolDetail={poolDetailV3}
                   tokenPriceList={tokenPriceList}
                   liquidities={user_liquidities}
-                ></UnclaimedFeesBox> */}
+                />
+                {!isMobile() ? (
+                  <RelatedFarmsBox
+                    poolDetail={poolDetailV3}
+                    tokenPriceList={tokenPriceList}
+                    sole_seed={sole_seed}
+                  ></RelatedFarmsBox>
+                ) : null}
               </>
             )
-          ) : null}
-          {/* {!isMobile ? (
-            <RelatedFarmsBox
-              poolDetail={poolDetail}
-              tokenPriceList={tokenPriceList}
-              sole_seed={sole_seed}
-            ></RelatedFarmsBox>
-          ) : null} */}
+          )}
         </div>
       </div>
 

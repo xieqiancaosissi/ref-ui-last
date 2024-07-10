@@ -12,7 +12,8 @@ export function PoolSlippageSelectorV3({
 }) {
   const validSlippages = [0.1, 0.5, 1.0];
   const intl = useIntl();
-  const slippageCopyId = "slippageCopy";
+  const slippageCopyId =
+    "Slippage means the difference between what you expect to get and what you actually get due to other executing first";
 
   return (
     <>
@@ -24,7 +25,7 @@ export function PoolSlippageSelectorV3({
             Slippage tolerance
           </label>
           <div className="text-primaryText">
-            <HoverTip msg={slippageCopyId} extraStyles={"w-15"} />
+            <HoverTip msg={slippageCopyId} extraStyles={"w-50"} />
           </div>
         </div>
 
@@ -32,10 +33,10 @@ export function PoolSlippageSelectorV3({
           {validSlippages.map((slippage) => (
             <div
               key={slippage}
-              className={`flex items-center justify-center cursor-pointer w-12 rounded-lg text-xs border  hover:border-gradientFromHover  py-1 px-2 mx-1 ${
+              className={`flex items-center justify-center cursor-pointer w-12 rounded-lg text-xs border border-gray-100  py-1 px-2 mx-1 ${
                 slippage === slippageTolerance
-                  ? "text-black bg-gradientFromHover border-gradientFromHover hover:text-black"
-                  : "text-farmText border-maxBorderColor hover:text-gradientFromHover"
+                  ? "text-white bg-gray-100"
+                  : "text-gray-60"
               }`}
               onClick={() => onChange(slippage)}
             >

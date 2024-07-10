@@ -191,7 +191,7 @@ export default function ClassicPoolDetail() {
 
         {/* right liquidity */}
         <div className="w-80 ml-auto pt-12">
-          <NoLiquidity add={() => addLiquidity} />
+          <NoLiquidity add={() => addLiquidity} isLoading={false} />
         </div>
       </div>
     </div>

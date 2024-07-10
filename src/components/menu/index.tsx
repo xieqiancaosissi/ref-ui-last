@@ -43,10 +43,13 @@ export default function Menu() {
 
   // for stable detail css style
   const [extraBack, setExtraBack] = useState("transparent");
+  const [extraWidth, setExtraWidth] = useState("60%");
   useEffect(() => {
     setExtraBack("transparent");
+    setExtraWidth("60%");
     if (router.route.indexOf("pool/stable") != -1) {
       setExtraBack("rgba(33, 43, 53, 0.4)");
+      setExtraWidth("100%");
     }
   }, [router]);
 
@@ -100,7 +103,7 @@ export default function Menu() {
           style={{
             height: "50px",
             background: extraBack,
-            width: "60%",
+            width: extraWidth,
             margin: "0 auto",
           }}
         >

@@ -43,6 +43,8 @@ import { isMobile } from "@/utils/device";
 import QuestionMark from "./QuestionMark";
 import { getSelector } from "@/utils/wallet";
 import HoverTip from "@/components/common/Tips";
+import { ButtonTextWrapper } from "@/components/common/Button";
+import CustomTooltip from "@/components/customTooltip/customTooltip";
 
 export const REF_POOL_NAV_TAB_KEY = "REF_POOL_NAV_TAB_VALUE";
 
@@ -95,7 +97,8 @@ export const RemovePoolV3 = (props: any) => {
     if (tokens && poolDetail && listLiquidities) {
       get_user_points_range();
     }
-  }, [tokens, poolDetail, listLiquidities]);
+  }, [poolDetail, listLiquidities]);
+
   useEffect(() => {
     if (minBoxPoint && maxBoxPoint) {
       let bin_amount;
@@ -107,6 +110,7 @@ export const RemovePoolV3 = (props: any) => {
       setBinBoxAmount(bin_amount);
     }
   }, [minBoxPoint, maxBoxPoint]);
+
   useEffect(() => {
     if (binBoxAmount !== "") {
       handleBinAmountToAppropriateAmount(+binBoxAmount);
@@ -119,6 +123,7 @@ export const RemovePoolV3 = (props: any) => {
       set_show_boundary_tip(false);
     }
   }, [boundary_is_diff, removeType]);
+
   const [
     min_received_x_amount,
     min_received_y_amount,
@@ -241,6 +246,7 @@ export const RemovePoolV3 = (props: any) => {
     }
     setBinBoxAmount(max_bin_amount);
   }
+
   function reverse_price(price: string) {
     if (Big(price).eq(0)) return "0";
     return Big(1).div(price).toFixed();
@@ -381,6 +387,7 @@ export const RemovePoolV3 = (props: any) => {
     }
     setBinBoxAmount(appropriate_amount.toString());
   }
+
   function getY(
     leftPoint: number,
     rightPoint: number,
@@ -703,7 +710,7 @@ export const RemovePoolV3 = (props: any) => {
   function get_boundary_tip() {
     const tip =
       "The Min Price and Max price displayed here correspond to the boundaries of the bins. Since you added liquidity before the upgrade, the liquidity boundaries are within the bins containing the Min Price or  Max price. Therefore, your actual price range may differ from the the Min Price or Max price displayed here.";
-    const result: string = `<div class="text-farmText text-xs text-left xsm:w-52 lg:w-80">${tip}</div>`;
+    const result: string = `<div class="text-farmText text-xs text-left xs:w-52 lg:w-80">${tip}</div>`;
     return result;
   }
   const isRemoveLiquidityDisabled = minBoxPoint == maxBoxPoint;
@@ -715,8 +722,8 @@ export const RemovePoolV3 = (props: any) => {
       {...restProps}
       style={{
         overlay: {
-          backdropFilter: "blur(15px)",
-          WebkitBackdropFilter: "blur(15px)",
+          backdropFilter: "blur(10px)",
+          WebkitBackdropFilter: "blur(10px)",
         },
         content: {
           outline: "none",
@@ -729,14 +736,12 @@ export const RemovePoolV3 = (props: any) => {
       }}
     >
       <div
-        style={{ maxHeight: cardHeight, minWidth: cardWidth }}
-        className={`outline-none border lg:border-gradientFrom border-opacity-50 overflow-auto xsm:p-3 xsm:rounded-t-2xl xsm:rounded-b-none xsm:border-bottomBoxBorderColor`}
+        style={{ maxHeight: cardHeight, minWidth: cardWidth, width: "320px" }}
+        className={`bg-refPublicBoxDarkBg rounded-md overflow-auto p-7`}
       >
         {/* Title */}
         <div className="flex items-center justify-between">
-          <span className="text-xl text-white">
-            <FormattedMessage id="remove_liquidity"></FormattedMessage>
-          </span>
+          <span className="text-xl text-white">Remove Liquidity</span>
           <div className="cursor-pointer" onClick={props.onRequestClose}>
             <ModalClose />
           </div>
@@ -751,25 +756,25 @@ export const RemovePoolV3 = (props: any) => {
             >
               <img
                 src={tokens[0]?.icon}
-                className="w-8 h-8 border border-greenColor rounded-full"
-              ></img>
+                className="w-6 h-6 border  rounded-full"
+              />
               <img
                 src={tokens[1]?.icon}
-                className="relative w-8 h-8 border border-greenColor rounded-full -ml-1.5"
-              ></img>
+                className="relative w-6 h-6 border  rounded-full -ml-1.5"
+              />
             </div>
-            <span className="text-white text-base font-bold ml-2.5">
+            <span className="text-white text-sm font-normal ml-2.5">
               {pair_is_reverse
                 ? `${tokens[1]?.symbol}-${tokens[0]?.symbol}`
                 : `${tokens[0]?.symbol}-${tokens[1]?.symbol}`}
             </span>
           </div>
-          <span className="text-white text-lg mb-2">
+          <span className="text-green-10 text-lg mb-2">
             {min_received_total_value}
           </span>
         </div>
-        <div className="flex flex-col relative items-center justify-center border border-v3SwapGray border-opacity-20 rounded-xl pb-4 pt-10">
-          <span className="absolute right-4 top-2 text-primaryText text-xs font-bold">
+        <div className="flex flex-col relative items-center justify-center border border-dark-10 rounded-xl pb-4 pt-10">
+          <span className="absolute right-4 top-2 text-gray-60 text-xs font-bold">
             (
             {pair_is_reverse
               ? `${tokens[0]?.symbol}/${tokens[1]?.symbol}`
@@ -794,23 +799,17 @@ export const RemovePoolV3 = (props: any) => {
                 point: removeType == "left" ? maxBoxPoint : minBoxPoint,
               }}
               reverse={pair_is_reverse}
-            ></DclChart>
+            />
           )}
         </div>
         {/* Removing way */}
         <div className="mt-3 frcb ">
-          <div className="text-primaryText text-xs">
-            <FormattedMessage
-              id="remove"
-              defaultMessage={"Remove"}
-            ></FormattedMessage>
-          </div>
-          <div className="frcs gap-2 text-xs text-primaryText">
+          <div className="text-gray-60 text-base">Remove</div>
+          <div className="frcs gap-2 text-xs text-gray-60">
             <div
-              className={`p-2 border border-v3LiquidityRemoveBarColor  cursor-pointer rounded-lg
-      ${removeType === "left" ? "bg-gradientFromHover text-black" : ""}
-      
-      `}
+              className={`p-2 border  cursor-pointer rounded-md ${
+                removeType === "left" ? "bg-gray-100 text-white" : ""
+              }`}
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
@@ -823,17 +822,13 @@ export const RemovePoolV3 = (props: any) => {
                 }
               }}
             >
-              <FormattedMessage
-                id="from_left"
-                defaultMessage={"From left"}
-              ></FormattedMessage>
+              From left
             </div>
 
             <div
-              className={`p-2 border border-v3LiquidityRemoveBarColor  cursor-pointer rounded-lg
-      ${removeType === "right" ? "bg-gradientFromHover text-black" : ""}
-      
-      `}
+              className={`p-2 border  cursor-pointer rounded-md ${
+                removeType === "right" ? "bg-gray-100 text-white" : ""
+              }`}
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
@@ -846,17 +841,13 @@ export const RemovePoolV3 = (props: any) => {
                 }
               }}
             >
-              <FormattedMessage
-                id="from_right"
-                defaultMessage={"From right"}
-              ></FormattedMessage>
+              From right
             </div>
 
             <div
-              className={`p-2 border border-v3LiquidityRemoveBarColor  cursor-pointer rounded-lg
-      ${removeType === "all" ? "bg-gradientFromHover text-black" : ""}
-      
-      `}
+              className={`p-2 border  cursor-pointer rounded-md ${
+                removeType === "all" ? "bg-gray-100 text-white" : ""
+              }`}
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
@@ -872,10 +863,7 @@ export const RemovePoolV3 = (props: any) => {
                 }
               }}
             >
-              <FormattedMessage
-                id="all"
-                defaultMessage={"All"}
-              ></FormattedMessage>
+              All
             </div>
           </div>
         </div>
@@ -884,7 +872,7 @@ export const RemovePoolV3 = (props: any) => {
         <ReactSlider
           invert={removeType == "right"}
           disabled={removeType == "all"}
-          className={`multi-slider mt-6`}
+          className={`multi-slider mt-6 h-10`}
           onChange={(v) => {
             setBinBoxAmount(v.toString());
           }}
@@ -892,21 +880,16 @@ export const RemovePoolV3 = (props: any) => {
           min={0}
           max={+maxBinAmount}
           step={1}
-        ></ReactSlider>
+        />
         {/* Set points */}
-        <div className="mb-3 text-base grid xsm:grid-rows-3 lg:grid-cols-3 gap-2 w-full mt-6">
+        <div className="mb-3 text-base grid xs:grid-rows-3 lg:grid-cols-3 gap-2 w-full mt-6">
           {/* min price  */}
-          <div className="frcs w-full border border-menuMoreBoxBorderColor py-2 px-3 rounded-xl col-span-1">
-            <span className="text-xs min-w-max text-primaryText">
-              <FormattedMessage
-                id="min_price"
-                defaultMessage={"Min Price"}
-              ></FormattedMessage>
-            </span>
+          <div className="frcs w-full border py-2 px-3 rounded-xl col-span-1">
+            <span className="text-xs min-w-max text-gray-60">Min Price</span>
 
             <input
-              className={`ml-2 font-gothamBold xsm:text-right ${
-                removeType !== "right" ? "text-primaryText" : "text-white"
+              className={`ml-2 font-gothamBold xs:text-right ${
+                removeType !== "right" ? "text-gray-60" : "text-white"
               }`}
               value={minBoxPrice !== "" ? toPrecision(minBoxPrice, 8) : ""}
               onChange={(e) => {
@@ -921,16 +904,11 @@ export const RemovePoolV3 = (props: any) => {
             ></input>
           </div>
           {/* max price */}
-          <div className="frcs w-full border border-menuMoreBoxBorderColor py-2 px-3 rounded-xl col-span-1">
-            <span className="text-xs min-w-max text-primaryText">
-              <FormattedMessage
-                id="max_price"
-                defaultMessage={"Max Price"}
-              ></FormattedMessage>
-            </span>
+          <div className="frcs w-full border  py-2 px-3 rounded-xl col-span-1">
+            <span className="text-xs min-w-max text-gray-60">Max Price</span>
             <input
-              className={`ml-2 font-gothamBold xsm:text-right ${
-                removeType !== "left" ? "text-primaryText" : "text-white"
+              className={`ml-2 font-bold xs:text-right ${
+                removeType !== "left" ? "text-gray-60" : "text-white"
               }`}
               onChange={(e) => {
                 const value = e.target.value;
@@ -945,10 +923,8 @@ export const RemovePoolV3 = (props: any) => {
             ></input>
           </div>
           {/* bin amount */}
-          <div className="frcs w-full border border-menuMoreBoxBorderColor py-2 px-3 rounded-xl col-span-1">
-            <span className="text-xs  min-w-max text-primaryText">
-              <FormattedMessage id="bin_amount" defaultMessage={"Bin Amount"} />
-            </span>
+          <div className="frcs w-full border  py-2 px-3 rounded-xl col-span-1">
+            <span className="text-xs  min-w-max text-gray-60">Bin Amount</span>
 
             <IntegerInputComponent
               value={binBoxAmount}
@@ -961,11 +937,16 @@ export const RemovePoolV3 = (props: any) => {
         </div>
         {/* Tip */}
         {show_boundary_tip ? (
-          <div className="flex items-start mt-2.5 text-sm text-warnColor">
-            {/* <WarningIcon className="ml-2.5 mr-2 relative top-px flex-shrink-0" /> */}
-            <div className="text-white text-right mr-1 relative top-1">
-              <QuestionMark></QuestionMark>
-              <HoverTip msg={get_boundary_tip()} extraStyles={"w-100"} />
+          <div className="my-2.5 text-xs text-yellow-10 flex items-center">
+            <div
+              className="mr-1"
+              data-class="reactTip"
+              data-tooltip-id="rewardRangeTipId"
+              data-place="top"
+              data-tooltip-html={get_boundary_tip()}
+            >
+              <QuestionMark colorhex={"#E6B401"}></QuestionMark>
+              <CustomTooltip id="rewardRangeTipId" />
             </div>
             <span>
               Why the Min Price or Max price here differ from my actual price
@@ -979,7 +960,7 @@ export const RemovePoolV3 = (props: any) => {
           <PoolSlippageSelectorV3
             slippageTolerance={slippageTolerance}
             onChange={setSlippageTolerance}
-            textColor="text-white"
+            textColor="text-gray-60"
           />
         </div>
         {/* Minimum received */}
@@ -987,33 +968,31 @@ export const RemovePoolV3 = (props: any) => {
           className="mt-6"
           style={{ borderTop: "1px solid rgba(110, 124, 133, 0.2)" }}
         ></div>
-        <div className="flex justify-between lg:items-center xsm:items-start mt-4">
-          <span className="text-sm text-white">
-            <FormattedMessage id="minimum_tokens_out"></FormattedMessage>
-          </span>
+        <div className="flex justify-between lg:items-center mt-4">
+          <span className="text-sm text-gray-60">Minimum Tokens Out</span>
 
           <div
-            className={`flex items-center gap-8 xsm:flex-col xsm:items-end xsm:gap-1 ${
+            className={`flex items-center gap-8 ${
               pair_is_reverse ? "flex-row-reverse" : ""
             }`}
           >
-            <div className="frcs gap-2 xsm:flex-row-reverse">
+            <div className="frcs gap-2">
               <img
                 src={tokenMetadata_x_y && tokenMetadata_x_y[0].icon}
-                className="w-5 h-5 border border-greenColor rounded-full"
+                className="w-5 h-5 border  rounded-full"
               ></img>
 
-              <span className="text-lg font-gothamBold text-white">
+              <span className="text-base font-bold text-white">
                 {min_received_x_amount}
               </span>
             </div>
-            <div className="frcs gap-2 xsm:flex-row-reverse">
+            <div className="frcs gap-2 ">
               <img
                 src={tokenMetadata_x_y && tokenMetadata_x_y[1].icon}
-                className="w-5 h-5 border border-greenColor rounded-full"
+                className="w-5 h-5 border  rounded-full"
               ></img>
 
-              <span className="text-lg font-gothamBold text-white">
+              <span className="text-base font-bold text-white">
                 {min_received_y_amount}
               </span>
             </div>
@@ -1024,24 +1003,17 @@ export const RemovePoolV3 = (props: any) => {
           <div
             onClick={batch_remove_nfts}
             color="#fff"
-            // disabled={removeLoading || isRemoveLiquidityDisabled}
-            // loading={removeLoading || isRemoveLiquidityDisabled}
-            // btnClassName={`${
-            //   isRemoveLiquidityDisabled ? "cursor-not-allowed" : ""
-            // }`}
-            className={`mt-8 w-full h-14 text-center text-lg text-white focus:outline-none font-semibold ${
+            className={`poolBtnStyleBase mt-8 w-full h-11 ${
               isRemoveLiquidityDisabled ? "cursor-not-allowed" : ""
             }`}
-            // backgroundImage="linear-gradient(180deg, #C0B1A3 0%, #92877D 100%)"
           >
-            {/* <ButtonTextWrapper
+            <ButtonTextWrapper
               loading={removeLoading}
-              Text={() => <FormattedMessage id="remove" />}
-            /> */}
-            remove
+              Text={() => <span>Remove</span>}
+            />
           </div>
         ) : (
-          <div className="mt-10">
+          <div className="poolBtnStyleDefaultBase mt-8 w-full h-11">
             <span
               onClick={() => {
                 window.modal.show();
@@ -1085,13 +1057,11 @@ export function IntegerInputComponent({
   };
 
   return (
-    <div
-      className={`${className} flex items-center justify-between xsm:flex-grow `}
-    >
+    <div className={`${className} flex items-center justify-between `}>
       <input
         type="text"
-        className={`text-base font-gothamBold mx-2 text-left xsm:text-right xsm:mx-0 ${
-          disabled ? "text-primaryText" : "text-white"
+        className={`text-base font-gothamBold mx-2 text-left ${
+          disabled ? "text-gray-60" : "text-white"
         }`}
         disabled={disabled}
         value={value}

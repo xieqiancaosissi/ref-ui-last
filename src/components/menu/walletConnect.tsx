@@ -5,11 +5,18 @@ import { Tooltip } from "react-tooltip";
 import "react-loading-skeleton/dist/skeleton.css";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { motion } from "framer-motion";
-import { DownArrowIcon, CopyIcon, DisconnectIcon, ChangeIcon, KeyIcon } from "./icons";
+import {
+  DownArrowIcon,
+  CopyIcon,
+  DisconnectIcon,
+  ChangeIcon,
+  KeyIcon,
+} from "./icons";
 import { useAccountStore } from "../../stores/account";
 import { getCurrentWallet, getSelector } from "../../utils/wallet";
 import type { Wallet } from "@near-wallet-selector/core";
 import swapStyles from "../swap/swap.module.css";
+import AccessKeyModal from "./AccessKeyModal";
 
 export default function WalletConnect() {
   const [accountId, setAccountId] = useState<string | undefined>();
@@ -18,6 +25,7 @@ export default function WalletConnect() {
   const [tipVisible, setTipVisible] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const accountStore = useAccountStore();
+  const [keyModalShow, setKeyModalShow] = useState<boolean>(false);
 
   useEffect(() => {
     init();
@@ -110,6 +118,14 @@ export default function WalletConnect() {
     setIsOpen(false);
   };
 
+  function showkeyModal() {
+    // document.documentElement.style.overflow = "visible";
+    setKeyModalShow(true);
+  }
+
+  function closeKeyModal() {
+    setKeyModalShow(false);
+  }
   return (
     <div className="relative justify-self-end z-50">
       {!loading ? (
@@ -173,8 +189,8 @@ export default function WalletConnect() {
                       </p>
                     </div>
                     <div className="flex gap-4">
-                    <KeyIcon
-                        onClick={showWalletSelector}
+                      <KeyIcon
+                        onClick={showkeyModal}
                         className={swapStyles.controlButton}
                       />
                       <ChangeIcon
@@ -232,6 +248,10 @@ export default function WalletConnect() {
           <Skeleton height={36} width={138} />
         </SkeletonTheme>
       )}
+
+      {accountId && keyModalShow ? (
+        <AccessKeyModal isOpen={keyModalShow} onRequestClose={closeKeyModal} />
+      ) : null}
     </div>
   );
 }

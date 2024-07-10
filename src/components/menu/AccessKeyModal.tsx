@@ -16,8 +16,9 @@ import { ModalClose, QuestionMark } from "../farm/icon";
 import { getAccountId } from "@/utils/wallet";
 import CustomTooltip from "../customTooltip/customTooltip";
 import { getAccount } from "@/utils/near";
-import { CheckedIcon, OrderlyIcon } from "./icons";
+import { CheckedIcon, ConnnectIcon, OrderlyIcon } from "./icons";
 import { ButtonTextWrapper } from "../common/Button";
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 const maxLength = 10;
 const maxOrderlyLength = 10;
 function AccessKeyModal(props: any) {
@@ -64,6 +65,10 @@ function AccessKeyModal(props: any) {
     Authorize one ordering key per account. Clean up if there are multiples. Deleting Orderly Keys may have delays as it requires confirmation from Orderly.
     </div>
     `;
+  }
+  function switchWallet() {
+    window.modal.show();
+    onRequestClose();
   }
   return (
     <Modal
@@ -139,6 +144,7 @@ function AccessKeyModal(props: any) {
         <AuthorizedApps
           hidden={tab == "orderlyKey"}
           currentUsedKeys={currentUsedKeys}
+          switchWallet={switchWallet}
           allKeys={allKeys}
         />
         <OrderlyKeys
@@ -153,10 +159,12 @@ function AuthorizedApps({
   hidden,
   currentUsedKeys,
   allKeys,
+  switchWallet,
 }: {
   hidden: boolean;
   currentUsedKeys: string[];
   allKeys: any[];
+  switchWallet: any;
 }) {
   const [clear_loading, set_clear_loading] = useState<boolean>(false);
   const [selectedKeys, setSelectedKeys] = useState<Set<string>>(new Set([]));
@@ -208,9 +216,6 @@ function AuthorizedApps({
     set_clear_loading(true);
     batchDeleteKeys(Array.from(selectedKeys));
   }
-  function switchWallet() {
-    window.modal.show();
-  }
   const disabled = selectedKeys.size === 0;
   const isEmpty = functionCallKeys.length == 0;
   const isDisabledAction =
@@ -236,75 +241,92 @@ function AuthorizedApps({
           </div>
         ) : null}
       </div>
-      <div
-        className="overflow-auto hide-scrollbar px-6 border-b border-gray1s"
-        style={{ maxHeight: "290px" }}
-      >
-        {functionCallKeys.map((item) => {
-          const isUsed = currentUsedKeys.includes(item.public_key);
-          return (
-            <div
-              key={item.public_key}
-              className="bg-gray-60 bg-opacity-10 rounded-xl p-4 mb-3"
-            >
-              <div className="flex items-center justify-between gap-4">
-                <div className="flex items-center gap-1">
-                  <p className="text-base paceGrotesk-Bold text-white break-all">
-                    {
-                      (item?.access_key?.permission as Ipermission)
-                        ?.FunctionCall?.receiver_id
-                    }
-                  </p>
-                  {isUsed ? (
-                    <span className="flex items-center justify-center bg-primaryGreen text-xs paceGrotesk-Bold italic whitespace-nowrap rounded w-12 text-black">
-                      In use
-                    </span>
-                  ) : null}
+      {allCheckdLength > 0 && !isDisabledAction ? (
+        <div
+          className="overflow-auto hide-scrollbar px-6 border-b border-gray1s"
+          style={{ maxHeight: "290px" }}
+        >
+          {functionCallKeys.map((item) => {
+            const isUsed = currentUsedKeys.includes(item.public_key);
+            return (
+              <div
+                key={item.public_key}
+                className="bg-gray-60 bg-opacity-10 rounded-xl p-4 mb-3"
+              >
+                <div className="flex items-center justify-between gap-4">
+                  <div className="flex items-center gap-1">
+                    <p className="text-base paceGrotesk-Bold text-white break-all">
+                      {
+                        (item?.access_key?.permission as Ipermission)
+                          ?.FunctionCall?.receiver_id
+                      }
+                    </p>
+                    {isUsed ? (
+                      <span className="flex items-center justify-center bg-primaryGreen text-xs paceGrotesk-Bold italic whitespace-nowrap rounded w-12 text-black">
+                        In use
+                      </span>
+                    ) : null}
+                  </div>
+                  {!isUsed && (
+                    <Checkbox
+                      appearance="b"
+                      checked={selectedKeys.has(item.public_key)}
+                      hidden={!!isDisabledAction}
+                      onClick={() => {
+                        onCheck(item.public_key);
+                      }}
+                    />
+                  )}
                 </div>
-                {!isUsed && (
-                  <Checkbox
-                    appearance="b"
-                    checked={selectedKeys.has(item.public_key)}
-                    hidden={!!isDisabledAction}
-                    onClick={() => {
-                      onCheck(item.public_key);
-                    }}
-                  />
-                )}
+                <div className="flex items-center  bg-dark-60 bg-opacity-70 rounded-md text-xs text-gray-60 p-2.5 my-3 break-all">
+                  TX <span className="underline ml-1">{item.public_key}</span>
+                </div>
+                <div className="flex items-center text-sm gap-1.5">
+                  <span className="text-gray-60">Fee Allowance</span>
+                  <span className="text-white">
+                    {getAllowance(
+                      (item?.access_key?.permission as Ipermission)
+                        ?.FunctionCall?.allowance
+                    )}{" "}
+                  </span>
+                </div>
               </div>
-              <div className="flex items-center  bg-dark-60 bg-opacity-70 rounded-md text-xs text-gray-60 p-2.5 my-3 break-all">
-                TX <span className="underline ml-1">{item.public_key}</span>
-              </div>
-              <div className="flex items-center text-sm gap-1.5">
-                <span className="text-gray-60">Fee Allowance</span>
-                <span className="text-white">
-                  {getAllowance(
-                    (item?.access_key?.permission as Ipermission)?.FunctionCall
-                      ?.allowance
-                  )}{" "}
-                </span>
-              </div>
+            );
+          })}
+          {isEmpty ? (
+            <div className="flex justify-center my-20 text-xs text-gray-60">
+              No Data
             </div>
-          );
-        })}
-        {isEmpty ? (
-          <div className="flex justify-center my-20 text-xs text-gray-60">
-            No Data
-          </div>
-        ) : null}
-      </div>
+          ) : null}
+        </div>
+      ) : (
+        <div className="flex justify-between px-6">
+          <SkeletonTheme
+            baseColor="rgba(33, 43, 53, 0.3)"
+            highlightColor="#2A3643"
+          >
+            <Skeleton width={560} height={152} count={2} className="mt-2.5" />
+          </SkeletonTheme>
+        </div>
+      )}
       {isDisabledAction ? (
-        <div className="border border-warningYellowColor border-opacity-30 px-4 py-2.5 text-memeyellowColor text-sm bg-memeyellowColor bg-opacity-10 mx-6 rounded-xl my-4">
+        <div className="border-opacity-30 px-4 py-2.5 text-yellow-10 text-sm bg-yellow-10 bg-opacity-10 mx-6 rounded my-4">
           This wallet doesn&apos;t support Delete Key. Consider switching to
           another wallet if necessary.
         </div>
       ) : null}
       {!isDisabledAction ? (
-        <div className="px-6 xsm:px-3">
+        <div className="px-6">
           <div
-            onClick={batchClear}
+            onClick={() => {
+              if (!disabled && !clear_loading) {
+                batchClear();
+              }
+            }}
             className={`frcc bg-greenGradient mt-4 rounded h-12 text-base paceGrotesk-Bold focus:outline-none ${
-              disabled || clear_loading ? "opacity-40" : ""
+              disabled || clear_loading
+                ? "opacity-40 cursor-not-allowed"
+                : "cursor-pointer"
             }`}
           >
             <ButtonTextWrapper
@@ -314,14 +336,13 @@ function AuthorizedApps({
           </div>
         </div>
       ) : (
-        <div className="px-6 xsm:px-3">
-          {/* <OprationButton
-            minWidth="7rem"
+        <div className="px-6">
+          <div
             onClick={switchWallet}
-            className={`flex flex-grow items-center justify-center border border-greenColor text-greenColor gotham_font rounded-xl h-12 text-base focus:outline-none`}
+            className={`frcc border mt-4 border-primaryGreen text-primaryGreen gotham_font rounded h-12 text-base focus:outline-none cursor-pointer`}
           >
             Switch Wallet
-          </OprationButton> */}
+          </div>
         </div>
       )}
     </div>
@@ -463,28 +484,31 @@ function OrderlyKeys({
           ) : null}
         </div>
         <div className="px-6 xsm:px-3">
-          {/* <OprationButton
-            minWidth="7rem"
-            disabled={disabled}
-            onClick={batchClear}
-            background="linear-gradient(180deg, #00C6A2 0%, #008B72 100%"
-            className={`flex flex-grow items-center justify-center text-white mt-6 rounded-xl h-12 text-base paceGrotesk-Bold focus:outline-none ${
-              disabled || clear_loading ? "opacity-40" : ""
+          <div
+            onClick={() => {
+              if (!disabled && !clear_loading) {
+                batchClear();
+              }
+            }}
+            className={`frcc text-white mt-4 rounded h-12 text-base paceGrotesk-Bold focus:outline-none ${
+              disabled || clear_loading
+                ? "opacity-40 cursor-not-allowed"
+                : "cursor-pointer"
             }`}
           >
             <ButtonTextWrapper
               loading={clear_loading}
               Text={() => <div className="flex items-center gap-2">Clear</div>}
             />
-          </OprationButton> */}
+          </div>
         </div>
       </div>
       {!orderlyKeyLoading && noConnected ? (
         <div className="flex flex-col items-center my-20">
-          {/* <ConnnectIcon /> */}
+          <ConnnectIcon />
           <div className="text-sm text-gray-60 text-center mt-10">
             Please{" "}
-            <a className="underline text-greenColor" href="/orderbook/spot">
+            <a className="underline text-white" href="/orderbook/spot">
               connect Orderly
             </a>{" "}
             first

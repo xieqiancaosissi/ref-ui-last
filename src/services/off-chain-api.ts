@@ -80,7 +80,6 @@ export const requestOrderly = async ({
     param,
     contentType: ct,
   });
-
   return await fetch(`${getOrderlyConfig().OFF_CHAIN_END_POINT}${url || ""}`, {
     method: "GET",
 
@@ -99,6 +98,5 @@ export const getAccountKeyInfo = async (props: {
     url,
     accountId: props.accountId,
   });
-
   return res?.data?.rows || [];
 };

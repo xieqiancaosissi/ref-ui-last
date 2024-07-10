@@ -1,6 +1,6 @@
 import { keyStores, KeyPair } from "near-api-js";
-import getConfig from "next/config";
 import { getSelectedWalletId } from "./wallet";
+import getConfig from "./config";
 
 export type OFF_CHAIN_METHOD = "POST" | "GET" | "DELETE" | "PUT";
 

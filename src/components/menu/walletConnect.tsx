@@ -120,6 +120,7 @@ export default function WalletConnect() {
 
   function showkeyModal() {
     // document.documentElement.style.overflow = "visible";
+    setIsOpen(false);
     setKeyModalShow(true);
   }
 

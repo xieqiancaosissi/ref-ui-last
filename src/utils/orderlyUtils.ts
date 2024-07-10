@@ -6,7 +6,7 @@ export type OFF_CHAIN_METHOD = "POST" | "GET" | "DELETE" | "PUT";
 
 export const tradingKeyMap = new Map();
 export const get_orderly_public_key_path = () =>
-    `orderly-trading-key-public:${getConfig().networkId}`;
+  `orderly-trading-key-public:${getConfig().networkId}`;
 
 export const keyStore = new keyStores.BrowserLocalStorageKeyStore();
 export const keyStoreKeypom = new keyStores.BrowserLocalStorageKeyStore(

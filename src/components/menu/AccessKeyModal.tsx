@@ -85,7 +85,7 @@ function AccessKeyModal(props: any) {
           backgroundColor: "#1B242C",
         }}
       >
-        <div className="frcb pt-6 pl-6 pb-5 border-b border-dark-150">
+        <div className="frcb pt-6 pl-6 pb-5 border-b border-dark-160">
           <div className="flex items-center">
             <span
               onClick={() => {

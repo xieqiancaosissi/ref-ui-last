@@ -1,6 +1,6 @@
 import { Tooltip as ReactTooltip, PlacesType } from "react-tooltip";
 import React from "react";
-import { useClientMobile } from "../../utils/device";
+import { useClientMobile, isMobile } from "../../utils/device";
 
 type Props = {
   id: string;
@@ -22,13 +22,13 @@ const CustomTooltip = ({
   place,
   style,
 }: Props) => {
-  const isMobile = useClientMobile();
+  // const isMobile = useClientMobile();
 
   return (
     <ReactTooltip
       id={id}
       globalCloseEvents={globalCloseEvents}
-      {...(isMobile && { events: ["click"] })}
+      {...(isMobile() && { events: ["click"] })}
       className={`custom-tooltip ${className}`}
       isOpen={isOpen}
       place={place}

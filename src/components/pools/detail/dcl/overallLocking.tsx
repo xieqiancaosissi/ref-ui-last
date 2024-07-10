@@ -45,12 +45,9 @@ export default function OverallLocking(props: any) {
             return (
               <div
                 key={item.title}
-                className={`flex-1 h-17 text-white box-border flex flex-col justify-center pl-4 rounded-md ${
+                className={`flex-1 h-17 text-white box-border flex flex-col justify-center pl-4 rounded-md bg-refPublicBoxDarkBg ${
                   index == 1 ? "mx-1" : ""
                 }`}
-                style={{
-                  backgroundColor: "rgba(33, 43, 53, 0.2)",
-                }}
               >
                 <h3 className="text-sm text-gray-50 font-normal">
                   {item.title}

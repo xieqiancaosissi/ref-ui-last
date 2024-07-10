@@ -397,12 +397,7 @@ export default function RecentTransaction(props: any) {
   // liquidity
 
   return (
-    <div
-      className="w-215 max-h-106 rounded-md p-4 overflow-auto"
-      style={{
-        background: "rgba(33, 43, 53, 0.2)",
-      }}
-    >
+    <div className="w-215 max-h-106 rounded-md p-4 overflow-auto bg-refPublicBoxDarkBg">
       <div className={`grid grid-cols-9 select-none`}>
         {title.map((item: any, index: number) => {
           return (

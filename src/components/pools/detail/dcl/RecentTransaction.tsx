@@ -606,12 +606,7 @@ export default function RecentTransaction(props: any) {
       : renderLimitOrderTransactions;
 
   return (
-    <div
-      className="w-183 max-h-106 rounded-md p-4 overflow-auto"
-      style={{
-        background: "rgba(33, 43, 53, 0.2)",
-      }}
-    >
+    <div className="w-183 max-h-106 rounded-md p-4 overflow-auto bg-refPublicBoxDarkBg">
       <div
         className={`grid ${
           activeTab == "order" ? "grid-cols-12" : "grid-cols-9"

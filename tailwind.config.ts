@@ -32,6 +32,7 @@ const config: Config = {
         modalGrayBg: "#1D2932",
         whiteOpacity: "rgba(255, 255, 255, 0.4)",
         v3feeTextColor: "#586F80",
+        refPublicBoxDarkBg: "rgba(33, 43, 53, 0.2)",
         gray: {
           10: "#91A2AE",
           20: "#212B35",
@@ -151,6 +152,29 @@ const config: Config = {
           height: "44px",
           borderRadius: "6px",
           background: "linear-gradient(90deg, #9EFF00 0%, #5F9900 100%)",
+        },
+        ".poolBtnStyleBase": {
+          // @apply frcc font-bold text-base text-black w-full h-11 rounded-md bg-greenGradient cursor-pointer
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "center",
+          alignItems: "center",
+          fontWeight: "700",
+          color: "#000",
+          borderRadius: "6px",
+          background: "linear-gradient(90deg, #9EFF00 0%, #5F9900 100%)",
+        },
+        ".poolBtnStyleDefaultBase": {
+          // @apply frcc font-bold text-base text-black w-full h-11 rounded-md bg-greenGradient cursor-pointer
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "center",
+          alignItems: "center",
+          fontWeight: "700",
+          color: "#BCC9D2",
+          borderRadius: "6px",
+          background: "transparent",
+          border: "1px solid #323E47",
         },
         ".frc": {
           display: "flex",

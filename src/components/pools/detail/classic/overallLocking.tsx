@@ -165,10 +165,7 @@ export default function OverallLocking(props: any) {
             return (
               <div
                 key={item.title}
-                className="w-45 h-17 text-white box-border flex flex-col justify-center pl-4 rounded-md"
-                style={{
-                  backgroundColor: "rgba(33, 43, 53, 0.2)",
-                }}
+                className="w-45 h-17 text-white box-border flex flex-col justify-center pl-4 rounded-md bg-refPublicBoxDarkBg"
               >
                 <h3 className="text-sm text-gray-50 font-normal">
                   {item.title}
@@ -190,12 +187,7 @@ export default function OverallLocking(props: any) {
         </div>
       )}
       {/* Overall locking */}
-      <div
-        className="w-full min-h-17 text-white  rounded-md mt-1 flex flex-col justify-center items-start px-4"
-        style={{
-          backgroundColor: "rgba(33, 43, 53, 0.2)",
-        }}
-      >
+      <div className="w-full min-h-17 text-white  rounded-md mt-1 flex flex-col justify-center items-start px-4 bg-refPublicBoxDarkBg">
         {/* locking detail */}
         <div className="flex items-center w-full h-17">
           <div className="text-sm text-gray-50 font-normal mr-40">

@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React, { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import _ from "lodash";
 import Big from "big.js";
 import {
@@ -9,9 +10,7 @@ import {
 } from "@/utils/numbers";
 import { TokenMetadata } from "@/services/ft-contract";
 import { toRealSymbol } from "@/services/farm";
-import { useHistory } from "react-router";
 import { BigNumber } from "bignumber.js";
-import { FormattedMessage } from "react-intl";
 import { PoolInfo } from "@/services/swapV3";
 import {
   UserLiquidityInfo,
@@ -50,6 +49,7 @@ export default function YourLiquidityBox(props: {
   tokenPriceList: any;
   matched_seeds: Seed[];
 }) {
+  const router = useRouter();
   const { poolDetail, liquidities, tokenPriceList, matched_seeds } = props;
   const [user_liquidities_detail, set_user_liquidities_detail] = useState<
     UserLiquidityDetail[]
@@ -67,7 +67,6 @@ export default function YourLiquidityBox(props: {
   const [is_in_farming_done, set_is_in_farming_done] = useState<boolean>(false);
   const { token_x_metadata, token_y_metadata, pool_id } = poolDetail;
   const accountId = getAccountId();
-  const history = useHistory();
   let pair_is_reverse = false;
   if (TOKEN_LIST_FOR_RATE.indexOf(token_x_metadata?.symbol) > -1) {
     pair_is_reverse = true;
@@ -124,6 +123,7 @@ export default function YourLiquidityBox(props: {
       set_user_liquidities_detail(temp_list);
     }
   }, [liquidities, Object.keys(tokenPriceList).length]);
+
   useEffect(() => {
     if (
       liquidities &&
@@ -134,6 +134,7 @@ export default function YourLiquidityBox(props: {
       get_24_apr_and_fee();
     }
   }, [poolDetail, tokenPriceList.length, liquidities.length]);
+
   useEffect(() => {
     if (liquidities) {
       const target = liquidities.find((l: UserLiquidityInfo) => {
@@ -193,6 +194,7 @@ export default function YourLiquidityBox(props: {
     set_earned_fee(formatWithCommas_usd(total_fee_earned));
     setAccountAPR(formatPercentage(apr_24));
   }
+
   function get_amount_x_y(liquidity: UserLiquidityInfo) {
     const [tokenX, tokenY] = [token_x_metadata, token_y_metadata];
     const { left_point, right_point, amount: L } = liquidity;
@@ -234,6 +236,7 @@ export default function YourLiquidityBox(props: {
       amount_y,
     };
   }
+
   function getX(
     leftPoint: number,
     rightPoint: number,
@@ -249,6 +252,7 @@ export default function YourLiquidityBox(props: {
       .toFixed();
     return toReadableNumber(token.decimals, toPrecision(x, 0));
   }
+
   function getY(
     leftPoint: number,
     rightPoint: number,
@@ -264,6 +268,7 @@ export default function YourLiquidityBox(props: {
     const y_result = y.toFixed();
     return toReadableNumber(token.decimals, toPrecision(y_result, 0));
   }
+
   function get_X_Y_In_CurrentPoint(
     tokenX: TokenMetadata,
     tokenY: TokenMetadata,
@@ -293,6 +298,7 @@ export default function YourLiquidityBox(props: {
     );
     return { amountx: amountX_read, amounty: amountY_read };
   }
+
   function getTotalLiquditiesTvl() {
     const [total_x, total_y] = get_tokens_amount_liquidities();
     const price_x = tokenPriceList[token_x_metadata.id]?.price || 0;
@@ -303,6 +309,7 @@ export default function YourLiquidityBox(props: {
     const total_value_display = formatWithCommas_usd(total_value);
     return total_value_display;
   }
+
   function get_tokens_amount_liquidities() {
     const [total_x, total_y] = get_token_amount_in_user_liquidities({
       user_liquidities: liquidities,
@@ -312,6 +319,7 @@ export default function YourLiquidityBox(props: {
     });
     return [total_x, total_y];
   }
+
   function getTotalTokenAmount() {
     const [total_x, total_y] = get_tokens_amount_liquidities();
     let display_total_x = "0";
@@ -335,10 +343,12 @@ export default function YourLiquidityBox(props: {
       total_y: display_total_y,
     };
   }
+
   function removeLiquidity() {
     setOperationType("remove");
     setShowSelectLiquidityBox(true);
   }
+
   function getGroupLiquidities() {
     const tokenMetadata_x_y = [token_x_metadata, token_y_metadata];
 
@@ -412,26 +422,26 @@ export default function YourLiquidityBox(props: {
 
   function goAddliquidityV2() {
     const url_pool_id = get_pool_name(poolDetail.pool_id);
-    history.push(`/addLiquidityV2#${url_pool_id}`);
+    router.push(`/liquidity/${url_pool_id}`);
   }
 
   return (
-    <div className="p-5 bg-cardBg rounded-xl xsm:p-0">
-      <div className="flex items-start justify-between xsm:mt-5">
-        <span className="text-white lg:font-gothamBold lg:text-base xsm:text-sm">
-          <FormattedMessage id="your_liquidity"></FormattedMessage>
+    <div className="ml-7 w-80 bg-refPublicBoxDarkBg p-4 rounded-xl xsm:p-0">
+      <div className="flex items-start justify-between">
+        <span className="text-white lg:font-bold lg:text-base xs:text-sm sm:text-sm">
+          Your Liquidity
         </span>
-        <span className="text-white font-gothamBold xsm:text-sm">
+        <span className="text-white font-bold xs:text-sm sm:text-sm lg:text-base">
           {getTotalLiquditiesTvl()}
         </span>
       </div>
       {/* chart area */}
-      <div className="flex items-center justify-center border border-gray2 border-opacity-20 rounded-xl p-3 pt-1 mt-6">
+      <div className="flex items-center justify-center border border-gray-90 rounded p-3 pt-1 mt-6">
         <DclChart
           pool_id={poolDetail?.pool_id}
           config={{
             controlHidden: true,
-            svgWidth: "300",
+            svgWidth: "280",
             svgHeight: "80",
             svgPaddingX: "12",
             currentBarHidden: true,
@@ -439,22 +449,17 @@ export default function YourLiquidityBox(props: {
           }}
           chartType="USER"
           reverse={pair_is_reverse ? noReverseRange : !noReverseRange}
-        ></DclChart>
+        />
       </div>
-      <div className="flex flex-col gap-3 mt-6 text-sm">
+      <div className="flex flex-col gap-3 mt-6 text-sm font-normal">
         <div className="flex items-start justify-between gap-5">
-          <span className="text-primaryText whitespace-nowrap">
-            <FormattedMessage
-              id="price_range"
-              defaultMessage={"Price Range"}
-            ></FormattedMessage>
-          </span>
+          <span className="text-gray-50 whitespace-nowrap">Price Range</span>
 
           <span className="flex items-center justify-end flex-wrap gap-1">
             {groupedData.rangeList.map((range: number[], i: number) => {
               return (
                 <div
-                  className="text-white whitespace-nowrap text-sm"
+                  className="text-white whitespace-nowrap"
                   key={i + "groupedData"}
                 >
                   <span>{displayNumberToAppropriateDecimals(range[0])}</span>
@@ -480,14 +485,9 @@ export default function YourLiquidityBox(props: {
         </div>
 
         <div className="frcb">
-          <span className="text-primaryText">
-            <FormattedMessage
-              id="position"
-              defaultMessage={"Position"}
-            ></FormattedMessage>
-          </span>
+          <span className="text-gray-50">Position</span>
 
-          <div className="frcs gap-1 flex-wrap text-sm text-white">
+          <div className="frcs gap-1 flex-wrap text-white">
             <span>{getTotalTokenAmount().total_x}</span>
 
             <span>{token_x_metadata.symbol}</span>
@@ -500,24 +500,19 @@ export default function YourLiquidityBox(props: {
           </div>
         </div>
 
-        <div className="frcb">
-          <span className="text-primaryText">APR(24h)</span>
+        <div className="frcb ">
+          <span className="text-gray-50">APR(24h)</span>
 
-          <div className="frcs gap-1 flex-wrap text-sm text-white">
+          <div className="frcs gap-1 flex-wrap  text-white">
             {accountAPR || "-"}
           </div>
         </div>
 
         <div className="frcb ">
-          <span className="text-primaryText">
-            <FormattedMessage
-              id="total_earned_fee"
-              defaultMessage={"Total Earned Fee"}
-            ></FormattedMessage>
-          </span>
+          <span className="text-gray-50">Total Earned Fee</span>
 
           <div
-            className="frcs gap-1 flex-wrap relative text-sm text-white"
+            className="frcs gap-1 flex-wrap relative text-white"
             onMouseEnter={() => {
               setHover(true);
             }}
@@ -562,9 +557,9 @@ export default function YourLiquidityBox(props: {
             e.stopPropagation();
             goAddliquidityV2();
           }}
-          className={`flex-grow w-1 h-11 text-center text-sm text-white focus:outline-none mr-2.5 rounded-lg`}
+          className={`poolBtnStyleBase w-35 h-10  mr-2.5 text-sm cursor-pointer hover:opacity-90 `}
         >
-          <FormattedMessage id="add" />
+          Add
         </div>
         <div
           className={`relative flex items-center flex-grow`}
@@ -585,13 +580,13 @@ export default function YourLiquidityBox(props: {
               removeLiquidity();
             }}
             // disabled={is_in_farming || !is_in_farming_done}
-            className={`flex-grow  w-1 h-11  items-center justify-center text-center text-sm text-white focus:outline-none font-semibold bg-bgGreyDefault hover:bg-bgGreyHover ${
+            className={`poolBtnStyleDefaultBase w-35 h-10 text-sm cursor-pointer hover:opacity-90 ${
               is_in_farming || !is_in_farming_done
                 ? "opacity-30 pointer-events-none"
                 : ""
             } }`}
           >
-            <FormattedMessage id="remove" />
+            Remove
           </div>
           <div
             className={`${

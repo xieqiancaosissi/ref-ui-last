@@ -1556,7 +1556,11 @@ export default function DclChart({
         </div> */}
         </div>
         <svg width={svgWidth} height={svgHeight}>
-          <g transform={`translate(0, 0)`} width={svgWidth} height={svgHeight}>
+          <g
+            transform={`translate(${svgPaddingX} 0)`}
+            width={svgWidth}
+            height={svgHeight}
+          >
             <g className="bars_order"></g>
             <g className="bars_liquidity"></g>
             <g className="bars_background"></g>
@@ -1874,12 +1878,9 @@ export default function DclChart({
             style={{ height: svgHeight + "px" }}
           ></div>
           <div
-            className={`currentLineDetail top-0 left-0 w-43 h-15 rounded-lg p-2.5 absolute transform -translate-x-1/2 -translate-y-full flex flex-col justify-between ${
+            className={`currentLineDetail bg-refPublicBoxDarkBg top-0 left-0 w-43 h-15 rounded-lg p-2.5 absolute transform -translate-x-1/2 -translate-y-full flex flex-col justify-between ${
               reverse ? "flex-col-reverse" : ""
             }`}
-            style={{
-              background: "rgba(0, 0, 0, 0.2)",
-            }}
           >
             <div className="flex items-center justify-between mb-0.5">
               <span className="text-xs text-gray-60 mr-3">

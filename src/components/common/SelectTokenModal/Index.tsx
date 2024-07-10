@@ -136,7 +136,7 @@ export default function SelectTokenModal({
               {common_tokens.map((token) => {
                 return (
                   <div
-                    className={`flex items-center gap-1.5 relative pl-2 pr-3.5 py-0.5 border border-gray-40 hover:bg-gray-70 cursor-pointer rounded-lg`}
+                    className={`flex items-center gap-1.5 relative pl-2 pr-3.5 py-0.5 border border-gray-40 hover:bg-gray-40 cursor-pointer rounded-lg`}
                     style={{
                       minWidth: "90px",
                     }}

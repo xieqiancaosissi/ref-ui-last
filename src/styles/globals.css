@@ -136,8 +136,6 @@ input[type="range"].lock-bar::-webkit-slider-thumb {
   transform-origin: center;
 }
 
-
-
 /* slider start*/
 .multi-slider {
   height: 22px;

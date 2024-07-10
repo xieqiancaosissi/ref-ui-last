@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext, useMemo, useRef } from 'react';
+import React, { useEffect, useState, useContext, useMemo, useRef } from "react";
 export function Icon(props: {
   icon?: string;
   className?: string;

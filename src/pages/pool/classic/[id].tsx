@@ -62,6 +62,10 @@ export default function ClassicPoolDetail() {
     setIsCollect((previos) => !previos);
   };
 
+  const addLiquidity = () => {
+    // const pool_name = get_pool_name(poolDetail.id);
+    // router.push(`/liquidity/${pool_name}`);
+  };
   return (
     <div className="w-full fccc h-full">
       {/* return */}
@@ -187,7 +191,7 @@ export default function ClassicPoolDetail() {
 
         {/* right liquidity */}
         <div className="w-80 ml-auto pt-12">
-          <NoLiquidity />
+          <NoLiquidity add={() => addLiquidity} />
         </div>
       </div>
     </div>

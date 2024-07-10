@@ -440,13 +440,10 @@ export function PointsComponent() {
           <div
             className={` ${
               priceRangeMode === "by_range" ? "hidden" : ""
-            } flex border border-menuMoreBoxBorderColor items-center bg-black bg-opacity-20 rounded-xl p-2.5 col-span-2`}
+            } flex  items-center bg-black bg-opacity-20 rounded-xl p-2.5 col-span-2`}
           >
-            <span className="text-sm text-primaryText xs:text-xs md:text-xs whitespace-nowrap">
-              <FormattedMessage
-                id="target_price"
-                defaultMessage="Target Price"
-              ></FormattedMessage>
+            <span className="text-sm text-gray-60 xs:text-xs md:text-xs whitespace-nowrap">
+              Target Price
             </span>
             <PointInputComponent
               handlePriceToAppropriatePoint={
@@ -466,13 +463,10 @@ export function PointsComponent() {
           <div
             className={` ${
               priceRangeMode === "by_range" ? "hidden" : ""
-            } flex border border-menuMoreBoxBorderColor items-center bg-black bg-opacity-20 rounded-xl p-2.5 col-span-1`}
+            } flex items-center bg-black bg-opacity-20 rounded-xl p-2.5 col-span-1`}
           >
-            <span className="text-sm text-primaryText xs:text-xs md:text-xs whitespace-nowrap">
-              <FormattedMessage
-                id="radius"
-                defaultMessage="Radius"
-              ></FormattedMessage>
+            <span className="text-sm text-gray-60 xs:text-xs md:text-xs whitespace-nowrap">
+              Radius
             </span>
             <IntegerInputComponent
               value={radius}
@@ -483,11 +477,9 @@ export function PointsComponent() {
 
           {/* min price input box */}
           <div
-            className={`flex border border-menuMoreBoxBorderColor items-center rounded-xl p-2.5 col-span-1 ${
-              priceRangeMode === "by_radius" ? "" : "bg-black bg-opacity-20"
-            }`}
+            className={`flex items-center rounded p-2.5 col-span-1 ${"bg-black bg-opacity-20"}`}
           >
-            <span className="text-sm text-primaryText xs:text-xs md:text-xs whitespace-nowrap">
+            <span className="text-sm text-gray-60 xs:text-xs md:text-xs whitespace-nowrap">
               Min Price
             </span>
             <PointInputComponent
@@ -511,15 +503,10 @@ export function PointsComponent() {
 
           {/* max price input box */}
           <div
-            className={`flex border border-menuMoreBoxBorderColor items-center rounded-xl p-2.5 col-span-1 ${
-              priceRangeMode === "by_radius" ? "" : "bg-black bg-opacity-20"
-            }`}
+            className={`flex items-center rounded p-2.5 col-span-1 ${"bg-black bg-opacity-20"}`}
           >
-            <span className="text-sm text-primaryText xs:text-xs whitespace-nowrap md:text-xs">
-              <FormattedMessage
-                id="max_price"
-                defaultMessage="Max Price"
-              ></FormattedMessage>
+            <span className="text-sm text-gray-60 xs:text-xs whitespace-nowrap md:text-xs">
+              Max Price
             </span>
             <PointInputComponent
               handlePriceToAppropriatePoint={(price: string) => {
@@ -542,15 +529,10 @@ export function PointsComponent() {
 
           {/* bin number input box */}
           <div
-            className={`flex border border-menuMoreBoxBorderColor items-center rounded-xl p-2.5 col-span-1 ${
-              priceRangeMode === "by_radius" ? "" : "bg-black bg-opacity-20"
-            }`}
+            className={`flex items-center rounded p-2.5 col-span-1 ${"bg-black bg-opacity-20"}`}
           >
-            <span className="text-sm text-primaryText xs:text-xs md:text-xs whitespace-nowrap">
-              <FormattedMessage
-                id="bin_amount"
-                defaultMessage="Bin amount"
-              ></FormattedMessage>
+            <span className="text-sm text-gray-60 xs:text-xs md:text-xs whitespace-nowrap">
+              Bin amount
             </span>
             <IntegerInputComponent
               value={binNumber}
@@ -573,7 +555,15 @@ export function PointsComponent() {
           {onlyAddXToken
             ? `*Only ${currentSelectedPool?.token_x_metadata?.symbol} is needed in the price range you choose.`
             : ""}
-          {invalidRange ? <FormattedMessage id="invalid_range_tip" /> : ""}
+          {invalidRange ? (
+            <span>
+              {
+                "Invalid range selected. The min price must be lower than the max price."
+              }
+            </span>
+          ) : (
+            ""
+          )}
         </div>
       </div>
     </div>

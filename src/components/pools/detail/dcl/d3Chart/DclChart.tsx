@@ -1527,12 +1527,12 @@ export default function DclChart({
         } ${randomId.slice(1)}`}
       >
         {/* control button area*/}
-        <div className="control flex items-center border border-v3GreyColor rounded-lg py-px h-6 w-16 absolute right-0 -top-28">
+        <div className="control flex items-center border border-gray-60 rounded-lg py-px h-6 w-16 absolute right-0 -top-28">
           <div
-            className={`flex items-center justify-center w-1 h-full flex-grow border-r border-chartBorderColor ${
+            className={`flex items-center justify-center w-1 h-full flex-grow border-r border-gray-60 ${
               is_in_max_zoom
-                ? "text-chartBorderColor cursor-not-allowed"
-                : "text-v3SwapGray cursor-pointer"
+                ? "text-gray-60 cursor-not-allowed"
+                : "text-white cursor-pointer"
             }`}
             onClick={zoomOut}
           >
@@ -1541,8 +1541,8 @@ export default function DclChart({
           <div
             className={`flex items-center justify-center w-1 h-full flex-grow ${
               is_in_min_zoom
-                ? "text-chartBorderColor cursor-not-allowed"
-                : "text-v3SwapGray cursor-pointer"
+                ? "text-gray-60 cursor-not-allowed"
+                : "text-white cursor-pointer"
             }`}
             onClick={zoomIn}
           >

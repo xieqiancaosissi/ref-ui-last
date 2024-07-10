@@ -48,7 +48,7 @@ export function NoDataComponent() {
               Yours
             </span>
           </div>
-          <div className="flex items-center justify-center text-ms text-primaryText mt-20">
+          <div className="flex items-center justify-center text-ms text-gray-60 mt-20">
             Oops! The Pool doesn’t exist
           </div>
         </div>
@@ -62,36 +62,30 @@ export function NoDataComponent() {
             <span className="text-xs font-gotham text-primaryText"></span>
           </div>
 
-          <div className="rounded-lg p-1 border frcs text-xs text-primaryText border-v3borderColor">
+          <div className="rounded p-0.5 border frcs text-xs text-primaryText border-gray-90">
             <span
               className={`whitespace-nowrap min-w-20 px-3 py-1.5 rounded-md cursor-pointer ${
                 priceRangeMode === "by_range"
-                  ? "text-white bg-proTabBgColor"
-                  : ""
+                  ? "text-white bg-gray-120"
+                  : "text-gray-60"
               }`}
               onClick={() => {
                 setPriceRangeMode("by_range");
               }}
             >
-              <FormattedMessage
-                id="by_range"
-                defaultMessage={"By range"}
-              ></FormattedMessage>
+              By range
             </span>
             <span
               className={`whitespace-nowrap min-w-20 px-3 py-1.5 rounded-md cursor-pointer ${
                 priceRangeMode === "by_radius"
-                  ? "text-white bg-proTabBgColor"
-                  : ""
+                  ? "text-white bg-gray-120"
+                  : "text-gray-60"
               }`}
               onClick={() => {
                 setPriceRangeMode("by_radius");
               }}
             >
-              <FormattedMessage
-                id="by_radius"
-                defaultMessage={"By Radius"}
-              ></FormattedMessage>
+              By Radius
             </span>
           </div>
         </div>
@@ -101,60 +95,44 @@ export function NoDataComponent() {
           <div
             className={`${
               priceRangeMode === "by_range" ? "hidden" : ""
-            } flex border border-menuMoreBoxBorderColor items-center justify-between rounded-xl p-2.5 col-span-2`}
+            } flex items-center justify-between rounded p-2.5 col-span-1 ${"bg-black bg-opacity-20"}`}
           >
-            <span className="text-sm text-primaryText xs:text-xs md:text-xs whitespace-nowrap">
-              <FormattedMessage
-                id="target_price"
-                defaultMessage="Target Price"
-              ></FormattedMessage>
+            <span className="text-sm text-gray-60 xs:text-xs md:text-xs whitespace-nowrap">
+              Target Price
             </span>
-            <span className="text-base text-primaryText font-gothamBold">
-              0
-            </span>
+            <span className="text-base text-gray-60 font-bold">0</span>
           </div>
 
           {/* radius input box */}
           <div
             className={` ${
               priceRangeMode === "by_range" ? "hidden" : ""
-            } flex border border-menuMoreBoxBorderColor items-center justify-between  rounded-xl p-2.5 col-span-1`}
+            } flex items-center justify-between rounded p-2.5 col-span-1 ${"bg-black bg-opacity-20"}`}
           >
-            <span className="text-sm text-primaryText xs:text-xs md:text-xs whitespace-nowrap">
-              <FormattedMessage
-                id="radius"
-                defaultMessage="Radius"
-              ></FormattedMessage>
+            <span className="text-sm text-gray-60 xs:text-xs md:text-xs whitespace-nowrap">
+              Radius
             </span>
-            <span className="text-base text-primaryText font-gothamBold">
-              0
-            </span>
+            <span className="text-base text-gray-60 font-bold">0</span>
           </div>
 
           {/* min price input box */}
-          <div className=" flex border border-menuMoreBoxBorderColor items-center justify-between rounded-xl p-2.5 col-span-1">
-            <span className="text-sm text-primaryText xs:text-xs md:text-xs whitespace-nowrap">
-              <FormattedMessage
-                id="min_price"
-                defaultMessage="Min Price"
-              ></FormattedMessage>
+          <div
+            className={`flex items-center justify-between rounded p-2.5 col-span-1 ${"bg-black bg-opacity-20"}`}
+          >
+            <span className="text-sm text-gray-60 xs:text-xs md:text-xs whitespace-nowrap">
+              Min Price
             </span>
-            <span className="text-base text-primaryText font-gothamBold">
-              0
-            </span>
+            <span className="text-base text-gray-60 font-bold">0</span>
           </div>
 
           {/* max price input box */}
-          <div className="flex border border-menuMoreBoxBorderColor items-center justify-between rounded-xl p-2.5 col-span-1">
-            <span className="text-sm text-primaryText xs:text-xs whitespace-nowrap md:text-xs">
-              <FormattedMessage
-                id="max_price"
-                defaultMessage="Max Price"
-              ></FormattedMessage>
+          <div
+            className={`flex items-center justify-between rounded p-2.5 col-span-1 ${"bg-black bg-opacity-20"}`}
+          >
+            <span className="text-sm text-gray-60 xs:text-xs whitespace-nowrap md:text-xs">
+              Max Price
             </span>
-            <span className="text-base text-primaryText font-gothamBold">
-              0
-            </span>
+            <span className="text-base text-gray-60 font-bold">0</span>
           </div>
         </div>
       </div>

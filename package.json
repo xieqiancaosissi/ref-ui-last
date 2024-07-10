@@ -38,6 +38,7 @@
     "@near-wallet-selector/wallet-connect": "^7.9.1",
     "@react-icons/all-files": "https://github.com/react-icons/react-icons/releases/download/v4.7.1/react-icons-all-files-4.7.1.tgz",
     "@transak/transak-sdk": "1.2.2",
+    "@types/react-slider": "^1.3.6",
     "@walletconnect/client": "^2.0.0-beta.26",
     "@walletconnect/qrcode-modal": "2.0.0-alpha.20",
     "@walletconnect/sign-client": "2.0.0-beta.102-6a30ee7.0",

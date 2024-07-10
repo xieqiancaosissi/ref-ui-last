@@ -2,7 +2,8 @@
 import React, { useState, useContext, useEffect, createContext } from "react";
 import { useRouter } from "next/router";
 import { useAccountStore } from "@/stores/account";
-// import { ReturnIcon, WarningIcon } from "src/components/icon/V3";
+import { ReturnIcon, WarningIcon } from "./icon";
+import { ExclamationIcon } from "@/components/common/Icons";
 import { FormattedMessage } from "react-intl";
 import { useHistory } from "react-router-dom";
 import useSelectTokens from "@/hooks/useSelectTokens";
@@ -34,7 +35,7 @@ import {
 import _, { forEach, set } from "lodash";
 import BigNumber from "bignumber.js";
 import { isMobile } from "@/utils/device";
-import { ArrowDownV3 } from "@/components/pools/icon";
+import { ArrowDownV3, TokenPairIcon } from "@/components/pools/icon";
 
 import Big from "big.js";
 import { SelectTokenDCL } from "./components/SelectToken";
@@ -164,7 +165,10 @@ export default function AddYourLiquidityPageV3() {
     if (currentSelectedPool && tokenX && tokenY) {
       const { fee } = currentSelectedPool;
       const link = get_pool_name(`${tokenX.id}|${tokenY.id}|${fee}`);
-      if (router.query.id != link) router.replace(`#${link}`);
+      if (router.query.id != link) {
+        console.log(router);
+        router.push(`/liquidity/${link}`);
+      }
     }
   }, [currentSelectedPool, tokenX, tokenY]);
 
@@ -1809,6 +1813,11 @@ export default function AddYourLiquidityPageV3() {
     }
   }
   if (!refTokens) return <BlueCircleLoading />;
+
+  const goback = () => {
+    router.push("/pools");
+  };
+
   return (
     <LiquidityProviderData.Provider
       value={
@@ -1881,22 +1890,18 @@ export default function AddYourLiquidityPageV3() {
         className="flex flex-col  2xl:w-3/5 xs:w-full md:w-full xsm:px-0 m-auto text-white rounded-2xl mt-10"
       >
         {/* head */}
-        {/* <div
+        <div
           className=" xs:w-full max-w-max text-farmText flex items-center mb-5 cursor-pointer hover:text-white"
-          onClick={() => {
-            history.goBack();
-          }}
+          onClick={() => router.push("/pools")}
         >
           <div
             className="cursor-pointer flex items-center justify-center w-6 h-6"
-            onClick={goYourLiquidityPage}
+            // onClick={goYourLiquidityPage}
           >
             <ReturnIcon></ReturnIcon>
           </div>
-          <span className=" text-sm">
-            <FormattedMessage id="add_liquidity"></FormattedMessage>
-          </span>
-        </div> */}
+          <span className=" text-sm">Back To Pool</span>
+        </div>
 
         {/* content */}
         <div className="relative z-10 py-5 px-7 xsm:px-0 rounded-2xl lg:bg-dark-10">
@@ -1942,8 +1947,8 @@ export default function AddYourLiquidityPageV3() {
                     className="pt-6  absolute top-5 outline-none  z-20  right-0 text-white    xs:text-white xs:font-bold xs:fixed xs:bottom-0 xs:w-full "
                     selected={
                       <div
-                        className={` text-sm rounded-lg frcc cursor-pointer p-3 bg-gray-60 bg-opacity-10 ${
-                          selectHover ? "text-white" : "text-primaryText"
+                        className={` text-sm rounded-lg frcc cursor-pointer py-3   ${
+                          selectHover ? "text-white" : "text-gray-60"
                         }`}
                         onMouseEnter={() => {
                           if (!mobileDevice) {
@@ -1966,7 +1971,7 @@ export default function AddYourLiquidityPageV3() {
                           }
                         }}
                       >
-                        <ArrowDownV3 />
+                        <TokenPairIcon></TokenPairIcon>
                       </div>
                     }
                   />
@@ -2003,9 +2008,12 @@ export default function AddYourLiquidityPageV3() {
                 ></InputAmount>
               </div>
               {token_amount_tip ? (
-                <div className="flex items-start text-sm text-warnColor mt-2.5">
-                  {/* <WarningIcon className="ml-2.5 mr-2 relative top-px flex-shrink-0"></WarningIcon> */}
-                  {token_amount_tip}
+                <div className="flex items-start text-sm text-yellow-10 mt-2.5">
+                  <ExclamationIcon
+                    className="ml-2.5 mr-2 relative top-px flex-shrink-0"
+                    color={"#E6B401"}
+                  ></ExclamationIcon>
+                  <span>{token_amount_tip}</span>
                 </div>
               ) : null}
               {!mobileDevice ? <SelectFeeTiers /> : null}
@@ -2069,7 +2077,7 @@ export default function AddYourLiquidityPageV3() {
                   </div>
                   <div
                     onClick={generate_new_user_chart}
-                    className="text-xs text-v3SwapGray border border-opacity-20 border-primaryText rounded-lg p-2 bg-primaryText bg-opacity-20 cursor-pointer hover:text-white hover:bg-opacity-10 hover:border-transparent"
+                    className="text-xs text-gray-60 border  border-gray-90 rounded-lg p-2 bg-dark-10 cursor-pointer hover:text-white hover:bg-opacity-80 hover:border-transparent"
                   >
                     Generate
                   </div>
@@ -2079,25 +2087,25 @@ export default function AddYourLiquidityPageV3() {
                   isSignedIn &&
                   !isInvalid(rightPoint) &&
                   !switch_pool_loading && (
-                    <div className="flex items-center justify-center border border-v3SwapGray border-opacity-20 rounded-xl px-3 mt-2 h-24">
+                    <div className="flex items-center justify-center border border-gray-90 rounded-xl px-3 mt-2 h-18">
                       <DclChart
                         pool_id={currentSelectedPool?.pool_id}
                         config={{
                           controlHidden: true,
                           currentBarHidden: true,
                           hoverBoxHidden: true,
-                          svgWidth: "300",
+                          svgWidth: "350",
                           svgHeight: "68",
                         }}
                         chartType="USER"
                         reverse={pair_is_reverse ? true : false}
                         newlyAddedLiquidities={new_user_liquidities}
-                      ></DclChart>
+                      />
                     </div>
                   )}
                 {(!currentSelectedPool?.pool_id || !isSignedIn) && (
-                  <div className="flex items-center justify-center border border-v3SwapGray border-opacity-20 text-sm text-primaryText mt-2 h-24 rounded-xl">
-                    No data
+                  <div className="flex items-center justify-center border border-gray-90 text-sm text-gray-60 mt-2 h-24 rounded-xl">
+                    No Content
                   </div>
                 )}
               </div>

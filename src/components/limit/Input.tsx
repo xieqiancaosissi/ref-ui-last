@@ -60,9 +60,19 @@ export default function Input(props: IInputProps) {
   function changeAmount(e: any) {
     const amount = e.target.value;
     if (isIn) {
-      limitStore.setTokenInAmount(amount);
+      limitStore.onAmountInChangeTrigger({
+        amount,
+        rate,
+        limitStore,
+      });
     } else {
-      limitStore.setTokenOutAmount(amount);
+      limitStore.onAmountOutChangeTrigger({
+        amount,
+        isLock,
+        rate,
+        tokenInAmount,
+        limitStore,
+      });
     }
     setAmount(amount);
   }
@@ -84,7 +94,11 @@ export default function Input(props: IInputProps) {
         tokenOut,
         dclPool.fee
       );
-      limitStore.setRate(toPrecision(regularizedRate, 8, false, false));
+      limitStore.onRateChangeTrigger({
+        amount: toPrecision(regularizedRate, 8, false, false),
+        tokenInAmount,
+        limitStore,
+      });
     }
   }
   return (

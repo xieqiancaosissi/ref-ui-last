@@ -31,6 +31,7 @@ const config: Config = {
         warn: "#FFB018",
         modalGrayBg: "#1D2932",
         whiteOpacity: "rgba(255, 255, 255, 0.4)",
+        v3feeTextColor: "#586F80",
         gray: {
           10: "#91A2AE",
           20: "#212B35",
@@ -69,7 +70,8 @@ const config: Config = {
           120: "#001818",
           130: "#000F0F",
           140: "#0F1921",
-          150: "#23313C",
+          150: "#15202B",
+          160: "#23313C",
         },
         green: {
           10: "#9EFE01",
@@ -80,6 +82,7 @@ const config: Config = {
         },
         red: {
           10: "#FF4B76",
+          20: "#FF6A8E",
         },
         yellow: {
           10: "#E6B401",

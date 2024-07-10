@@ -8,6 +8,7 @@ import { WRAP_NEAR_CONTRACT_ID } from "@/services/wrap-near";
 import { useAccountStore } from "@/stores/account";
 import { toRealSymbol } from "@/services/farm";
 import { WarningIcon } from "@/components/farm/icon/FarmBoost";
+import { ExclamationIcon } from "@/components/common/Icons";
 
 export function InputAmount({
   token,
@@ -75,17 +76,15 @@ export function InputAmount({
   return (
     <div>
       <div
-        className={`rounded-xl p-3 mt-3 border ${
-          disabled
-            ? "border-inputV3BorderHoverColor"
-            : "bg-black bg-opacity-20 border-inputV3BorderColor hover:border-inputV3BorderHoverColor"
+        className={`rounded p-3 mt-3 border border-transparent h-22 flex flex-col justify-between ${
+          disabled ? "" : "bg-black bg-opacity-20  hover:border-green-10"
         }`}
       >
         <div className="flex items-center justify-between">
           <input
             type="number"
             placeholder="0.0"
-            className="font-gothamBold text-base"
+            className="font-gothamBold text-2xl"
             disabled={!currentSelectedPool?.pool_id || disabled ? true : false}
             value={isNoPool ? "" : amount}
             step="any"
@@ -94,12 +93,17 @@ export function InputAmount({
             }}
           />
           <span
-            className={`text-base gotham_bold ml-5 whitespace-nowrap ${
+            className={`text-2xl font-bold mx-2.5 whitespace-nowrap frcc ${
               currentSelectedPool?.pool_id
                 ? "text-white"
                 : "text-v3feeTextColor"
             }`}
           >
+            <img
+              className="w-6 h-6 rounded-full border border-v3feeTextColor mx-1"
+              key={token?.id}
+              src={token?.icon}
+            />
             {token ? toRealSymbol(token.symbol) : "Selet Token"}
           </span>
         </div>
@@ -108,32 +112,37 @@ export function InputAmount({
             token ? "visible" : "invisible"
           }`}
         >
-          <span className="text-xs text-primaryText">{showCurrentPrice()}</span>
-          <div className="flex items-center text-xs text-primaryText text-right">
+          <span className="text-xs text-gray-60">{showCurrentPrice()}</span>
+          <div className="flex items-center text-xs text-gray-60 text-right">
             <span title={balance}>
-              <FormattedMessage id="balance" />:{" "}
+              <span>Balance</span>
               <span
-                className={`${
-                  disabled ? "" : "cursor-pointer hover:text-white underline"
+                className={`mx-1 ${
+                  disabled ? "" : "cursor-pointer hover:text-white"
                 }`}
+              >
+                {getBalance()}
+              </span>
+              <span
+                className=" underline"
                 onClick={() => {
                   if (disabled) return;
                   changeAmount(maxBalance);
                 }}
               >
-                {getBalance()}
+                Max
               </span>
             </span>
           </div>
         </div>
       </div>
       {showNearTip && !isNoPool ? (
-        <div className="flex items-center text-sm text-warnColor mt-2.5">
-          <WarningIcon className="ml-2.5 mr-2"></WarningIcon>
-          <FormattedMessage
-            id="near_validation_error"
-            defaultMessage="Must have 0.5N or more left in wallet for gas fee."
-          />
+        <div className="flex items-center text-sm text-yellow-10 mt-2.5 font-normal">
+          <ExclamationIcon
+            className="ml-2.5 mr-2"
+            color={"#E6B401"}
+          ></ExclamationIcon>
+          <span>Must have 0.5N or more left in wallet for gas fee.</span>
         </div>
       ) : null}
     </div>

@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from "react";
 
 export const isMobile = (): Boolean => {
-  return document.documentElement.clientWidth <= 1023;
+  if (typeof window !== "undefined" && window.document) {
+    return window.document.documentElement.clientWidth <= 1023;
+  }
+  // need useagent
+  return false;
 };
 
 export const isPC = (): Boolean => {

@@ -37,7 +37,7 @@ export function SelectFeeTiers() {
         Select Fee Tiers
       </div>
 
-      <div className="frcs gap-2">
+      <div className="frcs">
         <span className="text-sm text-white xsm:text-base xsm:font-gothamBold">
           {!!currentSelectedPool?.fee
             ? `${currentSelectedPool.fee / 10000}%`
@@ -66,17 +66,14 @@ export function SelectFeeTiers() {
           {hoverFeeBox && (
             <div className="absolute right-0 top-5 pt-4">
               <div
-                className="rounded-xl  right-0 top-3 px-4 py-3  xs:px-2 md:px-2"
+                className=" rounded-md  right-0 top-3 px-4 py-6  xs:px-2 md:px-2 h-35 border-gray-100 flex flex-col justify-between"
                 style={{
                   border: "1.2px solid rgba(145, 162, 174, 0.2)",
                   width: mobileDevice ? "300px" : "418px",
-                  background:
-                    "linear-gradient(rgb(34, 47, 55) 0%, rgb(25, 34, 41) 100%)",
+                  background: "rgb(22, 29, 35)",
                 }}
               >
-                <div className="text-sm text-white font-gothamBold">
-                  Fee Tiers
-                </div>
+                <div className="text-sm text-gray-60 font-bold">Fee Tiers</div>
                 <div
                   className={`lg:items-stretch lg:justify-between xsm:grid-cols-2 xsm:gap-1.5 mt-5 xsm:mt-2.5 lg:flex xsm:grid`}
                 >
@@ -91,18 +88,14 @@ export function SelectFeeTiers() {
                         key={fee + index}
                         className={`relative xsm:w-full flex flex-col px-2 py-1.5 xsm:py-1 rounded-lg w-1 flex-grow ${
                           tokenX && tokenY ? "cursor-pointer" : ""
-                        } ${index == 3 ? "" : "mr-2.5 xsm:mr-1"} ${
-                          isNoPool
-                            ? "border border-v3GreyColor"
-                            : currentSelectedPool?.fee == fee
-                            ? "bg-feeBoxBgLiqudityColor"
-                            : "bg-v3GreyColor"
-                        }`}
+                        } ${
+                          index == 3 ? "" : "mr-2.5 xsm:mr-1"
+                        } ${"border border-gray-100"}`}
                       >
                         <span
-                          className={`text-sm font-gothamBold ${
+                          className={`text-sm font-bold ${
                             isNoPool || !(tokenX && tokenY && currentPools)
-                              ? "text-primaryText text-opacity-60"
+                              ? "text-gray-60"
                               : "text-white"
                           }`}
                         >
@@ -110,7 +103,7 @@ export function SelectFeeTiers() {
                         </span>
                         {tokenX && tokenY && currentPools ? (
                           <span
-                            className={`transform scale-90 origin-left text-xs text-primaryText whitespace-nowrap ${
+                            className={`transform scale-90 origin-left text-xs text-gray-60 whitespace-nowrap ${
                               isNoPool ? "text-opacity-60" : ""
                             }`}
                           >

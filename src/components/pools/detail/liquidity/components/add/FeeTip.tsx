@@ -9,7 +9,13 @@ export function FeeTipV1() {
 }
 export function FeeTipDcl() {
   return (
-    <div className="border border-greenLight bg-greenLight bg-opacity-20 rounded-lg text-sm text-white px-3 py-2 mt-4">
+    <div
+      className="rounded text-sm text-white px-3 py-2 mt-4"
+      style={{
+        border: "1px solid rgba(154, 249, 1, 0.6)",
+        background: "rgba(154, 249, 1, 0.1)",
+      }}
+    >
       {`👀 Claim your fees on the "Your Liquidity" page.`}
     </div>
   );

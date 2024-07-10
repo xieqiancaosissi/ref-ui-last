@@ -64,7 +64,7 @@ export default function FeeTiers(props: any) {
           }`}
         />
         {/* fee Tiers */}
-        <FeeTiersSelector showFeeTiers={showFeeTiers} onHide={hide}/>
+        <FeeTiersSelector showFeeTiers={showFeeTiers} onHide={hide} />
       </div>
     </div>
   );

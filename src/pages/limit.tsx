@@ -7,7 +7,6 @@ import { useAllPoolsV2 } from "@/hooks/usePools";
 import useSelectTokens from "@/hooks/useSelectTokens";
 import { useDefaultBalanceTokens } from "@/hooks/useBalanceTokens";
 import RateContainer from "@/components/limit/RateContainer";
-import FeeTiers from "@/components/limit/FeeTiers";
 import { useSwapStore } from "@/stores/swap";
 import {
   usePersistLimitStore,
@@ -22,6 +21,9 @@ const CreateOrderButton = dynamic(
   () => import("@/components/limit/CreateOrderButton"),
   { ssr: false }
 );
+const FeeTiers = dynamic(() => import("@/components/limit/FeeTiers"), {
+  ssr: false,
+});
 export default function LimitOrderPage() {
   const { defaultList = [] } = useSelectTokens();
   useDefaultBalanceTokens(defaultList);

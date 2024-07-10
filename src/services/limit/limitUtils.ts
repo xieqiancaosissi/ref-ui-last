@@ -7,7 +7,7 @@ import { ftGetTokenMetadata } from "@/services/token";
 import { toReadableNumber } from "@/utils/numbers";
 import { getAllTokenPrices } from "@/services/farm";
 
-export function getAmountOut({
+export function setAmountOut({
   tokenInAmount,
   limitStore,
   rate,
@@ -17,11 +17,21 @@ export function getAmountOut({
   rate: string;
 }) {
   let amountOut = new Big(rate || 0).mul(tokenInAmount || 0).toFixed();
-  const minValue = "0.00000001";
-  if (new Big(amountOut).gte(minValue)) {
-    amountOut = toPrecision(amountOut, 8, false, false);
-  }
+  amountOut = prettyAmount(formatAmount(amountOut));
   limitStore.setTokenOutAmount(amountOut);
+}
+
+export function formatAmount(amount: string) {
+  let formated = amount;
+  const minValue = "0.00000001";
+  if (new Big(amount).gte(minValue)) {
+    formated = toPrecision(amount, 8, false, false);
+  }
+  return formated;
+}
+export function prettyAmount(amount: string) {
+  if (Big(amount || 0).eq(0)) return "0";
+  return amount;
 }
 
 export async function fillDclPool(p: IPoolDcl) {

@@ -21,12 +21,13 @@ import { getStakedListByAccountId } from "@/services/farm";
 import _ from "lodash";
 
 import { PoolInfo } from "@/services/swapV3";
-import { useTokenPriceList } from "./useTokenPriceList";
+import { getAllTokenPrices } from "@/services/farm";
 import BigNumber from "bignumber.js";
 import { toReadableNumber } from "@/utils/numbers";
 import getConfigV2 from "@/utils/configV2";
 import getConfig from "@/utils/config";
 import { refSwapV3ViewFunction } from "@/utils/contract";
+import { useSwapStore } from "@/stores/swap";
 //
 type UsePoolSearchProps = {
   isChecked: boolean;
@@ -317,13 +318,17 @@ export const listPools = async () => {
 };
 
 export const useAllPoolsV2 = (forPool?: boolean) => {
-  // todo
   const [allPools, setAllPools] = useState<PoolInfo[]>();
-
-  const tokenPriceList = useTokenPriceList();
+  const swapStore = useSwapStore();
+  const tokenPriceList = swapStore.getAllTokenPrices();
+  useEffect(() => {
+    getAllTokenPrices().then((res) => {
+      swapStore.setAllTokenPrices(res);
+    });
+  }, []);
 
   useEffect(() => {
-    if (!tokenPriceList) return;
+    if (!Object.keys(tokenPriceList || {}).length) return;
 
     listPools()
       .then((list: PoolInfo[]) => {
@@ -378,6 +383,6 @@ export const useAllPoolsV2 = (forPool?: boolean) => {
         );
       })
       .then(setAllPools);
-  }, [tokenPriceList]);
+  }, [Object.keys(tokenPriceList || {}).length]);
   return allPools;
 };

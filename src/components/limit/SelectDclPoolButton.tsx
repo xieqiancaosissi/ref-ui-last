@@ -12,10 +12,9 @@ import {
   IPersistLimitStore,
 } from "@/stores/limitOrder";
 import { sort_tokens_by_base } from "@/services/commonV3";
-const SelectDclTokenBox = dynamic(
-  () => import("./SelectDclTokenBox/SelectDclToken"),
-  { ssr: false }
-);
+const SelectDclTokenBox = dynamic(() => import("./SelectDclToken"), {
+  ssr: false,
+});
 export default function SelectDclPoolButton({
   isIn,
   isOut,
@@ -65,6 +64,9 @@ export default function SelectDclPoolButton({
   function hideBox() {
     setShow(false);
   }
+  function switchBox() {
+    setShow(!show);
+  }
   function selectEvent(p: IPoolDcl) {
     persistLimitStore.setDclPool(p);
     hideBox();
@@ -73,7 +75,7 @@ export default function SelectDclPoolButton({
     <div
       id="setDclToken"
       className="flex items-center cursor-pointer flex-shrink-0 relative id"
-      onClick={showBox}
+      onClick={switchBox}
     >
       {selectedToken ? (
         <>

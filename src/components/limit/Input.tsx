@@ -29,7 +29,6 @@ interface IInputProps {
 }
 export default function Input(props: IInputProps) {
   const { className, token, isIn, isOut } = props;
-  const [amount, setAmount] = useState<string>("");
   const [showNearTip, setShowNearTip] = useState<boolean>(false);
   const swapStore = useSwapStore();
   const limitStore = useLimitStore();
@@ -46,17 +45,17 @@ export default function Input(props: IInputProps) {
   const symbolsArr = ["e", "E", "+", "-"];
   useEffect(() => {
     if (
-      amount &&
+      tokenInAmount &&
       isIn &&
       token?.id &&
       isNEAR &&
-      Big(amount).gt(getMax(token))
+      Big(tokenInAmount).gt(getMax(token))
     ) {
       setShowNearTip(true);
     } else {
       setShowNearTip(false);
     }
-  }, [amount, isIn, token?.id]);
+  }, [tokenInAmount, isIn, token?.id]);
   function changeAmount(e: any) {
     const amount = e.target.value;
     if (isIn) {
@@ -74,31 +73,41 @@ export default function Input(props: IInputProps) {
         limitStore,
       });
     }
-    setAmount(amount);
   }
   function setMaxAmount() {
     if (token) {
-      setAmount(getMax(token));
+      limitStore.onAmountInChangeTrigger({
+        amount: getMax(token),
+        rate,
+        limitStore,
+      });
     }
   }
   function getTokenValue() {
     return formatTokenPrice(
-      new Big(amount || 0).mul(allTokenPrices[token?.id]?.price || 0).toFixed()
+      new Big(tokenInAmount || 0)
+        .mul(allTokenPrices[token?.id]?.price || 0)
+        .toFixed()
     );
   }
   function onBlurEvent() {
     if (isOut) {
-      const regularizedRate = regularizedPrice(
-        rate,
-        tokenIn,
-        tokenOut,
-        dclPool.fee
-      );
-      limitStore.onRateChangeTrigger({
-        amount: toPrecision(regularizedRate, 8, false, false),
-        tokenInAmount,
-        limitStore,
-      });
+      if (Big(rate || 0).eq(0)) {
+        limitStore.setTokenOutAmount("0");
+        limitStore.setRate("0");
+      } else {
+        const regularizedRate = regularizedPrice(
+          rate,
+          tokenIn,
+          tokenOut,
+          dclPool.fee
+        );
+        limitStore.onRateChangeTrigger({
+          amount: toPrecision(regularizedRate, 8),
+          tokenInAmount,
+          limitStore,
+        });
+      }
     }
   }
   return (

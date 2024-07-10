@@ -2,7 +2,7 @@ import { IPoolDcl } from "@/interfaces/swapDcl";
 import { TokenMetadata } from "@/services/ft-contract";
 import { sort_tokens_by_base } from "@/services/commonV3";
 import { usePersistLimitStore, IPersistLimitStore } from "@/stores/limitOrder";
-import { SelectedIcon } from "./Icons";
+import { SelectedIcon } from "./icons";
 export default function SelectDclTokenBox({
   onSelect,
   show,

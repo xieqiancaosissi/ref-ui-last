@@ -55,17 +55,22 @@ export default function RateContainer() {
     });
   }
   function onBlurEvent() {
-    const regularizedRate = regularizedPrice(
-      rate,
-      tokenIn,
-      tokenOut,
-      dclPool.fee
-    );
-    limitStore.onRateChangeTrigger({
-      amount: toPrecision(regularizedRate, 8, false, false),
-      tokenInAmount,
-      limitStore,
-    });
+    if (Big(rate || 0).eq(0)) {
+      limitStore.setTokenOutAmount("0");
+      limitStore.setRate("0");
+    } else {
+      const regularizedRate = regularizedPrice(
+        rate,
+        tokenIn,
+        tokenOut,
+        dclPool.fee
+      );
+      limitStore.onRateChangeTrigger({
+        amount: toPrecision(regularizedRate, 8),
+        tokenInAmount,
+        limitStore,
+      });
+    }
   }
   function onLock() {
     limitStore.setLock(true);
@@ -82,7 +87,7 @@ export default function RateContainer() {
       1
     );
     limitStore.onRateChangeTrigger({
-      amount: toPrecision(regularizedRate, 8, false, false),
+      amount: toPrecision(regularizedRate, 8),
       tokenInAmount,
       limitStore,
     });
@@ -96,13 +101,18 @@ export default function RateContainer() {
       -1
     );
     limitStore.onRateChangeTrigger({
-      amount: toPrecision(regularizedRate, 8, false, false),
+      amount: toPrecision(regularizedRate, 8),
       tokenInAmount,
       limitStore,
     });
   }
   function fetch_market_price() {
     limitStore.setRate(marketRate);
+    limitStore.onRateChangeTrigger({
+      amount: marketRate,
+      tokenInAmount,
+      limitStore,
+    });
     limitStore.onFetchPool({
       limitStore,
       dclPool,
@@ -110,7 +120,7 @@ export default function RateContainer() {
     });
   }
   return (
-    <div className="bg-dark-60 rounded w-3/4 border border-transparent hover:border-green-10 p-3.5 text-sm text-gray-50">
+    <div className="bg-dark-60 rounded border border-transparent hover:border-green-10 p-3.5 text-sm text-gray-50">
       <div className="flexBetween">
         <div className="flex items-center gap-0.5">
           <span>Buy in rate</span>

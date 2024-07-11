@@ -27,21 +27,21 @@ function LockedConfirmModal(props: any) {
       }}
     >
       <div
-        className=" rounded-lg bg-dark-10 p-5 pt-4 text-white"
+        className=" rounded bg-dark-10 p-5 pt-4 text-white"
         style={{
           width: cardWidth,
         }}
       >
         <div className="title flex items-center justify-between">
-          <div className="text-white text-xl gotham_bold">
+          <div className="text-white text-lg font-medium">
             Lock Instructions
           </div>
           <LpModalCloseIcon
-            className="cursor-pointer text-black"
+            className="cursor-pointer text-black hover:opacity-80"
             onClick={onRequestClose}
           />
         </div>
-        <p className="mt-3 mb-2 text-sm text-white">
+        <p className="mt-4 mb-12 text-sm text-gray-60">
           Your LP Token will be unlocked on{" "}
           {secToTime(
             Big(new Date().getTime() / 1000).plus(
@@ -53,13 +53,11 @@ function LockedConfirmModal(props: any) {
         <div className="flex justify-center">
           <div
             onClick={doLock}
-            className={`bg-senderHot px-3 py-1 gotham_bold cursor-pointer rounded-md mt-2 w-20 outline-none ${
+            className={`cursor-pointer rounded frcc mt-2 w-29 h-9 outline-none border hover:opacity-85 border-green-10 text-green-10 ${
               lockLoading ? "opacity-40" : ""
             }`}
           >
-            <div className="flex items-center gap-2 text-base text-boxBorder">
-              Got it!
-            </div>
+            Got it!
           </div>
         </div>
       </div>

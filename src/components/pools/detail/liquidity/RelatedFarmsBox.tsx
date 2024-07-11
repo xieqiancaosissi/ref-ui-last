@@ -99,7 +99,7 @@ export function RelatedFarmsBox(props: any) {
     const link_params = `${get_pool_name(
       pool_id
     )}[${left_point}-${right_point}]`;
-    openUrl(`/v2farms/${link_params}-r`);
+    openUrl(`/farms/${link_params}-r`);
   }
   if (farm_loading) return null;
   if (!related_seed) return null;
@@ -115,14 +115,14 @@ export function RelatedFarmsBox(props: any) {
         }}
       ></FarmBoardInDetailDCLPool>
       <div className="flex items-center justify-between">
-        <span className="text-base text-white gotham_bold">Farm APR</span>
-        <div className="flex items-center bg-dclButtonBgColor rounded-xl pl-1 pr-2 py-px">
+        <span className="text-base text-white font-bold">Farm APR</span>
+        <div className="flex items-center bg-dark-10 rounded-xl pl-1 pr-2 py-px">
           {getAllRewardsSymbols().map(([id, icon]: [any, any], index) => {
             return (
               <img
                 key={id}
                 src={icon}
-                className={`h-4 w-4 rounded-full border border-gradientFromHover ${
+                className={`h-4 w-4 rounded-full border border-gray-60 ${
                   index != 0 ? "-ml-1.5" : ""
                 }`}
               ></img>
@@ -136,14 +136,14 @@ export function RelatedFarmsBox(props: any) {
             </div>
           ) : null}
 
-          <span className="flex items-center text-sm text-v3SwapGray ml-1.5">
+          <span className="flex items-center text-sm text-gray-60 ml-1.5">
             {totalTvlPerWeekDisplay()}/week
           </span>
         </div>
       </div>
       <div className="flex items-center justify-between mt-3">
         <div className="flex items-center">
-          <span className="valueStyleYellow text-xl gotham_bold mr-1">
+          <span className="text-yellow-10 text-xl font-bold mr-1">
             {getTotalAprForSeed()}
           </span>
           <Fire></Fire>
@@ -152,7 +152,7 @@ export function RelatedFarmsBox(props: any) {
           className="py-1.5 pb-1.5 px-2 flex rounded-lg items-center justify-center whitespace-nowrap"
           onClick={go_farm}
         >
-          <FormattedMessage id="farm_now" defaultMessage={"Farm Now!"} />
+          Farm Now!
         </div>
       </div>
     </div>

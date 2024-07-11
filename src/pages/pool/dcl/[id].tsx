@@ -382,6 +382,7 @@ export default function DCLPoolDetail() {
         <div className="w-80 ml-auto pt-12">
           {user_liquidities.length == 0 ? (
             <NoLiquidity add={() => addLiquidity} isLoading={showSkection} />
+            <NoLiquidity add={() => addLiquidity()} isLoading={showSkection} />
           ) : (
             poolDetailV3?.token_x && (
               <>

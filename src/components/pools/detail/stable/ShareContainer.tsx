@@ -11,9 +11,11 @@ import {
   AddLiquidityIconStable,
   RemoveLiquidityIconStable,
 } from "../liquidity/icon";
+import { useRouter } from "next/router";
 
 export default function ShareContainer(props: any) {
   const { poolDetail } = props;
+  const router = useRouter();
   const { farmCount: countV1, endedFarmCount: endedFarmCountV1 } = useCanFarmV1(
     poolDetail.id,
     true
@@ -26,7 +28,9 @@ export default function ShareContainer(props: any) {
   const { farmStakeV1, farmStakeV2, userTotalShare } = useYourliquidity(
     poolDetail.id
   );
-
+  const toSauce = (type: string) => {
+    router.push(`/sauce/${type}/${router.query.id}`);
+  };
   return (
     <div className="my-5 w-270 flex justify-between items-center">
       {/* left */}
@@ -64,13 +68,17 @@ export default function ShareContainer(props: any) {
       </div>
       {/* right liquidity button */}
       <div className="flex items-center justify-end">
-        <div className="bg-primaryGreen text-black rounded p-2 h-7 opacity-90 frcc border border-transparent text-sm cursor-pointer hover:opacity-100">
+        <div
+          className="bg-primaryGreen text-black rounded p-2 h-7 opacity-90 frcc border border-transparent text-sm cursor-pointer hover:opacity-100"
+          onClick={() => toSauce("add")}
+        >
           Add Liquidity
           <AddLiquidityIconStable className="mx-1" />
         </div>
         <div
           className="bg-transparent rounded p-2 h-7 frcc border opacity-90 border-gray-40 text-sm ml-2  cursor-pointer hover:opacity-100"
           style={{ color: "#BCC9D2" }}
+          onClick={() => toSauce("remove")}
         >
           Remove Liquidity
           <RemoveLiquidityIconStable className="mx-1" />

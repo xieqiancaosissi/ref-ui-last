@@ -7,6 +7,10 @@ import {
 } from "@/hooks/useStableShares";
 import { ShareInFarmV2 } from "./ShareInFarm";
 import ShareNumber from "./ShareNumber";
+import {
+  AddLiquidityIconStable,
+  RemoveLiquidityIconStable,
+} from "../liquidity/icon";
 
 export default function ShareContainer(props: any) {
   const { poolDetail } = props;
@@ -60,14 +64,16 @@ export default function ShareContainer(props: any) {
       </div>
       {/* right liquidity button */}
       <div className="flex items-center justify-end">
-        <div className="bg-primaryGreen text-black rounded w-32 h-7 opacity-90 frcc border border-transparent text-sm cursor-pointer hover:opacity-100">
+        <div className="bg-primaryGreen text-black rounded p-2 h-7 opacity-90 frcc border border-transparent text-sm cursor-pointer hover:opacity-100">
           Add Liquidity
+          <AddLiquidityIconStable className="mx-1" />
         </div>
         <div
-          className="bg-transparent rounded w-36 h-7 frcc border opacity-90 border-gray-40 text-sm ml-2  cursor-pointer hover:opacity-100"
+          className="bg-transparent rounded p-2 h-7 frcc border opacity-90 border-gray-40 text-sm ml-2  cursor-pointer hover:opacity-100"
           style={{ color: "#BCC9D2" }}
         >
           Remove Liquidity
+          <RemoveLiquidityIconStable className="mx-1" />
         </div>
       </div>
     </div>

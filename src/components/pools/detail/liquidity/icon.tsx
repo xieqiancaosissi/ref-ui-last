@@ -611,3 +611,65 @@ export const FarmBoardInDetailDCLPool = (props: any) => {
     </svg>
   );
 };
+
+export const AddLiquidityIconStable = (props: any) => {
+  return (
+    <svg
+      width="15"
+      height="13"
+      viewBox="0 0 15 13"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <path
+        d="M7.2974 7.96637L7.17892 4.93065C7.10829 3.12099 8.2839 1.49753 10.0253 1V1"
+        stroke="black"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+      <path
+        d="M4.32812 5.84741L7.29479 8.39027L10.2615 5.84741"
+        stroke="black"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+      <path
+        d="M1 3L1 9C1 10.6569 2.34315 12 4 12L11 12C12.6569 12 14 10.6569 14 9L14 7.09091"
+        stroke="black"
+        strokeWidth="1.5"
+      />
+    </svg>
+  );
+};
+
+export const RemoveLiquidityIconStable = (props: any) => {
+  return (
+    <svg
+      width="15"
+      height="13"
+      viewBox="0 0 15 13"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <path
+        d="M8.26119 1.88125L8.37967 4.91697C8.4503 6.72663 7.27469 8.35009 5.53333 8.84762V8.84762"
+        stroke="#BCC9D2"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+      <path
+        d="M5.32812 3.88672L8.29479 1.34386L11.2615 3.88672"
+        stroke="#BCC9D2"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+      <path
+        d="M1 3L1 9C1 10.6569 2.34315 12 4 12L11 12C12.6569 12 14 10.6569 14 9L14 7.09091"
+        stroke="#BCC9D2"
+        strokeWidth="1.5"
+      />
+    </svg>
+  );
+};

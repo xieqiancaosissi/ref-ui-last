@@ -1,10 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import * as charts from "echarts";
-import {
-  formatPercentage,
-  toInternationalCurrencySystem_usd,
-  toInternationalCurrencySystem_number,
-} from "@/utils/uiNumber";
+import { toInternationalCurrencySystem_number } from "@/utils/uiNumber";
+import { colorMap } from "@/utils/config";
 
 export default function StablePoolRowCharts({
   legendJson,
@@ -22,6 +19,7 @@ export default function StablePoolRowCharts({
     const chartInstance = charts.init(chartRef.current);
     // deal data
     const waitSetList: any = [];
+    console.log(jsonMap);
     jsonMap.amounts.map((item: any, index: number) => {
       waitSetList.push({
         value: Number(
@@ -37,6 +35,9 @@ export default function StablePoolRowCharts({
             item.length - jsonMap.token_account_ids[index].decimals
           )
         ),
+        itemStyle: {
+          color: colorMap[jsonMap.token_symbols[index]] || "black",
+        },
       });
     });
 

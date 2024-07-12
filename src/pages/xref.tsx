@@ -334,7 +334,7 @@ export default function XrefPage(props: any) {
             />
           </div>
           {showDetails ? (
-            <div className="border border-gray-50 rounded px-3 py-4 mt-1.5 text-sm text-gray-50 mb-12">
+            <div className="border border-gray-50 rounded px-3 py-4 mt-1.5 text-sm text-gray-50 mb-4">
               {Object.values(analysisText).map((value, index: number) => {
                 const item = value as AnalysisTextItem;
                 return (
@@ -381,8 +381,10 @@ const pageStyle = {
   backgroundSize: "cover",
   backgroundPosition: "center",
   height: "100%",
+  minHeight: "90vh",
   margin: "-50px 0 0 0",
-  padding: "90px 0 0 0",
+  padding: "90px 0 24px 0",
+  backgroundColor: "#000a0a",
 };
 
 export interface XrefMetaData {

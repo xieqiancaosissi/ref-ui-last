@@ -1,4 +1,4 @@
-function getRpcSelectorList(
+export function getRpcSelectorList(
   env: string | undefined = process.env.NEXT_PUBLIC_NEAR_ENV
 ) {
   switch (env) {
@@ -78,13 +78,13 @@ function getRpcSelectorList(
       };
   }
 }
-function getCustomAddRpcSelectorList() {
-  let customRpcMapStr;
+export function getCustomAddRpcSelectorList() {
+  let customRpcMapStr: string | null = null;
   try {
     customRpcMapStr = window.localStorage.getItem("customRpcList");
   } catch (error) {}
 
-  let customRpcMap = {};
+  let customRpcMap: CustomRpcMap = {};
   if (customRpcMapStr) {
     try {
       customRpcMap = JSON.parse(customRpcMapStr);
@@ -111,3 +111,11 @@ export function getSelectedRpc() {
   } catch (error) {}
   return RPC_LIST[endPoint];
 }
+
+type CustomRpcEntry = {
+  url: string;
+  simpleName: string;
+  custom: boolean;
+};
+
+type CustomRpcMap = Record<string, CustomRpcEntry>;

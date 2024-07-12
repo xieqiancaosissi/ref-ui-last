@@ -8,6 +8,7 @@ import { useEffect } from "react";
 import getConfig from "../utils/config";
 import { ALL_STABLE_POOL_IDS } from "@/services/swap/swapConfig";
 import "../components/common/ModalDefaultStyle";
+import RpcList from "@/components/rpc";
 const Footer = dynamic(() => import("../components/footer"), { ssr: false });
 const ToastContainerEle = dynamic(() => import("../components/common/Toast"), {
   ssr: false,
@@ -41,6 +42,7 @@ export default function App({ Component, pageProps }: AppProps) {
         <div className="flex-grow mt-24">
           <Component {...pageProps} />
         </div>
+        <RpcList />
         <Footer />
         <ToastContainerEle />
       </div>

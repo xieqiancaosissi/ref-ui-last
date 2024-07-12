@@ -54,11 +54,11 @@ export default function Menu() {
   }, [router]);
 
   return (
-    <div>
+    <div className="fixed w-full" style={{ zIndex: "99" }}>
       {/* one level menu */}
       <div
-        className="grid grid-cols-3 items-center text-white px-5 border-b border-white border-opacity-10"
-        style={{ height: "50px" }}
+        className="grid grid-cols-3 items-center text-white px-5 border-b border-white border-opacity-10 bg-primaryDark"
+        style={{ height: "46px" }}
       >
         <Image src="/images/logo.svg" width={127} height={17} alt="" />
         <div className="justify-self-center flex items-center gap-12">
@@ -101,7 +101,7 @@ export default function Menu() {
             twoLevelMenuShow ? "" : "hidden"
           }`}
           style={{
-            height: "50px",
+            height: "46px",
             background: extraBack,
             width: extraWidth,
             margin: "0 auto",

@@ -391,45 +391,54 @@ export function KeyIcon(props: any) {
 export function MenuContainer(props: any) {
   return (
     <svg
-      {...props}
-      width="681"
-      height="48"
-      viewBox="0 0 681 48"
+    {...props}
+      width="679"
+      height="46"
+      viewBox="0 0 679 46"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <path
-        d="M1 1H680L662.091 42.1898C660.821 45.1107 657.94 47 654.755 47H26.2452C23.0602 47 20.1786 45.1107 18.9086 42.1898L1 1Z"
-        fill="url(#paint0_linear_3261_193)"
-        fillOpacity="0.4"
-      />
-      <path
-        d="M1 1L18.9086 42.1898C20.1786 45.1107 23.0602 47 26.2452 47H654.755C657.94 47 660.821 45.1107 662.091 42.1898L680 1"
-        stroke="url(#paint1_linear_3261_193)"
-      />
+      <g filter="url(#filter0_b_3268_21288)">
+        <path
+          d="M0 0H679L661.091 41.1898C659.821 44.1107 656.94 46 653.755 46H25.2452C22.0602 46 19.1786 44.1107 17.9086 41.1898L0 0Z"
+          fill="url(#paint0_linear_3268_21288)"
+          fillOpacity="0.9"
+        />
+      </g>
       <defs>
+        <filter
+          id="filter0_b_3268_21288"
+          x="-6"
+          y="-6"
+          width="691"
+          height="58"
+          filterUnits="userSpaceOnUse"
+          colorInterpolationFilters="sRGB"
+        >
+          <feFlood floodOpacity="0" result="BackgroundImageFix" />
+          <feGaussianBlur in="BackgroundImageFix" stdDeviation="3" />
+          <feComposite
+            in2="SourceAlpha"
+            operator="in"
+            result="effect1_backgroundBlur_3268_21288"
+          />
+          <feBlend
+            mode="normal"
+            in="SourceGraphic"
+            in2="effect1_backgroundBlur_3268_21288"
+            result="shape"
+          />
+        </filter>
         <linearGradient
-          id="paint0_linear_3261_193"
-          x1="291"
-          y1="51"
-          x2="291"
-          y2="0.999999"
+          id="paint0_linear_3268_21288"
+          x1="290"
+          y1="50"
+          x2="290"
+          y2="-8.48251e-07"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stopColor="#212E3B" />
-          <stop offset="1" stopColor="#212B35" stopOpacity="0" />
-        </linearGradient>
-        <linearGradient
-          id="paint1_linear_3261_193"
-          x1="31"
-          y1="24"
-          x2="551"
-          y2="24"
-          gradientUnits="userSpaceOnUse"
-        >
-          <stop stopColor="#26323C" stopOpacity="0.4" />
-          <stop offset="0.497107" stopColor="#486176" />
-          <stop offset="1" stopColor="#26323C" stopOpacity="0.4" />
+          <stop stopColor="#1F2D3B" stopOpacity="0.9" />
+          <stop offset="1" stopColor="#030F16" />
         </linearGradient>
       </defs>
     </svg>

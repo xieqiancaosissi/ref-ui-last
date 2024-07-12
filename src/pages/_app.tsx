@@ -38,7 +38,7 @@ export default function App({ Component, pageProps }: AppProps) {
     <IntlProvider messages={{}} locale={"en"}>
       <div className="flex flex-col bg-primaryDark min-h-screen">
         <Menu />
-        <div className="flex-grow">
+        <div className="flex-grow mt-24">
           <Component {...pageProps} />
         </div>
         <Footer />

@@ -100,7 +100,7 @@ export default function WalletConnect() {
     open: {
       opacity: 1,
       y: 0,
-      height: "calc(100vh - 86px)",
+      height: "calc(100vh - 82px)",
       width: "20%",
       transition: { duration: 0.5 },
     },
@@ -154,7 +154,7 @@ export default function WalletConnect() {
               </div>
               {/* Click menu */}
               <div
-                className={`fixed top-[50px] left-0 w-full h-[calc(100%-86px)] bg-black bg-opacity-50 ${
+                className={`fixed top-[46px] left-0 w-full h-[calc(100%-82px)] bg-black bg-opacity-50 ${
                   isOpen ? "block" : "hidden"
                 }`}
                 style={{
@@ -164,7 +164,7 @@ export default function WalletConnect() {
                 onClick={handleBackdropClick}
               ></div>
               <motion.div
-                className="fixed top-[50px] bottom-[36px] right-0 bg-dark-10 z-50"
+                className="fixed top-[46px] bottom-[32px] right-0 bg-dark-10 z-50"
                 variants={variants}
                 initial="closed"
                 animate={isOpen ? "open" : "closed"}

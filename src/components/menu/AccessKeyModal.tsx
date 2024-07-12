@@ -420,88 +420,68 @@ function OrderlyKeys({
           {/* <ChartLoading /> */}
         </div>
       ) : null}
-      <div className={`${orderlyKeyLoading || noConnected ? "hidden" : ""}`}>
-        <div className="flex items-center justify-between px-6 mb-3 xsm:px-3">
-          <div className="flex items-center gap-1">
-            <span className="text-sm text-white paceGrotesk-Bold">
-              Orderly Keys
-            </span>
-            <span className="flex items-center justify-center text-xs text-white px-1.5 py-1.5 rounded-md paceGrotesk-Bold bg-gray-60 bg-opacity-20">
-              {allOrderlyKeys.length}
-            </span>
-          </div>
-          {allCheckdLength > 0 ? (
-            <div className="flex items-center gap-1.5 text-sm text-gray-60">
-              <Checkbox
-                onClick={onCheckAll}
-                checked={selectedKeys.size == allCheckdLength}
-              />{" "}
-              Remove-10
-            </div>
-          ) : null}
+
+      <div className="flex items-center justify-between px-6 mb-3 xsm:px-3">
+        <div className="flex items-center gap-1">
+          <span className="text-sm text-white paceGrotesk-Bold">
+            Orderly Keys
+          </span>
+          <span className="flex items-center justify-center text-xs text-white px-1.5 py-1.5 rounded-md paceGrotesk-Bold bg-gray-60 bg-opacity-20">
+            {allOrderlyKeys.length}
+          </span>
         </div>
-        <div
-          className="overflow-auto hide-scrollbar px-6 border-b border-gray1 xsm:px-3"
-          style={{ maxHeight: "290px" }}
-        >
-          <div
-            className={`bg-gray-60 bg-opacity-20 rounded-xl p-4 ${
-              isEmpty ? "hidden" : ""
-            }`}
-          >
-            {allOrderlyKeys.map((key) => {
-              const isUsed = currentUsedKeys.includes(key);
-              return (
-                <div
-                  key={key}
-                  className="flex items-center justify-between gap-6 mb-3"
-                >
-                  <span className="flex  flex-col gap-2 flex-grow  bg-black bg-opacity-20 rounded-md text-xs text-greenColor p-2.5 break-all">
-                    {isUsed ? (
-                      <span className="flex items-center justify-center bg-portfolioQinColor text-xs paceGrotesk-Bold italic whitespace-nowrap rounded w-12 text-black">
-                        In use
-                      </span>
-                    ) : null}
-                    {key}
-                  </span>
-                  <div className={`${isUsed ? "invisible" : ""}`}>
-                    <Checkbox
-                      appearance="b"
-                      checked={selectedKeys.has(key)}
-                      onClick={() => {
-                        onCheck(key);
-                      }}
-                    />
-                  </div>
-                </div>
-              );
-            })}
+        {allCheckdLength > 0 ? (
+          <div className="flex items-center gap-1.5 text-sm text-gray-60">
+            <Checkbox
+              onClick={onCheckAll}
+              checked={selectedKeys.size == allCheckdLength}
+            />{" "}
+            Remove-10
           </div>
-          {isEmpty ? (
+        ) : null}
+      </div>
+      <div
+        className="overflow-auto hide-scrollbar px-6 border-b border-gray1 xsm:px-3"
+        style={{ maxHeight: "290px" }}
+      >
+        <div
+          className={`bg-gray-60 bg-opacity-20 rounded-xl p-4 ${
+            isEmpty ? "hidden" : ""
+          }`}
+        >
+          {allOrderlyKeys.map((key) => {
+            const isUsed = currentUsedKeys.includes(key);
+            return (
+              <div
+                key={key}
+                className="flex items-center justify-between gap-6 mb-3"
+              >
+                <span className="flex  flex-col gap-2 flex-grow  bg-black bg-opacity-20 rounded-md text-xs text-greenColor p-2.5 break-all">
+                  {isUsed ? (
+                    <span className="flex items-center justify-center bg-portfolioQinColor text-xs paceGrotesk-Bold italic whitespace-nowrap rounded w-12 text-black">
+                      In use
+                    </span>
+                  ) : null}
+                  {key}
+                </span>
+                <div className={`${isUsed ? "invisible" : ""}`}>
+                  <Checkbox
+                    appearance="b"
+                    checked={selectedKeys.has(key)}
+                    onClick={() => {
+                      onCheck(key);
+                    }}
+                  />
+                </div>
+              </div>
+            );
+          })}
+        </div>
+        {/* {isEmpty ? (
             <div className="flex justify-center my-20 text-xs text-gray-60">
               No Data
             </div>
-          ) : null}
-        </div>
-        <div className="px-6 xsm:px-3">
-          <div
-            onClick={() => {
-              if (!disabled && !clear_loading) {
-                batchClear();
-              }
-            }}
-            className={`frcc text-white mt-4 rounded h-12 text-base paceGrotesk-Bold focus:outline-none ${
-              disabled || clear_loading
-                ? "opacity-40 cursor-not-allowed"
-                : "cursor-pointer"
-            }`}
-          >
-            <ButtonTextWrapper
-              loading={clear_loading}
-              Text={() => <div className="flex items-center gap-2">Clear</div>}
-            />
-          </div>
-        </div>
+          ) : null} */}
       </div>
       {!orderlyKeyLoading && noConnected ? (
         <div className="flex flex-col items-center my-20">
@@ -515,6 +495,25 @@ function OrderlyKeys({
           </div>
         </div>
       ) : null}
+      <div className="px-6 xsm:px-3">
+        <div
+          onClick={() => {
+            if (!disabled && !clear_loading) {
+              batchClear();
+            }
+          }}
+          className={`frcc text-white mt-4 rounded h-12 text-base paceGrotesk-Bold focus:outline-none ${
+            disabled || clear_loading
+              ? "opacity-40 cursor-not-allowed bg-gray-40"
+              : "cursor-pointer bg-greenGradient"
+          }`}
+        >
+          <ButtonTextWrapper
+            loading={clear_loading}
+            Text={() => <div className="flex items-center gap-2">Clear</div>}
+          />
+        </div>
+      </div>
     </div>
   );
 }

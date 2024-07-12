@@ -23,7 +23,7 @@ const maxLength = 10;
 const maxOrderlyLength = 10;
 function AccessKeyModal(props: any) {
   const { isOpen, onRequestClose } = props;
-  const cardWidth = isMobile() ? "95vw" : "32vw";
+  const cardWidth = isMobile() ? "95vw" : "550px";
   const cardHeight = isMobile() ? "90vh" : "100vh";
   const [currentUsedKeys, setCurrentUsedKeys] = useState<string[]>([]);
   const accountId = getAccountId();
@@ -305,7 +305,7 @@ function AuthorizedApps({
             baseColor="rgba(33, 43, 53, 0.3)"
             highlightColor="#2A3643"
           >
-            <Skeleton width={560} height={152} count={2} className="mt-2.5" />
+            <Skeleton width={496} height={136} count={2} className="mt-2.5" />
           </SkeletonTheme>
         </div>
       )}

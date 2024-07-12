@@ -1,7 +1,11 @@
 import { map, distinctUntilChanged } from "rxjs";
 
 import { NetworkId, setupWalletSelector } from "@near-wallet-selector/core";
-import type { WalletSelector, AccountState } from "@near-wallet-selector/core";
+import type {
+  WalletSelector,
+  AccountState,
+  Network,
+} from "@near-wallet-selector/core";
 import { setupModal } from "@near-wallet-selector/modal-ui";
 import type { WalletSelectorModal } from "@near-wallet-selector/modal-ui";
 import { setupMyNearWallet } from "@near-wallet-selector/my-near-wallet";
@@ -17,6 +21,7 @@ import { setupKeypom } from "@keypom/selector";
 import "@near-wallet-selector/modal-ui/styles.css";
 import getConfig from "./config";
 import getOrderlyConfig from "./orderlyConfig";
+import { getCustomAddRpcSelectorList, getRpcSelectorList } from "./rpc";
 declare global {
   interface Window {
     selector: WalletSelector & { getAccountId: () => string };
@@ -49,8 +54,22 @@ export async function getWalletSelector({
       },
     ],
   };
+  const RPCLIST_system = getRpcSelectorList().RPC_LIST;
+  const RPCLIST_custom = getCustomAddRpcSelectorList();
+  const RPC_LIST = Object.assign(RPCLIST_system, RPCLIST_custom);
+  let endPoint = "defaultRpc";
+  try {
+    endPoint = window.localStorage.getItem("endPoint") || endPoint;
+    if (!RPC_LIST[endPoint]) {
+      endPoint = "defaultRpc";
+      localStorage.removeItem("endPoint");
+    }
+  } catch (error) {}
   const selector = await setupWalletSelector({
-    network: getConfig().networkId as NetworkId,
+    network: {
+      networkId: getConfig().networkId as NetworkId,
+      nodeUrl: RPC_LIST[endPoint].url,
+    } as Network,
     debug: false,
     modules: [
       setupMyNearWallet(),

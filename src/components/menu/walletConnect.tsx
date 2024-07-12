@@ -82,10 +82,12 @@ export default function WalletConnect() {
   }
 
   function showWalletSelector() {
+    setIsOpen(false);
     window.modal.show();
   }
 
   async function signOut() {
+    setIsOpen(false);
     await currentWallet?.signOut();
   }
 

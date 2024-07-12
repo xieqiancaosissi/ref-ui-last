@@ -391,7 +391,7 @@ export function KeyIcon(props: any) {
 export function MenuContainer(props: any) {
   return (
     <svg
-    {...props}
+      {...props}
       width="679"
       height="46"
       viewBox="0 0 679 46"

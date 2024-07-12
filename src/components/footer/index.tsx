@@ -35,7 +35,7 @@ export default function Footer() {
     light: { left: "24px" },
   };
   return (
-    <div className="mt-9">
+    <div className="mt-9 z-50">
       <div className="fixed w-full left-0 bottom-0 bg-primaryDark flex items-center justify-between text-white h-9 border-t border-white border-opacity-10 px-6">
         <div className="flex items-center gap-4">
           {communityLinks.map((item) => {

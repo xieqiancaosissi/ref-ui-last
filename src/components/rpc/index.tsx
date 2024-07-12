@@ -482,7 +482,7 @@ const ModalAddCustomNetWork = (props: any) => {
         >
           {customShow ? (
             <div>
-              <div className="frcb text-xl text-white">
+              <div className="frcb text-lg text-white">
                 <div className="flex items-center">
                   <ReturnArrowButtonIcon
                     className="mr-3 cursor-pointer"
@@ -494,15 +494,17 @@ const ModalAddCustomNetWork = (props: any) => {
                   <ModalClose></ModalClose>
                 </span>
               </div>
-              <div className="flex flex-col  mt-10">
-                <span className="text-white text-sm mb-2.5">Network Name</span>
+              <div className="flex flex-col  mt-6">
+                <span className="text-gray-10 text-sm mb-2.5">
+                  Network Name
+                </span>
                 <div
                   className={`overflow-hidden rounded-md ${
                     nameError ? "border border-warnRedColor" : ""
                   }`}
                 >
                   <input
-                    className="px-3 h-12 bg-black bg-opacity-20"
+                    className="px-3 h-10 bg-black bg-opacity-20"
                     onChange={({ target }) => changeNetName(target.value)}
                   ></input>
                 </div>
@@ -514,27 +516,27 @@ const ModalAddCustomNetWork = (props: any) => {
                   The network name was already taken
                 </span>
               </div>
-              <div className="flex flex-col mt-10">
-                <span className="text-white text-sm mb-2.5">RPC URL</span>
+              <div className="flex flex-col mt-6">
+                <span className="text-gray-10 text-sm mb-2.5">RPC URL</span>
                 <div
                   className={`overflow-hidden rounded-md ${
                     unavailableError ? "border border-warnRedColor" : ""
                   }`}
                 >
                   <input
-                    className="px-3 h-12 rounded-md bg-black bg-opacity-20"
+                    className="px-3 h-10 rounded-md bg-black bg-opacity-20"
                     onChange={({ target }) => changeNetUrl(target.value)}
                   ></input>
                 </div>
                 <span
-                  className={`errorTip text-redwarningColor text-sm mt-2 ${
+                  className={`errorTip text-warn text-sm mt-2 ${
                     unavailableError ? "" : "hidden"
                   }`}
                 >
                   The network was invalid
                 </span>
                 <span
-                  className={`errorTip text-redwarningColor text-sm mt-2 ${
+                  className={`errorTip text-warn text-sm mt-2 ${
                     testnetError ? "" : "hidden"
                   }`}
                 >
@@ -542,7 +544,7 @@ const ModalAddCustomNetWork = (props: any) => {
                   network (mainnet)
                 </span>
                 <span
-                  className={`errorTip text-redwarningColor text-sm mt-2 ${
+                  className={`errorTip text-warn text-sm mt-2 ${
                     notSupportTestnetError ? "" : "hidden"
                   }`}
                 >
@@ -551,9 +553,11 @@ const ModalAddCustomNetWork = (props: any) => {
               </div>
               <div
                 color="#fff"
-                className={`w-full h-10 text-center text-base text-white mt-10 focus:outline-none font-semibold ${
-                  submitStatus ? "" : "opacity-40"
-                } ${submitStatus ? "" : "cursor-not-allowed"}`}
+                className={`w-full h-10 text-center text-base rounded text-black mt-6 focus:outline-none font-semibold bg-greenGradient frcc ${
+                  submitStatus
+                    ? "cursor-pointer"
+                    : "opacity-40 cursor-not-allowed"
+                }`}
                 onClick={addCustomNetWork}
                 // disabled={!submitStatus}
                 // loading={customLoading}
@@ -570,7 +574,7 @@ const ModalAddCustomNetWork = (props: any) => {
             </div>
           ) : (
             <div>
-              <div className="frcb text-xl text-white mb-5">
+              <div className="frcb text-lg text-white mb-5">
                 RPC
                 <span onClick={closeModal} className="cursor-pointer">
                   <ModalClose></ModalClose>
@@ -636,22 +640,22 @@ const ModalAddCustomNetWork = (props: any) => {
                 )}
               </div>
               <div
-                className={`flex items-center mt-6 px-2 ${
+                className={`flex items-center mt-8 ${
                   isInEditStatus ? "justify-end" : "justify-between"
                 }`}
               >
                 <div
                   color="#fff"
-                  className={`h-10 px-4 text-center text-base text-white focus:outline-none font-semibold ${
+                  className={`pt-2 h-10 px-4 text-center text-base text-black focus:outline-none font-semibold bg-greenGradient rounded ${
                     isInEditStatus ? "hidden" : ""
                   }`}
                   onClick={showCustomNetWork}
                 >
-                  <div className={"flex items-center"}>
-                    <AddButtonIcon
+                  <div className={"flex items-center cursor-pointer"}>
+                    {/* <AddButtonIcon
                       style={{ zoom: 1.35 }}
                       className="mr-1 text-white"
-                    ></AddButtonIcon>
+                    ></AddButtonIcon> */}
                     Add
                   </div>
                 </div>

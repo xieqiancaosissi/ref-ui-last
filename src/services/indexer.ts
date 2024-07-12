@@ -2,6 +2,8 @@ import getConfig from "../utils/config";
 import { getAuthenticationHeaders } from "../services/signature";
 import { parsePoolView } from "./api";
 import { PoolRPCView } from "@/interfaces/swap";
+import { TokenMetadata } from "@/services/ft-contract";
+import { TokenPairRate } from "@/interfaces/limit";
 import moment from "moment";
 const config = getConfig();
 
@@ -322,4 +324,43 @@ export const getDCLTopBinFee = async (props: {
   const { pool_id, bin, start_point, end_point } = props;
   const result = await getDclPoolPoints(pool_id, bin, start_point, end_point);
   return result?.top_bin_fee_data;
+};
+export const getTokenPairRate = async ({
+  token,
+  base_token,
+  dimension,
+}: {
+  token: TokenMetadata;
+  base_token: TokenMetadata;
+  dimension: "Y" | "M" | "W" | "D" | "All";
+}): Promise<TokenPairRate> => {
+  return await fetch(
+    config.indexerUrl +
+      `/token-price-report?token=${token.id}&base_token=${base_token.id}&dimension=${dimension}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+        ...getAuthenticationHeaders("/token-price-report"),
+      },
+    }
+  )
+    .then(async (res) => {
+      const data = await res.json();
+      return {
+        ...data,
+        price_list: data.price_list.map((item: any) => ({
+          price: Number(item.price),
+          date_time: item.date_time * 1000,
+        })),
+      };
+    })
+
+    .catch(() => {
+      return {
+        symbol: token.symbol,
+        contract_address: token.id,
+        price_list: [],
+      };
+    });
 };

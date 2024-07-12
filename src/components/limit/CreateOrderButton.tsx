@@ -32,7 +32,7 @@ export default function CreateOrderButton() {
   function getButtonStatus(): IButtonStatus {
     let status: IButtonStatus = "walletLoading";
     const availableAmountIn = Big(amountIn || 0).lte(
-      getMax(tokenIn, tokenIn.decimals)
+      getMax(tokenIn, tokenIn?.decimals || 0)
     );
     if (walletLoading) {
       status = "walletLoading";

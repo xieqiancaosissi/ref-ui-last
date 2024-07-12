@@ -1,7 +1,7 @@
 import Big from "big.js";
 import BigNumber from "bignumber.js";
 import { ILimitStore } from "@/stores/limitOrder";
-import { toPrecision } from "@/utils/numbers";
+import { toPrecision, toInternationalCurrencySystem } from "@/utils/numbers";
 import { IPoolDcl } from "@/interfaces/swapDcl";
 import { ftGetTokenMetadata } from "@/services/token";
 import { toReadableNumber } from "@/utils/numbers";
@@ -56,3 +56,21 @@ export async function fillDclPool(p: IPoolDcl) {
   p.tvlUnreal = Object.keys(tokenPriceList).length === 0;
   return p;
 }
+export const formatNumber = (v: string | number) => {
+  if (isInvalid(v)) return "-";
+  const big = Big(v);
+  if (big.eq(0)) {
+    return "0";
+  } else if (big.lt(0.01)) {
+    return "<0.01";
+  } else {
+    return toInternationalCurrencySystem(big.toFixed(2, 1));
+  }
+};
+
+export const isInvalid = function (v: any) {
+  if (v === "" || v === undefined || v === null) return true;
+  return false;
+};
+
+export const GEARS = [15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1];

@@ -18,7 +18,6 @@ import { SWitchButton } from "../components/swap/icons";
 import { RefreshIcon } from "../components/limit/icons";
 import Init from "../components/limit/Init";
 import RateChart from "../components/limit/RateChart";
-import LimitOrderChartAndTable from "../components/limit/LimitOrderChartAndTable";
 import ChartTopBar from "../components/limit/ChartTopBar";
 import { useLimitRateChartStore } from "@/stores/limitChart";
 const CreateOrderButton = dynamic(
@@ -30,6 +29,12 @@ const FeeTiers = dynamic(() => import("@/components/limit/FeeTiers"), {
 });
 const LimitOrderPopup = dynamic(
   () => import("@/components/common/LimitOrderPopup"),
+  {
+    ssr: false,
+  }
+);
+const LimitOrderChartAndTable = dynamic(
+  () => import("../components/limit/LimitOrderChartAndTable"),
   {
     ssr: false,
   }

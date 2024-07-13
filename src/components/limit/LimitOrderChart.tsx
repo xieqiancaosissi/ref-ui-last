@@ -17,9 +17,9 @@ export default function OrderChart() {
   const [side, setSide] = useState<ISide>();
   // CONST start
   const isMobile = false;
-  const svg_width = isMobile ? 360 : 600;
+  const svg_width = isMobile ? 360 : 560;
   const svg_height = 400;
-  const svg_padding = 40;
+  const svg_padding = 20;
   const axisRightWidth = 60;
   const disFromHoverBoxToPointer = 20;
   const is_mobile = isMobile;
@@ -30,12 +30,12 @@ export default function OrderChart() {
     } else {
       clearChart();
     }
-  }, [buy_list, sell_list, zoom]);
+  }, [JSON.stringify(buy_list || []), JSON.stringify(sell_list || []), zoom]);
   function drawChart() {
     clearChart();
     const { price_range, amount_range, buy_list_new, sell_list_new } =
       get_data_for_drawing();
-    // 创建一个横坐标轴
+    // Create a horizontal axis
     const scaleBottom = d3
       .scaleLinear()
       .domain(price_range)
@@ -50,7 +50,7 @@ export default function OrderChart() {
       .attr("fill", "#7E8A93");
     d3.select(".axisBottom").select(".domain").attr("stroke", "transparent");
 
-    // 创建一个纵坐标
+    // Create a vertical coordinate
     const scaleRight = d3
       .scaleLinear()
       .domain(amount_range)
@@ -66,7 +66,7 @@ export default function OrderChart() {
       .select(".domain");
     d3.select(".axisRight").select(".domain").attr("stroke", "transparent");
 
-    // 面积 path data 生成器
+    // area path data builder
     const areaGenerator = d3
       .area()
       .x((d: any) => {
@@ -81,7 +81,7 @@ export default function OrderChart() {
         ).toFixed(0);
       });
 
-    // 折线path data生成器
+    // Broken line path data builder
     const lineGenerator = d3
       .line()
       .x((d: any) => {
@@ -93,11 +93,11 @@ export default function OrderChart() {
         ).toFixed(0);
       });
 
-    // 虚线 path data 生成器
+    // Dotted line path data builder
     const dashLineGenerator = d3.line();
 
-    /** 创建左侧区域 */
-    //  面积
+    /** Create left area */
+    //  area
     if (buy_list?.length) {
       const area_path_data_left = areaGenerator(buy_list_new as any);
       d3.select(".areaLeft")
@@ -106,7 +106,7 @@ export default function OrderChart() {
         .attr("d", area_path_data_left)
         .attr("fill", "url(#paint0_linear_7545_2924)");
 
-      // 渐变色
+      // gradient
       const max_y = buy_list_new[buy_list_new.length - 1];
       const y = +Big(
         scaleRight(
@@ -117,7 +117,7 @@ export default function OrderChart() {
         .attr("y1", y)
         .attr("y2", svg_height - svg_padding * 2);
 
-      // 折线
+      // Broken line
       const line_path_data_left = lineGenerator(buy_list_new as any);
       d3.select(".areaLeft")
         .append("path")
@@ -126,7 +126,7 @@ export default function OrderChart() {
         .attr("strokeWidth", "2")
         .attr("fill", "none");
 
-      // 触发鼠标事件的矩形区域
+      // The rectangular area where mouse events are triggered
       const buy_list_first = buy_list_new[0];
       const buy_list_last = buy_list_new[buy_list_new.length - 1];
       d3.select(".rectLeft")
@@ -173,8 +173,8 @@ export default function OrderChart() {
         });
     }
 
-    /** 创建右侧区域 */
-    // 面积
+    /** Create right area */
+    // area
     if (sell_list?.length) {
       const area_path_data_right = areaGenerator(sell_list_new as any);
       d3.select(".areaRight")
@@ -183,7 +183,7 @@ export default function OrderChart() {
         .attr("d", area_path_data_right)
         .attr("fill", "url(#paint0_linear_7545_2926)");
 
-      // 渐变色
+      // gradient
       const max_y = sell_list_new[0];
       const y = +Big(
         scaleRight(
@@ -194,7 +194,7 @@ export default function OrderChart() {
         .attr("y1", y)
         .attr("y2", svg_height - svg_padding * 2);
 
-      // 折线
+      // Broken line
       const line_path_data_right = lineGenerator(sell_list_new as any);
       d3.select(".areaRight")
         .append("path")
@@ -202,7 +202,7 @@ export default function OrderChart() {
         .attr("stroke", "#FF6A8E")
         .attr("strokeWidth", "2")
         .attr("fill", "none");
-      // 触发鼠标事件的矩形区域
+      // The rectangular area where mouse events are triggered
       const sell_list_first = sell_list_new[0];
       const sell_list_last = sell_list_new[sell_list_new.length - 1];
       d3.select(".rectRight")
@@ -250,7 +250,7 @@ export default function OrderChart() {
     }
   }
   function gte_price_range_by_zoom() {
-    // 获取价格区间
+    // Acquisition price range
     let min_price: any;
     let max_price: any;
     if (buy_list.length == 0) {
@@ -282,9 +282,9 @@ export default function OrderChart() {
     return [new_min_price, new_max_price];
   }
   function get_data_for_drawing() {
-    // 获取价格区间
+    // get price range
     const [min_price, max_price] = gte_price_range_by_zoom();
-    // 获取 数量区间
+    // git amount range
     const amounts: string[] = [];
     buy_list.concat(sell_list).forEach((item: IOrderPointItem) => {
       amounts.push(
@@ -297,7 +297,7 @@ export default function OrderChart() {
       return Big(b).minus(a).toNumber();
     });
 
-    // 给绘制的图 添加辅助点
+    // Add auxiliary point
     const buy_list_new: IOrderPointItem[] = [];
     if (buy_list.length == 1) {
       const ele = buy_list[0];
@@ -402,7 +402,7 @@ export default function OrderChart() {
     d3.select(".verticalDashLine").attr("d", "");
     d3.select(".horizontalDashLine").attr("d", "");
   }
-  // 找到离这个点最近的一个数据 中文
+  // Find the data closest to this point
   function searchNearCoordinate(
     list: IOrderPointItem[],
     e: any,
@@ -506,33 +506,33 @@ export default function OrderChart() {
     >
       <svg width={`${svg_width}`} height={`${svg_height}`}>
         <g transform={`translate(${svg_padding}, ${svg_padding})`}>
-          {/* 横坐标 */}
+          {/* Horizontal axis */}
           <g className="axisBottom"></g>
-          {/* 纵坐标 */}
+          {/* Vertical axis */}
           <g className="axisRight"></g>
-          {/* 左侧面积图 */}
+          {/* Left side area map */}
           <g className="areaLeft"></g>
-          {/* 右侧面积图 */}
+          {/* Right side area map */}
           <g className="areaRight"></g>
-          {/* 左侧触发鼠标事件区域 */}
+          {/* The left triggers the mouse event area */}
           <g className="rectLeft"></g>
-          {/* 右侧触发鼠标事件区域 */}
+          {/* The righe triggers the mouse event area */}
           <g className="rectRight"></g>
-          {/* 垂直 虚线 */}
+          {/* Vertical dotted line */}
           <path
             className="verticalDashLine"
             fill="none"
             stroke="#999"
             strokeDasharray="2,2"
           ></path>
-          {/* 水平 虚线 */}
+          {/* Horizontal dashed line */}
           <path
             className="horizontalDashLine"
             fill="none"
             stroke="#999"
             strokeDasharray="2,2"
           ></path>
-          {/* 折线上的点 */}
+          {/* The point on the polyline */}
           <circle
             className="dot"
             r="5"
@@ -541,7 +541,7 @@ export default function OrderChart() {
             opacity="0"
           />
         </g>
-        {/* 渐变色绿色 */}
+        {/* Gradient green */}
         <defs>
           <linearGradient
             className="greenLinearGradient"
@@ -554,7 +554,7 @@ export default function OrderChart() {
             <stop offset="1" stopColor="#00D6AF" stopOpacity="0" />
           </linearGradient>
         </defs>
-        {/* 渐变色红色 */}
+        {/* Gradient red */}
         <defs>
           <linearGradient
             className="redLinearGradient"
@@ -569,27 +569,25 @@ export default function OrderChart() {
         </defs>
       </svg>
       {/* lg:invisible xsm:hidden Floating frame */}
-      <div className="hoverBox absolute px-2 py-3 invisible left-0 top-0 bg-toolTipBoxBgColor border border-toolTipBoxBorderColor rounded-md">
+      <div className="hoverBox absolute px-2 py-3 invisible left-0 top-0 bg-dark-60 border border-gray-70 rounded">
         <div className="flex items-center justify-between gap-5 mb-3">
-          <span className="text-xs text-primaryText">Side</span>
+          <span className="text-xs text-gray-50">Side</span>
           <span
             className={`text-sm capitalize ${
-              side == "buy" ? "text-senderHot" : "text-sellColorNew"
+              side == "buy" ? "text-primaryGreen" : "text-red-20"
             }`}
           >
             {side}
           </span>
         </div>
         <div className="flex items-center justify-between gap-5 mb-3">
-          <span className="text-xs text-primaryText">Price({cur_pairs})</span>
+          <span className="text-xs text-gray-50">Price({cur_pairs})</span>
           <span className="text-sm text-white">
             {formatPriceWithCommas(foucsOrderPoint?.price || 0)}
           </span>
         </div>
         <div className="flex items-center justify-between gap-5 mb-3">
-          <span className="text-xs text-primaryText">
-            Qty({cur_token_symbol})
-          </span>
+          <span className="text-xs text-gray-50">Qty({cur_token_symbol})</span>
           <span className="text-sm text-white">
             {formatNumber(
               (foucsOrderPoint?.amount_x_readable ||
@@ -598,7 +596,7 @@ export default function OrderChart() {
           </span>
         </div>
         <div className="flex items-center justify-between gap-5">
-          <span className="text-xs text-primaryText whitespace-nowrap">
+          <span className="text-xs text-gray-50 whitespace-nowrap">
             Total Qty({cur_token_symbol})
           </span>
           <span className="text-sm text-white">

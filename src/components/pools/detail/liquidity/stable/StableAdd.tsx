@@ -46,7 +46,7 @@ export default function StableAdd(props: any) {
   }, [updatedMapList[0]?.token_account_ids]);
 
   const changeVal = useCallback((e: any, ind: number) => {
-    setInputValList((prev) => {
+    setInputValList((prev: string[]) => {
       const newValues = [...prev];
       newValues[ind] = e.target.value;
       return newValues;

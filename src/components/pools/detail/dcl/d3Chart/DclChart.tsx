@@ -1878,12 +1878,9 @@ export default function DclChart({
             style={{ height: svgHeight + "px" }}
           ></div>
           <div
-            className={`currentLineDetail  top-0 left-0 w-43 h-15 rounded-lg p-2.5 absolute transform -translate-x-1/2 -translate-y-full flex flex-col justify-between ${
+            className={`currentLineDetail  top-0 left-0 w-43 h-15 rounded-lg p-2.5 absolute transform -translate-x-1/2 -translate-y-full flex flex-col justify-between bg-modalGrayBg ${
               reverse ? "flex-col-reverse" : ""
             }`}
-            style={{
-              background: "rgba(0, 0, 0, 0.2)",
-            }}
           >
             <div className="flex items-center justify-between mb-0.5">
               <span className="text-xs text-gray-60 mr-3">

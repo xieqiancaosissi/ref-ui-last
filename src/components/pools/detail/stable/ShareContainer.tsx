@@ -14,7 +14,7 @@ import {
 import { useRouter } from "next/router";
 
 export default function ShareContainer(props: any) {
-  const { poolDetail } = props;
+  const { poolDetail, setShowAdd } = props;
   const router = useRouter();
   const { farmCount: countV1, endedFarmCount: endedFarmCountV1 } = useCanFarmV1(
     poolDetail.id,
@@ -70,7 +70,7 @@ export default function ShareContainer(props: any) {
       <div className="flex items-center justify-end">
         <div
           className="bg-primaryGreen text-black rounded p-2 h-7 opacity-90 frcc border border-transparent text-sm cursor-pointer hover:opacity-100"
-          onClick={() => toSauce("add")}
+          onClick={() => setShowAdd(true)}
         >
           Add Liquidity
           <AddLiquidityIconStable className="mx-1" />

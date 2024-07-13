@@ -19,7 +19,6 @@ export default function StablePoolRowCharts({
     const chartInstance = charts.init(chartRef.current);
     // deal data
     const waitSetList: any = [];
-    console.log(jsonMap);
     jsonMap.amounts.map((item: any, index: number) => {
       waitSetList.push({
         value: Number(

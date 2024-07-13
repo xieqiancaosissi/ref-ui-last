@@ -14,11 +14,15 @@ import { useWatchList } from "@/hooks/useWatchlist";
 import { usePoolStore } from "@/stores/pool";
 import ShareContainer from "@/components/pools/detail/stable/ShareContainer";
 import PieEcharts from "@/components/pools/detail/stable/PieEcharts";
+import StableAdd from "@/components/pools/detail/liquidity/stable/StableAdd";
+import StableRemove from "@/components/pools/detail/liquidity/stable/StableRemove";
+import { useRiskTokens } from "@/hooks/useRiskTokens";
 
 export default function StablePoolDetail() {
   const router = useRouter();
   const poolId = router.query.id || "";
   const poolStore = usePoolStore();
+  const { pureIdList } = useRiskTokens();
   const { currentwatchListId, accountId } = useWatchList();
   const [poolDetail, setPoolDetail] = useState<any>(null);
   const [isCollect, setIsCollect] = useState(false);
@@ -57,6 +61,11 @@ export default function StablePoolDetail() {
       addPoolToWatchList({ pool_id: poolId.toString() });
     }
     setIsCollect((previos) => !previos);
+  };
+
+  const [showAdd, setShowAdd] = useState(false);
+  const hideAdd = () => {
+    setShowAdd(false);
   };
 
   return (
@@ -106,7 +115,9 @@ export default function StablePoolDetail() {
         </div>
 
         {/* share and liquidity action */}
-        {poolDetail && <ShareContainer poolDetail={poolDetail} />}
+        {poolDetail && (
+          <ShareContainer poolDetail={poolDetail} setShowAdd={setShowAdd} />
+        )}
       </div>
       {/* main */}
       <div className="fccc w-270 mt-2">
@@ -161,6 +172,16 @@ export default function StablePoolDetail() {
           )}
         </div>
       </div>
+      {/* add */}
+      {updatedMapList && poolDetail && (
+        <StableAdd
+          isOpen={showAdd}
+          onRequestClose={hideAdd}
+          poolDetail={poolDetail}
+          pureIdList={pureIdList}
+          updatedMapList={updatedMapList}
+        />
+      )}
     </div>
   );
 }

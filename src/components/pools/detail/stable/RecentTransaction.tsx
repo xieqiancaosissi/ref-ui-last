@@ -259,9 +259,9 @@ export default function RecentTransaction(props: any) {
     amountsObj.forEach((amount: string, index) => {
       if (Big(amount || 0).gt(0)) {
         renderTokens.push({
-          token: updatedMapList[0].token_account_ids[index],
+          token: updatedMapList[0]?.token_account_ids[index],
           amount: toReadableNumber(
-            updatedMapList[0].token_account_ids[index].decimals,
+            updatedMapList[0]?.token_account_ids[index].decimals,
             amountsObj[index]
           ),
         });

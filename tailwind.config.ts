@@ -77,6 +77,7 @@ const config: Config = {
         },
         green: {
           10: "#9EFE01",
+          20: "#9AF901",
         },
         lightWhite: {
           10: "#FFF2F2",

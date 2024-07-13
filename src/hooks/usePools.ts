@@ -172,7 +172,7 @@ export const useTokenMetadata = (list: Array<any>) => {
       .catch((error) => {
         console.error("error:", error);
       });
-  }, [list]);
+  }, [list[0]]);
 
   return { isDealed, updatedMapList };
 };

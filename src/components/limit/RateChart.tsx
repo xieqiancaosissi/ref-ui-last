@@ -56,8 +56,6 @@ function RateChart() {
 
   const [loadingPriceList, setLoadingPriceList] = useState<boolean>(false);
 
-  const [reverseToken, setReverseToken] = useState<boolean>(false);
-
   const storedDimension = sessionStorage.getItem(
     REF_FI_SWAP_RATE_DIMENSIONS
   ) as Dimensions;
@@ -204,7 +202,7 @@ function RateChart() {
 
     return (
       <div className=" border px-2 py-1.5 rounded-md  bg-toolTipBoxBgColor border-toolTipBoxBorderColor min-w-max">
-        <div className="text-xs text-primaryText">
+        <div className="text-xs text-gray-10">
           {moment(payload[1].payload.date_time).format("HH:mm MMMM DD, YYYY")}
         </div>
 

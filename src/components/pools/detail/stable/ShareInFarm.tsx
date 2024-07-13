@@ -48,7 +48,7 @@ export const ShareInFarm = ({
       {/* <FarmDot inFarm={Number(farmShare) > 0} className="mr-1 flex-shrink-0" /> */}
       <div
         className={`self-start whitespace-nowrap w-full flex items-center ${
-          forStable ? `${hover ? "text-white" : "text-primaryText"}` : ""
+          forStable ? `${hover ? "text-white" : "text-gray-10"}` : ""
         }`}
       >
         <span

@@ -400,3 +400,27 @@ export function getAllocationsLeastOne(arr: string[]) {
     return [];
   }
 }
+
+export const checkAllocations = (sum: string, allocations: string[]) => {
+  if (!allocations || allocations?.length === 0) return [];
+
+  const sumNumber = new Big(sum);
+  const sumAllocations = allocations.reduce((acc, cur, i) => {
+    return acc.plus(new Big(cur));
+  }, new Big(0));
+
+  if (!sumAllocations.eq(sumNumber)) {
+    const maxNum = _.maxBy(allocations, (o) => Number(o));
+
+    const maxIndex = allocations.indexOf(maxNum!);
+
+    const leftSum = sumAllocations.minus(maxNum!);
+    const newMaxNum = sumNumber.minus(leftSum);
+
+    return [
+      ...allocations.slice(0, maxIndex),
+      newMaxNum.toString(),
+      ...allocations.slice(maxIndex + 1),
+    ];
+  } else return allocations;
+};

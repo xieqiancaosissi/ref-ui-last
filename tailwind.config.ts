@@ -54,6 +54,7 @@ const config: Config = {
           180: "#7E8993",
           190: "#A7B8C8",
           200: "#1C272D",
+          210: "#B9CAD6",
         },
         dark: {
           10: "#1B242C",
@@ -93,6 +94,9 @@ const config: Config = {
         purple: {
           10: "#A199FF",
           20: "#AA95FF",
+        },
+        blue: {
+          10: "#01D0FE",
         },
       },
       width: {

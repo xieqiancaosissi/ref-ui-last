@@ -1914,7 +1914,7 @@ export default function DclChart({
       {!chartDataListDone && (
         <div
           style={{ height: svgHeight + "px" }}
-          className={`flex items-center justify-center text-primaryText text-sm w-full ${
+          className={`flex items-center justify-center text-gray-10 text-sm w-full ${
             chartType == "USER"
               ? ""
               : appearanceConfig.smallChart
@@ -1930,7 +1930,7 @@ export default function DclChart({
         !appearanceConfig.smallChart && (
           <div
             style={{ height: svgHeight + "px" }}
-            className={`flex items-center justify-center text-primaryText text-sm ${
+            className={`flex items-center justify-center text-gray-10 text-sm ${
               chartType == "USER" ? "" : "-mt-10"
             }`}
           >

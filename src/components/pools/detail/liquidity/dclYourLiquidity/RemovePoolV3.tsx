@@ -710,7 +710,7 @@ export const RemovePoolV3 = (props: any) => {
   function get_boundary_tip() {
     const tip =
       "The Min Price and Max price displayed here correspond to the boundaries of the bins. Since you added liquidity before the upgrade, the liquidity boundaries are within the bins containing the Min Price or  Max price. Therefore, your actual price range may differ from the the Min Price or Max price displayed here.";
-    const result: string = `<div class="text-farmText text-xs text-left xs:w-52 lg:w-80">${tip}</div>`;
+    const result: string = `<div class="text-gray-10 text-xs text-left xs:w-52 lg:w-80">${tip}</div>`;
     return result;
   }
   const isRemoveLiquidityDisabled = minBoxPoint == maxBoxPoint;

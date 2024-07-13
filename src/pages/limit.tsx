@@ -39,6 +39,9 @@ const LimitOrderChartAndTable = dynamic(
     ssr: false,
   }
 );
+const MyOrders = dynamic(() => import("../components/limit/myOrders"), {
+  ssr: false,
+});
 export default function LimitOrderPage() {
   const { defaultList = [] } = useSelectTokens();
   useDefaultBalanceTokens(defaultList);
@@ -100,7 +103,7 @@ export default function LimitOrderPage() {
     },
   };
   return (
-    <main className="flex justify-center mt-6 gap-5">
+    <main className="flex items-start justify-center mt-6 gap-5">
       {/* popup */}
       <LimitOrderPopup />
       {/* init */}
@@ -123,6 +126,7 @@ export default function LimitOrderPage() {
             guarente that your limit order will be immediately filled.
           </p>
         </div>
+        <MyOrders />
       </div>
       {/* create order container */}
       <div

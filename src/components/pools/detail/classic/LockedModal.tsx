@@ -116,7 +116,7 @@ function LockedModal(props: any) {
             className="text-white text-xl focus:outline-none appearance-none leading-tight px-2.5 w-full"
           ></input>
           <div
-            className={`flex items-center flex-shrink-0 bg-primaryText bg-opacity-10 rounded-full p-1 ${styles.tokenImgContainer}`}
+            className={`flex items-center flex-shrink-0 bg-gray-60 bg-opacity-10 rounded-full p-1 ${styles.tokenImgContainer}`}
           >
             {tokens?.map((ite: any, ind: number) => (
               <TokenIconComponent

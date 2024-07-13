@@ -1891,7 +1891,7 @@ export default function AddYourLiquidityPageV3() {
       >
         {/* head */}
         <div
-          className=" xs:w-full max-w-max text-farmText flex items-center mb-5 cursor-pointer hover:text-white"
+          className=" xs:w-full max-w-max text-gray-10 flex items-center mb-5 cursor-pointer hover:text-white"
           onClick={() => router.push("/pools")}
         >
           <div

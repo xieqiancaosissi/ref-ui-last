@@ -173,7 +173,7 @@ function SeedInfo() {
     const display_left_price = left_price;
     const display_right_price = right_price;
     return (
-      <div className="flex whitespace-nowrap flex-col items-end text-sm text-primaryText">
+      <div className="flex whitespace-nowrap flex-col items-end text-sm text-gray-10">
         <div className="flex items-center">
           <RefreshIcon
             className="cursor-pointer mr-1"
@@ -333,7 +333,7 @@ function LiquidityInfo() {
       }
     }
     return (
-      <div className="flex items-center text-xs text-primaryText">
+      <div className="flex items-center text-xs text-gray-10">
         <label className="mr-1.5">{displayP(p)}</label>
         {icon}
       </div>

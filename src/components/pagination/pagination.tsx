@@ -111,7 +111,7 @@ const Pagination = ({
     return (
       <div>
         <span className="text-white">{currentPage}</span>/
-        <span className="text-primaryText">{pageCount}</span>
+        <span className="text-gray-10">{pageCount}</span>
       </div>
     );
   }, [currentPage, pageCount]);

@@ -22,7 +22,7 @@ export default function ShareNumber(props: any) {
           : "- "}
       </span>
 
-      <span className={`text-primaryText`}>
+      <span className={`text-gray-10`}>
         {accountStore.isSignedIn
           ? ` / ${toRoundedReadableNumber({
               decimals: getStablePoolDecimal(id),

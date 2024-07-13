@@ -49,7 +49,7 @@
 .farmEnded img {
   filter: grayscale(100%);
 }
-.farmEnded .bg-deepBlue.text-white {
+.farmEnded .bg-blue-10.text-white {
   color: #fff;
 }
 .farmEnded .active .text-navHighLightText {

@@ -355,7 +355,7 @@ export function CalcEle(props: {
                   love_staked
                 </label>
                 <div className="relative flex flex-col flex-grow">
-                  <span className="absolute text-xs text-primaryText right-0 -top-5">
+                  <span className="absolute text-xs text-gray-10 right-0 -top-5">
                     <label className="mr-1">+ balance :</label>
                     {toPrecision(loveTokenBalance, 6)}
                   </span>

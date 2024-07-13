@@ -579,7 +579,7 @@ export function FarmView(props: {
         <span className="text-sm">
           {display_left_price} ~ {display_right_price}
         </span>
-        {/* <span className="text-sm text-farmText ml-2">
+        {/* <span className="text-sm text-gray-10 ml-2">
           {rate_need_to_reverse_display ? (
             <>
               {token_x_metadata.symbol}/{token_y_metadata.symbol}
@@ -838,7 +838,7 @@ export function FarmView(props: {
                     e.stopPropagation();
                     setDclCalcVisible(true);
                   }}
-                  className="text-farmText ml-1.5 cursor-pointer hover:text-greenColor"
+                  className="text-gray-10 ml-1.5 cursor-pointer hover:text-greenColor"
                 />
               </p>
             </div>
@@ -884,7 +884,7 @@ export function FarmView(props: {
                     e.stopPropagation();
                     setCalcVisible(true);
                   }}
-                  className="text-farmText ml-1.5 cursor-pointer hover:text-greenColor"
+                  className="text-gray-10 ml-1.5 cursor-pointer hover:text-greenColor"
                 />
               </p>
             </div>

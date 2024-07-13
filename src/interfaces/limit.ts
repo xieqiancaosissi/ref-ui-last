@@ -34,3 +34,22 @@ export interface IOrderPointItem {
 
 export type ISwitchToken = "X" | "Y";
 export type ISide = "buy" | "sell";
+export interface OrderTxType {
+  order_id: string;
+  tx_id: string | null;
+  receipt_id: string | null;
+}
+
+export interface HistoryOrderSwapInfo {
+  tx_id: string;
+  token_in: string;
+  token_out: string;
+  pool_id: string;
+  point: string;
+  amount_in: string;
+  amount_out: string;
+  timestamp: string;
+  receipt_id: string;
+}
+
+export type IOrderType = "active" | "history";

@@ -607,7 +607,7 @@ export default function FarmsDetail(props: {
                   {yourApr ? (
                     <div className="flex flex-col items-end justify-center">
                       <label className="text-white">{yourApr}</label>
-                      <span className="text-sm text-primaryText">
+                      <span className="text-sm text-gray-10">
                         ({getTotalApr()}
                         {aprUpLimit})
                       </span>

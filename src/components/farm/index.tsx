@@ -1157,7 +1157,7 @@ export default function FarmsPage(props: any) {
               ></input>
               <span
                 className={`${
-                  keyWords ? "text-lightGreenColor" : "text-farmText"
+                  keyWords ? "text-lightGreenColor" : "text-gray-10"
                 }`}
               >
                 <SearchIcon />

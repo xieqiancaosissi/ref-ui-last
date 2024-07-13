@@ -3,7 +3,11 @@ import { getAuthenticationHeaders } from "../services/signature";
 import { parsePoolView } from "./api";
 import { PoolRPCView } from "@/interfaces/swap";
 import { TokenMetadata } from "@/services/ft-contract";
-import { TokenPairRate } from "@/interfaces/limit";
+import {
+  TokenPairRate,
+  OrderTxType,
+  HistoryOrderSwapInfo,
+} from "@/interfaces/limit";
 import moment from "moment";
 const config = getConfig();
 
@@ -363,4 +367,30 @@ export const getTokenPairRate = async ({
         price_list: [],
       };
     });
+};
+export const getHistoryOrder = async (
+  account_id: string
+): Promise<OrderTxType[]> => {
+  return await fetch(
+    config.indexerUrl + `/get-limit-order-log-by-account/${account_id}`,
+    {
+      method: "GET",
+      headers: getAuthenticationHeaders(
+        `/get-limit-order-log-by-account/${account_id}`
+      ),
+    }
+  ).then((res) => res.json());
+};
+export const getHistoryOrderSwapInfo = async (
+  account_id: string
+): Promise<HistoryOrderSwapInfo[]> => {
+  return await fetch(
+    config.indexerUrl + `/get-limit-order-swap-by-account/${account_id}`,
+    {
+      method: "GET",
+      headers: getAuthenticationHeaders(
+        `/get-limit-order-swap-by-account/${account_id}`
+      ),
+    }
+  ).then((res) => res.json());
 };

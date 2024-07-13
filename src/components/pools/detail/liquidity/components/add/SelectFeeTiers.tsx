@@ -45,7 +45,7 @@ export function SelectFeeTiers() {
         </span>
 
         <div
-          className="w-7 h-7 rounded-lg relative bg-v3SwapGray z-50 bg-opacity-10 hover:bg-opacity-30 text-primaryText hover:text-white frcc"
+          className="w-7 h-7 rounded-lg relative bg-v3SwapGray z-50 bg-opacity-10 hover:bg-opacity-30 text-gray-10 hover:text-white frcc"
           onMouseLeave={() => {
             // if (mobileDevice) return;
             setHoverFeeBox(false);

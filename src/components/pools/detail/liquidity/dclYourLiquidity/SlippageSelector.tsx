@@ -20,11 +20,11 @@ export function PoolSlippageSelectorV3({
       <fieldset className="flex lg:items-center flex-wrap justify-between mb-4 pt-2">
         <div className="flex items-center md:mb-4 xs:mb-4">
           <label
-            className={`text-sm text-center ${textColor || "text-primaryText"}`}
+            className={`text-sm text-center ${textColor || "text-gray-10"}`}
           >
             Slippage tolerance
           </label>
-          <div className="text-primaryText">
+          <div className="text-gray-10">
             <HoverTip msg={slippageCopyId} extraStyles={"w-50"} />
           </div>
         </div>

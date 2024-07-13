@@ -146,8 +146,8 @@ export function UnclaimedFeesBox(props: any) {
         <div
           className={`flex items-center font-gothamBold justify-center h-10 rounded-lg text-sm px-6 py-1 w-full mt-6 ${
             total_amount_x_y == 0
-              ? "bg-black bg-opacity-25 text-v3SwapGray cursor-not-allowed"
-              : "bg-deepBlue hover:bg-deepBlueHover text-white cursor-pointer"
+              ? "bg-black bg-opacity-25 text-gray-10 cursor-not-allowed"
+              : "bg-blue-10 hover:bg-deepBlueHover text-white cursor-pointer"
           }`}
           onClick={claimRewards}
           style={{

@@ -350,7 +350,7 @@ export default function LimitOrderChartAndTable() {
               ? formatPriceWithCommas(current_price_x)
               : formatPriceWithCommas(current_price_y)}
           </span>
-          <span className="text-sm text-primaryText">
+          <span className="text-sm text-gray-10">
             {switch_token == "X"
               ? token_y_metadata!.symbol + "/" + token_x_metadata!.symbol
               : token_x_metadata!.symbol + "/" + token_y_metadata!.symbol}

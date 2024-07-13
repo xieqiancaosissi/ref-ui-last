@@ -59,10 +59,10 @@ export function NoDataComponent() {
         <div className="frcb">
           <div className="text-white flex flex-col text-sm ">
             Set Price Range
-            <span className="text-xs font-gotham text-primaryText"></span>
+            <span className="text-xs font-gotham text-gray-10"></span>
           </div>
 
-          <div className="rounded p-0.5 border frcs text-xs text-primaryText border-gray-90">
+          <div className="rounded p-0.5 border frcs text-xs text-gray-10 border-gray-90">
             <span
               className={`whitespace-nowrap min-w-20 px-3 py-1.5 rounded-md cursor-pointer ${
                 priceRangeMode === "by_range"

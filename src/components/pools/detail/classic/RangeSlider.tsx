@@ -47,7 +47,7 @@ export default function RangeSlider(props: any) {
               </span>
               {/* <label
                 style={{ height: "5px", width: "1px" }}
-                className="bg-primaryText mt-1"
+                className="bg-gray-60 mt-1"
               ></label> */}
             </div>
           );

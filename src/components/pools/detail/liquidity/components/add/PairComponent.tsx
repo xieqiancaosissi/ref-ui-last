@@ -68,7 +68,7 @@ export function PairComponent() {
       </div>
       <div
         className={`flex items-center justify-center w-8 h-8 rounded-md bg-v3SwapGray bg-opacity-10 ${
-          show_chart ? "text-gradientFromHover" : "text-v3SwapGray"
+          show_chart ? "text-gradientFromHover" : "text-gray-10"
         }`}
         onClick={() => {
           set_show_chart(!show_chart);

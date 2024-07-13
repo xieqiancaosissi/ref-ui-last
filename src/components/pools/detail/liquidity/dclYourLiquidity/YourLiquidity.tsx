@@ -607,7 +607,7 @@ export default function YourLiquidityBox(props: {
               removeButtonTip ? "" : "hidden"
             } absolute z-50 -right-2 -top-12 pb-2`}
           >
-            <div className="border border-primaryText rounded-md px-2 py-1.5 text-xs text-farmText w-56 bg-cardBg">
+            <div className="border border-primaryText rounded-md px-2 py-1.5 text-xs text-gray-10 w-56 bg-cardBg">
               You have liquidity in farm, please unstake from{" "}
               <a
                 className="underline cursor-pointer"

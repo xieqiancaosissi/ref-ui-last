@@ -107,7 +107,7 @@ export default function PoolComposition(props: any) {
                             openUrl((TokenLinks as any)[item.meta.symbol]);
                           }}
                         >
-                          <FiArrowUpRight className="text-primaryText hover:text-green-10 cursor-pointer" />
+                          <FiArrowUpRight className="text-gray-10 hover:text-green-10 cursor-pointer" />
                         </a>
                         {/* <CustomTooltip id={"nearVerifiedId1" + i} /> */}
                       </HoverTooltip>

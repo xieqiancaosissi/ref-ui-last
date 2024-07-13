@@ -21,3 +21,4 @@ export const LOG_BASE = 1.0001;
 export const V3_POOL_SPLITER = "|";
 export const POINTLEFTRANGE = -800000;
 export const POINTRIGHTRANGE = 800000;
+export const TIMESTAMP_DIVISOR = 1000000000;

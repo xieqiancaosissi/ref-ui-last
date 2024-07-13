@@ -517,7 +517,7 @@ export default function FarmsDclDetail(props: {
             ${formatWithCommas(displayNum)}
             ${
               !isEnded && !tempFarms[id]
-                ? `<span class="text-farmText text-xs">${txt}</span>`
+                ? `<span class="text-gray-10 text-xs">${txt}</span>`
                 : ""
             }
           </div>

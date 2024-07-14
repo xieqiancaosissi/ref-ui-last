@@ -85,7 +85,7 @@ export default function OrderTab({
   return (
     <div className="flex whitespace-nowrap  text-white">
       <button
-        className={`mr-7  xs:mr-10 flex items-center gap-1.5 font-extrabold text-lg ${
+        className={`mr-7  xs:mr-10 flex items-center gap-1.5 font-extrabold text-lg outline-none ${
           isActive ? "text-white" : "text-gray-50"
         }`}
         onClick={(e) => {
@@ -116,7 +116,7 @@ export default function OrderTab({
       </button>
 
       <button
-        className={`flex items-center gap-1.5 font-extrabold text-lg ${
+        className={`flex items-center gap-1.5 font-extrabold text-lg outline-none ${
           isHistory ? "text-white" : "text-gray-50"
         }`}
         onClick={(e) => {

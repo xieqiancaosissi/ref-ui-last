@@ -14,16 +14,13 @@ export default function ClaimButton({
   const [claimLoading, setClaimLoading] = useState<boolean>(false);
   return (
     <button
-      className={`rounded-lg text-xs xs:text-sm xs:w-full ml-1.5 mr-2 py-2 px-9 ${
+      className={`rounded border  xs:text-sm xs:w-full ml-1.5 ${
         ONLY_ZEROS.test(unClaimedAmount)
-          ? "text-gray-10 cursor-not-allowe bg-black opacity-20 cursor-not-allowed"
-          : `text-white bg-blue-10 hover:text-white hover:bg-deepBlueHover ${
-              claimLoading ? " text-white bg-deepBlueHover " : ""
-            }`
+          ? "border-dark-190 text-dark-200 cursor-not-allowed opacity-40"
+          : `border-green-10 text-green-10`
       }`}
       type="button"
       disabled={ONLY_ZEROS.test(unClaimedAmount)}
-      // disabled
       onClick={(e) => {
         e.preventDefault();
         e.stopPropagation();
@@ -36,12 +33,15 @@ export default function ClaimButton({
         });
       }}
       style={{
-        height: "34px",
+        height: "32px",
+        fontSize: "13px",
+        width: "90px",
       }}
     >
       <ButtonTextWrapper
         Text={() => <FormattedMessage id="claim" defaultMessage={"Claim"} />}
         loading={claimLoading}
+        loadingColor="#9EFE01"
       ></ButtonTextWrapper>
     </button>
   );

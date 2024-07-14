@@ -1,4 +1,5 @@
 import { FormattedMessage } from "react-intl";
+import React, { useState, useMemo, Fragment, useRef } from "react";
 import Big from "big.js";
 import { UserOrderInfo } from "@/services/swapV3";
 import {
@@ -13,6 +14,14 @@ import { MyOrderInstantSwapArrowRight, FilledEllipse } from "../../icons2";
 import { BsCheckCircle } from "@/components/reactIcons";
 import { useSwapStore } from "@/stores/swap";
 import { isMobile } from "@/utils/device";
+import { HiOutlineExternalLink } from "@/components/reactIcons";
+import getConfig from "@/utils/config";
+import { getTxId } from "@/services/indexer";
+import {
+  NearblocksIcon,
+  PikespeakIcon,
+  TxLeftArrow,
+} from "@/components/pools/icon";
 export default function SwapBanner({
   order,
   totalIn,
@@ -26,6 +35,8 @@ export default function SwapBanner({
   claimedAmount,
   unClaimedAmountIn,
   unClaimedAmount,
+  orderTx,
+  isHoverOn,
 }: {
   order: UserOrderInfo;
   totalIn: string;
@@ -39,11 +50,50 @@ export default function SwapBanner({
   claimedAmount: string;
   unClaimedAmountIn: string;
   unClaimedAmount: string;
+  orderTx: string;
+  isHoverOn: boolean;
 }) {
+  const [loadingStates, setLoadingStates] = useState<Record<string, any>>({});
+  const [hoveredTx, setHoveredTx] = useState<string | null>(null);
+  const closeTimeoutRef = useRef(null) as any;
   const swapStore = useSwapStore();
   const allTokenPrices = swapStore.getAllTokenPrices();
   const sellTokenPrice = allTokenPrices?.[sellToken.id]?.price || null;
   const buyTokenPrice = allTokenPrices?.[buyToken.id]?.price || null;
+  const handleMouseEnter = (receipt_id: string) => {
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current);
+      closeTimeoutRef.current = null;
+    }
+    setHoveredTx(receipt_id);
+  };
+
+  const handleMouseLeave = () => {
+    closeTimeoutRef.current = setTimeout(() => {
+      setHoveredTx(null);
+    }, 200);
+  };
+
+  async function handleTxClick(receipt_id: string, url: string) {
+    setLoadingStates((prevStates) => ({ ...prevStates, [receipt_id]: true }));
+    try {
+      const data = await getTxId(receipt_id);
+      if (data && data.receipts && data.receipts.length > 0) {
+        const txHash = data.receipts[0].originated_from_transaction_hash;
+        window.open(`${url}/${txHash}`, "_blank", "noopener,noreferrer");
+      }
+    } catch (error) {
+      console.error(
+        "An error occurred while fetching transaction data:",
+        error
+      );
+    } finally {
+      setLoadingStates((prevStates) => ({
+        ...prevStates,
+        [receipt_id]: false,
+      }));
+    }
+  }
   function instant_swap_tip() {
     const token_sell_symbol = sellToken.symbol;
     const token_buy_symbol = buyToken.symbol;
@@ -68,8 +118,10 @@ export default function SwapBanner({
   }
   return (
     <td
-      colSpan={8}
-      className="xsm:block xsm:rounded-xl xs:text-xs text-gray-10 w-full relative lg:bottom-1.5 lg:pt-6 xsm:pt-4 bg-gray-20 bg-opacity-20"
+      colSpan={9}
+      className={`text-gray-10 w-full relative lg:pt-6 xsm:pt-4 ${
+        isHoverOn ? "rounded-b-lg" : ""
+      }`}
     >
       {new Big(order.original_deposit_amount || "0")
         .minus(order.original_amount || "0")
@@ -319,6 +371,96 @@ export default function SwapBanner({
             {sort ? sellToken.symbol : buyToken.symbol}
           </span>
         </div>
+      </div>
+      <div className="flex relative px-4 pb-4">
+        {!!orderTx && (
+          <a
+            className="flex items-center text-gray-10 cursor-pointer"
+            onMouseEnter={() => handleMouseEnter(orderTx)}
+            onMouseLeave={handleMouseLeave}
+            target="_blank"
+            rel="noopener noreferrer nofollow"
+          >
+            {loadingStates[orderTx] ? (
+              <>
+                Tx
+                <span className="loading-dots"></span>
+              </>
+            ) : (
+              <>
+                Tx
+                <span className="ml-1.5">
+                  <HiOutlineExternalLink />
+                </span>
+              </>
+            )}
+            {hoveredTx === orderTx && (
+              <div className="w-44 absolute bottom-4 left-16 bg-dark-70 border border-gray-70 rounded-lg p-2 shadow-lg z-50">
+                <div className="flex flex-col">
+                  <div
+                    className="mb-2 px-3 py-2 hover:bg-poolDetaileTxHoverColor text-white rounded-md flex items-center"
+                    onMouseEnter={(e) => {
+                      const arrow = e.currentTarget.querySelector(
+                        ".arrow"
+                      ) as HTMLElement;
+                      if (arrow) {
+                        arrow.style.display = "block";
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      const arrow = e.currentTarget.querySelector(
+                        ".arrow"
+                      ) as HTMLElement;
+                      if (arrow) {
+                        arrow.style.display = "none";
+                      }
+                    }}
+                    onClick={() =>
+                      handleTxClick(orderTx, `${getConfig().explorerUrl}/txns`)
+                    }
+                  >
+                    <NearblocksIcon />
+                    <p className="ml-2 text-sm">nearblocks</p>
+                    <div className="ml-3 arrow" style={{ display: "none" }}>
+                      <TxLeftArrow />
+                    </div>
+                  </div>
+                  <div
+                    className="px-3 py-2 hover:bg-poolDetaileTxHoverColor text-white rounded-md flex items-center"
+                    onMouseEnter={(e) => {
+                      const arrow = e.currentTarget.querySelector(
+                        ".arrow"
+                      ) as HTMLElement;
+                      if (arrow) {
+                        arrow.style.display = "block";
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      const arrow = e.currentTarget.querySelector(
+                        ".arrow"
+                      ) as HTMLElement;
+                      if (arrow) {
+                        arrow.style.display = "none";
+                      }
+                    }}
+                    onClick={() =>
+                      handleTxClick(
+                        orderTx,
+                        `${getConfig().pikespeakUrl}/transaction-viewer`
+                      )
+                    }
+                  >
+                    <PikespeakIcon />
+                    <p className="ml-2 text-sm">Pikespeak...</p>
+                    <div className="ml-3 arrow" style={{ display: "none" }}>
+                      <TxLeftArrow />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </a>
+        )}
       </div>
     </td>
   );

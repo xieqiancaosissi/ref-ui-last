@@ -373,7 +373,7 @@ export default function HistoryLine({
                     </>
                   )}
                   {hoveredTx === orderTx && (
-                    <div className="w-44 absolute top-6 right-0 bg-poolDetaileTxBgColor border border-poolDetaileTxBorderColor rounded-lg p-2 shadow-lg z-50">
+                    <div className="w-44 absolute top-6 right-0 bg-dark-70 border border-gray-70 rounded-lg p-2 shadow-lg z-50">
                       <div className="flex flex-col">
                         <div
                           className="mb-2 px-3 py-2 hover:bg-poolDetaileTxHoverColor text-white rounded-md flex items-center"

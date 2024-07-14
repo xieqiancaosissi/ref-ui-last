@@ -64,7 +64,8 @@ export default function OrderCard({
     "created"
   );
 
-  const [activeOrderHoverOn, setActiveOrderHoverOn] = useState<number>(-1);
+  // const [activeOrderHoverOn, setActiveOrderHoverOn] = useState<number>(-1);
+  const [activeOrderHoverOn, setActiveOrderHoverOn] = useState<number>(0);
 
   const [historyOrderHoverOn, setHistoryOrderHoverOn] = useState<number>(-1);
   const [historyInfoOrderHoverOn, setHistoryInfoOrderHoverOn] =
@@ -202,7 +203,7 @@ export default function OrderCard({
   };
 
   function getRealTimeOrderTip() {
-    return `<div class=" rounded-md lg:w-p200 xs:w-44 text-primaryOrderly  text-xs  text-left">
+    return `<div class="rounded-md w-44 text-white text-xs text-left">
   
       ${intl.formatMessage({
         id: "real_time_executed_orders_tip",
@@ -307,7 +308,7 @@ export default function OrderCard({
 
               <th>
                 <button
-                  className="col-span-1 flex items-center "
+                  className="col-span-2 flex items-center"
                   onClick={() => {
                     setActiveSortBy("created");
                     if (activeSortBy === "created") {
@@ -367,6 +368,7 @@ export default function OrderCard({
                   </span>
                 </button>
               </th>
+              <th className="text-right pr-4">Action</th>
             </tr>
           </>
         )}

@@ -7,9 +7,7 @@ export default function Actions({ order }: { order: UserOrderInfo }) {
   const [cancelLoading, setCancelLoading] = useState<boolean>(false);
   return (
     <button
-      className={`border col-span-1 rounded-lg xs:text-sm xs:w-full text-xs justify-self-end py-2 px-9 ${
-        cancelLoading ? "border border-transparent text-black bg-warn " : ""
-      }  border-warn border-opacity-20 text-warn  ${"hover:border hover:border-transparent hover:text-black hover:bg-warn"}`}
+      className={`border rounded xs:text-sm xs:w-full justify-self-end border-dark-190 text-dark-200`}
       onClick={(e) => {
         e.preventDefault();
         e.stopPropagation();
@@ -18,10 +16,16 @@ export default function Actions({ order }: { order: UserOrderInfo }) {
           order_id: order.order_id,
         });
       }}
+      style={{
+        height: "32px",
+        fontSize: "13px",
+        width: "90px",
+      }}
     >
       <ButtonTextWrapper
         Text={() => <FormattedMessage id="cancel" defaultMessage={"Cancel"} />}
         loading={cancelLoading}
+        loadingColor="#BCC9D2"
       />
     </button>
   );

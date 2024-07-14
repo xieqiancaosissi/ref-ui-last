@@ -192,3 +192,13 @@ input[type="range"].lock-bar::-webkit-slider-thumb {
   background-color: black;
 }
 /* slider end*/
+.loading-dots {
+  display: inline-block;
+  margin-left: 0.5rem;
+  font-size: 1rem;
+}
+
+.loading-dots::after {
+  content: '...';
+  animation: fadeInOut 1s infinite;
+}

@@ -201,7 +201,7 @@ function RateChart() {
     const price = payload[1].payload.price;
 
     return (
-      <div className=" border px-2 py-1.5 rounded-md  bg-toolTipBoxBgColor border-toolTipBoxBorderColor min-w-max">
+      <div className=" border px-2 py-1.5 rounded-md  bg-dark-60 border-gray-70 min-w-max">
         <div className="text-xs text-gray-10">
           {moment(payload[1].payload.date_time).format("HH:mm MMMM DD, YYYY")}
         </div>
@@ -465,7 +465,7 @@ function RateChart() {
                   <stop
                     offset="0%"
                     stopColor={
-                      diff && diff.direction === "down" ? "#FF6A8E" : "#00c6a2"
+                      diff && diff.direction === "down" ? "#FF6A8E" : "#9DFE01"
                     }
                     stopOpacity={0.1}
                   />
@@ -520,7 +520,7 @@ function RateChart() {
               />
               <Line
                 dataKey="stickLast"
-                stroke={diff.direction === "down" ? "#FF6A8e" : "#00c6a2"}
+                stroke={diff.direction === "down" ? "#FF6A8e" : "#9DFE01"}
                 opacity={0.3}
                 strokeDasharray={"2, 2"}
                 dot={false}
@@ -531,7 +531,7 @@ function RateChart() {
                 dataKey="price"
                 type={"monotone"}
                 dot={<CustomizedDot />}
-                stroke={diff.direction === "down" ? "#FF6A8e" : "#00c6a2"}
+                stroke={diff.direction === "down" ? "#FF6A8e" : "#9DFE01"}
                 strokeWidth={2}
                 strokeLinejoin="round"
                 fillOpacity={1}
@@ -541,7 +541,7 @@ function RateChart() {
                 activeDot={{
                   stroke: "#0D1A23",
                   strokeWidth: 2,
-                  fill: diff.direction === "down" ? "#FF6A8e" : "#00FFD1",
+                  fill: diff.direction === "down" ? "#FF6A8e" : "#9DFE01",
                   r: 5,
                 }}
                 isAnimationActive={false}

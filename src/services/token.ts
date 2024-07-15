@@ -4,8 +4,22 @@ import { getAccount, viewFunction } from "../utils/near";
 import db from "@/db/RefDatabase";
 import metadataDefaults from "@/utils/tokenIconConfig";
 import { NEAR_META_DATA } from "@/utils/nearMetaData";
-const { WRAP_NEAR_CONTRACT_ID } = getConfig();
+import { TokenMetadata } from "./ft-contract";
+import { Transaction } from "@/interfaces/swap";
+import { STORAGE_TO_REGISTER_WITH_FT } from "@/utils/constant";
+import { ONLY_ZEROS, toNonDivisibleNumber } from "@/utils/numbers";
+import { ONE_YOCTO_NEAR } from "./xref";
+import { ftGetStorageBalance } from "./ft-contract";
+import { REF_FI_CONTRACT_ID } from "@/utils/contract";
+import { registerTokenAction } from "./creator/token";
+import { checkTokenNeedsStorageDeposit } from "./swap/registerToken";
+import { storageDepositAction } from "./creator/storage";
+import { useAccountStore } from "@/stores/account";
+import { refFiViewFunction } from "@/utils/contract";
+import { extraStableTokenIds } from "./swap/swapConfig";
 
+const specialToken = "pixeltoken.near";
+const { WRAP_NEAR_CONTRACT_ID } = getConfig();
 const BANANA_ID = "berryclub.ek.near";
 const CHEDDAR_ID = "token.cheddar.near";
 const CUCUMBER_ID = "farm.berryclub.ek.near";
@@ -145,4 +159,98 @@ export const ftGetBalance = (tokenId: string, account_id?: string) => {
       account_id: getAccountId(),
     },
   }).catch(() => "0");
+};
+
+export const getWhitelistedTokens = async (): Promise<string[]> => {
+  let userWhitelist = [];
+  const globalWhitelist = await refFiViewFunction({
+    methodName: "get_whitelisted_tokens",
+  });
+  if (getAccountId()) {
+    userWhitelist = await refFiViewFunction({
+      methodName: "get_user_whitelisted_tokens",
+      args: { account_id: getAccountId() },
+    });
+  }
+
+  return [
+    ...new Set<string>([
+      ...globalWhitelist,
+      ...userWhitelist,
+      ...extraStableTokenIds,
+    ]),
+  ];
+};
+
+export const getDepositTransactions = async ({
+  tokens,
+  amounts,
+  msgs,
+}: {
+  tokens: TokenMetadata[];
+  amounts: string[];
+  msgs?: string[];
+}) => {
+  const whitelist = await getWhitelistedTokens();
+
+  const transactions: Transaction[] = [];
+
+  for (let i = 0; i < tokens.length; i++) {
+    if (ONLY_ZEROS.test(amounts[i])) continue;
+    const token = tokens[i];
+    const gasFee =
+      token.id === specialToken ? "150000000000000" : "100000000000000";
+    transactions.unshift({
+      receiverId: token.id,
+      functionCalls: [
+        {
+          methodName: "ft_transfer_call",
+          args: {
+            receiver_id: REF_FI_CONTRACT_ID,
+            amount: toNonDivisibleNumber(token.decimals, amounts[i]),
+            msg: msgs?.[i] || "",
+          },
+          amount: ONE_YOCTO_NEAR,
+          gas: gasFee,
+        },
+      ],
+    });
+
+    const exchangeBalanceAtFt = await ftGetStorageBalance(token.id);
+
+    if (!exchangeBalanceAtFt) {
+      transactions.unshift({
+        receiverId: token.id,
+        functionCalls: [
+          {
+            methodName: "storage_deposit",
+            args: {
+              account_id: REF_FI_CONTRACT_ID,
+              registration_only: true,
+            },
+            amount: STORAGE_TO_REGISTER_WITH_FT,
+            gas: "30000000000000",
+          },
+        ],
+      });
+    }
+
+    if (!whitelist.includes(token.id)) {
+      transactions.unshift({
+        receiverId: REF_FI_CONTRACT_ID,
+        functionCalls: [registerTokenAction(token.id)],
+      });
+    }
+  }
+
+  const neededStorage = await checkTokenNeedsStorageDeposit();
+
+  if (neededStorage) {
+    transactions.unshift({
+      receiverId: REF_FI_CONTRACT_ID,
+      functionCalls: [storageDepositAction({ amount: neededStorage })],
+    });
+  }
+
+  return transactions;
 };

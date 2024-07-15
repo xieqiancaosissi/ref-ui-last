@@ -15,6 +15,7 @@ const config = getConfig();
 const webWalletIds = ["my-near-wallet", "mintbase-wallet"];
 
 export const ONE_YOCTO_NEAR = "0.000000000000000000000001";
+export const LP_STORAGE_AMOUNT = "0.01";
 export const executeMultipleTransactions = async (
   transactions: Transaction[],
   callbackUrl?: string

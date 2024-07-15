@@ -7,8 +7,17 @@ import { refFiViewFunction } from "../utils/contract";
 import { getAccountId } from "../utils/wallet";
 import moment from "moment";
 import db from "@/db/RefDatabase";
+import { toReadableNumber } from "@/utils/numbers";
+import { RefFiFunctionCallOptions } from "./xref";
+import { registerAccountOnToken } from "./creator/token";
+import { nearDepositTransaction } from "./wrap-near";
+import { Transaction } from "@/interfaces/swap";
+import { ONLY_ZEROS } from "@/utils/numbers";
+import { getDepositTransactions } from "./token";
+import { LP_STORAGE_AMOUNT } from "@/utils/near";
+import { TokenMetadata } from "./ft-contract";
 
-const { REF_FI_CONTRACT_ID } = getConfig();
+const { REF_FI_CONTRACT_ID, WRAP_NEAR_CONTRACT_ID } = getConfig();
 
 const genUrlParams = (props: Record<string, string | number>) => {
   return Object.keys(props)
@@ -353,4 +362,59 @@ export const removePoolFromWatchList = async ({
   account?: string;
 }) => {
   return await db.watchList.delete(account + "-" + pool_id);
+};
+interface AddLiquidityToStablePoolOptions {
+  id: number;
+  amounts: string[];
+  min_shares: string;
+  tokens: TokenMetadata[];
+}
+export const addLiquidityToStablePool = async ({
+  id,
+  amounts,
+  min_shares,
+  tokens,
+}: AddLiquidityToStablePoolOptions) => {
+  // const transactions: Transaction[] = [];
+  const depositTransactions = await getDepositTransactions({
+    tokens,
+    amounts: amounts.map((amount: any, i: number) =>
+      toReadableNumber(tokens[i].decimals, amount)
+    ),
+  });
+
+  const actions: RefFiFunctionCallOptions[] = [
+    {
+      methodName: "add_stable_liquidity",
+      args: { pool_id: id, amounts, min_shares },
+      amount: LP_STORAGE_AMOUNT,
+    },
+  ];
+
+  const transactions: Transaction[] = depositTransactions;
+
+  transactions.push({
+    receiverId: REF_FI_CONTRACT_ID,
+    functionCalls: [...actions],
+  });
+
+  if (tokens.map((t) => t.id).includes(WRAP_NEAR_CONTRACT_ID)) {
+    const idx = tokens.findIndex((t) => t.id === WRAP_NEAR_CONTRACT_ID);
+
+    if (idx !== -1 && !ONLY_ZEROS.test(amounts[idx])) {
+      transactions.unshift(
+        nearDepositTransaction(toReadableNumber(24, amounts[idx]))
+      );
+    }
+
+    const registered = await ftGetStorageBalance(WRAP_NEAR_CONTRACT_ID);
+    if (registered === null) {
+      transactions.unshift({
+        receiverId: WRAP_NEAR_CONTRACT_ID,
+        functionCalls: [registerAccountOnToken()],
+      });
+    }
+  }
+
+  return executeMultipleTransactions(transactions);
 };

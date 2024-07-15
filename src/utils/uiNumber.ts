@@ -4,6 +4,7 @@ import {
   toInternationalCurrencySystem,
   toPrecision,
 } from "./numbers";
+import { useAccountStore } from "@/stores/account";
 
 export const formatWithCommas_usd = (v: any) => {
   if (isInvalid(v)) return "$-";
@@ -148,4 +149,13 @@ export const formatNumber = (v: string | number, decimal?: number) => {
   } else {
     return big.toFixed(decimal || 3, 1);
   }
+};
+
+export const disPlayBalance = (isSignedIn: boolean, balance: string) => {
+  const result = isSignedIn
+    ? 0 < Number(balance) && Number(balance) < 0.001
+      ? "< 0.001"
+      : toPrecision(String(balance), 3)
+    : "-";
+  return result;
 };

@@ -146,6 +146,14 @@ export const useTokenMetadata = (list: Array<any>) => {
                   : item?.token_symbols[index],
             })
           ),
+          rates: item.rates ||
+            item.degens || [
+              "1000000000000000000000000",
+              "1000000000000000000000000",
+              "1000000000000000000000000",
+              "1000000000000000000000000",
+            ],
+          amp: item.amp || 240,
           supplies: item?.amounts
             ? item.amounts.reduce(
                 (

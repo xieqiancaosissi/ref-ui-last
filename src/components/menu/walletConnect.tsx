@@ -4,19 +4,20 @@ import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import { Tooltip } from "react-tooltip";
 import "react-loading-skeleton/dist/skeleton.css";
 import { CopyToClipboard } from "react-copy-to-clipboard";
-import { motion } from "framer-motion";
 import {
   DownArrowIcon,
   CopyIcon,
   DisconnectIcon,
   ChangeIcon,
   KeyIcon,
+  TotalAssetsIcon,
 } from "./icons";
 import { useAccountStore } from "../../stores/account";
 import { getCurrentWallet, getSelector } from "../../utils/wallet";
 import type { Wallet } from "@near-wallet-selector/core";
 import swapStyles from "../swap/swap.module.css";
 import AccessKeyModal from "./AccessKeyModal";
+import Overview from "../portfolio";
 
 export default function WalletConnect() {
   const [accountId, setAccountId] = useState<string | undefined>();
@@ -98,30 +99,12 @@ export default function WalletConnect() {
     return account.length > 10 ? niceAccountId : accountId;
   };
 
-  const variants = {
-    open: {
-      opacity: 1,
-      y: 0,
-      height: "calc(100vh - 82px)",
-      width: "20%",
-      transition: { duration: 0.5 },
-    },
-    closed: {
-      opacity: 0,
-      y: "-100%",
-      height: 0,
-      width: "20%",
-      transition: { duration: 0.5 },
-    },
-  };
-
   const handleBackdropClick = (e: any) => {
     e.stopPropagation();
     setIsOpen(false);
   };
 
   function showkeyModal() {
-    // document.documentElement.style.overflow = "visible";
     setIsOpen(false);
     setKeyModalShow(true);
   }
@@ -129,6 +112,7 @@ export default function WalletConnect() {
   function closeKeyModal() {
     setKeyModalShow(false);
   }
+  
   return (
     <div className="relative justify-self-end z-50">
       {!loading ? (
@@ -165,11 +149,11 @@ export default function WalletConnect() {
                 }}
                 onClick={handleBackdropClick}
               ></div>
-              <motion.div
-                className="fixed top-[46px] bottom-[32px] right-0 bg-dark-10 z-50"
-                variants={variants}
-                initial="closed"
-                animate={isOpen ? "open" : "closed"}
+              <div
+                className={`fixed top-[46px] bottom-[32px] right-0 bg-dark-10 z-50 ${
+                  isOpen ? "block" : "hidden"
+                }`}
+                style={{ width: "20%" }}
                 onClick={(e) => e.stopPropagation()} // Prevent click inside from closing
               >
                 <div className="bg-dark-140 border border-gray-200 p-3.5 w-full h-full">
@@ -234,8 +218,9 @@ export default function WalletConnect() {
                       />
                     </div>
                   </div>
+                  <Overview />
                 </div>
-              </motion.div>
+              </div>
             </div>
           ) : (
             <div

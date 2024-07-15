@@ -4,6 +4,8 @@ import { getAccount, viewFunction } from "../utils/near";
 import db from "@/db/RefDatabase";
 import metadataDefaults from "@/utils/tokenIconConfig";
 import { NEAR_META_DATA } from "@/utils/nearMetaData";
+import { refFiViewFunction } from "@/utils/contract";
+import { useEffect, useState } from "react";
 const { WRAP_NEAR_CONTRACT_ID } = getConfig();
 
 const BANANA_ID = "berryclub.ek.near";
@@ -23,7 +25,10 @@ export async function ftGetTokenMetadata(
   accountPage?: boolean
 ) {
   try {
-    let metadata: any = await db.allTokens().where({ id: tokenId }).first();
+    let metadata: any = await db
+      .allTokens()
+      .where({ id: String(tokenId) })
+      .first();
     if (!metadata) {
       metadata = await viewFunction({
         contractId: tokenId,
@@ -145,4 +150,57 @@ export const ftGetBalance = (tokenId: string, account_id?: string) => {
       account_id: getAccountId(),
     },
   }).catch(() => "0");
+};
+
+export const getWhitelistedTokensAndNearTokens = async (): Promise<
+  string[]
+> => {
+  const requestAll = [];
+  const request1 = refFiViewFunction({
+    methodName: "get_whitelisted_tokens",
+  });
+  requestAll.push(request1);
+  const request2 = refFiViewFunction({
+    methodName: "get_user_whitelisted_tokens",
+    args: { account_id: getAccountId() },
+  });
+  requestAll.push(request2);
+  const [globalWhitelist = [], userWhitelist = []] = await Promise.all(
+    requestAll
+  );
+
+  return [
+    ...new Set<string>([
+      ...globalWhitelist,
+      ...userWhitelist,
+      getConfig().REF_VE_CONTRACT_ID,
+    ]),
+  ];
+};
+
+export const getTokenBalances = (): Promise<{
+  [tokenId: string]: string;
+}> => {
+  return refFiViewFunction({
+    methodName: "get_deposits",
+    args: { account_id: getAccountId() },
+  });
+};
+
+export const useTokenBalances = () => {
+  const [balances, setBalances] = useState<{
+    [tokenId: string]: string;
+  }>();
+  const accountId = getAccountId();
+
+  const isSignedIn = !!accountId;
+
+  useEffect(() => {
+    if (!isSignedIn) return;
+    getTokenBalances()
+      .then(setBalances)
+      .catch(() => setBalances({}));
+  }, [isSignedIn, accountId]);
+
+  return balances;
 };

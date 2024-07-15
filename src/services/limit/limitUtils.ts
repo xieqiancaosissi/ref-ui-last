@@ -1,5 +1,6 @@
 import Big from "big.js";
 import BigNumber from "bignumber.js";
+import _ from "lodash";
 import { ILimitStore } from "@/stores/limitOrder";
 import { toPrecision, toInternationalCurrencySystem } from "@/utils/numbers";
 import { IPoolDcl } from "@/interfaces/swapDcl";
@@ -56,6 +57,25 @@ export async function fillDclPool(p: IPoolDcl) {
   p.tvlUnreal = Object.keys(tokenPriceList).length === 0;
   return p;
 }
+
+export function getBestTvlPoolList(pools: IPoolDcl[]) {
+  if (!pools?.length) return [];
+  const accPools = pools.reduce((acc, p) => {
+    const { token_x, token_y } = p;
+    const key = `${token_x}|${token_y}`;
+    if (acc[key]) {
+      acc[key].push(p);
+    } else {
+      acc[key] = [p];
+    }
+    return acc;
+  }, {} as Record<string, IPoolDcl[]>);
+  const bestPools = Object.values(accPools).map((subPools: IPoolDcl[]) => {
+    return _.maxBy(subPools, (p) => Number(p.tvl || 0));
+  });
+  return bestPools;
+}
+
 export const formatNumber = (v: string | number) => {
   if (isInvalid(v)) return "-";
   const big = Big(v);

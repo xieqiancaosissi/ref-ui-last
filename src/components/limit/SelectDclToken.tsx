@@ -3,6 +3,7 @@ import { TokenMetadata } from "@/services/ft-contract";
 import { sort_tokens_by_base } from "@/services/commonV3";
 import { usePersistLimitStore, IPersistLimitStore } from "@/stores/limitOrder";
 import { SelectedIcon } from "./icons";
+import { getBestTvlPoolList } from "@/services/limit/limitUtils";
 export default function SelectDclTokenBox({
   onSelect,
   show,
@@ -12,6 +13,7 @@ export default function SelectDclTokenBox({
 }) {
   const persistLimitStore: IPersistLimitStore = usePersistLimitStore();
   const allPools = persistLimitStore.getAllDclPools();
+  const bestTvlPoolList = getBestTvlPoolList(allPools || []) as IPoolDcl[];
   if (!show) return null;
   return (
     <div className="absolute rounded-lg border border-gray-70 bg-dark-70 py-2.5 right-0 top-8 z-50">
@@ -20,7 +22,7 @@ export default function SelectDclTokenBox({
         style={{ height: "215px" }}
         className="overflow-y-auto  px-2.5 thinGrayscrollBar"
       >
-        {allPools?.map((p: IPoolDcl) => {
+        {bestTvlPoolList.map((p: IPoolDcl) => {
           const { token_x_metadata, token_y_metadata } = p;
           const tokens = sort_tokens_by_base([
             token_x_metadata as TokenMetadata,

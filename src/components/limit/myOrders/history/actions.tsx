@@ -1,9 +1,9 @@
 import { FormattedMessage } from "react-intl";
-import React, { useState, useContext, useMemo, Fragment, useRef } from "react";
+import React from "react";
 import Big from "big.js";
 import { ONLY_ZEROS } from "@/utils/numbers";
 import { UserOrderInfo } from "@/services/swapV3";
-import { HiOutlineExternalLink } from "@/components/reactIcons";
+import { ArrowTopRightIcon } from "../../icons2";
 import getConfig from "@/utils/config";
 import {
   NearblocksIcon,
@@ -49,7 +49,7 @@ export default function Actions({
       <div className="relative">
         {!!orderTx && (
           <a
-            className="flex items-center text-gray-10 cursor-pointer"
+            className="flex items-center text-gray-10 cursor-pointer hover:text-white"
             onMouseEnter={() => handleMouseEnter(orderTx)}
             onMouseLeave={handleMouseLeave}
             target="_blank"
@@ -64,12 +64,12 @@ export default function Actions({
               <>
                 Tx
                 <span className="ml-1.5">
-                  <HiOutlineExternalLink />
+                  <ArrowTopRightIcon />
                 </span>
               </>
             )}
             {hoveredTx === orderTx && (
-              <div className="w-44 absolute -bottom-2 left-14 bg-dark-70 border border-gray-70 rounded-lg p-2 shadow-lg z-50">
+              <div className="w-44 absolute -bottom-2 left-12 bg-dark-70 border border-gray-70 rounded-lg p-2 shadow-lg z-50">
                 <div className="flex flex-col">
                   <div
                     className="mb-2 px-3 py-2 hover:bg-poolDetaileTxHoverColor text-white rounded-md flex items-center"

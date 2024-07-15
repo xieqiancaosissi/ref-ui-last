@@ -1,7 +1,7 @@
 import React from "react";
 import { useIntl } from "react-intl";
-import { VETip } from "../icons2";
 import CustomTooltip from "@/components/customTooltip/customTooltip";
+import { TipIcon } from "../icons2";
 export default function ExclamationTip({
   id,
   color,
@@ -28,7 +28,7 @@ export default function ExclamationTip({
       id,
       defaultMessage,
     });
-    const result: string = `<div class="text-gray-10  border-black border-opacity-20 xsm:w-36 whitespace-normal text-sm text-left ${
+    const result: string = `<div class="text-white  border-black border-opacity-20 xsm:w-36 whitespace-normal text-xs text-left ${
       width ? width : ""
     }"
       style="max-width: 200px; ">${tip}</div>`;
@@ -56,7 +56,7 @@ export default function ExclamationTip({
           setLight(false);
         }}
       >
-        <VETip />
+        <TipIcon />
       </div>
       <CustomTooltip
         id={uniquenessId || "exclaimaton_tip" + "id"}

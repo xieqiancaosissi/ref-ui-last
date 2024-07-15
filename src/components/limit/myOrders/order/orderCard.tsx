@@ -48,7 +48,7 @@ export default function OrderCard({
       sessionStorage.removeItem(REF_FI_MY_ORDER_SHOW_HISTORY_SWAP_INFO);
     }
   };
-  const pool_id_by_url = dclPool.pool_id;
+  const pool_id_by_url = dclPool?.pool_id;
   const [orderType, setOrderType] = useState<"active" | "history">(
     sessionStorage.getItem(ORDER_TYPE_KEY) ||
       activeOrder?.length > 0 ||
@@ -64,9 +64,7 @@ export default function OrderCard({
     "created"
   );
 
-  // const [activeOrderHoverOn, setActiveOrderHoverOn] = useState<number>(-1);
-  const [activeOrderHoverOn, setActiveOrderHoverOn] = useState<number>(0);
-
+  const [activeOrderHoverOn, setActiveOrderHoverOn] = useState<number>(-1);
   const [historyOrderHoverOn, setHistoryOrderHoverOn] = useState<number>(-1);
   const [historyInfoOrderHoverOn, setHistoryInfoOrderHoverOn] =
     useState<number>(-1);

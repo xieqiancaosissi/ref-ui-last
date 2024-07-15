@@ -178,8 +178,8 @@ export default function SwapBanner({
             <div className="frcs text-xs pr-2 text-gray-10">
               <BsCheckCircle
                 className="mr-1.5"
-                fill="#00D6AF"
-                stroke="#00D6AF"
+                fill="#9EFE01"
+                stroke="#9EFE01"
               />
 
               <FormattedMessage

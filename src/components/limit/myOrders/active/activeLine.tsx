@@ -232,9 +232,6 @@ export default function ActiveLine({
         onMouseEnter={() => {
           setHoverOn(index);
         }}
-        style={{
-          zIndex: 21,
-        }}
       >
         <td className={hoverOn === index ? " rounded-tl-xl" : " rounded-l-xl"}>
           <SellTokenAmount sellToken={sellToken} orderIn={orderIn} />
@@ -283,7 +280,7 @@ export default function ActiveLine({
       {hoverOn === index && (
         <>
           <tr
-            className={`xs:flex z-20 relative  xs:flex-col whitespace-nowrap  bg-gray-30 w-full text-sm text-gray-10 px-5 pb-5 pt-10`}
+            className={`xs:flex z-20 relative  xs:flex-col whitespace-nowrap  bg-gray-20 bg-opacity-50 w-full text-sm text-gray-10 px-5 pb-5 pt-10`}
           >
             <SwapBanner
               order={order}

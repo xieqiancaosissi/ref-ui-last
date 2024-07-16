@@ -7,11 +7,19 @@ import { NEARXIDS } from "@/services/swap/swapConfig";
 import { WRAP_NEAR_CONTRACT_ID } from "@/services/wrap-near";
 import BigNumber from "bignumber.js";
 import Big from "big.js";
-import { toReadableNumber } from "@/utils/numbers";
 import {
+  toInternationalCurrencySystem,
+  toReadableNumber,
+} from "@/utils/numbers";
+import {
+  auroraAddr,
+  display_number_internationalCurrencySystemLongString,
+  useAuroraBalancesNearMapping,
   useDCLAccountBalance,
   useUserRegisteredTokensAllAndNearBalance,
 } from "@/services/aurora";
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import { divide } from "mathjs";
 
 export default function WalletPanel() {
   const {
@@ -31,32 +39,33 @@ export default function WalletPanel() {
   const [near_total_value, set_near_total_value] = useState<string>("0");
   const [dcl_total_value, set_dcl_total_value] = useState<string>("0");
   const [aurora_total_value, set_aurora_total_value] = useState<string>("0");
-  // const auroraAddress = auroraAddr(getAccountId() || "");
+  const auroraAddress = auroraAddr(getAccountId() || "");
   const userTokens = useUserRegisteredTokensAllAndNearBalance();
   const balances = useTokenBalances(); // inner account balance
-  // const auroaBalances = useAuroraBalancesNearMapping(auroraAddress);
+  const auroaBalances = useAuroraBalancesNearMapping(auroraAddress);
   const DCLAccountBalance = useDCLAccountBalance(!!accountId);
-  const is_tokens_loading = !userTokens || !balances || !DCLAccountBalance;
-  // useEffect(() => {
-  //   if (!is_tokens_loading) {
-  //     userTokens.forEach((token: TokenMetadata) => {
-  //       const { decimals, id, nearNonVisible } = token;
-  //       token.ref =
-  //         id === NEARXIDS[0]
-  //           ? "0"
-  //           : toReadableNumber(decimals, balances[id] || "0");
-  //       token.near = toReadableNumber(
-  //         decimals,
-  //         (nearNonVisible || "0").toString()
-  //       );
-  //       token.dcl = toReadableNumber(decimals, DCLAccountBalance[id] || "0");
-  //       token.aurora = toReadableNumber(
-  //         decimals,
-  //         auroaBalances[id] || "0"
-  //       ).toString();
-  //     });
-  //   }
-  // }, [is_tokens_loading]);
+  const is_tokens_loading =
+    !userTokens || !balances || !auroaBalances || !DCLAccountBalance;
+  useEffect(() => {
+    if (!is_tokens_loading) {
+      userTokens.forEach((token: TokenMetadata) => {
+        const { decimals, id, nearNonVisible } = token;
+        token.ref =
+          id === NEARXIDS[0]
+            ? "0"
+            : toReadableNumber(decimals, balances[id] || "0");
+        token.near = toReadableNumber(
+          decimals,
+          (nearNonVisible || "0").toString()
+        );
+        token.dcl = toReadableNumber(decimals, DCLAccountBalance[id] || "0");
+        token.aurora = toReadableNumber(
+          decimals,
+          auroaBalances[id] || "0"
+        ).toString();
+      });
+    }
+  }, [tokenPriceList, userTokens, is_tokens_loading]);
   useEffect(() => {
     if (!is_tokens_loading) {
       const ref_tokens_temp: TokenMetadata[] = [];
@@ -105,6 +114,11 @@ export default function WalletPanel() {
       set_wallet_assets_value_done(true);
     }
   }, [tokenPriceList, userTokens, is_tokens_loading]);
+  useEffect(() => {
+    if (userTokens) {
+      setUserTokens(userTokens);
+    }
+  }, [userTokens]);
   function token_data_process(
     target_tokens: TokenMetadata[],
     accountType: keyof TokenMetadata
@@ -131,6 +145,24 @@ export default function WalletPanel() {
 
     return { tokens, total_value };
   }
+  function display_value(amount: string) {
+    const accountId = getAccountId();
+    if (!accountId) return "$-";
+    const amount_big = new BigNumber(amount);
+    if (amount_big.isEqualTo("0")) {
+      return "$0";
+    } else if (amount_big.isLessThan("0.01")) {
+      return "<$0.01";
+    } else {
+      return `$${toInternationalCurrencySystem(amount, 2)}`;
+    }
+  }
+  function showTokenPrice(token: TokenMetadata) {
+    const token_price =
+      tokenPriceList[token.id == "NEAR" ? WRAP_NEAR_CONTRACT_ID : token.id]
+        ?.price || "0";
+    return display_value(token_price);
+  }
   return (
     <>
       <div className="bg-gray-20 bg-opacity-40 p-4 rounded">
@@ -139,23 +171,53 @@ export default function WalletPanel() {
           <div className="w-2/6">Balance</div>
           <div className="w-1/5 flex items-center justify-end">Value</div>
         </div>
-        <div>
-          {near_tokens.map((token: TokenMetadata) => {
-            return <div key={token.id + "near"} />;
-          })}
-        </div>
-        <div className="flex items-center w-full mb-6">
-          <div className="w-3/6 flex items-center">
-            <div className="w-5 h-5 rounded-3xl mr-2.5">11</div>
-            <div className="text-sm">
-              <p className="">ETH</p>
-              <p className="text-gray-50 text-xs">$2,893</p>
+        <div style={{ height: "40vh", overflow: "auto" }}>
+          {(!userTokens || !balances || !auroaBalances || !DCLAccountBalance) &&
+          isSignedIn ? (
+            <div className="flex justify-between">
+              <SkeletonTheme
+                baseColor="rgba(33, 43, 53, 0.3)"
+                highlightColor="#2A3643"
+              >
+                <Skeleton width={320} height={60} count={4} className="mt-4" />
+              </SkeletonTheme>
             </div>
-          </div>
-          <div className="w-2/6 text-sm">0.03</div>
-          <div className="w-1/5 flex items-center justify-end text-sm">
-            $86.79
-          </div>
+          ) : (
+            <>
+              {near_tokens.map((token: TokenMetadata) => {
+                return (
+                  <div
+                    key={token.id + "near"}
+                    className="flex items-center w-full mb-6"
+                  >
+                    <div className="w-3/6 flex items-center">
+                      <img
+                        className="w-6 h-6 rounded-3xl mr-2.5"
+                        src={token.icon}
+                        alt={""}
+                      />
+                      <div className="text-sm">
+                        <p className="w-24 overflow-hidden whitespace-nowrap overflow-ellipsis">
+                          {token.symbol}
+                        </p>
+                        <p className="text-gray-50 text-xs">
+                          {showTokenPrice(token)}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="w-2/6 text-sm">
+                      {display_number_internationalCurrencySystemLongString(
+                        Big(token?.near || 0).toFixed()
+                      )}
+                    </div>
+                    <div className="w-1/5 flex items-center justify-end text-sm">
+                      {display_value(String(token?.t_value))}
+                    </div>
+                  </div>
+                );
+              })}
+            </>
+          )}
         </div>
       </div>
     </>

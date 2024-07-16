@@ -19,13 +19,18 @@ import { defaultTokenList, getAuroraConfig } from "@/utils/auroraConfig";
 import { Near, WalletConnection, keyStores } from "near-api-js";
 import getConfig from "@/utils/config";
 import { nearMetadata } from "./wrap-near";
-import { scientificNotationToString, toReadableNumber } from "@/utils/numbers";
+import {
+  scientificNotationToString,
+  toInternationalCurrencySystemLongString,
+  toReadableNumber,
+} from "@/utils/numbers";
 import { useAccountStore } from "@/stores/account";
 import Big from "big.js";
 import { Erc20Abi } from "./abi/erc20";
 import AbiCoder from "web3-eth-abi";
 import { getAccountId } from "@/utils/wallet";
 import { list_user_assets } from "./swapV3";
+import BigNumber from "bignumber.js";
 
 const config = getConfig();
 const keyStore = new keyStores.BrowserLocalStorageKeyStore();
@@ -128,7 +133,6 @@ export const useUserRegisteredTokensAllAndNearBalance = () => {
         setTokens(arr);
       });
   }, []);
-
   return tokens;
 };
 
@@ -301,3 +305,16 @@ export const useDCLAccountBalance = (isSignedIn: boolean) => {
 
   return assets;
 };
+
+export function display_number_internationalCurrencySystemLongString(
+  amount: string
+) {
+  const amount_big = new BigNumber(amount);
+  if (amount_big.isEqualTo("0")) {
+    return "0";
+  } else if (amount_big.isLessThan("0.01")) {
+    return "<0.01";
+  } else {
+    return toInternationalCurrencySystemLongString(amount, 2);
+  }
+}

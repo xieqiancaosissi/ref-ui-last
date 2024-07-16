@@ -318,16 +318,17 @@ export const useTokenBalances = () => {
 
 export const getDepositableBalance = async (
   tokenId: string,
-  decimals: number = 18
+  decimals?: number
 ) => {
+  const safeDecimals = decimals || 0;
   if (tokenId === "NEAR") {
     return getAccountNearBalance().then(({ available }: any) => {
-      return toReadableNumber(decimals, available);
+      return toReadableNumber(safeDecimals, available);
     });
   } else if (tokenId) {
     return ftGetBalance(tokenId)
       .then((res: string) => {
-        return toReadableNumber(decimals, res);
+        return toReadableNumber(safeDecimals, res);
       })
       .catch((res: any) => "0");
   } else {

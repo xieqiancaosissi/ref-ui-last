@@ -112,7 +112,7 @@ export default function WalletConnect() {
   function closeKeyModal() {
     setKeyModalShow(false);
   }
-  
+
   return (
     <div className="relative justify-self-end z-50">
       {!loading ? (

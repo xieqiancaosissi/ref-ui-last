@@ -6,6 +6,7 @@ import metadataDefaults from "@/utils/tokenIconConfig";
 import { NEAR_META_DATA } from "@/utils/nearMetaData";
 import { refFiViewFunction } from "@/utils/contract";
 import { useEffect, useState } from "react";
+import { toReadableNumber } from "@/utils/numbers";
 const { WRAP_NEAR_CONTRACT_ID } = getConfig();
 
 const BANANA_ID = "berryclub.ek.near";
@@ -203,4 +204,23 @@ export const useTokenBalances = () => {
   }, [isSignedIn, accountId]);
 
   return balances;
+};
+
+export const getDepositableBalance = async (
+  tokenId: string,
+  decimals: number = 18
+) => {
+  if (tokenId === "NEAR") {
+    return getAccountNearBalance().then(({ available }: any) => {
+      return toReadableNumber(decimals, available);
+    });
+  } else if (tokenId) {
+    return ftGetBalance(tokenId)
+      .then((res: string) => {
+        return toReadableNumber(decimals, res);
+      })
+      .catch((res: any) => "0");
+  } else {
+    return "";
+  }
 };

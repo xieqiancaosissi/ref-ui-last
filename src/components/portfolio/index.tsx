@@ -158,7 +158,7 @@ export default function Overview() {
   );
 }
 
-interface OverviewContextType {
+export interface OverviewContextType {
   tokenPriceList: any;
   isSignedIn: boolean;
   accountId: string;

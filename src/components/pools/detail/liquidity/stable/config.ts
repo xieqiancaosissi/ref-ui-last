@@ -12,3 +12,16 @@ export const feeList = [
     value: "0.2",
   },
 ];
+
+export const removeTab = [
+  {
+    key: "share",
+    value: "By Share",
+    tips: "No fee in removing liquidity by share",
+  },
+  {
+    key: "token",
+    value: "By Token",
+    tips: "Remove how much you want per token",
+  },
+];

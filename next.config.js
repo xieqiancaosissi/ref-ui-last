@@ -1,6 +1,6 @@
-/** @type {import('next').NextConfig} */
-import { BundleAnalyzerPlugin } from "webpack-bundle-analyzer";
-const nextConfig = {
+const webpack = require("webpack");
+// import { BundleAnalyzerPlugin } from "webpack-bundle-analyzer";
+module.exports = {
   reactStrictMode: true,
   output: "standalone",
   transpilePackages: ["@near-wallet-selector/wallet-connect"],
@@ -18,6 +18,21 @@ const nextConfig = {
         hostname: "**",
       },
     ],
+  },
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+      };
+      config.plugins.push(
+        new webpack.ProvidePlugin({
+          fs: "browserify-fs",
+        })
+      );
+    }
+
+    return config;
   },
   // webpack: (config, { isServer }) => {
   //   if (!isServer) {
@@ -40,5 +55,3 @@ const nextConfig = {
   //   return config;
   // },
 };
-
-export default nextConfig;

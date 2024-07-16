@@ -2,6 +2,7 @@ import { useRouter } from "next/router";
 import { TokenMetadata } from "@/services/ft-contract";
 import { SwapContractType } from "@/interfaces/swap";
 import { RefMarketRouteIcon, PoolLinkIcon } from "./icons";
+import { isStablePool } from "@/services/swap/swapUtils";
 import Token from "./Token";
 const TradeRouteHub = ({
   token,
@@ -16,8 +17,13 @@ const TradeRouteHub = ({
   function jump() {
     if (!poolId) return;
     if (contract == "Ref_Classic") {
-      router.push(`/pool/${poolId}`);
+      if (isStablePool(poolId)) {
+        router.push(`/pool/stable/${poolId}`);
+      } else {
+        router.push(`/pool/classic/${poolId}`);
+      }
     } else if (contract == "Ref_DCL") {
+      router.push(`/pool/dcl/${poolId}`);
     }
   }
   return (

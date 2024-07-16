@@ -104,15 +104,15 @@ export default function OrderTab({
             defaultMessage={"Active Orders"}
           />
         </span>
-        <span
-          className={`flex items-center justify-center min-w-5 h-5 text-sm text-gray-210 rounded bg-gray-40 px-1 ${
-            !isActive ? "opacity-30" : ""
-          }`}
-        >
-          {activeOrderList && activeOrderList.length > 0
-            ? `${activeOrderList.length}`
-            : null}
-        </span>
+        {activeOrderList?.length > 0 ? (
+          <span
+            className={`flex items-center justify-center min-w-5 h-5 text-sm text-gray-210 rounded bg-gray-40 px-1 ${
+              !isActive ? "opacity-30" : ""
+            }`}
+          >
+            {activeOrderList.length}
+          </span>
+        ) : null}
       </button>
 
       <button
@@ -132,15 +132,15 @@ export default function OrderTab({
         >
           <FormattedMessage id="history" defaultMessage={"History"} />
         </span>
-        <span
-          className={`flex items-center justify-center min-w-5 h-5 text-sm text-gray-210 rounded bg-gray-40 px-1 ${
-            !isHistory ? "opacity-30" : ""
-          }`}
-        >
-          {historyOrderList && historyOrderList.length > 0
-            ? `${historyOrderList.length}`
-            : null}
-        </span>
+        {historyOrderList?.length > 0 ? (
+          <span
+            className={`flex items-center justify-center min-w-5 h-5 text-sm text-gray-210 rounded bg-gray-40 px-1 ${
+              !isHistory ? "opacity-30" : ""
+            }`}
+          >
+            {historyOrderList.length}
+          </span>
+        ) : null}
       </button>
     </div>
   );

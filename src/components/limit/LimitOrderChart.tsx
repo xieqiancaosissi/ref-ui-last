@@ -122,7 +122,7 @@ export default function OrderChart() {
       d3.select(".areaLeft")
         .append("path")
         .attr("d", line_path_data_left)
-        .attr("stroke", "#00FFD1")
+        .attr("stroke", "#9EFE01")
         .attr("strokeWidth", "2")
         .attr("fill", "none");
 
@@ -162,7 +162,7 @@ export default function OrderChart() {
               targetY,
               offsetX,
               offsetY,
-              dotFillColor: "#00FFD1",
+              dotFillColor: "#9EFE01",
             });
             setSide("buy");
             setFoucsOrderPoint(targetItem);

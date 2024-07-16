@@ -7,7 +7,11 @@ import { NEAR_META_DATA } from "@/utils/nearMetaData";
 import { TokenMetadata } from "./ft-contract";
 import { Transaction } from "@/interfaces/swap";
 import { STORAGE_TO_REGISTER_WITH_FT } from "@/utils/constant";
-import { ONLY_ZEROS, toNonDivisibleNumber, toReadableNumber } from "@/utils/numbers";
+import {
+  ONLY_ZEROS,
+  toNonDivisibleNumber,
+  toReadableNumber,
+} from "@/utils/numbers";
 import { ONE_YOCTO_NEAR } from "./xref";
 import { ftGetStorageBalance } from "./ft-contract";
 import { REF_FI_CONTRACT_ID } from "@/utils/contract";
@@ -38,7 +42,10 @@ export async function ftGetTokenMetadata(
   accountPage?: boolean
 ) {
   try {
-    let metadata: any = await db.allTokens().where({ id: tokenId }).first();
+    let metadata: any = await db
+      .allTokens()
+      .where({ id: String(tokenId) })
+      .first();
     if (!metadata) {
       metadata = await viewFunction({
         contractId: tokenId,

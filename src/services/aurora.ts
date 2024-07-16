@@ -84,6 +84,8 @@ export const toAddress = (address: string | any) => {
 
 export const getTokenNearAccount = async (auroraAddress: string) => {
   try {
+    // debugger
+    console.log(toAddress(auroraAddress),'toAddress(auroraAddress)')
     return (
       await getAurora().getNEP141Account(toAddress(auroraAddress))
     ).unwrap();
@@ -122,6 +124,7 @@ export const getTriTokenIdsOnRef = async () => {
     })
     .flat();
   const ids = await getBatchTokenNearAcounts(idsOnPair);
+  // debugger
   return ids?.filter((id: string) => !!id) || [];
 };
 
@@ -132,9 +135,7 @@ export const useUserRegisteredTokensAllAndNearBalance = () => {
     getWhitelistedTokensAndNearTokens()
       .then(async (tokenList) => {
         const triTokenIds = await getTriTokenIdsOnRef();
-        console.log(triTokenIds, "triTokenIds");
         const newList = [...new Set((triTokenIds || []).concat(tokenList))];
-
         const walletBalancePromise = Promise.all(
           [nearMetadata.id, ...newList].map((tokenId) => {
             return getDepositableBalance(tokenId);

@@ -18,8 +18,6 @@ import {
 import { defaultTokenList, getAuroraConfig } from "@/utils/auroraConfig";
 import { Near, WalletConnection, keyStores } from "near-api-js";
 import getConfig from "@/utils/config";
-import { keyStore } from "@/utils/orderlyUtils";
-import { getAccount } from "@/utils/near";
 import { nearMetadata } from "./wrap-near";
 import { scientificNotationToString, toReadableNumber } from "@/utils/numbers";
 import { useAccountStore } from "@/stores/account";
@@ -29,48 +27,24 @@ import AbiCoder from "web3-eth-abi";
 import { getAccountId } from "@/utils/wallet";
 import { list_user_assets } from "./swapV3";
 
-class AuroraWalletConnection extends WalletConnection {
-  async _completeSignInWithAccessKey() {
-    const currentUrl = new URL(window.location.href);
-    const publicKey = currentUrl.searchParams.get("public_key") || "";
-    const allKeys = (currentUrl.searchParams.get("all_keys") || "").split(",");
-    const accountId = currentUrl.searchParams.get("account_id") || "";
-    // TODO: Handle errors during login
-    if (accountId) {
-      this._authData = {
-        accountId,
-        allKeys,
-      };
-      window.localStorage.setItem(
-        this._authDataKey,
-        JSON.stringify(this._authData)
-      );
-      if (publicKey) {
-        await this._moveKeyFromTempToPermanent(accountId, publicKey);
-      }
-    }
-    // currentUrl.searchParams.delete('public_key');
-    // currentUrl.searchParams.delete('all_keys');
-    // currentUrl.searchParams.delete('account_id');
-    // currentUrl.searchParams.delete('meta');
-    // currentUrl.searchParams.delete('transactionHashes');
-    // window.history.replaceState({}, document.title, currentUrl.toString());
-  }
-}
 const config = getConfig();
+const keyStore = new keyStores.BrowserLocalStorageKeyStore();
 const near = new Near({
-  keyStore: new keyStores.InMemoryKeyStore(),
+  keyStore,
   headers: {},
   ...config,
 });
 const getAurora = () => {
-  const aurora_walletConnection = new AuroraWalletConnection(near, "aurora");
-
+  const aurora_walletConnection = new WalletConnection(near, "aurora");
+  const account = new WalletConnection(
+    near,
+    config.REF_FARM_BOOST_CONTRACT_ID
+  ).account();
   //@ts-ignore
   return new Engine(
     aurora_walletConnection,
     keyStore,
-    getAccount(),
+    account,
     getConfig().networkId,
     "aurora"
   );
@@ -84,8 +58,6 @@ export const toAddress = (address: string | any) => {
 
 export const getTokenNearAccount = async (auroraAddress: string) => {
   try {
-    // debugger
-    console.log(toAddress(auroraAddress),'toAddress(auroraAddress)')
     return (
       await getAurora().getNEP141Account(toAddress(auroraAddress))
     ).unwrap();

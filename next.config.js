@@ -23,7 +23,7 @@ module.exports = {
     if (!isServer) {
       config.resolve.fallback = {
         ...config.resolve.fallback,
-        fs: false, // 设置为 false 以忽略 fs 模块
+        fs: false,
       };
       config.plugins.push(
         new webpack.ProvidePlugin({

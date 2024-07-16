@@ -107,11 +107,11 @@ export const getAddLiquidityShares = async (
   const trade_fee = stablePool.total_fee * 10000;
 
   const STABLE_LP_TOKEN_DECIMALS = getStablePoolDecimal(pool_id);
-  const base_old_c_amounts = stablePool.amounts.map((amount: any) =>
+  const base_old_c_amounts = stablePool.c_amounts.map((amount: any) =>
     toReadableNumber(STABLE_LP_TOKEN_DECIMALS, amount)
   );
   console.log(STABLE_LP_TOKEN_DECIMALS);
-  console.log(base_old_c_amounts, stablePool.amounts);
+  console.log(base_old_c_amounts, stablePool.c_amounts);
   const rates = Reflect.has(stablePool, "degens")
     ? stablePool.degens.map((r: any) =>
         toReadableNumber(STABLE_LP_TOKEN_DECIMALS, r)

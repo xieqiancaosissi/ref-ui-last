@@ -28,6 +28,11 @@ import getConfigV2 from "@/utils/configV2";
 import getConfig from "@/utils/config";
 import { refSwapV3ViewFunction } from "@/utils/contract";
 import { useSwapStore } from "@/stores/swap";
+import { refFiViewFunction } from "@/utils/contract";
+import { STABLE_LP_TOKEN_DECIMALS } from "@/utils/constant";
+import { toNonDivisibleNumber } from "@/utils/numbers";
+import { StablePool } from "@/interfaces/swap";
+
 //
 type UsePoolSearchProps = {
   isChecked: boolean;
@@ -115,18 +120,17 @@ export const usePoolSearch = ({
 export const useTokenMetadata = (list: Array<any>) => {
   const [isDealed, setIsDealed] = useState(false);
   const [updatedMapList, setUpdatedList] = useState<Array<any>>([]);
-
   useEffect(() => {
     let updatedList = [...list];
     setIsDealed(false);
 
-    Promise.all(
-      list.flatMap((item) =>
-        item?.token_account_ids?.map((tokenId: string) =>
-          ftGetTokenMetadata(tokenId)
-        )
-      )
-    )
+    const promises = list.flatMap((item) =>
+      item?.token_account_ids?.map((tokenId: string) => {
+        return ftGetTokenMetadata(tokenId);
+      })
+    );
+
+    Promise.all(promises)
       .then((metadataResults) => {
         const metadataMap = new Map(
           metadataResults.map((metadata) => [metadata?.id, metadata])
@@ -146,14 +150,14 @@ export const useTokenMetadata = (list: Array<any>) => {
                   : item?.token_symbols[index],
             })
           ),
-          rates: item.rates ||
-            item.degens || [
+          rates: item?.rates ||
+            item?.degens || [
               "1000000000000000000000000",
               "1000000000000000000000000",
               "1000000000000000000000000",
               "1000000000000000000000000",
             ],
-          amp: item.amp || 240,
+          amp: item?.amp || 240,
           supplies: item?.amounts
             ? item.amounts.reduce(
                 (
@@ -171,7 +175,6 @@ export const useTokenMetadata = (list: Array<any>) => {
             return item == "wNEAR" ? "NEAR" : item;
           }),
         }));
-
         setUpdatedList(updatedList);
       })
       .finally(() => {

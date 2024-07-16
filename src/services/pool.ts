@@ -70,7 +70,7 @@ export const getSearchResult = async ({
     const url = !onlyUseId
       ? `/pool/search?type=${type}&sort=${sort}&limit=${limit}&labels=${labels}&offset=${offset}&hide_low_pool=${hide_low_pool}&order_by=${order}&token_type=${tktype}&token_list=${token_list}&pool_id_list=${pool_id_list}`
       : `/pool/search?pool_id_list=${pool_id_list}`;
-    pools = await fetch(getConfig().indexerOld + url, {
+    pools = await fetch(getConfig().tvlAnd24hUrl + url, {
       method: "GET",
       headers: {
         "Content-type": "application/json; charset=UTF-8",
@@ -202,7 +202,7 @@ export const findSamePools = async (
 };
 
 export const getPoolsDetailById = async ({ pool_id }: { pool_id: string }) => {
-  return fetch(getConfig().indexerUrl + "/pool/detail?pool_id=" + pool_id, {
+  return fetch(getConfig().tvlAnd24hUrl + "/pool/detail?pool_id=" + pool_id, {
     method: "GET",
     headers: {
       "Content-type": "application/json; charset=UTF-8",

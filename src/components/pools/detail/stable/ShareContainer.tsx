@@ -14,7 +14,7 @@ import {
 import { useRouter } from "next/router";
 
 export default function ShareContainer(props: any) {
-  const { poolDetail, setShowAdd } = props;
+  const { poolDetail, setShowAdd, setShowRemove } = props;
   const router = useRouter();
   const { farmCount: countV1, endedFarmCount: endedFarmCountV1 } = useCanFarmV1(
     poolDetail.id,
@@ -78,7 +78,7 @@ export default function ShareContainer(props: any) {
         <div
           className="bg-transparent rounded p-2 h-7 frcc border opacity-90 border-gray-40 text-sm ml-2  cursor-pointer hover:opacity-100"
           style={{ color: "#BCC9D2" }}
-          onClick={() => toSauce("remove")}
+          onClick={() => setShowRemove(true)}
         >
           Remove Liquidity
           <RemoveLiquidityIconStable className="mx-1" />

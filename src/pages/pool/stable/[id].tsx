@@ -68,6 +68,10 @@ export default function StablePoolDetail() {
     setShowAdd(false);
   };
 
+  const [showRemove, setShowRemove] = useState(false);
+  const hideRemove = () => {
+    setShowRemove(false);
+  };
   return (
     <div className="w-full fccc h-full">
       <div
@@ -116,7 +120,11 @@ export default function StablePoolDetail() {
 
         {/* share and liquidity action */}
         {poolDetail && (
-          <ShareContainer poolDetail={poolDetail} setShowAdd={setShowAdd} />
+          <ShareContainer
+            poolDetail={poolDetail}
+            setShowAdd={setShowAdd}
+            setShowRemove={setShowRemove}
+          />
         )}
       </div>
       {/* main */}
@@ -174,13 +182,23 @@ export default function StablePoolDetail() {
       </div>
       {/* add */}
       {updatedMapList && poolDetail && (
-        <StableAdd
-          isOpen={showAdd}
-          onRequestClose={hideAdd}
-          poolDetail={poolDetail}
-          pureIdList={pureIdList}
-          updatedMapList={updatedMapList}
-        />
+        <>
+          <StableAdd
+            isOpen={showAdd}
+            onRequestClose={hideAdd}
+            poolDetail={poolDetail}
+            pureIdList={pureIdList}
+            updatedMapList={updatedMapList}
+          />
+
+          <StableRemove
+            isOpen={showRemove}
+            onRequestClose={hideRemove}
+            poolDetail={poolDetail}
+            pureIdList={pureIdList}
+            updatedMapList={updatedMapList}
+          />
+        </>
       )}
     </div>
   );

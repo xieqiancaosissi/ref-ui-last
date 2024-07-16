@@ -133,7 +133,7 @@ export default function StableAdd(props: any) {
     }
   };
 
-  const [isActive, setActive] = useState(0.3);
+  const [isActive, setActive] = useState(0.1);
   const [feeValue, setFeeValue] = useState(isActive);
   const inputChange = (e: any) => {
     if (e.target.value >= 20) {
@@ -157,7 +157,7 @@ export default function StableAdd(props: any) {
     let flag: boolean = true;
     const k: any = [];
     inputValList.map((item: any, index: number) => {
-      if (item > balancesList[index]?.balance) {
+      if (+item > balancesList[index]?.balance) {
         flag = false;
         k.push(balancesList[index]?.symbol);
       }

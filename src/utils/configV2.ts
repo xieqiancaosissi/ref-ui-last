@@ -60,7 +60,21 @@ export default function getConfigV2(
         INIT_SWAP_PAIRS: ["near", "ref.fakes.testnet"],
         SKYWARDID: "skyward.fakes.testnet",
         BLACK_LIST_DCL_POOL_IDS_IN_POOLS: [],
-        WHITE_LIST_DCL_POOL_IDS_IN_LIMIT_ORDERS: [],
+        WHITE_LIST_DCL_POOL_IDS_IN_LIMIT_ORDERS: [
+          "usdt.fakes.testnet|wrap.testnet|2000",
+          "usdt.fakes.testnet|wrap.testnet|100",
+          "aurora.fakes.testnet|usdc.fakes.testnet|2000",
+          "eth.fakes.testnet|usdc.fakes.testnet|2000",
+          "usdc.fakes.testnet|wrap.testnet|2000",
+          "usdt.fakes.testnet|wbtc.fakes.testnet|100",
+          "eth.fakes.testnet|wrap.testnet|2000",
+          "phoenix-bonds.testnet|wrap.testnet|2000",
+          "ref.fakes.testnet|wrap.testnet|400",
+          "ref.fakes.testnet|usdc.fakes.testnet|400",
+          "ref.fakes.testnet|usdt.fakes.testnet|400",
+          "3e2210e1184b45b64c8a434c0a7e7b23cc04ea7eb7a6c3c32520d03d4afcb8af|wrap.testnet|2000",
+          "usdcc.ft.ref-labs.testnet|wrap.testnet|2000",
+        ],
       };
     case "testnet":
       return {

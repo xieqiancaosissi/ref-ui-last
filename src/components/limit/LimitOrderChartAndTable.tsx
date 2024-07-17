@@ -16,6 +16,7 @@ import { useLimitOrderChartStore } from "@/stores/limitChart";
 import { useLimitStore } from "@/stores/limitOrder";
 import { IPoolDcl } from "@/interfaces/swapDcl";
 import { sort_tokens_by_base } from "@/services/commonV3";
+import { fillDclPool } from "@/services/limit/limitUtils";
 const LimitOrderChart = dynamic(() => import("./LimitOrderChart"), {
   ssr: false,
 });
@@ -362,8 +363,9 @@ export default function LimitOrderChartAndTable() {
   async function fetch_data() {
     const orders = await get_points_of_orders();
     const p = (await getPool()) as IPoolDcl;
+    const filledPool = await fillDclPool(p);
+    persistLimitStore.setDclPool(filledPool);
     setOrders(orders);
-    persistLimitStore.setDclPool(p);
     set_market_loading(false);
   }
   async function marketRefresh() {

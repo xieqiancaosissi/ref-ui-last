@@ -1538,8 +1538,8 @@ export const list_liquidities = async () => {
       account_id: getAccountId(),
     },
   });
-
   return res.filter(
+    //@ts-ignore
     (item: any) => !getConfig().DCL_POOL_BLACK_LIST.includes(item.pool_id)
   );
 };

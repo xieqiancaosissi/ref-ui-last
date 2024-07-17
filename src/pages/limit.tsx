@@ -3,7 +3,7 @@ import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
 import _ from "lodash";
 import Input from "@/components/limit/Input";
-import { useAllPoolsV2 } from "@/hooks/usePools";
+import { useAllDclPools } from "@/hooks/usePools";
 import useSelectTokens from "@/hooks/useSelectTokens";
 import { useDefaultBalanceTokens } from "@/hooks/useBalanceTokens";
 import RateContainer from "@/components/limit/RateContainer";
@@ -20,6 +20,7 @@ import Init from "../components/limit/Init";
 import RateChart from "../components/limit/RateChart";
 import ChartTopBar from "../components/limit/ChartTopBar";
 import { useLimitRateChartStore } from "@/stores/limitChart";
+import { getBestTvlPoolList } from "@/services/limit/limitUtils";
 const CreateOrderButton = dynamic(
   () => import("@/components/limit/CreateOrderButton"),
   { ssr: false }
@@ -45,7 +46,7 @@ const MyOrders = dynamic(() => import("../components/limit/myOrders"), {
 export default function LimitOrderPage() {
   const { defaultList = [] } = useSelectTokens();
   useDefaultBalanceTokens(defaultList);
-  const allPools = useAllPoolsV2();
+  const allPools = useAllDclPools();
   const persistLimitStore: IPersistLimitStore = usePersistLimitStore();
   const limitStore = useLimitStore();
   const limitChartStore = useLimitRateChartStore();
@@ -62,14 +63,15 @@ export default function LimitOrderPage() {
     });
   }, []);
   useEffect(() => {
-    if (allPools) {
+    if (allPools?.length) {
       persistLimitStore.setAllDclPools(allPools);
     }
   }, [allPools?.length]);
   useEffect(() => {
-    if (allDclPools) {
+    if (allDclPools?.length) {
       if (!dclPool) {
-        persistLimitStore.setDclPool(allDclPools[0]);
+        const bestPools = getBestTvlPoolList(allDclPools);
+        persistLimitStore.setDclPool(bestPools[0]!);
       } else {
         const latestDclPool = allDclPools.find(
           (p) => p.pool_id == dclPool.pool_id

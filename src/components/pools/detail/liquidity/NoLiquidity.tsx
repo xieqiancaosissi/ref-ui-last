@@ -13,7 +13,7 @@ export default function NoLiquidity({
     <div className="w-80 h-56 rounded-md bg-modalGrayBg p-4 fccc">
       <LiquidityEmptyIcon />
       <div className="text-gray-10 text-sm my-7">
-        {isLoading ? "Content is loading..." : " No Positions in this pool yet"}
+        {isLoading ? "Content is loading..." : " No positions in this pool yet"}
       </div>
       {isLoading ? (
         <SkeletonTheme

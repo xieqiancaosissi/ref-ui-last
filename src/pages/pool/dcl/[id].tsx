@@ -306,7 +306,7 @@ export default function DCLPoolDetail() {
             {poolDetail && updatedMapList?.length > 0 ? (
               <Charts poolDetail={poolDetail} tokenPriceList={tokenPriceList} />
             ) : (
-              <NoContent tips="Charts is Loading..." h="h-90" />
+              <NoContent tips="Chart is Loading..." h="h-90" />
             )}
           </div>
 

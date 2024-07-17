@@ -20,7 +20,7 @@ export default function Classic({
 }) {
   const [isActive, setActive] = useState("");
   const [sortMap, setSortMap] = useState({ key: "tvl", sort: "desc" });
-  const [isChecked, setIsChecked] = useState(false);
+  const [isChecked, setIsChecked] = useState(true);
 
   // pagination
   const [currentPage, setCurrentPage] = useState(1);

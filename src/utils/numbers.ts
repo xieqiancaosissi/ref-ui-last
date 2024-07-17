@@ -42,7 +42,21 @@ export const toNonDivisibleNumber = (
 ): string => {
   if (decimals === null || decimals === undefined) return number;
   const [wholePart, fracPart = ""] = number.split(".");
-
+  console.log(number, "mnu");
+  console.log(
+    `${wholePart}${fracPart.padEnd(decimals, "0").slice(0, decimals)}`
+  );
+  console.log(
+    `${wholePart}${fracPart.padEnd(decimals, "0").slice(0, decimals)}`.replace(
+      /^0+/,
+      ""
+    )
+  );
+  console.log(
+    `${wholePart}${fracPart.padEnd(decimals, "0").slice(0, decimals)}`
+      .replace(/^0+/, "")
+      .padStart(1, "0")
+  );
   return `${wholePart}${fracPart.padEnd(decimals, "0").slice(0, decimals)}`
     .replace(/^0+/, "")
     .padStart(1, "0");

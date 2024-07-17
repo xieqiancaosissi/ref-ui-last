@@ -67,6 +67,9 @@ export enum ExplorerType {
 }
 
 export const getExplorer = () => {
+  if (typeof window == "undefined") {
+    return ExplorerType.Chrome;
+  }
   const explorer = window.navigator.userAgent;
   if (explorer.indexOf("MSIE") >= 0) {
     return "ie";

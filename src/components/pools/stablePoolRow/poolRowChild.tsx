@@ -40,9 +40,10 @@ export default function PoolRow(props: any) {
           className={`${styles.poolContainer} ${
             item.is_farm ? styles.isfarm : styles.notfarm
           }`}
+          onClick={() => toDetail(item)}
         >
           {/* pools---first child */}
-          <div onClick={() => toDetail(item)} className="flex items-center">
+          <div className="flex items-center">
             <div className={styles.tokenImgContainer}>
               {item?.token_account_ids?.map((ite: any, ind: number) => {
                 // if tokenid in tokenIcons
@@ -84,7 +85,7 @@ export default function PoolRow(props: any) {
           </div>
 
           {/* last child */}
-          <div onClick={() => toDetail(item)} className={styles.poolLast}>
+          <div className={styles.poolLast}>
             {/* apr */}
             <div>
               <span>{formatPercentage(item.apy)}</span>
@@ -165,12 +166,12 @@ export default function PoolRow(props: any) {
                 </span>
               </div>
               <div className="frcc">
-                <div className={`${styles.btnStyle} ${styles.lightBtn}`}>
+                {/* <div className={`${styles.btnStyle} ${styles.lightBtn}`}>
                   Add
                 </div>
                 <div className={`${styles.btnStyle} ${styles.darkBtn}`}>
                   Remove
-                </div>
+                </div> */}
               </div>
             </div>
           </div>

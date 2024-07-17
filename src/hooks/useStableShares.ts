@@ -11,6 +11,7 @@ import {
 } from "@/utils/numbers";
 import Big from "big.js";
 import _ from "lodash";
+import { StablePool } from "@/interfaces/swap";
 
 const FEE_DIVISOR = 10000;
 export const useFarmStake = ({
@@ -270,4 +271,120 @@ export const calc_y = (
   }
 
   return y;
+};
+
+export const getRemoveLiquidityByShare = (
+  shares: string,
+  stablePool: StablePool
+) => {
+  const c_amounts = stablePool.c_amounts.map((amount) => Number(amount));
+
+  const pool_token_supply = Number(stablePool.shares_total_supply);
+
+  const amounts = calc_remove_liquidity(
+    Number(shares),
+    c_amounts,
+    pool_token_supply
+  );
+
+  // TODO:
+  return amounts.map((amount) =>
+    toPrecision(scientificNotationToString(amount.toString()), 0)
+  );
+};
+
+export const getRemoveLiquidityByTokens = (
+  amounts: string[],
+  stablePool: StablePool
+) => {
+  const amp = stablePool.amp;
+  // const removed_c_amounts = amounts.map((amount) =>
+  //   Number(toNonDivisibleNumber(STABLE_LP_TOKEN_DECIMALS, amount))
+  // );
+
+  const STABLE_LP_TOKEN_DECIMALS = getStablePoolDecimal(stablePool.id);
+
+  const pool_token_supply = Number(stablePool.shares_total_supply);
+
+  const base_old_c_amounts = stablePool.c_amounts.map((amount) =>
+    toReadableNumber(STABLE_LP_TOKEN_DECIMALS, amount)
+  );
+  const rates = stablePool.rates.map((r) =>
+    toReadableNumber(STABLE_LP_TOKEN_DECIMALS, r)
+  );
+  const old_c_amounts = base_old_c_amounts
+    .map((amount, i) =>
+      toNonDivisibleNumber(
+        STABLE_LP_TOKEN_DECIMALS,
+        scientificNotationToString(
+          new Big(amount).times(new Big(rates[i])).toString()
+        )
+      )
+    )
+    .map((amount) => Number(amount));
+
+  const removed_c_amounts = amounts
+    .map((amount, i) =>
+      toNonDivisibleNumber(
+        STABLE_LP_TOKEN_DECIMALS,
+        scientificNotationToString(
+          new Big(amount).times(new Big(rates[i])).toString()
+        )
+      )
+    )
+    .map((amount) => Number(amount));
+  // const old_c_amounts = stablePool.c_amounts.map((amount) => Number(amount));
+  const trade_fee = Number(stablePool.total_fee);
+
+  const [burn_shares, diff] = calc_remove_liquidity_by_tokens(
+    amp,
+    removed_c_amounts,
+    old_c_amounts,
+    pool_token_supply,
+    trade_fee
+  );
+
+  return toPrecision(scientificNotationToString(burn_shares.toString()), 0);
+};
+
+export const calc_remove_liquidity = (
+  shares: number,
+  c_amounts: number[],
+  pool_token_supply: number
+) => {
+  const amounts = [];
+  for (let i = 0; i < c_amounts.length; i++) {
+    amounts[i] = (c_amounts[i] * shares) / pool_token_supply;
+  }
+  return amounts;
+};
+
+export const calc_remove_liquidity_by_tokens = (
+  amp: number,
+  removed_c_amounts: number[],
+  old_c_amounts: number[],
+  pool_token_supply: number,
+  trade_fee: number
+) => {
+  const token_num = old_c_amounts.length;
+  const d_0 = calc_d(amp, old_c_amounts);
+  const c_amounts = [];
+  for (let i = 0; i < old_c_amounts.length; i++) {
+    c_amounts[i] = old_c_amounts[i] - removed_c_amounts[i];
+  }
+  const d_1 = calc_d(amp, c_amounts);
+  if (d_1 >= d_0) throw new Error(`D1 need less then or equal to D0.`);
+  for (let i = 0; i < token_num; i++) {
+    const ideal_balance = (old_c_amounts[i] * d_1) / d_0;
+    const difference = Math.abs(ideal_balance - c_amounts[i]);
+    const fee = normalized_trade_fee(token_num, difference, trade_fee);
+    c_amounts[i] -= fee;
+  }
+  const d_2 = calc_d(amp, c_amounts);
+  if (d_2 > d_1) throw new Error(`D2 need less then D1.`);
+  if (d_1 >= d_0) throw new Error(`D1 need less then or equal to D0.`);
+  const burn_shares = (pool_token_supply * (d_0 - d_2)) / d_0;
+  const diff_shares = (pool_token_supply * (d_0 - d_1)) / d_0;
+
+  return [burn_shares, burn_shares - diff_shares];
 };

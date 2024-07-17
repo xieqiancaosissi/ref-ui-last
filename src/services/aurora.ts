@@ -20,8 +20,11 @@ import { Near, WalletConnection, keyStores } from "near-api-js";
 import getConfig from "@/utils/config";
 import { nearMetadata } from "./wrap-near";
 import {
+  formatWithCommas,
   scientificNotationToString,
+  toInternationalCurrencySystem,
   toInternationalCurrencySystemLongString,
+  toPrecision,
   toReadableNumber,
 } from "@/utils/numbers";
 import { useAccountStore } from "@/stores/account";
@@ -31,6 +34,9 @@ import AbiCoder from "web3-eth-abi";
 import { getAccountId } from "@/utils/wallet";
 import { list_user_assets } from "./swapV3";
 import BigNumber from "bignumber.js";
+import { getStakedListByAccountId } from "./farm";
+import { ILock, get_account } from "./lplock";
+import { getSharesInPool } from "./pool";
 
 const config = getConfig();
 const keyStore = new keyStores.BrowserLocalStorageKeyStore();
@@ -318,3 +324,142 @@ export function display_number_internationalCurrencySystemLongString(
     return toInternationalCurrencySystemLongString(amount, 2);
   }
 }
+export function display_value(amount: string) {
+  const accountId = getAccountId();
+  if (!accountId) return "$-";
+  const amount_big = new BigNumber(amount);
+  if (amount_big.isEqualTo("0")) {
+    return "$0";
+  } else if (amount_big.isLessThan("0.01")) {
+    return "<$0.01";
+  } else {
+    return `$${toInternationalCurrencySystem(amount, 2)}`;
+  }
+}
+
+export function display_value_withCommas(amount: string) {
+  const accountId = getAccountId();
+  if (!accountId) return "$-";
+  const amount_big = new BigNumber(amount);
+  if (amount_big.isEqualTo("0")) {
+    return "$0";
+  } else if (amount_big.isLessThan("0.01")) {
+    return "<$0.01";
+  } else {
+    return `$${formatWithCommas(toPrecision(amount, 2))}`;
+  }
+}
+
+export const useStakeListByAccountId = () => {
+  const accountStore = useAccountStore();
+  const isSignedIn = accountStore.isSignedIn;
+  const [stakeList, setStakeList] = useState<Record<string, string>>({});
+  const [v2StakeList, setV2StakeList] = useState<Record<string, string>>({});
+
+  const [finalStakeList, setFinalStakeList] = useState<Record<string, string>>(
+    {}
+  );
+  const [stakeListDone, setStakeListDone] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (!isSignedIn) return;
+    getStakedListByAccountId({})
+      .then(({ stakedList, finalStakeList, v2StakedList }) => {
+        setStakeList(stakedList);
+        setV2StakeList(v2StakedList);
+        setFinalStakeList(finalStakeList);
+        setStakeListDone(true);
+      })
+      .catch((error) => {
+        console.error("Failed to fetch staked list", error);
+      });
+  }, [isSignedIn]);
+
+  return {
+    stakeList,
+    v2StakeList,
+    finalStakeList,
+    stakeListDone,
+  };
+};
+
+export const useBatchTotalShares = (
+  ids: (string | number)[],
+  finalStakeList: Record<string, string>,
+  stakeListDone: boolean
+) => {
+  const accountStore = useAccountStore();
+  const isSignedIn = accountStore.isSignedIn;
+  const [batchShares, setBatchShares] = useState<string[]>();
+  const [batchFarmStake, setBatchFarmStake] = useState<(string | number)[]>();
+  const [batchLpLocked, setBatchLpLocked] = useState<(string | number)[]>();
+  const [sharesDone, setSharesDone] = useState<boolean>(false);
+  const [accountLocked, setAccountLocked] = useState<Record<string, ILock>>();
+
+  const getFarmStake = (pool_id: number) => {
+    const farmStake = "0";
+
+    const seedIdList: string[] = Object.keys(finalStakeList);
+    let tempFarmStake: string | number = "0";
+    seedIdList.forEach((seed) => {
+      const id = Number(seed.split("@")[1]);
+      if (id == pool_id) {
+        tempFarmStake = BigNumber.sum(
+          farmStake,
+          finalStakeList[seed]
+        ).valueOf();
+      }
+    });
+
+    return tempFarmStake;
+  };
+  useEffect(() => {
+    if (isSignedIn) {
+      get_account().then((locked) => {
+        setAccountLocked(locked?.locked_tokens || {});
+      });
+    }
+  }, [isSignedIn]);
+  useEffect(() => {
+    if (
+      !ids ||
+      !finalStakeList ||
+      !isSignedIn ||
+      !stakeListDone ||
+      !accountLocked
+    )
+      return undefined;
+    getShares();
+  }, [
+    ids?.join("-"),
+    finalStakeList,
+    isSignedIn,
+    stakeListDone,
+    accountLocked,
+  ]);
+  async function getShares() {
+    const shareInPools = await Promise.all(
+      ids.map((id) => getSharesInPool(Number(id)))
+    );
+    const shareInLocked = ids.map((id) => {
+      const key = `${getConfig().REF_FI_CONTRACT_ID}@:${id}`;
+      return accountLocked?.[key]?.locked_balance || "0";
+    });
+    const shareInFarms = ids.map((id) => getFarmStake(Number(id)));
+    setBatchShares(shareInPools);
+    setBatchFarmStake(shareInFarms);
+    setBatchLpLocked(shareInLocked);
+    setSharesDone(true);
+  }
+  return {
+    sharesDone,
+    shares: batchShares,
+    batchTotalShares:
+      ids?.map((id, index) => {
+        return new Big(batchShares?.[index] || "0")
+          .plus(new Big(batchFarmStake?.[index] || "0"))
+          .plus(new Big(batchLpLocked?.[index] || "0"))
+          .toNumber();
+      }) || undefined,
+  };
+};

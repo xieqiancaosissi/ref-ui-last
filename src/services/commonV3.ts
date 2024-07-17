@@ -1738,3 +1738,41 @@ export function findRangeIntersection(arr: number[][]) {
 
   return intersection;
 }
+
+export function get_liquidity_value({
+  liquidity,
+  poolDetail,
+  tokenPriceList,
+  tokensMeta,
+}: {
+  liquidity: UserLiquidityInfo;
+  poolDetail: PoolInfo;
+  tokenPriceList: Record<string, any>;
+  tokensMeta: TokenMetadata[];
+}) {
+  const { left_point, right_point, amount } = liquidity;
+  const { token_x, token_y } = poolDetail;
+  if (!token_x || !token_y) {
+    return;
+  }
+  const price_x_y: Record<string, any> = {
+    [token_x as string]: tokenPriceList[token_x]?.price || "0",
+    [token_y as string]: tokenPriceList[token_y]?.price || "0",
+  };
+
+  const metadata_x_y: Record<string, TokenMetadata> = {
+    [token_x as string]: tokensMeta[0],
+    [token_y as string]: tokensMeta[1],
+  };
+
+  const v = get_total_value_by_liquidity_amount_dcl({
+    left_point,
+    right_point,
+    poolDetail,
+    amount,
+    price_x_y,
+    metadata_x_y,
+  });
+
+  return v;
+}

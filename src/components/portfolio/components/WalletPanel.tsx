@@ -2,7 +2,7 @@ import { TokenMetadata } from "@/services/ft-contract";
 import { useTokenBalances } from "@/services/token";
 import { getAccountId } from "@/utils/wallet";
 import { useContext, useEffect, useState } from "react";
-import { OverviewContextType, OverviewData } from "./index";
+import { OverviewContextType, OverviewData } from "../index";
 import { NEARXIDS } from "@/services/swap/swapConfig";
 import { WRAP_NEAR_CONTRACT_ID } from "@/services/wrap-near";
 import BigNumber from "bignumber.js";
@@ -14,12 +14,15 @@ import {
 import {
   auroraAddr,
   display_number_internationalCurrencySystemLongString,
+  display_value,
+  display_value_withCommas,
   useAuroraBalancesNearMapping,
   useDCLAccountBalance,
   useUserRegisteredTokensAllAndNearBalance,
 } from "@/services/aurora";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import { divide } from "mathjs";
+import { WalletTokenList } from "./WalletTokenList";
 
 export default function WalletPanel() {
   const {
@@ -145,23 +148,17 @@ export default function WalletPanel() {
 
     return { tokens, total_value };
   }
-  function display_value(amount: string) {
-    const accountId = getAccountId();
-    if (!accountId) return "$-";
-    const amount_big = new BigNumber(amount);
-    if (amount_big.isEqualTo("0")) {
-      return "$0";
-    } else if (amount_big.isLessThan("0.01")) {
-      return "<$0.01";
-    } else {
-      return `$${toInternationalCurrencySystem(amount, 2)}`;
-    }
-  }
   function showTokenPrice(token: TokenMetadata) {
     const token_price =
       tokenPriceList[token.id == "NEAR" ? WRAP_NEAR_CONTRACT_ID : token.id]
         ?.price || "0";
     return display_value(token_price);
+  }
+  function showTotalValue() {
+    let target = "0";
+    target =
+      near_total_value + ref_total_value + dcl_total_value + aurora_total_value;
+    return display_value_withCommas(target);
   }
   return (
     <>
@@ -186,39 +183,51 @@ export default function WalletPanel() {
             <>
               {near_tokens.map((token: TokenMetadata) => {
                 return (
-                  <div
+                  <WalletTokenList
                     key={token.id + "near"}
-                    className="flex items-center w-full mb-6"
-                  >
-                    <div className="w-3/6 flex items-center">
-                      <img
-                        className="w-6 h-6 rounded-3xl mr-2.5"
-                        src={token.icon}
-                        alt={""}
-                      />
-                      <div className="text-sm">
-                        <p className="w-24 overflow-hidden whitespace-nowrap overflow-ellipsis">
-                          {token.symbol}
-                        </p>
-                        <p className="text-gray-50 text-xs">
-                          {showTokenPrice(token)}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="w-2/6 text-sm">
-                      {display_number_internationalCurrencySystemLongString(
-                        Big(token?.near || 0).toFixed()
-                      )}
-                    </div>
-                    <div className="w-1/5 flex items-center justify-end text-sm">
-                      {display_value(String(token?.t_value))}
-                    </div>
-                  </div>
+                    token={token}
+                    tokenBalance={token?.near ?? 0}
+                    showTokenPrice={showTokenPrice}
+                  />
+                );
+              })}
+              {ref_tokens.map((token: TokenMetadata) => {
+                return (
+                  <WalletTokenList
+                    key={token.id + "ref"}
+                    token={token}
+                    tokenBalance={token?.ref ?? 0}
+                    showTokenPrice={showTokenPrice}
+                  />
+                );
+              })}
+              {dcl_tokens.map((token: TokenMetadata) => {
+                return (
+                  <WalletTokenList
+                    key={token.id + "dcl"}
+                    token={token}
+                    tokenBalance={token?.dcl ?? 0}
+                    showTokenPrice={showTokenPrice}
+                  />
+                );
+              })}
+              {aurora_tokens.map((token: TokenMetadata) => {
+                return (
+                  <WalletTokenList
+                    key={token.id + "aurora"}
+                    token={token}
+                    tokenBalance={token?.aurora ?? 0}
+                    showTokenPrice={showTokenPrice}
+                  />
                 );
               })}
             </>
           )}
         </div>
+      </div>
+      <div className="frcb mt-6 px-4">
+        <p className="text-gray-50 text-sm">Total</p>
+        <p className="text-base">{showTotalValue()}</p>
       </div>
     </>
   );

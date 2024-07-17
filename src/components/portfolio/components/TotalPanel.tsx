@@ -1,7 +1,6 @@
 import { useContext, useMemo } from "react";
-import { TotalAssetsIcon } from "../menu/icons";
 import { formatWithCommas_usd } from "@/utils/uiNumber";
-import { OverviewData } from "./index";
+import { TotalAssetsIcon } from "@/components/menu/icons";
 
 export default function TotalPanel() {
   // const {

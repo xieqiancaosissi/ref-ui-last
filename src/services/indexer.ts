@@ -9,6 +9,7 @@ import {
   HistoryOrderSwapInfo,
 } from "@/interfaces/limit";
 import moment from "moment";
+import { getAccountId } from "@/utils/wallet";
 const config = getConfig();
 
 const genUrlParams = (props: Record<string, string | number>) => {
@@ -393,4 +394,19 @@ export const getHistoryOrderSwapInfo = async (
       ),
     }
   ).then((res) => res.json());
+};
+
+export const getYourPools = async (): Promise<PoolRPCView[]> => {
+  const account_id = getAccountId();
+  return await fetch(config.indexerUrl + "/liquidity-pools/" + account_id, {
+    method: "GET",
+    headers: {
+      "Content-type": "application/json; charset=UTF-8",
+      ...getAuthenticationHeaders(`/liquidity-pools/${account_id}`),
+    },
+  })
+    .then((res) => res.json())
+    .then((pools) => {
+      return pools;
+    });
 };

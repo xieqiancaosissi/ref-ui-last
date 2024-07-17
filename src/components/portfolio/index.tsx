@@ -10,8 +10,9 @@ import { useAccountStore } from "@/stores/account";
 import { isMobile } from "@/utils/device";
 import { getAccountId } from "@/utils/wallet";
 import { getBoostTokenPrices } from "@/services/farm";
-import TotalPanel from "./TotalPanel";
-import WalletPanel from "./WalletPanel";
+import WalletPanel from "./components/WalletPanel";
+import TotalPanel from "./components/TotalPanel";
+import RefPanel from "./components/RefPanel";
 
 export const OverviewData = createContext<OverviewContextType | null>(null);
 const is_mobile: boolean = !!isMobile();
@@ -152,7 +153,11 @@ export default function Overview() {
       </div>
       <div className="py-4">
         {activeTab === "Wallet" ? <WalletPanel /> : null}
-        {activeTab === "Portfolio" ? <>222</> : null}
+        {activeTab === "Portfolio" ? (
+          <div className="px-1.5">
+            <RefPanel></RefPanel>
+          </div>
+        ) : null}
       </div>
     </OverviewData.Provider>
   );

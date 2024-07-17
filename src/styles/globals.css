@@ -104,18 +104,18 @@ input[type="number"] {
 input[type="range"].lock-bar {
   display: block;
   -webkit-appearance: none;
-  background: #717E8D;
+  background: #717e8d;
   height: 8px;
   border-radius: 2px;
   margin: 0 auto;
   outline: none;
-  background-image: linear-gradient(to right,#9dfd01, #5f9900);
+  background-image: linear-gradient(to right, #9dfd01, #5f9900);
   background-size: 0% 100%;
   background-repeat: no-repeat;
 }
 input[type="range"].lock-bar::-webkit-slider-thumb {
   -webkit-appearance: none;
-  background-color: #F7FBFF;
+  background-color: #f7fbff;
   width: 14px;
   height: 12px;
   cursor: pointer;

@@ -161,7 +161,7 @@ export default function getConfig(
         FARM_LOCK_SWITCH: 0,
         VotingGauge: ["10%", "10%"],
         kitWalletOn: true,
-        DCL_POOL_BLACK_LIST: ["usdt.fakes.testnet|wrap.testnet|100"],
+        DCL_POOL_BLACK_LIST: [],
         REF_UNI_V3_SWAP_CONTRACT_ID: "dclv2.ref-dev.testnet",
         REF_UNI_SWAP_CONTRACT_ID: "dclv1.ref-dev.testnet",
         FARM_BLACK_LIST_V2: ["571"],

@@ -322,8 +322,8 @@ export const listPools = async () => {
   const res = await refSwapV3ViewFunction({
     methodName: "list_pools",
   });
-
   return res.filter(
+    //@ts-ignore
     (p: any) => !getConfig().DCL_POOL_BLACK_LIST.includes(p?.pool_id)
   );
 };
@@ -395,5 +395,70 @@ export const useAllPoolsV2 = (forPool?: boolean) => {
       })
       .then(setAllPools);
   }, [Object.keys(tokenPriceList || {}).length]);
+  return allPools;
+};
+export const useAllDclPools = () => {
+  const [allPools, setAllPools] = useState<PoolInfo[]>();
+  const [pricesDone, setPricesDone] = useState<boolean>(false);
+  const swapStore = useSwapStore();
+  const tokenPriceList = swapStore.getAllTokenPrices();
+  useEffect(() => {
+    getAllTokenPrices()
+      .then((res) => {
+        swapStore.setAllTokenPrices(res);
+      })
+      .catch()
+      .finally(() => {
+        setPricesDone(true);
+      });
+  }, []);
+
+  useEffect(() => {
+    if (Object.keys(tokenPriceList || {}).length > 0 || pricesDone) {
+      listPools()
+        .then((list: PoolInfo[]) => {
+          const final = list.filter((p: any) => {
+            return getConfigV2().WHITE_LIST_DCL_POOL_IDS_IN_LIMIT_ORDERS.includes(
+              p.pool_id
+            );
+          });
+          return Promise.all(
+            final.map(async (p: any) => {
+              const token_x: any = p.token_x;
+              const token_y: any = p.token_y;
+
+              p.token_x_metadata = await ftGetTokenMetadata(token_x);
+              p.token_y_metadata = await ftGetTokenMetadata(token_y);
+              const pricex = tokenPriceList[token_x]?.price || 0;
+              const pricey = tokenPriceList[token_y]?.price || 0;
+              const {
+                total_x,
+                total_y,
+                total_fee_x_charged,
+                total_fee_y_charged,
+              }: any = p;
+              const totalX = new BigNumber(total_x)
+                .minus(total_fee_x_charged)
+                .toFixed();
+              const totalY = new BigNumber(total_y)
+                .minus(total_fee_y_charged)
+                .toFixed();
+              const tvlx =
+                Number(toReadableNumber(p.token_x_metadata.decimals, totalX)) *
+                Number(pricex);
+              const tvly =
+                Number(toReadableNumber(p.token_y_metadata.decimals, totalY)) *
+                Number(pricey);
+
+              p.tvl = tvlx + tvly;
+              p.tvlUnreal = Object.keys(tokenPriceList).length === 0;
+
+              return p;
+            })
+          );
+        })
+        .then(setAllPools);
+    }
+  }, [Object.keys(tokenPriceList || {}).length, pricesDone]);
   return allPools;
 };

@@ -11,8 +11,11 @@ import { isMobile } from "@/utils/device";
 import { getAccountId } from "@/utils/wallet";
 import { getBoostTokenPrices } from "@/services/farm";
 import WalletPanel from "./components/WalletPanel";
-import TotalPanel from "./components/TotalPanel";
 import RefPanel from "./components/RefPanel";
+import OrderlyPanel from "./components/OrderlyPanel";
+import { TotalAssetsIcon } from "../menu/icons";
+import { formatWithCommas_usd } from "@/utils/uiNumber";
+import BurrowPanel from "./components/BurrowPanel";
 
 export const OverviewData = createContext<OverviewContextType | null>(null);
 const is_mobile: boolean = !!isMobile();
@@ -97,8 +100,10 @@ export default function Overview() {
   async function getTokenPriceList() {
     const tokenPriceList = await getBoostTokenPrices();
     setTokenPriceList(tokenPriceList);
-  }
-
+  };
+  // console.log(wallet_assets_value,'wallet_assets_value')
+  // console.log(ref_invest_value,'ref_invest_value')
+  // console.log(ref_profit_value,'ref_profit_value')
   return (
     <OverviewData.Provider
       value={{
@@ -130,7 +135,15 @@ export default function Overview() {
         burrow_done,
       }}
     >
-      <TotalPanel />
+      <div className="mt-4 bg-gray-20 py-2.5 pl-2 pr-4 rounded-3xl h-11 flex items-end justify-between mb-8">
+        <div className="frcc">
+          <TotalAssetsIcon />
+          <p className="text-sm	ml-2 text-gray-50 mt-4">Total Assets</p>
+        </div>
+        <div className="text-primaryGreen text-base paceGrotesk-Bold">
+          {formatWithCommas_usd(netWorth)}
+        </div>
+      </div>
       <div className="border-b border-gray-70 -mx-3.5 px-7 flex items-center text-gray-50 text-sm paceGrotesk-Bold">
         <div
           className={`mr-10 pb-1.5 cursor-pointer  ${
@@ -156,6 +169,8 @@ export default function Overview() {
         {activeTab === "Portfolio" ? (
           <div className="px-1.5">
             <RefPanel></RefPanel>
+            <OrderlyPanel></OrderlyPanel>
+            <BurrowPanel></BurrowPanel>
           </div>
         ) : null}
       </div>

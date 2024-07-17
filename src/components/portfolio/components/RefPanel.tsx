@@ -97,11 +97,10 @@ function RefPanel() {
       set_ref_profit_value_done(true);
     }
   }, [invest_value_done, total_profit_done]);
-
   return (
-    <div className="bg-gray-20 bg-opacity-40 rounded-lg p-4">
+    <div className="bg-gray-20 bg-opacity-40 rounded-lg p-4 mb-4 hover:bg-gray-20 cursor-pointer">
       <div className="flex items-center mb-6">
-        <div className="bg-gray-220 bg-opacity-60 rounded-md p-1.5 w-6 h-6 mr-2">
+        <div className="bg-gray-220 bg-opacity-60 rounded-md frcc w-6 h-6 mr-2">
           <PortfolioRefIcon />
         </div>
         <p className="text-gray-10 text-sm">Ref.finance</p>

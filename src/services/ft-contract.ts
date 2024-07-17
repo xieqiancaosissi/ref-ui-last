@@ -25,6 +25,11 @@ export interface TokenMetadata {
   isRisk?: boolean;
 }
 
+export interface FTStorageBalance {
+  total: string;
+  available: string;
+}
+
 export const ftGetStorageBalance = async (
   tokenId: string
 ): Promise<any | null> => {
@@ -53,4 +58,40 @@ export const unWrapToken = (token: TokenMetadata, keepId?: boolean) => {
   if (token.id === getConfig().WRAP_NEAR_CONTRACT_ID)
     return { ...nearMetadata, id: keepId ? token.id : nearMetadata.id };
   else return token;
+};
+
+export const native_usdc_has_upgrated = async (
+  tokenId: string,
+  accountId = getAccountId()
+) => {
+  try {
+    await ftViewFunction(tokenId, {
+      methodName: "storage_balance_of",
+      args: { account_id: accountId },
+    });
+    return true;
+  } catch (error) {
+    await check_registration(tokenId).then((is_registration) => {
+      if (is_registration) {
+        return new Promise((resove) => {
+          resove({ available: "1", total: "1" });
+        });
+      } else {
+        return new Promise((resove) => {
+          resove(null);
+        });
+      }
+    });
+    return false;
+  }
+};
+
+export const check_registration = (
+  tokenId: string,
+  accountId = getAccountId()
+): Promise<FTStorageBalance | null> => {
+  return ftViewFunction(tokenId, {
+    methodName: "check_registration",
+    args: { account_id: accountId },
+  });
 };

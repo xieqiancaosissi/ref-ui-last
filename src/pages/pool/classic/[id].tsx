@@ -119,7 +119,7 @@ export default function ClassicPoolDetail() {
             {poolDetail ? (
               <TvlAndVolumeCharts poolId={poolId} />
             ) : (
-              <NoContent tips="Charts is Loading..." h="h-90" />
+              <NoContent tips="Chart is Loading..." h="h-90" />
             )}
           </div>
 

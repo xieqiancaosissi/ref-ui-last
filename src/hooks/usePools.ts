@@ -32,6 +32,7 @@ import { refFiViewFunction } from "@/utils/contract";
 import { STABLE_LP_TOKEN_DECIMALS } from "@/utils/constant";
 import { toNonDivisibleNumber } from "@/utils/numbers";
 import { StablePool } from "@/interfaces/swap";
+import { getRemoveLiquidityByTokens } from "./useStableShares";
 
 //
 type UsePoolSearchProps = {
@@ -148,6 +149,7 @@ export const useTokenMetadata = (list: Array<any>) => {
                 item?.token_symbols[index] == "wNEAR"
                   ? "NEAR"
                   : item?.token_symbols[index],
+              name: metadataMap.get(tokenId)?.name,
             })
           ),
           rates: item?.rates ||
@@ -461,4 +463,60 @@ export const useAllDclPools = () => {
     }
   }, [Object.keys(tokenPriceList || {}).length, pricesDone]);
   return allPools;
+};
+
+export const usePredictRemoveShares = ({
+  amounts,
+  setError,
+  shares,
+  stablePool,
+}: {
+  amounts: string[];
+  setError: (e: Error) => void;
+  shares: string;
+  stablePool: StablePool;
+}) => {
+  const [canSubmitByToken, setCanSubmitByToken] = useState<boolean>(false);
+
+  const [predictedRemoveShares, setPredictedRemoveShares] =
+    useState<string>("0");
+
+  const zeroValidate = amounts.every((amount) => !(Number(amount) > 0));
+
+  function validate(predictedShare: string) {
+    if (new BigNumber(predictedShare).isGreaterThan(new BigNumber(shares))) {
+      setCanSubmitByToken(false);
+      setError(new Error("insufficient_shares"));
+    } else {
+      setCanSubmitByToken(true);
+    }
+  }
+
+  useEffect(() => {
+    setError(null as any);
+    if (zeroValidate) {
+      setPredictedRemoveShares("0");
+      setCanSubmitByToken(false);
+      return;
+    }
+    setCanSubmitByToken(false);
+
+    try {
+      const burn_shares = getRemoveLiquidityByTokens(
+        amounts.map((amount) => amount || "0"),
+        stablePool
+      );
+
+      validate(burn_shares);
+      setPredictedRemoveShares(burn_shares);
+    } catch (error) {
+      setError(new Error("insufficient_shares"));
+      setCanSubmitByToken(false);
+    }
+  }, [...amounts]);
+
+  return {
+    predictedRemoveShares,
+    canSubmitByToken,
+  };
 };

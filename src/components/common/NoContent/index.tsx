@@ -6,7 +6,7 @@ export default function NoContent({ tips, h }: { tips?: string; h?: string }) {
     <div className={`fccc ${h ? h : "h-100"} select-none`}>
       <NoContentIcon />
       <div className="text-lg font-normal text-gray-60 mt-5">
-        {tips ? tips : `There’s No content`}
+        {tips ? tips : `There’s no content`}
       </div>
     </div>
   );

@@ -136,7 +136,7 @@ export default function StablePoolDetail() {
             updatedMapList={updatedMapList}
           />
         ) : (
-          <NoContent tips="Charts is Loading..." h="h-90" />
+          <NoContent tips="Chart is Loading..." h="h-90" />
         )}
 
         {/* Recent Transaction */}

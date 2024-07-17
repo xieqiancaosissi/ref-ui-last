@@ -22,6 +22,20 @@ import { ButtonTextWrapper } from "@/components/common/Button";
 import { toNonDivisibleNumber } from "@/utils/numbers";
 import { addLiquidityToStablePool } from "@/services/pool";
 import { removeTab } from "./config";
+import { usePool } from "@/hooks/usePools";
+import { toRoundedReadableNumber } from "@/utils/numbers";
+import { getStablePoolDecimal } from "@/services/swap/swapUtils";
+import RangeSlider from "./StableRemoveRangeSlider";
+import { LP_TOKEN_DECIMALS } from "@/services/m-token";
+import { getRemoveLiquidityByShare } from "@/hooks/useStableShares";
+import { TokenMetadata } from "@/services/ft-contract";
+import { usePredictRemoveShares } from "@/hooks/usePools";
+import { percentIncrese } from "@/utils/numbers";
+import {
+  removeLiquidityFromStablePool,
+  removeLiquidityByTokensFromStablePool,
+} from "@/services/pool";
+
 export function myShares({
   totalShares,
   userTotalShare,
@@ -76,18 +90,6 @@ export default function StableAdd(props: any) {
       updatedMapList[0]?.token_account_ids?.length || 2
     ).fill("");
     setInputValList(array);
-    const fetchBalances = async () => {
-      try {
-        const promises = updatedMapList[0].token_account_ids.map((token: any) =>
-          returnBalance(token)
-        );
-        const resolvedBalances = await Promise.all(promises);
-        setBalances(resolvedBalances);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-    fetchBalances();
   }, [updatedMapList[0]?.token_account_ids]);
 
   const changeVal = useCallback((e: any, ind: number) => {
@@ -106,33 +108,6 @@ export default function StableAdd(props: any) {
   const debouncedSendSearchValue = _.debounce(originalSendSearchValue, 10);
 
   //
-
-  const [radioActive, setRadioActive] = useState("");
-  const setRadio = (type: string) => {
-    // interface
-    if (radioActive == type) {
-      setRadioActive("");
-    } else {
-      setRadioActive(type);
-    }
-
-    // data
-    if (type == "init") {
-      let k = [...inputValList];
-      k = k.map((item: any) => {
-        return "0.0";
-      });
-
-      setInputValList(k);
-    } else if (type == "max") {
-      let k = [...inputValList];
-      k = k.map((item: any, index: number) => {
-        return balancesList[index]?.balance;
-      });
-
-      setInputValList(k);
-    }
-  };
 
   const [isActive, setActive] = useState(0.1);
   const [feeValue, setFeeValue] = useState(isActive);
@@ -170,25 +145,153 @@ export default function StableAdd(props: any) {
   const [isLoading, setIsLoading] = useState(false);
 
   function submit() {
-    const min_shares = toPrecision(percentLess(feeValue, predicedShares), 0);
+    if (removeTabActive == "share") {
+      const removeShares = toNonDivisibleNumber(
+        RATED_POOL_LP_TOKEN_DECIMALS,
+        shareVal
+      );
 
-    const amounts = [...inputValList].map((amount, i) =>
-      toNonDivisibleNumber(
-        updatedMapList[0].token_account_ids[i].decimals,
-        amount
-      )
-    ) as [string, string, string];
+      const min_amounts = receiveAmounts.map((amount, i) =>
+        toNonDivisibleNumber(
+          updatedMapList[0].token_account_ids[i].decimals,
+          percentLess(
+            feeValue,
 
-    return addLiquidityToStablePool({
-      tokens: updatedMapList[0].token_account_ids,
-      id: Number(poolDetail.id),
-      amounts,
-      min_shares,
-    });
+            toReadableNumber(
+              updatedMapList[0].token_account_ids[i].decimals,
+              amount
+            )
+          )
+        )
+      );
+
+      return removeLiquidityFromStablePool({
+        tokens: updatedMapList[0].token_account_ids,
+        id: +poolDetail.id,
+        min_amounts: min_amounts as [string, string, string],
+        shares: removeShares,
+      });
+    } else {
+      const amounts = [...inputValList].map((amount, i) => {
+        return toNonDivisibleNumber(
+          updatedMapList[0].token_account_ids[i].decimals,
+          amount
+        );
+      }) as Array<string>;
+      const predict_burn = toPrecision(
+        percentIncrese(feeValue, predictedRemoveShares),
+        0
+      );
+
+      const max_burn_shares = new BigNumber(predict_burn).isGreaterThan(shares)
+        ? shares
+        : predict_burn;
+
+      return removeLiquidityByTokensFromStablePool({
+        tokens: updatedMapList[0].token_account_ids,
+        id: +poolDetail.id,
+        amounts,
+        max_burn_shares,
+      });
+    }
   }
-
   // tab change
   const [removeTabActive, setRemoveTabActive] = useState("share");
+
+  // by share
+  const { shares } = usePool(poolDetail.id);
+  const sharesDecimals = toRoundedReadableNumber({
+    decimals: getStablePoolDecimal(poolDetail.id),
+    number: shares,
+    precision: 12 || String(shares).length,
+  });
+  const [shareVal, setShareVal] = useState("0");
+  const changeShareVal = (val: any) => {
+    setCanSubmit(true);
+    if (+val > +sharesDecimals) {
+      setCanSubmit(false);
+    }
+    setShareVal(val ? val : "0");
+  };
+  const [receiveAmounts, setReceiveAmounts] = useState(new Array(4).fill(""));
+  useEffect(() => {
+    // setCanSubmitByShare(true);
+    const readableShares = toReadableNumber(
+      RATED_POOL_LP_TOKEN_DECIMALS,
+      shares
+    );
+
+    const shareParam = toNonDivisibleNumber(
+      RATED_POOL_LP_TOKEN_DECIMALS,
+      shareVal
+    );
+
+    if (Number(shareVal) === 0 || Number(shareVal) > Number(readableShares)) {
+      // setCanSubmitByShare(false);
+      setReceiveAmounts(["0", "0", "0", "0"]);
+      return;
+    }
+    // setCanSubmitByShare(false);
+
+    const receiveAmounts = getRemoveLiquidityByShare(
+      shareParam,
+      updatedMapList[0]
+    );
+    const parsedAmounts = receiveAmounts.map((amount: any, i: number) =>
+      toRoundedReadableNumber({
+        decimals:
+          LP_TOKEN_DECIMALS - updatedMapList[0].token_account_ids[i].decimals,
+        number: amount,
+        precision: 0,
+        withCommas: false,
+      })
+    );
+
+    setReceiveAmounts(parsedAmounts);
+  }, [updatedMapList[0].token_account_ids, shareVal]);
+
+  const calcTokenReceived = (receiveAmount: string, token: TokenMetadata) => {
+    const nonPrecisionAmount = percentLess(
+      feeValue,
+      toReadableNumber(token.decimals, receiveAmount)
+    );
+
+    return Number(nonPrecisionAmount) < 0.001 && Number(nonPrecisionAmount) > 0
+      ? "< 0.001"
+      : toPrecision(nonPrecisionAmount, 3);
+  };
+
+  // by tokens
+  const [error, setError]: any = useState(null);
+  const { predictedRemoveShares, canSubmitByToken } = usePredictRemoveShares({
+    amounts: [...inputValList],
+    setError,
+    shares,
+    stablePool: updatedMapList[0],
+  });
+
+  console.log(predictedRemoveShares, "predictedRemoveShares");
+
+  const calcSharesRemoved = () => {
+    const nonPrecisionValue = percentIncrese(
+      feeValue,
+      toReadableNumber(RATED_POOL_LP_TOKEN_DECIMALS, predictedRemoveShares)
+    );
+
+    const myReadableShare = toReadableNumber(
+      RATED_POOL_LP_TOKEN_DECIMALS,
+      shares
+    );
+    if (error) return "0";
+
+    return Number(nonPrecisionValue) > 0 && Number(nonPrecisionValue) < 0.001
+      ? "< 0.001"
+      : new BigNumber(nonPrecisionValue).isGreaterThan(
+          new BigNumber(myReadableShare)
+        )
+      ? toPrecision(myReadableShare, 3)
+      : toPrecision(nonPrecisionValue, 3);
+  };
   return (
     <Modal
       isOpen={isOpen}
@@ -234,112 +337,66 @@ export default function StableAdd(props: any) {
               );
             })}
           </div>
-          {updatedMapList[0]?.token_account_ids?.map(
-            (ite: any, ind: number) => {
-              return (
-                <div key={ite.tokenId}>
-                  <div className="mb-6">
-                    <div className="flex items-center justify-between text-gray-50 mb-2 text-sm">
-                      <span>
-                        Balance:{" "}
-                        {disPlayBalance(
-                          accountStore.isSignedIn,
-                          balancesList[ind]?.balance
-                        )}
-                      </span>
-                      <span
-                        className={`underline hover:cursor-pointer hover:text-white ${
-                          inputValList[ind] == balancesList[ind]?.balance
-                            ? "text-green-10"
-                            : "text-gray-50"
-                        }`}
-                        onClick={() => {
-                          changeVal(
-                            {
-                              target: {
-                                value: balancesList[ind]?.balance,
-                              },
-                            },
-                            ind
-                          );
-                        }}
-                      >
-                        Max
-                      </span>
-                    </div>
-                    <div
-                      className="flex h-16 w-full items-center border border-transparent hover:border-green-20 rounded"
-                      style={{ background: "rgba(0,0,0,.2)" }}
-                    >
-                      <input
-                        type="number"
-                        className="h-16 p-3 w-74 text-white"
-                        style={{ fontSize: "26px" }}
-                        value={inputValList[ind]}
-                        onChange={(e) => changeVal(e, ind)}
-                        placeholder="0"
-                      />
-                      <Icon icon={ite.icon} className="h-7 w-7 mr-2" />
-                      <span className="text-white text-base">{ite.symbol}</span>
-                    </div>
-                  </div>
+          {/*  */}
+          {removeTabActive == "share" && (
+            <div>
+              <div>
+                <div className="flex items-center justify-between text-gray-50 mb-2 text-sm">
+                  <span>Shares</span>
+                  <span
+                    className={`underline hover:cursor-pointer hover:text-white ${
+                      shareVal >= sharesDecimals
+                        ? "text-green-10"
+                        : "text-gray-50"
+                    }`}
+                    onClick={() => setShareVal(sharesDecimals)}
+                  >
+                    Max
+                  </span>
                 </div>
-              );
-            }
-          )}
-
-          {/* radio */}
-          <div className="w-full h-19 border border-gray-90 rounded flex px-4  py-3 justify-between flex-col cursor-pointer">
-            {/* init */}
-            <div
-              className="flex items-center text-sm text-gray-50"
-              onClick={() => setRadio("init")}
-            >
-              <div className="w-3 h-3 p-0.5 border border-green-10 rounded-full">
-                {radioActive == "init" && (
-                  <div className="bg-green-10 rounded-full w-full h-full"></div>
-                )}
+                <div
+                  className="flex h-16 w-full items-center border border-transparent hover:border-green-20 rounded"
+                  style={{ background: "rgba(0,0,0,.2)" }}
+                >
+                  <input
+                    type="number"
+                    className="h-16 p-3 w-full text-white"
+                    style={{ fontSize: "26px" }}
+                    placeholder="0"
+                    value={shareVal}
+                    onChange={(e) => {
+                      changeShareVal(e.target.value);
+                    }}
+                  />
+                </div>
               </div>
-              <span className="ml-1">
-                Add all tokens in a balanced proportion
-              </span>
-            </div>
-            {/* max */}
-            <div
-              className="flex items-center text-sm text-gray-50"
-              onClick={() => setRadio("max")}
-            >
-              <div className="w-3 h-3 p-0.5 border border-green-10 rounded-full">
-                {radioActive == "max" && (
-                  <div className="bg-green-10 rounded-full w-full h-full"></div>
-                )}
-              </div>
-              <span className="ml-1">
-                Use maximum amount of tokens available
-              </span>
-            </div>
-          </div>
+              <RangeSlider
+                sliderAmount={shareVal}
+                setSliderAmount={changeShareVal}
+                max={sharesDecimals}
+                // setAmount={changeVal}
+              ></RangeSlider>
 
-          {/* slippage */}
-          <div className="flex items-center justify-between mt-7">
-            <div className="text-sm text-gray-50 frcc">
-              Slippage tolerance{" "}
-              <HoverTip
-                msg={
-                  "Slippage means the difference between what you expect to get and what you actually get due to other executing first"
-                }
-                extraStyles={"w-50"}
-              />
-            </div>
-            <div className="frcc">
-              <div
-                className={`frcc w-38 text-sm py-1  ${poolStyle.commonStyle}`}
-              >
-                {feeList.map((item, index) => {
-                  return (
-                    <div
-                      key={item.key + index}
-                      className={`
+              {/* slippage */}
+              <div className="flex items-center justify-between mt-12">
+                <div className="text-sm text-gray-50 frcc">
+                  Slippage tolerance{" "}
+                  <HoverTip
+                    msg={
+                      "Slippage means the difference between what you expect to get and what you actually get due to other executing first"
+                    }
+                    extraStyles={"w-50"}
+                  />
+                </div>
+                <div className="frcc">
+                  <div
+                    className={`frcc w-38 text-sm py-1  ${poolStyle.commonStyle}`}
+                  >
+                    {feeList.map((item, index) => {
+                      return (
+                        <div
+                          key={item.key + index}
+                          className={`
                   ${
                     isActive == item.key
                       ? "text-white bg-gray-120 rounded"
@@ -347,61 +404,167 @@ export default function StableAdd(props: any) {
                   }
                   w-12 h-5 frcc cursor-pointer
                 `}
-                      onClick={() => {
-                        setActive(item.key);
-                        setFeeValue(item.key);
-                      }}
-                    >
-                      {item.value}%
-                    </div>
-                  );
-                })}
+                          onClick={() => {
+                            setActive(item.key);
+                            setFeeValue(item.key);
+                          }}
+                        >
+                          {item.value}%
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <div className={poolStyle.filterSeacrhInputContainer}>
+                    <input
+                      type="number"
+                      className={poolStyle.filterSearchInput}
+                      value={feeValue}
+                      onChange={inputChange}
+                    />
+                    <span className="text-gray-50 text-sm">%</span>
+                  </div>
+                </div>
               </div>
-              <div className={poolStyle.filterSeacrhInputContainer}>
-                <input
-                  type="number"
-                  className={poolStyle.filterSearchInput}
-                  value={feeValue}
-                  onChange={inputChange}
-                />
-                <span className="text-gray-50 text-sm">%</span>
-              </div>
-            </div>
-          </div>
 
-          {/* Minimum shares */}
-          <div className="flex items-center justify-between mt-5">
-            <div className="text-sm text-gray-50 frcc">Minimum shares</div>
-            <div className="text-white text-sm">
-              {myShares({
-                totalShares: BigNumber.sum(
-                  poolDetail.shares_total_supply,
-                  percentLess(feeValue, predicedShares)
-                )
-                  .toNumber()
-                  .toLocaleString("fullwide", { useGrouping: false }),
-                userTotalShare: new BigNumber(
-                  toPrecision(percentLess(feeValue, predicedShares), 0)
-                ),
-              })}
-            </div>
-          </div>
-          {/* tips  */}
-          {!canSubmit && (
-            <div
-              className="text-yellow-10 text-sm border h-11 w-full rounded flex px-4 py-1 items-center my-6"
-              style={{
-                borderColor: "rgba(230, 180, 1, 0.3)",
-                backgroundColor: "rgba(230, 180, 1, 0.14)",
-              }}
-            >
-              <span>{`You don't have enough ${notEnoughList.join("｜")}`}</span>
+              <div className="flex items-center justify-between mt-6">
+                <div className="text-sm text-gray-50 frcc">
+                  Minimum received
+                </div>
+              </div>
+
+              <div className="flex flex-wrap items-center justify-between">
+                {updatedMapList[0]?.token_account_ids?.map(
+                  (ite: any, ind: number) => {
+                    return (
+                      <>
+                        <div
+                          key={ite.tokenId}
+                          className="flex h-13 mt-2 p-2 w-45 shrink-0 items-center rounded"
+                          style={{ background: "rgba(33, 43, 53, 0.4)" }}
+                        >
+                          <Icon icon={ite.icon} className="h-7 w-7 mr-2" />
+                          <span className="text-gray-50 text-base">
+                            {ite.symbol}
+                          </span>
+                          <span className="text-base text-white ml-2">
+                            {calcTokenReceived(receiveAmounts[ind], ite)}
+                          </span>
+                        </div>
+                        <span className="text-gray-50 text-lg">
+                          {ind < updatedMapList[0]?.token_account_ids.length - 1
+                            ? "+"
+                            : ""}
+                        </span>
+                      </>
+                    );
+                  }
+                )}
+              </div>
             </div>
           )}
 
+          {removeTabActive == "token" && (
+            <>
+              {/*  */}
+              {updatedMapList[0]?.token_account_ids?.map(
+                (ite: any, ind: number) => {
+                  return (
+                    <div key={ite.tokenId}>
+                      <div className="mb-6">
+                        <div
+                          className="flex h-16 w-full items-center border border-transparent hover:border-green-20 rounded"
+                          style={{ background: "rgba(0,0,0,.2)" }}
+                        >
+                          <input
+                            type="number"
+                            className="h-16 p-3 w-74 text-white"
+                            style={{ fontSize: "26px" }}
+                            value={inputValList[ind]}
+                            onChange={(e) => changeVal(e, ind)}
+                            placeholder="0"
+                          />
+                          <Icon icon={ite.icon} className="h-7 w-7 mr-2" />
+                          <span className="text-white text-base">
+                            {ite.symbol}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                }
+              )}
+
+              {/* slippage */}
+              <div className="flex items-center justify-between mt-7">
+                <div className="text-sm text-gray-50 frcc">
+                  Slippage tolerance{" "}
+                  <HoverTip
+                    msg={
+                      "Slippage means the difference between what you expect to get and what you actually get due to other executing first"
+                    }
+                    extraStyles={"w-50"}
+                  />
+                </div>
+                <div className="frcc">
+                  <div
+                    className={`frcc w-38 text-sm py-1  ${poolStyle.commonStyle}`}
+                  >
+                    {feeList.map((item, index) => {
+                      return (
+                        <div
+                          key={item.key + index}
+                          className={`
+                  ${
+                    isActive == item.key
+                      ? "text-white bg-gray-120 rounded"
+                      : "text-gray-60"
+                  }
+                  w-12 h-5 frcc cursor-pointer
+                `}
+                          onClick={() => {
+                            setActive(item.key);
+                            setFeeValue(item.key);
+                          }}
+                        >
+                          {item.value}%
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <div className={poolStyle.filterSeacrhInputContainer}>
+                    <input
+                      type="number"
+                      className={poolStyle.filterSearchInput}
+                      value={feeValue}
+                      onChange={inputChange}
+                    />
+                    <span className="text-gray-50 text-sm">%</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Minimum shares */}
+              <div className="flex items-center justify-between mt-5">
+                <div className="text-sm text-gray-50 frcc">Shares</div>
+                <div className="text-white text-sm">{calcSharesRemoved()}</div>
+              </div>
+              {/* tips  */}
+              {error && (
+                <div
+                  className="text-yellow-10 text-sm border h-11 w-full rounded flex px-4 py-1 items-center my-6"
+                  style={{
+                    borderColor: "rgba(230, 180, 1, 0.3)",
+                    backgroundColor: "rgba(230, 180, 1, 0.14)",
+                  }}
+                >
+                  <span>{`Insufficient shares`}</span>
+                </div>
+              )}
+            </>
+          )}
           {/* submit */}
           {accountStore.isSignedIn ? (
-            canSubmit ? (
+            (removeTabActive == "share" ? canSubmit : canSubmitByToken) ? (
               <div
                 className="poolBtnStyleBase h-11 mt-6 cursor-pointer hover:opacity-90"
                 onClick={() => {
@@ -411,12 +574,12 @@ export default function StableAdd(props: any) {
               >
                 <ButtonTextWrapper
                   loading={isLoading}
-                  Text={() => <span>Add Liquidity</span>}
+                  Text={() => <span>Remove Liquidity</span>}
                 />
               </div>
             ) : (
               <div className="poolBtnStyleDefaultBase h-11 mt-6 cursor-not-allowed">
-                Add Liquidity
+                Remove Liquidity
               </div>
             )
           ) : (

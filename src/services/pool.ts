@@ -15,10 +15,18 @@ import { Transaction } from "@/interfaces/swap";
 import { ONLY_ZEROS } from "@/utils/numbers";
 import { getDepositTransactions } from "./token";
 import { LP_STORAGE_AMOUNT } from "@/utils/near";
-import { TokenMetadata } from "./ft-contract";
+import { TokenMetadata, native_usdc_has_upgrated } from "./ft-contract";
+import getConfigV2 from "@/utils/configV2";
+import { STORAGE_TO_REGISTER_WITH_FT } from "@/utils/constant";
+import { ONE_YOCTO_NEAR } from "./xref";
+import { storageDepositAction } from "./creator/storage";
+import { withdrawAction } from "./creator/token";
+import { checkTokenNeedsStorageDeposit } from "./swap/registerToken";
+import { getExplorer, ExplorerType } from "@/utils/device";
 
 const { REF_FI_CONTRACT_ID, WRAP_NEAR_CONTRACT_ID } = getConfig();
-
+const { NO_REQUIRED_REGISTRATION_TOKEN_IDS } = getConfigV2();
+const explorerType = getExplorer();
 const genUrlParams = (props: Record<string, string | number>) => {
   return Object.keys(props)
     .map((key) => key + "=" + props[key])
@@ -415,6 +423,301 @@ export const addLiquidityToStablePool = async ({
       });
     }
   }
+
+  return executeMultipleTransactions(transactions);
+};
+
+interface RemoveLiquidityFromStablePoolOptions {
+  id: number;
+  shares: string;
+  min_amounts: string[];
+  tokens: TokenMetadata[];
+  unregister?: boolean;
+}
+// todo by shares
+export const removeLiquidityFromStablePool = async ({
+  id,
+  shares,
+  min_amounts,
+  tokens,
+  unregister = false,
+}: RemoveLiquidityFromStablePoolOptions) => {
+  const tokenIds = tokens.map((token) => token.id);
+
+  const withDrawTransactions: Transaction[] = [];
+
+  for (let i = 0; i < tokenIds.length; i++) {
+    const tokenId = tokenIds[i];
+    const ftBalance = await ftGetStorageBalance(tokenId);
+    if (ftBalance === null) {
+      if (NO_REQUIRED_REGISTRATION_TOKEN_IDS.includes(tokenId)) {
+        const r = await native_usdc_has_upgrated(tokenId);
+        if (r) {
+          withDrawTransactions.unshift({
+            receiverId: tokenId,
+            functionCalls: [
+              storageDepositAction({
+                registrationOnly: true,
+                amount: STORAGE_TO_REGISTER_WITH_FT,
+              }),
+            ],
+          });
+        } else {
+          withDrawTransactions.unshift({
+            receiverId: tokenId,
+            functionCalls: [
+              {
+                methodName: "register_account",
+                args: {
+                  account_id: getAccountId(),
+                },
+                gas: "10000000000000",
+              },
+            ],
+          });
+        }
+      } else {
+        withDrawTransactions.unshift({
+          receiverId: tokenId,
+          functionCalls: [
+            storageDepositAction({
+              registrationOnly: true,
+              amount: STORAGE_TO_REGISTER_WITH_FT,
+            }),
+          ],
+        });
+      }
+    }
+  }
+
+  const neededStorage = await checkTokenNeedsStorageDeposit();
+  if (neededStorage) {
+    withDrawTransactions.unshift({
+      receiverId: REF_FI_CONTRACT_ID,
+      functionCalls: [storageDepositAction({ amount: neededStorage })],
+    });
+  }
+
+  const withdrawActions = tokenIds.map((tokenId) =>
+    withdrawAction({ tokenId, amount: "0", unregister })
+  );
+
+  const withdrawActionsFireFox = tokenIds.map((tokenId, i) =>
+    withdrawAction({ tokenId, amount: "0", unregister, singleTx: true })
+  );
+
+  const actions: RefFiFunctionCallOptions[] = [
+    {
+      methodName: "remove_liquidity",
+      args: {
+        pool_id: id,
+        shares,
+        min_amounts,
+      },
+      amount: ONE_YOCTO_NEAR,
+      gas: "30000000000000",
+    },
+  ];
+  let need_split = false;
+  const selectedWalletId = window.selector?.store?.getState()?.selectedWalletId;
+  if (selectedWalletId == "ledger") {
+    need_split = true;
+  }
+  if (explorerType !== ExplorerType.Firefox && !need_split) {
+    withdrawActions.forEach((item) => {
+      actions.push(item);
+    });
+  }
+
+  const transactions: Transaction[] = [
+    ...withDrawTransactions,
+    {
+      receiverId: REF_FI_CONTRACT_ID,
+      functionCalls: [...actions],
+    },
+  ];
+  if (explorerType !== ExplorerType.Firefox && need_split) {
+    withdrawActions.forEach((withdraw) => {
+      transactions.push({
+        receiverId: REF_FI_CONTRACT_ID,
+        functionCalls: [withdraw],
+      });
+    });
+  }
+
+  if (explorerType === ExplorerType.Firefox) {
+    transactions.push({
+      receiverId: REF_FI_CONTRACT_ID,
+      functionCalls: withdrawActionsFireFox,
+    });
+  }
+
+  // if (
+  //   tokenIds.includes(WRAP_NEAR_CONTRACT_ID) &&
+  //   !ONLY_ZEROS.test(min_amounts[tokenIds.indexOf(WRAP_NEAR_CONTRACT_ID)])
+  // ) {
+  //   transactions.push(
+  //     nearWithdrawTransaction(
+  //       toReadableNumber(
+  //         nearMetadata.decimals,
+  //         min_amounts[tokenIds.indexOf(WRAP_NEAR_CONTRACT_ID)]
+  //       )
+  //     )
+  //   );
+  // }
+
+  return executeMultipleTransactions(transactions);
+};
+
+export const predictRemoveLiquidityByTokens = async (
+  pool_id: number,
+  amounts: string[]
+): Promise<string> => {
+  return refFiViewFunction({
+    methodName: "predict_remove_liquidity_by_tokens",
+    args: { pool_id, amounts },
+  });
+};
+
+interface RemoveLiquidityByTokensFromStablePoolOptions {
+  id: number;
+  amounts: string[];
+  max_burn_shares: string;
+  tokens: TokenMetadata[];
+  unregister?: boolean;
+}
+
+// todo by tokens
+export const removeLiquidityByTokensFromStablePool = async ({
+  id,
+  amounts,
+  max_burn_shares,
+  tokens,
+  unregister = false,
+}: RemoveLiquidityByTokensFromStablePoolOptions) => {
+  const tokenIds = tokens.map((token) => token.id);
+  const withDrawTransactions: Transaction[] = [];
+
+  for (let i = 0; i < tokenIds.length; i++) {
+    if (ONLY_ZEROS.test(amounts[i])) continue;
+
+    const tokenId = tokenIds[i];
+
+    const ftBalance = await ftGetStorageBalance(tokenId);
+    if (ftBalance === null) {
+      if (NO_REQUIRED_REGISTRATION_TOKEN_IDS.includes(tokenId)) {
+        const r = await native_usdc_has_upgrated(tokenId);
+        if (r) {
+          withDrawTransactions.unshift({
+            receiverId: tokenId,
+            functionCalls: [
+              storageDepositAction({
+                registrationOnly: true,
+                amount: STORAGE_TO_REGISTER_WITH_FT,
+              }),
+            ],
+          });
+        } else {
+          withDrawTransactions.unshift({
+            receiverId: tokenId,
+            functionCalls: [
+              {
+                methodName: "register_account",
+                args: {
+                  account_id: getAccountId(),
+                },
+                gas: "10000000000000",
+              },
+            ],
+          });
+        }
+      } else {
+        withDrawTransactions.unshift({
+          receiverId: tokenId,
+          functionCalls: [
+            storageDepositAction({
+              registrationOnly: true,
+              amount: STORAGE_TO_REGISTER_WITH_FT,
+            }),
+          ],
+        });
+      }
+    }
+  }
+
+  const neededStorage = await checkTokenNeedsStorageDeposit();
+  if (neededStorage) {
+    withDrawTransactions.unshift({
+      receiverId: REF_FI_CONTRACT_ID,
+      functionCalls: [storageDepositAction({ amount: neededStorage })],
+    });
+  }
+
+  const withdrawActions = tokenIds
+    .filter((tk, i) => !ONLY_ZEROS.test(amounts[i]))
+    .map((tokenId) => withdrawAction({ tokenId, amount: "0", unregister }));
+
+  const withdrawActionsFireFox = tokenIds
+    .filter((tk, i) => !ONLY_ZEROS.test(amounts[i]))
+    .map((tokenId, i) =>
+      withdrawAction({ tokenId, amount: "0", unregister, singleTx: true })
+    );
+
+  const actions: RefFiFunctionCallOptions[] = [
+    {
+      methodName: "remove_liquidity_by_tokens",
+      args: { pool_id: id, amounts, max_burn_shares },
+      amount: ONE_YOCTO_NEAR,
+      gas: "30000000000000",
+    },
+  ];
+  let need_split = false;
+  const selectedWalletId = window.selector?.store?.getState()?.selectedWalletId;
+  if (selectedWalletId == "ledger" || selectedWalletId == "mintbase-wallet") {
+    need_split = true;
+  }
+  if (explorerType !== ExplorerType.Firefox && !need_split) {
+    withdrawActions.forEach((item) => {
+      actions.push(item);
+    });
+  }
+
+  const transactions: Transaction[] = [
+    ...withDrawTransactions,
+    {
+      receiverId: REF_FI_CONTRACT_ID,
+      functionCalls: [...actions],
+    },
+  ];
+  if (explorerType !== ExplorerType.Firefox && need_split) {
+    withdrawActions.forEach((withdraw) => {
+      transactions.push({
+        receiverId: REF_FI_CONTRACT_ID,
+        functionCalls: [withdraw],
+      });
+    });
+  }
+
+  if (explorerType === ExplorerType.Firefox) {
+    transactions.push({
+      receiverId: REF_FI_CONTRACT_ID,
+      functionCalls: withdrawActionsFireFox,
+    });
+  }
+
+  // if (
+  //   tokenIds.includes(WRAP_NEAR_CONTRACT_ID) &&
+  //   !ONLY_ZEROS.test(amounts[tokenIds.indexOf(WRAP_NEAR_CONTRACT_ID)])
+  // ) {
+  //   transactions.push(
+  //     nearWithdrawTransaction(
+  //       toReadableNumber(
+  //         nearMetadata.decimals,
+  //         amounts[tokenIds.indexOf(WRAP_NEAR_CONTRACT_ID)]
+  //       )
+  //     )
+  //   );
+  // }
 
   return executeMultipleTransactions(transactions);
 };

@@ -44,7 +44,7 @@ export function menuData(): IMenu[] {
           id: "orderbook",
           label: "Orderbook",
           icon: <OrderbookIcon />,
-          path: "",
+          path: "/orderbook/spot",
         },
       ],
     },

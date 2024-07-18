@@ -1,0 +1,3 @@
+.actionButton {
+  @apply flex items-center justify-center border border-dark-190 rounded cursor-pointer gap-2 text-sm text-dark-200 w-1 flex-grow h-9;
+}

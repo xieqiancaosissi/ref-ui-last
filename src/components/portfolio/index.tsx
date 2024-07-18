@@ -100,7 +100,7 @@ export default function Overview() {
   async function getTokenPriceList() {
     const tokenPriceList = await getBoostTokenPrices();
     setTokenPriceList(tokenPriceList);
-  };
+  }
   // console.log(wallet_assets_value,'wallet_assets_value')
   // console.log(ref_invest_value,'ref_invest_value')
   // console.log(ref_profit_value,'ref_profit_value')

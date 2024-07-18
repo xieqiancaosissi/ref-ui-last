@@ -20,3 +20,23 @@
   background: #566069;
   border-radius: 2px;
 }
+
+.thinDarkscrollBar::-webkit-scrollbar-thumb {
+  background: #2d3a45;
+  border-radius: 2px;
+}
+.thinDarkscrollBar::-webkit-scrollbar {
+  width: 4px;
+  border-radius: 2px;
+}
+
+.thinDarkscrollBar::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0);
+  background: transparent;
+  border-radius: 2px;
+}
+
+.thinDarkscrollBar::-webkit-scrollbar-thumb {
+  background: #2d3a45;
+  border-radius: 2px;
+}

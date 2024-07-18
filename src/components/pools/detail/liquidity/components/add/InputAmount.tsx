@@ -93,18 +93,18 @@ export function InputAmount({
             }}
           />
           <span
-            className={`text-2xl font-bold mx-2.5 whitespace-nowrap frcc ${
+            className={`text-2xl font-bold mx-2.5 whitespace-nowrap frcc min-w-10 ${
               currentSelectedPool?.pool_id
                 ? "text-white"
                 : "text-v3feeTextColor"
             }`}
           >
             <img
-              className="w-6 h-6 rounded-full border border-v3feeTextColor mx-1"
+              className="w-6 h-6 rounded-full border border-gray-60 mx-1 bg-dark-10"
               key={token?.id}
               src={token?.icon}
             />
-            {token ? toRealSymbol(token.symbol) : "Selet Token"}
+            {token ? toRealSymbol(token.symbol) : ""}
           </span>
         </div>
         <div

@@ -135,14 +135,12 @@ export default function TvlAndVolumeCharts(props: any) {
             {/* token right amount */}
             {tokenPriceList && poolDetail && (
               <span className="mr-1">
-                {Math.ceil(
-                  (tokenPriceList[poolDetail?.token_account_ids[currentSort[0]]]
-                    .price /
-                    tokenPriceList[
-                      poolDetail?.token_account_ids[currentSort[1]]
-                    ].price) *
-                    100
-                ) / 100}
+                {((tokenPriceList[poolDetail?.token_account_ids[currentSort[0]]]
+                  .price /
+                  tokenPriceList[poolDetail?.token_account_ids[currentSort[1]]]
+                    .price) *
+                  100) /
+                  100}
               </span>
             )}
             {/* token right name */}

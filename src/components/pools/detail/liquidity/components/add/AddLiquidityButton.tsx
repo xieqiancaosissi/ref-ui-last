@@ -10,6 +10,7 @@ import { TokenMetadata } from "@/services/ft-contract";
 import { WRAP_NEAR_CONTRACT_ID } from "@/services/wrap-near";
 import { getSelector } from "@/utils/wallet";
 import getConfigV2 from "@/utils/configV2";
+import { ButtonTextWrapper } from "@/components/common/Button";
 const configV2 = getConfigV2();
 
 /**
@@ -163,7 +164,6 @@ export function AddLiquidityButton() {
     liquidityShape === "Spot"
       ? addLiquiditySpot
       : addLiquidityForCurveAndBidAskMode;
-
   return (
     <div className={`w-full fccc  mt-5 poolBtnStyle cursor-pointer rounded`}>
       {isSignedIn ? (
@@ -176,7 +176,10 @@ export function AddLiquidityButton() {
           }`}
           onClick={add_lp_func}
         >
-          {getButtonText()}
+          <ButtonTextWrapper
+            loading={addLiquidityButtonLoading}
+            Text={() => <>{getButtonText()}</>}
+          />
         </div>
       ) : (
         <div

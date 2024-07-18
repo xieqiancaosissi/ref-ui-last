@@ -104,7 +104,7 @@ export default function AddYourLiquidityPageV3() {
   const [show_chart, set_show_chart] = useState<boolean>(true);
 
   // callBack handle
-  useAddLiquidityUrlHandle();
+  useAddLiquidityUrlHandle("dcl");
   const accoutStore = useAccountStore();
   const isSignedIn = accoutStore.isSignedIn;
   const nearBalance = useDepositableBalance("NEAR");
@@ -2115,6 +2115,8 @@ export default function AddYourLiquidityPageV3() {
           </div>
         </div>
       </div>
+      {/* slot */}
+      <div className="w-full min-h-10"></div>
     </LiquidityProviderData.Provider>
   );
 }

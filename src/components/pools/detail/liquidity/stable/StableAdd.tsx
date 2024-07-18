@@ -219,29 +219,28 @@ export default function StableAdd(props: any) {
                     <div className="flex items-center justify-between text-gray-50 mb-2 text-sm">
                       <span>
                         Balance:{" "}
-                        {disPlayBalance(
-                          accountStore.isSignedIn,
-                          balancesList[ind]?.balance
-                        )}
-                      </span>
-                      <span
-                        className={`underline hover:cursor-pointer hover:text-white ${
-                          inputValList[ind] == balancesList[ind]?.balance
-                            ? "text-green-10"
-                            : "text-gray-50"
-                        }`}
-                        onClick={() => {
-                          changeVal(
-                            {
-                              target: {
-                                value: balancesList[ind]?.balance,
+                        <span
+                          className={`underline hover:cursor-pointer hover:text-white  ${
+                            inputValList[ind] == balancesList[ind]?.balance
+                              ? ""
+                              : "text-gray-50"
+                          }`}
+                          onClick={() => {
+                            changeVal(
+                              {
+                                target: {
+                                  value: balancesList[ind]?.balance,
+                                },
                               },
-                            },
-                            ind
-                          );
-                        }}
-                      >
-                        Max
+                              ind
+                            );
+                          }}
+                        >
+                          {disPlayBalance(
+                            accountStore.isSignedIn,
+                            balancesList[ind]?.balance
+                          )}
+                        </span>
                       </span>
                     </div>
                     <div

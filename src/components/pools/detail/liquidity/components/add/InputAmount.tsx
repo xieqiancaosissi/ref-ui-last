@@ -83,7 +83,7 @@ export function InputAmount({
         <div className="flex items-center justify-between">
           <input
             type="number"
-            placeholder="0.0"
+            placeholder="0"
             className="font-gothamBold text-2xl"
             disabled={!currentSelectedPool?.pool_id || disabled ? true : false}
             value={isNoPool ? "" : amount}
@@ -117,20 +117,15 @@ export function InputAmount({
             <span title={balance}>
               <span>Balance</span>
               <span
-                className={`mx-1 ${
-                  disabled ? "" : "cursor-pointer hover:text-white"
-                }`}
-              >
-                {getBalance()}
-              </span>
-              <span
-                className=" underline"
                 onClick={() => {
                   if (disabled) return;
                   changeAmount(maxBalance);
                 }}
+                className={`mx-1 underline ${
+                  disabled ? "" : "cursor-pointer hover:text-white"
+                }`}
               >
-                Max
+                {getBalance()}
               </span>
             </span>
           </div>

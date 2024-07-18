@@ -440,7 +440,7 @@ export function PointsComponent() {
           <div
             className={` ${
               priceRangeMode === "by_range" ? "hidden" : ""
-            } flex  items-center bg-black bg-opacity-20 rounded-xl p-2.5 col-span-2`}
+            } flex  items-center bg-black bg-opacity-20 rounded p-2.5 col-span-2`}
           >
             <span className="text-sm text-gray-60 xs:text-xs md:text-xs whitespace-nowrap">
               Target Price
@@ -463,7 +463,7 @@ export function PointsComponent() {
           <div
             className={` ${
               priceRangeMode === "by_range" ? "hidden" : ""
-            } flex items-center bg-black bg-opacity-20 rounded-xl p-2.5 col-span-1`}
+            } flex items-center bg-black bg-opacity-20 rounded p-2.5 col-span-1`}
           >
             <span className="text-sm text-gray-60 xs:text-xs md:text-xs whitespace-nowrap">
               Radius
@@ -477,7 +477,13 @@ export function PointsComponent() {
 
           {/* min price input box */}
           <div
-            className={`flex items-center rounded p-2.5 col-span-1 ${"bg-black bg-opacity-20"}`}
+            className={`flex items-center rounded p-2.5 col-span-1`}
+            style={{
+              background:
+                priceRangeMode == "by_range"
+                  ? "rgba(0,0,0,.2)"
+                  : "rgba(126, 138, 147, 0.15)",
+            }}
           >
             <span className="text-sm text-gray-60 xs:text-xs md:text-xs whitespace-nowrap">
               Min Price
@@ -503,7 +509,13 @@ export function PointsComponent() {
 
           {/* max price input box */}
           <div
-            className={`flex items-center rounded p-2.5 col-span-1 ${"bg-black bg-opacity-20"}`}
+            className={`flex items-center rounded p-2.5 col-span-1`}
+            style={{
+              background:
+                priceRangeMode == "by_range"
+                  ? "rgba(0,0,0,.2)"
+                  : "rgba(126, 138, 147, 0.15)",
+            }}
           >
             <span className="text-sm text-gray-60 xs:text-xs whitespace-nowrap md:text-xs">
               Max Price
@@ -529,7 +541,13 @@ export function PointsComponent() {
 
           {/* bin number input box */}
           <div
-            className={`flex items-center rounded p-2.5 col-span-1 ${"bg-black bg-opacity-20"}`}
+            className={`flex items-center rounded p-2.5 col-span-1`}
+            style={{
+              background:
+                priceRangeMode == "by_range"
+                  ? "rgba(0,0,0,.2)"
+                  : "rgba(126, 138, 147, 0.15)",
+            }}
           >
             <span className="text-sm text-gray-60 xs:text-xs md:text-xs whitespace-nowrap">
               Bin amount

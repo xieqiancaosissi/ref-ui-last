@@ -239,7 +239,9 @@ export default function RecentTransaction(props: any) {
       >
         <div className="col-span-3">
           <span className="text-white">
-            {tx.method_name.toLowerCase().indexOf("add") > -1 && "Add"}
+            {(tx.method_name.toLowerCase().indexOf("add") > -1 ||
+              tx.method_name.toLowerCase().indexOf("append") > -1) &&
+              "Add"}
 
             {tx.method_name.toLowerCase().indexOf("remove") > -1 && "Remove"}
           </span>
@@ -361,8 +363,14 @@ export default function RecentTransaction(props: any) {
   // liquidity
 
   return (
-    <div className="w-183 max-h-106 rounded-md p-4 overflow-auto bg-refPublicBoxDarkBg">
-      <div className="grid grid-cols-9 select-none">
+    <div className="w-183 max-h-106 rounded-md overflow-auto ">
+      <div
+        className="grid grid-cols-9 sticky top-0  px-4 pt-4  select-none"
+        style={{
+          zIndex: 10,
+          background: "#08141C",
+        }}
+      >
         {title.map((item: string, index: number) => {
           return (
             <span
@@ -374,9 +382,11 @@ export default function RecentTransaction(props: any) {
           );
         })}
       </div>
-      {activeTab == "swap"
-        ? renderSwapTransactions
-        : renderLiquidityTransactions}
+      <div className="px-4 pb-4 pt-2 bg-refPublicBoxDarkBg">
+        {activeTab == "swap"
+          ? renderSwapTransactions
+          : renderLiquidityTransactions}
+      </div>
     </div>
   );
 }

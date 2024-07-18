@@ -121,7 +121,7 @@ export default function TvlAndVolumeCharts(props: any) {
               ? "NEAR"
               : poolDetail?.token_symbols[currentSort[0]]}
             {/* usd price */}
-            {tokenPriceList && poolDetail && (
+            {/* {tokenPriceList && poolDetail && (
               <span className="text-gray-50 font-normal">
                 (
                 {toInternationalCurrencySystem_usd(
@@ -130,7 +130,7 @@ export default function TvlAndVolumeCharts(props: any) {
                 )}
                 )
               </span>
-            )}
+            )} */}
             <span className="mx-1">=</span>
             {/* token right amount */}
             {tokenPriceList && poolDetail && (

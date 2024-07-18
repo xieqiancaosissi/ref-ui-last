@@ -116,7 +116,7 @@ export const useV3MonthTVL = (pool_id: string) => {
           (p.date = p.dateString);
       });
       res.sort((t1, t2) => {
-        return new Date(t1.date).getTime() - new Date(t2.date).getTime();
+        return new Date(t2.date).getTime() - new Date(t1.date).getTime();
       });
 
       const monthTVL = res
@@ -155,14 +155,13 @@ export const useV3MonthVolume = (pool_id: string) => {
   const [yMonth, setYData] = useState([]);
   useEffect(() => {
     getV3PoolVolumeById(pool_id).then((res) => {
-      const monthVolume = res
-        .map((v, i) => {
-          return {
-            ...v,
-            volume_dollar: Number(v.volume),
-          };
-        })
-        .reverse();
+      const monthVolume = res.map((v, i) => {
+        return {
+          ...v,
+          volume_dollar: Number(v.volume),
+        };
+      });
+
       const x: any = [];
       const y: any = [];
       monthVolume.map((item: any) => {

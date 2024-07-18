@@ -2,7 +2,6 @@ import React, { useRef, useEffect, useState } from "react";
 import * as charts from "echarts";
 import styles from "./style.module.css";
 import { useV3MonthTVL, useV3MonthVolume } from "@/hooks/usePoolDetailCharts";
-import LiquidityCharts from "./LiquidityCharts";
 import {
   toInternationalCurrencySystem_number,
   toInternationalCurrencySystem_usd,
@@ -169,7 +168,7 @@ export default function TvlAndVolumeCharts(props: any) {
                 svgHeight: isMobile() ? "250" : "450",
               }}
               reverse={!rateDirection}
-            ></DclChart>
+            />
           )}
         </div>
       )}

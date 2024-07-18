@@ -18,7 +18,8 @@ export default function PoolComposition(props: any) {
   const toSwap = (tokens: any) => {
     persistSwapStore.setTokenInId(getTokenUIId(tokens[0].meta));
     persistSwapStore.setTokenOutId(getTokenUIId(tokens[1].meta));
-    router.push("/");
+
+    window ? window.open("/", "_blank") : router.push("/");
   };
 
   function TokenIconComponent({ ite }: { ite: any }) {

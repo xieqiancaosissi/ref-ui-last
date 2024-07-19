@@ -131,7 +131,7 @@ export default function DCLPoolDetail() {
   }
 
   useEffect(() => {
-    if (poolDetailV3?.token_x) {
+    if (poolDetailV3?.token_x && Object.keys(tokenPriceList || {}).length > 0) {
       const {
         token_x,
         token_y,

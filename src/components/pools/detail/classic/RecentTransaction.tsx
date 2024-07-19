@@ -28,16 +28,19 @@ export default function RecentTransaction(props: any) {
   const [loadingStates, setLoadingStates] = useState<any>({});
   const [hoveredTx, setHoveredTx] = useState(null);
   const closeTimeoutRef = useRef<any>(null);
-  const handleMouseEnter = (receipt_id: any) => {
+  const [hoverIndex, setHoverIndex] = useState(0);
+  const handleMouseEnter = (receipt_id: any, index: number) => {
     if (closeTimeoutRef.current) {
       clearTimeout(closeTimeoutRef.current);
       closeTimeoutRef.current = null;
     }
     setHoveredTx(receipt_id);
+    setHoverIndex(index);
   };
   const handleMouseLeave = () => {
     closeTimeoutRef.current = setTimeout(() => {
       setHoveredTx(null);
+      setHoverIndex(0);
     }, 200);
   };
   async function handleTxClick(receipt_id: any, url: string) {
@@ -123,7 +126,7 @@ export default function RecentTransaction(props: any) {
           <span
             key={tx.receipt_id}
             className="inline-flex items-center cursor-pointer"
-            onMouseEnter={() => handleMouseEnter(tx.receipt_id)}
+            onMouseEnter={() => handleMouseEnter(tx.receipt_id, index)}
             onMouseLeave={handleMouseLeave}
           >
             {loadingStates[tx.receipt_id] ? (
@@ -139,7 +142,7 @@ export default function RecentTransaction(props: any) {
                 <BlinkIcon className="opacity-40 hover:opacity-100 ml-2"></BlinkIcon>
               </>
             )}
-            {hoveredTx === tx.receipt_id && (
+            {hoveredTx === tx.receipt_id && index == hoverIndex && (
               <div className="bg-dark-70 w-41 h-25 absolute top-6 -right-2 bg-poolDetaileTxBgColor  p-2 shadow-lg rounded z-50">
                 <div className="flex flex-col">
                   <div
@@ -236,7 +239,9 @@ export default function RecentTransaction(props: any) {
       >
         <div className="col-span-3">
           <span className="text-white">
-            {tx.method_name.toLowerCase().indexOf("add") > -1 && "Add"}
+            {(tx.method_name.toLowerCase().indexOf("add") > -1 ||
+              tx.method_name.toLowerCase().indexOf("append") > -1) &&
+              "Add"}
 
             {tx.method_name.toLowerCase().indexOf("remove") > -1 && "Remove"}
           </span>
@@ -265,7 +270,7 @@ export default function RecentTransaction(props: any) {
           <span
             key={tx.receipt_id}
             className="inline-flex items-center cursor-pointer"
-            onMouseEnter={() => handleMouseEnter(tx.receipt_id)}
+            onMouseEnter={() => handleMouseEnter(tx.receipt_id, index)}
             onMouseLeave={handleMouseLeave}
           >
             {loadingStates[tx.receipt_id] ? (
@@ -281,7 +286,7 @@ export default function RecentTransaction(props: any) {
                 <BlinkIcon className="opacity-40 hover:opacity-100 ml-2"></BlinkIcon>
               </>
             )}
-            {hoveredTx === tx.receipt_id && (
+            {hoveredTx === tx.receipt_id && index == hoverIndex && (
               <div className="bg-dark-70 w-41 h-25 absolute top-6 -right-2 bg-poolDetaileTxBgColor  p-2 shadow-lg rounded z-50">
                 <div className="flex flex-col">
                   <div
@@ -358,8 +363,14 @@ export default function RecentTransaction(props: any) {
   // liquidity
 
   return (
-    <div className="w-183 max-h-106 rounded-md p-4 overflow-auto bg-refPublicBoxDarkBg">
-      <div className="grid grid-cols-9 select-none">
+    <div className="w-183 max-h-106 rounded-md overflow-auto ">
+      <div
+        className="grid grid-cols-9 sticky top-0  px-4 pt-4  select-none"
+        style={{
+          zIndex: 10,
+          background: "#08141C",
+        }}
+      >
         {title.map((item: string, index: number) => {
           return (
             <span
@@ -371,9 +382,11 @@ export default function RecentTransaction(props: any) {
           );
         })}
       </div>
-      {activeTab == "swap"
-        ? renderSwapTransactions
-        : renderLiquidityTransactions}
+      <div className="px-4 pb-4 pt-2 bg-refPublicBoxDarkBg">
+        {activeTab == "swap"
+          ? renderSwapTransactions
+          : renderLiquidityTransactions}
+      </div>
     </div>
   );
 }

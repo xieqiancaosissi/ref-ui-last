@@ -27,7 +27,6 @@ export function SelectTokenDCL({
   limitOrder?: boolean;
 }) {
   const allPools = useAllPoolsV2(!limitOrder);
-
   const [hoverSelectToken, setHoverSelectToken] = useState<boolean>(false);
 
   const intl = useIntl();

@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/router";
-import { getPoolsDetailById } from "@/services/pool";
 import styles from "./style.module.css";
 import TokenDetail from "@/components/pools/detail/classic/tokenDetail";
 import { CollectStar } from "@/components/pools/icon";
@@ -9,19 +8,55 @@ import { getAllTokenPrices } from "@/services/farm";
 import TvlAndVolumeCharts from "@/components/pools/detail/classic/TvlAndVolumeCharts";
 import OverallLocking from "@/components/pools/detail/classic/overallLocking";
 import PoolComposition from "@/components/pools/detail/classic/PoolComposition";
-import { useTokenMetadata } from "@/hooks/usePools";
 import RecentTransaction from "@/components/pools/detail/classic/RecentTransaction";
-import { addPoolToWatchList, removePoolFromWatchList } from "@/services/pool";
+import {
+  addPoolToWatchList,
+  removePoolFromWatchList,
+  getPoolsDetailById,
+} from "@/services/pool";
 import NoLiquidity from "@/components/pools/detail/liquidity/NoLiquidity";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import NoContent from "@/components/common/NoContent";
 import { useWatchList } from "@/hooks/useWatchlist";
 import { usePoolStore } from "@/stores/pool";
+import BigNumber from "bignumber.js";
+import { useFarmStake } from "@/hooks/useStableShares";
+import { toRealSymbol } from "@/services/farm";
+import { Icon } from "@/components/pools/detail/liquidity/IconCom";
+import { useAccountStore } from "@/stores/account";
+import { Pool } from "@/interfaces/swap";
+import { TokenMetadata } from "@/services/ft-contract";
+import {
+  calculateFairShare,
+  toInternationalCurrencySystem,
+  divide,
+  multiply,
+  toRoundedReadableNumber,
+  toReadableNumber,
+  toPrecision,
+} from "@/utils/numbers";
+import { getVEPoolId, useAccountInfo } from "@/services/referendum";
+import getConfig from "@/utils/config";
+import MyShares from "@/components/pools/detail/liquidity/classic/Myshare";
+import {
+  useSeedFarms,
+  useSeedDetail,
+  usePool,
+  useTokenMetadata,
+} from "@/hooks/usePools";
+import { getEffectiveFarmList, openUrl } from "@/services/commonV3";
+import { FarmBoost } from "@/services/farm";
+import {
+  Fire,
+  FarmBoardInDetailPool,
+} from "@/components/pools/detail/liquidity/icon";
+import { Images } from "@/components/pools/detail/liquidity/components/liquidityComComp";
 
 export default function ClassicPoolDetail() {
   const router = useRouter();
   const poolId = router.query.id || "";
   const poolStore = usePoolStore();
+  const accountStore = useAccountStore();
   const { currentwatchListId, accountId } = useWatchList();
   const [poolDetail, setPoolDetail] = useState<any>(null);
   const [isCollect, setIsCollect] = useState(false);
@@ -62,10 +97,186 @@ export default function ClassicPoolDetail() {
     setIsCollect((previos) => !previos);
   };
 
+  // liquidity
+
   const addLiquidity = () => {
     // const pool_name = get_pool_name(poolDetail.id);
     // router.push(`/liquidity/${pool_name}`);
   };
+
+  const [showFunding, setShowFunding] = useState(false);
+  const [showWithdraw, setShowWithdraw] = useState(false);
+  const {
+    pool,
+    shares,
+    finalStakeList: stakeList,
+  } = usePool(poolId.toString());
+
+  const farmStakeTotal = useFarmStake({ poolId: Number(poolId), stakeList });
+
+  const userTotalShare = BigNumber.sum(shares, farmStakeTotal);
+
+  const userTotalShareToString = userTotalShare
+    .toNumber()
+    .toLocaleString("fullwide", { useGrouping: false });
+
+  const haveShare = Number(userTotalShareToString) > 0;
+
+  const tokenAmountShareRaw = (
+    pool: Pool,
+    token: TokenMetadata,
+    shares: string
+  ) => {
+    return toRoundedReadableNumber({
+      decimals: token.decimals,
+      number: calculateFairShare({
+        shareOf: pool.supplies[token.id],
+        contribution: shares,
+        totalContribution: pool.shareSupply,
+      }),
+      precision: 3,
+      withCommas: false,
+    });
+  };
+
+  const tokenAmountShare = (
+    pool: Pool,
+    token: TokenMetadata,
+    shares: string
+  ) => {
+    const value = toRoundedReadableNumber({
+      decimals: token.decimals,
+      number: calculateFairShare({
+        shareOf: pool.supplies[token.id],
+        contribution: shares,
+        totalContribution: pool.shareSupply,
+      }),
+      precision: 3,
+      withCommas: false,
+    });
+
+    return Number(value) == 0
+      ? "0"
+      : Number(value) < 0.001 && Number(value) > 0
+      ? "< 0.001"
+      : toInternationalCurrencySystem(value, 3);
+  };
+
+  const tokenInfoPC = ({ token }: { token: TokenMetadata }) => {
+    return tokenAmountShare(
+      pool,
+      token,
+      new BigNumber(userTotalShareToString)
+        .plus(Number(getVEPoolId()) === Number(pool.id) ? lptAmount : "0")
+        .toNumber()
+        .toFixed()
+    );
+  };
+
+  const { lptAmount, fetchDoneVOTEAccountInfo } =
+    !!getConfig().REF_VE_CONTRACT_ID && +poolId === Number(getVEPoolId())
+      ? // eslint-disable-next-line react-hooks/rules-of-hooks
+        useAccountInfo()
+      : { lptAmount: "0", fetchDoneVOTEAccountInfo: true };
+
+  const usdValue = useMemo(() => {
+    try {
+      if (!userTotalShareToString || !pool) return "-";
+
+      const rawRes = multiply(
+        new BigNumber(userTotalShareToString)
+          .plus(
+            Number(getVEPoolId()) === Number(pool.id) ? lptAmount || "0" : "0"
+          )
+          .toNumber()
+          .toFixed(),
+        divide(poolDetail?.tvl?.toString(), pool?.shareSupply)
+      );
+
+      return `$${
+        Number(rawRes) == 0 ? "0" : toInternationalCurrencySystem(rawRes, 2)
+      }`;
+    } catch (error) {
+      return "-";
+    }
+  }, [poolDetail?.tvl, userTotalShareToString, pool]);
+
+  // farm
+  const seedFarms = useSeedFarms(poolId.toString());
+  const seedDetail = useSeedDetail(poolId.toString());
+
+  function totalTvlPerWeekDisplay() {
+    const farms = seedFarms;
+    const rewardTokenIconMap: any = {};
+    let totalPrice = 0;
+    const effectiveFarms = getEffectiveFarmList(farms);
+    effectiveFarms.forEach((farm: FarmBoost) => {
+      const { id, decimals, icon }: any = farm.token_meta_data;
+      const { daily_reward } = farm.terms;
+      rewardTokenIconMap[id] = icon;
+      const tokenPrice = tokenPriceList?.[id]?.price;
+      if (tokenPrice && tokenPrice != "N/A") {
+        const tokenAmount = toReadableNumber(decimals, daily_reward);
+        totalPrice += +new BigNumber(tokenAmount)
+          .multipliedBy(tokenPrice)
+          .toFixed();
+      }
+    });
+    totalPrice = +new BigNumber(totalPrice).multipliedBy(7).toFixed();
+    const totalPriceDisplay =
+      totalPrice == 0
+        ? "-"
+        : "$" + toInternationalCurrencySystem(totalPrice.toString(), 2);
+    return totalPriceDisplay;
+  }
+  const [getBaseApr, setBaseApr] = useState({
+    displayApr: "",
+    rawApr: 0,
+  });
+  function BaseApr() {
+    if (pool?.shareSupply) {
+      const farms = seedFarms;
+
+      let totalReward = 0;
+      const effectiveFarms = getEffectiveFarmList(farms);
+      effectiveFarms.forEach((farm: any) => {
+        const reward_token_price = Number(
+          tokenPriceList?.[farm.token_meta_data.id]?.price || 0
+        );
+
+        totalReward =
+          totalReward + Number(farm.yearReward) * reward_token_price;
+      });
+
+      const poolShares = Number(toReadableNumber(24, pool.shareSupply));
+
+      const seedTvl =
+        !poolShares || !seedDetail
+          ? 0
+          : (Number(
+              toReadableNumber(
+                seedDetail.seed_decimal,
+                seedDetail.total_seed_power
+              )
+            ) *
+              (poolDetail?.tvl || 0)) /
+            poolShares;
+
+      const baseAprAll = !seedTvl ? 0 : totalReward / seedTvl;
+      setBaseApr({
+        displayApr:
+          !seedDetail || !seedFarms
+            ? "-"
+            : `${toPrecision((baseAprAll * 100).toString(), 2)}%`,
+        rawApr: !poolDetail?.tvl || !seedDetail || !seedFarms ? 0 : baseAprAll,
+      });
+    }
+  }
+
+  useEffect(() => {
+    BaseApr();
+  }, [seedDetail, seedFarms]);
+
   return (
     <div className="w-full fccc h-full">
       {/* return */}
@@ -190,8 +401,154 @@ export default function ClassicPoolDetail() {
         </div>
 
         {/* right liquidity */}
-        <div className="w-80 ml-auto pt-12">
-          <NoLiquidity add={() => addLiquidity} isLoading={false} />
+        <div className="w-80 ml-auto">
+          {!haveShare ||
+            (!poolId && (
+              <NoLiquidity add={() => addLiquidity()} isLoading={false} />
+            ))}
+          {haveShare && pool?.id && updatedMapList?.length > 0 && (
+            <div className="w-80 h-58 p-4 rounded bg-refPublicBoxDarkBg flex flex-col ">
+              <div className="flex items-center justify-between text-white">
+                <span className="whitespace-nowrap">Your Liquidity</span>
+
+                <MyShares
+                  shares={shares}
+                  totalShares={pool.shareSupply}
+                  poolId={pool.id}
+                  stakeList={stakeList}
+                  lptAmount={lptAmount}
+                />
+              </div>
+
+              <div className="w-full text-right text-sm mb-7 ">
+                {!accountStore.isSignedIn ? (
+                  "-"
+                ) : usdValue === "-" ? (
+                  "-"
+                ) : (
+                  <div className="flex items-center relative top-1.5 justify-between">
+                    <span className="whitespace-nowrap text-gray-50">
+                      Estimate Value
+                    </span>
+
+                    <span className="text-gray-50 font-normal">{usdValue}</span>
+                  </div>
+                )}
+              </div>
+
+              <div className="flex flex-col text-center text-base">
+                {updatedMapList[0]?.token_account_ids.map(
+                  (token: any, index: number) => (
+                    <div
+                      key={index + "classic" + token.symbol}
+                      className="flex items-center justify-between mb-3"
+                    >
+                      <div className="flex items-center">
+                        <Icon icon={token.icon} className="h-7 w-7 mr-2" />
+                        <div className="flex items-start flex-col">
+                          <div className="flex items-center text-gray-10 text-sm">
+                            {toRealSymbol(token.symbol)}
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        className="flex items-center text-gray-10 text-sm"
+                        title={tokenAmountShareRaw(
+                          pool,
+                          token,
+                          new BigNumber(userTotalShareToString)
+                            .plus(
+                              Number(getVEPoolId()) === Number(poolId)
+                                ? lptAmount
+                                : "0"
+                            )
+                            .toNumber()
+                            .toFixed()
+                        )}
+                      >
+                        {tokenInfoPC({ token })}
+                      </div>
+                    </div>
+                  )
+                )}
+              </div>
+
+              <div className="flex items-center w-full mt-2">
+                <div className={`pr-2 ${haveShare ? "w-1/2" : "w-full"} `}>
+                  <div
+                    className={`poolBtnStyleBase w-35 h-10  mr-2.5 text-sm cursor-pointer hover:opacity-90 `}
+                    onClick={() => {
+                      setShowFunding(true);
+                    }}
+                    // disabled={disable_add}
+                  >
+                    Add
+                  </div>
+                </div>
+                {haveShare && (
+                  <div className="pl-2 w-1/2">
+                    <div
+                      onClick={() => {
+                        setShowWithdraw(true);
+                      }}
+                      // disabled={Number(userTotalShareToString) == 0}
+                      className={`w-full ${
+                        Number(userTotalShareToString) == 0
+                          ? "text-opacity-30"
+                          : ""
+                      }  border border-green-10 rounded-md text-green-10 frcc w-35 h-10 text-sm cursor-pointer hover:opacity-80 `}
+                    >
+                      Remove
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* farm */}
+          {seedFarms && pool?.id && updatedMapList.length > 0 && (
+            <div className="flex flex-col mt-4 relative z-30 bg-refPublicBoxDarkBg rounded">
+              <div className="flex items-center mx-4 xs:mx-7 md:mx-7 mt-4 lg:mt-5 justify-between">
+                <div className="text-white whitespace-nowrap">Farm APR</div>
+
+                <div
+                  className="rounded-lg flex items-center px-2 py-0.5"
+                  style={{
+                    background: "#17252E",
+                  }}
+                >
+                  <Images
+                    className="mr-1"
+                    tokens={seedFarms.map((farm: any) => farm.token_meta_data)}
+                    size="4"
+                    isRewardDisplay
+                    borderStyle="1px solid #00C6A2"
+                  />
+                  <span className="text-xs text-gray-50">
+                    {totalTvlPerWeekDisplay()}
+                    /week
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex items-center mx-4 xs:mx-7 md:mx-7 mt-3 min-h-18 justify-between">
+                <div className="text-green-10 flex items-center text-lg">
+                  <span className="mr-2">{getBaseApr.displayApr}</span>
+                  <Fire />
+                </div>
+
+                <div
+                  className="border border-green-10 rounded-md text-green-10 frcc w-35 h-10 text-sm cursor-pointer hover:opacity-80"
+                  onClick={() => {
+                    openUrl(`/farms/${poolId}-r`);
+                  }}
+                >
+                  Farm Now!
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

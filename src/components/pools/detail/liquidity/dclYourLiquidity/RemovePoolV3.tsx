@@ -969,7 +969,7 @@ export const RemovePoolV3 = (props: any) => {
           style={{ borderTop: "1px solid rgba(110, 124, 133, 0.2)" }}
         ></div>
         <div className="flex justify-between lg:items-center mt-4">
-          <span className="text-sm text-gray-60">Minimum Tokens Out</span>
+          <span className="text-sm text-gray-60">Minimum received</span>
 
           <div
             className={`flex items-center gap-8 ${

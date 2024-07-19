@@ -1420,7 +1420,7 @@ export function get_total_earned_fee({
   };
 }
 
-export function useAddLiquidityUrlHandle() {
+export function useAddLiquidityUrlHandle(from?: string) {
   const router = useRouter();
   const accountStore = useAccountStore();
   const isSignedIn = accountStore.isSignedIn;
@@ -1458,7 +1458,11 @@ export function useAddLiquidityUrlHandle() {
           const [fee] = id.split("#");
           const pool_name = get_pool_name(`${tokenX}|${tokenY}|${fee}`);
           // router.replace("/pools/" + `${pool_name}`);
-          router.replace("/pools");
+          if (from == "dcl") {
+            router.replace(`/pool/dcl/${tokenX}|${tokenY}|${fee}`);
+          } else {
+            router.replace("/pools");
+          }
         }
       });
     }

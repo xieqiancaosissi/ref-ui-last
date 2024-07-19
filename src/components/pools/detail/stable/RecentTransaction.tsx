@@ -32,16 +32,19 @@ export default function RecentTransaction(props: any) {
   const [loadingStates, setLoadingStates] = useState<any>({});
   const [hoveredTx, setHoveredTx] = useState(null);
   const closeTimeoutRef = useRef<any>(null);
-  const handleMouseEnter = (receipt_id: any) => {
+  const [hoverIndex, setHoverIndex] = useState(0);
+  const handleMouseEnter = (receipt_id: any, index: number) => {
     if (closeTimeoutRef.current) {
       clearTimeout(closeTimeoutRef.current);
       closeTimeoutRef.current = null;
     }
     setHoveredTx(receipt_id);
+    setHoverIndex(index);
   };
   const handleMouseLeave = () => {
     closeTimeoutRef.current = setTimeout(() => {
       setHoveredTx(null);
+      setHoverIndex(0);
     }, 200);
   };
   async function handleTxClick(receipt_id: any, url: string) {
@@ -111,6 +114,11 @@ export default function RecentTransaction(props: any) {
   }, [activeTab]);
 
   // swap
+  console.log(
+    swapTransaction,
+    "swapTransactionswapTransactionswapTransaction",
+    updatedMapList[0].token_account_ids
+  );
   const renderSwapTransactions = swapTransaction.map((tx, index) => {
     const swapIn = updatedMapList[0].token_account_ids.find(
       (t: any) => t.id === tx.token_in
@@ -162,7 +170,7 @@ export default function RecentTransaction(props: any) {
           <span
             key={tx.receipt_id}
             className="inline-flex items-center cursor-pointer"
-            onMouseEnter={() => handleMouseEnter(tx.receipt_id)}
+            onMouseEnter={() => handleMouseEnter(tx.receipt_id, index)}
             onMouseLeave={handleMouseLeave}
           >
             {loadingStates[tx.receipt_id] ? (
@@ -178,7 +186,7 @@ export default function RecentTransaction(props: any) {
                 <BlinkIcon className="opacity-40 hover:opacity-100 ml-2"></BlinkIcon>
               </>
             )}
-            {hoveredTx === tx.receipt_id && (
+            {hoveredTx === tx.receipt_id && index == hoverIndex && (
               <div className="bg-dark-70 w-41 h-25 absolute top-6 -right-2 bg-poolDetaileTxBgColor  p-2 shadow-lg rounded z-50">
                 <div className="flex flex-col">
                   <div
@@ -207,6 +215,7 @@ export default function RecentTransaction(props: any) {
                     }
                   >
                     <NearblocksIcon />
+
                     <p className="ml-2">nearblocks</p>
                     <div className="ml-3 arrow" style={{ display: "none" }}>
                       <TxLeftArrow />
@@ -275,7 +284,9 @@ export default function RecentTransaction(props: any) {
       >
         <div className={containerWidth[0]}>
           <span className="text-white">
-            {tx.method_name.toLowerCase().indexOf("add") > -1 && "Add"}
+            {(tx.method_name.toLowerCase().indexOf("add") > -1 ||
+              tx.method_name.toLowerCase().indexOf("append") > -1) &&
+              "Add"}
 
             {tx.method_name.toLowerCase().indexOf("remove") > -1 && "Remove"}
           </span>
@@ -304,7 +315,7 @@ export default function RecentTransaction(props: any) {
           <span
             key={tx.receipt_id}
             className="inline-flex items-center cursor-pointer"
-            onMouseEnter={() => handleMouseEnter(tx.receipt_id)}
+            onMouseEnter={() => handleMouseEnter(tx.receipt_id, index)}
             onMouseLeave={handleMouseLeave}
           >
             {loadingStates[tx.receipt_id] ? (
@@ -320,7 +331,7 @@ export default function RecentTransaction(props: any) {
                 <BlinkIcon className="opacity-40 hover:opacity-100 ml-0.5"></BlinkIcon>
               </>
             )}
-            {hoveredTx === tx.receipt_id && (
+            {hoveredTx === tx.receipt_id && index == hoverIndex && (
               <div className="bg-dark-70 w-41 h-25 absolute top-6 -right-2 bg-poolDetaileTxBgColor  p-2 shadow-lg rounded z-50">
                 <div className="flex flex-col">
                   <div
@@ -397,8 +408,14 @@ export default function RecentTransaction(props: any) {
   // liquidity
 
   return (
-    <div className="w-215 max-h-106 rounded-md p-4 overflow-auto bg-refPublicBoxDarkBg">
-      <div className={`grid grid-cols-9 select-none`}>
+    <div className="w-215 max-h-106 rounded-md overflow-auto ">
+      <div
+        className={`grid grid-cols-9 sticky top-0  px-4 pt-4 select-none`}
+        style={{
+          zIndex: 10,
+          background: "#08141C",
+        }}
+      >
         {title.map((item: any, index: number) => {
           return (
             <span
@@ -410,9 +427,11 @@ export default function RecentTransaction(props: any) {
           );
         })}
       </div>
-      {activeTab == "swap"
-        ? renderSwapTransactions
-        : renderLiquidityTransactions}
+      <div className="px-4 pb-4 pt-2 bg-refPublicBoxDarkBg">
+        {activeTab == "swap"
+          ? renderSwapTransactions
+          : renderLiquidityTransactions}
+      </div>
     </div>
   );
 }

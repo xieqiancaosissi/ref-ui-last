@@ -2,7 +2,6 @@ import React, { useRef, useEffect, useState } from "react";
 import * as charts from "echarts";
 import styles from "./style.module.css";
 import { useV3MonthTVL, useV3MonthVolume } from "@/hooks/usePoolDetailCharts";
-import LiquidityCharts from "./LiquidityCharts";
 import {
   toInternationalCurrencySystem_number,
   toInternationalCurrencySystem_usd,
@@ -121,7 +120,7 @@ export default function TvlAndVolumeCharts(props: any) {
               ? "NEAR"
               : poolDetail?.token_symbols[currentSort[0]]}
             {/* usd price */}
-            {tokenPriceList && poolDetail && (
+            {/* {tokenPriceList && poolDetail && (
               <span className="text-gray-50 font-normal">
                 (
                 {toInternationalCurrencySystem_usd(
@@ -130,19 +129,17 @@ export default function TvlAndVolumeCharts(props: any) {
                 )}
                 )
               </span>
-            )}
+            )} */}
             <span className="mx-1">=</span>
             {/* token right amount */}
             {tokenPriceList && poolDetail && (
               <span className="mr-1">
-                {Math.ceil(
-                  (tokenPriceList[poolDetail?.token_account_ids[currentSort[0]]]
-                    .price /
-                    tokenPriceList[
-                      poolDetail?.token_account_ids[currentSort[1]]
-                    ].price) *
-                    100
-                ) / 100}
+                {((tokenPriceList[poolDetail?.token_account_ids[currentSort[0]]]
+                  .price /
+                  tokenPriceList[poolDetail?.token_account_ids[currentSort[1]]]
+                    .price) *
+                  100) /
+                  100}
               </span>
             )}
             {/* token right name */}
@@ -171,7 +168,7 @@ export default function TvlAndVolumeCharts(props: any) {
                 svgHeight: isMobile() ? "250" : "450",
               }}
               reverse={!rateDirection}
-            ></DclChart>
+            />
           )}
         </div>
       )}

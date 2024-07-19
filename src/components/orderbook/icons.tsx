@@ -37,3 +37,88 @@ export function OrderlyIcon(props: any) {
     </svg>
   );
 }
+
+export const GuideLine = () => {
+  return (
+    <svg
+      width="24"
+      height="57"
+      viewBox="0 0 24 57"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <circle
+        opacity="0.2"
+        cx="12"
+        cy="12"
+        r="12"
+        transform="matrix(1 0 0 -1 0 57)"
+        fill="#00D6AF"
+      />
+      <circle
+        cx="7"
+        cy="7"
+        r="7"
+        transform="matrix(1 0 0 -1 5 52)"
+        fill="#00D6AF"
+      />
+      <line
+        x1="11.5"
+        y1="32"
+        x2="11.5"
+        y2="2.18557e-08"
+        stroke="#00D6AF"
+        strokeDasharray="2 2"
+      />
+    </svg>
+  );
+};
+
+export function DepositIcon() {
+  return (
+    <svg
+      width="14"
+      height="13"
+      viewBox="0 0 14 13"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M6.5 11L6.74787 6.53829C6.89698 3.85435 8.81299 1.59711 11.4371 1.01399L11.5 1"
+        stroke="#91A2AE"
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
+      <path
+        d="M2 7.5L6.5 11.5L12 8.5"
+        stroke="#91A2AE"
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+export function WithdrawIcon() {
+  return (
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 14 14"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M7.5 2.56348L7.25213 7.02519C7.10302 9.70912 5.18701 11.9664 2.56295 12.5495L2.5 12.5635"
+        stroke="#91A2AE"
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
+      <path
+        d="M12 6.06348L7.5 2.06348L2 5.06348"
+        stroke="#91A2AE"
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}

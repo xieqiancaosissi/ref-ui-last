@@ -19,7 +19,6 @@ export default function getConfigV2(
         INIT_SWAP_PAIRS: ["near", "token.v2.ref-finance.near"],
         SKYWARDID: "token.skyward.near",
         BLACK_LIST_DCL_POOL_IDS_IN_POOLS: [
-          "token.burrow.near|wrap.near|400",
           "a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.factory.bridge.near|token.burrow.near|400",
           "dac17f958d2ee523a2206206994597c13d831ec7.factory.bridge.near|token.burrow.near|400",
           "token.v2.ref-finance.near|wrap.near|400",

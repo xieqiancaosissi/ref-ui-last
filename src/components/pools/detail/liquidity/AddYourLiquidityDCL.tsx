@@ -104,7 +104,7 @@ export default function AddYourLiquidityPageV3() {
   const [show_chart, set_show_chart] = useState<boolean>(true);
 
   // callBack handle
-  useAddLiquidityUrlHandle();
+  useAddLiquidityUrlHandle("dcl");
   const accoutStore = useAccountStore();
   const isSignedIn = accoutStore.isSignedIn;
   const nearBalance = useDepositableBalance("NEAR");
@@ -1818,6 +1818,15 @@ export default function AddYourLiquidityPageV3() {
     router.push("/pools");
   };
 
+  const toDetail = () => {
+    if (tokenX?.id && tokenY?.id)
+      router.push(
+        `/pool/dcl/${tokenX?.id}|${tokenY?.id}|${
+          currentSelectedPool?.fee || 2000
+        }`
+      );
+  };
+
   return (
     <LiquidityProviderData.Provider
       value={
@@ -1892,7 +1901,7 @@ export default function AddYourLiquidityPageV3() {
         {/* head */}
         <div
           className=" xs:w-full max-w-max text-gray-10 flex items-center mb-5 cursor-pointer hover:text-white"
-          onClick={() => router.push("/pools")}
+          onClick={() => toDetail()}
         >
           <div
             className="cursor-pointer flex items-center justify-center w-6 h-6"
@@ -1900,7 +1909,7 @@ export default function AddYourLiquidityPageV3() {
           >
             <ReturnIcon></ReturnIcon>
           </div>
-          <span className=" text-sm">Back To Pool</span>
+          <span className=" text-sm">Add Liquidity</span>
         </div>
 
         {/* content */}
@@ -2115,6 +2124,8 @@ export default function AddYourLiquidityPageV3() {
           </div>
         </div>
       </div>
+      {/* slot */}
+      <div className="w-full min-h-10"></div>
     </LiquidityProviderData.Provider>
   );
 }

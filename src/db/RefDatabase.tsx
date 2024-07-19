@@ -374,6 +374,19 @@ class RefDatabase extends Dexie {
   public async queryBoostSeeds() {
     return await this.boostSeeds.toArray();
   }
+
+  public async queryBoostSeedsBySeeds(seeds: string[]) {
+    return (
+      await this.boostSeeds
+        .filter((seed) => seeds.includes(seed.id || ""))
+        .toArray()
+    ).reduce((acc, cur, i) => {
+      return {
+        ...acc,
+        [(cur as any).id]: cur,
+      };
+    }, {});
+  }
   public async queryDclPools() {
     const dclPools = await this.dclPools.toArray();
     return dclPools.map((pool) => {

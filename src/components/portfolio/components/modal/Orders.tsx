@@ -44,6 +44,7 @@ import {
   PurpleCircleIcon,
 } from "../icon";
 import { BlueCircleLoading } from "@/components/pools/icon";
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 
 const { explorerUrl } = getConfig();
 export default function Orders(props: any) {
@@ -900,58 +901,68 @@ function OrderCard({
     !loading_status && (activeOrder?.length === 0 || !isSignedIn);
   return (
     <div className="flex flex-col">
-      {/* pc loading */}
-      {loading_status ? (
-        <div className="flex items-center justify-center my-20">
-          <BlueCircleLoading></BlueCircleLoading>
-        </div>
-      ) : null}
+      {loading_status || noData_status ? (
+        <SkeletonTheme
+          baseColor="rgba(33, 43, 53, 0.3)"
+          highlightColor="#2A3643"
+        >
+          <Skeleton
+            style={{ width: "100%" }}
+            height={40}
+            count={2}
+            className="mt-4"
+          />
+        </SkeletonTheme>
+      ) : (
+        <>
+          <div
+            className={`flex items-center justify-between  text-gray-60 text-sm  whitespace-nowrap ${
+              loading_status || noData_status ? "hidden" : ""
+            }`}
+          >
+            <div className="flex items-center">
+              <span className="text-left">You Sell</span>
+
+              <span className="ml-20">You Buy</span>
+            </div>
+            <div className="flex items-center">
+              <span className="w-32">@price</span>
+              <div className="flex items-center justify-between w-56">
+                <span className="">Execute Status</span>
+                <span
+                  onClick={() => {
+                    localStorage.setItem(SWAP_MODE_KEY, SWAP_MODE.LIMIT);
+                    openUrl("/");
+                  }}
+                  className="flex items-center justify-center text-xs text-gray-10 border border-gray-90 rounded-md px-1.5 cursor-pointer hover:text-white py-0.5"
+                >
+                  Your Orders
+                  <OrdersArrow className="ml-1" />
+                </span>
+              </div>
+            </div>
+          </div>
+          <div className={`${activeTab == "1" ? "" : "hidden"}`}>
+            {activeOrder
+              ?.sort((a, b) => activeOrderSorting(a, b) || 0)
+              .map((order, index) => {
+                return (
+                  <ActiveLine
+                    index={index}
+                    key={index + "order"}
+                    order={order}
+                  />
+                );
+              })}
+          </div>
+        </>
+      )}
       {/* pc no data */}
       {/* {noData_status  ? (
         <NoDataCard
           text={intl.formatMessage({ id: 'active_order_appear_here_tip' })}
         />
       ) : null} */}
-      {/* list data */}
-
-      {/* for pc banner */}
-      <div
-        className={`flex items-center justify-between  text-gray-60 text-sm  whitespace-nowrap ${
-          loading_status || noData_status ? "hidden" : ""
-        }`}
-      >
-        <div className="flex items-center">
-          <span className="text-left">You Sell</span>
-
-          <span className="ml-20">You Buy</span>
-        </div>
-        <div className="flex items-center">
-          <span className="w-32">@price</span>
-          <div className="flex items-center justify-between w-56">
-            <span className="">Execute Status</span>
-            <span
-              onClick={() => {
-                localStorage.setItem(SWAP_MODE_KEY, SWAP_MODE.LIMIT);
-                openUrl("/");
-              }}
-              className="flex items-center justify-center text-xs text-gray-10 border border-gray-90 rounded-md px-1.5 cursor-pointer hover:text-white py-0.5"
-            >
-              Your Orders
-              <OrdersArrow className="ml-1" />
-            </span>
-          </div>
-        </div>
-      </div>
-      {/* active order list */}
-      <div className={`${activeTab == "1" ? "" : "hidden"}`}>
-        {activeOrder
-          ?.sort((a, b) => activeOrderSorting(a, b) || 0)
-          .map((order, index) => {
-            return (
-              <ActiveLine index={index} key={index + "order"} order={order} />
-            );
-          })}
-      </div>
     </div>
   );
 }

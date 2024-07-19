@@ -7,6 +7,7 @@ import { getAccountId } from "@/utils/wallet";
 import { BlueCircleLoading } from "@/components/pools/icon";
 import { YourLiquidityV2 } from "./YourLiquidityV2";
 import { YourLiquidityV1 } from "./YourLiquidityV1";
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 
 export default function Positions(props: any) {
   const {
@@ -74,18 +75,25 @@ export default function Positions(props: any) {
         </div>
       </div>
       {/* pc loading */}
-      {loading_status ? (
-        <div className="flex items-center justify-center my-20">
-          <BlueCircleLoading />
-        </div>
+      {loading_status || noData_status ? (
+        <SkeletonTheme
+          baseColor="rgba(33, 43, 53, 0.3)"
+          highlightColor="#2A3643"
+        >
+          <Skeleton
+            style={{ width: "100%" }}
+            height={40}
+            count={2}
+            className="mt-4"
+          />
+        </SkeletonTheme>
       ) : null}
-      {/* pc no data */}
-      {noData_status ? (
-        // <NoDataCard
-        //   text={intl.formatMessage({ id: "position_will_appear_here" })}
-        // ></NoDataCard>
+      {/* {noData_status ? (
+        <NoDataCard
+          text={intl.formatMessage({ id: "position_will_appear_here" })}
+        ></NoDataCard>
         <div>nodata</div>
-      ) : null}
+      ) : null} */}
     </div>
   );
 }

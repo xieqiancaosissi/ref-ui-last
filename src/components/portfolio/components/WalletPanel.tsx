@@ -272,6 +272,7 @@ export default function WalletPanel() {
                       token={token}
                       tokenBalance={token?.ref ?? 0}
                       showTokenPrice={showTokenPrice}
+                      showWithdraw={true}
                     />
                   );
                 })}
@@ -284,6 +285,7 @@ export default function WalletPanel() {
                       token={token}
                       tokenBalance={token?.dcl ?? 0}
                       showTokenPrice={showTokenPrice}
+                      showWithdraw={true}
                     />
                   );
                 })}
@@ -296,6 +298,8 @@ export default function WalletPanel() {
                       token={token}
                       tokenBalance={token?.aurora ?? 0}
                       showTokenPrice={showTokenPrice}
+                      showWithdraw={true}
+                      isAurora={true}
                     />
                   );
                 })}

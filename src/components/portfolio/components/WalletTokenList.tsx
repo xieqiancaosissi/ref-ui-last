@@ -5,23 +5,31 @@ import {
 import { TokenMetadata } from "@/services/ft-contract";
 import Big from "big.js";
 import React from "react";
+import { WalletWithdraw } from "./icon";
+import CustomTooltip from "@/components/customTooltip/customTooltip";
 
 type Props = {
   token: TokenMetadata;
   tokenBalance: number | string;
   showTokenPrice: any;
   showWithdraw?: boolean;
+  isAurora?: boolean;
 };
 
 export const WalletTokenList = ({
   token,
   tokenBalance,
   showTokenPrice,
+  showWithdraw,
+  isAurora,
 }: Props) => {
   const { ref, dcl, id, decimals } = token || {};
   const isRefClassic = Number(ref) > 0;
   const isDCL = Number(dcl) > 0;
-
+  function getTip() {
+    const result: string = `Withdraw`;
+    return result;
+  }
   return (
     <div className="flex items-center w-full mb-6">
       <div className="w-3/6 flex items-center">
@@ -33,10 +41,27 @@ export const WalletTokenList = ({
           <p className="text-gray-50 text-xs">{showTokenPrice(token)}</p>
         </div>
       </div>
-      <div className="w-2/6 text-sm">
-        {display_number_internationalCurrencySystemLongString(
-          Big(tokenBalance || 0).toFixed()
-        )}
+      <div className="w-2/6 text-sm flex items-center ">
+        <span className={`${showWithdraw ? "text-primaryGreen" : ""}`}>
+          {display_number_internationalCurrencySystemLongString(
+            Big(tokenBalance || 0).toFixed()
+          )}
+        </span>
+        <div className="ml-1.5">
+          {showWithdraw && (
+            <>
+              <div
+                data-class="reactTip"
+                data-tooltip-id="showWithdrawId"
+                data-place="top"
+                data-tooltip-html={getTip()}
+              >
+                <WalletWithdraw className="text-gray-10 hover:text-white cursor-pointer" />
+                <CustomTooltip id="showWithdrawId" className="text-gray-10" />
+              </div>
+            </>
+          )}
+        </div>
       </div>
       <div className="w-1/5 flex items-center justify-end text-sm">
         {display_value(String(token?.t_value))}

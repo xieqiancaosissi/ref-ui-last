@@ -23,6 +23,7 @@ import {
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import { divide } from "mathjs";
 import { WalletTokenList } from "./WalletTokenList";
+import { AuroraIcon, AuroraIconActive } from "./icon";
 
 export default function WalletPanel() {
   const {
@@ -34,6 +35,8 @@ export default function WalletPanel() {
     set_wallet_assets_value,
     setUserTokens,
   } = useContext(OverviewData) as OverviewContextType;
+  const [tabList, setTabList] = useState([{ name: "NEAR", tag: "near" }]);
+  const [activeTab, setActiveTab] = useState("near");
   const [near_tokens, set_near_tokens] = useState<TokenMetadata[]>([]);
   const [ref_tokens, set_ref_tokens] = useState<TokenMetadata[]>([]);
   const [dcl_tokens, set_dcl_tokens] = useState<TokenMetadata[]>([]);
@@ -46,6 +49,13 @@ export default function WalletPanel() {
   const userTokens = useUserRegisteredTokensAllAndNearBalance();
   const balances = useTokenBalances(); // inner account balance
   const auroaBalances = useAuroraBalancesNearMapping(auroraAddress);
+  const displayAuroraAddress = `${auroraAddress?.substring(
+    0,
+    6
+  )}...${auroraAddress?.substring(
+    auroraAddress.length - 6,
+    auroraAddress.length
+  )}`;
   const DCLAccountBalance = useDCLAccountBalance(!!accountId);
   const is_tokens_loading =
     !userTokens || !balances || !auroaBalances || !DCLAccountBalance;
@@ -115,6 +125,17 @@ export default function WalletPanel() {
           .toFixed()
       );
       set_wallet_assets_value_done(true);
+      const tab_list = [{ name: "NEAR", tag: "near" }];
+      if (tokens_ref?.length > 0) {
+        tab_list.push({
+          name: "REF(classic)",
+          tag: "ref",
+        });
+      }
+      if (tokens_dcl?.length > 0) {
+        tab_list.push({ name: "DCL", tag: "dcl" });
+      }
+      setTabList(JSON.parse(JSON.stringify(tab_list)));
     }
   }, [tokenPriceList, userTokens, is_tokens_loading]);
   useEffect(() => {
@@ -156,12 +177,62 @@ export default function WalletPanel() {
   }
   function showTotalValue() {
     let target = "0";
-    target =
-      near_total_value + ref_total_value + dcl_total_value + aurora_total_value;
+    if (activeTab == "near") {
+      target = near_total_value;
+    } else if (activeTab == "ref") {
+      target = ref_total_value;
+    } else if (activeTab == "dcl") {
+      target = dcl_total_value;
+    } else if (activeTab == "aurora") {
+      target = aurora_total_value;
+    }
     return display_value_withCommas(target);
   }
   return (
     <>
+      <div className="mb-2.5 flex items-center">
+        {tabList.map((item: any, index: number) => {
+          return (
+            <span
+              key={item.tag}
+              onClick={() => {
+                setActiveTab(item.tag);
+              }}
+              className={`frcc border border-gray-100 rounded-md h-7 p-1.5 mr-2.5 ${
+                item.tag == "ref" ? "w-24" : "w-12"
+              } text-xs cursor-pointer hover:bg-portfolioLightGreyColor ${
+                index != tabList.length - 1 ? "mr-0.5" : ""
+              } ${
+                activeTab == item.tag
+                  ? "bg-gray-100 text-white"
+                  : "text-gray-60"
+              }`}
+            >
+              {item.tag == "ref" ? "REF(classic)" : item.name}
+            </span>
+          );
+        })}
+        {aurora_tokens?.length > 0 ? (
+          activeTab == "aurora" ? (
+            <AuroraIconActive className="cursor-pointer"></AuroraIconActive>
+          ) : (
+            <AuroraIcon
+              onClick={() => {
+                setActiveTab("aurora");
+              }}
+              className="text-primaryText hover:text-portfolioLightGreenColor cursor-pointer"
+            ></AuroraIcon>
+          )
+        ) : null}
+        <div
+          className={`flex flex-col ml-2.5 ${
+            activeTab == "aurora" ? "" : "hidden"
+          }`}
+        >
+          <p className="text-xs text-gray-60"> Mapping Account</p>
+          <p className="text-xs text-white">{displayAuroraAddress}</p>
+        </div>
+      </div>
       <div className="bg-gray-20 bg-opacity-40 p-4 rounded">
         <div className="flex items-center text-gray-50 text-xs w-full mb-5">
           <div className="w-3/6">Token</div>
@@ -181,46 +252,54 @@ export default function WalletPanel() {
             </div>
           ) : (
             <>
-              {near_tokens.map((token: TokenMetadata) => {
-                return (
-                  <WalletTokenList
-                    key={token.id + "near"}
-                    token={token}
-                    tokenBalance={token?.near ?? 0}
-                    showTokenPrice={showTokenPrice}
-                  />
-                );
-              })}
-              {ref_tokens.map((token: TokenMetadata) => {
-                return (
-                  <WalletTokenList
-                    key={token.id + "ref"}
-                    token={token}
-                    tokenBalance={token?.ref ?? 0}
-                    showTokenPrice={showTokenPrice}
-                  />
-                );
-              })}
-              {dcl_tokens.map((token: TokenMetadata) => {
-                return (
-                  <WalletTokenList
-                    key={token.id + "dcl"}
-                    token={token}
-                    tokenBalance={token?.dcl ?? 0}
-                    showTokenPrice={showTokenPrice}
-                  />
-                );
-              })}
-              {aurora_tokens.map((token: TokenMetadata) => {
-                return (
-                  <WalletTokenList
-                    key={token.id + "aurora"}
-                    token={token}
-                    tokenBalance={token?.aurora ?? 0}
-                    showTokenPrice={showTokenPrice}
-                  />
-                );
-              })}
+              <div className={`${activeTab == "near" ? "" : "hidden"}`}>
+                {near_tokens.map((token: TokenMetadata) => {
+                  return (
+                    <WalletTokenList
+                      key={token.id + "near"}
+                      token={token}
+                      tokenBalance={token?.near ?? 0}
+                      showTokenPrice={showTokenPrice}
+                    />
+                  );
+                })}
+              </div>
+              <div className={`${activeTab == "ref" ? "" : "hidden"}`}>
+                {ref_tokens.map((token: TokenMetadata) => {
+                  return (
+                    <WalletTokenList
+                      key={token.id + "ref"}
+                      token={token}
+                      tokenBalance={token?.ref ?? 0}
+                      showTokenPrice={showTokenPrice}
+                    />
+                  );
+                })}
+              </div>
+              <div className={`${activeTab == "dcl" ? "" : "hidden"}`}>
+                {dcl_tokens.map((token: TokenMetadata) => {
+                  return (
+                    <WalletTokenList
+                      key={token.id + "dcl"}
+                      token={token}
+                      tokenBalance={token?.dcl ?? 0}
+                      showTokenPrice={showTokenPrice}
+                    />
+                  );
+                })}
+              </div>
+              <div className={`${activeTab == "aurora" ? "" : "hidden"}`}>
+                {aurora_tokens.map((token: TokenMetadata) => {
+                  return (
+                    <WalletTokenList
+                      key={token.id + "aurora"}
+                      token={token}
+                      tokenBalance={token?.aurora ?? 0}
+                      showTokenPrice={showTokenPrice}
+                    />
+                  );
+                })}
+              </div>
             </>
           )}
         </div>

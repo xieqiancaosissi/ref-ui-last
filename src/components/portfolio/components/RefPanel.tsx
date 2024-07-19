@@ -29,6 +29,8 @@ import { getVEPoolId, useAccountInfo } from "@/services/referendum";
 import { OverviewContextType, OverviewData } from "../index";
 import { PortfolioRefIcon } from "./icon";
 import getConfig from "@/utils/config";
+import { BeatLoader } from "react-spinners";
+import RefPanelModal from "./RefPanelModal";
 const { XREF_TOKEN_ID } = getConfig();
 function RefPanel() {
   const {
@@ -39,7 +41,7 @@ function RefPanel() {
     is_mobile,
     accountId,
   } = useContext(OverviewData) as OverviewContextType;
-  const history = useHistory();
+  const [isRefModalOpen, setIsRefModalOpen] = useState<boolean>(false);
   // get xref
   const [xref_value, xref_value_done] = useXref() as [string, boolean];
   // get lp v1
@@ -87,6 +89,7 @@ function RefPanel() {
     }
     return [total_profit, total_profit_done];
   }, [total_fees_value_done, total_unClaimed_rewrads_value_done]);
+  const isLoading = !invest_value_done || !total_profit_done;
   useEffect(() => {
     if (invest_value_done) {
       set_ref_invest_value(invest_value_no_xref.toString());
@@ -97,29 +100,51 @@ function RefPanel() {
       set_ref_profit_value_done(true);
     }
   }, [invest_value_done, total_profit_done]);
+  function showRefModal() {
+    setIsRefModalOpen(true);
+  }
+  function hideRefModal() {
+    setIsRefModalOpen(false);
+  }
   return (
-    <div className="bg-gray-20 bg-opacity-40 rounded-lg p-4 mb-4 hover:bg-gray-20 cursor-pointer">
-      <div className="flex items-center mb-6">
-        <div className="bg-gray-220 bg-opacity-60 rounded-md frcc w-6 h-6 mr-2">
-          <PortfolioRefIcon />
+    <>
+      <div
+        className="bg-gray-20 bg-opacity-40 rounded-lg p-4 mb-4 hover:bg-gray-20 cursor-pointer"
+        onClick={() => {
+          showRefModal();
+        }}
+      >
+        <div className="flex items-center mb-6">
+          <div className="bg-gray-220 bg-opacity-60 rounded-md frcc w-6 h-6 mr-2">
+            <PortfolioRefIcon />
+          </div>
+          <p className="text-gray-10 text-sm">Ref.finance</p>
         </div>
-        <p className="text-gray-10 text-sm">Ref.finance</p>
+        <div className="flex">
+          <div className="flex-1">
+            <p className="mb-1.5 text-base paceGrotesk-Bold">
+              {isLoading ? (
+                <BeatLoader size={5} color={"#ffffff"} />
+              ) : (
+                formatWithCommas_usd(invest_value)
+              )}
+            </p>
+            <p className="text-xs text-gray-50">Total Invested</p>
+          </div>
+          <div className="flex-1">
+            <p className="mb-1.5 text-base paceGrotesk-Bold">
+              {isLoading ? (
+                <BeatLoader size={5} color={"#ffffff"} />
+              ) : (
+                formatWithCommas_usd(total_profit)
+              )}
+            </p>
+            <p className="text-xs text-gray-50">Claimable</p>
+          </div>
+        </div>
       </div>
-      <div className="flex">
-        <div className="flex-1">
-          <p className="mb-1.5 text-base paceGrotesk-Bold">
-            {formatWithCommas_usd(invest_value)}
-          </p>
-          <p className="text-xs text-gray-50">Total Invested</p>
-        </div>
-        <div className="flex-1">
-          <p className="mb-1.5 text-base paceGrotesk-Bold">
-            {formatWithCommas_usd(total_profit)}
-          </p>
-          <p className="text-xs text-gray-50">Claimable</p>
-        </div>
-      </div>
-    </div>
+      <RefPanelModal isOpen={isRefModalOpen} onRequestClose={hideRefModal} />
+    </>
   );
 }
 export default RefPanel;

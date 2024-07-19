@@ -17,6 +17,7 @@ import Big from "big.js";
 import { shrinkToken } from "@/services/burrow-utils";
 import { formatWithCommas_usd } from "@/utils/uiNumber";
 import { PortfolioArrow, PortfolioBurrowIcon } from "./icon";
+import { BeatLoader } from "react-spinners";
 export default function BurrowPanel() {
   const {
     isSignedIn,
@@ -231,6 +232,7 @@ export default function BurrowPanel() {
     window.open("https://app.burrow.finance/", "_blank");
   };
 
+  const isLoading = !burrow_data_done;
   return (
     <>
       <div className="bg-gray-20 bg-opacity-40 rounded-lg p-4 mb-4 hover:bg-gray-20 cursor-pointer">
@@ -239,7 +241,7 @@ export default function BurrowPanel() {
             <div className="bg-gray-220 bg-opacity-60 rounded-md w-6 h-6 mr-2 frcc">
               <PortfolioBurrowIcon />
             </div>
-            <p className="text-gray-10 text-sm">Orderly</p>
+            <p className="text-gray-10 text-sm">Burrow</p>
           </div>
           <PortfolioArrow
             className="cursor-pointer"
@@ -253,19 +255,31 @@ export default function BurrowPanel() {
         <div className="flex">
           <div className="w-2/6">
             <p className="mb-1.5 text-base paceGrotesk-Bold">
-              {formatWithCommas_usd(supplied)}
+              {isLoading ? (
+                <BeatLoader size={5} color={"#ffffff"} />
+              ) : (
+                formatWithCommas_usd(supplied)
+              )}
             </p>
             <p className="text-xs text-gray-50">Total Supplied</p>
           </div>
           <div className="w-2/6 text-center">
             <p className="mb-1.5 text-base paceGrotesk-Bold">
-              {formatWithCommas_usd(unclaimedRewards$)}
+              {isLoading ? (
+                <BeatLoader size={5} color={"#ffffff"} />
+              ) : (
+                formatWithCommas_usd(unclaimedRewards$)
+              )}
             </p>
             <p className="text-xs text-gray-50">Claimable</p>
           </div>
           <div className="w-2/6 pl-8">
             <p className="mb-1.5 text-base paceGrotesk-Bold text-error">
-              -{formatWithCommas_usd(borrowed)}
+              {isLoading ? (
+                <BeatLoader size={5} color={"#ffffff"} />
+              ) : (
+                "-" + formatWithCommas_usd(borrowed)
+              )}
             </p>
             <p className="text-xs text-gray-50">Total Debt</p>
           </div>

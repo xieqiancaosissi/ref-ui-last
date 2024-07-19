@@ -410,3 +410,26 @@ export const getYourPools = async (): Promise<PoolRPCView[]> => {
       return pools;
     });
 };
+
+export const getLimitOrderLogsByAccount = async (): Promise<any[]> => {
+  const account_id = getAccountId();
+  return await fetch(
+    config.indexerUrl + `/get-limit-order-log-by-account/${account_id}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+        ...getAuthenticationHeaders(
+          `/get-limit-order-log-by-account/${account_id}`
+        ),
+      },
+    }
+  )
+    .then((res) => res.json())
+    .then((list) => {
+      return list;
+    })
+    .catch(() => {
+      return [];
+    });
+};

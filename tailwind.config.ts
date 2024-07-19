@@ -102,6 +102,7 @@ const config: Config = {
         },
         blue: {
           10: "#01D0FE",
+          20: "#3994FF",
         },
       },
       width: {

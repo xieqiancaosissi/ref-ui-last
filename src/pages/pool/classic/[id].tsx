@@ -402,10 +402,9 @@ export default function ClassicPoolDetail() {
 
         {/* right liquidity */}
         <div className="w-80 ml-auto">
-          {!haveShare ||
-            (!poolId && (
-              <NoLiquidity add={() => addLiquidity()} isLoading={false} />
-            ))}
+          {(!haveShare || !poolId) && (
+            <NoLiquidity add={() => addLiquidity()} isLoading={false} />
+          )}
           {haveShare && pool?.id && updatedMapList?.length > 0 && (
             <div className="w-80 h-58 p-4 rounded bg-refPublicBoxDarkBg flex flex-col ">
               <div className="flex items-center justify-between text-white">
@@ -437,7 +436,7 @@ export default function ClassicPoolDetail() {
               </div>
 
               <div className="flex flex-col text-center text-base">
-                {updatedMapList[0]?.token_account_ids.map(
+                {updatedMapList[0]?.token_account_ids?.map(
                   (token: any, index: number) => (
                     <div
                       key={index + "classic" + token.symbol}

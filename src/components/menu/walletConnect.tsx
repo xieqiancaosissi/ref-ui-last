@@ -150,7 +150,7 @@ export default function WalletConnect() {
                 onClick={handleBackdropClick}
               ></div>
               <div
-                className={`fixed top-[46px] bottom-[32px] right-0 bg-dark-10 z-50 ${
+                className={`fixed top-[46px] bottom-[35px] right-0 bg-dark-10 z-50 ${
                   isOpen ? "block" : "hidden"
                 }`}
                 style={{ width: "20%" }}

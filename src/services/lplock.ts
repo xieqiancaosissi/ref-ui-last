@@ -7,6 +7,7 @@ import {
 import { executeFarmMultipleTransactions } from "@/utils/contract";
 import { storageDepositAction } from "./creator/storage";
 import { getAccountId } from "../utils/wallet";
+import { useEffect, useState } from "react";
 
 export interface ILock {
   locked_balance: string;
@@ -154,3 +155,21 @@ export const unlock_lp = async ({
   });
   return executeFarmMultipleTransactions(transactions);
 };
+
+export function useLpLocker(mftId: any) {
+  const [balance, setBalance] = useState("0");
+  useEffect(() => {
+    getBalance();
+  }, [mftId]);
+  async function getBalance() {
+    const locked = await get_account();
+    let balance = "0";
+    if (locked) {
+      balance =
+        locked.locked_tokens[`${getConfig().REF_FI_CONTRACT_ID}@${mftId}`]
+          ?.locked_balance || "0";
+      setBalance(balance);
+    }
+  }
+  return balance;
+}

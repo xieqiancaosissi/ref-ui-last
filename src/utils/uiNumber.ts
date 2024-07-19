@@ -159,3 +159,17 @@ export const disPlayBalance = (isSignedIn: boolean, balance: string) => {
     : "-";
   return result;
 };
+
+export const formatWithCommas_usd_down = (v: string | number) => {
+  if (isInvalid(v)) return "$-";
+  const big = Big(v);
+  if (big.eq(0)) {
+    return "$0";
+  } else if (big.lt(0.01)) {
+    return "<$0.01";
+  } else if (big.lt(10000)) {
+    return "$" + formatWithCommas(big.toFixed(2, 0));
+  } else {
+    return "$" + formatWithCommas(big.toFixed(0, 0));
+  }
+};

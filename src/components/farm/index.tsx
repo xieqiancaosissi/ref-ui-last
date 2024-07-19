@@ -447,7 +447,7 @@ export default function FarmsPage(props: any) {
             const replace_str = `${get_pool_name(
               `${tokena_id}|${tokenb_id}|${fee}`
             )}[${lp}-${rp}]-${status}`;
-            location.replace(`/v2farms/${replace_str}`);
+            location.replace(`/farms/${replace_str}`);
             return layer1;
           }
           const layer2 = layer1.split("[");
@@ -514,7 +514,7 @@ export default function FarmsPage(props: any) {
         }
       });
       if (!targetFarms) {
-        history.replace("/v2farms");
+        history.replace("/farms");
       } else {
         getDetailData({
           detailData: targetFarms,

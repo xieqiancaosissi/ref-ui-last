@@ -402,10 +402,9 @@ export default function ClassicPoolDetail() {
 
         {/* right liquidity */}
         <div className="w-80 ml-auto">
-          {!haveShare ||
-            (!poolId && (
-              <NoLiquidity add={() => addLiquidity()} isLoading={false} />
-            ))}
+          {(!haveShare || !poolId) && (
+            <NoLiquidity add={() => addLiquidity()} isLoading={false} />
+          )}
           {haveShare && pool?.id && updatedMapList?.length > 0 && (
             <div className="w-80 h-58 p-4 rounded bg-refPublicBoxDarkBg flex flex-col ">
               <div className="flex items-center justify-between text-white">
@@ -437,7 +436,7 @@ export default function ClassicPoolDetail() {
               </div>
 
               <div className="flex flex-col text-center text-base">
-                {updatedMapList[0]?.token_account_ids.map(
+                {updatedMapList[0]?.token_account_ids?.map(
                   (token: any, index: number) => (
                     <div
                       key={index + "classic" + token.symbol}
@@ -489,14 +488,15 @@ export default function ClassicPoolDetail() {
                   <div className="pl-2 w-1/2">
                     <div
                       onClick={() => {
+                        if (+userTotalShareToString == 0) return;
                         setShowWithdraw(true);
                       }}
                       // disabled={Number(userTotalShareToString) == 0}
                       className={`w-full ${
                         Number(userTotalShareToString) == 0
-                          ? "text-opacity-30"
-                          : ""
-                      }  border border-green-10 rounded-md text-green-10 frcc w-35 h-10 text-sm cursor-pointer hover:opacity-80 `}
+                          ? "border-gray-90 text-gray-60 cursor-not-allowed"
+                          : "border-green-10 text-green-10 cursor-pointer "
+                      }  border rounded-md frcc w-35 h-10 text-sm hover:opacity-80 `}
                     >
                       Remove
                     </div>

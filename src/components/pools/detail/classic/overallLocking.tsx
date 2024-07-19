@@ -177,7 +177,9 @@ export default function OverallLocking(props: any) {
                   {/* farm apy */}
                   {item.value == "apy" && poolDetail.farm_apy && (
                     <span className="text-xs text-primaryGreen ml-2">
-                      +{format_apy(poolDetail.farm_apy)}
+                      {poolDetail.farm_apy == 0
+                        ? ""
+                        : `+${format_apy(poolDetail.farm_apy)}`}
                     </span>
                   )}
                 </p>

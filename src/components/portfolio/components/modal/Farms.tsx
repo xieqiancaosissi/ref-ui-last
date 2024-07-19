@@ -53,6 +53,7 @@ import { FarmMiningIcon, OrdersArrow } from "../icon";
 import useTokens from "@/hooks/useTokens";
 import { LOVE_TOKEN_DECIMAL } from "@/services/referendum";
 import CustomTooltip from "@/components/customTooltip/customTooltip";
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 
 const { REF_VE_CONTRACT_ID, REF_UNI_V3_SWAP_CONTRACT_ID } = getConfig();
 export const FarmCommonDatas = createContext<FarmCommonDataContext | null>(
@@ -298,12 +299,19 @@ export default function Farms(props: any) {
           <ClassicFarms></ClassicFarms>
           <DclFarms></DclFarms>
         </div>
-
         {/* pc loading */}
-        {loading_status ? (
-          <div className="flex items-center justify-center my-20">
-            <BlueCircleLoading />
-          </div>
+        {loading_status || noData_status ? (
+          <SkeletonTheme
+            baseColor="rgba(33, 43, 53, 0.3)"
+            highlightColor="#2A3643"
+          >
+            <Skeleton
+              style={{ width: "100%" }}
+              height={40}
+              count={2}
+              className="mt-4"
+            />
+          </SkeletonTheme>
         ) : null}
         {/* pc no data */}
         {/* {noData_status ? (

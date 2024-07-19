@@ -101,7 +101,7 @@ export default function RefPanelModal({
       }}
     >
       <div
-        style={{ width: "80vw", height: "86vh", overflow: "auto" }}
+        style={{ width: "60vw", height: "72vh", overflow: "auto" }}
         className="text-white"
       >
         <div className="rounded-lg bg-dark-60 p-6">

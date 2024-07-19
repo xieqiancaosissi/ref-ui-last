@@ -384,7 +384,7 @@ export const useStakeListByAccountId = () => {
 };
 
 export const useBatchTotalShares = (
-  ids: (string | number)[],
+  ids: (any | number)[],
   finalStakeList: Record<string, string>,
   stakeListDone: boolean
 ) => {

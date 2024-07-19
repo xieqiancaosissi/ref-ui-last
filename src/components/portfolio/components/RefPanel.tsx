@@ -201,7 +201,7 @@ function useLpV1() {
   // get the rest lp amount in pool and all lp amount  (in v1 farm, v2 farm, pool)
   const { batchTotalShares, sharesDone: stableSharesDone } =
     useBatchTotalShares(
-      stablePools?.map((p) => p.id) || [],
+      stablePools?.map((p) => p.id) as (string | number)[],
       finalStakeList,
       stakeListDone
     );
@@ -209,7 +209,7 @@ function useLpV1() {
     batchTotalShares: batchTotalSharesSimplePools,
     sharesDone: simpleSharesDone,
   } = useBatchTotalShares(
-    pools?.map((p) => p.id) || [],
+    pools?.map((p) => p.id) as (string | number)[],
     finalStakeList,
     stakeListDone
   );

@@ -488,14 +488,15 @@ export default function ClassicPoolDetail() {
                   <div className="pl-2 w-1/2">
                     <div
                       onClick={() => {
+                        if (+userTotalShareToString == 0) return;
                         setShowWithdraw(true);
                       }}
                       // disabled={Number(userTotalShareToString) == 0}
                       className={`w-full ${
                         Number(userTotalShareToString) == 0
-                          ? "text-opacity-30"
-                          : ""
-                      }  border border-green-10 rounded-md text-green-10 frcc w-35 h-10 text-sm cursor-pointer hover:opacity-80 `}
+                          ? "border-gray-90 text-gray-60 cursor-not-allowed"
+                          : "border-green-10 text-green-10 cursor-pointer "
+                      }  border rounded-md frcc w-35 h-10 text-sm hover:opacity-80 `}
                     >
                       Remove
                     </div>

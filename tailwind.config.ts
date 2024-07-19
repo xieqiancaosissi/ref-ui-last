@@ -124,6 +124,8 @@ const config: Config = {
         ...getStyleMapping(1800, 0),
       },
       backgroundImage: (theme) => ({
+        topLinearGradient: "linear-gradient( #FFDA19, #FF833E)",
+
         poolsTypelinearGrayBg:
           "linear-gradient(356.54deg, #2A3643 2.38%, #6A88A9 90.82%)",
         farmTitleBg:

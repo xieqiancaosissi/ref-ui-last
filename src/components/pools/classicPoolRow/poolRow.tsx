@@ -94,6 +94,14 @@ export default function PoolRow({
                   News
                 </div>
               )}
+
+              {item.top && (
+                <div
+                  className={`bg-topLinearGradient text-black ${styles.topStyle} mx-1`}
+                >
+                  Top
+                </div>
+              )}
             </div>
             <div>
               {/* fee */}

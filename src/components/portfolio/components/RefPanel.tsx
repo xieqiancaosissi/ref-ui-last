@@ -183,118 +183,116 @@ function useXref() {
   return [xref_value, xref_value_done];
 }
 function useLpV1() {
-  const accountInfo = useAccountInfo();
   const { tokenPriceList, isSignedIn, accountId } = useContext(
     OverviewData
   ) as OverviewContextType;
   const [yourLpValueV1, setYourLpValueV1] = useState("0");
   const [lpValueV1Done, setLpValueV1Done] = useState(false);
-  const [pools, setPools] = useState<any[]>([]);
-  const [stablePools, setStablePools] = useState<any[]>([]);
-  const [tvls, setTvls] = useState<Record<string, number>>({});
+  const [pools, setPools] = useState<any[]>();
+  const [stablePools, setStablePools] = useState<any[]>();
+  const [tvls, setTvls] = useState<Record<string, number>>();
+  // get stake list in v1 farm and v2 farm
   const { finalStakeList, stakeListDone } = useStakeListByAccountId();
+  // get lp amount locked in ve contract;
   const { lptAmount, accountInfoDone } = !!getConfig().REF_VE_CONTRACT_ID
-    ? accountInfo
+    ? // eslint-disable-next-line react-hooks/rules-of-hooks
+      useAccountInfo()
     : { lptAmount: "0", accountInfoDone: true };
-
+  // get the rest lp amount in pool and all lp amount  (in v1 farm, v2 farm, pool)
   const { batchTotalShares, sharesDone: stableSharesDone } =
     useBatchTotalShares(
-      stablePools.map((p) => p.id),
+      stablePools?.map((p) => p.id) || [],
       finalStakeList,
       stakeListDone
     );
-
   const {
     batchTotalShares: batchTotalSharesSimplePools,
     sharesDone: simpleSharesDone,
   } = useBatchTotalShares(
-    pools.map((p) => p.id),
+    pools?.map((p) => p.id) || [],
     finalStakeList,
     stakeListDone
   );
-
   useEffect(() => {
-    const fetchStablePools = async () => {
-      const ids = ALL_STABLE_POOL_IDS;
-      const res = await getPoolsByIds({ pool_ids: ids });
+    // get all stable pools;
+    const ids = ALL_STABLE_POOL_IDS;
+    getPoolsByIds({ pool_ids: ids }).then((res) => {
       setStablePools(res.filter((p) => p.id.toString() !== NEARX_POOL_ID));
-    };
-    fetchStablePools();
+    });
   }, []);
-
   useEffect(() => {
     if (!isSignedIn) return;
-    const fetchPools = async () => {
-      const res = await getYourPools();
+    // get all your simple pools;
+    getYourPools().then((res) => {
       setPools(res.filter((p) => !isStablePool(p.id.toString())));
-    };
-    fetchPools();
+    });
   }, [isSignedIn]);
-
   useEffect(() => {
-    const fetchTvls = async () => {
-      if (pools.length > 0) {
-        const res = await getPoolsByIds({
-          pool_ids: pools.map((p) => p.id.toString()),
-        });
+    if (!pools) return;
+    // get all tvls of simple pools;(stable pools has tvl field， but simple pools doesn't,so need request again)
+    getPoolsByIds({ pool_ids: pools.map((p) => p.id.toString()) }).then(
+      (res) => {
         setTvls(
-          res.reduce((pre, cur) => {
-            return {
-              ...pre,
-              [cur.id]: cur.tvl,
-            };
-          }, {})
+          res
+            .map((p) => p.tvl)
+            ?.reduce((pre, cur, i) => {
+              return {
+                ...pre,
+                [res[i].id]: cur,
+              };
+            }, {})
         );
       }
-    };
-    fetchTvls();
+    );
   }, [pools]);
-
+  const data_fetch_status =
+    !stablePools ||
+    !pools ||
+    !stableSharesDone ||
+    !simpleSharesDone ||
+    !accountInfoDone;
   useEffect(() => {
-    const calculateLpValue = () => {
-      if (
-        !stablePools.length ||
-        !pools.length ||
-        !stableSharesDone ||
-        !simpleSharesDone ||
-        !accountInfoDone
-      ) {
-        return;
-      }
+    if (!data_fetch_status) {
+      // get the number of pools which lp amount is greater than zero;
       const count =
-        batchTotalSharesSimplePools.reduce(
-          (acc, cur, i) =>
-            cur + Number(pools[i]?.id) === Number(getVEPoolId())
-              ? acc + Number(lptAmount) + cur
-              : acc + cur,
-          0
-        ) + batchTotalShares.reduce((acc, cur) => acc + cur, 0);
-      if (count > 0 && tvls) {
+        batchTotalSharesSimplePools
+          .map((n, i) =>
+            n + Number(pools?.[i].id) === Number(getVEPoolId())
+              ? Number(lptAmount) + n
+              : n
+          )
+          ?.reduce((acc, cur) => {
+            return cur > 0 ? acc + 1 : acc;
+          }, 0) +
+        batchTotalShares?.reduce((acc, cur) => (cur > 0 ? acc + 1 : acc), 0);
+      if (+count > 0 && tvls) {
         const allPools = pools.concat(stablePools);
         let total_value_final = "0";
-
-        allPools.forEach((pool) => {
+        allPools.forEach((pool: PoolRPCView) => {
+          // get total amount
           const { id, shares_total_supply, tvl } = pool;
           const is_stable_pool = isStablePool(id);
           const decimals = is_stable_pool
             ? getStablePoolDecimal(id)
             : LP_TOKEN_DECIMALS;
-          const i = is_stable_pool
-            ? stablePools.findIndex((p) => p.id === pool.id)
-            : pools.findIndex((p) => p.id === pool.id);
-          const total_amount = is_stable_pool
-            ? batchTotalShares[i]
-            : batchTotalSharesSimplePools[i];
-
-          const lp_in_vote =
-            +id === +getVEPoolId()
-              ? new BigNumber(lptAmount || 0).shiftedBy(-24).toFixed()
-              : "0";
-
+          let total_amount = 0;
+          if (is_stable_pool) {
+            const i = stablePools.findIndex(
+              (p: PoolRPCView) => p.id === pool.id
+            );
+            total_amount = batchTotalShares?.[i];
+          } else {
+            const i = pools.findIndex((p: PoolRPCView) => p.id === pool.id);
+            total_amount = batchTotalSharesSimplePools?.[i];
+          }
+          let lp_in_vote = "0";
+          if (+id == +getVEPoolId()) {
+            lp_in_vote = new BigNumber(lptAmount || 0).shiftedBy(-24).toFixed();
+          }
           const read_total_amount = new BigNumber(total_amount)
             .shiftedBy(-decimals)
             .plus(lp_in_vote);
-
+          // get single lp value
           const pool_tvl = tvls[id] || tvl || "0";
           if (+shares_total_supply > 0 && +pool_tvl > 0) {
             const read_total_supply = new BigNumber(
@@ -309,23 +307,14 @@ function useLpV1() {
         });
         setLpValueV1Done(true);
         setYourLpValueV1(total_value_final);
-      } else if (count === 0) {
+      } else if (+count == 0) {
         setLpValueV1Done(true);
         setYourLpValueV1("0");
       }
-    };
-    calculateLpValue();
-  }, [
-    stablePools,
-    pools,
-    stableSharesDone,
-    simpleSharesDone,
-    accountInfoDone,
-    tvls,
-  ]);
+    }
+  }, [data_fetch_status, tvls]);
   return [yourLpValueV1, lpValueV1Done];
 }
-
 function useLpV2() {
   const { tokenPriceList, isSignedIn, accountId } = useContext(
     OverviewData

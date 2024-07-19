@@ -128,7 +128,7 @@ export function YourLiquidityV1(props: any) {
     shares: batchStableShares,
     sharesDone: stableSharesDone,
   } = useBatchTotalShares(
-    stablePools?.map((p) => p.id) || [],
+    stablePools?.map((p) => p.id) as (string | number)[],
     finalStakeList,
     stakeListDone
   );
@@ -137,7 +137,7 @@ export function YourLiquidityV1(props: any) {
     shares: batchShares,
     sharesDone: simpleSharesDone,
   } = useBatchTotalShares(
-    pools?.map((p) => p.id) || [],
+    pools?.map((p) => p.id) as (string | number)[],
     finalStakeList,
     stakeListDone
   );

@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { twMerge } from "tailwind-merge";
-import { useOrderbookDataStore } from "@/stores/orderbook";
-import { IoCloseSharp } from "@/components/reactIcons";
+import {
+  useOrderbookDataStore,
+  useOrderbookWSDataStore,
+} from "@/stores/orderbook";
 import SymbolLine from "./SymbolLine";
 import { Ticker } from "@/interfaces/orderbook";
 import { parseSymbol } from "@/services/orderbook/utils";
@@ -20,7 +22,8 @@ export default function SymbolSelector({
   const [searchList, setSearchList] = useState<Ticker[]>([]);
   const [searchValue, setSearchValue] = useState<string>();
   const orderbookDataStore = useOrderbookDataStore();
-  const allTickers = orderbookDataStore.getAllTickers();
+  const orderbookWSDataStore = useOrderbookWSDataStore();
+  const allTickers = orderbookWSDataStore.getAllTickers();
   const allTickersSpot = allTickers?.filter(
     (t) => t.symbol.indexOf("SPOT") > -1
   );

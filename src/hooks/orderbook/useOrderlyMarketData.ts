@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import useOrderlyWS from "./useOrderlyWS";
 import { getFundingRateSymbol } from "@/services/orderbook/perp-off-chain-api";
 import { generateMarketDataFlow } from "@/services/orderbook/off-chain-ws";
-import { useOrderbookDataStore } from "@/stores/orderbook";
+import { useOrderbookWSDataStore } from "@/stores/orderbook";
 import {
   Orders,
   Ticker,
@@ -23,7 +23,7 @@ const useOrderlyMarketData = ({ symbol }: { symbol: string }) => {
   const [indexprices, setIndexprices] = useState<IndexPrice[]>();
   const [estFundingRate, setEstFundingRate] = useState<EstFundingrate>();
   const [openinterests, setOpeninterests] = useState<OpenInterest[]>();
-  const orderbookDataStore = useOrderbookDataStore();
+  const orderbookWSDataStore = useOrderbookWSDataStore();
 
   useEffect(() => {
     if (connectionStatus !== "Open") return;
@@ -134,7 +134,7 @@ const useOrderlyMarketData = ({ symbol }: { symbol: string }) => {
       const tickers = lastJsonMessage?.data;
 
       setAllTickers(tickers);
-      orderbookDataStore.setAllTickers(tickers);
+      orderbookWSDataStore.setAllTickers(tickers);
 
       const ticker = tickers.find((t: Ticker) => t.symbol === symbol);
 

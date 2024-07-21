@@ -1,4 +1,5 @@
 import getConfig from "@/utils/config";
+import getOrderlyConfig from "@/utils/orderlyConfig";
 import { getAccount } from "@/utils/near";
 import { getAccountId, getCurrentWallet } from "@/utils/wallet";
 import { ftGetTokenMetadata } from "./token";
@@ -9,6 +10,7 @@ import { shrinkToken } from "./burrow-utils";
 import { IToken } from "./burrow-interfaces";
 
 const config = getConfig();
+const orderlyConfig = getOrderlyConfig();
 const { BURROW_CONTRACT_ID, WRAP_NEAR_CONTRACT_ID } = getConfig();
 const NO_STORAGE_DEPOSIT_CONTRACTS = ["aurora"];
 const lpTokenPrefix = "shadow_ref_v1";
@@ -20,7 +22,7 @@ const near = new Near({
 });
 export const wallet = new WalletConnection(
   near,
-  config.REF_FARM_BOOST_CONTRACT_ID
+  orderlyConfig.ORDERLY_ASSET_MANAGER
 );
 
 export const burrowViewFunction = async ({

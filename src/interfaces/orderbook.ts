@@ -432,3 +432,18 @@ export interface IOrderKeyInfo {
   orderly_key: string;
   trading_key: string;
 }
+
+// export type IConnectStatus =
+//   | "register"
+//   | "registering"
+//   | "connect"
+//   | "connecting"
+//   | "connected"
+//   | "";
+
+export type IConnectStatus =
+  | "has_connected"
+  | "need_register"
+  | "need_storage"
+  | "need_key_set"
+  | "status_fetching";

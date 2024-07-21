@@ -6,7 +6,6 @@ export default function CreateOrder() {
   const orderTab = spotStore.getOrderTab();
   const isLimit = orderTab == "LIMIT";
   const isMarket = orderTab == "MARKET";
-
   return (
     <div>
       <div className="flex items-center text-lg font-bold text-gray-50">

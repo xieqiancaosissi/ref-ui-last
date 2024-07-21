@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import dynamic from "next/dynamic";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import { Tooltip } from "react-tooltip";
 import "react-loading-skeleton/dist/skeleton.css";
@@ -17,8 +18,7 @@ import { getCurrentWallet, getSelector } from "../../utils/wallet";
 import type { Wallet } from "@near-wallet-selector/core";
 import swapStyles from "../swap/swap.module.css";
 import AccessKeyModal from "./AccessKeyModal";
-import Overview from "../portfolio";
-
+const Overview = dynamic(() => import("../portfolio"), { ssr: false });
 export default function WalletConnect() {
   const [accountId, setAccountId] = useState<string | undefined>();
   const [currentWallet, setCurrentWallet] = useState<Wallet>();

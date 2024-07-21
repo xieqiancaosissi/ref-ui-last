@@ -18,6 +18,7 @@ import { setupNightly } from "@near-wallet-selector/nightly";
 import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
 import { setupNearMobileWallet } from "@near-wallet-selector/near-mobile-wallet";
 import { setupKeypom } from "@keypom/selector";
+import { setupMintbaseWallet } from "@near-wallet-selector/mintbase-wallet";
 import "@near-wallet-selector/modal-ui/styles.css";
 import getConfig from "./config";
 import getOrderlyConfig from "./orderlyConfig";
@@ -58,6 +59,7 @@ export async function getWalletSelector({
   const RPCLIST_custom = getCustomAddRpcSelectorList();
   const RPC_LIST = Object.assign(RPCLIST_system, RPCLIST_custom);
   let endPoint = "defaultRpc";
+  const signInContractId = getOrderlyConfig().ORDERLY_ASSET_MANAGER;
   try {
     endPoint = window.localStorage.getItem("endPoint") || endPoint;
     if (!RPC_LIST[endPoint]) {
@@ -102,7 +104,7 @@ export async function getWalletSelector({
       }),
       setupKeypom({
         networkId: getConfig().networkId as NetworkId,
-        signInContractId: getOrderlyConfig().ORDERLY_ASSET_MANAGER,
+        signInContractId,
         trialAccountSpecs: {
           url: "/trial-accounts/ACCOUNT_ID#SECRET_KEY",
           modalOptions: KEYPOM_OPTIONS,
@@ -110,6 +112,11 @@ export async function getWalletSelector({
         instantSignInSpecs: {
           url: "/#instant-url/ACCOUNT_ID#SECRET_KEY/MODULE_ID",
         },
+      }),
+      setupMintbaseWallet({
+        walletUrl: "https://wallet.mintbase.xyz",
+        contractId: signInContractId,
+        deprecated: false,
       }),
     ],
   });

@@ -44,10 +44,7 @@ const user_account_exists = async (user: string) => {
   });
 };
 
-const is_orderly_key_announced = async (
-  user: string,
-  fromUserBoard?: boolean
-) => {
+const is_orderly_key_announced = async (user: string) => {
   const orderly_key = await getPublicKey(user);
 
   if (!orderly_key) return null;
@@ -92,7 +89,6 @@ const is_trading_key_set = async (user: string) => {
       return false;
     }
   }
-
   return orderlyViewFunction({
     methodName: "is_trading_key_set",
     args: {

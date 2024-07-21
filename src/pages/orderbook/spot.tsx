@@ -1,9 +1,22 @@
 import dynamic from "next/dynamic";
 import OrderBookTab from "@/components/orderbook/orderBookTab";
-import CreateOrder from "@/components/orderbook/spot/createOrder";
-import Account from "@/components/orderbook/spot/account";
-// TODO
+import { useOrderbookDataStore } from "@/stores/orderbook";
 const InitData = dynamic(() => import("@/components/orderbook/initData"), {
+  ssr: false,
+});
+const ConnectToOrderly = dynamic(
+  () => import("@/components/orderbook/connectToOrderly"),
+  {
+    ssr: false,
+  }
+);
+const CreateOrder = dynamic(
+  () => import("@/components/orderbook/spot/createOrder"),
+  {
+    ssr: false,
+  }
+);
+const Account = dynamic(() => import("@/components/orderbook/spot/account"), {
   ssr: false,
 });
 const CurrentSymbol = dynamic(
@@ -13,6 +26,8 @@ const CurrentSymbol = dynamic(
   }
 );
 export default function Spot(props: any) {
+  const orderbookDataStore = useOrderbookDataStore();
+  const connectStatus = orderbookDataStore.getConnectStatus();
   return (
     <div className="flex items-start justify-between p-6 gap-7">
       <InitData />
@@ -22,9 +37,14 @@ export default function Spot(props: any) {
         <CurrentSymbol />
       </div>
       {/* right part */}
-      <div style={{ width: "350px" }}>
-        <CreateOrder />
-        <Account />
+      <div className="relative" style={{ width: "350px" }}>
+        <ConnectToOrderly />
+        {connectStatus == "status_fetching" ? null : (
+          <>
+            <CreateOrder />
+            <Account />
+          </>
+        )}
       </div>
     </div>
   );

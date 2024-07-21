@@ -140,6 +140,8 @@ const config: Config = {
         createPoolLinear: "linear-gradient(90deg, #9EFF00 1.39%, #5F9900 100%)",
         AddLiquidityBg: "linear-gradient(90deg, #8BE100 0%, #0099A3 100%)",
         textWhiteGradient: "linear-gradient(90deg, #FFFFFF 0%, #91A2AE 100%)",
+        primaryGreenGradient:
+          "linear-gradient(90deg, #9EFF00 -6.25%, #5F9900 100%)",
       }),
     },
     screens: {

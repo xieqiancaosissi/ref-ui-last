@@ -18,6 +18,7 @@ import {
 import { defaultTokenList, getAuroraConfig } from "@/utils/auroraConfig";
 import { Near, WalletConnection, keyStores } from "near-api-js";
 import getConfig from "@/utils/config";
+import getOrderlyConfig from "@/utils/orderlyConfig";
 import { nearMetadata } from "./wrap-near";
 import {
   formatWithCommas,
@@ -39,6 +40,7 @@ import { ILock, get_account } from "./lplock";
 import { getSharesInPool } from "./pool";
 
 const config = getConfig();
+const orderConfig = getOrderlyConfig();
 const keyStore = new keyStores.BrowserLocalStorageKeyStore();
 const near = new Near({
   keyStore,
@@ -49,7 +51,7 @@ const getAurora = () => {
   const aurora_walletConnection = new WalletConnection(near, "aurora");
   const account = new WalletConnection(
     near,
-    config.REF_FARM_BOOST_CONTRACT_ID
+    orderConfig.ORDERLY_ASSET_MANAGER
   ).account();
   //@ts-ignore
   return new Engine(
@@ -107,7 +109,6 @@ export const getTriTokenIdsOnRef = async () => {
     })
     .flat();
   const ids = await getBatchTokenNearAcounts(idsOnPair);
-  // debugger
   return ids?.filter((id: string) => !!id) || [];
 };
 

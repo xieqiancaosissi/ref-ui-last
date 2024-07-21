@@ -122,3 +122,125 @@ export function WithdrawIcon() {
     </svg>
   );
 }
+
+export function OrderlyConnectIcon(props: any) {
+  return (
+    <svg
+      {...props}
+      width="138"
+      height="42"
+      viewBox="0 0 138 42"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M136.978 26.8803C134.435 35.6162 126.369 42 116.812 42C107.256 42 99.19 35.6162 96.6469 26.8803H109.686C111.381 28.9322 113.945 30.2399 116.814 30.2399C119.683 30.2399 122.247 28.9322 123.941 26.8803H136.978ZM137.392 25.2003H125.046C125.69 23.9401 126.054 22.5124 126.054 20.9999C126.054 19.4876 125.69 18.0601 125.046 16.8H137.392C137.668 18.1571 137.812 19.5617 137.812 21C137.812 22.4384 137.668 23.8431 137.392 25.2003ZM108.581 25.2003C107.937 23.9401 107.574 22.5124 107.574 20.9999C107.574 19.4876 107.937 18.0601 108.581 16.8H96.2326C95.9571 18.1571 95.8125 19.5617 95.8125 21C95.8125 22.4384 95.9571 23.8431 96.2326 25.2003H108.581ZM100.011 8.39951C98.5131 10.3941 97.3617 12.6641 96.6468 15.12H109.686C111.38 13.0679 113.944 11.7599 116.814 11.7599C119.683 11.7599 122.247 13.0679 123.942 15.12H136.978C136.263 12.6641 135.112 10.3941 133.614 8.39951H100.011ZM132.21 6.71951H101.415C105.251 2.58641 110.729 0 116.812 0C122.896 0 128.374 2.58641 132.21 6.71951Z"
+        fill="url(#paint0_linear_6038_5998)"
+      />
+      <circle cx="54.4688" cy="22.9688" r="1.96875" fill="#D9D9D9" />
+      <circle cx="64.9688" cy="22.9688" r="1.96875" fill="#D9D9D9" />
+      <circle cx="75.4688" cy="22.9688" r="1.96875" fill="#D9D9D9" />
+      <path
+        d="M26.2825 0.443848H0V8.30003H20.9974C22.8543 8.30003 24.549 9.10596 24.549 10.8716V15.4424C24.549 17.7279 22.8543 18.2988 20.9974 18.2988H8.57038L22.1401 38.2963H33.1388L23.14 24.0124H26.2825C26.2825 24.0124 33.1388 24.5842 33.1388 16.5851V7.44341C33.1388 1.72982 29.2674 0.443848 26.2825 0.443848Z"
+        fill="url(#paint1_linear_6038_5998)"
+      />
+      <path
+        d="M0 38.2963V22.584L10.713 38.2963H0Z"
+        fill="url(#paint2_linear_6038_5998)"
+      />
+      <defs>
+        <linearGradient
+          id="paint0_linear_6038_5998"
+          x1="116.812"
+          y1="0"
+          x2="116.812"
+          y2="42"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stopColor="white" stopOpacity="0.7" />
+          <stop offset="1" stopColor="white" stopOpacity="0" />
+        </linearGradient>
+        <linearGradient
+          id="paint1_linear_6038_5998"
+          x1="16.5694"
+          y1="0.443848"
+          x2="16.5694"
+          y2="38.2963"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stopColor="white" stopOpacity="0.7" />
+          <stop offset="1" stopColor="white" stopOpacity="0" />
+        </linearGradient>
+        <linearGradient
+          id="paint2_linear_6038_5998"
+          x1="5.35649"
+          y1="22.584"
+          x2="5.35649"
+          y2="38.2963"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stopColor="white" stopOpacity="0.7" />
+          <stop offset="1" stopColor="white" stopOpacity="0" />
+        </linearGradient>
+      </defs>
+    </svg>
+  );
+}
+
+export function RegisterIcon() {
+  return (
+    <svg
+      width="12"
+      height="45"
+      viewBox="0 0 12 45"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <circle cx="6" cy="39" r="5.5" fill="black" stroke="#9AF901" />
+      <circle cx="6" cy="6" r="5.5" fill="black" stroke="#9AF901" />
+      <line
+        x1="6.75"
+        y1="13"
+        x2="6.75"
+        y2="32"
+        stroke="#7E8A93"
+        strokeWidth="1.5"
+        strokeDasharray="2 2"
+      />
+    </svg>
+  );
+}
+
+export function PrimartGreenLoadingIcon() {
+  return (
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 18 18"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M17 9C17 13.4183 13.4183 17 9 17C4.58172 17 1 13.4183 1 9C1 4.58172 4.58172 1 9 1"
+        stroke="url(#paint0_angular_6038_6547)"
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
+      <defs>
+        <radialGradient
+          id="paint0_angular_6038_6547"
+          cx="0"
+          cy="0"
+          r="1"
+          gradientUnits="userSpaceOnUse"
+          gradientTransform="translate(7.5 9) rotate(-7.43141) scale(11.5974 11.6766)"
+        >
+          <stop stopColor="#9EFF00" />
+          <stop offset="1" stopColor="#9EFF00" stopOpacity="0" />
+        </radialGradient>
+      </defs>
+    </svg>
+  );
+}

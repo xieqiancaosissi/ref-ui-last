@@ -35,7 +35,7 @@ import { registerAccountOnToken } from "@/services/creator/token";
 import { ftViewFunction } from "@/services/ft-contract";
 import { executeMultipleTransactions } from "@/utils/near";
 import getConfig from "@/utils/config";
-import { ledgerTipTrigger } from "@/utils/wallet";
+import { ledgerTipTrigger, getAccountId } from "@/utils/wallet";
 export const REF_ORDERLY_NEW_USER_TIP = "REF_ORDERLY_NEW_USER_TIP_KEY";
 
 const signAndSendTransactions = async (transactions: Transaction[]) => {
@@ -234,7 +234,8 @@ const setTradingKey = async (accountId: string) => {
   });
 };
 
-const storageDeposit = async (accountId: string) => {
+const storageDeposit = async () => {
+  const accountId = getAccountId();
   const functionCallList: any = [];
 
   const transactions: Transaction[] = [];
@@ -311,7 +312,6 @@ const checkStorageDeposit = async (accountId: string) => {
 
   const announce_key_amount = await get_cost_of_announce_key();
 
-  // if (storage_amount !== null) {
   const deposit_functionCall_register = orderly_storage_deposit(
     accountId,
     utils.format.formatNearAmount(min_amount.min)

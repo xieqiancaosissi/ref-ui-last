@@ -13,26 +13,26 @@ import {
   getOpenOrders,
   getAllOrders,
   getAccountInformation,
-} from "./off-chain-api";
+} from "../off-chain-api";
 
-import { checkStorageDeposit } from "./api";
+import { checkStorageDeposit } from "../api";
 import {
   is_orderly_key_announced,
   is_trading_key_set,
   user_account_exists,
-} from "./on-chain-api";
+} from "../on-chain-api";
 import { useAccountStore } from "@/stores/account";
+import { useOrderbookPrivateWSDataStore } from "@/stores/orderbook/orderbookPrivateWSDataStore";
 import {
   getLiquidationHistory,
   getUserAllPositions,
   updateLeverage,
-} from "./perp-off-chain-api";
+} from "../perp-off-chain-api";
 import _ from "lodash";
 import { marginPopUp } from "@/components/orderbook/transactionTipPopUp";
 import { useIntl } from "react-intl";
-import { constOrderlyPageSize } from "./utils";
+import { constOrderlyPageSize } from "../utils";
 import { useOrderbookDataStore } from "@/stores/orderbook/orderbookDataStore";
-import { useOrderbookPrivateWSDataStore } from "@/stores/orderbook/orderbookPrivateWSDataStore";
 
 export function useMarketTrades({
   symbol,
@@ -67,6 +67,7 @@ export function usePendingOrders({
   const [liveOrders, setLiveOrders] = useState<MyOrder[]>([]);
   const accountStore = useAccountStore();
   const accountId = accountStore.getAccountId();
+
   const setFunc = useCallback(async () => {
     if (accountId === null || !validAccountSig) return;
     try {
@@ -126,7 +127,7 @@ export function useAllOrders({
 }
 
 export function useTokenInfo() {
-  const [tokenInfo, setTokenInfo] = useState<TokenInfo[]>([]);
+  const [tokenInfo, setTokenInfo] = useState<TokenInfo[]>();
 
   useEffect(() => {
     getOrderlyPublic("/v1/public/token").then((res) => {
@@ -169,7 +170,6 @@ export function useOrderlySystemAvailable() {
 
 export function useAccountExist() {
   const [userExist, setUserExist] = useState<boolean>();
-
   const accountStore = useAccountStore();
   const accountId = accountStore.getAccountId();
 
@@ -216,11 +216,12 @@ export function useOrderlyRegistered() {
 }
 
 export function useAllPositions(validAccountSig: boolean) {
-  const [positions, setPositions] = useState<PositionsType>();
   const accountStore = useAccountStore();
-  const orderbookDataStore = useOrderbookDataStore();
   const accountId = accountStore.getAccountId();
-  const positionTrigger = orderbookDataStore.getPositionTrigger();
+
+  const [positions, setPositions] = useState<PositionsType>();
+
+  const [positionTrigger, setPositionTrigger] = useState<boolean>(false);
 
   useEffect(() => {
     if (!accountId || !validAccountSig) return;
@@ -234,10 +235,6 @@ export function useAllPositions(validAccountSig: boolean) {
       res.data.rows = rows;
 
       setPositions({ ...res.data, timestamp: res.timestamp });
-      orderbookDataStore.setPositions({
-        ...res.data,
-        timestamp: res.timestamp,
-      });
     });
   }, [accountId, positionTrigger, validAccountSig]);
 
@@ -245,19 +242,21 @@ export function useAllPositions(validAccountSig: boolean) {
     positions,
     setPositions,
     positionTrigger,
+    setPositionTrigger,
   };
 }
 
 export function useLeverage() {
+  const [error, setError] = useState<Error>();
   const accountStore = useAccountStore();
-  const accountId = accountStore.getAccountId();
-  const [error, setError] = useState<Error | undefined | null>();
-  const intl = useIntl();
   const orderbookPrivateWSDataStore = useOrderbookPrivateWSDataStore();
   const orderbookDataStore = useOrderbookDataStore();
-  const futureLeverage = orderbookPrivateWSDataStore.getFutureLeverage();
   const userInfo = orderbookDataStore.getUserInfo();
   const positionTrigger = orderbookDataStore.getPositionTrigger();
+  const accountId = accountStore.getAccountId();
+  const intl = useIntl();
+  const futureLeverage = orderbookPrivateWSDataStore.getFutureLeverage();
+
   const [curLeverage, setCurLeverage] = useState<number>();
 
   const [changeTrigger, setChangeTrigger] = useState<boolean>();
@@ -312,11 +311,10 @@ export function useLeverage() {
         })}`;
 
         marginPopUp(tip, "success");
-
         orderbookDataStore.setPositionTrigger(!positionTrigger);
       }
 
-      setError(null);
+      setError(undefined);
 
       await requestLeverage();
     },
@@ -375,7 +373,7 @@ export function useLiquidationHistoryAll() {
     getLiquidationHistory({
       accountId,
       HistoryParam: {
-        page: (res?.curPage ?? 0) + 1 || 1,
+        page: (res?.curPage || 0) + 1 || 1,
       },
     }).then((response) => {
       const data = response.data;

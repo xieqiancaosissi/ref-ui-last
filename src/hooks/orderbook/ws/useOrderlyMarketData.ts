@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import useOrderlyWS from "./useOrderlyWS";
 import { getFundingRateSymbol } from "@/services/orderbook/perp-off-chain-api";
 import { generateMarketDataFlow } from "@/services/orderbook/off-chain-ws";
-import { useOrderbookWSDataStore } from "@/stores/orderbook";
+import { useOrderbookWSDataStore } from "@/stores/orderbook/orderbookWSDataStore";
 import {
   Orders,
   Ticker,
@@ -52,10 +52,13 @@ const useOrderlyMarketData = ({ symbol }: { symbol: string }) => {
     ) {
       setOrders(lastJsonMessage?.data);
       setOrdersUpdate(lastJsonMessage?.data);
+      orderbookWSDataStore.setOrders(lastJsonMessage?.data);
+      orderbookWSDataStore.setOrdersUpdate(lastJsonMessage?.data);
     }
 
     if (lastJsonMessage?.topic === `${symbol}@orderbookupdate` && !!orders) {
       setOrdersUpdate(lastJsonMessage?.data);
+      orderbookWSDataStore.setOrdersUpdate(lastJsonMessage?.data);
 
       const asks = orders.asks;
 
@@ -99,14 +102,22 @@ const useOrderlyMarketData = ({ symbol }: { symbol: string }) => {
         bids: bids.sort((b1, b2) => b2[0] - b1[0]),
         ts: lastJsonMessage?.ts,
       });
+      orderbookWSDataStore.setOrders({
+        ...orders,
+        asks: asks.sort((a1, a2) => a1[0] - a2[0]),
+        bids: bids.sort((b1, b2) => b2[0] - b1[0]),
+        ts: lastJsonMessage?.ts,
+      });
     }
 
     if (lastJsonMessage?.topic === `${symbol}@estfundingrate`) {
       setEstFundingRate(lastJsonMessage?.data);
+      orderbookWSDataStore.setEstFundingRate(lastJsonMessage?.data);
     }
 
     if (lastJsonMessage?.topic === `openinterests`) {
       setOpeninterests(lastJsonMessage?.data);
+      orderbookWSDataStore.setOpeninterests(lastJsonMessage?.data);
     }
 
     //  process trade
@@ -119,6 +130,9 @@ const useOrderlyMarketData = ({ symbol }: { symbol: string }) => {
         setMarketTrade(
           lastJsonMessage?.data.map((t: MarketTrade) => ({ ...t, symbol }))
         );
+        orderbookWSDataStore.setMarketTrade(
+          lastJsonMessage?.data.map((t: MarketTrade) => ({ ...t, symbol }))
+        );
       } else
         setMarketTrade([
           {
@@ -128,6 +142,14 @@ const useOrderlyMarketData = ({ symbol }: { symbol: string }) => {
           },
           ...(marketTrade || []),
         ]);
+      orderbookWSDataStore.setMarketTrade([
+        {
+          ...lastJsonMessage?.data,
+          symbol,
+          ts: lastJsonMessage?.ts,
+        },
+        ...(marketTrade || []),
+      ]);
     }
 
     if (lastJsonMessage?.topic === "tickers") {
@@ -138,19 +160,24 @@ const useOrderlyMarketData = ({ symbol }: { symbol: string }) => {
 
       const ticker = tickers.find((t: Ticker) => t.symbol === symbol);
 
-      if (ticker) setTicker(ticker);
+      if (ticker) {
+        setTicker(ticker);
+        orderbookWSDataStore.setTicker(ticker);
+      }
     }
 
     if (lastJsonMessage?.topic === "indexprices") {
       const indexPrices = lastJsonMessage?.data;
 
       setIndexprices(indexPrices);
+      orderbookWSDataStore.setIndexprices(indexPrices);
     }
 
     if (lastJsonMessage?.topic === "markprices") {
       const markPrices = lastJsonMessage?.data;
 
       setMarkPrices(markPrices);
+      orderbookWSDataStore.setMarkPrices(markPrices);
     }
   }, [lastJsonMessage, symbol, connectionStatus]);
 
@@ -160,6 +187,11 @@ const useOrderlyMarketData = ({ symbol }: { symbol: string }) => {
 
     getFundingRateSymbol(symbol).then((res) => {
       setEstFundingRate({
+        symbol,
+        fundingRate: res.data?.est_funding_rate,
+        fundingTs: res.data?.next_funding_time,
+      });
+      orderbookWSDataStore.setEstFundingRate({
         symbol,
         fundingRate: res.data?.est_funding_rate,
         fundingTs: res.data?.next_funding_time,

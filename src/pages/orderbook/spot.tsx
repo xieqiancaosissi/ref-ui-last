@@ -1,6 +1,6 @@
 import dynamic from "next/dynamic";
 import OrderBookTab from "@/components/orderbook/orderBookTab";
-import { useOrderbookDataStore } from "@/stores/orderbook";
+import { useOrderbookDataStore } from "@/stores/orderbook/orderbookDataStore";
 const InitData = dynamic(() => import("@/components/orderbook/initData"), {
   ssr: false,
 });

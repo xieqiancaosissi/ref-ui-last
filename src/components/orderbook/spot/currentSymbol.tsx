@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useOrderbookDataStore } from "@/stores/orderbook";
+import { useOrderbookDataStore } from "@/stores/orderbook/orderbookDataStore";
 import SymbolSelector from "./SymbolSelector";
 import { TokenIcon } from "../common";
 import { ArrowDownIcon } from "@/components/swap/icons";

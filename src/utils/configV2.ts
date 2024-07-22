@@ -38,6 +38,12 @@ export default function getConfigV2(
           "dac17f958d2ee523a2206206994597c13d831ec7.factory.bridge.near|token.v2.ref-finance.near|400",
           "17208628f84f5d6ad33f0da3bbbeb27ffcb398eac501a31bd6ad2011e36133a1|wrap.near|2000",
         ],
+        NATIVE_TOKENS: [
+          "usdt.tether-token.near",
+          "17208628f84f5d6ad33f0da3bbbeb27ffcb398eac501a31bd6ad2011e36133a1",
+        ],
+        ORDRRBOOK_COLLATTERAL_TOKEN:
+          "a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.factory.bridge.near",
       };
     case "pub-testnet":
       return {
@@ -74,6 +80,11 @@ export default function getConfigV2(
           "3e2210e1184b45b64c8a434c0a7e7b23cc04ea7eb7a6c3c32520d03d4afcb8af|wrap.testnet|2000",
           "usdcc.ft.ref-labs.testnet|wrap.testnet|2000",
         ],
+        NATIVE_TOKENS: [
+          "usdtt.fakes.testnet",
+          "3e2210e1184b45b64c8a434c0a7e7b23cc04ea7eb7a6c3c32520d03d4afcb8af",
+        ],
+        ORDRRBOOK_COLLATTERAL_TOKEN: "usdc.orderly.testnet",
       };
     case "testnet":
       return {
@@ -105,6 +116,8 @@ export default function getConfigV2(
           "usdcc.fakes.testnet|wrap.testnet|400",
           "ref.fakes.testnet|usdc.fakes.testnet|400",
         ],
+        NATIVE_TOKENS: ["usdtt.fakes.testnet", "usdcc.fakes.testnet"],
+        ORDRRBOOK_COLLATTERAL_TOKEN: "usdc.orderly.testnet",
       };
     default:
       return {
@@ -142,6 +155,12 @@ export default function getConfigV2(
           "dac17f958d2ee523a2206206994597c13d831ec7.factory.bridge.near|token.v2.ref-finance.near|400",
           "17208628f84f5d6ad33f0da3bbbeb27ffcb398eac501a31bd6ad2011e36133a1|wrap.near|2000",
         ],
+        NATIVE_TOKENS: [
+          "usdt.tether-token.near",
+          "17208628f84f5d6ad33f0da3bbbeb27ffcb398eac501a31bd6ad2011e36133a1",
+        ],
+        ORDRRBOOK_COLLATTERAL_TOKEN:
+          "a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.factory.bridge.near",
       };
   }
 }

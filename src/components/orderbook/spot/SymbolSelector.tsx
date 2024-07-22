@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
 import { twMerge } from "tailwind-merge";
-import {
-  useOrderbookDataStore,
-  useOrderbookWSDataStore,
-} from "@/stores/orderbook";
+import { useOrderbookWSDataStore } from "@/stores/orderbook/orderbookWSDataStore";
+import { useOrderbookDataStore } from "@/stores/orderbook/orderbookDataStore";
 import SymbolLine from "./SymbolLine";
 import { Ticker } from "@/interfaces/orderbook";
 import { parseSymbol } from "@/services/orderbook/utils";

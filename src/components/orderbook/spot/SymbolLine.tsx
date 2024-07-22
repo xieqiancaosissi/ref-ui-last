@@ -1,6 +1,6 @@
 import { Ticker } from "@/interfaces/orderbook";
 import { parseSymbol } from "@/services/orderbook/utils";
-import { useOrderbookDataStore } from "@/stores/orderbook";
+import { useOrderbookDataStore } from "@/stores/orderbook/orderbookDataStore";
 import TickerDisplayComponent from "./tickerDisplayComponent";
 
 import { TokenIcon } from "../common";

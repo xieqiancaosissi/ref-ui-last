@@ -4,7 +4,7 @@ import { useIntl, FormattedMessage } from "react-intl";
 import { IoClose } from "@/components/reactIcons";
 import { useClientMobile } from "@/utils/device";
 import { OrderlyConnectIcon } from "./icons";
-import { useOrderbookDataStore } from "@/stores/orderbook";
+import { useOrderbookDataStore } from "@/stores/orderbook/orderbookDataStore";
 
 export default function ConnectConfirmModal(
   props: Modal.Props & {

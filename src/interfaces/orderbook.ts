@@ -433,17 +433,29 @@ export interface IOrderKeyInfo {
   trading_key: string;
 }
 
-// export type IConnectStatus =
-//   | "register"
-//   | "registering"
-//   | "connect"
-//   | "connecting"
-//   | "connected"
-//   | "";
-
 export type IConnectStatus =
   | "has_connected"
   | "need_register"
   | "need_storage"
   | "need_key_set"
   | "status_fetching";
+
+export interface TokenWithDecimals {
+  id: string;
+  decimals: number;
+}
+
+export interface BalanceType {
+  meta: TokenMetadata;
+  holding: number;
+  wallet_balance: string;
+  id: string;
+  name: string;
+  "in-order": number;
+}
+export interface OrderAsset {
+  near: string;
+  "in-order": string;
+  available: string;
+  tokenMeta: TokenMetadata;
+}

@@ -38,7 +38,11 @@ export default function Menu() {
   }
   function chooseTwoLevelMenu(item: IMenuChild) {
     setTwoLevelMenuId(item.id);
-    router.push(item.path);
+    if (item.path) {
+      router.push(item.path);
+    } else if (item.externalLink) {
+      window.open(item.externalLink);
+    }
   }
 
   // for stable detail css style

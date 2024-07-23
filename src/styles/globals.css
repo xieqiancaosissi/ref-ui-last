@@ -204,7 +204,7 @@ input[type="range"].lock-bar::-webkit-slider-thumb {
 }
 
 .farmTextGradient {
-    background: -webkit-linear-gradient(left, #FFD278, #FF9900);  
-    -webkit-background-clip: text;  
-    -webkit-text-fill-color: transparent; 
+  background: -webkit-linear-gradient(left, #ffd278, #ff9900);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }

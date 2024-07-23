@@ -45,7 +45,7 @@ export function menuData(): IMenu[] {
           id: "orderbook",
           label: "Orderbook",
           icon: <OrderbookIcon />,
-          externalLink: "https://app.ref.finance",
+          externalLink: "https://app.ref.finance/orderbook/spot",
         },
       ],
     },
@@ -83,7 +83,22 @@ export function menuData(): IMenu[] {
       id: "meme",
       icon: <Image src="/images/memeMenu.svg" width={24} height={24} alt="" />,
       label: "MEME SEASON",
-      path: "",
+      path: "/meme",
     },
   ];
 }
+
+export const routeMapIds = {
+  "trade-swap": ["/"],
+  "trade-limit": ["/limit"],
+  "earn-pools": [
+    "/pools",
+    "/pool/classic/[id]",
+    "/pool/stable/[id]",
+    "/pool/dcl/[id]",
+    "/liquidity/[id]",
+  ],
+  "earn-farms": ["/farms"],
+  "earn-stake": ["/xref"],
+  meme: ["/meme"],
+};

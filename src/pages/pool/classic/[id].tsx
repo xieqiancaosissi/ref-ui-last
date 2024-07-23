@@ -535,10 +535,10 @@ export default function ClassicPoolDetail() {
                     size="4"
                     isRewardDisplay
                   />
-                  {/* <span className="text-xs text-gray-50">
+                  <span className="text-xs text-white">
                     {totalTvlPerWeekDisplay()}
                     /week
-                  </span> */}
+                  </span>
                 </div>
               </div>
 

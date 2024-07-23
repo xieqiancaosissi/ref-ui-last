@@ -40,6 +40,7 @@ import { isStablePool } from "@/services/swap/swapUtils";
 import { getStablePoolDecimal } from "@/services/swap/swapUtils";
 import db from "@/db/RefDatabase";
 import { get_seed } from "@/services/farm";
+import { get24hVolumes } from "@/services/indexer";
 
 //
 type UsePoolSearchProps = {
@@ -738,4 +739,14 @@ export const useSeedFarmsByPools = (pools: Pool[]) => {
     farmAprById,
     loadingSeedsDone,
   };
+};
+
+export const useDayVolume = (pool_id: string) => {
+  const [dayVolume, setDayVolume] = useState<string>();
+  useEffect(() => {
+    get24hVolumes([pool_id]).then((res) => {
+      setDayVolume(res.join(""));
+    });
+  }, [pool_id]);
+  return dayVolume;
 };

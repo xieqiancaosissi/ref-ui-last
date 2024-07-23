@@ -95,3 +95,10 @@ export const check_registration = (
     args: { account_id: accountId },
   });
 };
+
+export const tokenFtMetadata = async (tokenId: string) => {
+  const metadata = await ftViewFunction(tokenId, {
+    methodName: "tknx_metadata",
+  });
+  return metadata;
+};

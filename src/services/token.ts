@@ -157,7 +157,7 @@ export const get_auto_whitelisted_postfix_list = async (): Promise<
 };
 
 export const ftGetBalance = (tokenId: string, account_id?: string) => {
-  if (tokenId === "NEAR") {
+  if (tokenId === "NEAR" || tokenId == "wrap.near") {
     return getAccountNearBalance().then(({ available }: any) => available);
   }
   return viewFunction({

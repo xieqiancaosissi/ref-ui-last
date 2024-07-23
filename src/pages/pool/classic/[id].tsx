@@ -51,9 +51,13 @@ import {
   FarmBoardInDetailPool,
 } from "@/components/pools/detail/liquidity/icon";
 import { Images } from "@/components/pools/detail/liquidity/components/liquidityComComp";
+import ClassicAdd from "@/components/pools/detail/liquidity/classic/ClassicAdd";
+import ClassicRemove from "@/components/pools/detail/liquidity/classic/ClassicRemove";
+import { useRiskTokens } from "@/hooks/useRiskTokens";
 
 export default function ClassicPoolDetail() {
   const router = useRouter();
+  const { pureIdList } = useRiskTokens();
   const poolId = router.query.id || "";
   const poolStore = usePoolStore();
   const accountStore = useAccountStore();
@@ -277,6 +281,16 @@ export default function ClassicPoolDetail() {
     BaseApr();
   }, [seedDetail, seedFarms]);
 
+  const [showAdd, setShowAdd] = useState(false);
+  const hideAdd = () => {
+    setShowAdd(false);
+  };
+
+  const [showRemove, setShowRemove] = useState(false);
+  const hideRemove = () => {
+    setShowRemove(false);
+  };
+
   return (
     <div className="w-full fccc h-full">
       {/* return */}
@@ -476,9 +490,7 @@ export default function ClassicPoolDetail() {
                 <div className={`pr-2 ${haveShare ? "w-1/2" : "w-full"} `}>
                   <div
                     className={`poolBtnStyleBase w-35 h-10  mr-2.5 text-sm cursor-pointer hover:opacity-90 `}
-                    onClick={() => {
-                      setShowFunding(true);
-                    }}
+                    onClick={() => setShowAdd(true)}
                     // disabled={disable_add}
                   >
                     Add
@@ -489,7 +501,7 @@ export default function ClassicPoolDetail() {
                     <div
                       onClick={() => {
                         if (+userTotalShareToString == 0) return;
-                        setShowWithdraw(true);
+                        setShowRemove(true);
                       }}
                       // disabled={Number(userTotalShareToString) == 0}
                       className={`w-full ${
@@ -551,6 +563,27 @@ export default function ClassicPoolDetail() {
           )}
         </div>
       </div>
+
+      {/* add */}
+      {updatedMapList[0]?.token_account_ids && poolDetail && (
+        <>
+          <ClassicAdd
+            isOpen={showAdd}
+            onRequestClose={hideAdd}
+            poolDetail={poolDetail}
+            pureIdList={pureIdList}
+            updatedMapList={updatedMapList}
+          />
+
+          <ClassicRemove
+            isOpen={showRemove}
+            onRequestClose={hideRemove}
+            poolDetail={poolDetail}
+            pureIdList={pureIdList}
+            updatedMapList={updatedMapList}
+          />
+        </>
+      )}
     </div>
   );
 }

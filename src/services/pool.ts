@@ -15,7 +15,11 @@ import { Transaction } from "@/interfaces/swap";
 import { ONLY_ZEROS } from "@/utils/numbers";
 import { getDepositTransactions } from "./token";
 import { LP_STORAGE_AMOUNT } from "@/utils/near";
-import { TokenMetadata, native_usdc_has_upgrated } from "./ft-contract";
+import {
+  TokenMetadata,
+  native_usdc_has_upgrated,
+  tokenFtMetadata,
+} from "./ft-contract";
 import getConfigV2 from "@/utils/configV2";
 import { STORAGE_TO_REGISTER_WITH_FT } from "@/utils/constant";
 import { ONE_YOCTO_NEAR } from "./xref";
@@ -23,10 +27,13 @@ import { storageDepositAction } from "./creator/storage";
 import { withdrawAction } from "./creator/token";
 import { checkTokenNeedsStorageDeposit } from "./swap/registerToken";
 import { getExplorer, ExplorerType } from "@/utils/device";
+import { toNonDivisibleNumber } from "@/utils/numbers";
+import Big from "big.js";
 
 const { REF_FI_CONTRACT_ID, WRAP_NEAR_CONTRACT_ID } = getConfig();
 const { NO_REQUIRED_REGISTRATION_TOKEN_IDS } = getConfigV2();
 const explorerType = getExplorer();
+export const DEFLATION_MARK = "tknx.near";
 const genUrlParams = (props: Record<string, string | number>) => {
   return Object.keys(props)
     .map((key) => key + "=" + props[key])
@@ -718,6 +725,83 @@ export const removeLiquidityByTokensFromStablePool = async ({
   //     )
   //   );
   // }
+
+  return executeMultipleTransactions(transactions);
+};
+
+interface AddLiquidityToPoolOptions {
+  id: number;
+  tokenAmounts: { token: TokenMetadata; amount: string }[];
+}
+export const addLiquidityToPool = async ({
+  id,
+  tokenAmounts,
+}: AddLiquidityToPoolOptions) => {
+  let amounts = tokenAmounts.map(({ token, amount }) =>
+    toNonDivisibleNumber(token?.decimals, amount)
+  );
+  const transactions = await getDepositTransactions({
+    tokens: tokenAmounts.map(({ token, amount }) => token),
+    amounts: tokenAmounts.map(({ token, amount }) => amount),
+  });
+  // add deflation calc logic
+  const tknx_tokens = tokenAmounts
+    .map((item) => item.token)
+    .filter((token) => token.id.includes(DEFLATION_MARK));
+  if (tknx_tokens.length > 0) {
+    const pending = tknx_tokens.map((token) => tokenFtMetadata(token.id));
+    const tokenFtMetadatas = await Promise.all(pending);
+    const rate = tokenFtMetadatas.reduce((acc, cur, index) => {
+      const is_owner = cur.owner_account_id == getAccountId();
+      return {
+        ...acc,
+        [tknx_tokens[index].id]: is_owner
+          ? 0
+          : (cur?.deflation_strategy?.fee_strategy?.SellFee?.fee_rate ?? 0) +
+            (cur?.deflation_strategy?.burn_strategy?.SellBurn?.burn_rate ?? 0),
+      };
+    }, {});
+    amounts = tokenAmounts.map(({ token, amount }) => {
+      const reforeAmount = toNonDivisibleNumber(token.decimals, amount);
+      let afterAmount = reforeAmount;
+      if (rate[token.id]) {
+        afterAmount = Big(1 - rate[token.id] / 1000000)
+          .mul(reforeAmount)
+          .toFixed(0);
+      }
+      return afterAmount;
+    });
+  }
+  const actions: RefFiFunctionCallOptions[] = [
+    {
+      methodName: "add_liquidity",
+      args: { pool_id: +id, amounts },
+      amount: LP_STORAGE_AMOUNT,
+    },
+  ];
+
+  transactions.push({
+    receiverId: REF_FI_CONTRACT_ID,
+    functionCalls: [...actions],
+  });
+
+  const wNearTokenAmount = tokenAmounts.find(
+    (TA) => TA.token.id === WRAP_NEAR_CONTRACT_ID
+  );
+
+  if (wNearTokenAmount && !ONLY_ZEROS.test(wNearTokenAmount.amount)) {
+    transactions.unshift(nearDepositTransaction(wNearTokenAmount.amount));
+  }
+
+  if (tokenAmounts.map((ta) => ta.token.id).includes(WRAP_NEAR_CONTRACT_ID)) {
+    const registered = await ftGetStorageBalance(WRAP_NEAR_CONTRACT_ID);
+    if (registered === null) {
+      transactions.unshift({
+        receiverId: WRAP_NEAR_CONTRACT_ID,
+        functionCalls: [registerAccountOnToken()],
+      });
+    }
+  }
 
   return executeMultipleTransactions(transactions);
 };

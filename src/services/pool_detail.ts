@@ -107,7 +107,7 @@ export const getV3poolTvlById = async (pool_id: string): Promise<any[]> => {
     });
 };
 
-export const getPool = async (id: number): Promise<any> => {
+export const getPool = async (id: number | string): Promise<any> => {
   return refFiViewFunction({
     methodName: "get_pool",
     args: { pool_id: id },

@@ -192,6 +192,30 @@ const config: Config = {
           background: "transparent",
           border: "1px solid #323E47",
         },
+        ".poolBtnStyleDisable": {
+          // @apply frcc font-bold text-base text-black w-full h-11 rounded-md bg-greenGradient cursor-pointer
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "center",
+          alignItems: "center",
+          fontWeight: "700",
+          color: "#6A7279",
+          borderRadius: "6px",
+          background: "#2A3643",
+          border: "1px solid #323E47",
+        },
+        ".poolBtnStyleActiveEmpty": {
+          // @apply frcc font-bold text-base text-black w-full h-11 rounded-md bg-greenGradient cursor-pointer
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "center",
+          alignItems: "center",
+          fontWeight: "700",
+          color: "#9EFF00",
+          border: "1px solid #9EFF00",
+          borderRadius: "6px",
+          background: "transparent",
+        },
         ".frc": {
           display: "flex",
           flexDirection: "row",

@@ -29,6 +29,7 @@ import { checkTokenNeedsStorageDeposit } from "./swap/registerToken";
 import { getExplorer, ExplorerType } from "@/utils/device";
 import { toNonDivisibleNumber } from "@/utils/numbers";
 import Big from "big.js";
+import { getPool } from "./pool_detail";
 
 const { REF_FI_CONTRACT_ID, WRAP_NEAR_CONTRACT_ID } = getConfig();
 const { NO_REQUIRED_REGISTRATION_TOKEN_IDS } = getConfigV2();
@@ -804,4 +805,146 @@ export const addLiquidityToPool = async ({
   }
 
   return executeMultipleTransactions(transactions);
+};
+
+interface RemoveLiquidityOptions {
+  id: number;
+  shares: string;
+  minimumAmounts: { [tokenId: string]: string };
+  unregister?: boolean;
+}
+
+export const removeLiquidityFromPool = async ({
+  id,
+  shares,
+  minimumAmounts,
+  unregister = false,
+}: RemoveLiquidityOptions) => {
+  const pool = await getPool(id);
+
+  const amounts = pool.tokenIds.map((tokenId: any) => minimumAmounts[tokenId]);
+
+  const tokenIds = Object.keys(minimumAmounts);
+
+  const withDrawTransactions: Transaction[] = [];
+
+  for (let i = 0; i < tokenIds.length; i++) {
+    const tokenId = tokenIds[i];
+
+    const ftBalance = await ftGetStorageBalance(tokenId);
+    if (ftBalance === null) {
+      if (NO_REQUIRED_REGISTRATION_TOKEN_IDS.includes(tokenId)) {
+        const r = await native_usdc_has_upgrated(tokenId);
+        if (r) {
+          withDrawTransactions.unshift({
+            receiverId: tokenId,
+            functionCalls: [
+              storageDepositAction({
+                registrationOnly: true,
+                amount: STORAGE_TO_REGISTER_WITH_FT,
+              }),
+            ],
+          });
+        } else {
+          withDrawTransactions.unshift({
+            receiverId: tokenId,
+            functionCalls: [
+              {
+                methodName: "register_account",
+                args: {
+                  account_id: getAccountId(),
+                },
+                gas: "10000000000000",
+              },
+            ],
+          });
+        }
+      } else {
+        withDrawTransactions.unshift({
+          receiverId: tokenId,
+          functionCalls: [
+            storageDepositAction({
+              registrationOnly: true,
+              amount: STORAGE_TO_REGISTER_WITH_FT,
+            }),
+          ],
+        });
+      }
+    }
+  }
+
+  const neededStorage = await checkTokenNeedsStorageDeposit();
+  if (neededStorage) {
+    withDrawTransactions.unshift({
+      receiverId: REF_FI_CONTRACT_ID,
+      functionCalls: [storageDepositAction({ amount: neededStorage })],
+    });
+  }
+
+  const withdrawActions = tokenIds.map((tokenId, i) =>
+    withdrawAction({ tokenId, amount: "0", unregister })
+  );
+
+  const withdrawActionsFireFox = tokenIds.map((tokenId, i) =>
+    withdrawAction({ tokenId, amount: "0", unregister, singleTx: true })
+  );
+
+  const actions: RefFiFunctionCallOptions[] = [
+    {
+      methodName: "remove_liquidity",
+      args: {
+        pool_id: id,
+        shares,
+        min_amounts: amounts,
+      },
+      amount: ONE_YOCTO_NEAR,
+      gas: "30000000000000",
+    },
+  ];
+  if (explorerType !== ExplorerType.Firefox) {
+    withdrawActions.forEach((item) => {
+      actions.push(item);
+    });
+  }
+
+  const transactions: Transaction[] = [
+    ...withDrawTransactions,
+    {
+      receiverId: REF_FI_CONTRACT_ID,
+      functionCalls: [...actions],
+    },
+  ];
+
+  if (explorerType === ExplorerType.Firefox) {
+    transactions.push({
+      receiverId: REF_FI_CONTRACT_ID,
+      functionCalls: withdrawActionsFireFox,
+    });
+  }
+
+  // if (
+  //   tokenIds.includes(WRAP_NEAR_CONTRACT_ID) &&
+  //   !ONLY_ZEROS.test(minimumAmounts[WRAP_NEAR_CONTRACT_ID])
+  // ) {
+  //   transactions.push(
+  //     nearWithdrawTransaction(
+  //       toReadableNumber(
+  //         nearMetadata.decimals,
+  //         minimumAmounts[WRAP_NEAR_CONTRACT_ID]
+  //       )
+  //     )
+  //   );
+  // }
+
+  return executeMultipleTransactions(transactions);
+};
+
+export const predictRemoveLiquidity = async (
+  pool_id: number,
+  shares: string
+): Promise<[]> => {
+  return refFiViewFunction({
+    methodName: "predict_remove_liquidity",
+    args: { pool_id, shares },
+  });
 };

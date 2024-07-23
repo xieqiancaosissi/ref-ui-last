@@ -41,7 +41,8 @@ import { getStablePoolDecimal } from "@/services/swap/swapUtils";
 import db from "@/db/RefDatabase";
 import { get_seed } from "@/services/farm";
 import { get24hVolumes } from "@/services/indexer";
-
+import { calculateFairShare, toPrecision, percentLess } from "@/utils/numbers";
+import { removeLiquidityFromPool } from "@/services/pool";
 //
 type UsePoolSearchProps = {
   isChecked: boolean;
@@ -749,4 +750,44 @@ export const useDayVolume = (pool_id: string) => {
     });
   }, [pool_id]);
   return dayVolume;
+};
+
+export const useRemoveLiquidity = ({
+  pool,
+  shares,
+  slippageTolerance,
+}: {
+  pool: Pool;
+  shares: string;
+  slippageTolerance: number;
+}) => {
+  const minimumAmounts = Object.entries(pool.supplies).reduce<{
+    [tokenId: string]: string;
+  }>((acc, [tokenId, totalSupply]) => {
+    acc[tokenId] = toPrecision(
+      percentLess(
+        slippageTolerance,
+        calculateFairShare({
+          shareOf: totalSupply,
+          contribution: shares,
+          totalContribution: (pool as any).shares_total_supply,
+        })
+      ),
+      0
+    );
+    return acc;
+  }, {});
+
+  const removeLiquidity = () => {
+    return removeLiquidityFromPool({
+      id: +pool.id,
+      shares,
+      minimumAmounts,
+    });
+  };
+
+  return {
+    removeLiquidity,
+    minimumAmounts,
+  };
 };

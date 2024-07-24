@@ -212,59 +212,62 @@ export default function StableAdd(props: any) {
           />
         </div>
         <div className="w-108 min-h-123 rounded-lg bg-dark-10 px-4 py-5">
-          {updatedMapList[0]?.token_account_ids?.map(
-            (ite: any, ind: number) => {
-              return (
-                <div key={ite.tokenId}>
-                  <div className="mb-6">
-                    <div className="flex items-center justify-between text-gray-50 mb-2 text-sm">
-                      <span>
-                        Balance:{" "}
-                        <span
-                          className={`underline hover:cursor-pointer hover:text-white  ${
-                            inputValList[ind] == balancesList[ind]?.balance
-                              ? ""
-                              : "text-gray-50"
-                          }`}
-                          onClick={() => {
-                            changeVal(
-                              {
-                                target: {
-                                  value: balancesList[ind]?.balance,
+          <div className="max-h-60 overflow-y-auto">
+            {updatedMapList[0]?.token_account_ids?.map(
+              (ite: any, ind: number) => {
+                return (
+                  <div key={ite.tokenId}>
+                    <div className="mb-6">
+                      <div className="flex items-center justify-between text-gray-50 mb-2 text-sm">
+                        <span>
+                          Balance:{" "}
+                          <span
+                            className={`underline hover:cursor-pointer hover:text-white  ${
+                              inputValList[ind] == balancesList[ind]?.balance
+                                ? ""
+                                : "text-gray-50"
+                            }`}
+                            onClick={() => {
+                              changeVal(
+                                {
+                                  target: {
+                                    value: balancesList[ind]?.balance,
+                                  },
                                 },
-                              },
-                              ind
-                            );
-                          }}
-                        >
-                          {disPlayBalance(
-                            accountStore.isSignedIn,
-                            balancesList[ind]?.balance
-                          )}
+                                ind
+                              );
+                            }}
+                          >
+                            {disPlayBalance(
+                              accountStore.isSignedIn,
+                              balancesList[ind]?.balance
+                            )}
+                          </span>
                         </span>
-                      </span>
-                    </div>
-                    <div
-                      className="flex h-16 w-full items-center border border-transparent hover:border-green-20 rounded"
-                      style={{ background: "rgba(0,0,0,.2)" }}
-                    >
-                      <input
-                        type="number"
-                        className="h-16 p-3 w-74 text-white"
-                        style={{ fontSize: "26px" }}
-                        value={inputValList[ind]}
-                        onChange={(e) => changeVal(e, ind)}
-                        placeholder="0"
-                      />
-                      <Icon icon={ite.icon} className="h-7 w-7 mr-2" />
-                      <span className="text-white text-base">{ite.symbol}</span>
+                      </div>
+                      <div
+                        className="flex h-16 w-full items-center border border-transparent hover:border-green-20 rounded"
+                        style={{ background: "rgba(0,0,0,.2)" }}
+                      >
+                        <input
+                          type="number"
+                          className="h-16 p-3 w-74 text-white"
+                          style={{ fontSize: "26px" }}
+                          value={inputValList[ind]}
+                          onChange={(e) => changeVal(e, ind)}
+                          placeholder="0"
+                        />
+                        <Icon icon={ite.icon} className="h-7 w-7 mr-2" />
+                        <span className="text-white text-base">
+                          {ite.symbol}
+                        </span>
+                      </div>
                     </div>
                   </div>
-                </div>
-              );
-            }
-          )}
-
+                );
+              }
+            )}
+          </div>
           {/* radio */}
           <div className="w-full h-19 border border-gray-90 rounded flex px-4  py-3 justify-between flex-col cursor-pointer">
             {/* init */}

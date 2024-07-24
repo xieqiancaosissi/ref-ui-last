@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import Big from "big.js";
 import { motion } from "framer-motion";
+import { useRouter } from "next/router";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { communityLinks, docLinks } from "./footerData";
@@ -8,6 +9,7 @@ import { MoonIcon, SunIcon, RefPriceIcon } from "./icons";
 import { useThemeStore } from "../../stores/theme";
 import { useRefPrice } from "../../hooks/useRefPrice";
 export default function Footer() {
+  const router = useRouter();
   const themeStore: any = useThemeStore();
   const currentTheme = themeStore.getTheme();
   const { refPrice, priceLoading } = useRefPrice();
@@ -18,8 +20,12 @@ export default function Footer() {
       document.documentElement.className = "dark";
     }
   }, []);
-  function jump(url: string) {
-    window.open(url);
+  function jump(item: any) {
+    if (item.inLink) {
+      router.push(item.url);
+    } else {
+      window.open(item.url);
+    }
   }
   function toggleTheme() {
     if (currentTheme == "dark") {
@@ -77,7 +83,7 @@ export default function Footer() {
                 {" "}
                 <div
                   onClick={() => {
-                    jump(item.url);
+                    jump(item);
                   }}
                   key={item.id}
                   className={`flex items-end gap-1 text-xs font-bold text-gray-50 hover:text-primaryGreen cursor-pointer px-5 `}

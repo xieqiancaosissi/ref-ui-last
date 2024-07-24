@@ -54,7 +54,8 @@ export const docLinks = [
   {
     id: "risks",
     label: "RISKS",
-    url: "https://app.ref.finance/risks",
+    url: "/risks",
+    inLink: true,
   },
   {
     id: "bugbounty",

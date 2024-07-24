@@ -8,19 +8,22 @@ export default function RangeSlider(props: any) {
   const tipRef: any = useRef(null);
   const valueRef: any = useRef(null);
   useEffect(() => {
+    const divMax = max > 0 ? max : 1;
     if (valueRef.current) {
       valueRef.current.style.backgroundSize = `${
-        (sliderAmount * 100) / max
+        (sliderAmount * 100) / divMax
       }% 100%`;
     }
     if (tipRef.current) {
       tipRef.current.style.left = `${
-        (sliderAmount * 100) / max > 100 ? 100 : (sliderAmount * 100) / max
+        (sliderAmount * 100) / divMax > 100
+          ? 100
+          : (sliderAmount * 100) / divMax
       }%`;
       const marginLeft =
-        (sliderAmount * 100) / max > 100
+        (sliderAmount * 100) / divMax > 100
           ? -30
-          : -10 - (20 * (sliderAmount * 100)) / max / 100;
+          : -10 - (20 * (sliderAmount * 100)) / divMax / 100;
       tipRef.current.style.marginLeft = `${marginLeft}px`;
     }
   }, [sliderAmount]);
@@ -33,6 +36,11 @@ export default function RangeSlider(props: any) {
     //     .toFixed()
     // );
   }
+  useEffect(() => {
+    if (max == 0) {
+      setSliderAmount(0);
+    }
+  }, [max]);
   return (
     <div className="mb-8">
       <div className="flex justify-between items-center mb-3 -mx-3">
@@ -84,13 +92,15 @@ export default function RangeSlider(props: any) {
         >
           <span className="text-xs text-black">
             <label className="font-bold">
-              {toPrecision(
-                ((sliderAmount * 100) / max > 100
-                  ? 100
-                  : (sliderAmount * 100) / max
-                ).toString(),
-                0
-              )}
+              {max > 0
+                ? toPrecision(
+                    ((sliderAmount * 100) / max > 100
+                      ? 100
+                      : (sliderAmount * 100) / max
+                    ).toString(),
+                    0
+                  )
+                : 0}
             </label>
             %
           </span>

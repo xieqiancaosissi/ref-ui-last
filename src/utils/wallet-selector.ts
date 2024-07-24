@@ -19,6 +19,7 @@ import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
 import { setupNearMobileWallet } from "@near-wallet-selector/near-mobile-wallet";
 import { setupKeypom } from "@keypom/selector";
 import { setupMintbaseWallet } from "@near-wallet-selector/mintbase-wallet";
+import { setupOKXWallet } from "@near-wallet-selector/okx-wallet";
 import "@near-wallet-selector/modal-ui/styles.css";
 import getConfig from "./config";
 import getOrderlyConfig from "./orderlyConfig";
@@ -74,6 +75,7 @@ export async function getWalletSelector({
     } as Network,
     debug: false,
     modules: [
+      setupOKXWallet({}),
       setupMyNearWallet(),
       setupHereWallet(),
       setupSender(),

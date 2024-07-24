@@ -209,10 +209,9 @@ input[type="range"].lock-bar::-webkit-slider-thumb {
   -webkit-text-fill-color: transparent;
 }
 
-
 /* wallet select modal ui start */
 .nws-modal-wrapper {
-  z-index: 9999!important;
+  z-index: 9999 !important;
 }
 .nws-modal-wrapper .nws-modal-overlay {
   backdrop-filter: blur(20px);
@@ -311,8 +310,8 @@ options-list::-webkit-scrollbar {
   color: #fff;
 }
 .nws-modal-wrapper .nws-modal .nws-modal-body button.middleButton {
-  background: #9EFF00!important;
-  color: #000!important;
+  background: #9eff00 !important;
+  color: #000 !important;
 }
 .options-list-section-header {
   font-size: 14px;
@@ -364,7 +363,7 @@ options-list::-webkit-scrollbar {
   box-sizing: content-box;
 }
 .nws-modal-wrapper .modal:before {
-  content: '';
+  content: "";
   z-index: -1;
   position: absolute;
   top: 0;
@@ -379,7 +378,7 @@ options-list::-webkit-scrollbar {
 }
 
 .nws-modal-wrapper .modal::after {
-  content: '';
+  content: "";
   z-index: -1;
   position: absolute;
   top: 0;
@@ -414,7 +413,7 @@ options-list::-webkit-scrollbar {
   .choose-ledger-account-form-wrapper
   .nws-form-control
   .account
-  input[type='checkbox'] {
+  input[type="checkbox"] {
   transform: scale(1.2);
 }
 .nws-modal-wrapper .nws-modal .overview-wrapper .account {
@@ -430,13 +429,18 @@ options-list::-webkit-scrollbar {
 .nws-modal-wrapper .nws-modal .modal-right::-webkit-scrollbar {
   width: 2px;
 }
-.nws-modal-wrapper .nws-modal .derivation-path-wrapper .enter-derivation-path .ledger-description .specify-path {
-  color: white!important;
+.nws-modal-wrapper
+  .nws-modal
+  .derivation-path-wrapper
+  .enter-derivation-path
+  .ledger-description
+  .specify-path {
+  color: white !important;
 }
 .connecting-wrapper .content .connecting-details span {
-  color: white!important;
+  color: white !important;
 }
-.nws-modal-wrapper .nws-modal .modal-right .wallet-what .icon-side{
-  background: transparent!important;
+.nws-modal-wrapper .nws-modal .modal-right .wallet-what .icon-side {
+  background: transparent !important;
 }
 /* wallet select modal ui end */

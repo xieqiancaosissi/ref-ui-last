@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styles from "../yours.module.css";
-import { ItemNumDivActive, ItemNumDivDisable } from "../icon";
+// import { ItemNumDivActive, ItemNumDivDisable } from "../icon";
 
 export default function YoursTab(props: any) {
   const { setCurrentModule } = props;

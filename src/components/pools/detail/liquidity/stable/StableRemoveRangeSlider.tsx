@@ -50,7 +50,7 @@ export default function RangeSlider(props: any) {
               key={p}
               className={`flex flex-col items-center cursor-pointer`}
               onClick={() => {
-                changeValue(p.toString());
+                changeValue(((p * max) / 100).toString());
               }}
             >
               <span

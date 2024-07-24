@@ -3,6 +3,7 @@ import { toPrecision } from "@/utils/numbers";
 import Big from "big.js";
 export default function RangeSlider(props: any) {
   const { setAmount, sliderAmount, setSliderAmount, max } = props;
+
   const [splitList] = useState([0, 25, 50, 75, 100]);
 
   const tipRef: any = useRef(null);
@@ -50,7 +51,7 @@ export default function RangeSlider(props: any) {
               key={p}
               className={`flex flex-col items-center cursor-pointer`}
               onClick={() => {
-                changeValue(p.toString());
+                changeValue(new Big(max).times(p / 100).toString());
               }}
             >
               <span
@@ -96,9 +97,9 @@ export default function RangeSlider(props: any) {
                 ? toPrecision(
                     ((sliderAmount * 100) / max > 100
                       ? 100
-                      : (sliderAmount * 100) / max
+                      : new Big(sliderAmount).times(100).div(max)
                     ).toString(),
-                    0
+                    1
                   )
                 : 0}
             </label>

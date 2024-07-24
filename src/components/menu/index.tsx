@@ -25,6 +25,9 @@ export default function Menu() {
   }, [oneLevelMenuId, menuList]);
   function chooseOneLevelMenu(id: string) {
     const choosedMenu = menuList.find((menu) => menu.id === id);
+    if (!choosedMenu) {
+      return;
+    }
     if (oneLevelMenuId === id) {
       if (choosedMenu?.children) {
         setTwoLevelMenuShow(!twoLevelMenuShow);
@@ -34,6 +37,8 @@ export default function Menu() {
     setOneLevelMenuId(id);
     if (choosedMenu?.children) {
       setTwoLevelMenuShow(true);
+    } else if (choosedMenu.path) {
+      router.push(choosedMenu.path);
     }
   }
   function chooseTwoLevelMenu(item: IMenuChild) {

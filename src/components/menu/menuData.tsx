@@ -82,7 +82,7 @@ export function menuData(): IMenu[] {
       id: "meme",
       icon: <Image src="/images/memeMenu.svg" width={24} height={24} alt="" />,
       label: "MEME SEASON",
-      path: "",
+      path: "/meme",
     },
   ];
 }

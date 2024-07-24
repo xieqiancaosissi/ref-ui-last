@@ -142,6 +142,7 @@ const config: Config = {
         textWhiteGradient: "linear-gradient(90deg, #FFFFFF 0%, #91A2AE 100%)",
         primaryGreenGradient:
           "linear-gradient(90deg, #9EFF00 -6.25%, #5F9900 100%)",
+        memeCardGradient: "linear-gradient(180deg, #213441 0%, #15242F 100%)",
       }),
     },
     screens: {

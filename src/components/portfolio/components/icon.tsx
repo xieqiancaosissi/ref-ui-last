@@ -411,15 +411,28 @@ export function AuroraIcon(props: any) {
   );
 }
 
-
 export function WalletWithdraw(props: any) {
   return (
-   
-<svg {...props} width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M5.75586 1.3521L5.54459 5.15486C5.41382 7.50883 3.73337 9.48856 1.43191 10V10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-<path d="M9.64844 4.37891L5.75688 0.919744L1.00053 3.51412" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-</svg>
-
+    <svg
+      {...props}
+      width="11"
+      height="11"
+      viewBox="0 0 11 11"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M5.75586 1.3521L5.54459 5.15486C5.41382 7.50883 3.73337 9.48856 1.43191 10V10"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+      <path
+        d="M9.64844 4.37891L5.75688 0.919744L1.00053 3.51412"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+    </svg>
   );
 }
-

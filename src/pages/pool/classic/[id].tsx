@@ -207,8 +207,14 @@ export default function ClassicPoolDetail() {
   }, [poolDetail?.tvl, userTotalShareToString, pool]);
 
   // farm
-  const seedFarms = useSeedFarms(poolId.toString());
-  const seedDetail = useSeedDetail(poolId.toString());
+  const [seedId, setSeedId] = useState("");
+  const seedFarms = useSeedFarms(seedId);
+  const { seedDetail, isLoading: seedIsLoading } = useSeedDetail(seedId);
+  useEffect(() => {
+    if (poolDetail?.id) {
+      setSeedId(poolDetail?.id.toString());
+    }
+  }, [poolDetail]);
 
   function totalTvlPerWeekDisplay() {
     const farms = seedFarms;
@@ -239,7 +245,7 @@ export default function ClassicPoolDetail() {
     rawApr: 0,
   });
   function BaseApr() {
-    if (pool?.shareSupply) {
+    if (pool?.shareSupply && !seedIsLoading) {
       const farms = seedFarms;
 
       let totalReward = 0;
@@ -279,7 +285,7 @@ export default function ClassicPoolDetail() {
   }
 
   useEffect(() => {
-    BaseApr();
+    if (seedDetail && seedFarms) BaseApr();
   }, [seedDetail, seedFarms]);
 
   const [showAdd, setShowAdd] = useState(false);
@@ -520,7 +526,7 @@ export default function ClassicPoolDetail() {
           )}
 
           {/* farm */}
-          {seedFarms && pool?.id && updatedMapList.length > 0 && (
+          {seedFarms && pool?.id && seedDetail && (
             <div className="flex flex-col mt-4 relative z-30 rounded">
               <GradientFarmBorder className="absolute -z-10 left-2"></GradientFarmBorder>
               <div className="flex items-center px-6 pt-4 justify-between">
@@ -531,7 +537,7 @@ export default function ClassicPoolDetail() {
                 <div className="rounded-lg flex items-center px-2 py-0.5">
                   <Images
                     className="mr-1"
-                    tokens={seedFarms.map((farm: any) => farm.token_meta_data)}
+                    tokens={seedFarms?.map((farm: any) => farm.token_meta_data)}
                     size="4"
                     isRewardDisplay
                   />

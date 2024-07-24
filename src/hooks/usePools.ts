@@ -530,16 +530,26 @@ export const usePredictRemoveShares = ({
 
 export const useSeedDetail = (pool_id: string | number) => {
   const seed_id = getConfig().REF_FI_CONTRACT_ID + "@" + pool_id.toString();
-
-  const [seedDetail, setSeedDetail] = useState<any>();
-
+  const [seedDetail, setSeedDetail] = useState<any | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
-    get_seed(seed_id).then((res) => {
-      setSeedDetail(res);
-    });
-  }, []);
+    const fetchSeed = async () => {
+      setIsLoading(true);
+      try {
+        const res = await get_seed(seed_id);
+        setSeedDetail(res);
+      } catch (error) {
+        // Handle error appropriately
+        console.error("Failed to fetch seed detail:", error);
+        setSeedDetail(null); // Or some error state
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-  return seedDetail;
+    fetchSeed();
+  }, [seed_id]); // Note: seed_id is dependent on pool_id
+  return { seedDetail, isLoading };
 };
 
 export const useSeedFarms = (pool_id: string | number) => {

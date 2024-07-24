@@ -116,6 +116,9 @@ function MemeVoteModal(props: any) {
   function closeMemeVoteConfirmModal() {
     setConfirmIsOpen(false);
   }
+  function showWalletSelector() {
+    window.modal.show();
+  }
   if (!selectedTab) return null;
   return (
     <Modal
@@ -352,7 +355,12 @@ function MemeVoteModal(props: any) {
                 />
               </div>
             ) : (
-              <div>...</div>
+              <div
+                onClick={showWalletSelector}
+                className="frcc h-12 rounded border border-primaryGreen px-4 font-semibold text-primaryGreen cursor-pointer"
+              >
+                Connect Wallet
+              </div>
             )}
             <div
               className={`flex items-start gap-2 mt-4 ${

@@ -163,6 +163,9 @@ function VoteModel(props: any) {
       setSelectedOtherTab("");
     }
   }, [selectedTab]);
+  function showWalletSelector() {
+    window.modal.show();
+  }
   if (!selectedTab) return null;
   return (
     <Modal
@@ -402,7 +405,12 @@ function VoteModel(props: any) {
                 />
               </div>
             ) : (
-              <div>...</div>
+              <div
+                onClick={showWalletSelector}
+                className="frcc h-12 rounded border border-primaryGreen px-4 font-semibold text-primaryGreen cursor-pointer"
+              >
+                Connect Wallet
+              </div>
             )}
             <div
               className={`flex items-start gap-2 mt-4 ${

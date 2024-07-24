@@ -81,6 +81,9 @@ function DonateModal(props: any) {
   function closeDonateConfirmModal() {
     setConfirmIsOpen(false);
   }
+  function showWalletSelector() {
+    window.modal.show();
+  }
   if (!selectedTab) return null;
   return (
     <Modal
@@ -221,7 +224,12 @@ function DonateModal(props: any) {
               />
             </div>
           ) : (
-            <div>...</div>
+            <div
+              onClick={showWalletSelector}
+              className="frcc h-12 rounded border border-primaryGreen px-4 font-semibold text-primaryGreen cursor-pointer"
+            >
+              Connect Wallet
+            </div>
           )}
         </div>
         <div

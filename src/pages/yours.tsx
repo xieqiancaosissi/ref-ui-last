@@ -1,19 +1,23 @@
-import React from "react";
+import React, { useState } from "react";
+import YoursValue from "@/components/yours/yoursValue";
+import YoursTab from "@/components/yours/yoursTabs";
 
 export default function Yours() {
+  const [currentModule, setCurrentModule] = useState("pools");
+  const sendCurrentModule = (tab: string) => {
+    console.log(tab);
+    setCurrentModule(tab);
+  };
   return (
     <div>
-      {/* top */}
-      <div
-        className="w-full h-35 fixed"
-        style={{
-          background: "rgba(33, 43, 53, 0.4)",
-          top: "92px",
-          zIndex: "99",
-        }}
-      >
-        <div className="w-276"></div>
+      <div className="h-52">
+        {/* value */}
+        <YoursValue></YoursValue>
+        {/* tab */}
+        <YoursTab setCurrentModule={sendCurrentModule}></YoursTab>
       </div>
+      {/* main */}
+      <div></div>
     </div>
   );
 }

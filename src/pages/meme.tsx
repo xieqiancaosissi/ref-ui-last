@@ -3,6 +3,7 @@ import MobileBanner from "@/components/meme/MobileBanner";
 import Overview from "@/components/meme/Overview";
 import SeedsBox from "@/components/meme/SeedsBox";
 import Staking from "@/components/meme/Staking";
+import WithdrawList from "@/components/meme/WithdrawList";
 import { MemeContextProvider } from "@/components/meme/context";
 import Countdown from "@/components/meme/countdown";
 import { isMobile } from "@/utils/device";
@@ -16,7 +17,7 @@ export default function MemePage() {
   };
   return (
     <MemeContextProvider>
-      <div className="-mt-14 xsm:mt-0">
+      <div className="-mt-14 mb-8 xsm:mt-0">
         {is_mobile ? <MobileBanner /> : <Banner />}
         <div className="m-auto lg:w-5/6" style={{ maxWidth: "1100px" }}>
           <Overview />
@@ -26,7 +27,7 @@ export default function MemePage() {
           <Staking />
           {/* <VoteXREF /> */}
           <SeedsBox />
-          {/* <WithdrawList /> */}
+          <WithdrawList />
         </div>
       </div>
     </MemeContextProvider>

@@ -310,7 +310,7 @@ const MySeedsBox = ({
                         set_modal_action_seed_id(seed.seed_id);
                         setIsUnStakeOpen(true);
                       }}
-                      className={`flex flex-grow items-center justify-center border border-primaryGreen
+                      className={`flex flex-grow items-center cursor-pointer justify-center border border-primaryGreen
                          rounded-xl h-12 text-primaryGreen text-base paceGrotesk-Bold focus:outline-none w-1/2 xsm:w-full ${
                            unStakeButtonDisabled ? "opacity-30" : ""
                          }`}
@@ -332,7 +332,7 @@ const MySeedsBox = ({
                             : MEME_TOKEN_XREF_MAP[seed_id],
                         });
                       }}
-                      className={`flex flex-grow items-center justify-center text-boxBorder rounded-xl h-12 text-base paceGrotesk-Bold focus:outline-none w-1/2 xsm:w-full ${
+                      className={`flex flex-grow items-center cursor-pointer justify-center text-boxBorder rounded-xl h-12 text-base paceGrotesk-Bold focus:outline-none w-1/2 xsm:w-full ${
                         claimButtonDisabled ? "bg-gray-40" : "bg-primaryGreen"
                       }`}
                     >

@@ -332,7 +332,7 @@ function UnStakeModal(props: any) {
 
             <div
               onClick={unStakeToken}
-              className={`flex flex-grow items-center justify-center bg-primaryGreen text-boxBorder mt-6 rounded-xl h-12 text-base paceGrotesk-Bold focus:outline-none ${
+              className={`flex flex-grow cursor-pointer items-center justify-center bg-primaryGreen text-boxBorder mt-6 rounded-xl h-12 text-base paceGrotesk-Bold focus:outline-none ${
                 disabled || unStakeLoading ? "opacity-40" : ""
               }`}
             >

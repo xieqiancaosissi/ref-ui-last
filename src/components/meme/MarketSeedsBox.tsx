@@ -217,8 +217,8 @@ const MarketSeedsBox = ({
                     set_modal_action_seed_id(seed.seed_id);
                     setIsStakeOpen(true);
                   }}
-                  className={`flex flex-grow items-center justify-center rounded-xl h-12 paceGrotesk-Bold focus:outline-none xsm:w-full ${
-                    stakeButtonDisabled ? "bg-primaryDark" : "bg-primaryGreen"
+                  className={`flex flex-grow items-center justify-center cursor-pointer rounded-xl h-12 paceGrotesk-Bold focus:outline-none xsm:w-full ${
+                    stakeButtonDisabled ? "" : "bg-primaryGreen"
                   }`}
                 >
                   Feed {seed?.token_meta_data?.symbol}
@@ -226,13 +226,13 @@ const MarketSeedsBox = ({
               ) : (
                 <>
                   <div
-                    className={`flex flex-grow items-center justify-center border border-primaryGreen 
+                    className={`flex flex-grow items-center cursor-pointer justify-center border border-primaryGreen 
                       rounded-xl h-12 text-primaryGreen paceGrotesk-Bold focus:outline-none w-1/2 xsm:w-full ${"opacity-30"}`}
                   >
                     Unstake
                   </div>
                   <div
-                    className={`flex flex-grow items-center justify-center rounded-xl h-12 paceGrotesk-Bold focus:outline-none w-1/2 xsm:w-full ${"bg-greenLight"}`}
+                    className={`flex flex-grow items-center cursor-pointer justify-center rounded-xl h-12 paceGrotesk-Bold focus:outline-none w-1/2 xsm:w-full ${"bg-greenLight"}`}
                   >
                     Claim
                   </div>

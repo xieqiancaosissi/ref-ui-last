@@ -11,6 +11,8 @@ import tokenIcons from "@/utils/tokenIconConfig";
 import { useRouter } from "next/router";
 import { formatePoolData } from "../detail/stable/FormatterPool";
 import { useYourliquidity } from "@/hooks/useStableShares";
+import { useWatchList } from "@/hooks/useWatchlist";
+import { StartWatchList } from "@/components/pools/icon";
 
 export default function PoolRow(props: any) {
   const { item, index } = props;
@@ -20,6 +22,13 @@ export default function PoolRow(props: any) {
   const toDetail = (item: any) => {
     router.push(`/pool/stable/${item.id}`);
   };
+  const { currentwatchListId } = useWatchList();
+  const [renderStarList, setRenderStarList] = useState<any>([]);
+  useEffect(() => {
+    if (currentwatchListId.length > 0) {
+      setRenderStarList(currentwatchListId);
+    }
+  }, [currentwatchListId]);
   const [legendJson, setLegendJson] = useState<any>({
     item: null,
     ind: 0,
@@ -66,7 +75,9 @@ export default function PoolRow(props: any) {
               {item.token_symbols.join("-")}
             </span>
             {/* dangerous */}
-
+            {renderStarList.includes(item.id.toString()) && (
+              <StartWatchList className="mr-2" />
+            )}
             {/* tag */}
             {item.is_farm && (
               <div

@@ -21,6 +21,7 @@ import { usePredictShares } from "@/hooks/useStableLiquidity";
 import { ButtonTextWrapper } from "@/components/common/Button";
 import { toNonDivisibleNumber } from "@/utils/numbers";
 import { addLiquidityToStablePool } from "@/services/pool";
+import AddLiqTip from "../../addLiqTip";
 export function myShares({
   totalShares,
   userTotalShare,
@@ -151,20 +152,36 @@ export default function StableAdd(props: any) {
   });
 
   const [canSubmit, setCanSubmit] = useState(true);
+  const [inputAmountIsEmpty, setInputAmountIsEmpty] = useState(true);
   const [notEnoughList, setNotEnoughList] = useState([]);
 
   useEffect(() => {
     let flag: boolean = true;
+    let emptyFlag: boolean = false;
     const k: any = [];
     inputValList.map((item: any, index: number) => {
       if (+item > balancesList[index]?.balance) {
         flag = false;
         k.push(balancesList[index]?.symbol);
       }
+      if (item > 0) {
+        emptyFlag = true;
+      }
     });
+    setInputAmountIsEmpty(emptyFlag);
     setCanSubmit(flag);
     setNotEnoughList(k);
   }, [inputValList]);
+
+  useEffect(() => {
+    let emptyFlag: boolean = true;
+    inputValList.map((item: any, index: number) => {
+      if (!+item) {
+        emptyFlag = false;
+      }
+    });
+    setInputAmountIsEmpty(emptyFlag);
+  }, []);
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -186,10 +203,19 @@ export default function StableAdd(props: any) {
     });
   }
 
+  const closeInit = () => {
+    setActive(0.1);
+    setInputValList([]);
+    setFeeValue(0.1);
+  };
+
   return (
     <Modal
       isOpen={isOpen}
-      onRequestClose={onRequestClose}
+      onRequestClose={() => {
+        onRequestClose();
+        closeInit();
+      }}
       style={{
         overlay: {
           backdropFilter: "blur(15px)",
@@ -207,63 +233,69 @@ export default function StableAdd(props: any) {
           <AddLiqTitleIcon />
           <LpModalCloseIcon
             className="cursor-pointer hover:opacity-90"
-            onClick={onRequestClose}
+            onClick={() => {
+              onRequestClose();
+              closeInit();
+            }}
           />
         </div>
         <div className="w-108 min-h-123 rounded-lg bg-dark-10 px-4 py-5">
-          {updatedMapList[0]?.token_account_ids?.map(
-            (ite: any, ind: number) => {
-              return (
-                <div key={ite.tokenId}>
-                  <div className="mb-6">
-                    <div className="flex items-center justify-between text-gray-50 mb-2 text-sm">
-                      <span>
-                        Balance:{" "}
-                        <span
-                          className={`underline hover:cursor-pointer hover:text-white  ${
-                            inputValList[ind] == balancesList[ind]?.balance
-                              ? ""
-                              : "text-gray-50"
-                          }`}
-                          onClick={() => {
-                            changeVal(
-                              {
-                                target: {
-                                  value: balancesList[ind]?.balance,
+          <div className="max-h-60 overflow-y-auto">
+            {updatedMapList[0]?.token_account_ids?.map(
+              (ite: any, ind: number) => {
+                return (
+                  <div key={ite.tokenId}>
+                    <div className="mb-6">
+                      <div className="flex items-center justify-between text-gray-50 mb-2 text-sm">
+                        <span>
+                          Balance:{" "}
+                          <span
+                            className={`underline hover:cursor-pointer hover:text-white  ${
+                              inputValList[ind] == balancesList[ind]?.balance
+                                ? ""
+                                : "text-gray-50"
+                            }`}
+                            onClick={() => {
+                              changeVal(
+                                {
+                                  target: {
+                                    value: balancesList[ind]?.balance,
+                                  },
                                 },
-                              },
-                              ind
-                            );
-                          }}
-                        >
-                          {disPlayBalance(
-                            accountStore.isSignedIn,
-                            balancesList[ind]?.balance
-                          )}
+                                ind
+                              );
+                            }}
+                          >
+                            {disPlayBalance(
+                              accountStore.isSignedIn,
+                              balancesList[ind]?.balance
+                            )}
+                          </span>
                         </span>
-                      </span>
-                    </div>
-                    <div
-                      className="flex h-16 w-full items-center border border-transparent hover:border-green-20 rounded"
-                      style={{ background: "rgba(0,0,0,.2)" }}
-                    >
-                      <input
-                        type="number"
-                        className="h-16 p-3 w-74 text-white"
-                        style={{ fontSize: "26px" }}
-                        value={inputValList[ind]}
-                        onChange={(e) => changeVal(e, ind)}
-                        placeholder="0"
-                      />
-                      <Icon icon={ite.icon} className="h-7 w-7 mr-2" />
-                      <span className="text-white text-base">{ite.symbol}</span>
+                      </div>
+                      <div
+                        className="flex h-16 w-full items-center border border-transparent hover:border-green-20 rounded"
+                        style={{ background: "rgba(0,0,0,.2)" }}
+                      >
+                        <input
+                          type="number"
+                          className="h-16 p-3 w-74 text-white"
+                          style={{ fontSize: "26px" }}
+                          value={inputValList[ind]}
+                          onChange={(e) => changeVal(e, ind)}
+                          placeholder="0"
+                        />
+                        <Icon icon={ite.icon} className="h-7 w-7 mr-2" />
+                        <span className="text-white text-base">
+                          {ite.symbol}
+                        </span>
+                      </div>
                     </div>
                   </div>
-                </div>
-              );
-            }
-          )}
-
+                );
+              }
+            )}
+          </div>
           {/* radio */}
           <div className="w-full h-19 border border-gray-90 rounded flex px-4  py-3 justify-between flex-col cursor-pointer">
             {/* init */}
@@ -365,7 +397,7 @@ export default function StableAdd(props: any) {
           {/* tips  */}
           {!canSubmit && (
             <div
-              className="text-yellow-10 text-sm border h-11 w-full rounded flex px-4 py-1 items-center my-6"
+              className="text-yellow-10 text-sm border h-11 w-full rounded flex px-4 py-1 items-center mt-6 mb-2"
               style={{
                 borderColor: "rgba(230, 180, 1, 0.3)",
                 backgroundColor: "rgba(230, 180, 1, 0.14)",
@@ -374,12 +406,16 @@ export default function StableAdd(props: any) {
               <span>{`You don't have enough ${notEnoughList.join("｜")}`}</span>
             </div>
           )}
-
+          <AddLiqTip
+            tips={
+              "Fees automatically contribute to your liquidity for market making."
+            }
+          ></AddLiqTip>
           {/* submit */}
           {accountStore.isSignedIn ? (
-            canSubmit ? (
+            canSubmit && inputAmountIsEmpty ? (
               <div
-                className="poolBtnStyleBase h-11 mt-6 cursor-pointer hover:opacity-90"
+                className="poolBtnStyleBase h-11 mt-1 cursor-pointer hover:opacity-90"
                 onClick={() => {
                   setIsLoading(true);
                   submit();
@@ -391,7 +427,7 @@ export default function StableAdd(props: any) {
                 />
               </div>
             ) : (
-              <div className="poolBtnStyleDefaultBase h-11 mt-6 cursor-not-allowed">
+              <div className="poolBtnStyleDefaultBase h-11 mt-1 cursor-not-allowed">
                 Add Liquidity
               </div>
             )

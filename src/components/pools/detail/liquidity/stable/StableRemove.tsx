@@ -126,18 +126,19 @@ export default function StableAdd(props: any) {
     stablePool: updatedMapList[0],
   });
 
-  const [canSubmit, setCanSubmit] = useState(true);
+  const [canSubmit, setCanSubmit] = useState(false);
   const [notEnoughList, setNotEnoughList] = useState([]);
 
   useEffect(() => {
     let flag: boolean = true;
     const k: any = [];
     inputValList.map((item: any, index: number) => {
-      if (+item > balancesList[index]?.balance) {
+      if (+item > balancesList[index]?.balance || +item <= 0) {
         flag = false;
         k.push(balancesList[index]?.symbol);
       }
     });
+    console.log(inputValList, "inputValList");
     setCanSubmit(flag);
     setNotEnoughList(k);
   }, [inputValList]);
@@ -207,10 +208,12 @@ export default function StableAdd(props: any) {
   });
   const [shareVal, setShareVal] = useState("0");
   const changeShareVal = (val: any) => {
-    setCanSubmit(true);
-    if (+val > +sharesDecimals) {
+    if (+val > +sharesDecimals || val <= 0) {
       setCanSubmit(false);
+    } else {
+      setCanSubmit(true);
     }
+
     setShareVal(val ? val : "0");
   };
   const [receiveAmounts, setReceiveAmounts] = useState(new Array(4).fill(""));
@@ -270,8 +273,6 @@ export default function StableAdd(props: any) {
     stablePool: updatedMapList[0],
   });
 
-  console.log(predictedRemoveShares, "predictedRemoveShares");
-
   const calcSharesRemoved = () => {
     const nonPrecisionValue = percentIncrese(
       feeValue,
@@ -292,10 +293,24 @@ export default function StableAdd(props: any) {
       ? toPrecision(myReadableShare, 3)
       : toPrecision(nonPrecisionValue, 3);
   };
+
+  const closeInit = () => {
+    const array = new Array(
+      updatedMapList[0]?.token_account_ids?.length || 2
+    ).fill("");
+    setInputValList(array);
+    setFeeValue(0.1);
+    setActive(0.1);
+    changeShareVal(0);
+    setCanSubmit(false);
+  };
   return (
     <Modal
       isOpen={isOpen}
-      onRequestClose={onRequestClose}
+      onRequestClose={() => {
+        onRequestClose();
+        closeInit();
+      }}
       style={{
         overlay: {
           backdropFilter: "blur(15px)",
@@ -313,7 +328,10 @@ export default function StableAdd(props: any) {
           <RemoveLiqTitleIcon />
           <LpModalCloseIcon
             className="cursor-pointer hover:opacity-90"
-            onClick={onRequestClose}
+            onClick={() => {
+              onRequestClose();
+              closeInit();
+            }}
           />
         </div>
 
@@ -344,25 +362,28 @@ export default function StableAdd(props: any) {
                 <div className="flex items-center justify-between text-gray-50 mb-2 text-sm">
                   <span>Shares</span>
                   <span
-                    className={`underline hover:cursor-pointer hover:text-white ${
+                    className={`underline hover:cursor-pointer  ${
                       shareVal >= sharesDecimals
-                        ? "text-green-10"
+                        ? "text-green-10 "
                         : "text-gray-50"
                     }`}
-                    onClick={() => setShareVal(sharesDecimals)}
+                    onClick={() => changeShareVal(sharesDecimals)}
                   >
                     Max
                   </span>
                 </div>
                 <div
-                  className="flex h-16 w-full items-center border border-transparent hover:border-green-20 rounded"
+                  className={`flex h-16 w-full items-center border border-transparent  rounded hover:border-green-20`}
                   style={{ background: "rgba(0,0,0,.2)" }}
                 >
                   <input
                     type="number"
-                    className="h-16 p-3 w-full text-white"
+                    className={`h-16 p-3 w-full ${
+                      +sharesDecimals > 0 ? "text-white" : "text-gray-50"
+                    }`}
                     style={{ fontSize: "26px" }}
                     placeholder="0"
+                    disabled={+sharesDecimals <= 0}
                     value={shareVal}
                     onChange={(e) => {
                       changeShareVal(e.target.value);

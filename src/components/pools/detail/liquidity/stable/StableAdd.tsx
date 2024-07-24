@@ -21,6 +21,7 @@ import { usePredictShares } from "@/hooks/useStableLiquidity";
 import { ButtonTextWrapper } from "@/components/common/Button";
 import { toNonDivisibleNumber } from "@/utils/numbers";
 import { addLiquidityToStablePool } from "@/services/pool";
+import AddLiqTip from "../../addLiqTip";
 export function myShares({
   totalShares,
   userTotalShare,
@@ -365,7 +366,7 @@ export default function StableAdd(props: any) {
           {/* tips  */}
           {!canSubmit && (
             <div
-              className="text-yellow-10 text-sm border h-11 w-full rounded flex px-4 py-1 items-center my-6"
+              className="text-yellow-10 text-sm border h-11 w-full rounded flex px-4 py-1 items-center mt-6 mb-2"
               style={{
                 borderColor: "rgba(230, 180, 1, 0.3)",
                 backgroundColor: "rgba(230, 180, 1, 0.14)",
@@ -374,12 +375,16 @@ export default function StableAdd(props: any) {
               <span>{`You don't have enough ${notEnoughList.join("｜")}`}</span>
             </div>
           )}
-
+          <AddLiqTip
+            tips={
+              "Fees automatically contribute to your liquidity for market making."
+            }
+          ></AddLiqTip>
           {/* submit */}
           {accountStore.isSignedIn ? (
             canSubmit ? (
               <div
-                className="poolBtnStyleBase h-11 mt-6 cursor-pointer hover:opacity-90"
+                className="poolBtnStyleBase h-11 mt-1 cursor-pointer hover:opacity-90"
                 onClick={() => {
                   setIsLoading(true);
                   submit();
@@ -391,7 +396,7 @@ export default function StableAdd(props: any) {
                 />
               </div>
             ) : (
-              <div className="poolBtnStyleDefaultBase h-11 mt-6 cursor-not-allowed">
+              <div className="poolBtnStyleDefaultBase h-11 mt-1 cursor-not-allowed">
                 Add Liquidity
               </div>
             )

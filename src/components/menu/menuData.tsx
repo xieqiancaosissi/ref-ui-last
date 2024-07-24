@@ -69,7 +69,7 @@ export function menuData(): IMenu[] {
           id: "yours",
           label: "Yours",
           icon: <YoursIcon />,
-          path: "",
+          path: "/yours",
         },
         {
           id: "stake",

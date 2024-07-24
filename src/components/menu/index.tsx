@@ -76,7 +76,10 @@ export default function Menu() {
   useEffect(() => {
     setExtraBack("transparent");
     setExtraWidth("60%");
-    if (router.route.indexOf("pool/stable") != -1) {
+    if (
+      router.route.indexOf("pool/stable") != -1 ||
+      router.route.indexOf("yours") != -1
+    ) {
       setExtraBack("rgba(33, 43, 53, 0.4)");
       setExtraWidth("100%");
     }

@@ -55,6 +55,7 @@ import ClassicAdd from "@/components/pools/detail/liquidity/classic/ClassicAdd";
 import ClassicRemove from "@/components/pools/detail/liquidity/classic/ClassicRemove";
 import { useRiskTokens } from "@/hooks/useRiskTokens";
 import { GradientFarmBorder } from "@/components/pools/icon";
+import { format_apy } from "@/utils/uiNumber";
 
 export default function ClassicPoolDetail() {
   const router = useRouter();
@@ -526,7 +527,7 @@ export default function ClassicPoolDetail() {
           )}
 
           {/* farm */}
-          {seedFarms && pool?.id && seedDetail && (
+          {seedFarms && (
             <div className="flex flex-col mt-4 relative z-30 rounded">
               <GradientFarmBorder className="absolute -z-10 left-2"></GradientFarmBorder>
               <div className="flex items-center px-6 pt-4 justify-between">
@@ -550,7 +551,9 @@ export default function ClassicPoolDetail() {
 
               <div className="flex items-center px-6 pt-1 justify-between">
                 <div className="flex items-center text-lg farmTextGradient">
-                  <span className="mr-2">{getBaseApr.displayApr}</span>
+                  <span className="mr-2">
+                    {format_apy(poolDetail.farm_apy)}
+                  </span>
                   <Fire />
                 </div>
 

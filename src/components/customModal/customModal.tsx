@@ -1,6 +1,6 @@
 import React from "react";
 import Portal from "./portal";
-import { CloseIcon } from "../../common/Icons";
+import { CloseIcon } from "../common/Icons";
 
 type onClickHandler = (event: React.MouseEvent<HTMLElement>) => any;
 
@@ -61,7 +61,7 @@ const CustomModal = ({
                 {title && <div className={"modal-title"}>{title}</div>}
                 {onClose && (
                   <div onClick={onClose} style={{ cursor: "pointer" }}>
-                    <CloseIcon />
+                    <CloseIcon className="text-gray-50" />
                   </div>
                 )}
               </div>

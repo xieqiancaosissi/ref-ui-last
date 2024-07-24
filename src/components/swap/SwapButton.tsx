@@ -15,6 +15,8 @@ import {
   getTokenUIId,
 } from "@/services/swap/swapUtils";
 import { IButtonStatus } from "@/interfaces/swap";
+import { useAppStore } from "@/stores/app";
+import { showWalletSelectorModal } from "@/utils/wallet";
 
 export default function SwapButton({
   isHighImpact,
@@ -24,6 +26,7 @@ export default function SwapButton({
   highImpactCheck: boolean;
 }) {
   const [swapLoading, setSwapLoading] = useState<boolean>(false);
+  const appStore = useAppStore();
   const accountStore = useAccountStore();
   const swapStore = useSwapStore();
   const persistSwapStore = usePersistSwapStore();
@@ -130,7 +133,7 @@ export default function SwapButton({
           className="flex items-center justify-center bg-greenGradient rounded mt-4 text-black font-bold text-base cursor-pointer"
           style={{ height: "42px" }}
           onClick={() => {
-            window.modal.show();
+            showWalletSelectorModal(appStore.setShowRiskModal);
           }}
         >
           Connect Wallet

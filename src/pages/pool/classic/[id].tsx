@@ -56,10 +56,13 @@ import ClassicRemove from "@/components/pools/detail/liquidity/classic/ClassicRe
 import { useRiskTokens } from "@/hooks/useRiskTokens";
 import { GradientFarmBorder } from "@/components/pools/icon";
 import { format_apy } from "@/utils/uiNumber";
+import { useAppStore } from "@/stores/app";
+import { showWalletSelectorModal } from "@/utils/wallet";
 
 export default function ClassicPoolDetail() {
   const router = useRouter();
   const { pureIdList } = useRiskTokens();
+  const appStore = useAppStore();
   const poolId = router.query.id || "";
   const poolStore = usePoolStore();
   const accountStore = useAccountStore();
@@ -94,7 +97,7 @@ export default function ClassicPoolDetail() {
   }, []);
 
   const collectPool = () => {
-    if (!accountId) window.modal.show();
+    if (!accountId) showWalletSelectorModal(appStore.setShowRiskModal);
     if (isCollect) {
       removePoolFromWatchList({ pool_id: poolId.toString() });
     } else {

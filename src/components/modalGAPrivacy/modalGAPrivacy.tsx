@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import CustomModal from "./customModal/customModal";
+import CustomModal from "../customModal/customModal";
 import { CloseIcon } from "../common/Icons";
 const CONST_ACKNOWLEDGE_GA = "ackGA";
 const CONST_GA_ACTION = {

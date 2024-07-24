@@ -19,6 +19,8 @@ import { usePool } from "@/hooks/usePools";
 import { toInternationalCurrencySystem } from "@/utils/numbers";
 import { useRemoveLiquidity } from "@/hooks/usePools";
 import { useIntl } from "react-intl";
+import { useAppStore } from "@/stores/app";
+import { showWalletSelectorModal } from "@/utils/wallet";
 
 export const REF_FI_PRE_LIQUIDITY_ID_KEY = "REF_FI_PRE_LIQUIDITY_ID_VALUE";
 
@@ -57,7 +59,7 @@ export function myShares({
 export default function StableAdd(props: any) {
   const accountStore = useAccountStore();
   const intl = useIntl();
-
+  const appStore = useAppStore();
   const { isOpen, onRequestClose, poolDetail, pureIdList, updatedMapList } =
     props;
 
@@ -312,7 +314,9 @@ export default function StableAdd(props: any) {
             ) : (
               <div
                 className="poolBtnStyleDefaultBase h-11 mt-2 cursor-pointer hover:opacity-90"
-                onClick={() => window.modal.show()}
+                onClick={() =>
+                  showWalletSelectorModal(appStore.setShowRiskModal)
+                }
               >
                 Connect Wallet
               </div>

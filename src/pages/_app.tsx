@@ -9,7 +9,7 @@ import getConfig from "../utils/config";
 import { ALL_STABLE_POOL_IDS } from "@/services/swap/swapConfig";
 import "@/components/common/ModalDefaultStyle";
 import "@/components/modalGAPrivacy/modalGAPrivacy.css";
-import "@/components/modalGAPrivacy/customModal/customModal.css";
+import "@/components/customModal/customModal.css";
 import RpcList from "@/components/rpc";
 const Footer = dynamic(() => import("../components/footer"), { ssr: false });
 const ModalGAPrivacy = dynamic(
@@ -19,6 +19,12 @@ const ModalGAPrivacy = dynamic(
 const ToastContainerEle = dynamic(() => import("../components/common/Toast"), {
   ssr: false,
 });
+const RiskModal = dynamic(
+  () => import("../components/riskCheckModal/WalletRiskCheckBoxModal"),
+  {
+    ssr: false,
+  }
+);
 
 export default function App({ Component, pageProps }: AppProps) {
   useEffect(() => {
@@ -52,6 +58,7 @@ export default function App({ Component, pageProps }: AppProps) {
         <Footer />
         <ToastContainerEle />
         <ModalGAPrivacy />
+        <RiskModal />
       </div>
     </IntlProvider>
   );

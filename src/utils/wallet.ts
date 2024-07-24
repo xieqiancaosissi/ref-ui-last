@@ -1,4 +1,5 @@
 import type { Wallet } from "@near-wallet-selector/core";
+import { CONST_ACKNOWLEDGE_WALLET_RISK } from "@/utils/constantLocal";
 
 export function getSelector() {
   return window.selector;
@@ -11,6 +12,14 @@ export function getSelectedWalletId(): string {
 }
 export function getAccountId() {
   return window.accountId;
+}
+export function showWalletSelectorModal(riskModalShow: any) {
+  const status = localStorage.getItem(CONST_ACKNOWLEDGE_WALLET_RISK);
+  if (status == "1") {
+    window.modal.show();
+  } else {
+    riskModalShow(true);
+  }
 }
 
 export const ledgerTipTrigger = async (wallet: any) => {

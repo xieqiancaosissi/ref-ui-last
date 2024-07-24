@@ -7,11 +7,14 @@ import { ButtonTextWrapper } from "@/components/common/Button";
 import { getMax } from "@/services/swap/swapUtils";
 import { IButtonStatus } from "@/interfaces/swap";
 import ConfirmOrderModal from "./ConfirmOrderModal";
+import { useAppStore } from "@/stores/app";
+import { showWalletSelectorModal } from "@/utils/wallet";
 
 export default function CreateOrderButton() {
   const [showConfirmModal, setShowConfirmModal] = useState<boolean>(false);
   const accountStore = useAccountStore();
   const limitStore = useLimitStore();
+  const appStore = useAppStore();
   const walletLoading = accountStore.getWalletLoading();
   const accountId = accountStore.getAccountId();
   const amountIn = limitStore.getTokenInAmount();
@@ -65,7 +68,7 @@ export default function CreateOrderButton() {
           className="flex items-center justify-center bg-greenGradient rounded mt-4 text-black font-bold text-base cursor-pointer"
           style={{ height: "42px" }}
           onClick={() => {
-            window.modal.show();
+            showWalletSelectorModal(appStore.setShowRiskModal);
           }}
         >
           Connect Wallet

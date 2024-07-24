@@ -35,6 +35,8 @@ import {
   removeLiquidityFromStablePool,
   removeLiquidityByTokensFromStablePool,
 } from "@/services/pool";
+import { useAppStore } from "@/stores/app";
+import { showWalletSelectorModal } from "@/utils/wallet";
 
 export function myShares({
   totalShares,
@@ -70,6 +72,7 @@ export function myShares({
 
 export default function StableAdd(props: any) {
   const accountStore = useAccountStore();
+  const appStore = useAppStore();
   const { isOpen, onRequestClose, poolDetail, pureIdList, updatedMapList } =
     props;
   const [balancesList, setBalances] = useState<any>([]);
@@ -606,7 +609,7 @@ export default function StableAdd(props: any) {
           ) : (
             <div
               className="poolBtnStyleDefaultBase h-11 mt-6 cursor-pointer hover:opacity-90"
-              onClick={() => window.modal.show()}
+              onClick={() => showWalletSelectorModal(appStore.setShowRiskModal)}
             >
               Connect Wallet
             </div>

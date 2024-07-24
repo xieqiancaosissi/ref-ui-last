@@ -126,18 +126,19 @@ export default function StableAdd(props: any) {
     stablePool: updatedMapList[0],
   });
 
-  const [canSubmit, setCanSubmit] = useState(true);
+  const [canSubmit, setCanSubmit] = useState(false);
   const [notEnoughList, setNotEnoughList] = useState([]);
 
   useEffect(() => {
     let flag: boolean = true;
     const k: any = [];
     inputValList.map((item: any, index: number) => {
-      if (+item > balancesList[index]?.balance) {
+      if (+item > balancesList[index]?.balance || +item <= 0) {
         flag = false;
         k.push(balancesList[index]?.symbol);
       }
     });
+    console.log(inputValList, "inputValList");
     setCanSubmit(flag);
     setNotEnoughList(k);
   }, [inputValList]);
@@ -207,9 +208,10 @@ export default function StableAdd(props: any) {
   });
   const [shareVal, setShareVal] = useState("0");
   const changeShareVal = (val: any) => {
-    setCanSubmit(true);
     if (+val > +sharesDecimals || val <= 0) {
       setCanSubmit(false);
+    } else {
+      setCanSubmit(true);
     }
 
     setShareVal(val ? val : "0");
@@ -291,10 +293,24 @@ export default function StableAdd(props: any) {
       ? toPrecision(myReadableShare, 3)
       : toPrecision(nonPrecisionValue, 3);
   };
+
+  const closeInit = () => {
+    const array = new Array(
+      updatedMapList[0]?.token_account_ids?.length || 2
+    ).fill("");
+    setInputValList(array);
+    setFeeValue(0.1);
+    setActive(0.1);
+    changeShareVal(0);
+    setCanSubmit(false);
+  };
   return (
     <Modal
       isOpen={isOpen}
-      onRequestClose={onRequestClose}
+      onRequestClose={() => {
+        onRequestClose();
+        closeInit();
+      }}
       style={{
         overlay: {
           backdropFilter: "blur(15px)",
@@ -312,7 +328,10 @@ export default function StableAdd(props: any) {
           <RemoveLiqTitleIcon />
           <LpModalCloseIcon
             className="cursor-pointer hover:opacity-90"
-            onClick={onRequestClose}
+            onClick={() => {
+              onRequestClose();
+              closeInit();
+            }}
           />
         </div>
 
@@ -348,7 +367,7 @@ export default function StableAdd(props: any) {
                         ? "text-green-10 "
                         : "text-gray-50"
                     }`}
-                    onClick={() => setShareVal(sharesDecimals)}
+                    onClick={() => changeShareVal(sharesDecimals)}
                   >
                     Max
                   </span>

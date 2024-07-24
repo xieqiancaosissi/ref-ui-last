@@ -152,20 +152,36 @@ export default function StableAdd(props: any) {
   });
 
   const [canSubmit, setCanSubmit] = useState(true);
+  const [inputAmountIsEmpty, setInputAmountIsEmpty] = useState(true);
   const [notEnoughList, setNotEnoughList] = useState([]);
 
   useEffect(() => {
     let flag: boolean = true;
+    let emptyFlag: boolean = false;
     const k: any = [];
     inputValList.map((item: any, index: number) => {
       if (+item > balancesList[index]?.balance) {
         flag = false;
         k.push(balancesList[index]?.symbol);
       }
+      if (item > 0) {
+        emptyFlag = true;
+      }
     });
+    setInputAmountIsEmpty(emptyFlag);
     setCanSubmit(flag);
     setNotEnoughList(k);
   }, [inputValList]);
+
+  useEffect(() => {
+    let emptyFlag: boolean = true;
+    inputValList.map((item: any, index: number) => {
+      if (!+item) {
+        emptyFlag = false;
+      }
+    });
+    setInputAmountIsEmpty(emptyFlag);
+  }, []);
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -187,10 +203,19 @@ export default function StableAdd(props: any) {
     });
   }
 
+  const closeInit = () => {
+    setActive(0.1);
+    setInputValList([]);
+    setFeeValue(0.1);
+  };
+
   return (
     <Modal
       isOpen={isOpen}
-      onRequestClose={onRequestClose}
+      onRequestClose={() => {
+        onRequestClose();
+        closeInit();
+      }}
       style={{
         overlay: {
           backdropFilter: "blur(15px)",
@@ -208,7 +233,10 @@ export default function StableAdd(props: any) {
           <AddLiqTitleIcon />
           <LpModalCloseIcon
             className="cursor-pointer hover:opacity-90"
-            onClick={onRequestClose}
+            onClick={() => {
+              onRequestClose();
+              closeInit();
+            }}
           />
         </div>
         <div className="w-108 min-h-123 rounded-lg bg-dark-10 px-4 py-5">
@@ -385,7 +413,7 @@ export default function StableAdd(props: any) {
           ></AddLiqTip>
           {/* submit */}
           {accountStore.isSignedIn ? (
-            canSubmit ? (
+            canSubmit && inputAmountIsEmpty ? (
               <div
                 className="poolBtnStyleBase h-11 mt-1 cursor-pointer hover:opacity-90"
                 onClick={() => {

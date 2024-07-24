@@ -61,7 +61,9 @@ export default function StableAdd(props: any) {
     props;
   const [balancesList, setBalances] = useState<any>([]);
   const [inputValList, setInputValList] = useState<any>([]);
-
+  const closeInit = () => {
+    setInputValList([]);
+  };
   const returnBalance = async (token: any) => {
     try {
       const data = await ftGetBalance(token.tokenId);
@@ -194,22 +196,31 @@ export default function StableAdd(props: any) {
   const [notEnoughList, setNotEnoughList] = useState([]);
   useEffect(() => {
     let flag: boolean = true;
-    let emptyFlag: boolean = true;
+    let emptyFlag: boolean = false;
     const k: any = [];
     inputValList.map((item: any, index: number) => {
       if (+item > balancesList[index]?.balance) {
         flag = false;
         k.push(balancesList[index]?.symbol);
       }
+      if (item > 0) {
+        emptyFlag = true;
+      }
+    });
+    setInputAmountIsEmpty(emptyFlag);
+    setCanSubmit(flag);
+    setNotEnoughList(k);
+  }, [inputValList]);
+
+  useEffect(() => {
+    let emptyFlag: boolean = true;
+    inputValList.map((item: any, index: number) => {
       if (!+item) {
         emptyFlag = false;
       }
     });
     setInputAmountIsEmpty(emptyFlag);
-
-    setCanSubmit(flag);
-    setNotEnoughList(k);
-  }, [inputValList]);
+  }, []);
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -232,7 +243,10 @@ export default function StableAdd(props: any) {
   return (
     <Modal
       isOpen={isOpen}
-      onRequestClose={onRequestClose}
+      onRequestClose={() => {
+        closeInit();
+        onRequestClose();
+      }}
       style={{
         overlay: {
           backdropFilter: "blur(15px)",
@@ -250,7 +264,10 @@ export default function StableAdd(props: any) {
           <AddLiqTitleIcon />
           <LpModalCloseIcon
             className="cursor-pointer hover:opacity-90"
-            onClick={onRequestClose}
+            onClick={() => {
+              closeInit();
+              onRequestClose();
+            }}
           />
         </div>
         <div className="flex flex-col justify-between w-108 min-h-123 rounded-lg bg-dark-10 px-4 py-5">

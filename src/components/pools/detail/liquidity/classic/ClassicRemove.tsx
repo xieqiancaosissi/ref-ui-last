@@ -120,10 +120,18 @@ export default function StableAdd(props: any) {
     shares: shareVal ? toNonDivisibleNumber(24, shareVal) : "0",
   });
 
+  const closeInit = () => {
+    changeShareVal(0);
+    setActive(0.5);
+  };
+
   return (
     <Modal
       isOpen={isOpen}
-      onRequestClose={onRequestClose}
+      onRequestClose={() => {
+        onRequestClose();
+        closeInit();
+      }}
       style={{
         overlay: {
           backdropFilter: "blur(15px)",
@@ -141,7 +149,10 @@ export default function StableAdd(props: any) {
           <RemoveLiqTitleIcon />
           <LpModalCloseIcon
             className="cursor-pointer hover:opacity-90"
-            onClick={onRequestClose}
+            onClick={() => {
+              onRequestClose();
+              closeInit();
+            }}
           />
         </div>
 

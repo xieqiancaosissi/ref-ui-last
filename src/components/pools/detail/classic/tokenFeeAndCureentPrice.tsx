@@ -41,7 +41,7 @@ export default function TokenFeeAndCureentPrice({
               (
               {toInternationalCurrencySystem_usd(
                 tokenPriceList[poolDetail.token_account_ids[currentSort[0]]]
-                  .price
+                  ?.price
               )}
               )
             </span>
@@ -52,9 +52,9 @@ export default function TokenFeeAndCureentPrice({
             <span className="mr-1">
               {Math.ceil(
                 (tokenPriceList[poolDetail?.token_account_ids[currentSort[0]]]
-                  .price /
+                  ?.price /
                   tokenPriceList[poolDetail?.token_account_ids[currentSort[1]]]
-                    .price) *
+                    ?.price) *
                   100
               ) / 100}
             </span>

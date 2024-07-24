@@ -7,9 +7,15 @@ import Menu from "../components/menu";
 import { useEffect } from "react";
 import getConfig from "../utils/config";
 import { ALL_STABLE_POOL_IDS } from "@/services/swap/swapConfig";
-import "../components/common/ModalDefaultStyle";
+import "@/components/common/ModalDefaultStyle";
+import "@/components/modalGAPrivacy/modalGAPrivacy.css";
+import "@/components/modalGAPrivacy/customModal/customModal.css";
 import RpcList from "@/components/rpc";
 const Footer = dynamic(() => import("../components/footer"), { ssr: false });
+const ModalGAPrivacy = dynamic(
+  () => import("@/components/modalGAPrivacy/modalGAPrivacy"),
+  { ssr: false }
+);
 const ToastContainerEle = dynamic(() => import("../components/common/Toast"), {
   ssr: false,
 });
@@ -45,6 +51,7 @@ export default function App({ Component, pageProps }: AppProps) {
         <RpcList />
         <Footer />
         <ToastContainerEle />
+        <ModalGAPrivacy />
       </div>
     </IntlProvider>
   );

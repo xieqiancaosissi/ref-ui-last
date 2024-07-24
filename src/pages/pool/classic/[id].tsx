@@ -51,9 +51,14 @@ import {
   FarmBoardInDetailPool,
 } from "@/components/pools/detail/liquidity/icon";
 import { Images } from "@/components/pools/detail/liquidity/components/liquidityComComp";
+import ClassicAdd from "@/components/pools/detail/liquidity/classic/ClassicAdd";
+import ClassicRemove from "@/components/pools/detail/liquidity/classic/ClassicRemove";
+import { useRiskTokens } from "@/hooks/useRiskTokens";
+import { GradientFarmBorder } from "@/components/pools/icon";
 
 export default function ClassicPoolDetail() {
   const router = useRouter();
+  const { pureIdList } = useRiskTokens();
   const poolId = router.query.id || "";
   const poolStore = usePoolStore();
   const accountStore = useAccountStore();
@@ -277,6 +282,16 @@ export default function ClassicPoolDetail() {
     BaseApr();
   }, [seedDetail, seedFarms]);
 
+  const [showAdd, setShowAdd] = useState(false);
+  const hideAdd = () => {
+    setShowAdd(false);
+  };
+
+  const [showRemove, setShowRemove] = useState(false);
+  const hideRemove = () => {
+    setShowRemove(false);
+  };
+
   return (
     <div className="w-full fccc h-full">
       {/* return */}
@@ -476,9 +491,7 @@ export default function ClassicPoolDetail() {
                 <div className={`pr-2 ${haveShare ? "w-1/2" : "w-full"} `}>
                   <div
                     className={`poolBtnStyleBase w-35 h-10  mr-2.5 text-sm cursor-pointer hover:opacity-90 `}
-                    onClick={() => {
-                      setShowFunding(true);
-                    }}
+                    onClick={() => setShowAdd(true)}
                     // disabled={disable_add}
                   >
                     Add
@@ -489,7 +502,7 @@ export default function ClassicPoolDetail() {
                     <div
                       onClick={() => {
                         if (+userTotalShareToString == 0) return;
-                        setShowWithdraw(true);
+                        setShowRemove(true);
                       }}
                       // disabled={Number(userTotalShareToString) == 0}
                       className={`w-full ${
@@ -508,38 +521,38 @@ export default function ClassicPoolDetail() {
 
           {/* farm */}
           {seedFarms && pool?.id && updatedMapList.length > 0 && (
-            <div className="flex flex-col mt-4 relative z-30 bg-refPublicBoxDarkBg rounded">
-              <div className="flex items-center mx-4 xs:mx-7 md:mx-7 mt-4 lg:mt-5 justify-between">
-                <div className="text-white whitespace-nowrap">Farm APR</div>
+            <div className="flex flex-col mt-4 relative z-30 rounded">
+              <GradientFarmBorder className="absolute -z-10 left-2"></GradientFarmBorder>
+              <div className="flex items-center px-6 pt-4 justify-between">
+                <div className="text-white whitespace-nowrap text-base font-normal">
+                  Farm APR
+                </div>
 
-                <div
-                  className="rounded-lg flex items-center px-2 py-0.5"
-                  style={{
-                    background: "#17252E",
-                  }}
-                >
+                <div className="rounded-lg flex items-center px-2 py-0.5">
                   <Images
                     className="mr-1"
                     tokens={seedFarms.map((farm: any) => farm.token_meta_data)}
                     size="4"
                     isRewardDisplay
-                    borderStyle="1px solid #00C6A2"
                   />
-                  <span className="text-xs text-gray-50">
+                  <span className="text-xs text-white">
                     {totalTvlPerWeekDisplay()}
                     /week
                   </span>
                 </div>
               </div>
 
-              <div className="flex items-center mx-4 xs:mx-7 md:mx-7 mt-3 min-h-18 justify-between">
-                <div className="text-green-10 flex items-center text-lg">
+              <div className="flex items-center px-6 pt-1 justify-between">
+                <div className="flex items-center text-lg farmTextGradient">
                   <span className="mr-2">{getBaseApr.displayApr}</span>
                   <Fire />
                 </div>
 
                 <div
-                  className="border border-green-10 rounded-md text-green-10 frcc w-35 h-10 text-sm cursor-pointer hover:opacity-80"
+                  className=" rounded text-white frcc w-28 h-8 text-sm cursor-pointer hover:opacity-90"
+                  style={{
+                    background: "linear-gradient(to bottom, #9EFF01, #5F9901)",
+                  }}
                   onClick={() => {
                     openUrl(`/farms/${poolId}-r`);
                   }}
@@ -551,6 +564,27 @@ export default function ClassicPoolDetail() {
           )}
         </div>
       </div>
+
+      {/* add */}
+      {updatedMapList[0]?.token_account_ids && poolDetail && (
+        <>
+          <ClassicAdd
+            isOpen={showAdd}
+            onRequestClose={hideAdd}
+            poolDetail={poolDetail}
+            pureIdList={pureIdList}
+            updatedMapList={updatedMapList}
+          />
+
+          <ClassicRemove
+            isOpen={showRemove}
+            onRequestClose={hideRemove}
+            poolDetail={poolDetail}
+            pureIdList={pureIdList}
+            updatedMapList={updatedMapList}
+          />
+        </>
+      )}
     </div>
   );
 }

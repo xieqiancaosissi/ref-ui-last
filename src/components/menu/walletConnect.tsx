@@ -114,7 +114,7 @@ export default function WalletConnect() {
   }
 
   return (
-    <div className="relative justify-self-end z-50">
+    <div className="relative z-50">
       {!loading ? (
         <>
           {accountId ? (

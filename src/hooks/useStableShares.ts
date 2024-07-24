@@ -111,15 +111,14 @@ export const getAddLiquidityShares = async (
   const base_old_c_amounts = stablePool.c_amounts.map((amount: any) =>
     toReadableNumber(STABLE_LP_TOKEN_DECIMALS, amount)
   );
-  console.log(STABLE_LP_TOKEN_DECIMALS);
-  console.log(base_old_c_amounts, stablePool.c_amounts);
-  const rates = Reflect.has(stablePool, "degens")
+  const rates = stablePool?.degens
     ? stablePool.degens.map((r: any) =>
         toReadableNumber(STABLE_LP_TOKEN_DECIMALS, r)
       )
     : stablePool.rates.map((r: any) =>
         toReadableNumber(STABLE_LP_TOKEN_DECIMALS, r)
       );
+
   const old_c_amounts = base_old_c_amounts
     .map((amount: any, i: number) =>
       toNonDivisibleNumber(
@@ -157,6 +156,7 @@ export const getAddLiquidityShares = async (
     pool_token_supply,
     trade_fee
   );
+  console.log("162");
   console.log(
     amp,
     deposit_c_amounts,
@@ -227,8 +227,16 @@ export const calc_d = (amp: number, c_amounts: number[]) => {
   let d = sum_amounts;
   for (let i = 0; i < 256; i++) {
     let d_prod = d;
+    let zeroCount = 0;
     for (const c_amount of c_amounts) {
+      if (c_amount === 0) {
+        zeroCount++;
+        continue;
+      }
       d_prod = (d_prod * d) / (c_amount * token_num);
+    }
+    if (zeroCount === token_num) {
+      return 0;
     }
     d_prev = d;
     const ann = amp * token_num ** token_num;
@@ -237,7 +245,7 @@ export const calc_d = (amp: number, c_amounts: number[]) => {
     d = numerator / denominator;
     if (Math.abs(d - d_prev) <= 1) break;
   }
-  return d;
+  return isNaN(d) ? 0 : d;
 };
 
 export const calc_y = (

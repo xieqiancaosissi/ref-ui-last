@@ -253,7 +253,7 @@ export default function XrefPage(props: any) {
         <div className="frcc w-full mb-2.5">
           <div className="flex-1 mr-2.5 bg-dark-120 bg-opacity-40 rounded-lg py-3.5 px-4">
             <p className="text-gray-50 text-sm mb-1.5">Staking APR</p>
-            <p className="text-2xl">
+            <div className="text-2xl">
               <div
                 className="text-white text-left"
                 data-class="reactTip"
@@ -266,14 +266,14 @@ export default function XrefPage(props: any) {
                 </span>
                 <CustomTooltip id={"xrefAprId"} />
               </div>
-            </p>
+            </div>
           </div>
           <div className="flex-1 bg-dark-120 bg-opacity-40 rounded-lg py-3.5 px-4">
             <p className="text-sm mb-1.5 flex items-center">
               <XrefSmallLogo className="mr-1" />
               xREF <span className="text-gray-50 ml-1">Balance</span>
             </p>
-            <p className="text-2xl frcb" title={xrefBalance || ""}>
+            <div className="text-2xl frcb" title={xrefBalance || ""}>
               {displayBalance(xrefBalance!)}
               <div
                 className="text-left text-sm text-gray-50"
@@ -285,7 +285,7 @@ export default function XrefPage(props: any) {
                 {displayTotalREF()}REF
                 <CustomTooltip id={"youGetId"} />
               </div>
-            </p>
+            </div>
           </div>
         </div>
         <div className="rounded-lg bg-dark-120 bg-opacity-40 p-5 w-full">

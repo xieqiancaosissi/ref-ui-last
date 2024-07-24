@@ -202,3 +202,9 @@ input[type="range"].lock-bar::-webkit-slider-thumb {
   content: "...";
   animation: fadeInOut 1s infinite;
 }
+
+.farmTextGradient {
+  background: -webkit-linear-gradient(left, #ffd278, #ff9900);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}

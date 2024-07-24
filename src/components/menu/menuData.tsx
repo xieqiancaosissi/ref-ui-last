@@ -20,7 +20,8 @@ export interface IMenuChild {
   id: string;
   label: string | React.ReactElement;
   icon: React.ReactElement;
-  path: string;
+  path?: string;
+  externalLink?: string;
 }
 export function menuData(): IMenu[] {
   return [
@@ -44,7 +45,7 @@ export function menuData(): IMenu[] {
           id: "orderbook",
           label: "Orderbook",
           icon: <OrderbookIcon />,
-          path: "/orderbook/spot",
+          externalLink: "https://app.ref.finance/orderbook/spot",
         },
       ],
     },
@@ -86,3 +87,18 @@ export function menuData(): IMenu[] {
     },
   ];
 }
+
+export const routeMapIds = {
+  "trade-swap": ["/"],
+  "trade-limit": ["/limit"],
+  "earn-pools": [
+    "/pools",
+    "/pool/classic/[id]",
+    "/pool/stable/[id]",
+    "/pool/dcl/[id]",
+    "/liquidity/[id]",
+  ],
+  "earn-farms": ["/farms"],
+  "earn-stake": ["/xref"],
+  meme: ["/meme"],
+};

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { useAccountStore } from "@/stores/account";
 import { PerpOrSpot } from "@/services/orderbook/utils";
+import { useOrderbookDataStore } from "@/stores/orderbook/orderbookDataStore";
 import { GuideLine } from "./icons";
 export const REF_ORDERLY_NEW_USER_TIP = "REF_ORDERLY_NEW_USER_TIP_KEY";
 export function NewUserTip(props: {
@@ -9,10 +10,9 @@ export function NewUserTip(props: {
   type: "perp-pc" | "spot-pc" | "perp-mobile" | "spot-mobile";
 }) {
   const { type } = props;
-
-  // const { symbol, newUserTip } = useOrderlyContext(); TODO Wait for processing
-  const { symbol, newUserTip } = {} as any;
-
+  const orderbookDataStore = useOrderbookDataStore();
+  const symbol = orderbookDataStore.getSymbol();
+  const newUserTip = orderbookDataStore.getNewUserTip();
   const symbolType = PerpOrSpot(symbol);
 
   const accountStore = useAccountStore();

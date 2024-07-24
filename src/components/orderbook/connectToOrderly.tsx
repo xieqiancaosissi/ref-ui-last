@@ -6,11 +6,7 @@ import {
   RegisterIcon,
   PrimartGreenLoadingIcon,
 } from "./icons";
-import {
-  useOrderbookDataStore,
-  usePersistOrderbookDataStore,
-  IPersistOrderbookDataStore,
-} from "@/stores/orderbook";
+import { useOrderbookDataStore } from "@/stores/orderbook/orderbookDataStore";
 import { useAccountStore } from "@/stores/account";
 import { LoadingIcon } from "@/components/limit/icons";
 import Styles from "@/components/orderbook/orderbook.module.css";

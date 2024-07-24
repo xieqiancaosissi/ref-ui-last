@@ -1,21 +1,24 @@
 import { useEffect, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
-import Link from "next/link";
 import { useRouter } from "next/router";
-import { ArrowIcon, MenuContainer } from "./icons";
-import { menuData, IMenuChild } from "./menuData";
-// CSR
+import { MenuContainer } from "./icons";
+import Bridge from "./bridge";
+import { menuData, IMenuChild, routeMapIds } from "./menuData";
+import BuyNearButton from "../buyNear/button";
+import { useAccountStore } from "@/stores/account";
+// CSR,
 const WalletConnect = dynamic(() => import("./walletConnect"), {
   ssr: false,
 });
-
 export default function Menu() {
   const [oneLevelMenuId, setOneLevelMenuId] = useState("trade");
   const [twoLevelMenuId, setTwoLevelMenuId] = useState("swap");
   const [twoLevelMenuShow, setTwoLevelMenuShow] = useState<boolean>(true);
   const menuList = menuData();
   const router = useRouter();
+  const accountStore = useAccountStore();
+  const isSignedIn = accountStore.getIsSignedIn();
   const oneLevelData = useMemo(() => {
     let oneLevel;
     if (oneLevelMenuId) {
@@ -23,6 +26,9 @@ export default function Menu() {
     }
     return oneLevel;
   }, [oneLevelMenuId, menuList]);
+  useEffect(() => {
+    chooseMenuByRoute(router.route);
+  }, [router.route]);
   function chooseOneLevelMenu(id: string) {
     const choosedMenu = menuList.find((menu) => menu.id === id);
     if (!choosedMenu) {
@@ -37,15 +43,33 @@ export default function Menu() {
     setOneLevelMenuId(id);
     if (choosedMenu?.children) {
       setTwoLevelMenuShow(true);
-    } else if (choosedMenu.path) {
+    } else if (choosedMenu?.path) {
       router.push(choosedMenu.path);
+      setTwoLevelMenuId("");
     }
   }
   function chooseTwoLevelMenu(item: IMenuChild) {
     setTwoLevelMenuId(item.id);
-    router.push(item.path);
+    if (item.path) {
+      router.push(item.path);
+    } else if (item.externalLink) {
+      window.open(item.externalLink);
+    }
   }
-
+  function chooseMenuByRoute(route: string) {
+    const target = Object.entries(routeMapIds).find(([, value]) => {
+      return value.includes(route);
+    });
+    if (target) {
+      const arr = target[0].split("-");
+      setOneLevelMenuId(arr[0]);
+      if (arr[1]) {
+        setTwoLevelMenuId(arr[1]);
+      } else {
+        setTwoLevelMenuId("");
+      }
+    }
+  }
   // for stable detail css style
   const [extraBack, setExtraBack] = useState("transparent");
   const [extraWidth, setExtraWidth] = useState("60%");
@@ -56,7 +80,7 @@ export default function Menu() {
       setExtraBack("rgba(33, 43, 53, 0.4)");
       setExtraWidth("100%");
     }
-  }, [router]);
+  }, [router.route]);
 
   return (
     <div className="fixed w-full" style={{ zIndex: "99" }}>
@@ -80,27 +104,18 @@ export default function Menu() {
               >
                 {menu.icon}
                 {menu.label}
-                {/* {menu.children ? (
-                  <ArrowIcon
-                    className={`${
-                      oneLevelMenuId === menu.id && twoLevelMenuShow
-                        ? "transform rotate-180"
-                        : ""
-                    }`}
-                  />
-                ) : null} */}
               </div>
             );
           })}
         </div>
-        <WalletConnect />
+        <div className="flex items-center gap-2.5 justify-self-end">
+          {isSignedIn ? <BuyNearButton /> : null}
+          <Bridge />
+          <WalletConnect />
+        </div>
       </div>
       {/* two level menu */}
       {oneLevelData?.children ? (
-        // <div
-        //   className={`flex items-center justify-center bg-gray-20 bg-opacity-40 gap-6 border-b border-white border-opacity-10 ${
-        //     twoLevelMenuShow ? "" : "hidden"
-        //   }`}
         <div
           className={`flex items-center justify-center relative gap-6 z-40 ${
             twoLevelMenuShow ? "" : "hidden"
@@ -119,11 +134,6 @@ export default function Menu() {
                 onClick={() => {
                   chooseTwoLevelMenu(item);
                 }}
-                // className={`flex items-center h-9 rounded cursor-pointer font-bold text-base gap-2 px-5 border-2 ${
-                //   twoLevelMenuId === item.id
-                //     ? "bg-gray-40 text-white border-gray-40"
-                //     : "text-gray-10  border-gray-30"
-                // }`}
                 className={`flex items-center h-9 rounded cursor-pointer text-base gap-2 px-5 ${
                   twoLevelMenuId === item.id ? "text-white" : "text-gray-10"
                 }`}

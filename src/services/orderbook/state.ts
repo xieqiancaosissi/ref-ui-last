@@ -27,10 +27,12 @@ import {
   getUserAllPositions,
   updateLeverage,
 } from "./perp-off-chain-api";
-import _, { set } from "lodash";
-// import { marginPopUp } from "../../../components/layout/transactionTipPopUp"; TODO Wait for processing
+import _ from "lodash";
+import { marginPopUp } from "@/components/orderbook/transactionTipPopUp";
 import { useIntl } from "react-intl";
 import { constOrderlyPageSize } from "./utils";
+import { useOrderbookDataStore } from "@/stores/orderbook/orderbookDataStore";
+import { useOrderbookPrivateWSDataStore } from "@/stores/orderbook/orderbookPrivateWSDataStore";
 
 export function useMarketTrades({
   symbol,
@@ -214,12 +216,11 @@ export function useOrderlyRegistered() {
 }
 
 export function useAllPositions(validAccountSig: boolean) {
-  const accountStore = useAccountStore();
-  const accountId = accountStore.getAccountId();
-
   const [positions, setPositions] = useState<PositionsType>();
-
-  const [positionTrigger, setPositionTrigger] = useState<boolean>(false);
+  const accountStore = useAccountStore();
+  const orderbookDataStore = useOrderbookDataStore();
+  const accountId = accountStore.getAccountId();
+  const positionTrigger = orderbookDataStore.getPositionTrigger();
 
   useEffect(() => {
     if (!accountId || !validAccountSig) return;
@@ -233,6 +234,10 @@ export function useAllPositions(validAccountSig: boolean) {
       res.data.rows = rows;
 
       setPositions({ ...res.data, timestamp: res.timestamp });
+      orderbookDataStore.setPositions({
+        ...res.data,
+        timestamp: res.timestamp,
+      });
     });
   }, [accountId, positionTrigger, validAccountSig]);
 
@@ -240,23 +245,19 @@ export function useAllPositions(validAccountSig: boolean) {
     positions,
     setPositions,
     positionTrigger,
-    setPositionTrigger,
   };
 }
 
 export function useLeverage() {
   const accountStore = useAccountStore();
   const accountId = accountStore.getAccountId();
-
   const [error, setError] = useState<Error | undefined | null>();
-
   const intl = useIntl();
-
-  // const { futureLeverage, userInfo, setUserInfo, setPositionTrigger } =
-  //   useOrderlyContext();
-  const { futureLeverage, userInfo, setUserInfo, setPositionTrigger } =
-    {} as any; // TODO Wait for processing
-
+  const orderbookPrivateWSDataStore = useOrderbookPrivateWSDataStore();
+  const orderbookDataStore = useOrderbookDataStore();
+  const futureLeverage = orderbookPrivateWSDataStore.getFutureLeverage();
+  const userInfo = orderbookDataStore.getUserInfo();
+  const positionTrigger = orderbookDataStore.getPositionTrigger();
   const [curLeverage, setCurLeverage] = useState<number>();
 
   const [changeTrigger, setChangeTrigger] = useState<boolean>();
@@ -271,7 +272,7 @@ export function useLeverage() {
   const requestLeverage = async () => {
     getAccountInformation({ accountId }).then((res) => {
       if (!!res) {
-        setUserInfo(res);
+        orderbookDataStore.setUserInfo(res);
         setCurLeverage(res.max_leverage);
       }
     });
@@ -303,16 +304,16 @@ export function useLeverage() {
           });
         }
 
-        // return marginPopUp(tip, "error"); // TODO Wait for processing
+        return marginPopUp(tip, "error");
       } else {
         const tip = `${curLeverage}x ${intl.formatMessage({
           id: "futures_leverage_saved",
           defaultMessage: "Futures Leverage saved",
         })}`;
 
-        // marginPopUp(tip, "success"); TODO Wait for processing
+        marginPopUp(tip, "success");
 
-        setPositionTrigger((b: any) => !b);
+        orderbookDataStore.setPositionTrigger(!positionTrigger);
       }
 
       setError(null);

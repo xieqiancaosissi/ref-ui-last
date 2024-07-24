@@ -15,7 +15,11 @@ import { Transaction } from "@/interfaces/swap";
 import { ONLY_ZEROS } from "@/utils/numbers";
 import { getDepositTransactions } from "./token";
 import { LP_STORAGE_AMOUNT } from "@/utils/near";
-import { TokenMetadata, native_usdc_has_upgrated } from "./ft-contract";
+import {
+  TokenMetadata,
+  native_usdc_has_upgrated,
+  tokenFtMetadata,
+} from "./ft-contract";
 import getConfigV2 from "@/utils/configV2";
 import { STORAGE_TO_REGISTER_WITH_FT } from "@/utils/constant";
 import { ONE_YOCTO_NEAR } from "./xref";
@@ -23,10 +27,14 @@ import { storageDepositAction } from "./creator/storage";
 import { withdrawAction } from "./creator/token";
 import { checkTokenNeedsStorageDeposit } from "./swap/registerToken";
 import { getExplorer, ExplorerType } from "@/utils/device";
+import { toNonDivisibleNumber } from "@/utils/numbers";
+import Big from "big.js";
+import { getPool } from "./pool_detail";
 
 const { REF_FI_CONTRACT_ID, WRAP_NEAR_CONTRACT_ID } = getConfig();
 const { NO_REQUIRED_REGISTRATION_TOKEN_IDS } = getConfigV2();
 const explorerType = getExplorer();
+export const DEFLATION_MARK = "tknx.near";
 const genUrlParams = (props: Record<string, string | number>) => {
   return Object.keys(props)
     .map((key) => key + "=" + props[key])
@@ -720,4 +728,223 @@ export const removeLiquidityByTokensFromStablePool = async ({
   // }
 
   return executeMultipleTransactions(transactions);
+};
+
+interface AddLiquidityToPoolOptions {
+  id: number;
+  tokenAmounts: { token: TokenMetadata; amount: string }[];
+}
+export const addLiquidityToPool = async ({
+  id,
+  tokenAmounts,
+}: AddLiquidityToPoolOptions) => {
+  let amounts = tokenAmounts.map(({ token, amount }) =>
+    toNonDivisibleNumber(token?.decimals, amount)
+  );
+  const transactions = await getDepositTransactions({
+    tokens: tokenAmounts.map(({ token, amount }) => token),
+    amounts: tokenAmounts.map(({ token, amount }) => amount),
+  });
+  // add deflation calc logic
+  const tknx_tokens = tokenAmounts
+    .map((item) => item.token)
+    .filter((token) => token.id.includes(DEFLATION_MARK));
+  if (tknx_tokens.length > 0) {
+    const pending = tknx_tokens.map((token) => tokenFtMetadata(token.id));
+    const tokenFtMetadatas = await Promise.all(pending);
+    const rate = tokenFtMetadatas.reduce((acc, cur, index) => {
+      const is_owner = cur.owner_account_id == getAccountId();
+      return {
+        ...acc,
+        [tknx_tokens[index].id]: is_owner
+          ? 0
+          : (cur?.deflation_strategy?.fee_strategy?.SellFee?.fee_rate ?? 0) +
+            (cur?.deflation_strategy?.burn_strategy?.SellBurn?.burn_rate ?? 0),
+      };
+    }, {});
+    amounts = tokenAmounts.map(({ token, amount }) => {
+      const reforeAmount = toNonDivisibleNumber(token.decimals, amount);
+      let afterAmount = reforeAmount;
+      if (rate[token.id]) {
+        afterAmount = Big(1 - rate[token.id] / 1000000)
+          .mul(reforeAmount)
+          .toFixed(0);
+      }
+      return afterAmount;
+    });
+  }
+  const actions: RefFiFunctionCallOptions[] = [
+    {
+      methodName: "add_liquidity",
+      args: { pool_id: +id, amounts },
+      amount: LP_STORAGE_AMOUNT,
+    },
+  ];
+
+  transactions.push({
+    receiverId: REF_FI_CONTRACT_ID,
+    functionCalls: [...actions],
+  });
+
+  const wNearTokenAmount = tokenAmounts.find(
+    (TA) => TA.token.id === WRAP_NEAR_CONTRACT_ID
+  );
+
+  if (wNearTokenAmount && !ONLY_ZEROS.test(wNearTokenAmount.amount)) {
+    transactions.unshift(nearDepositTransaction(wNearTokenAmount.amount));
+  }
+
+  if (tokenAmounts.map((ta) => ta.token.id).includes(WRAP_NEAR_CONTRACT_ID)) {
+    const registered = await ftGetStorageBalance(WRAP_NEAR_CONTRACT_ID);
+    if (registered === null) {
+      transactions.unshift({
+        receiverId: WRAP_NEAR_CONTRACT_ID,
+        functionCalls: [registerAccountOnToken()],
+      });
+    }
+  }
+
+  return executeMultipleTransactions(transactions);
+};
+
+interface RemoveLiquidityOptions {
+  id: number;
+  shares: string;
+  minimumAmounts: { [tokenId: string]: string };
+  unregister?: boolean;
+}
+
+export const removeLiquidityFromPool = async ({
+  id,
+  shares,
+  minimumAmounts,
+  unregister = false,
+}: RemoveLiquidityOptions) => {
+  const pool = await getPool(id);
+
+  const amounts = pool.tokenIds.map((tokenId: any) => minimumAmounts[tokenId]);
+
+  const tokenIds = Object.keys(minimumAmounts);
+
+  const withDrawTransactions: Transaction[] = [];
+
+  for (let i = 0; i < tokenIds.length; i++) {
+    const tokenId = tokenIds[i];
+
+    const ftBalance = await ftGetStorageBalance(tokenId);
+    if (ftBalance === null) {
+      if (NO_REQUIRED_REGISTRATION_TOKEN_IDS.includes(tokenId)) {
+        const r = await native_usdc_has_upgrated(tokenId);
+        if (r) {
+          withDrawTransactions.unshift({
+            receiverId: tokenId,
+            functionCalls: [
+              storageDepositAction({
+                registrationOnly: true,
+                amount: STORAGE_TO_REGISTER_WITH_FT,
+              }),
+            ],
+          });
+        } else {
+          withDrawTransactions.unshift({
+            receiverId: tokenId,
+            functionCalls: [
+              {
+                methodName: "register_account",
+                args: {
+                  account_id: getAccountId(),
+                },
+                gas: "10000000000000",
+              },
+            ],
+          });
+        }
+      } else {
+        withDrawTransactions.unshift({
+          receiverId: tokenId,
+          functionCalls: [
+            storageDepositAction({
+              registrationOnly: true,
+              amount: STORAGE_TO_REGISTER_WITH_FT,
+            }),
+          ],
+        });
+      }
+    }
+  }
+
+  const neededStorage = await checkTokenNeedsStorageDeposit();
+  if (neededStorage) {
+    withDrawTransactions.unshift({
+      receiverId: REF_FI_CONTRACT_ID,
+      functionCalls: [storageDepositAction({ amount: neededStorage })],
+    });
+  }
+
+  const withdrawActions = tokenIds.map((tokenId, i) =>
+    withdrawAction({ tokenId, amount: "0", unregister })
+  );
+
+  const withdrawActionsFireFox = tokenIds.map((tokenId, i) =>
+    withdrawAction({ tokenId, amount: "0", unregister, singleTx: true })
+  );
+
+  const actions: RefFiFunctionCallOptions[] = [
+    {
+      methodName: "remove_liquidity",
+      args: {
+        pool_id: id,
+        shares,
+        min_amounts: amounts,
+      },
+      amount: ONE_YOCTO_NEAR,
+      gas: "30000000000000",
+    },
+  ];
+  if (explorerType !== ExplorerType.Firefox) {
+    withdrawActions.forEach((item) => {
+      actions.push(item);
+    });
+  }
+
+  const transactions: Transaction[] = [
+    ...withDrawTransactions,
+    {
+      receiverId: REF_FI_CONTRACT_ID,
+      functionCalls: [...actions],
+    },
+  ];
+
+  if (explorerType === ExplorerType.Firefox) {
+    transactions.push({
+      receiverId: REF_FI_CONTRACT_ID,
+      functionCalls: withdrawActionsFireFox,
+    });
+  }
+
+  // if (
+  //   tokenIds.includes(WRAP_NEAR_CONTRACT_ID) &&
+  //   !ONLY_ZEROS.test(minimumAmounts[WRAP_NEAR_CONTRACT_ID])
+  // ) {
+  //   transactions.push(
+  //     nearWithdrawTransaction(
+  //       toReadableNumber(
+  //         nearMetadata.decimals,
+  //         minimumAmounts[WRAP_NEAR_CONTRACT_ID]
+  //       )
+  //     )
+  //   );
+  // }
+
+  return executeMultipleTransactions(transactions);
+};
+
+export const predictRemoveLiquidity = async (
+  pool_id: number,
+  shares: string
+): Promise<[]> => {
+  return refFiViewFunction({
+    methodName: "predict_remove_liquidity",
+    args: { pool_id, shares },
+  });
 };

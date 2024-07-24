@@ -1204,3 +1204,51 @@ export const TokenPairIcon = (props: any) => {
     </svg>
   );
 };
+
+export const GradientFarmBorder = (props: any) => {
+  return (
+    <svg
+      width="308"
+      height="92"
+      viewBox="0 0 308 92"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <rect
+        x="0.75"
+        y="0.75"
+        width="306.5"
+        height="90.5"
+        rx="11.25"
+        fill="url(#paint0_radial_3261_14009)"
+        stroke="url(#paint1_linear_3261_14009)"
+        strokeWidth="1.5"
+      />
+      <defs>
+        <radialGradient
+          id="paint0_radial_3261_14009"
+          cx="0"
+          cy="0"
+          r="1"
+          gradientUnits="userSpaceOnUse"
+          gradientTransform="translate(78.7017 26.5) rotate(35.7383) scale(128.406 147.568)"
+        >
+          <stop stopColor="#0E3E48" />
+          <stop offset="1" stopColor="#001320" />
+        </radialGradient>
+        <linearGradient
+          id="paint1_linear_3261_14009"
+          x1="0"
+          y1="92"
+          x2="308"
+          y2="92"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stopColor="#9EFF01" />
+          <stop offset="1" stopColor="#FF43EC" />
+        </linearGradient>
+      </defs>
+    </svg>
+  );
+};

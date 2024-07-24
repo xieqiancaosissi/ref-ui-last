@@ -32,7 +32,7 @@ function DonateConfirmModal(props: any) {
         }}
       >
         <div className="title flex items-center justify-between">
-          <div className="text-white text-xl gotham_bold">
+          <div className="text-white text-xl paceGrotesk-Bold">
             Donation Instructions
           </div>
           <ModalCloseIcon
@@ -47,7 +47,7 @@ function DonateConfirmModal(props: any) {
         <div className="flex justify-center">
           <div
             onClick={doDonate}
-            className={`bg-senderHot px-3 py-1 gotham_bold cursor-pointer rounded-md mt-2 w-20 outline-none ${
+            className={`bg-senderHot px-3 py-1 paceGrotesk-Bold cursor-pointer rounded-md mt-2 w-20 outline-none ${
               donateLoading ? "opacity-40" : ""
             }`}
           >

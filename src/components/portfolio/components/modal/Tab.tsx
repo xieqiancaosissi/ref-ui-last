@@ -140,7 +140,7 @@ export default function Tab() {
                   <span
                     className={`bg-gray-60 bg-opacity-15 rounded-md text-xs py-1 px-2  ml-1.5 ${
                       tab.tag == activeTab
-                        ? "text-white gotham_bold"
+                        ? "text-white paceGrotesk-Bold"
                         : "text-gray-10"
                     }`}
                   >
@@ -150,7 +150,7 @@ export default function Tab() {
                 <span
                   className={`text-base ${
                     tab.tag == activeTab
-                      ? "text-white gotham_bold"
+                      ? "text-white paceGrotesk-Bold"
                       : "text-gray-10"
                   }`}
                 >

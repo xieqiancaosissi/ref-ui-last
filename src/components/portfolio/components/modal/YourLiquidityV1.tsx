@@ -506,7 +506,7 @@ function YourClassicLiquidityLinePage() {
       <div className="frcb h-14">
         <div className="flex items-center">
           <div className="flex items-center">{Images}</div>
-          <span className="text-sm text-white gotham_bold mx-2.5">
+          <span className="text-sm text-white paceGrotesk-Bold mx-2.5">
             {Symbols}
           </span>
           <span className="frcc text-xs text-gray-10 px-1 rounded-md border border-gray-90 mr-1.5">
@@ -522,7 +522,7 @@ function YourClassicLiquidityLinePage() {
           </span>
         </div>
         <div className="flex items-center">
-          <span className="text-sm text-white gotham_bold mr-5">
+          <span className="text-sm text-white paceGrotesk-Bold mr-5">
             {display_value(lp_total_value)}
           </span>
           <UpDownButton

@@ -66,7 +66,7 @@ function UnLockedModal(props: any) {
           style={{ height: "65px", background: "rgba(0,0,0,.2)" }}
         >
           <div className="text-white text-xl focus:outline-none appearance-none leading-tight px-2.5 w-full flex items-center">
-            <span className="text-white gotham_bold text-2xl mr-2">
+            <span className="text-white paceGrotesk-Bold text-2xl mr-2">
               {balance}
             </span>
             <LpUnlockWithDivIcon />

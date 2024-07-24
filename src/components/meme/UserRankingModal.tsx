@@ -256,7 +256,7 @@ function UserRankingModal(props: any) {
         }}
       >
         <div className="title flex items-center justify-between pr-3 mb-6">
-          <div className="text-white text-xl gotham_bold">
+          <div className="text-white text-xl paceGrotesk-Bold">
             User stake ranking
           </div>
           <ModalCloseIcon className="cursor-pointer" onClick={onRequestClose} />

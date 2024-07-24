@@ -207,7 +207,7 @@ export function getAccountFarmData({
   if (!xrefContractId) {
     return;
   }
-  const userSeed = memeFarmContractUserData.join_seeds[seed_id];
+  const userSeed = memeFarmContractUserData.join_seeds?.[seed_id];
   const userXrefSeed =
     xrefFarmContractUserData[xrefContractId]?.join_seeds?.[xrefTokenId];
   if (userSeed && !emptyObject(seeds)) {
@@ -238,7 +238,7 @@ export function getAccountFarmData({
     };
   }, {});
   xrefUnclaimed = Object.entries(
-    xrefFarmContractUserData[xrefContractId].unclaimed_rewards || {}
+    xrefFarmContractUserData[xrefContractId]?.unclaimed_rewards || {}
   ).reduce((acc: Record<string, string>, [tokenId, amount]) => {
     return {
       ...acc,
@@ -285,18 +285,18 @@ export function getAccountButtonStatus({
   xrefTokenId: string;
 }) {
   const memeUnStakeButtonDisabled =
-    +(memeFarmContractUserData.join_seeds[seed_id]?.free_amount || 0) == 0;
+    +(memeFarmContractUserData.join_seeds?.[seed_id]?.free_amount || 0) == 0;
   const memeClaimButtonDisabled = emptyObject(
-    memeFarmContractUserData.unclaimed_rewards[seed_id]
+    memeFarmContractUserData.unclaimed_rewards?.[seed_id]
   );
   const xrefUnStakeButtonDisabled =
     +(
-      xrefFarmContractUserData[MEME_TOKEN_XREF_MAP[seed_id]].join_seeds[
+      xrefFarmContractUserData[MEME_TOKEN_XREF_MAP[seed_id]]?.join_seeds[
         xrefTokenId
       ]?.free_amount || 0
     ) == 0;
   const xrefClaimButtonDisabled = emptyObject(
-    xrefFarmContractUserData[MEME_TOKEN_XREF_MAP[seed_id]].unclaimed_rewards
+    xrefFarmContractUserData[MEME_TOKEN_XREF_MAP[seed_id]]?.unclaimed_rewards
   );
   return {
     memeUnStakeButtonDisabled,

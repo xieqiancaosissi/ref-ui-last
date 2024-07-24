@@ -659,7 +659,7 @@ function DclFarmRowPage() {
           <div className="flex items-center flex-shrink-0 mr-2.5">
             {displayImgs()}
           </div>
-          <span className="text-white font-bold text-sm gotham_bold">
+          <span className="text-white font-bold text-sm paceGrotesk-Bold">
             {displaySymbols()}
           </span>
           <span className="frcc text-xs text-gray-10 px-1 rounded-md border border-gray-90 mr-1.5">
@@ -676,12 +676,12 @@ function DclFarmRowPage() {
         </div>
         <div className="flex items-center">
           <div className="flex flex-col items-end mr-5">
-            <span className="text-white text-sm gotham_bold">
+            <span className="text-white text-sm paceGrotesk-Bold">
               {display_value(listLiquidities_inFarimg_value)}
             </span>
             <div className="flex items-center">
               <FarmListRewards className="ml-1 mr-1" />
-              <span className="text-xs text-farmApyColor gotham_bold">
+              <span className="text-xs text-farmApyColor paceGrotesk-Bold">
                 {unclaimedRewardsData.worth}
               </span>
             </div>
@@ -725,7 +725,7 @@ function DclFarmRowPage() {
                         src={token.icon}
                         className={`w-5 h-5 border border-greenColor rounded-full mr-1.5`}
                       ></img>
-                      <span className={`text-xs text-white gotham_bold`}>
+                      <span className={`text-xs text-white paceGrotesk-Bold`}>
                         {amount}
                       </span>
                     </div>
@@ -1052,7 +1052,7 @@ function ClassicFarmRowPage() {
           <div className="flex items-center flex-shrink-0 mr-2.5">
             {displayImgs()}
           </div>
-          <span className="text-white font-bold text-sm gotham_bold">
+          <span className="text-white font-bold text-sm paceGrotesk-Bold">
             {displaySymbols()}
           </span>
           <span className="ml-2 frcc text-xs text-gray-10 px-1 rounded-md border border-gray-90 mr-1.5">
@@ -1069,12 +1069,12 @@ function ClassicFarmRowPage() {
         </div>
         <div className="flex items-center">
           <div className="flex flex-col items-end mr-5">
-            <span className="text-white text-sm gotham_bold">
+            <span className="text-white text-sm paceGrotesk-Bold">
               {getYourTvl()}
             </span>
             <div className="flex items-center">
               <FarmListRewards className="ml-1 mr-1" />
-              <span className="text-xs text-farmApyColor gotham_bold">
+              <span className="text-xs text-farmApyColor paceGrotesk-Bold">
                 {unclaimedRewardsData.worth}
               </span>
             </div>
@@ -1135,7 +1135,7 @@ function ClassicFarmRowPage() {
                         src={token.icon}
                         className={`w-5 h-5 border border-greenColor rounded-full mr-1.5`}
                       ></img>
-                      <span className={`text-xs text-white gotham_bold`}>
+                      <span className={`text-xs text-white paceGrotesk-Bold`}>
                         {amount}
                       </span>
                     </div>

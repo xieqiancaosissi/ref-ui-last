@@ -76,7 +76,7 @@ export default function RangeSlider(props: any) {
           ref={tipRef}
         >
           <span className="text-xs text-black">
-            <label className="gotham_bold">
+            <label className="paceGrotesk-Bold">
               {toPrecision(sliderAmount.toString(), 0)}
             </label>
             %

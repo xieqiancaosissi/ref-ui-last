@@ -1711,13 +1711,13 @@ export default function DclChart({
         <div className="overBox w-75 min-h-48 flex flex-col lg:absolute rounded-xl bg-modalGrayBg  p-4 xsm:hidden xsm:mt-4 z-10 lg:invisible">
           <div className="flex items-center justify-between my-2">
             <span className="text-xs text-gray-60">APR(24h)</span>
-            <span className="text-xs text-white gotham_bold">
+            <span className="text-xs text-white paceGrotesk-Bold">
               {binDetail?.feeApr}
             </span>
           </div>
           <div className="flex items-center justify-between my-2">
             <span className="text-xs text-gray-60 mr-10">Price</span>
-            <span className="text-xs text-white gotham_bold">
+            <span className="text-xs text-white paceGrotesk-Bold">
               {reverse ? (
                 <>
                   {binDetail?.price_by_token_y} {pool?.token_x_metadata?.symbol}{" "}
@@ -1739,7 +1739,7 @@ export default function DclChart({
                 <span className="text-xs text-gray-60">
                   {pool?.token_x_metadata?.symbol} Amount
                 </span>
-                <span className="text-xs text-white gotham_bold">
+                <span className="text-xs text-white paceGrotesk-Bold">
                   {binDetail.token_x_amount}
                 </span>
               </div>
@@ -1756,7 +1756,7 @@ export default function DclChart({
                   ></span>
                   <span className="text-xs text-gray-60">in Liquidity</span>
                 </div>
-                <span className="text-xs text-white gotham_bold">
+                <span className="text-xs text-white paceGrotesk-Bold">
                   {binDetail.token_x_amount_in_liquidity}
                 </span>
               </div>
@@ -1773,7 +1773,7 @@ export default function DclChart({
                   ></span>
                   <span className="text-xs text-gray-60">in Limit Orders</span>
                 </div>
-                <span className="text-xs text-white gotham_bold">
+                <span className="text-xs text-white paceGrotesk-Bold">
                   {binDetail.token_x_amount_in_order}
                 </span>
               </div>
@@ -1785,7 +1785,7 @@ export default function DclChart({
                 <span className="text-xs text-gray-60">
                   {pool?.token_y_metadata?.symbol} Amount
                 </span>
-                <span className="text-xs text-white gotham_bold">
+                <span className="text-xs text-white paceGrotesk-Bold">
                   {binDetail.token_y_amount}
                 </span>
               </div>
@@ -1802,7 +1802,7 @@ export default function DclChart({
                   ></span>
                   <span className="text-xs text-gray-60">in Liquidity</span>
                 </div>
-                <span className="text-xs text-white gotham_bold">
+                <span className="text-xs text-white paceGrotesk-Bold">
                   {binDetail.token_y_amount_in_liquidity}
                 </span>
               </div>
@@ -1819,7 +1819,7 @@ export default function DclChart({
                   ></span>
                   <span className="text-xs text-gray-60">in Limit Orders</span>
                 </div>
-                <span className="text-xs text-white gotham_bold">
+                <span className="text-xs text-white paceGrotesk-Bold">
                   {binDetail.token_y_amount_in_order}
                 </span>
               </div>
@@ -1829,13 +1829,13 @@ export default function DclChart({
         <div className="wholeOverBox xsm:w-full lg:absolute rounded-xl bg-modalGrayBg px-3 py-2 z-10  xsm:hidden xsm:mt-4 lg:invisible">
           <div className="flex items-center justify-between my-2">
             <span className="text-xs text-gray-60">Your Liquidity</span>
-            <span className="text-xs text-white gotham_bold">
+            <span className="text-xs text-white paceGrotesk-Bold">
               {user_liquidities_detail?.total_value || "-"}
             </span>
           </div>
           <div className="flex items-center justify-between my-2">
             <span className="text-xs text-gray-60 mr-10">Price Range</span>
-            <span className="flex items-center text-xs text-white gotham_bold">
+            <span className="flex items-center text-xs text-white paceGrotesk-Bold">
               {user_liquidities_detail?.min_price} -{" "}
               {user_liquidities_detail?.max_price}
               <span className="ml-1">
@@ -1851,7 +1851,7 @@ export default function DclChart({
           </div>
           <div className="flex items-center justify-between my-2">
             <span className="text-xs text-gray-60 mr-10">Position</span>
-            <span className="text-xs text-white gotham_bold">
+            <span className="text-xs text-white paceGrotesk-Bold">
               {user_liquidities_detail?.total_x_amount}{" "}
               {pool?.token_x_metadata?.symbol} +{" "}
               {user_liquidities_detail?.total_y_amount}{" "}
@@ -1860,13 +1860,13 @@ export default function DclChart({
           </div>
           <div className="flex items-center justify-between my-2">
             <span className="text-xs text-gray-60 mr-10">APR(24h)</span>
-            <span className="text-xs text-white gotham_bold">
+            <span className="text-xs text-white paceGrotesk-Bold">
               {user_liquidities_detail?.apr_24 || "-"}
             </span>
           </div>
           <div className="flex items-center justify-between my-2">
             <span className="text-xs text-gray-60 mr-10">Total Earned Fee</span>
-            <span className="text-xs text-white gotham_bold">
+            <span className="text-xs text-white paceGrotesk-Bold">
               {user_liquidities_detail?.total_earned_fee || "-"}
             </span>
           </div>
@@ -1887,7 +1887,7 @@ export default function DclChart({
                 {pool?.token_x_metadata?.symbol}:{" "}
               </span>
               <span className="text-xs text-white">
-                <label className="gotham_bold mr-1">
+                <label className="paceGrotesk-Bold mr-1">
                   {reverse
                     ? get_current_price_by_token_y()
                     : get_current_price_by_token_x()}
@@ -1900,7 +1900,7 @@ export default function DclChart({
                 {pool?.token_y_metadata?.symbol}:{" "}
               </span>
               <span className="text-xs text-white">
-                <label className="gotham_bold mr-1">
+                <label className="paceGrotesk-Bold mr-1">
                   {reverse
                     ? get_current_price_by_token_x()
                     : get_current_price_by_token_y()}

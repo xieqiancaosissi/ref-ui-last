@@ -108,7 +108,7 @@ function VoteDetailsModal(props: any) {
         }}
       >
         <div className="title flex items-center justify-between pr-3 mb-8 xsm:mb-2">
-          <div className="text-white text-xl gotham_bold">Detail</div>
+          <div className="text-white text-xl paceGrotesk-Bold">Detail</div>
           <ModalCloseIcon className="cursor-pointer" onClick={onRequestClose} />
         </div>
         <div style={{ height: is_mobile ? "94%" : "60vh", overflow: "auto" }}>
@@ -182,7 +182,7 @@ function DonateListPc({ donateList }: { donateList: IDonate[] }) {
                         <span>{donateData.metadata?.symbol}</span>
                         {donateData.win ? (
                           <div
-                            className="text-black text-xs gotham_bold rounded py-0.5 px-1 bg-primaryGreen transform"
+                            className="text-black text-xs paceGrotesk-Bold rounded py-0.5 px-1 bg-primaryGreen transform"
                             style={{ transform: "skewX(-20deg)" }}
                           >
                             Listed
@@ -190,19 +190,21 @@ function DonateListPc({ donateList }: { donateList: IDonate[] }) {
                         ) : null}
                       </div>
                     </div>
-                    <div className="gotham_bold">
+                    <div className="paceGrotesk-Bold">
                       {toInternationalCurrencySystem_number(
                         donateData.xrefStakedAmount
                       )}
                     </div>
-                    <div className="gotham_bold">{donateData.xrefVoters}</div>
+                    <div className="paceGrotesk-Bold">
+                      {donateData.xrefVoters}
+                    </div>
                     <div className="flex items-center gap-1.5">
                       <img
                         className="w-5 h-5 rounded-full"
                         src={donateData.metadata?.icon}
                       />
                       <div className="flex flex-col">
-                        <span className="gotham_bold">
+                        <span className="paceGrotesk-Bold">
                           {toInternationalCurrencySystem_number(
                             donateData.donateBalance
                           )}
@@ -215,8 +217,8 @@ function DonateListPc({ donateList }: { donateList: IDonate[] }) {
                       </div>
                     </div>
                     {isSignedIn ? (
-                      <div className="gotham_bold pl-3">
-                        <div className="justify-self-end gotham_bold">
+                      <div className="paceGrotesk-Bold pl-3">
+                        <div className="justify-self-end paceGrotesk-Bold">
                           {toInternationalCurrencySystem_number(
                             userStakedAmount
                           )}
@@ -263,12 +265,12 @@ function DonateListMobile({ donateList }: { donateList: IDonate[] }) {
                     className="w-10 h-10 rounded-full"
                     src={donateData.metadata?.icon}
                   />
-                  <span className="text-base text-white gotham_bold">
+                  <span className="text-base text-white paceGrotesk-Bold">
                     {donateData.metadata?.symbol}
                   </span>
                   {donateData.win ? (
                     <div
-                      className="text-black text-xs gotham_bold rounded py-0.5 px-1 bg-senderHot transform"
+                      className="text-black text-xs paceGrotesk-Bold rounded py-0.5 px-1 bg-senderHot transform"
                       style={{ transform: "skewX(-20deg)" }}
                     >
                       Listed

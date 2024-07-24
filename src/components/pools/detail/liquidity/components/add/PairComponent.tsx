@@ -19,7 +19,7 @@ export function PairComponent() {
     <div className="flex items-center justify-between px-4 mb-3 w-full">
       <div className="flex items-center gap-2.5">
         {!tokenX || !tokenY ? (
-          <span className="text-lg gotham_bold text-white">
+          <span className="text-lg paceGrotesk-Bold text-white">
             Select Token Pair
           </span>
         ) : (
@@ -45,7 +45,7 @@ export function PairComponent() {
               />
             </div>
             <div
-              className={`flex items-center text-lg text-white gotham_bold ${
+              className={`flex items-center text-lg text-white paceGrotesk-Bold ${
                 pair_is_reverse ? "flex-row-reverse" : ""
               }`}
             >

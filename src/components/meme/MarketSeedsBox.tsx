@@ -86,6 +86,9 @@ const MarketSeedsBox = ({
     </div>`;
     return result;
   }
+  function showWalletSelector() {
+    window.modal.show();
+  }
   return (
     <div
       className={`grid gap-4 xsm:grid-cols-1 xsm:grid-rows-1 lg:grid-cols-2 xsm:mx-3 ${
@@ -204,7 +207,12 @@ const MarketSeedsBox = ({
             )}
             {/* operation */}
             <div className={`mt-6 ${isSignedIn ? "hidden" : ""}`}>
-              <div>...</div>
+              <div
+                onClick={showWalletSelector}
+                className="frcc h-12 rounded border border-primaryGreen px-4 font-semibold text-primaryGreen cursor-pointer"
+              >
+                Connect Wallet
+              </div>
             </div>
             <div
               className={`flex items-center justify-between mt-6 gap-3 xsm:flex-col-reverse ${

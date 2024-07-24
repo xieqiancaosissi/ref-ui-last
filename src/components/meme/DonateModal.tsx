@@ -115,7 +115,7 @@ function DonateModal(props: any) {
         }}
       >
         <div className="title flex items-center justify-between">
-          <div className="text-white text-2xl gotham_bold xsm:text-xl">
+          <div className="text-white text-2xl paceGrotesk-Bold xsm:text-xl">
             Donate Meme
           </div>
           <ModalCloseIcon className="cursor-pointer" onClick={onRequestClose} />
@@ -156,7 +156,7 @@ function DonateModal(props: any) {
                   className="w-6 h-6 rounded-full"
                   src={selectedDefaultTab?.icon}
                 />
-                <div className="ml-1.5 mr-2 text-base gotham_bold">
+                <div className="ml-1.5 mr-2 text-base paceGrotesk-Bold">
                   {selectedDefaultTab?.symbol}
                 </div>
                 <SelectsDown />
@@ -183,7 +183,7 @@ function DonateModal(props: any) {
                           className="w-6 h-6 rounded-full"
                           src={allTokenMetadatas[memeTokenId]?.icon}
                         />
-                        <div className="ml-2 text-base gotham_bold">
+                        <div className="ml-2 text-base paceGrotesk-Bold">
                           {allTokenMetadatas[memeTokenId]?.symbol}
                         </div>
                       </div>
@@ -209,7 +209,7 @@ function DonateModal(props: any) {
           {isSignedIn ? (
             <div
               onClick={openDonateConfirmModal}
-              className={`flex flex-grow items-center justify-center bg-greenGradient mt-6 rounded-xl h-12 text-base gotham_bold focus:outline-none ${
+              className={`flex flex-grow items-center justify-center bg-greenGradient mt-6 rounded-xl h-12 text-base paceGrotesk-Bold focus:outline-none ${
                 disabled || donateLoading ? "opacity-40" : ""
               }`}
             >
@@ -261,7 +261,7 @@ const Tab = ({
 }) => {
   const baseStyle =
     "rounded-3xl border border-dark-40 pt-2 pl-2 pr-3 pb-2 flex items-center justify-between cursor-pointer outline-none";
-  const selectedStyle = "bg-primaryGreen text-cardBg";
+  const selectedStyle = "bg-primaryGreen";
   const unselectedStyle = "bg-dark-70 text-white";
 
   return (
@@ -272,7 +272,9 @@ const Tab = ({
       onClick={onSelect}
     >
       <img className="w-6 h-6 rounded-full" src={metadata?.icon} />
-      <div className="ml-1.5 text-base gotham_bold">{metadata?.symbol}</div>
+      <div className="ml-1.5 text-base paceGrotesk-Bold">
+        {metadata?.symbol}
+      </div>
     </button>
   );
 };

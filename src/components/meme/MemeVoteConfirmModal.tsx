@@ -33,7 +33,7 @@ function MemeVoteConfirmModal(props: any) {
         }}
       >
         <div className="title flex items-center justify-between">
-          <div className="text-white text-xl gotham_bold">
+          <div className="text-white text-xl paceGrotesk-Bold">
             Feed Instructions
           </div>
           <ModalCloseIcon
@@ -49,7 +49,7 @@ function MemeVoteConfirmModal(props: any) {
         <div className="flex justify-center">
           <div
             onClick={doVote}
-            className={`bg-senderHot px-3 py-1 gotham_bold cursor-pointer rounded-md mt-2 w-20 outline-none ${
+            className={`bg-senderHot px-3 py-1 paceGrotesk-Bold cursor-pointer rounded-md mt-2 w-20 outline-none ${
               memeVoteLoading ? "opacity-40" : ""
             }`}
           >

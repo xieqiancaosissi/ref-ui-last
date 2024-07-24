@@ -65,7 +65,7 @@ const Overview = () => {
   function goFarmDetail(seed_id: string) {
     const lpSeed = lpSeeds[seed_id];
     if (lpSeed && lpSeed.farmList && lpSeed.farmList[0] && lpSeed.pool) {
-      if (lpSeed.farmList[0].status == "Ended") {
+      if (lpSeed && lpSeed.farmList && lpSeed.farmList[0] && lpSeed.pool) {
         window.open(`/farms/${lpSeed.pool.id}-e`);
       } else {
         window.open(`/farms/${lpSeed.pool.id}-r`);
@@ -78,12 +78,12 @@ const Overview = () => {
       {is_mobile ? (
         <div className="relative z-50 grid grid-cols-2 gap-2.5 mt-6 px-3">
           <TemplateMobile title="Total Staked">
-            <span className="text-xl gotham_bold text-white">
+            <span className="text-xl paceGrotesk-Bold text-white">
               {totalStaked}
             </span>
           </TemplateMobile>
           <TemplateMobile title="Total Stakers">
-            <span className="text-xl gotham_bold text-white">
+            <span className="text-xl paceGrotesk-Bold text-white">
               {totalStaker}
             </span>
           </TemplateMobile>
@@ -95,12 +95,12 @@ const Overview = () => {
                   className="rounded-full"
                   style={{ height: "26px", width: "26px" }}
                 />
-                <span className="text-xl gotham_bold text-white">
+                <span className="text-xl paceGrotesk-Bold text-white">
                   {formatPercentage(maxAprSeed[1])}
                 </span>
               </div>
             ) : (
-              <span className="text-xl gotham_bold text-white">-</span>
+              <span className="text-xl paceGrotesk-Bold text-white">-</span>
             )}
           </TemplateMobile>
           <TemplateMobile
@@ -127,19 +127,19 @@ const Overview = () => {
                     }
                   )}
                 </div>
-                <span className="text-xl gotham_bold text-white">
+                <span className="text-xl paceGrotesk-Bold text-white">
                   {formatPercentage(topApyFarm[1])}
                 </span>
               </div>
             ) : (
-              <span className="text-xl gotham_bold text-white">-</span>
+              <span className="text-xl paceGrotesk-Bold text-white">-</span>
             )}
           </TemplateMobile>
         </div>
       ) : (
         <div className="relative z-50 flex items-center justify-between gap-8">
           <Template title="Total Staked">
-            <span className="text-3xl gotham_bold text-white">
+            <span className="text-3xl paceGrotesk-Bold text-white">
               {totalStaked}
             </span>
           </Template>
@@ -151,12 +151,12 @@ const Overview = () => {
                   className="rounded-full"
                   style={{ height: "26px", width: "26px" }}
                 />
-                <span className="text-3xl gotham_bold text-white">
+                <span className="text-3xl paceGrotesk-Bold text-white">
                   {formatPercentage(maxAprSeed[1])}
                 </span>
               </div>
             ) : (
-              <span className="text-3xl gotham_bold text-white">-</span>
+              <span className="text-3xl paceGrotesk-Bold text-white">-</span>
             )}
           </Template>
           <Template
@@ -184,16 +184,16 @@ const Overview = () => {
                     }
                   )}
                 </div>
-                <span className="text-3xl gotham_bold text-white">
+                <span className="text-3xl paceGrotesk-Bold text-white">
                   {formatPercentage(topApyFarm[1])}
                 </span>
               </div>
             ) : (
-              <span className="text-3xl gotham_bold text-white">-</span>
+              <span className="text-3xl paceGrotesk-Bold text-white">-</span>
             )}
           </Template>
           <Template title="Total Stakers">
-            <span className="text-3xl gotham_bold text-white">
+            <span className="text-3xl paceGrotesk-Bold text-white">
               {totalStaker}
             </span>
           </Template>

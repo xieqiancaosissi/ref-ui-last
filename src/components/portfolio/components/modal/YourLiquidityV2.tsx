@@ -1231,7 +1231,7 @@ function UserLiquidityLineStyleGroupPage() {
                 className="relative -ml-1.5 w-7 h-7 border border-black rounded-full"
               ></img>
             </div>
-            <span className="text-white font-bold text-sm gotham_bold">
+            <span className="text-white font-bold text-sm paceGrotesk-Bold">
               {tokens[0]?.symbol}-{tokens[1]?.symbol}
             </span>
             <span className="frcc text-xs text-gray-10 bg-gray-60 bg-opacity-15 rounded-md px-1.5 mx-1.5 py-0.5">
@@ -1249,12 +1249,12 @@ function UserLiquidityLineStyleGroupPage() {
           </div>
           <div className="flex items-center">
             <div className="flex flex-col items-end mr-5">
-              <span className="text-white text-sm gotham_bold">
+              <span className="text-white text-sm paceGrotesk-Bold">
                 {your_liquidity || "-"}
               </span>
               <div className="flex items-center">
                 <WaterDropIcon className="m-1.5"></WaterDropIcon>
-                <span className="text-xs text-primaryGreen gotham_bold">
+                <span className="text-xs text-primaryGreen paceGrotesk-Bold">
                   {tokenFeeValue}
                 </span>
               </div>
@@ -1460,14 +1460,14 @@ function UserLiquidityLineStyleGroupPage() {
                   src={tokenMetadata_x_y && tokenMetadata_x_y[0].icon}
                   className="w-5 h-5 border border-greenColor rounded-full mr-1.5"
                 ></img>
-                <span className="text-xs text-white mr-5 gotham_bold">
+                <span className="text-xs text-white mr-5 paceGrotesk-Bold">
                   {tokenFeeLeft || "-"}
                 </span>
                 <img
                   src={tokenMetadata_x_y && tokenMetadata_x_y[1].icon}
                   className="w-5 h-5 border border-greenColor rounded-full mr-1.5"
                 ></img>
-                <span className="text-xs text-white gotham_bold">
+                <span className="text-xs text-white paceGrotesk-Bold">
                   {tokenFeeRight || "-"}
                 </span>
                 <span className="text-xs text-primaryGreen pl-3.5  ml-3.5">

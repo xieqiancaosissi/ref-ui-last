@@ -68,7 +68,7 @@ export function InputAmount({
               src={token.icon}
             />
             <span
-              className={`text-base gotham_bold whitespace-nowrap text-white`}
+              className={`text-base paceGrotesk-Bold whitespace-nowrap text-white`}
             >
               {token.symbol}
             </span>
@@ -80,7 +80,7 @@ export function InputAmount({
             <span title={balance}>
               {title || <FormattedMessage id="balance" />}:{" "}
               <span
-                className={`gotham_bold cursor-pointer hover:text-white underline`}
+                className={`paceGrotesk-Bold cursor-pointer hover:text-white underline`}
                 onClick={() => {
                   changeAmount(balance);
                 }}

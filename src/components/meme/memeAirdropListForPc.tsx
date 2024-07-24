@@ -55,7 +55,7 @@ export default function MemeAirdropListForPc({ onRequestClose, isOpen }: any) {
         {/* header */}
         <div className="px-5 xs:px-3 md:px-3 py-6 flex items-center justify-between">
           <div className="flex items-center">
-            <label className="text-white text-xl gotham_bold">
+            <label className="text-white text-xl paceGrotesk-Bold">
               Airdrop Announcement
             </label>
             <div
@@ -106,7 +106,7 @@ export default function MemeAirdropListForPc({ onRequestClose, isOpen }: any) {
                   >
                     {/* title */}
                     <div>
-                      <h3 className="gotham_bold text-xl">{item.title}</h3>
+                      <h3 className="paceGrotesk-Bold text-xl">{item.title}</h3>
                       <p className="text-gray-60 text-sm">{item.introduce}</p>
                     </div>
 
@@ -116,7 +116,7 @@ export default function MemeAirdropListForPc({ onRequestClose, isOpen }: any) {
                       <div>
                         <h5 className="text-sm">Amount</h5>
                         <p>
-                          <span className="text-xl gotham_bold text-primaryGreen">
+                          <span className="text-xl paceGrotesk-Bold text-primaryGreen">
                             {item.amount}
                           </span>
                           {/* <span className="ml-1 text-xs">
@@ -129,7 +129,7 @@ export default function MemeAirdropListForPc({ onRequestClose, isOpen }: any) {
                       <div>
                         <div>
                           <h5 className="text-sm">Airdrop time</h5>
-                          <p className="text-xl gotham_bold text-primaryGreen">
+                          <p className="text-xl paceGrotesk-Bold text-primaryGreen">
                             {item.airdropTime}
                           </p>
                         </div>

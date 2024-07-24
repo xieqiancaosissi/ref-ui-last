@@ -346,7 +346,7 @@ export default function LimitOrderChartAndTable() {
         : "0";
       return (
         <div className="flex items-center">
-          <span className="text-2xl text-senderHot gotham_bold mx-1.5">
+          <span className="text-2xl text-senderHot paceGrotesk-Bold mx-1.5">
             {switch_token == "X"
               ? formatPriceWithCommas(current_price_x)
               : formatPriceWithCommas(current_price_y)}

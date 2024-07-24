@@ -424,7 +424,7 @@ export default function ClassicPoolDetail() {
         {/* right liquidity */}
         <div className="w-80 ml-auto">
           {(!haveShare || !poolId) && (
-            <NoLiquidity add={() => addLiquidity()} isLoading={false} />
+            <NoLiquidity add={() => setShowAdd(true)} isLoading={false} />
           )}
           {haveShare && pool?.id && updatedMapList?.length > 0 && (
             <div className="w-80 h-58 p-4 rounded bg-refPublicBoxDarkBg flex flex-col ">

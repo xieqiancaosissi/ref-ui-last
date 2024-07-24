@@ -1,21 +1,19 @@
-
 .filterPoolType {
-    @apply text-xs cursor-pointer border border-gray-100 rounded w-59 h-9 frcc;
+  @apply text-xs cursor-pointer border border-gray-100 rounded w-59 h-9 frcc;
 }
 
 .tagActive {
-    @apply min-w-5 h-3 frcc text-black bg-primaryGreen font-bold absolute;
-    font-size: 10px;
-    border-radius: 9px 10px 10px 0;
-    top: 6px;
-    right: 13px
+  @apply min-w-5 h-3 frcc text-black bg-primaryGreen font-bold absolute;
+  font-size: 10px;
+  border-radius: 9px 10px 10px 0;
+  top: 6px;
+  right: 13px;
 }
 
-
 .tagDisable {
-    @apply min-w-5 h-3 frcc text-white bg-gray-100 font-bold absolute;
-    font-size: 10px;
-    border-radius: 9px 10px 10px 0;
-    top: 6px;
-    right: 13px
+  @apply min-w-5 h-3 frcc text-white bg-gray-100 font-bold absolute;
+  font-size: 10px;
+  border-radius: 9px 10px 10px 0;
+  top: 6px;
+  right: 13px;
 }

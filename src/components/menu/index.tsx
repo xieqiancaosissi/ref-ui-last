@@ -4,18 +4,21 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import { MenuContainer } from "./icons";
 import Bridge from "./bridge";
-import { menuData, IMenuChild, IMenu, routeMapIds } from "./menuData";
+import { menuData, IMenuChild, routeMapIds } from "./menuData";
+import BuyNearButton from "../buyNear/button";
+import { useAccountStore } from "@/stores/account";
 // CSR,
 const WalletConnect = dynamic(() => import("./walletConnect"), {
   ssr: false,
 });
-
 export default function Menu() {
   const [oneLevelMenuId, setOneLevelMenuId] = useState("trade");
   const [twoLevelMenuId, setTwoLevelMenuId] = useState("swap");
   const [twoLevelMenuShow, setTwoLevelMenuShow] = useState<boolean>(true);
   const menuList = menuData();
   const router = useRouter();
+  const accountStore = useAccountStore();
+  const isSignedIn = accountStore.getIsSignedIn();
   const oneLevelData = useMemo(() => {
     let oneLevel;
     if (oneLevelMenuId) {
@@ -103,6 +106,7 @@ export default function Menu() {
           })}
         </div>
         <div className="flex items-center gap-2.5 justify-self-end">
+          {isSignedIn ? <BuyNearButton /> : null}
           <Bridge />
           <WalletConnect />
         </div>

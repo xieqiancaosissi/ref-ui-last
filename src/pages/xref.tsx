@@ -242,7 +242,7 @@ export default function XrefPage(props: any) {
   };
   return (
     <div style={pageStyle} className="text-white">
-      <div className="w-4/12 m-auto flex flex-col items-center">
+      <div className="xl:w-4/12 md:w-7/12 w-6/12 m-auto flex flex-col items-center">
         <XrefLogo className="mb-4" />
         <XrefTitle className="mb-3.5" />
         <p className="text-sm text-gray-190 text-center mb-10">
@@ -334,7 +334,7 @@ export default function XrefPage(props: any) {
             />
           </div>
           {showDetails ? (
-            <div className="border border-gray-50 rounded px-3 py-4 mt-1.5 text-sm text-gray-50 mb-4">
+            <div className="border border-gray-90 rounded px-3 py-4 mt-1.5 text-sm text-gray-50 mb-4">
               {Object.values(analysisText).map((value, index: number) => {
                 const item = value as AnalysisTextItem;
                 return (
@@ -380,8 +380,9 @@ const pageStyle = {
   backgroundImage: `url('https://assets.ref.finance/images/XrefBg.png')`,
   backgroundSize: "cover",
   backgroundPosition: "center",
+  backgroundAttachment: "fixed",
   height: "100%",
-  minHeight: "90vh",
+  // minHe  ight: "100%",
   margin: "-50px 0 0 0",
   padding: "90px 0 24px 0",
   backgroundColor: "#000a0a",

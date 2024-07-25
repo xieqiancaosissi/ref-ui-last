@@ -62,7 +62,7 @@ export function InputView(props: any) {
         const displayStr = niceDecimals(cur_rate_forward, 4);
         return (
           <>
-            1 <span className="text-gray-50 ml-1">XREF =</span>&nbsp;
+            1 <span className="text-gray-50 ml-1">xREF =</span>&nbsp;
             <span className="" title={cur_rate_forward.toString()}>
               {displayStr}
             </span>
@@ -77,14 +77,14 @@ export function InputView(props: any) {
             <span className="" title={cur_rate_reverse.toString()}>
               {displayStr}
             </span>
-            &nbsp; <span className="text-gray-50 ml-1">XREF</span>
+            &nbsp; <span className="text-gray-50 ml-1">xREF</span>
           </>
         );
       }
     } else {
       return (
         <>
-          1 <span className="text-gray-50 ml-1">XREF =</span>
+          1 <span className="text-gray-50 ml-1">xREF =</span>
           <span className="text-gray-50 ml-1" title="1">
             1
           </span>
@@ -121,7 +121,7 @@ export function InputView(props: any) {
             }}
             className="frcc text-sm  cursor-pointer"
           >
-            <XrefSwitch className="mr-2" />
+            <XrefSwitch className="mr-2 text-gray-10 hover:text-primaryGreen" />
             {rateDisplay(tab)}
           </div>
           <div className="flex items-center text-gray-50 text-sm">
@@ -145,14 +145,14 @@ export function InputView(props: any) {
           <div className="absolute frcc right-4 top-5">
             {tab == 0 ? <RefSymbol /> : <XrefSymbol />}
             <label className="text-white text-base ml-1.5">
-              {tab == 0 ? "REF" : "XREF"}
+              {tab == 0 ? "REF" : "xREF"}
             </label>
           </div>
         </div>
       </div>
       <div className="flex items-center mb-4">
         {tab == 0 ? (
-          <label className="text-sm text-gray-50">XREF to receive ≈</label>
+          <label className="text-sm text-gray-50">xREF to receive ≈</label>
         ) : (
           <label className="text-sm text-gray-50">REF to receive ≈</label>
         )}

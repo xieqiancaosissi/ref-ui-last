@@ -236,9 +236,9 @@ export default function XrefPage(props: any) {
       title: "Cumulative REF Buyback",
       unit: "REF",
     },
-    sixth: {
-      title: "Yearly Revenue Booster",
-    },
+    // sixth: {
+    //   title: "Yearly Revenue Booster",
+    // },
   };
   return (
     <div style={pageStyle} className="text-white">
@@ -326,12 +326,14 @@ export default function XrefPage(props: any) {
           ></InputView>
           <div className="mt-6 frcb text-sm text-gray-10 ">
             <p>Details</p>
-            <XrefArrow
-              className={`cursor-pointer hover:text-primaryGreen ${
-                showDetails ? " transform rotate-180" : ""
-              }`}
+            <div
+              className="w-4 h-4 frcc cursor-pointer hover:text-primaryGreen"
               onClick={toggleDetails}
-            />
+            >
+              <XrefArrow
+                className={` ${showDetails ? " transform rotate-180" : ""}`}
+              />
+            </div>
           </div>
           {showDetails ? (
             <div className="border border-gray-90 rounded px-3 py-4 mt-1.5 text-sm text-gray-50 mb-4">

@@ -57,14 +57,14 @@ function AccessKeyModal(props: any) {
   }
   function getApprovedTip() {
     return `
-    <div class="flex items-center text-navHighLightText text-xs text-left w-48 gotham_font">
+    <div class="flex items-center text-navHighLightText text-xs text-left w-48">
         Authorize one Gas fee key per Dapp. Clean up if there are multiples.
     </div>
     `;
   }
   function getOrderlyTip() {
     return `
-    <div class="flex items-center text-navHighLightText text-xs text-left w-48 gotham_font">
+    <div class="flex items-center text-navHighLightText text-xs text-left w-48">
     Authorize one ordering key per account. Clean up if there are multiples. Deleting Orderly Keys may have delays as it requires confirmation from Orderly.
     </div>
     `;
@@ -99,11 +99,11 @@ function AccessKeyModal(props: any) {
               onClick={() => {
                 setTab("accessKey");
               }}
-              className={`flex items-center gap-1.5 text-base paceGrotesk-Bold pr-4 border-r border-gray-10 border-opacity-20 cursor-pointer ${
+              className={`flex items-center gap-1.5 text-base pr-4 border-r border-gray-10 border-opacity-20 cursor-pointer ${
                 tab == "accessKey" ? "text-white" : "text-dark-80"
               }`}
             >
-              Approved
+              <span className="paceGrotesk-Bold "> Approved</span>
               <div
                 className="text-white text-right ml-1"
                 data-class="reactTip"
@@ -124,8 +124,8 @@ function AccessKeyModal(props: any) {
               }`}
             >
               <OrderlyIcon isActive={tab == "orderlyKey"} />
-              <span className="flex items-center gap-1.5 text-lg paceGrotesk-Bold">
-                Orderly
+              <span className="flex items-center gap-1.5 text-lg">
+                <span className="paceGrotesk-Bold ">Orderly</span>
                 <div
                   className="text-white text-right ml-1"
                   data-class="reactTip"
@@ -282,7 +282,8 @@ function AuthorizedApps({
                   )}
                 </div>
                 <div className="flex items-center  bg-dark-60 bg-opacity-70 rounded-md text-xs text-gray-60 p-2.5 my-3 break-all">
-                  TX <span className="underline ml-1">{item.public_key}</span>
+                  {/* TX  */}
+                  <span className="ml-1">{item.public_key}</span>
                 </div>
                 <div className="flex items-center text-sm gap-1.5">
                   <span className="text-gray-60">Fee Allowance</span>

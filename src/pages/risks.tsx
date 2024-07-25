@@ -115,8 +115,8 @@ export default function RiskPage() {
             <div className={styles.wrapBoxContent}>
               If the team behind a token, either whitelisted or not, decides to
               abandon its project and takes the investors’ money, the project’s
-              token will probably be worth $0. If the token is whitelisted on Ref
-              Finance, that does not mean the project will succeed. You are
+              token will probably be worth $0. If the token is whitelisted on
+              Ref Finance, that does not mean the project will succeed. You are
               responsible for doing your own due diligence of the project and
               should understand that crypto are very-high risk, speculative
               investments. You should be aware and prepared to potentially lose
@@ -132,9 +132,9 @@ export default function RiskPage() {
               If you provide liquidity, please do note that you can make more
               money by not providing liquidity. Divergence Loss is often yet
               inappropriately called “impermanent loss”. The adjective
-              (impermanent) may assume or create the marketing feeling that losses
-              are only impermanent, meaning that losses are guaranteed to be
-              reversed, which is not true.
+              (impermanent) may assume or create the marketing feeling that
+              losses are only impermanent, meaning that losses are guaranteed to
+              be reversed, which is not true.
               <div
                 className="flex items-center gap-1 hover:text-white cursor-pointer mt-4"
                 onClick={() => {
@@ -153,8 +153,8 @@ export default function RiskPage() {
           <div className="flex flex-col gap-3">
             <span className={styles.wrapBoxTitle}>Staking risks</span>
             <div className={styles.wrapBoxContent}>
-              When staking you use multiple smart contract products each of which
-              has its own risks.
+              When staking you use multiple smart contract products each of
+              which has its own risks.
             </div>
           </div>
         </div>
@@ -163,10 +163,10 @@ export default function RiskPage() {
           <div className="flex flex-col gap-3">
             <span className={styles.wrapBoxTitle}>Permanent loss of a peg</span>
             <div className={styles.wrapBoxContent}>
-              If one of the stablecoins in the pool goes significantly down below
-              the peg of 1.0 and never returns to the peg, it will effectively
-              mean that pool liquidity providers hold almost all their liquidity
-              in that currency.
+              If one of the stablecoins in the pool goes significantly down
+              below the peg of 1.0 and never returns to the peg, it will
+              effectively mean that pool liquidity providers hold almost all
+              their liquidity in that currency.
             </div>
           </div>
         </div>
@@ -175,10 +175,10 @@ export default function RiskPage() {
           <div className="flex flex-col gap-3">
             <span className={styles.wrapBoxTitle}>Systemic issues</span>
             <div className={styles.wrapBoxContent}>
-              In general, DeFi or the legos of money is highly connected, meaning
-              that one failure of its component may trigger a succession of
-              failures. A systematic risk means that you can lose money even if
-              the failure does not directly concern your investment/exposure.{" "}
+              In general, DeFi or the legos of money is highly connected,
+              meaning that one failure of its component may trigger a succession
+              of failures. A systematic risk means that you can lose money even
+              if the failure does not directly concern your investment/exposure.{" "}
               <p>
                 The following risks may have an impact in the liquidity pools:{" "}
               </p>
@@ -192,11 +192,13 @@ export default function RiskPage() {
         <div className={styles.wrapBox}>
           <CryptoTradingAddictionIcon />
           <div className="flex flex-col gap-3">
-            <span className={styles.wrapBoxTitle}>Crypto trading addiction</span>
+            <span className={styles.wrapBoxTitle}>
+              Crypto trading addiction
+            </span>
             <div className={styles.wrapBoxContent}>
-              Trading crypto can be very addictive and, according to many sources,
-              be a form of gambling addiction, which can destroy lives. Please
-              find below a collection of stories relating to that matter.
+              Trading crypto can be very addictive and, according to many
+              sources, be a form of gambling addiction, which can destroy lives.
+              Please find below a collection of stories relating to that matter.
               <p
                 className="flex items-center gap-2 hover:text-white cursor-pointer underline mt-4"
                 onClick={() => {
@@ -252,11 +254,11 @@ export default function RiskPage() {
             <div className={styles.wrapBoxContent}>
               <p>Ref Finance integrates third-party wallets.</p>
               <p>
-                While we have taken measures to select wallet providers, we cannot
-                guarantee their security or performance. You should familiarize
-                yourself with the risks associated with the specific wallet
-                provider and understand their terms of service, privacy policy,
-                and security practices.
+                While we have taken measures to select wallet providers, we
+                cannot guarantee their security or performance. You should
+                familiarize yourself with the risks associated with the specific
+                wallet provider and understand their terms of service, privacy
+                policy, and security practices.
               </p>
               <p>
                 Please use these services at your own risk and exercise caution.

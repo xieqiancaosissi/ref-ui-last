@@ -437,7 +437,6 @@ export function WalletWithdraw(props: any) {
   );
 }
 
-
 export const PoolTotalValIcon = (props: any) => {
   return (
     <svg

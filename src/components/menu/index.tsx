@@ -5,10 +5,12 @@ import { useRouter } from "next/router";
 import { MenuContainer } from "./icons";
 import Bridge from "./bridge";
 import { menuData, IMenuChild, routeMapIds } from "./menuData";
-import BuyNearButton from "../buyNear/button";
 import { useAccountStore } from "@/stores/account";
 // CSR,
 const WalletConnect = dynamic(() => import("./walletConnect"), {
+  ssr: false,
+});
+const BuyNearButton = dynamic(() => import("../buyNear/button"), {
   ssr: false,
 });
 export default function Menu() {
@@ -112,7 +114,7 @@ export default function Menu() {
           })}
         </div>
         <div className="flex items-center gap-2.5 justify-self-end">
-          {isSignedIn ? <BuyNearButton /> : null}
+          <BuyNearButton />
           <Bridge />
           <WalletConnect />
         </div>

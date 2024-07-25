@@ -22,6 +22,8 @@ import MemeVoteConfirmModal from "./MemeVoteConfirmModal";
 import { formatSeconds, sortByXrefStaked } from "./tool";
 import { useAccountStore } from "@/stores/account";
 import { ButtonTextWrapper } from "../common/Button";
+import { useAppStore } from "@/stores/app";
+import { showWalletSelectorModal } from "@/utils/wallet";
 
 const { MEME_TOKEN_XREF_MAP } = getMemeContractConfig();
 const { meme_winner_tokens, meme_nonListed_tokens } = getMemeDataConfig();
@@ -32,6 +34,7 @@ function MemeVoteModal(props: any) {
   const [selectedOtherTab, setSelectedOtherTab] = useState("");
   const [amount, setAmount] = useState("");
   const [memeVoteLoading, setMemeVoteLoading] = useState(false);
+  const appStore = useAppStore();
   const {
     allTokenMetadatas,
     tokenPriceList,
@@ -117,7 +120,7 @@ function MemeVoteModal(props: any) {
     setConfirmIsOpen(false);
   }
   function showWalletSelector() {
-    window.modal.show();
+    showWalletSelectorModal(appStore.setShowRiskModal);
   }
   if (!selectedTab) return null;
   return (

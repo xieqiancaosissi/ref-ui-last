@@ -162,10 +162,10 @@ const Staking = () => {
                     <div className="w-32 mr-4 border border-gray-100 bg-dark-10 rounded-lg h-12 flex items-center justify-center text-white text-base">
                       Detail
                     </div>
-                    <div className="w-32 mr-4 bg-greenLight rounded-lg h-12 flex items-center justify-center text-black text-base">
+                    <div className="w-32 mr-4 bg-primaryGreen rounded-lg h-12 flex items-center justify-center text-black text-base">
                       Vote
                     </div>
-                    <div className="w-32 border border-greenLight bg-memeDarkColor rounded-lg h-12 flex items-center justify-center text-greenLight text-base">
+                    <div className="w-32 border border-primaryGreen bg-memeDarkColor rounded-lg h-12 flex items-center justify-center text-primaryGreen text-base">
                       Donate
                     </div>
                   </div>

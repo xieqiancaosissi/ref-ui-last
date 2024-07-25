@@ -101,7 +101,7 @@ function Intro({
           </h2>
           {/* main modal content */}
           <div
-            className="bg-greenLight font-gotham text-base text-black p-3 rounded-2xl cursor-default relative text-left"
+            className="bg-primaryGreen font-gotham text-base text-black p-3 rounded-2xl cursor-default relative text-left"
             style={{ width: "343px" }}
           >
             {modalContentArray.map(
@@ -151,7 +151,7 @@ function Intro({
                 width: "1px",
                 height: "69px",
                 bottom: "-69px",
-                border: "1px dashed #00D6AF",
+                border: "1px dashed #9EFF00",
                 right: currentPage == 2 ? "100px" : "300px",
               }}
             >
@@ -160,7 +160,7 @@ function Intro({
                   width: "14px",
                   height: "14px",
                   borderRadius: "50%",
-                  backgroundColor: "#00D6AF",
+                  backgroundColor: "#9EFF00",
                   boxShadow: "0px 0px 0px 4px rgba(255, 255, 255, 0.1)",
                   position: "absolute",
                   bottom: "-7px",

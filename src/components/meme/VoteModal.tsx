@@ -31,6 +31,8 @@ import {
 } from "./tool";
 import { useAccountStore } from "@/stores/account";
 import { ButtonTextWrapper } from "../common/Button";
+import { showWalletSelectorModal } from "@/utils/wallet";
+import { useAppStore } from "@/stores/app";
 
 const { MEME_TOKEN_XREF_MAP } = getMemeContractConfig();
 const { meme_winner_tokens, meme_nonListed_tokens } = getMemeDataConfig();
@@ -39,6 +41,7 @@ function VoteModel(props: any) {
   const [selectedTab, setSelectedTab] = useState("");
   const [amount, setAmount] = useState("");
   const [stakeLoading, setStakeLoading] = useState(false);
+  const appStore = useAppStore();
   const {
     allTokenMetadatas,
     tokenPriceList,
@@ -164,7 +167,7 @@ function VoteModel(props: any) {
     }
   }, [selectedTab]);
   function showWalletSelector() {
-    window.modal.show();
+    showWalletSelectorModal(appStore.setShowRiskModal);
   }
   if (!selectedTab) return null;
   return (

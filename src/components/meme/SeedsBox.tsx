@@ -234,7 +234,8 @@ const SeedsBox = () => {
                       left: "20px",
                       width: "244px",
                     }}
-                    className={`flex flex-grow items-center justify-center border border-greenLight rounded-xl h-12 text-greenLight text-base paceGrotesk-Bold focus:outline-none w-1/2 xsm:w-full 'opacity-30'`}
+                    className={`flex flex-grow items-center justify-center border border-primaryGreen 
+                      rounded-xl h-12 text-primaryGreen text-base paceGrotesk-Bold focus:outline-none w-1/2 xsm:w-full 'opacity-30'`}
                   >
                     Unstake
                   </div>

@@ -17,6 +17,8 @@ import { useScrollToTopOnFirstPage } from "@/services/meme";
 import { useAccountStore } from "@/stores/account";
 import { Seed } from "@/services/farm";
 import CustomTooltip from "../customTooltip/customTooltip";
+import { showWalletSelectorModal } from "@/utils/wallet";
+import { useAppStore } from "@/stores/app";
 
 const is_mobile = isMobile();
 
@@ -38,6 +40,7 @@ const MarketSeedsBox = ({
   const [isStakeOpen, setIsStakeOpen] = useState(false);
   const [modal_action_seed_id, set_modal_action_seed_id] = useState("");
   const memeDataConfig = getMemeDataConfig();
+  const appStore = useAppStore();
   // if parent components is intro
   const meme_winner_tokens =
     origin == "intro"
@@ -87,7 +90,7 @@ const MarketSeedsBox = ({
     return result;
   }
   function showWalletSelector() {
-    window.modal.show();
+    showWalletSelectorModal(appStore.setShowRiskModal);
   }
   return (
     <div

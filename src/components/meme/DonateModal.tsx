@@ -14,6 +14,8 @@ import { sortByXrefStaked, emptyObject } from "./tool";
 import DonateConfirmModal from "./DonateConfirmModal";
 import { useAccountStore } from "@/stores/account";
 import { ButtonTextWrapper } from "../common/Button";
+import { showWalletSelectorModal } from "@/utils/wallet";
+import { useAppStore } from "@/stores/app";
 const { MEME_TOKEN_XREF_MAP } = getMemeContractConfig();
 function DonateModal(props: any) {
   const { isOpen, onRequestClose } = props;
@@ -24,6 +26,7 @@ function DonateModal(props: any) {
     useContext(MemeContext)!;
   const { getIsSignedIn } = useAccountStore();
   const isSignedIn = getIsSignedIn();
+  const appStore = useAppStore();
   const balance = useMemo(() => {
     if (allTokenMetadatas?.[selectedTab]) {
       return toReadableNumber(
@@ -82,7 +85,7 @@ function DonateModal(props: any) {
     setConfirmIsOpen(false);
   }
   function showWalletSelector() {
-    window.modal.show();
+    showWalletSelectorModal(appStore.setShowRiskModal);
   }
   if (!selectedTab) return null;
   return (

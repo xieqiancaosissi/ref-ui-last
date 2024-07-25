@@ -1,10 +1,8 @@
 import React, { useState, useEffect, useContext, useMemo } from "react";
-import { FormattedMessage, useIntl } from "react-intl";
 import { PortfolioContextType, PortfolioData } from "../RefPanelModal";
 import { UpDownButton, useTotalLiquidityData } from "../Tool";
 import { useAccountStore } from "@/stores/account";
 import { getAccountId } from "@/utils/wallet";
-import { BlueCircleLoading } from "@/components/pools/icon";
 import { YourLiquidityV2 } from "./YourLiquidityV2";
 import { YourLiquidityV1 } from "./YourLiquidityV1";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
@@ -87,13 +85,21 @@ export default function Positions(props: any) {
       </div>
       <div className="xsm:border-b xsm:border-cardBg">
         {/* liquidities list */}
-        <div className={`${activeTab == "1" ? "" : "hidden"}`}>
+        <div
+          className={`${activeTab == "1" && poolType == "dcl" ? "" : "hidden"}`}
+        >
           <YourLiquidityV2
             setYourLpValueV2={setYourLpValueV2}
             setLpValueV2Done={setLpValueV2Done}
             setLiquidityLoadingDone={setV2LiquidityLoadingDone}
             setLiquidityQuantity={setV2LiquidityQuantity}
           />
+        </div>
+        <div
+          className={`${
+            activeTab == "1" && poolType == "classic" ? "" : "hidden"
+          }`}
+        >
           <YourLiquidityV1
             setLpValueV1Done={setLpValueV1Done}
             setYourLpValueV1={setYourLpValueV1}

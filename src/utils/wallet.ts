@@ -11,7 +11,7 @@ export function getSelectedWalletId(): string {
   return window.selector?.store?.getState()?.selectedWalletId ?? "";
 }
 export function getAccountId() {
-  return window.accountId;
+  return window?.accountId;
 }
 export function showWalletSelectorModal(riskModalShow: any) {
   const status = localStorage.getItem(CONST_ACKNOWLEDGE_WALLET_RISK);

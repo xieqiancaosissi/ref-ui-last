@@ -100,6 +100,7 @@ export const routeMapIds = {
   ],
   "earn-farms": ["/farms"],
   "earn-stake": ["/xref"],
+  "earn-yours": ["/yours"],
   meme: ["/meme"],
   "-": ["/risks"],
 };

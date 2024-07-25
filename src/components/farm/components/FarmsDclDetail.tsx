@@ -891,6 +891,96 @@ export default function FarmsDclDetail(props: {
       router.push(`/pool/classic/${poolId}`);
     }
   }
+  function getAprTip() {
+    const tempList = detailData.farmList;
+    const lastList: any[] = [];
+    const pending_farms: FarmBoost[] = [];
+    const no_pending_farms: FarmBoost[] = [];
+    let totalApr;
+    const baseApr = getTotalApr();
+    const txt = "Rewards APR";
+    tempList?.forEach((farm: FarmBoost) => {
+      if (farm.status == "Created") {
+        pending_farms.push(farm);
+      } else {
+        no_pending_farms.push(farm);
+      }
+    });
+    if (pending_farms.length > 0) {
+      pending_farms.forEach((farm: FarmBoost) => {
+        lastList.push({
+          rewardToken: farm.token_meta_data,
+          apr: new BigNumber(farm.apr || 0)
+            .multipliedBy(100)
+            .toFixed()
+            .toString(),
+          startTime: farm.terms.start_at,
+          pending: true,
+        });
+      });
+    }
+    if (no_pending_farms.length > 0) {
+      const mergedFarms = mergeCommonRewardsFarms(
+        JSON.parse(JSON.stringify(no_pending_farms))
+      );
+      mergedFarms.forEach((farm: FarmBoost) => {
+        lastList.push({
+          rewardToken: farm.token_meta_data,
+          apr: new BigNumber(farm.apr || 0)
+            .multipliedBy(100)
+            .toFixed()
+            .toString(),
+        });
+      });
+    }
+    // eslint-disable-next-line prefer-const
+    totalApr = baseApr;
+    // show last display string
+    let result: string = "";
+    result = `
+    <div class="flex items-center justify-between ">
+      <span class="text-xs text-gray-60 mr-3">${txt}</span>
+      <span class="text-sm text-white font-bold">${
+        toPrecision(totalApr.toString(), 2) + "%"
+      }</span>
+    </div>
+    `;
+    lastList.forEach((item: any) => {
+      const { rewardToken, apr: baseApr, pending, startTime } = item;
+      const token = rewardToken;
+      let itemHtml = "";
+      const apr = baseApr;
+      if (pending) {
+        const startDate = moment.unix(startTime).format("YYYY-MM-DD");
+        const txt = "start";
+        itemHtml = `<div class="flex justify-between items-center h-8">
+          <image class="w-5 h-5 rounded-full mr-7" style="filter: grayscale(100%)" src="${
+            token.icon
+          }"/>
+          <div class="flex flex-col items-end">
+            <label class="text-xs text-gray-60">${
+              (apr == 0 ? "-" : formatWithCommas(toPrecision(apr, 2))) + "%"
+            }</label>
+            <label class="text-xs text-gray-60 ${
+              +startTime == 0 ? "hidden" : ""
+            }">${txt}: ${startDate}</label>
+            <label class="text-xs text-gray-60 mt-0.5 ${
+              +startTime == 0 ? "" : "hidden"
+            }">Pending</label>
+          </div>
+      </div>`;
+      } else {
+        itemHtml = `<div class="flex justify-between items-center h-8">
+          <image class="w-5 h-5 rounded-full mr-7" src="${token.icon}"/>
+          <label class="text-xs text-gray-60">${
+            (apr == 0 ? "-" : formatWithCommas(toPrecision(apr, 2))) + "%"
+          }</label>
+      </div>`;
+      }
+      result += itemHtml;
+    });
+    return result;
+  }
   const stakeDisabled = !canStake || nft_stake_loading;
   return (
     <main className="dark:text-white">
@@ -932,7 +1022,21 @@ export default function FarmsDclDetail(props: {
                     }}
                     className="text-gray-50 mr-1.5 cursor-pointer hover:text-greenColor"
                   />
-                  {get_total_apr()}
+                  <div
+                    data-type="info"
+                    data-place="top"
+                    data-multiline={true}
+                    data-tooltip-html={getAprTip()}
+                    data-tooltip-id={
+                      "aprId" + detailData?.farmList?.[0].farm_id + "your"
+                    }
+                    data-class="reactTip"
+                  >
+                    <span> {get_total_apr()}</span>
+                    <CustomTooltip
+                      id={"aprId" + detailData?.farmList?.[0].farm_id + "your"}
+                    />
+                  </div>
                 </p>
               </div>
               <div className="pr-6 text-sm relative w-max mr-6">

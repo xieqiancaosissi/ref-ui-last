@@ -27,7 +27,7 @@ export default function Withdraw({
   const [selectAll, setSelectAll] = useState(false);
   const [checkedList, setCheckedList] = useState<Record<string, any>>({});
   const [withdrawLoading, setWithdrawLoading] = useState<boolean>(false);
-  const withdrawNumber = 4;
+  const withdrawNumber = Object.keys(rewardList).length;
   function clickCheckBox(tokenId: string) {
     if (checkedList[tokenId]) {
       delete checkedList[tokenId];
@@ -149,7 +149,7 @@ export default function Withdraw({
               }}
             />
           </div>
-          <div className="h-60 overflow-auto">
+          <div className="h-60 overflow-auto pr-3">
             {Object.values(rewardList).map((item: any) => {
               return (
                 <div
@@ -205,7 +205,7 @@ export default function Withdraw({
             ) : null}
           </div>
           {Object.values(rewardList).length !== 0 ? (
-            <div className="flex justify-between mb-5">
+            <div className="flex justify-between mb-5 pr-3">
               <div className="frcc">
                 <label
                   className="mr-5 cursor-pointer"

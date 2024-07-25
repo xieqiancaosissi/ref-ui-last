@@ -285,21 +285,18 @@ export default function FarmsPage(props: any) {
     farms?.forEach(function (item: FarmBoost) {
       const pendingFarm = item.status == "Created" || item.status == "Pending";
       if (allPendingFarms || (!allPendingFarms && !pendingFarm)) {
-        if (typeof item.apr === "number") {
-          apr = +new BigNumber(item.apr).plus(apr).toFixed();
-        }
+        const itemApr = new BigNumber(item.apr || 0);
+        apr = +itemApr.plus(apr).toFixed();
       }
     });
     // get pool fee apy
-    const poolId = seed.pool?.id;
-    const poolApy =
-      poolId !== undefined
-        ? getPoolFeeApr(dayVolumeMap[poolId], seed)
-        : undefined;
-    if (poolApy) {
-      apr = +new BigNumber(poolApy)
-        .plus(new BigNumber(apr || 0).multipliedBy(100).toFixed())
-        .toFixed();
+    if (seed.pool) {
+      const poolApy = getPoolFeeApr(dayVolumeMap[seed.pool.id], seed);
+      if (poolApy) {
+        apr = +new BigNumber(poolApy)
+          .plus(new BigNumber(apr || 0).multipliedBy(100).toFixed())
+          .toFixed();
+      }
     }
     return apr;
   }
@@ -1243,7 +1240,8 @@ export default function FarmsPage(props: any) {
                 <Skeleton width={356} height={200} count={2} className="mt-4" />
               </SkeletonTheme>
             </div>
-          ) : farm_display_List.length === 0 ? (
+          ) : farm_display_List.filter((seed: any) => !seed.hidden).length ===
+            0 ? (
             <NoContent />
           ) : (
             <>

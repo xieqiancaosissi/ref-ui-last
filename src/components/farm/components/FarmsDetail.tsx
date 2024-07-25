@@ -10,7 +10,7 @@ import {
 } from "@/services/farm";
 import { FarmDetailsPoolIcon, QuestionMark } from "../icon";
 import { TokenMetadata } from "@/services/ft-contract";
-import { getEffectiveFarmList, sort_tokens_by_base } from "@/services/commonV3";
+import { getEffectiveFarmList, get_matched_seeds_for_dcl_pool, sort_tokens_by_base } from "@/services/commonV3";
 import useTokens from "@/hooks/useTokens";
 import { useRouter } from "next/router";
 import { WRAP_NEAR_CONTRACT_ID } from "@/services/wrap-near";
@@ -26,7 +26,7 @@ import BigNumber from "bignumber.js";
 import { LOVE_TOKEN_DECIMAL } from "@/services/referendum";
 import getConfig from "@/utils/config";
 import { get24hVolumes } from "@/services/indexer";
-import { CalcIcon } from "../icon/FarmBoost";
+import { CalcIcon, NewTag } from "../icon/FarmBoost";
 import CalcModelBooster from "./CalcModelBooster";
 import CustomTooltip from "@/components/customTooltip/customTooltip";
 import moment from "moment";
@@ -411,7 +411,7 @@ export default function FarmsDetail(props: {
     }
     // show last display string
     const rewards_week_txt = "rewards_week";
-    let result: string = `<div class="text-sm text-gray-10 frcb"><p>Rewards</p><p>Week</p></div>`;
+    let result: string = `<div class="text-sm text-gray-10 frcb"><p>Rewards/</p><p>Week</p></div>`;
     let itemHtml: string = "";
     lastList.forEach((item: any) => {
       const {
@@ -557,6 +557,43 @@ export default function FarmsDetail(props: {
     const timestamp = await getServerTime();
     setServerTime(timestamp);
   };
+  function goPool() {
+    const poolId = pool?.id;
+    if (poolId) {
+      router.push(`/pool/classic/${poolId}`);
+    }
+  }
+  function showNewTag() {
+    if (isInMonth()) {
+      return true;
+    }
+  }
+  function isEnded() {
+    const farms = detailData.farmList;
+    if (farms && farms.length > 0) {
+      return farms[0].status == "Ended";
+    }
+    return false;
+  }
+  function isInMonth() {
+    const endedStatus = isEnded();
+    if (endedStatus) return false;
+    const result = detailData.farmList?.find((farm: FarmBoost) => {
+      const start_at = farm?.terms?.start_at;
+      if (start_at == 0) return true;
+      const one_month_seconds = 15 * 24 * 60 * 60;
+      const currentA = new Date().getTime();
+      const compareB = new BigNumber(start_at)
+        .plus(one_month_seconds)
+        .multipliedBy(1000);
+      const compareResult = compareB.minus(currentA);
+      if (compareResult.isGreaterThan(0)) {
+        return true;
+      }
+    });
+    if (result) return true;
+    return false;
+  }
   const radio = getBoostMutil();
   return (
     <main className="dark:text-white">
@@ -571,11 +608,15 @@ export default function FarmsDetail(props: {
             <div className="frcb mb-5">
               <div className="frcc">
                 {displayImgs()}
-                <p className="ml-1.5 text-2xl paceGrotesk-Bold">
-                  {displaySymbols()}
+                <p className="ml-1.5 text-2xl paceGrotesk-Bold flex items-center">
+                  <p> {displaySymbols()}</p>
+                  {showNewTag() ? <NewTag className="ml-1"></NewTag> : null}
                 </p>
               </div>
-              <div className="text-gray-60 text-sm frcc">
+              <div
+                className="text-gray-60 text-sm frcc cursor-pointer"
+                onClick={goPool}
+              >
                 Pool
                 <div className="w-5 h-5 frcc bg-gray-100 rounded ml-1.5">
                   <FarmDetailsPoolIcon />

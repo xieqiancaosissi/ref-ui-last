@@ -33,6 +33,7 @@ import { openUrl } from "../../../services/commonV3";
 import { ModalClose, HandIcon, LinkIcon } from "../icon";
 import { useAccountStore } from "../../../stores/account";
 import { CalcEle } from "./CalcEle";
+import { useRouter } from "next/router";
 
 const config = getConfig();
 const { STABLE_POOL_IDS, FARM_LOCK_SWITCH, REF_VE_CONTRACT_ID } = config;
@@ -57,6 +58,7 @@ export default function CalcModelBooster(
     user_unclaimed_token_meta_map,
     user_unclaimed_map,
   } = props;
+  const router = useRouter();
   const [usd, setUsd] = useState("");
   const [lpTokenNum, setLpTokenNum] = useState("");
   const [usdDisplay, setUsdDisplay] = useState("");
@@ -180,7 +182,7 @@ export default function CalcModelBooster(
   function goPool() {
     const poolId = seed?.pool?.id;
     if (poolId) {
-      openUrl(`/pool/${poolId}`);
+      router.push(`/pool/classic/${poolId}`);
     }
   }
   return (
@@ -212,7 +214,7 @@ export default function CalcModelBooster(
             </div>
             <span
               className="flex items-center cursor-pointer whitespace-nowrap underline hover:text-primaryGreen"
-              // onClick={goPool}
+              onClick={goPool}
             >
               Get LP Tokens
               <VEARROW className="ml-1.5"></VEARROW>

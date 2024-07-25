@@ -20,7 +20,6 @@ import {
 } from "@/utils/numbers";
 import getConfig from "@/utils/config";
 import BigNumber from "bignumber.js";
-import Alert from "@/components/alert/Alert";
 import { ButtonTextWrapper } from "@/components/common/Button";
 import {
   ArrowDownHollow,
@@ -29,6 +28,7 @@ import {
   GoldLevel2,
   GoldLevel3,
   GoldLevel4,
+  VEARROW,
 } from "../icon";
 import { CalcEle } from "./CalcEle";
 import { CalcIcon } from "../icon/FarmBoost";
@@ -252,14 +252,14 @@ export default function FarmsDetailStake(props: {
             </div>
           </div>
           {amountAvailableCheck ? null : (
-            <div className="flex justify-center mt-2">
-              <Alert
-                level="warn"
-                message={
-                  "Input must be greater than or equal to '" +
-                  toReadableNumber(DECIMALS, min_deposit)
-                }
-              />
+            <div className="flex justify-center mt-2.5">
+              <div className="w-full bg-yellow-10 bg-opacity-10 rounded py-2 px-2.5 text-yellow-10 text-sm flex items-center">
+                {toReadableNumber(DECIMALS, min_deposit)} 
+                <p className="ml-1 mr-2">available to stake,</p>
+                <p className="underline frcc">
+                  Add liquidity <VEARROW className="ml-1.5"></VEARROW>
+                </p>
+              </div>
             </div>
           )}
           <div className="mt-2.5 text-sm mb-6">

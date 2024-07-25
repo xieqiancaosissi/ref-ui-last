@@ -30,6 +30,7 @@ import {
 } from "../../../services/commonV3";
 import CustomTooltip from "../../customTooltip/customTooltip";
 import { RefreshIcon } from "@/components/swap/icons";
+import { useRouter } from "next/router";
 
 const config = getConfig();
 const { STABLE_POOL_IDS, FARM_LOCK_SWITCH, REF_VE_CONTRACT_ID } = config;
@@ -133,6 +134,7 @@ export default function CalcModelDcl(
 function SeedInfo() {
   const intl = useIntl();
   const [rangeSort, setRangeSort] = useState(true);
+  const router = useRouter();
   const context = useContext(DclContext);
   const { seed, one_lp_value, set_lp_amount, set_lp_value } = context ?? {};
   const rate_need_to_reverse_display = useMemo(() => {
@@ -215,11 +217,20 @@ function SeedInfo() {
     const result: string = `<div class="text-gray-50 text-xs text-left">${tip}</div>`;
     return result;
   }
+  function goPool() {
+    const poolId = seed?.pool?.pool_id;
+    if (poolId) {
+      router.push(`/pool/dcl/${poolId}`);
+    }
+  }
   return (
     <>
       <div className="frcb text-sm text-gray-50 mt-4">
         <span>Liquidity staked</span>
-        <div className="flex items-center text-gray-50 hover:text-framBorder">
+        <div
+          className="flex items-center text-gray-50 underline hover:text-primaryGreen"
+          onClick={goPool}
+        >
           <label className="mr-2 text-sm cursor-pointer">DCL Pool Detail</label>
           <LinkArrowIcon className="cursor-pointer"></LinkArrowIcon>
         </div>

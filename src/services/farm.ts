@@ -561,24 +561,32 @@ export const withdrawAllReward_boost = async (
   const transactions: Transaction[] = [];
   const token_id_list = Object.keys(checkedList);
   const ftBalancePromiseList: any[] = [];
-  const functionCalls: any[] = [];
+  const functionCallsList: any[][] = [];
 
-  token_id_list.forEach((token_id) => {
-    const ftBalance = ftGetStorageBalance(token_id);
-    ftBalancePromiseList.push(ftBalance);
-    functionCalls.push({
-      methodName: "withdraw_reward",
-      args: {
-        token_id,
-      },
-      gas: "50000000000000",
-    });
-  });
+  // Group function calls into chunks of 4
+  for (let i = 0; i < token_id_list.length; i += 4) {
+    const functionCalls: any[] = [];
+    for (let j = i; j < i + 4 && j < token_id_list.length; j++) {
+      const token_id = token_id_list[j];
+      const ftBalance = ftGetStorageBalance(token_id);
+      ftBalancePromiseList.push(ftBalance);
+      functionCalls.push({
+        methodName: "withdraw_reward",
+        args: {
+          token_id,
+        },
+        gas: "50000000000000",
+      });
+    }
+    functionCallsList.push(functionCalls);
+  }
+
   const resolvedBalanceList = await Promise.all(ftBalancePromiseList);
   resolvedBalanceList.forEach((ftBalance, index) => {
     if (!ftBalance) {
+      const token_id = token_id_list[index];
       transactions.unshift({
-        receiverId: token_id_list[index],
+        receiverId: token_id,
         functionCalls: [
           storageDepositAction({
             registrationOnly: true,
@@ -589,10 +597,13 @@ export const withdrawAllReward_boost = async (
     }
   });
 
-  transactions.push({
-    receiverId: REF_FARM_BOOST_CONTRACT_ID,
-    functionCalls,
+  functionCallsList.forEach((functionCalls) => {
+    transactions.push({
+      receiverId: REF_FARM_BOOST_CONTRACT_ID,
+      functionCalls,
+    });
   });
+
   if (Object.keys(checkedList).includes(WRAP_NEAR_CONTRACT_ID)) {
     sessionStorage.setItem("near_with_draw_source", "farm_token");
     transactions.push(
@@ -604,6 +615,7 @@ export const withdrawAllReward_boost = async (
       )
     );
   }
+
   return executeFarmMultipleTransactions(transactions);
 };
 

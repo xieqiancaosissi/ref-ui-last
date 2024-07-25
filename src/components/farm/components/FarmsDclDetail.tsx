@@ -78,6 +78,7 @@ export default function FarmsDclDetail(props: {
     all_seeds,
   } = props;
   const { seed_id } = detailData;
+  const pool = detailData.pool;
   const [listLiquiditiesLoading, setListLiquiditiesLoading] = useState(true);
   const [listLiquidities_inFarimg, set_listLiquidities_inFarimg] = useState<
     UserLiquidityInfo[]
@@ -731,7 +732,7 @@ export default function FarmsDclDetail(props: {
       });
     }
     // show last display string
-    let result: string = `<div class="text-sm text-gray-10 frcb"><p>Rewards</p><p>Week</p></div>`;
+    let result: string = `<div class="text-sm text-gray-10 frcb"><p>Rewards/</p><p>Week</p></div>`;
     let itemHtml: string = "";
     lastList.forEach((item: any) => {
       const {
@@ -884,6 +885,12 @@ export default function FarmsDclDetail(props: {
       setClaimLoading(false);
     });
   }
+  function goPool() {
+    const poolId = pool?.id;
+    if (poolId) {
+      router.push(`/pool/classic/${poolId}`);
+    }
+  }
   const stakeDisabled = !canStake || nft_stake_loading;
   return (
     <main className="dark:text-white">
@@ -903,7 +910,10 @@ export default function FarmsDclDetail(props: {
                 </p>
                 <FarmListDCLIcon className="ml-1" />
               </div>
-              <div className="text-gray-60 text-sm frcc">
+              <div
+                className="text-gray-60 text-sm frcc cursor-pointer"
+                onClick={goPool}
+              >
                 Pool
                 <div className="w-5 h-5 frcc bg-gray-100 rounded ml-1.5">
                   <FarmDetailsPoolIcon />

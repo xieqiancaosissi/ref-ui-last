@@ -336,7 +336,7 @@ export function FarmView(props: {
       }
     }
     // show last display string
-    let result: string = `<div class="text-sm text-gray-10 frcb"><p>Rewards</p><p>Week</p></div>`;
+    let result: string = `<div class="text-sm text-gray-10 frcb"><p>Rewards/</p><p>Week</p></div>`;
     let itemHtml: string = "";
     lastList.forEach((item: any) => {
       const {
@@ -657,7 +657,7 @@ export function FarmView(props: {
         onClick={() => {
           goFarmDetailPage(seed);
         }}
-        className={`relative rounded-2xl cursor-pointer bg-cardBg p-5 ${
+        className={`relative rounded-2xl cursor-pointer p-5 ${
           isEnded() || needForbidden ? styles.farmEnded : ""
         }
         `}
@@ -666,29 +666,49 @@ export function FarmView(props: {
           <div className="relative w-min h-14 flex-shrink-0">
             {tokens_sort.length === 2 ? (
               <>
-                {tokens_sort.map((token, index) => {
-                  const isSecondToken = index === 1;
-                  const sizeClass = isSecondToken ? "w-10 h-10" : "w-8 h-8";
-                  const positionClass = isSecondToken
-                    ? "absolute top-3 left-3 z-20"
-                    : "absolute top-0 left-0 z-10";
+                {tokens_sort.some((token) => token.id === WRAP_NEAR_CONTRACT_ID)
+                  ? tokens_sort.map((token, index) => {
+                      const isWrapNearContract =
+                        token.id === WRAP_NEAR_CONTRACT_ID;
+                      const sizeClass = isWrapNearContract
+                        ? "w-8 h-8"
+                        : "w-10 h-10";
+                      const positionClass = isWrapNearContract
+                        ? "absolute top-0 left-0 z-10"
+                        : "absolute top-3 left-3 z-20";
 
-                  return (
-                    <label
-                      key={token.id}
-                      className={`rounded-full box-content overflow-hidden bg-cardBg border border-dark-90 ${sizeClass} ${positionClass}`}
-                    >
-                      <img src={token.icon} className="w-full h-full" />
-                    </label>
-                  );
-                })}
+                      return (
+                        <label
+                          key={token.id}
+                          className={`rounded-full box-content overflow-hidden bg-dark-90 border border-dark-90 ${sizeClass} ${positionClass}`}
+                        >
+                          <img src={token.icon} className="w-full h-full" />
+                        </label>
+                      );
+                    })
+                  : tokens_sort.map((token, index) => {
+                      const isFirst = index === 0;
+                      const sizeClass = isFirst ? "w-8 h-8" : "w-10 h-10";
+                      const positionClass = isFirst
+                        ? "absolute top-0 left-0 z-10"
+                        : "absolute top-3 left-3 z-20";
+
+                      return (
+                        <label
+                          key={token.id}
+                          className={`rounded-full box-content overflow-hidden bg-dark-90 border border-dark-90 ${sizeClass} ${positionClass}`}
+                        >
+                          <img src={token.icon} className="w-full h-full" />
+                        </label>
+                      );
+                    })}
               </>
             ) : tokens_sort.length === 3 ? (
               <div className="flex">
                 {tokens_sort.map((token, index) => (
                   <label
                     key={token.id}
-                    className="rounded-full box-content overflow-hidden bg-cardBg w-8 h-8 border border-dark-90"
+                    className="rounded-full box-content overflow-hidden bg-dark-90 w-8 h-8 border border-dark-90"
                   >
                     <img src={token.icon} className="w-full h-full" />
                   </label>
@@ -713,7 +733,7 @@ export function FarmView(props: {
                   return (
                     <label
                       key={token.id}
-                      className={`rounded-full box-content overflow-hidden bg-cardBg w-6 h-6 border border-dark-90 ${marginClass}`}
+                      className={`rounded-full box-content overflow-hidden bg-dark-90 w-6 h-6 border border-dark-90 ${marginClass}`}
                       style={{ zIndex }}
                     >
                       <img src={token.icon} className="w-full h-full" />
@@ -803,7 +823,6 @@ export function FarmView(props: {
                   </span>
                 </div>
               </div>
-              {showNewTag() ? <NewTag className="ml-1"></NewTag> : null}
               {isPending() ? (
                 <div className="flex flex-col text-purple-10 text-xs bg-purple-20 bg-opacity-20 rounded-2xl px-2 py-0.5 ml-1">
                   <em>Coming</em>
@@ -812,10 +831,11 @@ export function FarmView(props: {
                     renderer={renderer}
                   />
                 </div>
-              ) : is_dcl_pool ? (
-                <FarmListDCLIcon className="ml-1" />
+              ) : showNewTag() ? (
+                <NewTag className="ml-1"></NewTag>
               ) : null}
-              {status_is_new_or_will_end() == "will end" ? (
+              {is_dcl_pool ? <FarmListDCLIcon className="ml-1" /> : null}
+              {status_is_new_or_will_end() === "will end" ? (
                 <span className="text-xs text-redwarningColor bg-purple-20 bg-opacity-20 rounded-3xl px-1.5 py-1">
                   Ending soon
                 </span>

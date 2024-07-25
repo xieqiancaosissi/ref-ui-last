@@ -167,3 +167,29 @@ export const ErrorTriangle = ({ expand }: { expand?: boolean }) => {
     </svg>
   );
 };
+
+export const ExternalLinkIcon = (props: any) => {
+  return (
+    <svg
+      {...props}
+      width="11"
+      height="11"
+      viewBox="0 0 11 11"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M2 1H10V9"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="square"
+      />
+      <path
+        d="M9 2L2 9"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="square"
+      />
+    </svg>
+  );
+};

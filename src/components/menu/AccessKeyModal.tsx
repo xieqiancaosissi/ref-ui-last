@@ -19,6 +19,8 @@ import { getAccount } from "@/utils/near";
 import { CheckedIcon, ConnnectIcon, OrderlyIcon } from "./icons";
 import { ButtonTextWrapper } from "../common/Button";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import { useAppStore } from "@/stores/app";
+import { showWalletSelectorModal } from "@/utils/wallet";
 const maxLength = 10;
 const maxOrderlyLength = 10;
 function AccessKeyModal(props: any) {
@@ -30,6 +32,7 @@ function AccessKeyModal(props: any) {
   const [tab, setTab] = useState<"accessKey" | "orderlyKey">("accessKey");
   const [allKeys, setAllKeys] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const appStore = useAppStore();
   useEffect(() => {
     getUsedKeys();
   }, [accountId]);
@@ -67,7 +70,7 @@ function AccessKeyModal(props: any) {
     `;
   }
   function switchWallet() {
-    window.modal.show();
+    showWalletSelectorModal(appStore.setShowRiskModal);
     onRequestClose();
   }
   return (

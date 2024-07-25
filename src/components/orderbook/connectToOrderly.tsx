@@ -17,6 +17,8 @@ import {
   is_trading_key_set,
 } from "@/services/orderbook/on-chain-api";
 import { announceKey, setTradingKey } from "@/services/orderbook/key_set";
+import { useAppStore } from "@/stores/app";
+import { showWalletSelectorModal } from "@/utils/wallet";
 export default function ConnectToOrderly() {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isConfirmed, setIsConfirmed] = useState<boolean>(false);
@@ -25,6 +27,7 @@ export default function ConnectToOrderly() {
   const accountStore = useAccountStore();
   const walletLoading = accountStore.getWalletLoading();
   const accountId = accountStore.getAccountId();
+  const appStore = useAppStore();
   useEffect(() => {
     if (connectStatus == "need_key_set") {
       is_orderly_key_announced(accountId)
@@ -93,7 +96,7 @@ export default function ConnectToOrderly() {
               )}
               style={{ height: "42px", marginTop: "82px" }}
               onClick={() => {
-                window.modal.show();
+                showWalletSelectorModal(appStore.setShowRiskModal);
               }}
             >
               Connect Wallet

@@ -17,8 +17,11 @@ import PieEcharts from "@/components/pools/detail/stable/PieEcharts";
 import StableAdd from "@/components/pools/detail/liquidity/stable/StableAdd";
 import StableRemove from "@/components/pools/detail/liquidity/stable/StableRemove";
 import { useRiskTokens } from "@/hooks/useRiskTokens";
+import { useAppStore } from "@/stores/app";
+import { showWalletSelectorModal } from "@/utils/wallet";
 
 export default function StablePoolDetail() {
+  const appStore = useAppStore();
   const router = useRouter();
   const poolId = router.query.id || "";
   const poolStore = usePoolStore();
@@ -54,7 +57,7 @@ export default function StablePoolDetail() {
   }, []);
 
   const collectPool = () => {
-    if (!accountId) window.modal.show();
+    if (!accountId) showWalletSelectorModal(appStore.setShowRiskModal);
     if (isCollect) {
       removePoolFromWatchList({ pool_id: poolId.toString() });
     } else {

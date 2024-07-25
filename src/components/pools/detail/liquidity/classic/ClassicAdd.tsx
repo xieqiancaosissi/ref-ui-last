@@ -22,6 +22,8 @@ import { ButtonTextWrapper } from "@/components/common/Button";
 import { addLiquidityToPool } from "@/services/pool";
 import AddLiqTip from "../../addLiqTip";
 import { PoolDetailCard } from "./ClassicAddDetail";
+import { useAppStore } from "@/stores/app";
+import { showWalletSelectorModal } from "@/utils/wallet";
 
 export function myShares({
   totalShares,
@@ -64,6 +66,7 @@ export default function StableAdd(props: any) {
   const closeInit = () => {
     setInputValList([]);
   };
+  const appStore = useAppStore();
   const returnBalance = async (token: any) => {
     try {
       const data = await ftGetBalance(token.tokenId);
@@ -377,7 +380,7 @@ export default function StableAdd(props: any) {
           ) : (
             <div
               className="poolBtnStyleDefaultBase h-11 cursor-pointer hover:opacity-90"
-              onClick={() => window.modal.show()}
+              onClick={() => showWalletSelectorModal(appStore.setShowRiskModal)}
             >
               Connect Wallet
             </div>

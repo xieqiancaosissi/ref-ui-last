@@ -11,6 +11,8 @@ import { WRAP_NEAR_CONTRACT_ID } from "@/services/wrap-near";
 import { getSelector } from "@/utils/wallet";
 import getConfigV2 from "@/utils/configV2";
 import { ButtonTextWrapper } from "@/components/common/Button";
+import { useAppStore } from "@/stores/app";
+import { showWalletSelectorModal } from "@/utils/wallet";
 const configV2 = getConfigV2();
 
 /**
@@ -34,6 +36,7 @@ export function AddLiquidityButton() {
     getLiquiditySpot,
     getLiquidityForCurveAndBidAskMode,
   }: any = useContext(LiquidityProviderData);
+  const appStore = useAppStore();
   const [addLiquidityButtonLoading, setAddLiquidityButtonLoading] =
     useState(false);
   const accountStore = useAccountStore();
@@ -184,7 +187,7 @@ export function AddLiquidityButton() {
       ) : (
         <div
           onClick={() => {
-            window.modal.show();
+            showWalletSelectorModal(appStore.setShowRiskModal);
           }}
         >
           Connect Wallet

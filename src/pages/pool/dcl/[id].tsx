@@ -41,6 +41,8 @@ import getConfig from "@/utils/config";
 import dynamic from "next/dynamic";
 import { UnclaimedFeesBox } from "@/components/pools/detail/liquidity/UnclaimedFeesBox";
 import { RelatedFarmsBox } from "@/components/pools/detail/liquidity/RelatedFarmsBox";
+import { useAppStore } from "@/stores/app";
+import { showWalletSelectorModal } from "@/utils/wallet";
 
 const YourLiquidityBox = dynamic(
   () =>
@@ -80,7 +82,7 @@ export default function DCLPoolDetail() {
     { key: "order", value: "Limit Order" },
   ];
   const [transactionActive, setTransactionActive] = useState("swap");
-  //
+  const appStore = useAppStore();
   useEffect(() => {
     if (poolId) {
       getPoolsDetailById({ pool_id: poolId as any }).then((res) => {
@@ -107,7 +109,7 @@ export default function DCLPoolDetail() {
   }, [poolDetail]);
 
   const collectPool = () => {
-    if (!accountId) window.modal.show();
+    if (!accountId) showWalletSelectorModal(appStore.setShowRiskModal);
     if (isCollect) {
       removePoolFromWatchList({ pool_id: poolId.toString() });
     } else {

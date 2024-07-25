@@ -18,6 +18,8 @@ import { getCurrentWallet, getSelector } from "../../utils/wallet";
 import type { Wallet } from "@near-wallet-selector/core";
 import swapStyles from "../swap/swap.module.css";
 import AccessKeyModal from "./AccessKeyModal";
+import { useAppStore } from "@/stores/app";
+import { showWalletSelectorModal } from "@/utils/wallet";
 const Overview = dynamic(() => import("../portfolio"), { ssr: false });
 export default function WalletConnect() {
   const [accountId, setAccountId] = useState<string | undefined>();
@@ -27,6 +29,7 @@ export default function WalletConnect() {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const accountStore = useAccountStore();
   const [keyModalShow, setKeyModalShow] = useState<boolean>(false);
+  const appStore = useAppStore();
 
   useEffect(() => {
     init();
@@ -84,7 +87,7 @@ export default function WalletConnect() {
 
   function showWalletSelector() {
     setIsOpen(false);
-    window.modal.show();
+    showWalletSelectorModal(appStore.setShowRiskModal);
   }
 
   async function signOut() {

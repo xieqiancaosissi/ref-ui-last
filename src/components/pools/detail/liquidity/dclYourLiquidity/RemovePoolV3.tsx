@@ -45,6 +45,8 @@ import { getSelector } from "@/utils/wallet";
 import HoverTip from "@/components/common/Tips";
 import { ButtonTextWrapper } from "@/components/common/Button";
 import CustomTooltip from "@/components/customTooltip/customTooltip";
+import { useAppStore } from "@/stores/app";
+import { showWalletSelectorModal } from "@/utils/wallet";
 
 export const REF_POOL_NAV_TAB_KEY = "REF_POOL_NAV_TAB_VALUE";
 
@@ -66,6 +68,7 @@ export const RemovePoolV3 = (props: any) => {
     restProps: any;
     listLiquidities: UserLiquidityInfo[];
   } = props;
+  const appStore = useAppStore();
   const SLOT_NUMBER = get_slot_number_in_a_bin();
   const [slippageTolerance, setSlippageTolerance] = useState<number>(0.5);
   const pair_is_reverse =
@@ -1016,7 +1019,7 @@ export const RemovePoolV3 = (props: any) => {
           <div className="poolBtnStyleDefaultBase mt-8 w-full h-11">
             <span
               onClick={() => {
-                window.modal.show();
+                showWalletSelectorModal(appStore.setShowRiskModal);
               }}
             >
               Connect Wallet

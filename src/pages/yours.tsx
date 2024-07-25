@@ -1,23 +1,11 @@
 import React, { useState } from "react";
-import YoursValue from "@/components/yours/yoursValue";
-import YoursTab from "@/components/yours/yoursTabs";
+import dynamic from "next/dynamic";
+const Yours = dynamic(() => import("@/components/yours"), { ssr: false });
 
-export default function Yours() {
-  const [currentModule, setCurrentModule] = useState("pools");
-  const sendCurrentModule = (tab: string) => {
-    console.log(tab);
-    setCurrentModule(tab);
-  };
+export default function YoursPage() {
   return (
     <div>
-      <div className="h-52">
-        {/* value */}
-        <YoursValue></YoursValue>
-        {/* tab */}
-        <YoursTab setCurrentModule={sendCurrentModule}></YoursTab>
-      </div>
-      {/* main */}
-      <div></div>
+      <Yours></Yours>
     </div>
   );
 }

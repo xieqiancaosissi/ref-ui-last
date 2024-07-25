@@ -45,9 +45,8 @@ export default function Actions({
           </div>
         )}
       </span>
-
-      <div className="relative">
-        {!!orderTx && (
+      {!!orderTx ? (
+        <div className="relative">
           <a
             className="flex items-center text-gray-10 cursor-pointer hover:text-white"
             onMouseEnter={() => handleMouseEnter(orderTx)}
@@ -134,8 +133,8 @@ export default function Actions({
               </div>
             )}
           </a>
-        )}
-      </div>
+        </div>
+      ) : null}
     </div>
   );
 }

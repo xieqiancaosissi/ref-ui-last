@@ -40,3 +40,7 @@
   background: #2d3a45;
   border-radius: 2px;
 }
+
+.transak_modal .transak_modal-content .transak_close:hover {
+  color: #6A7279;
+}

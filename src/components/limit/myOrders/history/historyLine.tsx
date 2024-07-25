@@ -252,8 +252,8 @@ export default function HistoryLine({
               .minus(order.original_amount || "0")
               .gt(0) ||
               Number(claimedAmountIn) > 0)
-              ? " rounded-tl-xl"
-              : " rounded-l-xl"
+              ? "rounded-tl-xl"
+              : "rounded-l-xl"
           }
         >
           <SellTokenAmount sellToken={sellToken} orderIn={orderIn} />
@@ -315,7 +315,7 @@ export default function HistoryLine({
           .gt(0) ||
           Number(claimedAmountIn) > 0) && (
           <>
-            <tr className="xs:flex z-20 relative  xs:flex-col whitespace-nowrap xs:bg-cardBg xs:bg-opacity-50  bottom-2 xs:bottom-0 w-full text-sm text-gray-10 bg-cardBg rounded-xl px-5 pb-5 pt-10 xs:px-3 xs:py-4 xs:text-xs">
+            <tr className="xs:flex z-20 relative  xs:flex-col whitespace-nowrap xs:bottom-0 w-full text-sm text-gray-10 rounded-xl">
               <SwapBanner
                 order={order}
                 totalIn={totalIn}
@@ -460,7 +460,7 @@ export default function HistoryLine({
           <Created order={order} />
         </div>
         {/*  content */}
-        <div className="rounded-b-xl p-3 bg-cardBg">
+        <div className="rounded-b-xl p-3 bg-gray-20">
           <MobileInfoBanner
             text={
               <FormattedMessage id="fee_tiers" defaultMessage={"Fee Tiers"} />

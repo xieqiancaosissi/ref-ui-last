@@ -6,7 +6,7 @@ import dynamic from "next/dynamic";
 import { ITokenMetadata } from "@/hooks/useBalanceTokens";
 import { useSwapStore } from "@/stores/swap";
 import { getTokenUIId } from "@/services/swap/swapUtils";
-import { formatTokenPrice } from "@/utils/uiNumber";
+import { toInternationalCurrencySystemLongString_usd } from "@/utils/uiNumber";
 import { getMax } from "@/services/swap/swapUtils";
 
 const SelectTokenButton = dynamic(() => import("./SelectTokenButton"), {
@@ -67,7 +67,7 @@ export default function Input(props: IInputProps) {
     }
   }
   function getTokenValue() {
-    return formatTokenPrice(
+    return toInternationalCurrencySystemLongString_usd(
       new Big(amount || 0).mul(allTokenPrices[token?.id]?.price || 0).toFixed()
     );
   }

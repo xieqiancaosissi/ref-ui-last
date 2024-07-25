@@ -163,7 +163,7 @@ export default function LimitOrderPage() {
           </div>
         </div>
         <Input token={tokenOut} isOut />
-        <div className="flex items-stretch gap-0.5 mt-0.5">
+        <div className="flex items-stretch gap-0.5 mt-0.5 select-none">
           <RateContainer />
           <FeeTiers />
         </div>

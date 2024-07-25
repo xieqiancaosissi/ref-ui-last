@@ -107,7 +107,7 @@ export default function LimitOrderChartAndTable() {
   }, [sellBoxRef, sell_list]);
   const [cur_pairs, , cur_token_symbol] = useMemo(() => {
     if (pool_id) {
-      const classStr = "w-6 h-6 rounded-full border border-gradientFromHover";
+      const classStr = "w-6 h-6 rounded-full border border-dark-90";
       const { token_x_metadata, token_y_metadata } = pool;
       const x_symbol = token_x_metadata!.symbol;
       const y_symbol = token_y_metadata!.symbol;

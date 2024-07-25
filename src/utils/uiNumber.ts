@@ -3,8 +3,8 @@ import {
   formatWithCommas,
   toInternationalCurrencySystem,
   toPrecision,
+  toInternationalCurrencySystemLongString,
 } from "./numbers";
-import { useAccountStore } from "@/stores/account";
 
 export const formatWithCommas_usd = (v: any) => {
   if (isInvalid(v)) return "$-";
@@ -51,6 +51,17 @@ export const toInternationalCurrencySystem_usd = (v: any) => {
     return "<$0.01";
   } else {
     return `$${toInternationalCurrencySystem(decimal.toFixed())}`;
+  }
+};
+export const toInternationalCurrencySystemLongString_usd = (v: any) => {
+  if (isInvalid(v)) return "$-";
+  const decimal = new Big(v);
+  if (decimal.lte(0)) {
+    return "$0";
+  } else if (decimal.lt(0.01)) {
+    return "<$0.01";
+  } else {
+    return `$${toInternationalCurrencySystemLongString(decimal.toFixed())}`;
   }
 };
 

@@ -19,7 +19,7 @@ export default function ChartTopBar() {
     <div className="frcb pl-1.5">
       <div className="frcs">
         <Images
-          borderStyle="1px solid #00D6AF"
+          borderStyle="1px solid #273342"
           size="6"
           tokens={[tokenIn, tokenOut]}
           uId={"swap-chart-header"}

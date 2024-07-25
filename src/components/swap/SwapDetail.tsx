@@ -112,6 +112,8 @@ export default function SwapDetail() {
     const result = math.evaluate(`${fromAmount} / ${toAmount}`);
     if (new BigNumber(result).isLessThan("0.0001")) {
       return "<0.0001";
+    } else if (new BigNumber(result).gt(1000000000)) {
+      return toInternationalCurrencySystemLongString(result, 4);
     } else {
       const floor: any = math.floor;
       return numberWithCommas(floor(result, 4).toString());

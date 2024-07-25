@@ -263,7 +263,7 @@ export default function OrderCard({
       )}
       {/* table */}
       <table
-        className="border-separate xsm:block"
+        className="border-separate xsm:block mb-8"
         style={{
           borderSpacing: 0,
         }}
@@ -324,7 +324,9 @@ export default function OrderCard({
 
                   <span
                     className={`ml-0.5 ${
-                      activeSortBy === "created" ? "text-gradientFrom" : ""
+                      activeSortBy === "created"
+                        ? "text-primaryGreen"
+                        : "hover:text-white"
                     }`}
                   >
                     {activeSortBy === "created" && sortOrderActive === "asc" ? (
@@ -355,7 +357,9 @@ export default function OrderCard({
                   <FormattedMessage id="executed" defaultMessage={"Executed"} />
                   <span
                     className={`ml-0.5 ${
-                      activeSortBy === "unclaim" ? "text-gradientFrom" : ""
+                      activeSortBy === "unclaim"
+                        ? "text-primaryGreen"
+                        : "hover:text-white"
                     }`}
                   >
                     {activeSortBy === "unclaim" && sortOrderActive === "asc" ? (
@@ -421,7 +425,9 @@ export default function OrderCard({
 
                   <span
                     className={`ml-0.5 ${
-                      historySortBy === "created" ? "text-gradientFrom" : ""
+                      historySortBy === "created"
+                        ? "text-primaryGreen"
+                        : "hover:text-white"
                     }`}
                   >
                     {historySortBy === "created" &&
@@ -453,7 +459,9 @@ export default function OrderCard({
                   <FormattedMessage id="executed" defaultMessage={"Executed"} />
                   <span
                     className={`ml-0.5 ${
-                      historySortBy === "claimed" ? "text-gradientFrom" : ""
+                      historySortBy === "claimed"
+                        ? "text-primaryGreen"
+                        : "hover:text-white"
                     }`}
                   >
                     {historySortBy === "claimed" &&

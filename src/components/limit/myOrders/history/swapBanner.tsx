@@ -60,92 +60,145 @@ export default function SwapBanner({
   return (
     <td
       colSpan={8}
-      className=" rounded-b-xl xsm:hidden  w-full relative bottom-1.5 pt-6 bg-gray-20 bg-opacity-20"
+      className="rounded-b-xl xsm:hidden  w-full relative bg-gray-20 bg-opacity-50 px-3 pb-4 text-gray-10"
     >
-      {new Big(order.original_deposit_amount || "0")
-        .minus(order.original_amount || "0")
-        .gt(0) && (
-        <>
-          <div className="flex items-center px-4 pb-4 justify-between ">
-            <span className="flex items-center">
-              <FormattedMessage
-                id="initial_order"
-                defaultMessage={"Initial Order"}
-              />
-              <ExclamationTip
-                id="this_order_has_been_partially_filled"
-                defaultMessage="This order has been partially filled "
-                dataPlace="bottom"
-                colorhex="#7E8A93"
-                uniquenessId={
-                  "this_order_has_been_partially_filled" + order.order_id
-                }
-              />
-            </span>
-
-            <span className="flex items-center">
-              <span title={totalIn} className="text-gray-10">
-                {Number(totalIn) > 0 && Number(totalIn) < 0.01
-                  ? "< 0.01"
-                  : toPrecision(totalIn, 2)}
+      <div className="flex flex-col gap-4 border border-gray-30 rounded bg-dark-210 px-3 py-4">
+        {new Big(order.original_deposit_amount || "0")
+          .minus(order.original_amount || "0")
+          .gt(0) && (
+          <>
+            {/* Initial Order */}
+            <div className="flex items-center gap-2">
+              <span className="flex items-center w-35">
+                <FormattedMessage
+                  id="initial_order"
+                  defaultMessage={"Initial Order"}
+                />
+                <ExclamationTip
+                  id="this_order_has_been_partially_filled"
+                  defaultMessage="This order has been partially filled "
+                  dataPlace="top"
+                  colorhex="#7E8A93"
+                  uniquenessId={
+                    "this_order_has_been_partially_filled" + order.order_id
+                  }
+                />
               </span>
 
-              <span className="ml-1.5">{sellToken.symbol}</span>
-              <span className="mx-6 xs:mx-2 text-white xs:text-gray-10">
-                {isClientMobie() ? (
-                  <MyOrderInstantSwapArrowRight />
-                ) : (
-                  <MyOrderInstantSwapArrowRight />
-                )}
+              <span className="flex items-center">
+                <span title={totalIn} className="text-white">
+                  {Number(totalIn) > 0 && Number(totalIn) < 0.01
+                    ? "< 0.01"
+                    : toPrecision(totalIn, 2)}
+                </span>
+
+                <span className="ml-1.5">{sellToken.symbol}</span>
+                <span className="mx-6 xs:mx-2 text-white xs:text-gray-10">
+                  {isClientMobie() ? (
+                    <MyOrderInstantSwapArrowRight />
+                  ) : (
+                    <MyOrderInstantSwapArrowRight />
+                  )}
+                </span>
+                <span
+                  title={toPrecision(totalOut, buyToken.decimals)}
+                  className="text-white"
+                >
+                  {Number(totalOut) > 0 && Number(totalOut) < 0.01
+                    ? "< 0.01"
+                    : toPrecision(totalOut, 2)}
+                </span>
+
+                <span className="ml-1.5">{buyToken.symbol}</span>
               </span>
-              <span
-                title={toPrecision(totalOut, buyToken.decimals)}
-                className="text-gray-10"
-              >
-                {Number(totalOut) > 0 && Number(totalOut) < 0.01
-                  ? "< 0.01"
-                  : toPrecision(totalOut, 2)}
+            </div>
+            {/* Instant Swap */}
+            <div className="flex items-center gap-2">
+              <span className="flex items-center w-35">
+                <FormattedMessage
+                  id="instants_swap"
+                  defaultMessage={"Instant Swap"}
+                />
+
+                <ExclamationTip
+                  colorhex="#7E8A93"
+                  id={instant_swap_tip()}
+                  defaultMessage={instant_swap_tip()}
+                  dataPlace="top"
+                  uniquenessId={"instant_swap_tip" + order.order_id}
+                />
               </span>
 
-              <span className="ml-1.5">{buyToken.symbol}</span>
-            </span>
-          </div>
+              <span className="frcb min-w-p300">
+                <div className="frcs text-sm w pr-2 text-gray-10">
+                  <BsCheckCircle
+                    className="mr-1.5"
+                    fill="#00FFC2"
+                    stroke="#00FFC2"
+                  />
 
-          <div className="frcb px-4 pb-4">
-            <span className="flex items-center ">
-              <FormattedMessage
-                id="instants_swap"
-                defaultMessage={"Instant Swap"}
-              />
+                  <FormattedMessage
+                    id="swappped"
+                    defaultMessage={"Swapped"}
+                  ></FormattedMessage>
+                </div>
 
-              <ExclamationTip
-                colorhex="#7E8A93"
-                id={instant_swap_tip()}
-                defaultMessage={instant_swap_tip()}
-                dataPlace="bottom"
-                uniquenessId={"instant_swap_tip" + order.order_id}
-              />
+                <div className="flex items-center justify-end">
+                  <span title={swapIn} className="text-white">
+                    {Number(swapIn) > 0 && Number(swapIn) < 0.01
+                      ? "< 0.01"
+                      : toPrecision(swapIn, 2)}
+                  </span>
+
+                  <span className="ml-1.5">{sellToken.symbol}</span>
+                  <span className="mx-6 xs:mx-2 text-gray-10">
+                    {isClientMobie() ? (
+                      <MyOrderInstantSwapArrowRight />
+                    ) : (
+                      <MyOrderInstantSwapArrowRight />
+                    )}
+                  </span>
+                  <span title={swapOut} className="text-white">
+                    {Number(swapOut) > 0 && Number(swapOut) < 0.01
+                      ? "< 0.01"
+                      : toPrecision(swapOut, 2)}
+                  </span>
+
+                  <span className="ml-1.5">{buyToken.symbol}</span>
+                </div>
+              </span>
+            </div>
+          </>
+        )}
+        {/* Executed */}
+        {Number(claimedAmountIn) > 0 && (
+          <div className="flex items-center gap-2">
+            <span className="w-35">
+              <FormattedMessage id="executed" defaultMessage={"Executed"} />
             </span>
 
             <span className="frcb min-w-p300">
-              <div className="frcs text-xs w pr-2 text-gray-10">
+              <div className="frcs text-sm pr-2 text-gray-10">
                 <BsCheckCircle
                   className="mr-1.5"
-                  fill="#42bb17"
-                  stroke="#42BB17"
+                  fill="#9EFE01"
+                  stroke="#9EFE01"
                 />
 
                 <FormattedMessage
-                  id="swappped"
-                  defaultMessage={"Swapped"}
+                  id="claimed"
+                  defaultMessage={"Claimed"}
                 ></FormattedMessage>
               </div>
 
               <div className="flex items-center justify-end">
-                <span title={swapIn} className="text-gray-10">
-                  {Number(swapIn) > 0 && Number(swapIn) < 0.01
+                <span
+                  title={toPrecision(claimedAmountIn, sellToken.decimals)}
+                  className="text-white"
+                >
+                  {Number(claimedAmountIn) > 0 && Number(claimedAmountIn) < 0.01
                     ? "< 0.01"
-                    : toPrecision(swapIn, 2)}
+                    : toPrecision(claimedAmountIn, 2)}
                 </span>
 
                 <span className="ml-1.5">{sellToken.symbol}</span>
@@ -156,67 +209,18 @@ export default function SwapBanner({
                     <MyOrderInstantSwapArrowRight />
                   )}
                 </span>
-                <span title={swapOut} className="text-gray-10">
-                  {Number(swapOut) > 0 && Number(swapOut) < 0.01
+                <span title={claimedAmount} className="text-white">
+                  {Number(claimedAmount) > 0 && Number(claimedAmount) < 0.01
                     ? "< 0.01"
-                    : toPrecision(swapOut, 2)}
+                    : toPrecision(claimedAmount, 2)}
                 </span>
 
                 <span className="ml-1.5">{buyToken.symbol}</span>
               </div>
             </span>
           </div>
-        </>
-      )}
-      {Number(claimedAmountIn) > 0 && (
-        <div className="frcb px-4 pb-4">
-          <span>
-            <FormattedMessage id="executed" defaultMessage={"Executed"} />
-          </span>
-
-          <span className="frcb min-w-p300">
-            <div className="frcs text-xs pr-2 text-gray-10">
-              <BsCheckCircle
-                className="mr-1.5"
-                fill="#9EFE01"
-                stroke="#9EFE01"
-              />
-
-              <FormattedMessage
-                id="claimed"
-                defaultMessage={"Claimed"}
-              ></FormattedMessage>
-            </div>
-
-            <div className="flex items-center justify-end">
-              <span
-                title={toPrecision(claimedAmountIn, sellToken.decimals)}
-                className="text-gray-10"
-              >
-                {Number(claimedAmountIn) > 0 && Number(claimedAmountIn) < 0.01
-                  ? "< 0.01"
-                  : toPrecision(claimedAmountIn, 2)}
-              </span>
-
-              <span className="ml-1.5">{sellToken.symbol}</span>
-              <span className="mx-6 xs:mx-2 text-gray-10">
-                {isClientMobie() ? (
-                  <MyOrderInstantSwapArrowRight />
-                ) : (
-                  <MyOrderInstantSwapArrowRight />
-                )}
-              </span>
-              <span title={claimedAmount} className="text-gray-10">
-                {Number(claimedAmount) > 0 && Number(claimedAmount) < 0.01
-                  ? "< 0.01"
-                  : toPrecision(claimedAmount, 2)}
-              </span>
-
-              <span className="ml-1.5">{buyToken.symbol}</span>
-            </div>
-          </span>
-        </div>
-      )}
+        )}
+      </div>
     </td>
   );
 }

@@ -21,6 +21,7 @@ import RewardList from "./RewardList";
 import { ButtonTextWrapper } from "../common/Button";
 import { Seed } from "@/services/farm";
 import CustomTooltip from "../customTooltip/customTooltip";
+import { useRouter } from "next/router";
 
 const is_mobile = isMobile();
 const MySeedsBox = ({
@@ -40,6 +41,7 @@ const MySeedsBox = ({
     tokenPriceList,
     allTokenMetadatas,
   } = useContext(MemeContext)!;
+  const router = useRouter();
   const [isUnStakeOpen, setIsUnStakeOpen] = useState(false);
   const [modal_action_seed_id, set_modal_action_seed_id] = useState("");
   const [claim_id, set_claim_id] = useState("");
@@ -78,9 +80,9 @@ const MySeedsBox = ({
   function goFarmDetail(seed_id: string) {
     const lpSeed = lpSeeds[seed_id];
     if (lpSeed && lpSeed.farmList && lpSeed.farmList[0] && lpSeed.pool) {
-      window.open(`/farms/${lpSeed.pool.id}-e`);
+      router.push(`/farms/${lpSeed.pool.id}-e`);
     } else if (lpSeed.pool) {
-      window.open(`/farms/${lpSeed.pool.id}-r`);
+      router.push(`/farms/${lpSeed.pool.id}-r`);
     }
   }
   function seedClaimAll({
@@ -312,7 +314,9 @@ const MySeedsBox = ({
                       }}
                       className={`flex flex-grow items-center cursor-pointer justify-center border border-primaryGreen
                          rounded-xl h-12 text-primaryGreen text-base paceGrotesk-Bold focus:outline-none w-1/2 xsm:w-full ${
-                           unStakeButtonDisabled ? "opacity-30" : ""
+                           unStakeButtonDisabled
+                             ? "opacity-30 cursor-not-allowed"
+                             : "cursor-pointer"
                          }`}
                     >
                       <ButtonTextWrapper
@@ -333,7 +337,9 @@ const MySeedsBox = ({
                         });
                       }}
                       className={`flex flex-grow items-center cursor-pointer justify-center text-boxBorder rounded-xl h-12 text-base paceGrotesk-Bold focus:outline-none w-1/2 xsm:w-full ${
-                        claimButtonDisabled ? "bg-gray-40" : "bg-primaryGreen"
+                        claimButtonDisabled
+                          ? "bg-gray-40 cursor-not-allowed"
+                          : "bg-primaryGreen cursor-pointer"
                       }`}
                     >
                       <ButtonTextWrapper

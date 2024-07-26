@@ -732,15 +732,17 @@ function YourClassicLiquidityLinePage(props: any) {
         {/*  */}
         <div className="col-span-2">{Symbols}</div>
         {/*  */}
-        <div className="flex items-center text-xs text-white col-span-5">
-          <span className="text-base font-medium">
-            {display_number_withCommas(lp_total)}
-          </span>
-          <span className="text-sm text-gray-10 font-normal ml-1.5">
-            ({display_percent(user_lp_percent)})
-          </span>
+        <div className="flex  items-center text-xs text-white col-span-5">
+          <div>
+            <span className="text-base font-medium">
+              {display_number_withCommas(lp_total)}
+            </span>
+            <span className="text-sm text-gray-10 font-normal ml-1.5">
+              ({display_percent(user_lp_percent)})
+            </span>
+          </div>
 
-          <div className="col-span-2 flex flex-col text-xs  -ml-12 text-farmText">
+          <div className="flex flex-col text-xs ml-9 text-gray-10 relative z-10">
             {(supportFarmV1 > endedFarmV1 || Number(farmStakeV1) > 0) && (
               <div
                 onClick={(e) => {

@@ -13,6 +13,7 @@ export default function SelectDclTokenBox({
 }) {
   const persistLimitStore: IPersistLimitStore = usePersistLimitStore();
   const allPools = persistLimitStore.getAllDclPools();
+  const selectedDclPool = persistLimitStore.getDclPool();
   const bestTvlPoolList = getBestTvlPoolList(allPools || []) as IPoolDcl[];
   if (!show) return null;
   return (
@@ -23,16 +24,19 @@ export default function SelectDclTokenBox({
         className="overflow-y-auto  px-2.5 thinGrayscrollBar"
       >
         {bestTvlPoolList.map((p: IPoolDcl) => {
-          const { token_x_metadata, token_y_metadata } = p;
+          const { token_x_metadata, token_y_metadata, pool_id } = p;
           const tokens = sort_tokens_by_base([
             token_x_metadata as TokenMetadata,
             token_y_metadata as TokenMetadata,
           ]);
+          const isSelected = selectedDclPool?.pool_id == pool_id;
           return (
             <div
               key={p.pool_id}
               style={{ height: "38px" }}
-              className={`flex items-center justify-between rounded-md px-2.5 py-1.5 mb-1.5 hover:bg-dark-10 gap-10 cursor-pointer min-w-max`}
+              className={`flex items-center justify-between rounded-md px-2.5 py-1.5 mb-1.5 hover:bg-dark-10 gap-10 cursor-pointer min-w-max ${
+                isSelected ? "bg-dark-10" : ""
+              }`}
               onClick={(e) => {
                 e.stopPropagation();
                 onSelect(p);
@@ -42,7 +46,7 @@ export default function SelectDclTokenBox({
                 <Images tokens={tokens} />
                 <Symbols tokens={tokens} />
               </div>
-              <SelectedIcon className="hidden" />
+              {isSelected ? <SelectedIcon /> : null}
             </div>
           );
         })}

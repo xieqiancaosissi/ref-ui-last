@@ -100,7 +100,7 @@ export default function Table({
           >
             <div className="flex items-center gap-2.5">
               <div
-                className="flex justify-center relative overflow-hidden rounded-full border border-gray-110"
+                className="flex items-center justify-center relative overflow-hidden rounded-full border border-gray-110"
                 style={{
                   width: "26px",
                   height: "26px",

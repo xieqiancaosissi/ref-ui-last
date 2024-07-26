@@ -154,7 +154,7 @@ export default function SwapBanner({
                 </span>
 
                 <div className="flex items-center text-sm">
-                  <span title={totalIn} className="text-gray-10">
+                  <span title={totalIn} className="text-white">
                     {Number(totalIn) > 0 && Number(totalIn) < 0.01
                       ? "< 0.01"
                       : toPrecision(totalIn, 2)}
@@ -170,7 +170,7 @@ export default function SwapBanner({
                   </span>
                   <span
                     title={toPrecision(totalOut, buyToken.decimals)}
-                    className="text-gray-10"
+                    className="text-white"
                   >
                     {Number(totalOut) > 0 && Number(totalOut) < 0.01
                       ? "< 0.01"
@@ -216,7 +216,7 @@ export default function SwapBanner({
                   </div>
 
                   <div className="flex items-center justify-end">
-                    <span title={swapIn} className="text-gray-10">
+                    <span title={swapIn} className="text-white">
                       {Number(swapIn) > 0 && Number(swapIn) < 0.01
                         ? "< 0.01"
                         : toPrecision(swapIn, 2)}
@@ -230,7 +230,7 @@ export default function SwapBanner({
                         <MyOrderInstantSwapArrowRight />
                       )}
                     </span>
-                    <span title={swapOut} className="text-gray-10">
+                    <span title={swapOut} className="text-white">
                       {Number(swapOut) > 0 && Number(swapOut) < 0.01
                         ? "< 0.01"
                         : toPrecision(swapOut, 2)}
@@ -269,7 +269,7 @@ export default function SwapBanner({
                 <div className="flex items-center justify-end">
                   <span
                     title={toPrecision(claimedAmountIn, sellToken.decimals)}
-                    className="text-gray-10"
+                    className="text-white"
                   >
                     {Number(claimedAmountIn) > 0 &&
                     Number(claimedAmountIn) < 0.01
@@ -287,7 +287,7 @@ export default function SwapBanner({
                       <MyOrderInstantSwapArrowRight />
                     )}
                   </span>
-                  <span title={claimedAmount} className="text-gray-10">
+                  <span title={claimedAmount} className="text-white">
                     {Number(claimedAmount) > 0 && Number(claimedAmount) < 0.01
                       ? "< 0.01"
                       : toPrecision(claimedAmount, 2)}
@@ -389,8 +389,8 @@ export default function SwapBanner({
           </div>
         </div>
         {/* tx */}
-        <div className="flex relative rounded border border-gray-90 px-2 py-0.5">
-          {!!orderTx && (
+        {!!orderTx ? (
+          <div className="flex relative rounded border border-gray-90 px-2 py-0.5">
             <a
               className="flex items-center text-gray-10 cursor-pointer text-xs hover:text-white"
               onMouseEnter={() => handleMouseEnter(orderTx)}
@@ -481,8 +481,8 @@ export default function SwapBanner({
                 </div>
               )}
             </a>
-          )}
-        </div>
+          </div>
+        ) : null}
       </div>
     </td>
   );

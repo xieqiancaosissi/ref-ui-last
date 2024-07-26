@@ -11,7 +11,7 @@ import {
   IPersistLimitStore,
 } from "@/stores/limitOrder";
 import { getTokenUIId } from "@/services/swap/swapUtils";
-import { formatTokenPrice } from "@/utils/uiNumber";
+import { toInternationalCurrencySystemLongString_usd } from "@/utils/uiNumber";
 import { getMax } from "@/services/swap/swapUtils";
 import { regularizedPrice } from "@/services/swapV3";
 
@@ -84,7 +84,7 @@ export default function Input(props: IInputProps) {
     }
   }
   function getTokenValue() {
-    return formatTokenPrice(
+    return toInternationalCurrencySystemLongString_usd(
       new Big(tokenInAmount || 0)
         .mul(allTokenPrices[token?.id]?.price || 0)
         .toFixed()

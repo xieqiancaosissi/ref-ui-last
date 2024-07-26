@@ -676,7 +676,7 @@ export const LimitOrderPopUp = ({
       )}
 
       <span
-        className="text-v3SwapGray hover:text-gradientFrom flex items-center hover:underline"
+        className="text-v3SwapGray hover:text-primaryGreen flex items-center hover:underline"
         style={{
           textDecorationThickness: "1px",
         }}

@@ -62,7 +62,7 @@ export const Images = ({
                     is_vertical && index > 1 ? "-mt-3" : "relative z-10"
                   }  h-${size || 10} w-${size || 10} rounded-full border ${
                     border ? "border" : ""
-                  } border-gradientFromHover ${
+                  } border-dark-90 ${
                     tokens?.length > 1 ? (noverlap ? "ml-0" : "-ml-1") : ""
                   } bg-cardBg`}
                   src={icon}
@@ -76,7 +76,7 @@ export const Images = ({
                 key={id || 0 + index}
                 className={`inline-block h-${size || 10} flex-shrink-0 w-${
                   size || 10
-                } rounded-full bg-cardBg border border-gradientFromHover -ml-1 `}
+                } rounded-full bg-cardBg border border-dark-90 -ml-1 `}
                 style={{
                   border: borderStyle || "none",
                 }}
@@ -91,7 +91,7 @@ export const Images = ({
             size || 10
           } flex-shrink-0 flex items-center justify-center text-gradientFrom w-${
             size || 10
-          } rounded-full bg-darkBg border border-gradientFromHover -ml-1 `}
+          } rounded-full bg-darkBg border border-dark-90 -ml-1 `}
         >
           <span className={`relative bottom-1`}>...</span>
         </div>

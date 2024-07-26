@@ -53,7 +53,7 @@ export default function SelectTokenButton(props: ISelectTokenButtonProps) {
           onClick={showModal}
         >
           <div
-            className="flex justify-center relative overflow-hidden rounded-full border border-gray-110"
+            className="flex items-center justify-center relative overflow-hidden rounded-full border border-gray-110"
             style={{
               width: "24px",
               height: "24px",

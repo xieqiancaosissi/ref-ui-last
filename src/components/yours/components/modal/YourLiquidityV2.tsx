@@ -1528,9 +1528,9 @@ function UserLiquidityLineStyleGroupPage() {
                   <div
                     className={`${
                       !canClaim
-                        ? "text-dark-200 border-dark-190  cursor-not-allowed "
-                        : "text-green-10 border-green-10  cursor-pointer "
-                    } w-21 h-7 frcc text-sm font-bold border  rounded mr-1 hover:opacity-90`}
+                        ? "text-dark-200 border-gray-190  cursor-not-allowed opacity-40"
+                        : "text-green-10 border-green-10  cursor-pointer hover:opacity-90"
+                    } w-21 h-7 frcc text-sm font-bold border  rounded mr-1`}
                     onClick={claimRewards}
                   >
                     <ButtonTextWrapper
@@ -1568,9 +1568,9 @@ function UserLiquidityLineStyleGroupPage() {
                       }}
                       className={`${
                         !!joined_seeds
-                          ? "cursor-not-allowed"
-                          : "cursor-pointer "
-                      } w-21 h-7 frcc text-sm font-bold text-dark-200 border border-dark-190 rounded hover:opacity-90`}
+                          ? "text-dark-200 border-gray-190  cursor-not-allowed opacity-40"
+                          : "text-dark-200 cursor-pointer border-dark-190"
+                      } w-21 h-7 frcc text-sm font-bold border  rounded hover:text-white`}
                     >
                       Remove
                     </div>

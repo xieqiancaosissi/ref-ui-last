@@ -50,6 +50,8 @@ import { useFarmStake } from "@/hooks/useStableShares";
 import { useLpLocker } from "@/services/lplock";
 import Link from "next/link";
 import { OrdersArrow } from "../icon";
+import { getPoolDetails } from "@/services/pool_detail";
+import { getSharesInPool } from "@/services/pool";
 
 const { BLACK_TOKEN_LIST } = getConfig();
 export const StakeListContext = createContext<any>(null);
@@ -78,6 +80,7 @@ export function YourLiquidityV1(props: any) {
     // get all stable pools;
     const ids = ALL_STABLE_POOL_IDS;
     getPoolsByIds({ pool_ids: ids }).then((res) => {
+      console.log(res, "getPoolsByIds82");
       setStablePools(res.filter((p) => p.id.toString() !== NEARX_POOL_ID));
     });
   }, []);
@@ -276,8 +279,45 @@ function LiquidityContainerStyle2() {
     );
     return activeStablePools;
   }, [batchTotalShares]);
+  const titleList = [
+    {
+      name: "Pair",
+      class: "col-span-1",
+    },
+    {
+      name: "Token",
+      class: "col-span-2",
+    },
+    {
+      name: "LP Tokens(Shares)",
+      class: "col-span-5",
+    },
+    {
+      name: "USD Value",
+      class: "col-span-2",
+    },
+    {
+      name: "",
+      class: "col-span-2",
+    },
+  ];
+  // console.log(vePool, "vePool");
+  // console.log(stablePoolsFinal, "stablePoolsFinal");
+  // console.log(simplePoolsFinal, "simplePoolsFinal");
   return (
     <div>
+      <div className="w-full grid grid-cols-12 px-4">
+        {titleList.map((item: any, index: any) => {
+          return (
+            <span
+              key={item.name + index}
+              className={`text-gray-60 text-sm ${item.class}`}
+            >
+              {item.name}
+            </span>
+          );
+        })}
+      </div>
       {!vePool || !getConfig().REF_VE_CONTRACT_ID ? null : (
         <YourClassicLiquidityLine pool={vePool}></YourClassicLiquidityLine>
       )}
@@ -286,6 +326,7 @@ function LiquidityContainerStyle2() {
           <YourClassicLiquidityLine
             pool={pool}
             key={pool.id}
+            type="stable"
           ></YourClassicLiquidityLine>
         );
       })}
@@ -301,6 +342,7 @@ function LiquidityContainerStyle2() {
   );
 }
 const LiquidityContextData = createContext<any>(null);
+
 function YourClassicLiquidityLine(props: any) {
   const {
     vePool,
@@ -317,10 +359,13 @@ function YourClassicLiquidityLine(props: any) {
     batchShares,
     finalStakeList,
   } = useContext(StakeListContext)!;
+
   const { set_your_classic_lp_all_in_farms } = useContext(
     PortfolioData
   ) as PortfolioContextType;
-  const { pool } = props;
+
+  const { pool, type } = props;
+
   const { token_account_ids, id: poolId } = pool;
   const tokens = token_account_ids.map((id: number) => tokensMeta[id]) || [];
   const [switch_off, set_switch_off] = useState<boolean>(true);
@@ -328,35 +373,162 @@ function YourClassicLiquidityLine(props: any) {
   const decimals = isStablePool(poolId)
     ? getStablePoolDecimal(poolId)
     : LP_TOKEN_DECIMALS;
-  const Images = tokens.map((token: TokenMetadata, index: number) => {
-    const { icon, id } = token;
-    if (icon)
+
+  // image start
+  let Images;
+  if (tokens.length == 2) {
+    Images = tokens.map((token: TokenMetadata, index: number) => {
+      const { icon, id } = token;
+      if (icon)
+        return (
+          <img
+            key={id}
+            className={`inline-block w-6 h-6 border border-black rounded-full ${
+              index == 0 ? "" : "-ml-1"
+            }`}
+            src={icon}
+          />
+        );
       return (
-        <img
+        <div
           key={id}
-          className={`inline-block w-6 h-6 border border-black rounded-full ${
-            index == 0 ? "" : "-ml-1"
-          }`}
-          src={icon}
-        />
+          className={
+            "inline-block w-6 h-6 border border-black rounded-full -ml-1"
+          }
+        ></div>
       );
-    return (
-      <div
-        key={id}
-        className={
-          "inline-block w-6 h-6 border border-black rounded-full -ml-1"
-        }
-      ></div>
+    });
+  }
+
+  if (tokens.length == 3) {
+    Images = (
+      <div className="w-12 h-12 frcc flex-wrap">
+        {tokens.map((token: TokenMetadata, index: number) => {
+          const { icon, id } = token;
+          if (icon)
+            return (
+              <img
+                key={id}
+                className={`inline-block w-6 h-6 border border-black rounded-full ${
+                  index == 1 && "-ml-1"
+                } ${index == 2 ? "flex-shrink-0 -mt-3" : ""}`}
+                src={icon}
+              />
+            );
+          return (
+            <div
+              key={id}
+              className={`inline-block w-6 h-6 border border-black rounded-full ${
+                index == 1 && "-ml-1"
+              } ${index == 2 ? "flex-shrink-0 -mt-3" : ""}`}
+            ></div>
+          );
+        })}
+      </div>
     );
-  });
-  const Symbols = tokens.map((token: TokenMetadata, index: number) => {
-    const { symbol } = token;
-    if (index == tokens.length - 1) {
-      return <label key={symbol}>{symbol}</label>;
-    } else {
-      return <label key={symbol}>{symbol}/</label>;
-    }
-  });
+  }
+
+  if (tokens.length == 4) {
+    Images = (
+      <div className="w-12 h-12 frcc flex-wrap">
+        {tokens.map((token: TokenMetadata, index: number) => {
+          const { icon, id } = token;
+          if (icon)
+            return (
+              <img
+                key={id}
+                className={`inline-block w-6 h-6 border border-black rounded-full ${
+                  (index == 1 || index == 3) && "-ml-1"
+                } ${index == 2 ? "flex-shrink-0 -mt-3" : ""}
+                ${index == 3 ? "flex-shrink-0 -mt-3" : ""}
+                `}
+                src={icon}
+              />
+            );
+          return (
+            <div
+              key={id}
+              className={`inline-block w-6 h-6 border border-black rounded-full ${
+                index == 1 && "-ml-1"
+              } ${index == 2 ? "flex-shrink-0 -mt-3" : ""}`}
+            ></div>
+          );
+        })}
+      </div>
+    );
+  }
+  // image end
+
+  // token symbol start
+  const [poolNew, setPoolNew] = useState<any>();
+  const [sharesNew, setShares] = useState("");
+  useEffect(() => {
+    getPoolDetails(+poolId).then(setPoolNew);
+    getSharesInPool(+poolId)
+      .then(setShares)
+      .catch(() => setShares);
+  }, []);
+
+  const farmStakeTotal = useFarmStake({ poolId, stakeList: finalStakeList });
+  const LpLocked = useLpLocker(`:${poolId}`);
+  const userTotalShare = BigNumber.sum(sharesNew, farmStakeTotal, LpLocked);
+
+  const userTotalShareToString = userTotalShare
+    .toNumber()
+    .toLocaleString("fullwide", { useGrouping: false });
+
+  const tokenAmountShare = (
+    pool: Pool,
+    token: TokenMetadata,
+    shares: string
+  ) => {
+    const value = toRoundedReadableNumber({
+      decimals: token.decimals,
+      number: calculateFairShare({
+        shareOf: poolNew.supplies[token.id],
+        contribution: shares,
+        totalContribution: poolNew.shareSupply,
+      }),
+      precision: 3,
+      withCommas: false,
+    });
+    return Number(value) < 0.001 ? (
+      <span className="whitespace-nowrap">{"< 0.001"}</span>
+    ) : (
+      toInternationalCurrencySystem(value, 3)
+    );
+  };
+
+  const TokenInfoPC = ({ token }: { token: TokenMetadata }) => {
+    return (
+      <div className="flex items-center text-sm font-normal ">
+        <div className="w-16 text-gray-10">{toRealSymbol(token.symbol)}</div>
+        <div className="font-medium">
+          {poolNew &&
+            tokenAmountShare(
+              pool,
+              token,
+              new BigNumber(userTotalShareToString)
+                .plus(
+                  Number(getVEPoolId()) === Number(poolId) ? lptAmount : "0"
+                )
+                .toNumber()
+                .toFixed()
+            )}
+        </div>
+      </div>
+    );
+  };
+
+  const Symbols = (
+    <div className="flex flex-col">
+      {tokens.map((token: TokenMetadata, index: number) => {
+        return TokenInfoPC({ token });
+      })}
+    </div>
+  );
+  // token symbol end
+
   // get lp amount in farm
   const lp_in_farm = useMemo(() => {
     let inFarmAmount = "0";
@@ -465,6 +637,7 @@ function YourClassicLiquidityLine(props: any) {
         switch_off,
         Images,
         Symbols,
+        TokenInfoPC,
         pool,
         lp_total_value,
         set_switch_off,
@@ -477,11 +650,13 @@ function YourClassicLiquidityLine(props: any) {
         seed_status,
       }}
     >
-      <YourClassicLiquidityLinePage></YourClassicLiquidityLinePage>
+      <YourClassicLiquidityLinePage
+        type={type || ""}
+      ></YourClassicLiquidityLinePage>
     </LiquidityContextData.Provider>
   );
 }
-function YourClassicLiquidityLinePage() {
+function YourClassicLiquidityLinePage(props: any) {
   const {
     switch_off,
     Images,
@@ -496,6 +671,7 @@ function YourClassicLiquidityLinePage() {
     lp_in_pool,
     lp_in_farm,
     seed_status,
+    TokenInfoPC,
   } = useContext(LiquidityContextData)!;
   return (
     <div
@@ -503,37 +679,50 @@ function YourClassicLiquidityLinePage() {
         switch_off ? "" : "pb-4"
       }`}
     >
-      <div className="frcb h-14">
-        <div className="flex items-center">
-          <div className="flex items-center">{Images}</div>
-          <span className="text-sm text-white paceGrotesk-Bold mx-2.5">
-            {Symbols}
-          </span>
-          <span className="frcc text-xs text-gray-10 px-1 rounded-md border border-gray-90 mr-1.5">
-            Classic
-            <span
-              className="ml-1.5"
-              onClick={() => {
-                openUrl(`/pools/${pool.id}`);
-              }}
-            >
-              <OrdersArrow></OrdersArrow>
-            </span>
+      <div
+        className="w-full min-h-17 grid grid-cols-12 py-4"
+        onClick={() => {
+          openUrl(
+            props?.type == "stable"
+              ? `/pool/stable/${pool.id}`
+              : `/pool/classic/${pool.id}`
+          );
+        }}
+      >
+        <div className="flex flex-col justify-center col-span-1">
+          <div className="flex pl-2">{Images}</div>
+          <span className="text-xs text-gray-10 mt-1">
+            {props?.type == "stable" ? "Stable Pool" : ""}
           </span>
         </div>
-        <div className="flex items-center">
-          <span className="text-sm text-white paceGrotesk-Bold mr-5">
+        {/*  */}
+        <div className="col-span-2">{Symbols}</div>
+        {/*  */}
+        <div className="flex items-center text-xs text-white col-span-5">
+          <span className="text-base font-medium">
+            {display_number_withCommas(lp_total)}
+          </span>
+          <span className="text-sm text-gray-10 font-normal ml-1.5">
+            ({display_percent(user_lp_percent)})
+          </span>
+        </div>
+        {/*  */}
+        <div className="flex items-center col-span-2">
+          <span className="text-base text-white font-medium">
             {display_value(lp_total_value)}
           </span>
-          <UpDownButton
+          {/* <UpDownButton
             set_switch_off={() => {
               set_switch_off(!switch_off);
             }}
             switch_off={switch_off}
-          ></UpDownButton>
+          ></UpDownButton> */}
         </div>
+
+        {/* btn */}
+        <div className="col-span-2"></div>
       </div>
-      <div className={`${switch_off ? "hidden" : ""}`}>
+      {/* <div className={`${switch_off ? "hidden" : ""}`}>
         <div className="bg-dark-210 rounded-xl px-3.5 py-5 bg-opacity-70 mt-2">
           <div className="frcb mb-4">
             <span className="text-xs text-gray-10">
@@ -597,7 +786,7 @@ function YourClassicLiquidityLinePage() {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }

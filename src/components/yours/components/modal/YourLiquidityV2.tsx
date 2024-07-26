@@ -5,6 +5,7 @@ import React, {
   useMemo,
   createContext,
 } from "react";
+import styles from "../../yours.module.css";
 import { useHistory } from "react-router";
 import { FormattedMessage, useIntl } from "react-intl";
 import BigNumber from "bignumber.js";
@@ -74,6 +75,7 @@ import { get_unClaimed_fee_data } from "@/components/pools/detail/dcl/d3Chart/De
 import { ButtonTextWrapper } from "@/components/common/Button";
 import { RemovePoolV3 } from "@/components/pools/detail/liquidity/dclYourLiquidity/RemovePoolV3";
 import { OrdersArrow, WaterDropIcon } from "../icon";
+import { DCLIconNew } from "../icon";
 
 const { REF_UNI_V3_SWAP_CONTRACT_ID } = getConfig();
 export function YourLiquidityV2(props: any) {
@@ -107,7 +109,7 @@ export function YourLiquidityV2(props: any) {
 
   const accountStore = useAccountStore();
   const isSignedIn = accountStore.isSignedIn;
-  useRemoveLiquidityUrlHandle();
+  // useRemoveLiquidityUrlHandle();
   useEffect(() => {
     getBoostTokenPrices().then(setTokenPriceList);
     get_all_seeds().then((seeds: Seed[]) => {
@@ -356,8 +358,38 @@ export function YourLiquidityV2(props: any) {
       setYourLpValueV2 && setYourLpValueV2(total_value.toFixed());
     }
   }
+  const titleList = [
+    {
+      name: "Pool",
+      class: "col-span-4",
+    },
+    {
+      name: "Price Range",
+      class: "col-span-5",
+    },
+    {
+      name: "APR(24h)",
+      class: "col-span-1",
+    },
+    {
+      name: "Your Liquidity",
+      class: "col-span-2 frcc",
+    },
+  ];
   return (
     <div>
+      <div className="w-full grid grid-cols-12 px-4">
+        {titleList.map((item: any, index: any) => {
+          return (
+            <span
+              key={item.name + index}
+              className={`text-gray-60 text-sm ${item.class}`}
+            >
+              {item.name}
+            </span>
+          );
+        })}
+      </div>
       {groupYourLiquidity &&
         Object.entries(groupYourLiquidity).map(
           ([id, liquidity]: any, index: number) => {
@@ -709,9 +741,7 @@ function UserLiquidityLineStyleGroup({
   // new
   const [farm_icon, set_farm_icon] = useState<"single" | "muti">();
   const [tip_seed, set_tip_seed] = useState<ILatestSeedTip>();
-  const [joined_seeds, set_joined_seeds] = useState<
-    Record<string, IUserJoinedSeed> | undefined
-  >(undefined);
+  const [joined_seeds, set_joined_seeds] = useState();
   const [joined_seeds_done, set_joined_seeds_done] = useState<boolean>(false);
 
   const [removeButtonTip, setRemoveButtonTip] = useState<boolean>(false);
@@ -777,7 +807,7 @@ function UserLiquidityLineStyleGroup({
         }
       }
       // get all seed that user had joined
-      let joined_seeds: Record<string, IUserJoinedSeed> | undefined = {};
+      let joined_seeds: any;
       const in_farming_liquidities = groupYourLiquidityList.filter((l: any) => {
         return l.is_in_farming;
       });
@@ -820,30 +850,29 @@ function UserLiquidityLineStyleGroup({
 
       // get farm apr and value of user's investment
       joined_seeds &&
-        Object.values(joined_seeds).forEach(
-          (joined_seed_info: IUserJoinedSeedDetail) => {
-            const { seed, liquidities } = joined_seed_info;
-            if (seed) {
-              joined_seed_info.seed_apr = formatPercentage(getSeedApr(seed));
-              joined_seed_info.value_of_investment = formatWithCommas_usd(
-                getTotalValueInFarmsOfLiquidities(seed, liquidities)
-              );
-              if (seed.farmList && seed.farmList[0].status == "Ended") {
-                joined_seed_info.seed_status = "ended";
-                joined_seed_info.seed_status_num = 3;
+        Object.values(joined_seeds).forEach((joined_seed_info: any) => {
+          const { seed, liquidities } = joined_seed_info;
+          if (seed) {
+            joined_seed_info.seed_apr = formatPercentage(getSeedApr(seed));
+            joined_seed_info.value_of_investment = formatWithCommas_usd(
+              getTotalValueInFarmsOfLiquidities(seed, liquidities)
+            );
+            if (seed.farmList && seed.farmList[0].status == "Ended") {
+              joined_seed_info.seed_status = "ended";
+              joined_seed_info.seed_status_num = 3;
+            } else {
+              if (latest_seed.seed_id == seed.seed_id) {
+                joined_seed_info.seed_status = "run";
+                joined_seed_info.seed_status_num = 1;
               } else {
-                if (latest_seed.seed_id == seed.seed_id) {
-                  joined_seed_info.seed_status = "run";
-                  joined_seed_info.seed_status_num = 1;
-                } else {
-                  joined_seed_info.seed_status = "would_ended";
-                  joined_seed_info.seed_status_num = 2;
-                }
+                joined_seed_info.seed_status = "would_ended";
+                joined_seed_info.seed_status_num = 2;
               }
-              joined_seed_info.go_farm_url_link = get_go_seed_link_url(seed);
             }
+            joined_seed_info.go_farm_url_link = get_go_seed_link_url(seed);
           }
-        );
+        });
+
       set_joined_seeds(joined_seeds);
       set_joined_seeds_done(true);
     }
@@ -1206,95 +1235,100 @@ function UserLiquidityLineStyleGroupPage() {
     tokenFeeRight,
     poolDetail,
     tokenFeeValue,
+    groupYourLiquidityList,
+    liquidity,
+    liquidities_list,
+    joined_seeds_done,
+    removeButtonTip,
+    tokenPriceList,
+    setRemoveButtonTip,
+    setShowRemoveBox,
+    showRemoveBox,
   } = useContext(GroupData)!;
   const [switch_off, set_switch_off] = useState<boolean>(true);
   function goPoolDetailPage() {
     const params_str = get_pool_name(poolDetail.pool_id);
     openUrl(`/poolV2/${params_str}`);
   }
+  const canClaim = +tokenFeeLeft != 0 && +tokenFeeRight != 0;
+  const [claim_loading, set_claim_loading] = useState(false);
+  function claimRewards() {
+    if (!canClaim) return;
+
+    set_claim_loading(true);
+    const lpt_ids: string[] = [];
+
+    liquidities_list.forEach((liquidity: any) => {
+      const { unclaimed_fee_x, unclaimed_fee_y }: any = liquidity;
+      if (+unclaimed_fee_x > 0 || +unclaimed_fee_y > 0) {
+        lpt_ids.push(liquidity.lpt_id);
+      }
+    });
+    claim_all_liquidity_fee({
+      token_x: tokenMetadata_x_y[0],
+      token_y: tokenMetadata_x_y[1],
+      lpt_ids,
+    });
+  }
+
+  const toDclLiq = (id: string) => {
+    openUrl(`/liquidity/${get_pool_name(id)}`);
+  };
+
   return (
     <>
       <div
         className={`rounded-xl mt-3 bg-gray-20 px-4 bg-opacity-30 ${
           switch_off ? "" : "pb-4"
         }`}
+        onMouseEnter={() => set_switch_off(false)}
+        onMouseLeave={() => set_switch_off(true)}
       >
-        <div className="frcb h-14">
-          <div className="flex items-center">
-            <div className="flex items-center flex-shrink-0 mr-2.5">
-              <img
-                src={tokens[0]?.icon}
-                className="w-6 h-6 border border-black rounded-full"
-              ></img>
-              <img
-                src={tokens[1]?.icon}
-                className="relative -ml-1.5 w-7 h-7 border border-black rounded-full"
-              ></img>
-            </div>
-            <span className="text-white font-bold text-sm paceGrotesk-Bold">
-              {tokens[0]?.symbol}-{tokens[1]?.symbol}
-            </span>
-            <span className="frcc text-xs text-gray-10 bg-gray-60 bg-opacity-15 rounded-md px-1.5 mx-1.5 py-0.5">
-              {+fee / 10000}%
-            </span>
-            <span
-              onClick={() => {
-                goPoolDetailPage();
-              }}
-              className="frcc text-xs rounded-md px-1.5 cursor-pointer py-0.5  mr-1.5"
-            >
-              DCL Pools
-              <OrdersArrow className="ml-1"></OrdersArrow>
-            </span>
-          </div>
-          <div className="flex items-center">
-            <div className="flex flex-col items-end mr-5">
-              <span className="text-white text-sm paceGrotesk-Bold">
-                {your_liquidity || "-"}
-              </span>
-              <div className="flex items-center">
-                <WaterDropIcon className="m-1.5"></WaterDropIcon>
-                <span className="text-xs text-primaryGreen paceGrotesk-Bold">
-                  {tokenFeeValue}
+        <div className={`${styles.dclPoolRowContainer}`}>
+          <div
+            className={`min-h-18 w-full grid grid-cols-12`}
+            onClick={() => {
+              openUrl(`/pool/dcl/${poolDetail.pool_id}`);
+            }}
+          >
+            {/* Pool */}
+            <div className="flex items-center col-span-4">
+              <div className="flex items-center flex-shrink-0 mr-2.5">
+                <img
+                  src={tokens[0]?.icon}
+                  className="w-6 h-6 border border-black rounded-full"
+                ></img>
+                <img
+                  src={tokens[1]?.icon}
+                  className="relative -ml-1.5 w-7 h-7 border border-black rounded-full"
+                ></img>
+              </div>
+              <div className="flex flex-col justify-start items-start">
+                <span className="text-white font-bold text-lg paceGrotesk-Bold">
+                  {tokens[0]?.symbol}-{tokens[1]?.symbol}
+                </span>
+                <span className="frcc text-xs text-gray-10 mt-0.5">
+                  Fee Tiers {+fee / 10000}%
                 </span>
               </div>
+              <span
+                onClick={() => {
+                  goPoolDetailPage();
+                }}
+                className="frcc text-xs rounded-md px-1.5 cursor-pointer py-0.5  mr-1.5"
+              >
+                <DCLIconNew />
+              </span>
             </div>
-            <UpDownButton
-              set_switch_off={() => {
-                set_switch_off(!switch_off);
-              }}
-              switch_off={switch_off}
-            ></UpDownButton>
-          </div>
-        </div>
-        <div className={`${switch_off ? "hidden" : ""}`}>
-          <div className="bg-dark-210 rounded-xl px-3.5 py-5 bg-opacity-70 mt-2">
-            <div className="frcb mb-4">
-              <span className="text-xs text-gray-10">Price Range</span>
-              <div className="flex items-center text-xs text-white">
-                <div
-                  className={`flex items-center justify-center bg-opacity-15 rounded-md h-5 px-1 mr-2 ${
-                    isInRange ? "bg-blue-20" : "bg-warn"
-                  }`}
-                >
-                  <span
-                    className={`flex-shrink-0 w-1.5 h-1.5 rounded-full mr-1.5 ${
-                      isInRange ? "bg-blue-20" : "bg-warn"
-                    }`}
-                  ></span>
-                  <span
-                    className={`whitespace-nowrap text-xs ${
-                      isInRange ? "text-blue-20" : "text-warn"
-                    }`}
-                  >
-                    {isInRange ? "In range" : "Out of range"}
-                  </span>
-                </div>
+
+            {/* Price Range */}
+            <div className="flex items-center text-xs text-white col-span-5">
+              <div className="flex flex-col items-start justify-start">
                 <div className="flex items-center flex-wrap">
                   {intersectionRangeList.map((range: string[], i: number) => {
                     return (
                       <div
-                        className="text-white whitespace-nowrap text-xs"
+                        className="text-white whitespace-nowrap text-base"
                         key={i + "id"}
                       >
                         <span>
@@ -1312,67 +1346,77 @@ function UserLiquidityLineStyleGroupPage() {
                       </div>
                     );
                   })}
-                  <span className="text-xs ml-1 text-gray-10">
+                  <span className="text-base ml-1 text-gray-10">
                     {ratedMapTokens}
                   </span>
                 </div>
+                <span
+                  className={`whitespace-nowrap text-xs my-0.5 ${
+                    isInRange ? "text-green-10" : "text-warn"
+                  }`}
+                >
+                  {isInRange ? "In range" : "Out of range"}
+                </span>
               </div>
             </div>
-            <div className="frcb mb-4">
-              <span className="text-xs text-gray-10">APR(24h)</span>
-              <div className="flex items-center">
-                <span className="text-xs mr-2">{accountAPR || "-"}</span>
+
+            {/* apr */}
+            <div className="fccc col-span-1">
+              <div className="text-base mr-2">{accountAPR || "-"}</div>
+              {joined_seeds ? (
+                <div className="flex items-center gap-2 text-xs">
+                  {(Object.values(joined_seeds) as IUserJoinedSeedDetail[])
+                    .sort(sort_joined_seeds)
+                    .map(
+                      (
+                        joined_seed_info: IUserJoinedSeedDetail,
+                        index: number
+                      ) => {
+                        const length = Object.values(joined_seeds).length;
+                        const { seed_apr, seed_status } = joined_seed_info;
+                        if (seed_status == "ended") return null;
+                        if (length == 1) {
+                          return (
+                            <div
+                              className="frcs gap-1 text-gray-10 whitespace-nowrap"
+                              key={index + "id"}
+                            >
+                              <span>Farm APR</span>
+                              <span>{seed_apr}</span>
+                            </div>
+                          );
+                        } else {
+                          return (
+                            <div
+                              className="frcs gap-1 text-gray-10 whitespace-nowrap"
+                              key={index + "id"}
+                            >
+                              <span>
+                                ({seed_status == "run" ? "new" : "pre."}) APR
+                              </span>
+                              <span>{seed_apr}</span>
+                            </div>
+                          );
+                        }
+                      }
+                    )}
+                </div>
+              ) : tip_seed ? (
+                <div className="frcs gap-1 text-gray-10 text-xs">
+                  <span>Farm APR</span>
+                  <span>0%</span>
+                </div>
+              ) : null}
+            </div>
+
+            {/* your liquidity */}
+            <div className="frcc col-span-2">
+              <span className="text-white text-base font-medium">
+                {your_liquidity || "-"}
+              </span>
+              <span>
                 {joined_seeds ? (
                   <div className="flex items-center gap-2 text-xs">
-                    {(Object.values(joined_seeds) as IUserJoinedSeedDetail[])
-                      .sort(sort_joined_seeds)
-                      .map(
-                        (
-                          joined_seed_info: IUserJoinedSeedDetail,
-                          index: number
-                        ) => {
-                          const length = Object.values(joined_seeds).length;
-                          const { seed_apr, seed_status } = joined_seed_info;
-                          if (seed_status == "ended") return null;
-                          if (length == 1) {
-                            return (
-                              <div
-                                className="frcs gap-1 text-gray-10 whitespace-nowrap"
-                                key={index + "id"}
-                              >
-                                <span>Farm APR</span>
-                                <span>{seed_apr}</span>
-                              </div>
-                            );
-                          } else {
-                            return (
-                              <div
-                                className="frcs gap-1 text-gray-10 whitespace-nowrap"
-                                key={index + "id"}
-                              >
-                                <span>
-                                  ({seed_status == "run" ? "new" : "pre."}) APR
-                                </span>
-                                <span>{seed_apr}</span>
-                              </div>
-                            );
-                          }
-                        }
-                      )}
-                  </div>
-                ) : tip_seed ? (
-                  <div className="frcs gap-1 text-gray-10 text-xs">
-                    <span>Farm APR</span>
-                    <span>0%</span>
-                  </div>
-                ) : null}
-              </div>
-            </div>
-            {joined_seeds || tip_seed ? (
-              <div className="frcb mb-4">
-                <span className="text-xs text-gray-10">Unclaimed</span>
-                {joined_seeds ? (
-                  <div className="flex flex-col items-end gap-2">
                     {(Object.values(joined_seeds) as IUserJoinedSeedDetail[])
                       .sort(sort_joined_seeds)
                       .map(
@@ -1385,21 +1429,20 @@ function UserLiquidityLineStyleGroupPage() {
                             seed_status,
                             value_of_investment,
                             go_farm_url_link,
-                          } = joined_seed_info;
+                          }: any = joined_seed_info;
+                          if (seed_status == "ended") return null;
                           if (length == 1) {
                             return (
                               <div
-                                className="frcs gap-1 whitespace-nowrap text-gray-10 text-xs"
-                                key={index + "id"}
+                                key={"in farm" + index}
+                                className="frcs gap-1 text-primaryText whitespace-nowrap"
                               >
                                 {value_of_investment} in{" "}
                                 <a
                                   className="cursor-pointer underline"
                                   onClick={(e) => {
                                     e.stopPropagation();
-                                    if (go_farm_url_link) {
-                                      openUrl(go_farm_url_link);
-                                    }
+                                    openUrl(go_farm_url_link);
                                   }}
                                 >
                                   farm
@@ -1409,17 +1452,15 @@ function UserLiquidityLineStyleGroupPage() {
                           } else {
                             return (
                               <div
-                                className="frcs gap-1 whitespace-nowrap text-gray-10 text-xs"
-                                key={index + "id"}
+                                key={"in farm" + index}
+                                className="frcs gap-1 text-primaryText whitespace-nowrap"
                               >
                                 {value_of_investment} in{" "}
                                 <a
-                                  className={`cursor-pointer underline text-gray-10 hover:text-greenColor`}
+                                  className={`cursor-pointer underline text-primaryText hover:text-greenColor`}
                                   onClick={(e) => {
                                     e.stopPropagation();
-                                    if (go_farm_url_link) {
-                                      openUrl(go_farm_url_link);
-                                    }
+                                    openUrl(go_farm_url_link);
                                   }}
                                 >
                                   farm (
@@ -1436,47 +1477,150 @@ function UserLiquidityLineStyleGroupPage() {
                         }
                       )}
                   </div>
-                ) : tip_seed ? (
-                  <div className="frcs gap-1 text-gray-10 text-xs">
-                    0% in{" "}
-                    <a
-                      className="cursor-pointer underline"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        openUrl(tip_seed.go_farm_url_link);
-                      }}
-                    >
-                      farm
-                    </a>
-                  </div>
                 ) : null}
-              </div>
-            ) : null}
-
-            <div className="flex items-center justify-between">
-              <span className="text-xs text-gray-10">Unclaimed Fees</span>
-              <div className="flex items-center">
-                <img
-                  src={tokenMetadata_x_y && tokenMetadata_x_y[0].icon}
-                  className="w-5 h-5 border border-greenColor rounded-full mr-1.5"
-                ></img>
-                <span className="text-xs text-white mr-5 paceGrotesk-Bold">
-                  {tokenFeeLeft || "-"}
-                </span>
-                <img
-                  src={tokenMetadata_x_y && tokenMetadata_x_y[1].icon}
-                  className="w-5 h-5 border border-greenColor rounded-full mr-1.5"
-                ></img>
-                <span className="text-xs text-white paceGrotesk-Bold">
-                  {tokenFeeRight || "-"}
-                </span>
-                <span className="text-xs text-primaryGreen pl-3.5  ml-3.5">
+              </span>
+              {/* <div className="flex items-center">
+                <WaterDropIcon className="m-1.5"></WaterDropIcon>
+                <span className="text-xs text-primaryGreen paceGrotesk-Bold">
                   {tokenFeeValue}
                 </span>
+              </div> */}
+            </div>
+          </div>
+          {/* <UpDownButton
+              set_switch_off={() => {
+                set_switch_off(!switch_off);
+              }}
+              switch_off={switch_off}
+            ></UpDownButton> */}
+          {/* hide block */}
+          <div
+            className={`col-span-12 flex justify-between ${styles.claimRow}`}
+            style={{
+              gridRow: "2/3",
+            }}
+          >
+            <div className="w-full bg-dark-210 rounded p-4 mt-2 border border-gray-30">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <span className="text-sm text-gray-10 mr-2.5">
+                    Unclaimed Fees
+                  </span>
+                  <img
+                    src={tokenMetadata_x_y && tokenMetadata_x_y[0].icon}
+                    className="w-5 h-5 border border-greenColor rounded-full mr-1.5"
+                  />
+                  <span className="text-sm text-white mr-5">
+                    {tokenFeeLeft || "-"}
+                  </span>
+                  <img
+                    src={tokenMetadata_x_y && tokenMetadata_x_y[1].icon}
+                    className="w-5 h-5 border border-greenColor rounded-full mr-1.5"
+                  />
+                  <span className="text-sm text-white">
+                    {tokenFeeRight || "-"}
+                  </span>
+                  {/* <span className="text-xs text-primaryGreen pl-3.5  ml-3.5">
+                  {tokenFeeValue}
+                </span> */}
+                </div>
+                <div className="frcc">
+                  <div
+                    className={`${
+                      !canClaim
+                        ? "text-dark-200 border-dark-190  cursor-not-allowed "
+                        : "text-green-10 border-green-10  cursor-pointer "
+                    } w-21 h-7 frcc text-sm font-bold border  rounded mr-1 hover:opacity-90`}
+                    onClick={claimRewards}
+                  >
+                    <ButtonTextWrapper
+                      loading={claim_loading}
+                      Text={() => <> Claim</>}
+                    />
+                  </div>
+                  <div
+                    onClick={() => toDclLiq(poolDetail.pool_id)}
+                    className="w-21 h-7 frcc text-sm font-bold text-green-10 border border-green-10 rounded mr-1 cursor-pointer hover:opacity-90"
+                  >
+                    Add
+                  </div>
+
+                  <div
+                    className={`relative flex items-center flex-grow ${
+                      joined_seeds_done ? "" : "hidden"
+                    }`}
+                    onMouseEnter={() => {
+                      if (!!joined_seeds) {
+                        setRemoveButtonTip(true);
+                      }
+                    }}
+                    onMouseLeave={() => {
+                      if (!!joined_seeds) {
+                        setRemoveButtonTip(false);
+                      }
+                    }}
+                  >
+                    <div
+                      onClick={(e) => {
+                        if (!!joined_seeds) return;
+                        e.stopPropagation();
+                        setShowRemoveBox(true);
+                      }}
+                      className={`${
+                        !!joined_seeds
+                          ? "cursor-not-allowed"
+                          : "cursor-pointer "
+                      } w-21 h-7 frcc text-sm font-bold text-dark-200 border border-dark-190 rounded hover:opacity-90`}
+                    >
+                      Remove
+                    </div>
+                    <div
+                      className={`${
+                        removeButtonTip ? "" : "hidden"
+                      } absolute z-50 right-0 -top-12 border border-primaryText rounded-md px-2 py-1.5 text-xs text-farmText w-56 bg-cardBg`}
+                    >
+                      You have liquidity in farm, please unstake from{" "}
+                      <a
+                        className="underline cursor-pointer"
+                        onClick={() => {
+                          localStorage.setItem("BOOST_FARM_TAB", "yours");
+                          openUrl("/farms");
+                        }}
+                      >
+                        Your Farm
+                      </a>{" "}
+                      first.
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
+
+        {showRemoveBox ? (
+          <RemovePoolV3
+            isOpen={showRemoveBox}
+            onRequestClose={() => {
+              setShowRemoveBox(false);
+            }}
+            listLiquidities={liquidities_list}
+            tokenMetadata_x_y={tokenMetadata_x_y}
+            poolDetail={poolDetail}
+            tokenPriceList={tokenPriceList}
+            userLiquidity={(list_liquidities as any)[0]}
+            style={{
+              overlay: {
+                backdropFilter: "blur(15px)",
+                WebkitBackdropFilter: "blur(15px)",
+              },
+              content: {
+                outline: "none",
+                transform: "translate(-50%, -50%)",
+              },
+            }}
+          ></RemovePoolV3>
+        ) : null}
       </div>
     </>
   );

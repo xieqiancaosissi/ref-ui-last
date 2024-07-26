@@ -1809,9 +1809,9 @@ export function useRemoveLiquidityUrlHandle() {
           sessionStorage.removeItem("REMOVE_POOL_ID");
           if (pool_id) {
             const pool_name = get_pool_name(pool_id);
-            history.replace(`/poolV2/${pool_name}`);
+            history.replace(`/liquidity/${pool_name}`);
           } else {
-            history.replace("/yourliquidity");
+            history.replace("/yours");
           }
         } else {
           history.replace(`${location.pathname}`);

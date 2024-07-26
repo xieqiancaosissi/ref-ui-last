@@ -17,3 +17,9 @@
   top: 6px;
   right: 13px;
 }
+.claimRow {
+  display: none;
+}
+.dclPoolRowContainer:hover .claimRow {
+  display: block;
+}

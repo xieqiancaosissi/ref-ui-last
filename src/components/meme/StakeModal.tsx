@@ -383,7 +383,9 @@ function StakeModal(props: any) {
             <div
               onClick={stakeToken}
               className={`flex flex-grow items-center cursor-pointer justify-center bg-primaryGreen text-boxBorder mt-6 rounded-xl h-12 text-base paceGrotesk-Bold focus:outline-none ${
-                disabled || stakeLoading ? "opacity-40" : ""
+                disabled || stakeLoading
+                  ? "opacity-40 cursor-not-allowed"
+                  : "cursor-pointer"
               }`}
             >
               <ButtonTextWrapper

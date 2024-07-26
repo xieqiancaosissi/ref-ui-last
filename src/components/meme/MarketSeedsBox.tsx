@@ -229,7 +229,9 @@ const MarketSeedsBox = ({
                     setIsStakeOpen(true);
                   }}
                   className={`flex flex-grow items-center justify-center cursor-pointer rounded-xl h-12 paceGrotesk-Bold focus:outline-none xsm:w-full ${
-                    stakeButtonDisabled ? "" : "bg-primaryGreen"
+                    stakeButtonDisabled
+                      ? "cursor-not-allowed"
+                      : "bg-primaryGreen cursor-pointer"
                   }`}
                 >
                   Feed {seed?.token_meta_data?.symbol}

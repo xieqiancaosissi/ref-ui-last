@@ -312,7 +312,9 @@ const MySeedsBox = ({
                       }}
                       className={`flex flex-grow items-center cursor-pointer justify-center border border-primaryGreen
                          rounded-xl h-12 text-primaryGreen text-base paceGrotesk-Bold focus:outline-none w-1/2 xsm:w-full ${
-                           unStakeButtonDisabled ? "opacity-30" : ""
+                           unStakeButtonDisabled
+                             ? "opacity-30 cursor-not-allowed"
+                             : "cursor-pointer"
                          }`}
                     >
                       <ButtonTextWrapper
@@ -333,7 +335,9 @@ const MySeedsBox = ({
                         });
                       }}
                       className={`flex flex-grow items-center cursor-pointer justify-center text-boxBorder rounded-xl h-12 text-base paceGrotesk-Bold focus:outline-none w-1/2 xsm:w-full ${
-                        claimButtonDisabled ? "bg-gray-40" : "bg-primaryGreen"
+                        claimButtonDisabled
+                          ? "bg-gray-40 cursor-not-allowed"
+                          : "bg-primaryGreen cursor-pointer"
                       }`}
                     >
                       <ButtonTextWrapper

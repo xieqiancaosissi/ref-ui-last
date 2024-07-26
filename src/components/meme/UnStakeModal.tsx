@@ -160,6 +160,8 @@ function UnStakeModal(props: any) {
       ? Big(amount || 0).lte(0) || Big(amount || 0).gt(stakedBalance)
       : Big(xrefAmount || 0).lte(0) ||
         Big(xrefAmount || 0).gt(xrefStakedBalance);
+  console.log(allTokenMetadatas, "allTokenMetadatas");
+  console.log(xrefTokenId, "xrefTokenId");
   return (
     <Modal
       isOpen={isOpen}
@@ -252,7 +254,7 @@ function UnStakeModal(props: any) {
               >
                 <img
                   src={allTokenMetadatas?.[xrefTokenId]?.icon}
-                  style={{ width: "26px", height: "26px" }}
+                  style={{ height: "26px" }}
                   className="rounded-full"
                 />
                 <span className="text-base paceGrotesk-Bold ml-2 xsm:hidden">

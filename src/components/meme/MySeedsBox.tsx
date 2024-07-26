@@ -78,9 +78,9 @@ const MySeedsBox = ({
   function goFarmDetail(seed_id: string) {
     const lpSeed = lpSeeds[seed_id];
     if (lpSeed && lpSeed.farmList && lpSeed.farmList[0] && lpSeed.pool) {
-      window.open(`/v2farms/${lpSeed.pool.id}-e`);
+      window.open(`/farms/${lpSeed.pool.id}-e`);
     } else if (lpSeed.pool) {
-      window.open(`/v2farms/${lpSeed.pool.id}-r`);
+      window.open(`/farms/${lpSeed.pool.id}-r`);
     }
   }
   function seedClaimAll({
@@ -282,7 +282,7 @@ const MySeedsBox = ({
                     <div className="flex items-start gap-3">
                       <img
                         src={allTokenMetadatas?.[xrefTokenId]?.icon}
-                        className="w-8 h-8 relative top-1"
+                        className="w-8 h-9 relative top-1"
                       />
                       <div className="flex flex-col">
                         <span className="text-white text-xl paceGrotesk-Bold">

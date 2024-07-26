@@ -396,8 +396,10 @@ function VoteModel(props: any) {
             {isSignedIn ? (
               <div
                 onClick={stakeToken}
-                className={`flex flex-grow items-center justify-center bg-greenGradient mt-6 rounded-xl h-12 text-base paceGrotesk-Bold focus:outline-none ${
-                  disabled || stakeLoading ? "opacity-40" : ""
+                className={`flex flex-grow items-center justify-center  bg-greenGradient mt-6 rounded-xl h-12 text-base paceGrotesk-Bold focus:outline-none ${
+                  disabled || stakeLoading
+                    ? "opacity-40 cursor-not-allowed"
+                    : "cursor-pointer"
                 }`}
               >
                 <ButtonTextWrapper

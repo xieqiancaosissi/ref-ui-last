@@ -64,7 +64,7 @@ export function InputAmount({
           <div className="flex items-center gap-1.5 ml-5 flex-shrink-0">
             <img
               className="rounded-full"
-              style={{ width: "26px", height: "26px" }}
+              style={{ width: "26px" }}
               src={token.icon}
             />
             <span

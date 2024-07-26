@@ -100,7 +100,7 @@ const RpcList = () => {
     <>
       <div
         style={{ zIndex: 100 }}
-        className="flex items-end fixed right-8 bottom-9 text-white"
+        className="flex items-end fixed right-6 bottom-9 text-white"
       >
         <div
           onMouseEnter={() => {

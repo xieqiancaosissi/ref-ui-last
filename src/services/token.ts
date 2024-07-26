@@ -36,6 +36,7 @@ const BLACKDRAGON_ID = "blackdragon.tkn.near";
 const SOL_NATIVE_ID = "22.contract.portalbridge.near";
 const BABY_BLACKDRAGON_ID = "babyblackdragon.tkn.near";
 const INTEL_ID = "intel.tkn.near";
+const XREF_ID = "xtoken.ref-finance.near";
 
 export async function ftGetTokenMetadata(
   tokenId: string,
@@ -84,7 +85,8 @@ export async function ftGetTokenMetadata(
       metadata.id === FRAX_ID ||
       metadata.id === SOL_NATIVE_ID ||
       metadata.id === BABY_BLACKDRAGON_ID ||
-      metadata.id === INTEL_ID
+      metadata.id === INTEL_ID ||
+      metadata.id === XREF_ID
     ) {
       metadata.icon = metadataDefaults[tokenId];
       if (metadata.id === SOL_ID) {

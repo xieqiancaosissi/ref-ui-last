@@ -295,7 +295,7 @@ function StakeModal(props: any) {
               >
                 <img
                   src={allTokenMetadatas?.[xrefTokenId]?.icon}
-                  style={{ width: "26px", height: "26px" }}
+                  style={{ height: "26px" }}
                   className="rounded-full"
                 />
                 <span className="text-base paceGrotesk-Bold ml-2 xsm:hidden">
@@ -441,7 +441,7 @@ export function Template({
       {from ? (
         <div className="flex items-center text-sm text-white gap-2">
           <span className="flex items-center gap-1.5 line-through">
-            {icon ? <img className="w-4 h-4 rounded-full" src={icon} /> : null}
+            {icon ? <img className="h-4 rounded-full" src={icon} /> : null}
             {from}
           </span>
           <ArrowRightIcon />

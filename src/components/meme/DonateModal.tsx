@@ -215,8 +215,10 @@ function DonateModal(props: any) {
           {isSignedIn ? (
             <div
               onClick={openDonateConfirmModal}
-              className={`flex flex-grow items-center justify-center bg-greenGradient mt-6 rounded-xl h-12 text-base paceGrotesk-Bold focus:outline-none ${
-                disabled || donateLoading ? "opacity-40" : ""
+              className={`flex flex-grow items-center justify-center cursor-pointer bg-greenGradient mt-6 rounded-xl h-12 text-base paceGrotesk-Bold focus:outline-none ${
+                disabled || donateLoading
+                  ? "opacity-40 cursor-not-allowed"
+                  : "cursor-pointer"
               }`}
             >
               <ButtonTextWrapper

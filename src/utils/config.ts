@@ -63,8 +63,8 @@ export default function getConfig(
           "6b175474e89094c44da98b954eedeac495271d0f.factory.bridge.near": 2,
         },
         USN_ID: "usn",
-        TOTAL_PLATFORM_FEE_REVENUE: "2601011.25",
-        CUMULATIVE_REF_BUYBACK: "3459276.03",
+        TOTAL_PLATFORM_FEE_REVENUE: "2,968,234.25",
+        CUMULATIVE_REF_BUYBACK: "3,948,907.03",
 
         BLACKLIST_POOL_IDS: [
           "3699",
@@ -154,8 +154,8 @@ export default function getConfig(
           "usdc.fakes.testnet": 1,
           "dai.fakes.testnet": 2,
         },
-        TOTAL_PLATFORM_FEE_REVENUE: "2601011.25",
-        CUMULATIVE_REF_BUYBACK: "3459276.03",
+        TOTAL_PLATFORM_FEE_REVENUE: "2,968,234.25",
+        CUMULATIVE_REF_BUYBACK: "3,948,907.03",
         BLACKLIST_POOL_IDS: ["1752", "1760"],
         REF_FARM_BOOST_CONTRACT_ID: "boostfarm.ref-finance.testnet",
         FARM_LOCK_SWITCH: 0,
@@ -231,8 +231,8 @@ export default function getConfig(
         },
         DCL_POOL_BLACK_LIST: ["usdt.fakes.testnet|wrap.testnet|100"],
 
-        TOTAL_PLATFORM_FEE_REVENUE: "2601011.25",
-        CUMULATIVE_REF_BUYBACK: "3459276.03",
+        TOTAL_PLATFORM_FEE_REVENUE: "2,968,234.25",
+        CUMULATIVE_REF_BUYBACK: "3,948,907.03",
         BLACKLIST_POOL_IDS: ["686"],
         REF_FARM_BOOST_CONTRACT_ID: "boostfarm-dev.ref-dev.testnet",
         FARM_LOCK_SWITCH: 0,
@@ -316,8 +316,8 @@ export default function getConfig(
           "6b175474e89094c44da98b954eedeac495271d0f.factory.bridge.near": 2,
         },
         USN_ID: "usn",
-        TOTAL_PLATFORM_FEE_REVENUE: "2601011.25",
-        CUMULATIVE_REF_BUYBACK: "3459276.03",
+        TOTAL_PLATFORM_FEE_REVENUE: "2,968,234.25",
+        CUMULATIVE_REF_BUYBACK: "3,948,907.03",
 
         BLACKLIST_POOL_IDS: [
           "3699",

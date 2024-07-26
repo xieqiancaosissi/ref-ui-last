@@ -52,6 +52,13 @@ import Link from "next/link";
 import { OrdersArrow } from "../icon";
 import { getPoolDetails } from "@/services/pool_detail";
 import { getSharesInPool } from "@/services/pool";
+import {
+  ONLY_ZEROS,
+  toNonDivisibleNumber,
+  scientificNotationToString,
+} from "@/utils/numbers";
+import { LOVE_TOKEN_DECIMAL } from "@/services/referendum";
+import Big from "big.js";
 
 const { BLACK_TOKEN_LIST } = getConfig();
 export const StakeListContext = createContext<any>(null);
@@ -76,6 +83,7 @@ export function YourLiquidityV1(props: any) {
   const isClientMobile = useClientMobile();
   const [count, setCount] = useState(0);
   const isSignedIn = accountStore.isSignedIn;
+
   useEffect(() => {
     // get all stable pools;
     const ids = ALL_STABLE_POOL_IDS;
@@ -258,6 +266,8 @@ function LiquidityContainerStyle2() {
     stablePools,
     batchTotalShares,
     batchTotalSharesSimplePools,
+    stakeList,
+    v2StakeList,
   } = useContext(StakeListContext)!;
   const simplePoolsFinal = useMemo(() => {
     const activeSimplePools: PoolRPCView[] = pools.filter(
@@ -358,6 +368,8 @@ function YourClassicLiquidityLine(props: any) {
     batchTotalSharesSimplePools,
     batchShares,
     finalStakeList,
+    stakeList,
+    v2StakeList,
   } = useContext(StakeListContext)!;
 
   const { set_your_classic_lp_all_in_farms } = useContext(
@@ -648,6 +660,13 @@ function YourClassicLiquidityLine(props: any) {
         lp_in_pool,
         lp_in_farm,
         seed_status,
+        sharesNew,
+        LpLocked,
+        lptAmount,
+        v1Farm,
+        v2Farm,
+        stakeList,
+        v2StakeList,
       }}
     >
       <YourClassicLiquidityLinePage
@@ -672,7 +691,22 @@ function YourClassicLiquidityLinePage(props: any) {
     lp_in_farm,
     seed_status,
     TokenInfoPC,
+    sharesNew,
+    LpLocked,
+    lptAmount,
+    v1Farm,
+    v2Farm,
+    stakeList,
+    v2StakeList,
   } = useContext(LiquidityContextData)!;
+  const lpDecimal = isStablePool(pool.id) ? getStablePoolDecimal(pool.id) : 24;
+  const supportFarmV1 = getFarmsCount(pool.id.toString(), v1Farm);
+  const supportFarmV2 = getFarmsCount(pool.id.toString(), v2Farm);
+  const endedFarmV1 = getEndedFarmsCount(pool.id.toString(), v1Farm);
+  const endedFarmV2 = getEndedFarmsCount(pool.id.toString(), v2Farm);
+
+  const farmStakeV1 = useFarmStake({ poolId: pool.id, stakeList });
+  const farmStakeV2 = useFarmStake({ poolId: pool.id, stakeList: v2StakeList });
   return (
     <div
       className={`rounded-xl mt-3 bg-gray-20 px-4 bg-opacity-30 ${
@@ -705,6 +739,142 @@ function YourClassicLiquidityLinePage(props: any) {
           <span className="text-sm text-gray-10 font-normal ml-1.5">
             ({display_percent(user_lp_percent)})
           </span>
+
+          <div className="col-span-2 flex flex-col text-xs  -ml-12 text-farmText">
+            {(supportFarmV1 > endedFarmV1 || Number(farmStakeV1) > 0) && (
+              <div
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+                className="text-primaryText mb-1.5 flex"
+              >
+                <span>
+                  {toPrecision(
+                    toReadableNumber(
+                      lpDecimal,
+                      scientificNotationToString(farmStakeV1.toString())
+                    ),
+                    2
+                  )}
+                </span>
+                <span className="mx-1">in</span>
+                <div className="text-primaryText flex items-center hover:text-gradientFrom flex-shrink-0">
+                  <span className="underline">Legacy Farms</span>
+
+                  {/* <span className="ml-0.5">
+                    <VEARROW />
+                  </span> */}
+                </div>
+              </div>
+            )}
+
+            {(supportFarmV2 > endedFarmV2 || Number(farmStakeV2) > 0) && (
+              <div
+                // to={{
+                //   pathname: `/v2farms/${pool.id}-${
+                //     props.onlyEndedFarmV2 ? 'e' : 'r'
+                //   }`,
+                // }}
+                // target="_blank"
+                // rel="noopener noreferrer nofollow"
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+                className="text-primaryText mb-1.5 flex"
+              >
+                <span>
+                  {toPrecision(
+                    toReadableNumber(
+                      lpDecimal,
+                      scientificNotationToString(farmStakeV2.toString())
+                    ),
+                    2
+                  )}
+                </span>
+                <span className="mx-1">in</span>
+                <div className="text-primaryText flex items-center hover:text-gradientFrom flex-shrink-0">
+                  <span className="underline">classic_farms</span>
+
+                  {/* <span className="ml-0.5">
+                    <VEARROW />
+                  </span> */}
+                </div>
+              </div>
+            )}
+            {Big(LpLocked).gt(0) ? (
+              <div>
+                <span>
+                  {toPrecision(
+                    toReadableNumber(
+                      lpDecimal,
+                      scientificNotationToString(LpLocked.toString())
+                    ),
+                    2
+                  )}
+                </span>
+                <span className="mx-1">in</span>
+                <span className="text-primaryText">Locked</span>
+              </div>
+            ) : null}
+            {Number(getVEPoolId()) === Number(pool.id) &&
+            !!getConfig().REF_VE_CONTRACT_ID ? (
+              <div
+                onClick={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                  openUrl("/referendum");
+                }}
+                className="text-primaryText mb-1.5 flex whitespace-nowrap items-center"
+              >
+                <span>
+                  {toPrecision(
+                    ONLY_ZEROS.test(
+                      toNonDivisibleNumber(
+                        LOVE_TOKEN_DECIMAL,
+                        toReadableNumber(24, lptAmount || "0")
+                      )
+                    )
+                      ? "0"
+                      : toReadableNumber(24, lptAmount || "0"),
+                    2
+                  )}
+                </span>
+                <span className="mx-1">locked</span>
+                <span className="mr-1">in</span>
+                <div className="text-primaryText flex items-center hover:text-gradientFrom flex-shrink-0">
+                  <span className="underline">VOTE</span>
+                  {/* <span className="ml-0.5">
+                    <VEARROW />
+                  </span> */}
+                </div>
+              </div>
+            ) : null}
+
+            {ONLY_ZEROS.test(sharesNew) ||
+            (supportFarmV1 === 0 && supportFarmV2 === 0) ? null : (
+              <div>
+                <span
+                  className={"text-gradientFrom"}
+                  title={toReadableNumber(
+                    isStablePool(pool.id) ? getStablePoolDecimal(pool.id) : 24,
+                    sharesNew
+                  )}
+                >
+                  {toPrecision(
+                    toReadableNumber(
+                      isStablePool(pool.id)
+                        ? getStablePoolDecimal(pool.id)
+                        : 24,
+                      sharesNew
+                    ),
+                    2
+                  )}
+                </span>
+
+                <span className="ml-1">available</span>
+              </div>
+            )}
+          </div>
         </div>
         {/*  */}
         <div className="flex items-center col-span-2">

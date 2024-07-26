@@ -70,7 +70,7 @@ function YourFeed({ seed_id }: { seed_id: string }) {
         <div class="flex flex-col gap-1">
         <div class="flex items-center gap-5">
           <img
-            class="w-4 h-4 rounded-full"
+            class="h-4 rounded-full"
             src=${seeds?.[seed_id]?.token_meta_data?.icon}
           />
           <span className="text-sm text-white">
@@ -83,7 +83,7 @@ function YourFeed({ seed_id }: { seed_id: string }) {
         </div>
         <div class="flex items-center gap-5">
           <img
-            class="w-4 h-4 rounded-full"
+            class="h-4 rounded-full"
             src=${xrefSeeds?.[xrefContractId]?.token_meta_data?.icon}
           />
           <span class="text-sm text-white">

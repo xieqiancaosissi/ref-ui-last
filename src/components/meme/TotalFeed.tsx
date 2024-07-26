@@ -43,7 +43,7 @@ function TotalFeed({ seed_id }: { seed_id: string }) {
     return `<div class="flex flex-col gap-2 text-white">
       <div class="flex items-start justify-between gap-4">
         <div class="flex items-center gap-1.5">
-          <img src="${feedData?.seed?.token_meta_data?.icon}" class="w-4 h-4 rounded-full" />
+          <img src="${feedData?.seed?.token_meta_data?.icon}" class="h-4 rounded-full" />
           <span class="text-xs">${feedData?.seed?.token_meta_data?.symbol}</span>
         </div>
         <div class="flex flex-col items-end gap-0.5">
@@ -53,7 +53,7 @@ function TotalFeed({ seed_id }: { seed_id: string }) {
       </div>
       <div class="flex items-start justify-between gap-4">
         <div class="flex items-center gap-1.5">
-          <img src="${feedData?.xrefSeed?.token_meta_data?.icon}" class="w-4 h-4 rounded-full" />
+          <img src="${feedData?.xrefSeed?.token_meta_data?.icon}" class="h-4 rounded-full" />
           <span class="text-xs">${feedData?.xrefSeed?.token_meta_data?.symbol}</span>
         </div>
         <div class="flex flex-col items-end gap-0.5">

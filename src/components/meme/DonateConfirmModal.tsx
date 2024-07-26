@@ -26,9 +26,10 @@ function DonateConfirmModal(props: any) {
       }}
     >
       <div
-        className="border border-memeDonateBorderColor border-opacity-20 bg-memeDonateBgColor rounded-2xl p-5 pt-4 text-white"
+        className="rounded-2xl p-5 pt-4 text-white"
         style={{
           width: cardWidth,
+          background: "#213441",
         }}
       >
         <div className="title flex items-center justify-between">
@@ -47,7 +48,7 @@ function DonateConfirmModal(props: any) {
         <div className="flex justify-center">
           <div
             onClick={doDonate}
-            className={`bg-senderHot px-3 py-1 paceGrotesk-Bold cursor-pointer rounded-md mt-2 w-20 outline-none ${
+            className={`bg-greenGradient px-3 py-1 paceGrotesk-Bold cursor-pointer rounded-md mt-2 w-20 outline-none ${
               donateLoading ? "opacity-40" : ""
             }`}
           >

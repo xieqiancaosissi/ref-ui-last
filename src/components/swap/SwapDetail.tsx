@@ -32,6 +32,10 @@ export default function SwapDetail() {
   const allTokenPrices = swapStore.getAllTokenPrices();
   const priceImpact = swapStore.getPriceImpact();
   const avgFee = swapStore.getAvgFee();
+  const deflation = swapStore.getDeflation();
+  const tokenInAmountRate = Big(1 - (deflation?.rate || 0))
+    .mul(tokenInAmount || 0)
+    .toFixed();
   const [fromSymbol, toSymbol, fromPrice, rate] = useMemo(() => {
     if (Big(tokenInAmount || 0).gt(0) && Big(tokenOutAmount || 0).gt(0)) {
       let fromSymbol, toSymbol, fromPrice, rate;
@@ -69,21 +73,23 @@ export default function SwapDetail() {
   ]);
   const priceImpactDisplay = useMemo(() => {
     try {
-      return GetPriceImpact(priceImpact, tokenInAmount);
+      return GetPriceImpact(priceImpact, tokenInAmountRate);
     } catch (error) {
       return null;
     }
-  }, [priceImpact, tokenInAmount]);
+  }, [priceImpact, tokenInAmountRate]);
   const poolFeeDisplay = useMemo(() => {
     try {
       return `${toPrecision(
         calculateFeePercent(+avgFee).toString(),
         2
-      )}% / ${calculateFeeCharge(+avgFee, tokenInAmount)} ${tokenIn.symbol}`;
+      )}% / ${calculateFeeCharge(+avgFee, tokenInAmountRate)} ${
+        tokenIn.symbol
+      }`;
     } catch (error) {
       return null;
     }
-  }, [avgFee, tokenInAmount, tokenIn?.symbol]);
+  }, [avgFee, tokenInAmountRate, tokenIn?.symbol]);
   const minAmountOutDisplay = useMemo(() => {
     let minAmountOut;
     try {

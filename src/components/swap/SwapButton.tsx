@@ -3,7 +3,7 @@ import Big from "big.js";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import { useAccountStore } from "@/stores/account";
 import { ButtonTextWrapper } from "@/components/common/Button";
-import swap from "@/services/swap/executeSwap";
+import { swap, swapFromServer } from "@/services/swap/executeSwap";
 import nearSwap from "@/services/swap/executeNearSwap";
 import dclSwap from "@/services/swap/executeDclSwap";
 import { usePersistSwapStore, useSwapStore } from "@/stores/swap";
@@ -40,6 +40,8 @@ export default function SwapButton({
   const estimating = swapStore.getEstimating();
   const swapError = swapStore.getSwapError();
   const best = swapStore.getBest();
+  const estimates = swapStore.getEstimates();
+  const estimatesServer = swapStore.getEstimatesServer();
   const slippageTolerance = persistSwapStore.getSlippage();
   const isnearwnearSwap = is_near_wnear_swap(tokenIn, tokenOut);
   const decimals = isnearwnearSwap ? 24 : undefined;
@@ -69,12 +71,20 @@ export default function SwapButton({
         tokenOut,
         amountIn,
       });
-    } else if (best == "v1") {
+    } else if (best == "v1" && estimates) {
       swap({
         tokenIn,
         tokenOut,
         swapsToDo: swapStore.getEstimates(),
         slippageTolerance,
+        amountIn,
+      });
+    } else if (best == "v1" && estimatesServer) {
+      const { estimatesFromServer } = estimatesServer;
+      swapFromServer({
+        swapsToDoServer: estimatesFromServer,
+        tokenIn,
+        tokenOut,
         amountIn,
       });
     } else if (best == "v3") {

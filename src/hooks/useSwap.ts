@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDebounce } from "react-use";
+import { Big } from "big.js";
 import estimateSwap from "@/services/swap/estimateSwap";
 import { IEstimateResult } from "@/interfaces/swap";
 import {
@@ -33,12 +34,19 @@ const useSwap = ({
   const smartRoute = persistSwapStore.getSmartRoute();
   const slippage = persistSwapStore.getSlippage();
   const trigger = swapStore.getTrigger();
+  const deflation = swapStore.getDeflation();
   useDebounce(
     () => {
       estimateWrap();
     },
     firstInput ? 100 : 300,
-    [getTokenUIId(tokenIn), getTokenUIId(tokenOut), tokenInAmount, smartRoute]
+    [
+      getTokenUIId(tokenIn),
+      getTokenUIId(tokenOut),
+      tokenInAmount,
+      smartRoute,
+      JSON.stringify(deflation || {}),
+    ]
   );
   useEffect(() => {
     if (trigger) {
@@ -63,13 +71,17 @@ const useSwap = ({
       tokenIn?.id &&
       tokenOut?.id &&
       tokenIn?.id !== tokenOut?.id &&
-      Number(tokenInAmount) > 0
+      Number(tokenInAmount) > 0 &&
+      deflation?.done
     ) {
       swapStore.setEstimating(true);
       doEstimateSwap({
         tokenIn,
         tokenOut,
-        tokenInAmount,
+        tokenInAmount: Big(1 - (deflation?.rate || 0))
+          .mul(tokenInAmount || 0)
+          .toFixed(),
+        tokenInAmountNoRate: tokenInAmount,
       });
     }
   }
@@ -77,10 +89,12 @@ const useSwap = ({
     tokenIn,
     tokenOut,
     tokenInAmount,
+    tokenInAmountNoRate,
   }: {
     tokenIn: ITokenMetadata;
     tokenOut: ITokenMetadata;
     tokenInAmount: string;
+    tokenInAmountNoRate: string;
   }) {
     estimateSwap({
       tokenIn,
@@ -97,7 +111,7 @@ const useSwap = ({
             : { swapsToDo: estimateResult };
         setSwapEstimateResult({
           quoteDone: true,
-          tag: `${tokenIn.id}@${tokenOut.id}@${tokenInAmount}`,
+          tag: `${tokenIn.id}@${tokenOut.id}@${tokenInAmountNoRate}`,
           ...todo,
         });
       })
@@ -105,7 +119,7 @@ const useSwap = ({
         setSwapEstimateResult({
           swapError: e,
           quoteDone: true,
-          tag: `${tokenIn.id}@${tokenOut.id}@${tokenInAmount}`,
+          tag: `${tokenIn.id}@${tokenOut.id}@${tokenInAmountNoRate}`,
         });
       })
       .finally(() => {

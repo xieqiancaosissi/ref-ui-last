@@ -162,11 +162,12 @@ export interface IEstimateServerResult {
 
 export type SwapMarket = "ref" | "tri" | "orderly" | undefined;
 export interface SwapOptions {
-  swapsToDo: EstimateSwapView[];
+  swapsToDo?: EstimateSwapView[];
+  swapsToDoServer?: IEstimateSwapServerView;
   tokenIn: TokenMetadata;
   tokenOut: TokenMetadata;
   amountIn: string;
-  slippageTolerance: number;
+  slippageTolerance?: number;
   swapMarket?: SwapMarket;
 }
 export interface nearSwapOptions {
@@ -234,10 +235,14 @@ export interface IServerRoute {
   tokens: TokenMetadata[];
 }
 export interface IServerPool {
-  amount_in: string;
+  amount_in?: string;
   min_amount_out: string;
   pool_id: string | number;
   token_in: string;
   token_out: string;
+}
+export interface IDeflation {
+  rate: number;
+  done: boolean;
 }
 export type ISource = "script" | "server";

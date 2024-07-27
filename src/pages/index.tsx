@@ -34,6 +34,8 @@ import { getTokenUIId, is_near_wnear_swap } from "@/services/swap/swapUtils";
 import { WarnIcon } from "@/components/swap/icons";
 import SkyWardModal from "@/components/swap/SkyWardModal";
 import getConfigV2 from "@/utils/configV2";
+import { DEFLATION_MARK } from "@/services/pool";
+import { tokenFtMetadata } from "@/services/ft-contract";
 const configV2 = getConfigV2();
 const SwapButton = dynamic(() => import("../components/swap/SwapButton"), {
   ssr: false,
@@ -83,6 +85,20 @@ export default function Swap() {
   useEffect(() => {
     if (tokenIn?.id == configV2.SKYWARDID) {
       setShowSkywardTip(true);
+    }
+  }, [tokenIn?.id]);
+  useEffect(() => {
+    if (tokenIn?.id) {
+      if (tokenIn.id.includes(DEFLATION_MARK)) {
+        getTokenDeflationRate();
+      } else {
+        swapStore.setDeflation({
+          rate: 0,
+          done: true,
+        });
+      }
+    } else {
+      swapStore.setDeflation(undefined);
     }
   }, [tokenIn?.id]);
   useEffect(() => {
@@ -168,6 +184,19 @@ export default function Swap() {
           swapStore.setTrigger(true);
         }
       });
+  }
+  async function getTokenDeflationRate() {
+    swapStore.setDeflation(undefined);
+    const tokenMeta = await tokenFtMetadata(tokenIn.id);
+    const rate =
+      ((tokenMeta?.deflation_strategy?.fee_strategy?.SellFee?.fee_rate ?? 0) +
+        (tokenMeta?.deflation_strategy?.burn_strategy?.SellBurn?.burn_rate ??
+          0)) /
+      1000000;
+    swapStore.setDeflation({
+      rate,
+      done: true,
+    });
   }
   // select-none
   return (

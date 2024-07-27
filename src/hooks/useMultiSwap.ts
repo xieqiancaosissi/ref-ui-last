@@ -157,6 +157,7 @@ const useMultiSwap = ({
     }
   }
   function getV1EstimateDetailData(swapsToDo: EstimateSwapView[]) {
+    const deflation = swapStore.getDeflation();
     const estimates = swapsToDo.map((e) => ({
       ...e,
       partialAmountIn: e.pool?.partialAmountIn,
@@ -167,19 +168,22 @@ const useMultiSwap = ({
         acc.plus(cur.outputToken === tokenOut.id ? cur.estimate || 0 : 0),
       new Big(0)
     );
+    const tokenInAmountRate = Big(1 - (deflation?.rate || 0))
+      .mul(tokenInAmount || 0)
+      .toFixed();
     const priceImpactValue = getPriceImpact({
       estimates,
       tokenIn,
       tokenOut,
       tokenOutAmount: scientificNotationToString(expectedOutV1.toString()),
-      tokenInAmount,
+      tokenInAmount: tokenInAmountRate,
       tokenPriceList: allTokenPrices,
     });
     const avgFee = getAverageFee({
       estimates,
       tokenIn,
       tokenOut,
-      tokenInAmount,
+      tokenInAmount: tokenInAmountRate,
     });
     const priceImpact = scientificNotationToString(
       new Big(priceImpactValue).minus(new Big((avgFee || 0) / 100)).toString()
@@ -192,6 +196,7 @@ const useMultiSwap = ({
   async function getV1ServerEstimateDetailData(
     swapsToDoServer: IEstimateServerResult
   ) {
+    const deflation = swapStore.getDeflation();
     const { estimatesFromServer, poolsMap, tokensMap } = swapsToDoServer;
     const expectedOutV1 = Big(
       toReadableNumber(
@@ -199,9 +204,12 @@ const useMultiSwap = ({
         swapsToDoServer.estimatesFromServer.amount_out
       )
     );
+    const tokenInAmountRate = Big(1 - (deflation?.rate || 0))
+      .mul(tokenInAmount || 0)
+      .toFixed();
     const avgFee = await getAvgFeeFromServer({
       estimatesFromServer,
-      tokenInAmount,
+      tokenInAmount: tokenInAmountRate,
       tokenIn,
       poolsMap,
     });
@@ -209,7 +217,7 @@ const useMultiSwap = ({
       estimatesFromServer,
       tokenIn,
       tokenOut,
-      tokenInAmount,
+      tokenInAmount: tokenInAmountRate,
       tokenOutAmount: scientificNotationToString(expectedOutV1.toString()),
       poolsMap,
       tokensMap,

@@ -6,6 +6,7 @@ import {
   EstimateSwapView,
   IBest,
   IEstimateServerResult,
+  IDeflation,
 } from "@/interfaces/swap";
 import { IEstimateDclSwapView } from "@/interfaces/swapDcl";
 
@@ -78,6 +79,8 @@ interface ISwapStore {
   setEstimatesServer: (
     estimatesServer: IEstimateServerResult | undefined
   ) => void;
+  getDeflation: () => IDeflation;
+  setDeflation: (deflation: IDeflation | undefined) => void;
 }
 export const useSwapStore = create<ISwapStore>((set: any, get: any) => ({
   tokenIn: null,
@@ -94,6 +97,9 @@ export const useSwapStore = create<ISwapStore>((set: any, get: any) => ({
   swapError: undefined,
   estimating: false,
   trigger: false,
+  deflation: {},
+  getDeflation: () => get().deflation,
+  setDeflation: (deflation: IDeflation | undefined) => set({ deflation }),
   getTokenIn: () => get().tokenIn,
   setTokenIn: (tokenIn: ITokenMetadata) =>
     set({

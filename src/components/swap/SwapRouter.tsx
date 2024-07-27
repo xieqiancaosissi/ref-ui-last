@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Big from "big.js";
 import { useSwapStore } from "@/stores/swap";
 import { TokenMetadata } from "@/services/ft-contract";
 import { RefMarketIcon, ArrowTopRightIcon, ArrowRightIcon } from "./icons";
@@ -9,6 +10,8 @@ export default function SwapRouter() {
   const swapStore = useSwapStore();
   const best = swapStore.getBest();
   const estimates = swapStore.getEstimates();
+  const estimatesServer = swapStore.getEstimatesServer();
+  const { estimatesFromServer, tokensMap } = estimatesServer || {};
   const tokenIn = swapStore.getTokenIn();
   const tokenOut = swapStore.getTokenOut();
   function showDetailModal() {
@@ -17,7 +20,35 @@ export default function SwapRouter() {
   function closeDetailModal() {
     setShowRouteDetail(false);
   }
-  if (!estimates?.length) return null;
+  let throughPoolsLength = 0;
+  if (estimatesServer) {
+    throughPoolsLength = estimatesFromServer.routes
+      .reduce((acc, cur) => {
+        return acc.plus(cur.pools.length);
+      }, Big(0))
+      .toNumber();
+  } else if (estimates) {
+    throughPoolsLength = estimates.length;
+  }
+  if (!estimates?.length && !estimatesServer) return null;
+  const routeLength = estimates?.length || estimatesFromServer?.routes?.length;
+  function getDisplayTokensOfOnePath() {
+    if (estimates) {
+      return estimates[0].tokens || [];
+    } else if (estimatesServer) {
+      const route = estimatesFromServer.routes[0];
+      const tokenIds = route.pools.reduce((acc, cur, index) => {
+        if (index == 0) {
+          acc.push(cur.token_in, cur.token_out);
+        } else {
+          acc.push(cur.token_out);
+        }
+        return acc;
+      }, [] as string[]);
+      return tokenIds.map((id) => tokensMap[id]);
+    }
+    return [];
+  }
   return (
     <div className="flexBetween">
       <span>Route</span>
@@ -29,11 +60,11 @@ export default function SwapRouter() {
         <span className="w-px h-2 bg-gray-160"></span>
         {best == "v1" ? (
           <>
-            {estimates.length > 2 ? (
-              <span>{estimates.length} Steps in the Route</span>
+            {routeLength > 2 ? (
+              <span>{throughPoolsLength} Steps in the Route</span>
             ) : (
               <div className="flex items-center gap-1">
-                <OneRouter tokens={estimates[0].tokens || []} />
+                <OneRouter tokens={getDisplayTokensOfOnePath()} />
               </div>
             )}
           </>

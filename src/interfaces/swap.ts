@@ -141,10 +141,23 @@ export interface EstimateSwapParams {
 
 export interface IEstimateResult {
   swapError?: Error | undefined;
-  swapsToDo?: EstimateSwapView[] | undefined;
+  swapsToDo?: IEstimateScriptResult | undefined;
+  swapsToDoServer?: IEstimateServerResult | undefined;
   quoteDone?: boolean;
   tag?: string;
   is_near_wnear_swap?: boolean;
+}
+export interface IEstimateScriptResult {
+  estimates: EstimateSwapView[];
+  source: "script";
+  tag: string;
+}
+export interface IEstimateServerResult {
+  estimatesFromServer: IEstimateSwapServerView;
+  source: "server";
+  tag: string;
+  poolsMap: Record<string, any>;
+  tokensMap: Record<string, TokenMetadata>;
 }
 
 export type SwapMarket = "ref" | "tri" | "orderly" | undefined;
@@ -205,3 +218,26 @@ export interface IBatchUpdateiquidityInfo {
   remove_liquidity_infos: IRemoveLiquidityInfo[];
   add_liquidity_infos: IAddLiquidityInfo[];
 }
+
+export interface IEstimateSwapServerView {
+  amount_in: string;
+  amount_out: string;
+  contract_in: string;
+  contract_out: string;
+  routes: IServerRoute[];
+  contract?: string;
+}
+export interface IServerRoute {
+  amount_in: string;
+  min_amount_out: string;
+  pools: IServerPool[];
+  tokens: TokenMetadata[];
+}
+export interface IServerPool {
+  amount_in: string;
+  min_amount_out: string;
+  pool_id: string | number;
+  token_in: string;
+  token_out: string;
+}
+export type ISource = "script" | "server";

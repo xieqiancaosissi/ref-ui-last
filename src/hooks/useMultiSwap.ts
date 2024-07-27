@@ -9,11 +9,20 @@ import { useSwapStore } from "@/stores/swap";
 import useSwap from "./useSwap";
 import useDclSwap from "./useDclSwap";
 import { getPriceImpact, getAverageFee } from "@/services/swap/swapUtils";
-import { SwapContractType, EstimateSwapView } from "@/interfaces/swap";
+import {
+  SwapContractType,
+  EstimateSwapView,
+  IEstimateSwapServerView,
+  IEstimateServerResult,
+} from "@/interfaces/swap";
 import { IEstimateDclSwapView } from "@/interfaces/swapDcl";
 import { getDclPoolByIdFromCache } from "@/services/swap/swapDcl";
 import { getV3PoolId, getDclPriceImpact } from "@/services/swap/swapDclUtils";
 import { IPoolDcl } from "@/interfaces/swapDcl";
+import {
+  getAvgFeeFromServer,
+  getPriceImpactFromServer,
+} from "@/services/swap/smartRouterFromServer";
 const useMultiSwap = ({
   supportDclQuote = false,
   hideLowTvlPools = false,
@@ -27,7 +36,14 @@ const useMultiSwap = ({
   const tokenOut = swapStore.getTokenOut();
   const tokenInAmount = swapStore.getTokenInAmount();
   const allTokenPrices = swapStore.getAllTokenPrices();
-  const { swapError, swapsToDo, quoteDone, tag, is_near_wnear_swap } = useSwap({
+  const {
+    swapError,
+    quoteDone,
+    tag,
+    is_near_wnear_swap,
+    swapsToDoServer,
+    swapsToDo,
+  } = useSwap({
     tokenIn,
     tokenOut,
     tokenInAmount,
@@ -54,7 +70,8 @@ const useMultiSwap = ({
     tokenIn?.id,
     tokenOut?.id,
     tokenInAmount,
-    JSON.stringify(swapsToDo || []),
+    JSON.stringify(swapsToDo || {}),
+    JSON.stringify(swapsToDoServer || {}),
     JSON.stringify(dclSwapsToDo || {}),
     is_near_wnear_swap,
     tag,
@@ -75,7 +92,7 @@ const useMultiSwap = ({
     let expectedOutV1 = Big(0);
     let expectedOutDcl = Big(0);
     if (!swapError && swapsToDo) {
-      const estimates = swapsToDo.map((e) => ({
+      const estimates = swapsToDo.estimates.map((e) => ({
         ...e,
         partialAmountIn: e.pool?.partialAmountIn,
         contract: "Ref_Classic" as SwapContractType,
@@ -86,6 +103,14 @@ const useMultiSwap = ({
         new Big(0)
       );
       swapStore.setEstimates(estimates);
+    } else if (!swapError && swapsToDoServer) {
+      expectedOutV1 = Big(
+        toReadableNumber(
+          tokenOut.decimals,
+          swapsToDoServer.estimatesFromServer.amount_out
+        )
+      );
+      swapStore.setEstimatesServer(swapsToDoServer);
     }
     if (!dclSwapError && dclSwapsToDo) {
       expectedOutDcl = Big(
@@ -103,11 +128,19 @@ const useMultiSwap = ({
     if (tokenInAmount && !ONLY_ZEROS.test(tokenInAmount)) {
       let expectedOut;
       if (expectedOutV1.gt(expectedOutDcl || 0)) {
-        const { avgFee, priceImpact } = getV1EstimateDetailData(
-          swapsToDo as EstimateSwapView[]
-        );
-        swapStore.setPriceImpact(priceImpact);
-        swapStore.setAvgFee(avgFee);
+        if (swapsToDo) {
+          const { avgFee, priceImpact } = getV1EstimateDetailData(
+            swapsToDo?.estimates as EstimateSwapView[]
+          );
+          swapStore.setPriceImpact(priceImpact);
+          swapStore.setAvgFee(avgFee);
+        } else if (swapsToDoServer) {
+          const { avgFee, priceImpact } = await getV1ServerEstimateDetailData(
+            swapsToDoServer
+          );
+          swapStore.setPriceImpact(priceImpact);
+          swapStore.setAvgFee(avgFee);
+        }
         swapStore.setBest("v1");
         expectedOut = expectedOutV1;
       } else {
@@ -147,6 +180,39 @@ const useMultiSwap = ({
       tokenIn,
       tokenOut,
       tokenInAmount,
+    });
+    const priceImpact = scientificNotationToString(
+      new Big(priceImpactValue).minus(new Big((avgFee || 0) / 100)).toString()
+    );
+    return {
+      avgFee,
+      priceImpact,
+    };
+  }
+  async function getV1ServerEstimateDetailData(
+    swapsToDoServer: IEstimateServerResult
+  ) {
+    const { estimatesFromServer, poolsMap, tokensMap } = swapsToDoServer;
+    const expectedOutV1 = Big(
+      toReadableNumber(
+        tokenOut.decimals,
+        swapsToDoServer.estimatesFromServer.amount_out
+      )
+    );
+    const avgFee = await getAvgFeeFromServer({
+      estimatesFromServer,
+      tokenInAmount,
+      tokenIn,
+      poolsMap,
+    });
+    const priceImpactValue = await getPriceImpactFromServer({
+      estimatesFromServer,
+      tokenIn,
+      tokenOut,
+      tokenInAmount,
+      tokenOutAmount: scientificNotationToString(expectedOutV1.toString()),
+      poolsMap,
+      tokensMap,
     });
     const priceImpact = scientificNotationToString(
       new Big(priceImpactValue).minus(new Big((avgFee || 0) / 100)).toString()

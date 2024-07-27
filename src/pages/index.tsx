@@ -106,7 +106,8 @@ export default function Swap() {
       swapStore.setAvgFee("");
       swapStore.setBest("");
       swapStore.setPriceImpact("");
-      swapStore.setEstimates([]);
+      swapStore.setEstimates(undefined);
+      swapStore.setEstimatesServer(undefined);
       swapStore.setEstimatesDcl(undefined);
       swapStore.setEstimating(false);
       swapStore.setTrigger(false);

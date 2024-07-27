@@ -2,7 +2,11 @@ import { ITokenMetadata } from "@/hooks/useBalanceTokens";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { TokenPrice } from "@/db/RefDatabase";
-import { EstimateSwapView, IBest } from "@/interfaces/swap";
+import {
+  EstimateSwapView,
+  IBest,
+  IEstimateServerResult,
+} from "@/interfaces/swap";
 import { IEstimateDclSwapView } from "@/interfaces/swapDcl";
 
 export interface IPersistSwapStore {
@@ -57,7 +61,7 @@ interface ISwapStore {
   getAvgFee: () => string | number;
   setAvgFee: (avgFee: string | number) => void;
   getEstimates: () => EstimateSwapView[];
-  setEstimates: (estimates: EstimateSwapView[]) => void;
+  setEstimates: (estimates: EstimateSwapView[] | undefined) => void;
   getAllTokenPrices: () => Record<string, TokenPrice>;
   setAllTokenPrices: (allTokenPrices: Record<string, TokenPrice>) => void;
   getSwapError: () => Error | undefined;
@@ -70,6 +74,10 @@ interface ISwapStore {
   setEstimating: (estimating: boolean) => void;
   getTrigger: () => boolean;
   setTrigger: (trigger: boolean) => void;
+  getEstimatesServer: () => IEstimateServerResult;
+  setEstimatesServer: (
+    estimatesServer: IEstimateServerResult | undefined
+  ) => void;
 }
 export const useSwapStore = create<ISwapStore>((set: any, get: any) => ({
   tokenIn: null,
@@ -79,7 +87,8 @@ export const useSwapStore = create<ISwapStore>((set: any, get: any) => ({
   priceImpact: "",
   avgFee: "",
   allTokenPrices: {},
-  estimates: [],
+  estimates: undefined,
+  estimatesServer: undefined,
   estimatesDcl: {},
   best: "",
   swapError: undefined,
@@ -104,7 +113,8 @@ export const useSwapStore = create<ISwapStore>((set: any, get: any) => ({
   getAvgFee: () => get().avgFee,
   setAvgFee: (avgFee: string | number) => set({ avgFee }),
   getEstimates: () => get().estimates,
-  setEstimates: (estimates: EstimateSwapView[]) => set({ estimates }),
+  setEstimates: (estimates: EstimateSwapView[] | undefined) =>
+    set({ estimates }),
   getAllTokenPrices: () => get().allTokenPrices,
   setAllTokenPrices: (allTokenPrices: Record<string, TokenPrice>) =>
     set({ allTokenPrices }),
@@ -119,4 +129,7 @@ export const useSwapStore = create<ISwapStore>((set: any, get: any) => ({
   setEstimating: (estimating: boolean) => set({ estimating }),
   getTrigger: () => get().trigger,
   setTrigger: (trigger: boolean) => set({ trigger }),
+  getEstimatesServer: () => get().estimatesServer,
+  setEstimatesServer: (estimatesServer: IEstimateServerResult | undefined) =>
+    set({ estimatesServer }),
 }));

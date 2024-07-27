@@ -1,120 +1,113 @@
-import Big from "big.js";
-import { toNonDivisibleNumber, ONLY_ZEROS } from "@/utils/numbers";
+import { toNonDivisibleNumber } from "@/utils/numbers";
 import { EstimateSwapView, EstimateSwapOptions } from "@/interfaces/swap";
-import { getContainPairsPools } from "./swap";
-import getOneSwapActionResult from "./getOneSwapActionResult";
-import { isStableToken, getRefPoolsByTokens, getLiquidity } from "./swapUtils";
-import getHybridStableSmart from "./getHybridStableSmart";
-import { LOW_POOL_TVL_BOUND } from "@/utils/constant";
+import estimateSwapFromScript from "./estimateSwapFromScript";
 import {
-  transformWorkerResult,
-  createSmartRouteLogicWorker,
-} from "./smartRouteLogicWorker";
-const smartRouteLogicWorker: any = createSmartRouteLogicWorker();
+  estimateSwapFromServer,
+  getUsedPools,
+  getUsedTokens,
+} from "./smartRouterFromServer";
+import getConfigV3 from "@/utils/configV3";
+import { getAllTokenPrices } from "@/services/farm";
+import { IEstimateSwapServerView, ISource } from "@/interfaces/swap";
+import { TokenMetadata } from "@/services/ft-contract";
+import { Pool } from "@/services/pool_detail";
+const configV3 = getConfigV3();
 const estimateSwap = async ({
   tokenIn,
   tokenOut,
   amountIn,
   supportLedger,
   hideLowTvlPools,
-}: EstimateSwapOptions): Promise<{
-  estimates: EstimateSwapView[];
+  slippage,
+}: EstimateSwapOptions & { slippage: number }): Promise<{
+  source: ISource;
   tag: string;
+  estimates?: EstimateSwapView[];
+  estimatesFromServer?: IEstimateSwapServerView;
+  poolsMap?: Record<string, Pool>;
+  tokensMap?: Record<string, TokenMetadata>;
 }> => {
-  const parsedAmountIn = toNonDivisibleNumber(tokenIn.decimals, amountIn);
-
-  const tag = `${tokenIn.id}-${parsedAmountIn}-${tokenOut.id}`;
-
-  if (ONLY_ZEROS.test(parsedAmountIn))
-    throw new Error(`${amountIn} is not a valid swap amount`);
-
-  const throwNoPoolError = () => {
-    throw new Error(
-      `No pool available to make a swap from ${tokenIn?.symbol} -> ${tokenOut?.symbol} for the amount ${amountIn}`
-    );
-  };
-
-  let containPairsPools = await getContainPairsPools({
-    tokenInId: tokenIn.id,
-    tokenOutId: tokenOut.id,
-  });
-  containPairsPools = containPairsPools.filter((p: any) => {
-    return getLiquidity(p, tokenIn, tokenOut) > 0;
-  });
-  const { supportLedgerRes } = await getOneSwapActionResult({
-    poolsOneSwap: containPairsPools,
-    supportLedger,
-    tokenIn,
-    tokenOut,
-    throwNoPoolError,
-    amountIn,
-    parsedAmountIn,
-  });
-
-  if (supportLedger) {
-    return { estimates: supportLedgerRes, tag };
-  }
-  const orpools = hideLowTvlPools
-    ? (await getRefPoolsByTokens()).filter(
-        (pool) => +(pool.tvl || 0) >= LOW_POOL_TVL_BOUND
+  const SHUTDOWN_SERVER = configV3.SHUTDOWN_SERVER;
+  if (!SHUTDOWN_SERVER) {
+    const resultFromServer = await estimateSwapFromServer({
+      tokenIn: tokenIn.id,
+      tokenOut: tokenOut.id,
+      amountIn: toNonDivisibleNumber(tokenIn.decimals, amountIn),
+      slippage,
+      supportLedger,
+    }).catch(() => ({}));
+    if (
+      !(
+        resultFromServer?.result_code !== 0 ||
+        !resultFromServer?.result_data?.routes?.length
       )
-    : await getRefPoolsByTokens();
-  let res;
-  let smartRouteV2OutputEstimate;
-
-  try {
-    const stableSmartActionsV2: any = transformWorkerResult(
-      await smartRouteLogicWorker.getStableSmart({
-        pools: orpools.filter((p) => !p?.Dex || p.Dex !== "tri"),
-        inputToken: tokenIn.id,
-        outputToken: tokenOut.id,
-        totalInput: parsedAmountIn,
-      })
-    );
-    res = stableSmartActionsV2;
-
-    smartRouteV2OutputEstimate = stableSmartActionsV2
-      .filter((a: any) => a.outputToken == a.routeOutputToken)
-      .map((a: any) => new Big(a.estimate))
-      .reduce((a: any, b: any) => a.plus(b), new Big(0))
-      .toString();
-  } catch (error) {
-    console.error("smartRouteV2OutputEstimate error", error);
-  }
-
-  let bestEstimate = smartRouteV2OutputEstimate || 0;
-  // hybrid smart routing
-  if (isStableToken(tokenIn.id) || isStableToken(tokenOut.id)) {
-    const hybridStableSmart = await getHybridStableSmart(
+    ) {
+      const routes = resultFromServer.result_data?.routes;
+      let poolsMap = {};
+      let tokensMap = {};
+      try {
+        const prices = await getAllTokenPrices();
+        // TODOX
+        const isLosePrice =
+          !prices?.[tokenIn.id]?.price || !prices?.[tokenOut.id]?.price;
+        poolsMap = await getUsedPools(routes);
+      } catch (error) {}
+      try {
+        tokensMap = await getUsedTokens(routes);
+      } catch (error) {}
+      return {
+        estimatesFromServer: resultFromServer.result_data,
+        tag: `${tokenIn.id}-${toNonDivisibleNumber(
+          tokenIn.decimals,
+          amountIn
+        )}-${tokenOut.id}`,
+        source: "server",
+        poolsMap,
+        tokensMap,
+      };
+    } else {
+      return await doEstimateSwapFromScript({
+        tokenIn,
+        tokenOut,
+        amountIn,
+        supportLedger,
+        hideLowTvlPools,
+      });
+    }
+  } else {
+    return await doEstimateSwapFromScript({
       tokenIn,
       tokenOut,
-      amountIn
-    );
-
-    const hybridStableSmartOutputEstimate =
-      hybridStableSmart.estimate.toString();
-
-    if (
-      new Big(
-        hybridStableSmartOutputEstimate === "NaN"
-          ? "0"
-          : hybridStableSmartOutputEstimate
-      ).gt(bestEstimate)
-    ) {
-      bestEstimate = hybridStableSmartOutputEstimate || 0;
-
-      res = hybridStableSmart.actions;
-    }
+      amountIn,
+      supportLedger,
+      hideLowTvlPools,
+    });
   }
-
-  if (
-    new Big(supportLedgerRes?.[0]?.estimate || 0).gt(new Big(bestEstimate || 0))
-  ) {
-    res = supportLedgerRes;
-  }
-  if (!res?.length) {
-    throwNoPoolError();
-  }
-  return { estimates: res, tag };
 };
+async function doEstimateSwapFromScript({
+  tokenIn,
+  tokenOut,
+  amountIn,
+  supportLedger,
+  hideLowTvlPools,
+}: {
+  tokenIn: TokenMetadata;
+  tokenOut: TokenMetadata;
+  amountIn: string;
+  supportLedger: boolean;
+  hideLowTvlPools: boolean;
+}) {
+  const resultFromScript = await estimateSwapFromScript({
+    tokenIn,
+    tokenOut,
+    amountIn,
+    supportLedger,
+    hideLowTvlPools,
+  });
+  const s: ISource = "script";
+  return {
+    ...resultFromScript,
+    source: s,
+  };
+}
 export default estimateSwap;

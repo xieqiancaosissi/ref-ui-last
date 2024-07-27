@@ -266,7 +266,10 @@ const runWorker = () => {
       }
     ).then((res) => res.json());
     db.cacheTopPools(topPools);
-    const pools = topPools.map((p) => parsePool(p, p.id));
+    const pools = topPools.map((p) => ({
+      ...parsePool(p, p.id),
+      Dex: "ref",
+    }));
     db.cachePoolsByTokens(
       pools.filter(filterBlackListPools).filter((p: any) => isNotStablePool(p))
     );

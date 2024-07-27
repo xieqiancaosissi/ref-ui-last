@@ -215,6 +215,8 @@ class RefDatabase extends Dexie {
         [item.token2Id]: item.token2Supply,
       },
       Dex: item.Dex,
+      shareSupply: item.shares,
+      tvl: item.tvl,
     }));
   }
 
@@ -530,6 +532,17 @@ class RefDatabase extends Dexie {
         id: dclPool.pool_id,
         update_time: moment().unix(),
       }))
+    );
+  }
+  public async checkPoolsTokens() {
+    const items = await this.poolsTokens.limit(10).toArray();
+    return (
+      items.length > 0 &&
+      items.every(
+        (item) =>
+          Number(item.update_time) >=
+          Number(moment().unix()) - Number(TOP_POOLS_TOKEN_REFRESH_INTERVAL)
+      )
     );
   }
 }

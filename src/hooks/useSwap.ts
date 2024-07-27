@@ -31,6 +31,7 @@ const useSwap = ({
   const swapStore = useSwapStore();
   const persistSwapStore = usePersistSwapStore() as IPersistSwapStore;
   const smartRoute = persistSwapStore.getSmartRoute();
+  const slippage = persistSwapStore.getSlippage();
   const trigger = swapStore.getTrigger();
   useDebounce(
     () => {
@@ -87,12 +88,17 @@ const useSwap = ({
       amountIn: tokenInAmount,
       supportLedger: !smartRoute,
       hideLowTvlPools,
+      slippage,
     })
-      .then(({ estimates }) => {
+      .then((estimateResult) => {
+        const todo: any =
+          estimateResult.source == "server"
+            ? { swapsToDoServer: estimateResult }
+            : { swapsToDo: estimateResult };
         setSwapEstimateResult({
-          swapsToDo: estimates,
           quoteDone: true,
           tag: `${tokenIn.id}@${tokenOut.id}@${tokenInAmount}`,
+          ...todo,
         });
       })
       .catch((e) => {

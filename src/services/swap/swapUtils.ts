@@ -14,7 +14,7 @@ import {
 } from "@/utils/numbers";
 import { ALL_STABLE_POOL_IDS, AllStableTokenIds } from "./swapConfig";
 import getStablePoolConfig from "@/utils/getStablePoolConfig";
-import { StablePool, EstimateSwapView, SwapMarket } from "@/interfaces/swap";
+import { StablePool, EstimateSwapView, IServerRoute } from "@/interfaces/swap";
 import {
   STABLE_LP_TOKEN_DECIMALS,
   RATED_POOL_LP_TOKEN_DECIMALS,
@@ -35,10 +35,10 @@ export const parsePool = (pool: PoolRPCView, id: number): Pool => ({
     },
     {}
   ),
-  shareSupply: pool.shares_total_supply,
   fee: pool.total_fee,
-  pool_kind: pool.pool_kind,
-  tvl: pool?.tvl,
+  shareSupply: pool.shares_total_supply,
+  tvl: pool.tvl,
+  pool_kind: pool?.pool_kind,
 });
 export const parsePools = (pools: PoolRPCView[]): Pool[] => {
   const parsedPools = pools.map((p: PoolRPCView) => {
@@ -298,6 +298,58 @@ export function getPoolAllocationPercents(pools: Pool[]) {
   if (pools) {
     const partialAmounts = pools.map((pool) => {
       return math.bignumber(pool.partialAmountIn);
+    });
+
+    const ps: string[] = new Array(partialAmounts.length).fill("0");
+
+    const sum =
+      partialAmounts.length === 1
+        ? partialAmounts[0]
+        : math.sum(...partialAmounts);
+
+    const sortedAmount = sortBy(partialAmounts, (p) => Number(p));
+
+    const minIndexes: number[] = [];
+
+    for (let k = 0; k < sortedAmount.length - 1; k++) {
+      let minIndex = -1;
+
+      for (let j = 0; j < partialAmounts.length; j++) {
+        if (partialAmounts[j].eq(sortedAmount[k]) && !minIndexes.includes(j)) {
+          minIndex = j;
+          minIndexes.push(j);
+          break;
+        }
+      }
+      const res = math
+        .round(percent(partialAmounts[minIndex].toString(), sum))
+        .toString();
+
+      if (Number(res) === 0) {
+        ps[minIndex] = "1";
+      } else {
+        ps[minIndex] = res;
+      }
+    }
+
+    const finalPIndex = ps.indexOf("0");
+
+    ps[finalPIndex] = subtraction(
+      "100",
+      ps.length === 1 ? Number(ps[0]) : math.sum(...ps.map((p) => Number(p)))
+    ).toString();
+
+    return ps;
+  } else {
+    return [];
+  }
+}
+export function getRouteAllocationPercents(routes: IServerRoute[]) {
+  if (routes.length === 1) return ["100"];
+
+  if (routes) {
+    const partialAmounts = routes.map((route) => {
+      return math.bignumber(route.amount_in);
     });
 
     const ps: string[] = new Array(partialAmounts.length).fill("0");

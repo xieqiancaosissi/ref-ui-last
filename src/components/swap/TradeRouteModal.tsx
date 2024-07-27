@@ -1,17 +1,20 @@
-import { useMemo } from "react";
+import { useMemo, useEffect, useState } from "react";
 import Modal from "react-modal";
 import { useSwapStore } from "@/stores/swap";
 import {
   separateRoutes,
   getPoolAllocationPercents,
+  getRouteAllocationPercents,
 } from "@/services/swap/swapUtils";
 import { getV3PoolId } from "@/services/swap/swapDclUtils";
-import { Pool } from "@/interfaces/swap";
+import { IEstimateSwapServerView, Pool } from "@/interfaces/swap";
 import TradeRouteHub from "@/components/swap/TradeRouteHub";
 import { LeftBracket, RightBracket } from "@/components/swap/Bracket";
 import Token from "@/components/swap/Token";
 import { PolygonArrowIcon, RefMarketRouteIcon } from "./icons";
 import { CloseIcon } from "@/components/common/Icons";
+import { isMobile } from "@/utils/device";
+import { getTokensOfRoute } from "@/services/swap/smartRouterFromServer";
 
 export default function TradeRouteModal({
   isOpen,
@@ -20,16 +23,37 @@ export default function TradeRouteModal({
   isOpen: boolean;
   onRequestClose: () => void;
 }) {
+  const [estimatesFromServerUI, setEstimatesFromServerUI] =
+    useState<IEstimateSwapServerView>();
   const swapStore = useSwapStore();
   const estimates = swapStore.getEstimates();
+  const estimatesServer = swapStore.getEstimatesServer();
   const avgFee = swapStore.getAvgFee();
   const tokenIn = swapStore.getTokenIn();
   const tokenOut = swapStore.getTokenOut();
   const best = swapStore.getBest();
-  const identicalRoutes = separateRoutes(
-    estimates,
-    estimates[estimates.length - 1].outputToken ?? ""
-  );
+  const { estimatesFromServer } = estimatesServer || {};
+  useEffect(() => {
+    if (estimatesServer) {
+      getTokensDataOfEstimatesServer();
+    }
+  }, [JSON.stringify(estimatesServer || {})]);
+  async function getTokensDataOfEstimatesServer() {
+    const pending = estimatesFromServer.routes.map((route) =>
+      getTokensOfRoute(route)
+    );
+    const tokens_of_routes = await Promise.all(pending);
+    estimatesFromServer.routes.map((route, index) => {
+      route.tokens = tokens_of_routes[index];
+    });
+    setEstimatesFromServerUI(JSON.parse(JSON.stringify(estimatesFromServer)));
+  }
+  const identicalRoutes = estimates
+    ? separateRoutes(
+        estimates,
+        estimates[estimates.length - 1].outputToken ?? ""
+      )
+    : [];
   const percents = useMemo(() => {
     try {
       const pools = identicalRoutes
@@ -41,6 +65,16 @@ export default function TradeRouteModal({
       else return identicalRoutes.map((r) => r[0].percent);
     }
   }, [JSON.stringify(identicalRoutes || []), best]);
+  const percentsServer = useMemo(() => {
+    const routes = estimatesFromServer?.routes || [];
+    try {
+      return getRouteAllocationPercents(routes);
+    } catch (error) {
+      return ["100"];
+    }
+  }, [(estimatesFromServer?.routes || []).length]);
+  const routeLength =
+    identicalRoutes.length || estimatesFromServer?.routes?.length;
   return (
     <Modal
       isOpen={isOpen}
@@ -56,7 +90,7 @@ export default function TradeRouteModal({
       }}
     >
       <div
-        style={{ width: "680px" }}
+        style={{ width: "800px" }}
         className="bg-dark-10 p-6 pb-8 rounded-lg"
       >
         {/* title */}
@@ -71,9 +105,9 @@ export default function TradeRouteModal({
         </div>
         <div className="flexBetween mt-10">
           <Token icon={tokenIn.icon} size="26" />
-          <LeftBracket size={identicalRoutes.length} />
+          <LeftBracket size={routeLength} />
           <div className="w-full mx-2 xsm:overflow-x-auto relative">
-            {best == "v1" ? (
+            {best == "v1" && estimates ? (
               <>
                 {identicalRoutes.map((route, j) => {
                   return (
@@ -116,7 +150,56 @@ export default function TradeRouteModal({
                   );
                 })}
               </>
-            ) : (
+            ) : null}
+            {best == "v1" && estimatesFromServerUI ? (
+              <div
+                className={`w-full  mx-2 xsm:overflow-x-auto hideScroll relative`}
+              >
+                {estimatesFromServerUI.routes.map((route, j) => {
+                  const { pools, tokens } = route;
+                  return (
+                    <div
+                      key={j}
+                      className="relative frcb my-3 "
+                      style={{
+                        width: isMobile() ? "620px" : "",
+                      }}
+                    >
+                      <span className="text-xs text-gray-180">
+                        {percentsServer[j]}%
+                      </span>
+                      <div
+                        className="border border-dashed absolute left-5 opacity-30 border-gray-60 w-full px-3"
+                        style={{
+                          width: "calc(100% - 32px)",
+                        }}
+                      ></div>
+                      <div className="frcs">
+                        {tokens?.slice(1, tokens.length).map((t, i) => {
+                          return (
+                            <>
+                              <TradeRouteHub
+                                poolId={Number(pools[i].pool_id)}
+                                token={t}
+                                contract="Ref_Classic"
+                              />
+                              {t.id !== tokens[tokens.length - 1]?.id && (
+                                <div className="mx-3">
+                                  <PolygonArrowIcon />
+                                </div>
+                              )}
+                            </>
+                          );
+                        })}
+                      </div>
+
+                      <PolygonArrowIcon />
+                    </div>
+                  );
+                })}
+              </div>
+            ) : null}
+            {best == "v3" ? (
               <>
                 <div className="relative flexBetween my-3">
                   <span className="text-xs text-gray-180">100%</span>
@@ -142,10 +225,9 @@ export default function TradeRouteModal({
                   <PolygonArrowIcon />
                 </div>
               </>
-            )}
-            {}
+            ) : null}
           </div>
-          <RightBracket size={identicalRoutes.length} />
+          <RightBracket size={routeLength} />
           <Token icon={tokenOut.icon} size="26" />
         </div>
       </div>

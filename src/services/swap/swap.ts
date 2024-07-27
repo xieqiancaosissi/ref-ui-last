@@ -154,15 +154,13 @@ export const getAllStablePoolsFromCache = async () => {
   } else {
     stablePools = await fetchStablePoolsAndCacheData();
   }
-  const topPoolsMap: Record<string, PoolRPCView> = stableBaseDataPools.reduce(
-    (acc, cur) => {
+  const stableBaseDataPoolsMap: Record<string, PoolRPCView> =
+    stableBaseDataPools.reduce((acc, cur) => {
       return {
         ...acc,
         [cur.id]: cur,
       };
-    },
-    {}
-  );
+    }, {});
   const stablePoolsMap: Record<string, StablePool> = stablePools.reduce(
     (acc, cur) => {
       return {
@@ -176,7 +174,7 @@ export const getAllStablePoolsFromCache = async () => {
     (id: string) => !BLACKLIST_POOL_IDS.includes(id.toString())
   ).map((id: string) => {
     const stablePoolInfo = stablePoolsMap[id];
-    const stablePool = parsePool(topPoolsMap[id], +id);
+    const stablePool = parsePool(stableBaseDataPoolsMap[id], +id);
     stablePool.rates = stablePoolInfo.token_account_ids.reduce(
       (acc: any, cur: any, i: number) => ({
         ...acc,
@@ -189,7 +187,7 @@ export const getAllStablePoolsFromCache = async () => {
     );
     return [stablePool, stablePoolInfo];
   });
-  const allStablePoolsById = res.reduce((pre, cur, i) => {
+  const allStablePoolsById = res.reduce((pre, cur) => {
     return {
       ...pre,
       [cur[0].id]: cur,
@@ -240,4 +238,14 @@ export const getStablePoolFromCache = async (
   );
 
   return [stablePool, stablePoolInfo];
+};
+export const getAllPoolsByTokensFromCache = async () => {
+  const isLatest = await db.checkPoolsTokens();
+  let pools;
+  if (isLatest) {
+    pools = await db.getAllPoolsTokens();
+  } else {
+    pools = await fetchPoolsAndCacheData();
+  }
+  return pools;
 };

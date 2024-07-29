@@ -4,13 +4,16 @@ import {
   formatPercentage,
   toInternationalCurrencySystem_usd,
 } from "@/utils/uiNumber";
+import { toReadableNumber, numberWithCommas } from "@/utils/numbers";
 
 export default function TokenFeeAndCureentPrice({
   poolDetail,
   tokenPriceList,
+  updatedMapList,
 }: {
   poolDetail: any;
   tokenPriceList: any;
+  updatedMapList: any;
 }) {
   const [currentSort, setCurrenSort] = useState([0, 1]);
 
@@ -19,6 +22,21 @@ export default function TokenFeeAndCureentPrice({
     setCurrenSort([b, a]);
   };
   //
+  const first_token_num = toReadableNumber(
+    updatedMapList[0].token_account_ids[currentSort[0]].decimals ?? 24,
+    updatedMapList[0].supplies[
+      updatedMapList[0].token_account_ids[currentSort[0]].id
+    ]
+  );
+  const second_token_num = toReadableNumber(
+    updatedMapList[0].token_account_ids[currentSort[1]].decimals ?? 24,
+    updatedMapList[0].supplies[
+      updatedMapList[0].token_account_ids[currentSort[1]].id
+    ]
+  );
+  const rate = Number(second_token_num) / Number(first_token_num);
+
+  const showRate = rate < 0.001 ? "< 0.001" : numberWithCommas(rate.toFixed(3));
   return (
     <div className="flex items-center text-white h-10 justify-around ml-9">
       <div className="text-sm">
@@ -50,13 +68,7 @@ export default function TokenFeeAndCureentPrice({
           {/* token right amount */}
           {tokenPriceList && poolDetail && (
             <span className="mr-1">
-              {Math.ceil(
-                (tokenPriceList[poolDetail?.token_account_ids[currentSort[0]]]
-                  ?.price /
-                  tokenPriceList[poolDetail?.token_account_ids[currentSort[1]]]
-                    ?.price) *
-                  100
-              ) / 100}
+              {rate < 0.01 ? "" : ""} {showRate}
             </span>
           )}
           {/* token right name */}

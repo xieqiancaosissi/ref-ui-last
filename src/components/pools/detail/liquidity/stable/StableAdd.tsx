@@ -382,7 +382,20 @@ export default function StableAdd(props: any) {
           {/* Minimum shares */}
           <div className="flex items-center justify-between mt-5">
             <div className="text-sm text-gray-50 frcc">Minimum shares</div>
-            <div className="text-white text-sm">
+            <div
+              className="text-white text-sm overflow-hidden text-ellipsis whitespace-nowrap"
+              title={myShares({
+                totalShares: BigNumber.sum(
+                  poolDetail.shares_total_supply,
+                  percentLess(feeValue, predicedShares)
+                )
+                  .toNumber()
+                  .toLocaleString("fullwide", { useGrouping: false }),
+                userTotalShare: new BigNumber(
+                  toPrecision(percentLess(feeValue, predicedShares), 0)
+                ),
+              })}
+            >
               {myShares({
                 totalShares: BigNumber.sum(
                   poolDetail.shares_total_supply,

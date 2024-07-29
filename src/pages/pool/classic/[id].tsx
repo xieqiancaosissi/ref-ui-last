@@ -338,10 +338,13 @@ export default function ClassicPoolDetail() {
             />
 
             {/* fee */}
-            <TokenFeeAndCureentPrice
-              poolDetail={poolDetail}
-              tokenPriceList={tokenPriceList}
-            />
+            {updatedMapList && updatedMapList[0]?.token_account_ids && (
+              <TokenFeeAndCureentPrice
+                poolDetail={poolDetail}
+                tokenPriceList={tokenPriceList}
+                updatedMapList={updatedMapList}
+              />
+            )}
           </>
         )}
       </div>

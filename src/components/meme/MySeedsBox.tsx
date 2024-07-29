@@ -79,10 +79,10 @@ const MySeedsBox = ({
   }, [memeFarmContractUserData, xrefFarmContractUserData, seeds, xrefSeeds]);
   function goFarmDetail(seed_id: string) {
     const lpSeed = lpSeeds[seed_id];
-    if (lpSeed && lpSeed.farmList && lpSeed.farmList[0] && lpSeed.pool) {
-      router.push(`/farms/${lpSeed.pool.id}-e`);
-    } else if (lpSeed.pool) {
-      router.push(`/farms/${lpSeed.pool.id}-r`);
+    if (lpSeed?.farmList?.[0].status == "Ended") {
+      window.open(`/farms/${lpSeed?.pool?.id}-e`);
+    } else {
+      window.open(`/farms/${lpSeed?.pool?.id}-r`);
     }
   }
   function seedClaimAll({
@@ -342,7 +342,7 @@ const MySeedsBox = ({
                       }}
                       className={`flex flex-grow items-center justify-center text-boxBorder rounded-xl h-12 text-base paceGrotesk-Bold focus:outline-none w-1/2 xsm:w-full ${
                         claimButtonDisabled
-                          ? "bg-gray-40 cursor-not-allowed"
+                          ? "bg-gray-40 text-dark-60 cursor-not-allowed"
                           : "bg-primaryGreen cursor-pointer"
                       }`}
                     >

@@ -65,7 +65,7 @@ function YourRewards({ seed_id }: { seed_id: string }) {
       ([tokenId, amount]) => {
         const metadata: TokenMetadata = allTokenMetadatas[tokenId];
         result += `<div class="flex items-center justify-between text-xs text-farmText gap-5">
-          <img src="${metadata?.icon}" class="h-5 rounded-full" />
+          <img src="${metadata?.icon}" class="h-4 rounded-full" />
           <span class="text-xs">${toInternationalCurrencySystem_number(
             amount
           )}</span>

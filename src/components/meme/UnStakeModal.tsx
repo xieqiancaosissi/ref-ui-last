@@ -318,7 +318,7 @@ function UnStakeModal(props: any) {
             {(selectedTab === "meme" && withdraw_part_status == "locked") ||
             (selectedTab === "xref" &&
               xref_withdraw_part_status == "locked") ? (
-              <div className="bg-memeyellowColor rounded-lg px-3 py-1.5 my-4 text-sm text-memeyellowColor bg-opacity-10">
+              <div className="bg-yellow-10 rounded-lg px-3 py-1.5 my-4 text-sm text-yellow-10 bg-opacity-10">
                 You have a record in the process of unstaking. If you unstake
                 again, the two records will be merged and the pending time will
                 be reset.

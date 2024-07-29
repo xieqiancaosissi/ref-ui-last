@@ -54,6 +54,9 @@ import useTokens from "@/hooks/useTokens";
 import { LOVE_TOKEN_DECIMAL } from "@/services/referendum";
 import CustomTooltip from "@/components/customTooltip/customTooltip";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import { FarmView } from "@/components/farm/components/FarmView";
+import { get24hVolumes } from "@/services/indexer";
+import { getVeSeedShare } from "@/services/farm";
 
 const { REF_VE_CONTRACT_ID, REF_UNI_V3_SWAP_CONTRACT_ID } = getConfig();
 export const FarmCommonDatas = createContext<FarmCommonDataContext | null>(
@@ -313,19 +316,21 @@ export default function Farms(props: any) {
             />
           </SkeletonTheme>
         ) : null}
-        {/* pc no data */}
-        {/* {noData_status ? (
-          <NoDataCard
-            text={intl.formatMessage({ id: "yield_farming_appear_here_tip" })}
-          ></NoDataCard>
-        ) : null} */}
       </FarmCommonDatas.Provider>
     </>
   );
 }
 function DclFarms() {
-  const { user_seeds_map, dclSeeds, your_list_liquidities, tokenPriceList } =
-    useContext(FarmCommonDatas)!;
+  const {
+    user_seeds_map,
+    dclSeeds,
+    your_list_liquidities,
+    tokenPriceList,
+    user_unclaimed_token_meta_map,
+    user_unclaimed_map,
+    boostConfig,
+  } = useContext(FarmCommonDatas)!;
+
   const { set_dcl_farms_value_done, set_dcl_farms_value } = useContext(
     PortfolioData
   ) as PortfolioContextType;
@@ -338,6 +343,8 @@ function DclFarms() {
       const total_value = get_all_seeds_liquidities_value();
       set_dcl_farms_value_done(true);
       set_dcl_farms_value(total_value);
+      getAllPoolsDayVolume(dclSeeds);
+      get_ve_seed_share();
     }
   }, [your_list_liquidities, tokenPriceList, dclSeeds]);
   function get_all_seeds_liquidities_value() {
@@ -380,386 +387,108 @@ function DclFarms() {
     });
     return temp_farming;
   }
+
+  const [detailData, setDetailData] = useState<Seed | null>(null);
+  const [loveSeed, setLoveSeed] = useState<Seed | null>(null);
+  const [maxLoveShareAmount, setMaxLoveShareAmount] = useState<string>("0");
+  const getDetailData = (data: { detailData: Seed; loveSeed: Seed }) => {
+    const { detailData, loveSeed } = data;
+    setDetailData(detailData);
+    setLoveSeed(loveSeed);
+  };
+  const [dayVolumeMap, setDayVolumeMap] = useState<any>({});
+  async function getAllPoolsDayVolume(list_seeds: Seed[]) {
+    const tempMap: { [key: string]: any } = {};
+    const poolIds: string[] = [];
+    const seedIds: string[] = [];
+    list_seeds.forEach((seed: Seed) => {
+      seedIds.push(seed.seed_id);
+    });
+    seedIds.forEach((seedId: string) => {
+      const [contractId, temp_pool_id] = seedId.split("@");
+      if (contractId !== REF_UNI_V3_SWAP_CONTRACT_ID) {
+        poolIds.push(temp_pool_id);
+      }
+    });
+    // get24hVolume
+    try {
+      const resolvedResult = await get24hVolumes(poolIds);
+      poolIds.forEach((poolId: string, index: number) => {
+        tempMap[poolId] = resolvedResult[index];
+      });
+      setDayVolumeMap(tempMap);
+    } catch (error) {}
+  }
+
+  async function get_ve_seed_share() {
+    const result = await getVeSeedShare();
+    const maxShareObj = result?.accounts?.accounts[0] || {};
+    const amount = maxShareObj?.amount;
+    if (amount) {
+      const amountStr = new BigNumber(amount).toFixed().toString();
+      // todo 现在是 用 ref-near替代，上mainnet后替代
+      // const amountStr_readable = toReadableNumber(LOVE_TOKEN_DECIMAL, amountStr);
+      const amountStr_readable = toReadableNumber(24, amountStr);
+      setMaxLoveShareAmount(amountStr_readable);
+    }
+  }
+
   return (
-    <>
-      {dclSeeds.map((seed: Seed) => {
-        return <DclFarmRow seed={seed} key={seed.seed_id}></DclFarmRow>;
+    <div className="grid grid-cols-2 xs:grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-6 m-auto mt-8">
+      {dclSeeds.map((seed: Seed, index: number) => {
+        return (
+          <div
+            key={seed.seed_id + index}
+            className={
+              seed.hidden
+                ? "hidden"
+                : index < 2
+                ? "bg-farmItemBg rounded-lg"
+                : "bg-gray-20 bg-opacity-30 rounded-lg"
+            }
+          >
+            <FarmView
+              seed={seed}
+              all_seeds={dclSeeds}
+              tokenPriceList={tokenPriceList}
+              getDetailData={getDetailData}
+              dayVolumeMap={dayVolumeMap}
+              boostConfig={boostConfig || ({} as BoostConfig)}
+              loveSeed={loveSeed || ({} as Seed)}
+              user_seeds_map={user_seeds_map}
+              user_unclaimed_map={user_unclaimed_map}
+              user_unclaimed_token_meta_map={user_unclaimed_token_meta_map}
+              maxLoveShareAmount={maxLoveShareAmount}
+            ></FarmView>
+          </div>
+        );
       })}
-    </>
-  );
-}
-const DCLData = createContext<DCLDataContext | null>(null);
-function DclFarmRow({ seed }: { seed: Seed }) {
-  const {
-    user_seeds_map,
-    user_unclaimed_map,
-    user_unclaimed_token_meta_map,
-    tokenPriceList,
-    your_list_liquidities,
-  } = useContext(FarmCommonDatas)!;
-  const [listLiquidities_inFarimg, set_listLiquidities_inFarimg] = useState<
-    UserLiquidityInfo[]
-  >([]);
-  const [listLiquidities_inFarimg_value, set_listLiquidities_inFarimg_value] =
-    useState<string>("0");
-  const [switch_off, set_switch_off] = useState<boolean>(true);
-  const tokens =
-    seed.pool && seed.pool.tokens_meta_data
-      ? sortTokens(seed.pool.tokens_meta_data)
-      : [];
-  useEffect(() => {
-    get_inFarming_list_liquidities();
-  }, [your_list_liquidities]);
-  useEffect(() => {
-    get_liquidities_in_seed_value();
-  }, [listLiquidities_inFarimg, tokenPriceList]);
-
-  const rate_need_to_reverse_display = useMemo(() => {
-    const { tokens_meta_data } = seed.pool || {};
-    if (tokens_meta_data) {
-      const [tokenX] = tokens_meta_data;
-      if (TOKEN_LIST_FOR_RATE.indexOf(tokenX.symbol) > -1) return true;
-      return false;
-    }
-  }, [seed]);
-  const unclaimedRewardsData = useMemo(() => {
-    return getTotalUnclaimedRewards();
-  }, [user_unclaimed_map[seed.seed_id], tokenPriceList]);
-  function get_inFarming_list_liquidities() {
-    if (your_list_liquidities.length > 0) {
-      // get farming liquidites of seed;
-      const { free_amount = "0", locked_amount = "0" } =
-        user_seeds_map[seed.seed_id] || {};
-      const user_seed_amount = new BigNumber(free_amount)
-        .plus(locked_amount)
-        .toFixed();
-      const [temp_farming] = allocation_rule_liquidities({
-        list: your_list_liquidities,
-        user_seed_amount,
-        seed,
-      });
-      set_listLiquidities_inFarimg(temp_farming);
-    }
-  }
-  function get_liquidities_in_seed_value() {
-    if (
-      Object.keys(tokenPriceList).length > 0 &&
-      listLiquidities_inFarimg.length > 0
-    ) {
-      // get farming liquidites value;
-      let total_value = new BigNumber(0);
-      listLiquidities_inFarimg.forEach((liquidity: UserLiquidityInfo) => {
-        const poolDetail = seed.pool;
-        if (!poolDetail) {
-          throw new Error("poolDetail is undefined");
-        }
-        const { tokens_meta_data } = poolDetail || {};
-        if (!tokens_meta_data) {
-          throw new Error("tokens_meta_data is undefined");
-        }
-
-        const v = get_liquidity_value({
-          liquidity,
-          poolDetail,
-          tokenPriceList,
-          tokensMeta: tokens_meta_data,
-        });
-        if (v === undefined) {
-          throw new Error("get_liquidity_value returned undefined");
-        }
-        total_value = total_value.plus(v);
-      });
-      set_listLiquidities_inFarimg_value(total_value.toFixed());
-    }
-  }
-  function getTotalUnclaimedRewards() {
-    let totalPrice = 0;
-    const tempFarmsRewards: Record<string, any> = {};
-    seed.farmList &&
-      seed.farmList.forEach((farm: FarmBoost) => {
-        const { terms, token_meta_data } = farm;
-        const reward_token = terms.reward_token;
-        tempFarmsRewards[reward_token] = token_meta_data;
-      });
-    const unclaimed = user_unclaimed_map[seed.seed_id] || {};
-    const unClaimedTokenIds = Object.keys(unclaimed);
-    const tokenList: any[] = [];
-    if (unClaimedTokenIds?.length == 0) {
-      const tokenList_temp: any = Object.values(tempFarmsRewards).reduce(
-        (acc: any[], cur) => {
-          const temp = {
-            token: cur,
-            amount: <span className="text-gray-10">0</span>,
-          };
-          acc.push(temp);
-          return acc;
-        },
-        []
-      );
-      return {
-        worth: <span className="text-gray-10">$0</span>,
-        list: tokenList_temp,
-      };
-    }
-    unClaimedTokenIds?.forEach((tokenId: string) => {
-      const token: TokenMetadata = user_unclaimed_token_meta_map[tokenId];
-      // total price
-      const { id, decimals } = token;
-      const amount = toReadableNumber(decimals, unclaimed[id] || "0");
-      const tokenPrice = tokenPriceList[id]?.price;
-      if (tokenPrice && tokenPrice != "N/A") {
-        totalPrice += +amount * tokenPrice;
-      }
-      // rewards number
-      let displayNum;
-      if (new BigNumber("0").isEqualTo(amount)) {
-        displayNum = <span className="text-gray-10">0</span>;
-      } else if (new BigNumber("0.001").isGreaterThan(amount)) {
-        displayNum = "<0.001";
-      } else {
-        displayNum = new BigNumber(amount).toFixed(3, 1);
-      }
-      const tempTokenData = {
-        token,
-        amount: displayNum,
-      };
-      tokenList.push(tempTokenData);
-    });
-    if (totalPrice == 0) {
-      return {
-        worth: <span className="text-gray-10">$0</span>,
-        list: tokenList,
-      };
-    } else if (new BigNumber("0.01").isGreaterThan(totalPrice)) {
-      return {
-        worth: "<$0.01",
-        list: tokenList,
-      };
-    } else {
-      return {
-        worth: `$${toInternationalCurrencySystem(totalPrice.toString(), 2)}`,
-        list: tokenList,
-      };
-    }
-  }
-  function displaySymbols() {
-    let result = "";
-    const tokensMetaData = seed.pool?.tokens_meta_data;
-    if (tokensMetaData) {
-      tokensMetaData.forEach((token: TokenMetadata, index: number) => {
-        const symbol = toRealSymbol(token.symbol);
-        if (index === tokensMetaData.length - 1) {
-          result += symbol;
-        } else {
-          result += symbol + "-";
-        }
-      });
-    }
-    return result;
-  }
-  function displayImgs() {
-    const tokenList: any[] = [];
-    (tokens || []).forEach((token: TokenMetadata, index: number) => {
-      tokenList.push(
-        <label
-          key={token.id}
-          className={`h-6 w-6 rounded-full overflow-hidden border border-black bg-cardBg ${
-            index > 0 ? "-ml-1.5" : ""
-          }`}
-        >
-          <img src={token.icon} className="w-full h-full"></img>
-        </label>
-      );
-    });
-    return tokenList;
-  }
-  function getRange() {
-    const [contractId, temp_pool_id] = seed.seed_id.split("@");
-    const [fixRange, dcl_pool_id, left_point, right_point] =
-      temp_pool_id.split("&");
-    const tokensMetaData = seed.pool?.tokens_meta_data;
-    if (!tokensMetaData || tokensMetaData.length < 2) {
-      throw new Error("Invalid tokens_meta_data");
-    }
-    const [token_x_metadata, token_y_metadata] = tokensMetaData;
-    const decimalRate =
-      Math.pow(10, token_x_metadata.decimals) /
-      Math.pow(10, token_y_metadata.decimals);
-    let left_price = getPriceByPoint(+left_point, decimalRate);
-    let right_price = getPriceByPoint(+right_point, decimalRate);
-    let pairsDiv = (
-      <span className="text-xs text-gray-10">
-        {token_y_metadata.symbol}/{token_x_metadata.symbol}
-      </span>
-    );
-    if (rate_need_to_reverse_display) {
-      const temp = left_price;
-      left_price = new BigNumber(1).dividedBy(right_price).toFixed();
-      right_price = new BigNumber(1).dividedBy(temp).toFixed();
-      pairsDiv = (
-        <span className="text-xs text-gray-10">
-          {token_x_metadata.symbol}/{token_y_metadata.symbol}
-        </span>
-      );
-    }
-    const display_left_price = left_price;
-    const display_right_price = right_price;
-    return (
-      <div className="flex items-center whitespace-nowrap">
-        <span className="text-xs text-white mr-1">
-          {displayNumberToAppropriateDecimals(display_left_price)} -{" "}
-          {displayNumberToAppropriateDecimals(display_right_price)}
-        </span>
-        {pairsDiv}
-      </div>
-    );
-  }
-  return (
-    <DCLData.Provider
-      value={{
-        switch_off,
-        displayImgs,
-        displaySymbols,
-        seed,
-        listLiquidities_inFarimg_value,
-        unclaimedRewardsData,
-        set_switch_off,
-        getRange,
-        listLiquidities_inFarimg,
-        tokens,
-        rate_need_to_reverse_display,
-      }}
-    >
-      <DclFarmRowPage></DclFarmRowPage>
-    </DCLData.Provider>
-  );
-}
-function DclFarmRowPage() {
-  const {
-    switch_off,
-    displayImgs,
-    displaySymbols,
-    seed,
-    listLiquidities_inFarimg_value,
-    unclaimedRewardsData,
-    set_switch_off,
-    getRange,
-    listLiquidities_inFarimg,
-    tokens,
-    rate_need_to_reverse_display,
-  } = useContext(DCLData) as DCLDataContext;
-  return (
-    <div
-      className={`rounded-xl mt-3 bg-gray-20 px-4 bg-opacity-30 ${
-        switch_off ? "" : "pb-4"
-      }`}
-    >
-      <div className="frcb h-14">
-        <div className="flex items-center">
-          <div className="flex items-center flex-shrink-0 mr-2.5">
-            {displayImgs()}
-          </div>
-          <span className="text-white font-bold text-sm paceGrotesk-Bold">
-            {displaySymbols()}
-          </span>
-          <span className="frcc text-xs text-gray-10 px-1 rounded-md border border-gray-90 mr-1.5">
-            DCL
-            <span
-              className="ml-1.5"
-              onClick={() => {
-                goFarmDetailPage(seed);
-              }}
-            >
-              <OrdersArrow></OrdersArrow>
-            </span>
-          </span>
-        </div>
-        <div className="flex items-center">
-          <div className="flex flex-col items-end mr-5">
-            <span className="text-white text-sm paceGrotesk-Bold">
-              {display_value(listLiquidities_inFarimg_value)}
-            </span>
-            <div className="flex items-center">
-              <FarmListRewards className="ml-1 mr-1" />
-              <span className="text-xs text-farmApyColor paceGrotesk-Bold">
-                {unclaimedRewardsData.worth}
-              </span>
-            </div>
-          </div>
-          <UpDownButton
-            set_switch_off={() => {
-              set_switch_off(!switch_off);
-            }}
-            switch_off={switch_off}
-          ></UpDownButton>
-        </div>
-      </div>
-      <div className={`${switch_off ? "hidden" : ""}`}>
-        {/* border-b border-gray1  */}
-        <div className="bg-dark-210 rounded-xl px-3.5 py-5 bg-opacity-70 mt-2">
-          <div className="frcb">
-            <span className="text-xs text-gray-10">farm_reward_range</span>
-            <div className="flex items-center">{getRange()}</div>
-          </div>
-          <div className="flex items-center justify-between mt-5">
-            <span className="text-xs text-gray-10">unclaimed_farm_rewards</span>
-            <div className="flex items-center">
-              {unclaimedRewardsData.list.map(
-                (
-                  {
-                    token,
-                    amount,
-                  }: { token: TokenMetadata; amount: JSX.Element },
-                  index: number
-                ) => {
-                  return (
-                    <div
-                      key={`pc_${token.id}_${index}`}
-                      className={`flex items-center ${
-                        index == unclaimedRewardsData.list.length - 1
-                          ? ""
-                          : "mr-4"
-                      }`}
-                    >
-                      <img
-                        src={token.icon}
-                        className={`w-5 h-5 border border-greenColor rounded-full mr-1.5`}
-                      ></img>
-                      <span className={`text-xs text-white paceGrotesk-Bold`}>
-                        {amount}
-                      </span>
-                    </div>
-                  );
-                }
-              )}
-              <span
-                className={`tex-xs text-farmApyColor pl-3.5 ml-3.5 ${
-                  unclaimedRewardsData.list.length == 0
-                    ? ""
-                    : "border-l border-orderTypeBg"
-                }`}
-              >
-                {unclaimedRewardsData.worth}
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   );
 }
+
 function ClassicFarms() {
   const { set_classic_farms_value_done, set_classic_farms_value } = useContext(
     PortfolioData
   ) as PortfolioContextType;
-  const { classicSeeds, user_seeds_map } = useContext(FarmCommonDatas)!;
+  const {
+    classicSeeds,
+    user_seeds_map,
+    user_unclaimed_map,
+    user_unclaimed_token_meta_map,
+    boostConfig,
+    tokenPriceList,
+  } = useContext(FarmCommonDatas)!;
   useEffect(() => {
     if (classicSeeds.length > 0) {
       const total_value = get_all_seeds_liquidities_value();
       set_classic_farms_value_done(true);
       set_classic_farms_value(total_value);
+      getAllPoolsDayVolume(classicSeeds);
+      get_ve_seed_share();
     }
   }, [classicSeeds]);
+
   function get_all_seeds_liquidities_value() {
     let total_value = new BigNumber(0);
     classicSeeds.forEach((seed: Seed) => {
@@ -791,407 +520,86 @@ function ClassicFarms() {
       return yourTvl;
     }
   }
+
+  const [detailData, setDetailData] = useState<Seed | null>(null);
+  const [loveSeed, setLoveSeed] = useState<Seed | null>(null);
+  const [maxLoveShareAmount, setMaxLoveShareAmount] = useState<string>("0");
+  const getDetailData = (data: { detailData: Seed; loveSeed: Seed }) => {
+    const { detailData, loveSeed } = data;
+    setDetailData(detailData);
+    setLoveSeed(loveSeed);
+  };
+  const [dayVolumeMap, setDayVolumeMap] = useState<any>({});
+
+  async function getAllPoolsDayVolume(list_seeds: Seed[]) {
+    const tempMap: { [key: string]: any } = {};
+    const poolIds: string[] = [];
+    const seedIds: string[] = [];
+    list_seeds.forEach((seed: Seed) => {
+      seedIds.push(seed.seed_id);
+    });
+    seedIds.forEach((seedId: string) => {
+      const [contractId, temp_pool_id] = seedId.split("@");
+      if (contractId !== REF_UNI_V3_SWAP_CONTRACT_ID) {
+        poolIds.push(temp_pool_id);
+      }
+    });
+    // get24hVolume
+    try {
+      const resolvedResult = await get24hVolumes(poolIds);
+      poolIds.forEach((poolId: string, index: number) => {
+        tempMap[poolId] = resolvedResult[index];
+      });
+      setDayVolumeMap(tempMap);
+    } catch (error) {}
+  }
+
+  async function get_ve_seed_share() {
+    const result = await getVeSeedShare();
+    const maxShareObj = result?.accounts?.accounts[0] || {};
+    const amount = maxShareObj?.amount;
+    if (amount) {
+      const amountStr = new BigNumber(amount).toFixed().toString();
+      // todo 现在是 用 ref-near替代，上mainnet后替代
+      // const amountStr_readable = toReadableNumber(LOVE_TOKEN_DECIMAL, amountStr);
+      const amountStr_readable = toReadableNumber(24, amountStr);
+      setMaxLoveShareAmount(amountStr_readable);
+    }
+  }
   return (
-    <>
-      {classicSeeds.map((seed: Seed) => {
-        return <ClassicFarmRow seed={seed} key={seed.seed_id}></ClassicFarmRow>;
+    <div className="grid grid-cols-2 xs:grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-6 m-auto mt-8">
+      {classicSeeds.map((seed: Seed, index: number) => {
+        return (
+          <div
+            key={seed.seed_id + index}
+            className={
+              seed.hidden
+                ? "hidden"
+                : index < 2
+                ? "bg-farmItemBg rounded-lg"
+                : "bg-gray-20 bg-opacity-30 rounded-lg"
+            }
+          >
+            <FarmView
+              seed={seed}
+              all_seeds={classicSeeds}
+              tokenPriceList={tokenPriceList}
+              getDetailData={getDetailData}
+              dayVolumeMap={dayVolumeMap}
+              boostConfig={boostConfig || ({} as BoostConfig)}
+              loveSeed={loveSeed || ({} as Seed)}
+              user_seeds_map={user_seeds_map}
+              user_unclaimed_map={user_unclaimed_map}
+              user_unclaimed_token_meta_map={user_unclaimed_token_meta_map}
+              maxLoveShareAmount={maxLoveShareAmount}
+            ></FarmView>
+          </div>
+        );
       })}
-    </>
-  );
-}
-const ClassicData = createContext<ClassicDataContext | null>(null);
-function ClassicFarmRow({ seed }: { seed: Seed }) {
-  const {
-    user_seeds_map,
-    user_unclaimed_map,
-    user_unclaimed_token_meta_map,
-    boostConfig,
-    tokenPriceList,
-  } = useContext(FarmCommonDatas)!;
-  const { pool, seedTvl, seed_id, seed_decimal } = seed;
-  const {
-    free_amount = "0",
-    x_locked_amount = "0",
-    locked_amount = "0",
-  } = user_seeds_map[seed_id] || {};
-  const { token_account_ids } = pool || {};
-  const tokens = sortTokens(useTokens(token_account_ids) || []);
-  const [switch_off, set_switch_off] = useState<boolean>(true);
-  const unclaimedRewardsData = useMemo(() => {
-    return getTotalUnclaimedRewards();
-  }, [user_unclaimed_map[seed_id], tokenPriceList]);
-  function getTotalUnclaimedRewards() {
-    let totalPrice = 0;
-    const tempFarmsRewards: Record<string, any> = {};
-    seed.farmList?.forEach((farm: FarmBoost) => {
-      const { terms, token_meta_data } = farm;
-      const reward_token = terms.reward_token;
-      tempFarmsRewards[reward_token] = token_meta_data;
-    });
-    const unclaimed = user_unclaimed_map[seed_id] || {};
-    const unClaimedTokenIds = Object.keys(unclaimed);
-    const tokenList: any[] = [];
-    if (unClaimedTokenIds?.length == 0) {
-      const tokenList_temp: any = Object.values(tempFarmsRewards).reduce(
-        (acc: any[], cur) => {
-          const temp = {
-            token: cur,
-            amount: <span className="text-gray-10">0</span>,
-          };
-          acc.push(temp);
-          return acc;
-        },
-        []
-      );
-      return {
-        worth: <span className="text-gray-10">$0</span>,
-        list: tokenList_temp,
-      };
-    }
-    unClaimedTokenIds?.forEach((tokenId: string) => {
-      const token: TokenMetadata = user_unclaimed_token_meta_map[tokenId];
-      // total price
-      const { id, decimals, icon } = token;
-      const amount = toReadableNumber(decimals, unclaimed[id] || "0");
-      const tokenPrice = tokenPriceList[id]?.price;
-      if (tokenPrice && tokenPrice != "N/A") {
-        totalPrice += +amount * tokenPrice;
-      }
-      // rewards number
-      let displayNum = "";
-      if (new BigNumber("0").isEqualTo(amount)) {
-        displayNum = "-";
-      } else if (new BigNumber("0.001").isGreaterThan(amount)) {
-        displayNum = "<0.001";
-      } else {
-        displayNum = new BigNumber(amount).toFixed(3, 1);
-      }
-      const tempTokenData = {
-        token,
-        amount: displayNum,
-      };
-      tokenList.push(tempTokenData);
-    });
-    if (totalPrice == 0) {
-      return {
-        worth: <label>$0</label>,
-        list: tokenList,
-      };
-    } else if (new BigNumber("0.01").isGreaterThan(totalPrice)) {
-      return {
-        worth: "<$0.01",
-        list: tokenList,
-      };
-    } else {
-      return {
-        worth: `$${toInternationalCurrencySystem(totalPrice.toString(), 2)}`,
-        list: tokenList,
-      };
-    }
-  }
-  function displayImgs() {
-    const tokenList: any[] = [];
-    (tokens || []).forEach((token: TokenMetadata, index: number) => {
-      tokenList.push(
-        <img
-          key={token.id + index}
-          src={token.icon}
-          className={`relative w-6 h-6  border border-black rounded-full ${
-            index > 0 ? "-ml-1.5" : ""
-          }`}
-        ></img>
-      );
-    });
-    return tokenList;
-  }
-  function displaySymbols() {
-    let result = "";
-    pool?.tokens_meta_data?.forEach((token: TokenMetadata, index: number) => {
-      const symbol = toRealSymbol(token.symbol);
-      if (index === (pool?.tokens_meta_data?.length ?? 0) - 1) {
-        result += symbol;
-      } else {
-        result += symbol + "-";
-      }
-    });
-    return result;
-  }
-  // function getTotalStaked() {
-  //   return Number(seedTvl) == 0
-  //     ? "-"
-  //     : `$${toInternationalCurrencySystem(seedTvl, 2)}`;
-  // }
-  function showLpPower() {
-    const power = getUserPower();
-    const powerBig = new BigNumber(power);
-    if (powerBig.isEqualTo(0)) {
-      return <label className="opacity-50">{"0.0"}</label>;
-    } else if (powerBig.isLessThan("0.01")) {
-      return "<0.01";
-    } else {
-      return formatWithCommas(toPrecision(power, 2));
-    }
-  }
-  function getUserPower() {
-    if (REF_VE_CONTRACT_ID && !boostConfig) return "";
-    let realRadio;
-    const { affected_seeds = {} } = boostConfig || {};
-    const { seed_id } = seed;
-    const love_user_seed = REF_VE_CONTRACT_ID
-      ? user_seeds_map[REF_VE_CONTRACT_ID]
-      : undefined;
-    const base = affected_seeds[seed_id];
-    if (base) {
-      const { free_amount = 0, locked_amount = 0 } = love_user_seed || {};
-      const totalStakeLoveAmount = toReadableNumber(
-        LOVE_TOKEN_DECIMAL,
-        new BigNumber(free_amount).plus(locked_amount).toFixed()
-      );
-      if (+totalStakeLoveAmount > 0) {
-        if (+totalStakeLoveAmount < 1) {
-          realRadio = 1;
-        } else {
-          realRadio = new BigNumber(1)
-            .plus(Math.log(+totalStakeLoveAmount) / Math.log(base))
-            .toFixed();
-        }
-      }
-    }
-    const powerBig = new BigNumber(+(realRadio || 1))
-      .multipliedBy(free_amount)
-      .plus(x_locked_amount);
-    const power = toReadableNumber(
-      seed_decimal,
-      powerBig.toFixed(0).toString()
-    );
-    return power;
-  }
-  function getUserLpPercent() {
-    let result = "(-%)";
-    const { total_seed_power } = seed;
-    const userPower = getUserPower();
-    if (+total_seed_power && +userPower) {
-      const totalAmount = toReadableNumber(seed_decimal, total_seed_power);
-      const percent = new BigNumber(userPower)
-        .dividedBy(totalAmount)
-        .multipliedBy(100);
-      if (percent.isLessThan("0.001")) {
-        result = "<0.001%";
-      } else {
-        result = `${toPrecision(percent.toFixed().toString(), 3)}%`;
-      }
-    }
-    return result;
-  }
-  function getPowerTip() {
-    if (REF_VE_CONTRACT_ID && !boostConfig) return "";
-    const { affected_seeds = {} } = boostConfig || {};
-    const { seed_id } = seed;
-    const base = affected_seeds[seed_id];
-    const result: string = `<div class="text-navHighLightText text-xs w-52 xsm:w-32 text-left">farm_no_boost_tip</div>`;
-    return result;
-  }
-  function getYourTvl() {
-    if (pool) {
-      const { tvl, shares_total_supply } = pool;
-      const amount = new BigNumber(free_amount || 0)
-        .plus(locked_amount || 0)
-        .toFixed();
-      const poolShares = toReadableNumber(seed_decimal, shares_total_supply);
-      const yourLpAmount = toReadableNumber(seed_decimal, amount);
-      const yourTvl =
-        +poolShares == 0
-          ? "0"
-          : new BigNumber(yourLpAmount)
-              .multipliedBy(tvl)
-              .dividedBy(poolShares)
-              .toFixed();
-      return "$" + toInternationalCurrencySystem(yourTvl, 2);
-    }
-  }
-  return (
-    <ClassicData.Provider
-      value={{
-        switch_off,
-        set_switch_off,
-        displayImgs,
-        displaySymbols,
-        seed,
-        getYourTvl,
-        unclaimedRewardsData,
-        getPowerTip,
-        showLpPower,
-        getUserLpPercent,
-      }}
-    >
-      <ClassicFarmRowPage></ClassicFarmRowPage>
-    </ClassicData.Provider>
-  );
-}
-function ClassicFarmRowPage() {
-  const {
-    switch_off,
-    set_switch_off,
-    displayImgs,
-    displaySymbols,
-    seed,
-    getYourTvl,
-    unclaimedRewardsData,
-    getPowerTip,
-    showLpPower,
-    getUserLpPercent,
-  } = useContext(ClassicData)!;
-  return (
-    <div
-      className={`rounded-xl mt-3 bg-gray-20 px-4 bg-opacity-30 ${
-        switch_off ? "" : "pb-4"
-      }`}
-    >
-      <div className="frcb h-14">
-        <div className="flex items-center">
-          <div className="flex items-center flex-shrink-0 mr-2.5">
-            {displayImgs()}
-          </div>
-          <span className="text-white font-bold text-sm paceGrotesk-Bold">
-            {displaySymbols()}
-          </span>
-          <span className="ml-2 frcc text-xs text-gray-10 px-1 rounded-md border border-gray-90 mr-1.5">
-            Classic
-            <span
-              className="ml-1.5"
-              onClick={() => {
-                goFarmDetailPage(seed);
-              }}
-            >
-              <OrdersArrow></OrdersArrow>
-            </span>
-          </span>
-        </div>
-        <div className="flex items-center">
-          <div className="flex flex-col items-end mr-5">
-            <span className="text-white text-sm paceGrotesk-Bold">
-              {getYourTvl()}
-            </span>
-            <div className="flex items-center">
-              <FarmListRewards className="ml-1 mr-1" />
-              <span className="text-xs text-farmApyColor paceGrotesk-Bold">
-                {unclaimedRewardsData.worth}
-              </span>
-            </div>
-          </div>
-          <UpDownButton
-            set_switch_off={() => {
-              set_switch_off(!switch_off);
-            }}
-            switch_off={switch_off}
-          ></UpDownButton>
-        </div>
-      </div>
-      <div className={`${switch_off ? "hidden" : ""}`}>
-        <div className="bg-dark-210 rounded-xl px-3.5 py-5 bg-opacity-70 mt-2">
-          <div className="frcb mb-3">
-            <span className="text-xs text-gray-10">USD Value Staked</span>
-            <span className="text-xs text-white">{getYourTvl()}</span>
-          </div>
-          <div className="frcb mb-3">
-            <div className="flex items-center">
-              <span className="text-xs text-gray-10">Your Power</span>
-              <div
-                className="text-white text-right ml-1"
-                data-class="reactTip"
-                data-tooltip-id="powerTipId"
-                data-place="top"
-                data-tooltip-html={getPowerTip()}
-              >
-                <QuestionMark className="transform scale-90"></QuestionMark>
-                <CustomTooltip id="powerTipId" />
-              </div>
-            </div>
-            <div className="flex flex-col items-end">
-              <span className="text-xs text-white">{showLpPower()}</span>
-              <span className="text-xs text-gray-10 mt-0.5">
-                ({getUserLpPercent()})
-              </span>
-            </div>
-          </div>
-          <div className="frcb">
-            <span className="text-xs text-gray-10">Unclaimed Farm Rewards</span>
-            <div className="flex items-center">
-              {unclaimedRewardsData.list.map(
-                (
-                  { token, amount }: { token: TokenMetadata; amount: string },
-                  index: number
-                ) => {
-                  return (
-                    <div
-                      key={`pc_${token.id}_${index}`}
-                      className={`flex items-center ${
-                        index == unclaimedRewardsData.list.length - 1
-                          ? ""
-                          : "mr-4"
-                      }`}
-                    >
-                      <img
-                        src={token.icon}
-                        className={`w-5 h-5 border border-greenColor rounded-full mr-1.5`}
-                      ></img>
-                      <span className={`text-xs text-white paceGrotesk-Bold`}>
-                        {amount}
-                      </span>
-                    </div>
-                  );
-                }
-              )}
-              <span className="text-xs text-farmApyColor pl-3.5 border-l border-orderTypeBg ml-3.5">
-                {unclaimedRewardsData && unclaimedRewardsData.worth}
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   );
 }
-function sortTokens(tokens: TokenMetadata[]) {
-  tokens.sort((a: TokenMetadata, b: TokenMetadata) => {
-    if (a.symbol === "NEAR") return 1;
-    if (b.symbol === "NEAR") return -1;
-    return 0;
-  });
-  return tokens;
-}
-function goFarmDetailPage(seed: Seed) {
-  if (!seed.farmList || seed.farmList.length === 0) {
-    return;
-  }
-  const poolId = getPoolIdBySeedId(seed.seed_id);
-  const status = seed.farmList[0].status == "Ended" ? "e" : "r";
-  let mft_id = poolId;
-  let is_dcl_pool = false;
-  const [contractId, temp_pool_id] = seed.seed_id.split("@");
-  if (contractId == REF_UNI_V3_SWAP_CONTRACT_ID) {
-    is_dcl_pool = true;
-  }
-  if (is_dcl_pool) {
-    const [fixRange, pool_id, left_point, right_point] =
-      temp_pool_id.split("&");
-    mft_id = `${get_pool_name(pool_id)}[${left_point}-${right_point}]`;
-  }
-  openUrl(`/farms/${mft_id}-${status}`);
-}
-function getPoolIdBySeedId(seed_id: string) {
-  const [contractId, temp_pool_id] = seed_id.split("@");
-  if (temp_pool_id) {
-    if (contractId == REF_UNI_V3_SWAP_CONTRACT_ID) {
-      const [fixRange, dcl_pool_id, left_point, right_point] =
-        temp_pool_id.split("&");
-      return dcl_pool_id;
-    } else {
-      return temp_pool_id;
-    }
-  }
-  return "";
-}
+
 function isPending(seed: Seed) {
   let pending: boolean = true;
   const farms = seed.farmList;

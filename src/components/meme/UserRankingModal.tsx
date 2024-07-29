@@ -23,10 +23,11 @@ import {
   getMemeFarmingTokens,
   getMemeFarmingTotalAssetsList,
 } from "../../services/api";
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 function UserRankingModal(props: any) {
   const { isOpen, onRequestClose } = props;
   const cardWidth = isMobile() ? "90vw" : "52vw";
-  const cardHeight = isMobile() ? "588px" : "auto";
+  const cardHeight = isMobile() ? "588px" : "622px";
   const is_mobile = isMobile();
   const { allTokenMetadatas } = useContext(MemeContext)!;
   const [isLoading, setIsLoading] = useState(true);
@@ -342,7 +343,19 @@ function UserRankingModal(props: any) {
           </div>
         </div>
         {isLoading ? (
-          <div style={{ minHeight: is_mobile ? "400px" : "468px" }}>...</div>
+          <div style={{ minHeight: is_mobile ? "400px" : "468px" }}>
+            <SkeletonTheme
+              baseColor="rgba(33, 43, 53, 0.3)"
+              highlightColor="#2A3643"
+            >
+              <Skeleton
+                style={{ width: "100%" }}
+                height={50}
+                count={7}
+                className="mt-4"
+              />
+            </SkeletonTheme>
+          </div>
         ) : (
           <>
             <div className="xsm:hidden" style={{ minHeight: "468px" }}>

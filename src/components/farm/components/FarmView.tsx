@@ -44,7 +44,12 @@ import { NEAR_META_DATA, WNEAR_META_DATA } from "../../../utils/nearMetaData";
 import useTokens from "@/hooks/useTokens";
 import CustomTooltip from "../../customTooltip/customTooltip";
 import CalcModelBooster from "./CalcModelBooster";
-import { FarmListDCLIcon, FarmListRewards, FarmPlaceholder } from "../icon";
+import {
+  ClockIcon,
+  FarmListDCLIcon,
+  FarmListRewards,
+  FarmPlaceholder,
+} from "../icon";
 import {
   LP_STABLE_TOKEN_DECIMALS,
   LP_TOKEN_DECIMALS,
@@ -826,10 +831,6 @@ export function FarmView(props: {
               {isPending() ? (
                 <div className="flex flex-col text-purple-10 text-xs bg-purple-20 bg-opacity-20 rounded-2xl px-2 py-0.5 ml-1">
                   <em>Coming</em>
-                  <Countdown
-                    date={moment.unix(getStartTime()).valueOf()}
-                    renderer={renderer}
-                  />
                 </div>
               ) : showNewTag() ? (
                 <NewTag className="ml-1"></NewTag>
@@ -935,6 +936,21 @@ export function FarmView(props: {
           id={"rewardPerWeekId" + (seed?.farmList?.[0]?.farm_id ?? "")}
           place="bottom"
         />
+        {isPending() ? (
+          <div
+            className="absolute bottom-0 text-purple-10 text-xs bg-purple-20 bg-opacity-20 w-full left-0 frcc"
+            style={{
+              borderBottomLeftRadius: "10px",
+              borderBottomRightRadius: "10px",
+            }}
+          >
+            <ClockIcon className="mr-1.5" />
+            <Countdown
+              date={moment.unix(getStartTime()).valueOf()}
+              renderer={renderer}
+            />
+          </div>
+        ) : null}
       </div>
       {calcVisible ? (
         <CalcModelBooster

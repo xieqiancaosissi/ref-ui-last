@@ -207,7 +207,10 @@ export default function StableAdd(props: any) {
 
   const closeInit = () => {
     setActive(0.1);
-    setInputValList([]);
+    const array = new Array(
+      updatedMapList[0]?.token_account_ids?.length || 2
+    ).fill("");
+    setInputValList(array);
     setFeeValue(0.1);
   };
 

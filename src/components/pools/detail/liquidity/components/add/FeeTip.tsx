@@ -16,7 +16,8 @@ export function FeeTipDcl() {
         background: "rgba(154, 249, 1, 0.1)",
       }}
     >
-      {`👀 Claim your fees on the "Your Liquidity" page.`}
+      {`👀 Claim your fees on the`} <span className="font-sans">"</span>Your
+      Liquidity<span className="font-sans">"</span> {`page.`}
     </div>
   );
 }

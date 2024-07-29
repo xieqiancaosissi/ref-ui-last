@@ -312,14 +312,16 @@ export default function StableAdd(props: any) {
                     >
                       <input
                         type="number"
-                        className="h-16 p-3 w-74 text-white"
+                        className="h-16 p-3 max-w-74 text-white"
                         style={{ fontSize: "26px" }}
                         value={inputValList[ind]}
                         onChange={(e) => changeVal(e, ind)}
                         placeholder="0"
                       />
                       <Icon icon={ite.icon} className="h-7 w-7 mr-2" />
-                      <span className="text-white text-base">{ite.symbol}</span>
+                      <span className="text-white text-base mr-1">
+                        {ite.symbol}
+                      </span>
                     </div>
                   </div>
                 </div>

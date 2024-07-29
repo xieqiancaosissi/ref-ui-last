@@ -1,13 +1,9 @@
 import Big from "big.js";
-import { ITokenMetadata } from "@/hooks/useBalanceTokens";
+import { ITokenMetadata } from "@/interfaces/tokens";
 import { IPoolDcl } from "@/interfaces/swapDcl";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-import {
-  setAmountOut,
-  formatAmount,
-  prettyAmount,
-} from "@/services/limit/limitUtils";
+import { setAmountOut, formatAmount } from "@/services/limit/limitUtils";
 import { toPrecision } from "@/utils/numbers";
 import { get_pool } from "@/services/swapV3";
 import { fillDclPool } from "@/services/limit/limitUtils";
@@ -30,6 +26,8 @@ export interface ILimitStore {
   setPoolFetchLoading: (poolFetchLoading: boolean) => void;
   getRateDiff: () => string;
   setRateDiff: (rateDiff: string) => void;
+  getBalanceLoading: () => boolean;
+  setBalanceLoading: (balanceLoading: boolean) => void;
   onAmountInChangeTrigger: ({
     amount,
     limitStore,
@@ -104,6 +102,9 @@ export const useLimitStore = create<ILimitStore>((set: any, get: any) => ({
   lock: false,
   poolFetchLoading: false,
   rateDiff: "",
+  balanceLoading: true,
+  getBalanceLoading: () => get().balanceLoading,
+  setBalanceLoading: (balanceLoading: boolean) => set({ balanceLoading }),
   onAmountInChangeTrigger: ({
     amount,
     rate,

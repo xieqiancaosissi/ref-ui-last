@@ -74,7 +74,9 @@ export default function TradeRouteModal({
     }
   }, [(estimatesFromServer?.routes || []).length]);
   const routeLength =
-    identicalRoutes.length || estimatesFromServer?.routes?.length;
+    best == "v3"
+      ? 1
+      : identicalRoutes.length || estimatesFromServer?.routes?.length;
   return (
     <Modal
       isOpen={isOpen}

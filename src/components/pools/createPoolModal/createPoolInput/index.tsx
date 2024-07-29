@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import SelectTokenModal from "@/components/common/SelectTokenModal/Index";
 import { ArrowDownIcon } from "@/components/swap/icons";
-import { ITokenMetadata } from "@/hooks/useBalanceTokens";
+import { ITokenMetadata } from "@/interfaces/tokens";
 import HoverTooltip from "@/components/common/HoverToolTip";
 export default function PoolInput({
   title,

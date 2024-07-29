@@ -8,7 +8,7 @@ import {
   IPersistSwapStore,
   useSwapStore,
 } from "@/stores/swap";
-import { ITokenMetadata } from "./useBalanceTokens";
+import { ITokenMetadata } from "@/interfaces/tokens";
 import { getTokenUIId, is_near_wnear_swap } from "@/services/swap/swapUtils";
 
 const useSwap = ({

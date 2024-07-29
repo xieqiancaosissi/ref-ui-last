@@ -16,7 +16,8 @@ import {
 
 import { IoArrowUpOutline } from "../reactIcons";
 import moment from "moment";
-import { ChartNoData, LoadingIcon } from "./icons";
+import { ChartNoData } from "./icons";
+import { LoadingIcon } from "@/components/common/Icons";
 import { numberWithCommas } from "@/utils/numbers";
 import { useClientMobile } from "../../utils/device";
 import { scientificNotationToString, toPrecision } from "../../utils/numbers";

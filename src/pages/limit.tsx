@@ -5,7 +5,6 @@ import _ from "lodash";
 import Input from "@/components/limit/Input";
 import { useAllDclPools } from "@/hooks/usePools";
 import useSelectTokens from "@/hooks/useSelectTokens";
-import { useDefaultBalanceTokens } from "@/hooks/useBalanceTokens";
 import RateContainer from "@/components/limit/RateContainer";
 import { useSwapStore } from "@/stores/swap";
 import {
@@ -44,8 +43,6 @@ const MyOrders = dynamic(() => import("../components/limit/myOrders"), {
   ssr: false,
 });
 export default function LimitOrderPage() {
-  const { defaultList = [] } = useSelectTokens();
-  useDefaultBalanceTokens(defaultList);
   const allPools = useAllDclPools();
   const persistLimitStore: IPersistLimitStore = usePersistLimitStore();
   const limitStore = useLimitStore();

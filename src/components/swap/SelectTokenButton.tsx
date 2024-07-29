@@ -1,9 +1,8 @@
-import Image from "next/image";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import SelectTokenModal from "../../components/common/SelectTokenModal/Index";
 import { ArrowDownIcon } from "../../components/swap/icons";
 import { useEffect, useState } from "react";
-import { ITokenMetadata } from "@/hooks/useBalanceTokens";
+import { ITokenMetadata } from "@/interfaces/tokens";
 import { getTokenUIId } from "@/services/swap/swapUtils";
 import {
   usePersistSwapStore,
@@ -35,7 +34,7 @@ export default function SelectTokenButton(props: ISelectTokenButtonProps) {
         persistSwapStore.setTokenOutId(getTokenUIId(selectToken));
       }
     }
-  }, [getTokenUIId(selectToken)]);
+  }, [JSON.stringify(selectToken || {})]);
   function showModal() {
     setIsOpen(true);
   }

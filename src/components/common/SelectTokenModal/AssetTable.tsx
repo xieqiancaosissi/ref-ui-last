@@ -4,15 +4,16 @@ import { SolidArrowDownIcon } from "./Icons";
 import Table from "./Table";
 import { SelectTokenContext } from "./Context";
 import { TokenMetadata } from "@/services/ft-contract";
-import { useAccountTokenStore, IAccountTokenStore } from "@/stores/token";
+import { useTokenStore, ITokenStore } from "@/stores/token";
 import CustomTooltip from "@/components/customTooltip/customTooltip";
 import { QuestionIcon } from "../Icons";
+import Loading from "@/components/limit/myOrders/loading";
 export default function AssetTable() {
   const [sort, setSort] = useState<"asc" | "desc">("desc");
   const [tab, setTab] = useState<"default" | "tkn">("default");
-  const accountTokenStore = useAccountTokenStore() as IAccountTokenStore;
-  const defaultDisplayTokens = accountTokenStore.getDefaultAccountTokens();
-  const autoDisplayTokens = accountTokenStore.getAutoAccountTokens();
+  const tokenStore = useTokenStore() as ITokenStore;
+  const defaultDisplayTokens = tokenStore.getDefaultAccountTokens();
+  const autoDisplayTokens = tokenStore.getAutoAccountTokens();
   const { searchText } = useContext(SelectTokenContext);
   const [defaultTokens, autoTokens] = useMemo(() => {
     if (searchText) {
@@ -49,6 +50,7 @@ export default function AssetTable() {
     </div>
     `;
   }
+  const isLoading = !defaultDisplayTokens.length;
   return (
     <div className="mt-7">
       {/* title */}
@@ -95,17 +97,21 @@ export default function AssetTable() {
           />
         </div>
       </div>
-      <div className={`flex flex-col gap-1 mt-2`}>
-        {/* Default */}
-        <Table
-          tokens={defaultTokens}
-          sort={sort}
-          enableAddToken
-          hidden={tab !== "default"}
-        />
-        {/* TKN */}
-        <Table tokens={autoTokens} sort={sort} hidden={tab !== "tkn"} />
-      </div>
+      {isLoading ? (
+        <Loading />
+      ) : (
+        <div className={`flex flex-col gap-1 mt-2`}>
+          {/* Default */}
+          <Table
+            tokens={defaultTokens}
+            sort={sort}
+            enableAddToken
+            hidden={tab !== "default"}
+          />
+          {/* TKN */}
+          <Table tokens={autoTokens} sort={sort} hidden={tab !== "tkn"} />
+        </div>
+      )}
     </div>
   );
 }

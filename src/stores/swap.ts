@@ -1,4 +1,4 @@
-import { ITokenMetadata } from "@/hooks/useBalanceTokens";
+import { ITokenMetadata } from "@/interfaces/tokens";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { TokenPrice } from "@/db/RefDatabase";
@@ -20,34 +20,6 @@ export interface IPersistSwapStore {
   getTokenOutId: () => string;
   setTokenOutId: (tokenOutId: string) => void;
 }
-export const usePersistSwapStore = create(
-  persist(
-    (set: any, get: any) => ({
-      smartRoute: true,
-      slippage: 0.5,
-      tokenInId: "",
-      tokenOutId: "",
-      getSmartRoute: () => get().smartRoute,
-      setSmartRoute: (smartRoute: boolean) => {
-        set({
-          smartRoute,
-        });
-      },
-      getSlippage: () => get().slippage,
-      setSlippage: (slippage: number) => set({ slippage }),
-      getTokenInId: () => get().tokenInId,
-      setTokenInId: (tokenInId: string) => set({ tokenInId }),
-      getTokenOutId: () => get().tokenOutId,
-      setTokenOutId: (tokenOutId: string) => set({ tokenOutId }),
-    }),
-    {
-      name: "_cached_swap",
-      version: 0.1,
-      storage: createJSONStorage(() => localStorage),
-    }
-  )
-);
-
 interface ISwapStore {
   getTokenIn: () => ITokenMetadata;
   setTokenIn: (token: ITokenMetadata) => void;
@@ -81,7 +53,37 @@ interface ISwapStore {
   ) => void;
   getDeflation: () => IDeflation;
   setDeflation: (deflation: IDeflation | undefined) => void;
+  getBalanceLoading: () => boolean;
+  setBalanceLoading: (balanceLoading: boolean) => void;
 }
+export const usePersistSwapStore = create(
+  persist(
+    (set: any, get: any) => ({
+      smartRoute: true,
+      slippage: 0.5,
+      tokenInId: "",
+      tokenOutId: "",
+      getSmartRoute: () => get().smartRoute,
+      setSmartRoute: (smartRoute: boolean) => {
+        set({
+          smartRoute,
+        });
+      },
+      getSlippage: () => get().slippage,
+      setSlippage: (slippage: number) => set({ slippage }),
+      getTokenInId: () => get().tokenInId,
+      setTokenInId: (tokenInId: string) => set({ tokenInId }),
+      getTokenOutId: () => get().tokenOutId,
+      setTokenOutId: (tokenOutId: string) => set({ tokenOutId }),
+    }),
+    {
+      name: "_cached_swap",
+      version: 0.1,
+      storage: createJSONStorage(() => localStorage),
+    }
+  )
+);
+
 export const useSwapStore = create<ISwapStore>((set: any, get: any) => ({
   tokenIn: null,
   tokenOut: null,
@@ -98,6 +100,9 @@ export const useSwapStore = create<ISwapStore>((set: any, get: any) => ({
   estimating: false,
   trigger: false,
   deflation: {},
+  balanceLoading: true,
+  getBalanceLoading: () => get().balanceLoading,
+  setBalanceLoading: (balanceLoading: boolean) => set({ balanceLoading }),
   getDeflation: () => get().deflation,
   setDeflation: (deflation: IDeflation | undefined) => set({ deflation }),
   getTokenIn: () => get().tokenIn,

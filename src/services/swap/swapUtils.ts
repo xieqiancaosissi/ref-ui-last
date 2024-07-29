@@ -20,8 +20,9 @@ import {
   RATED_POOL_LP_TOKEN_DECIMALS,
 } from "@/utils/constant";
 import db from "@/db/RefDatabase";
-import { ITokenMetadata } from "@/hooks/useBalanceTokens";
+import { ITokenMetadata } from "@/interfaces/tokens";
 import { MIN_RETAINED_NEAR_AMOUNT } from "@/utils/constant";
+import { NEAR_META_DATA, WNEAR_META_DATA } from "@/utils/nearMetaData";
 import getConfig from "@/utils/config";
 const { WRAP_NEAR_CONTRACT_ID } = getConfig();
 const { RATED_POOLS_IDS } = getStablePoolConfig();
@@ -424,4 +425,16 @@ export function is_near_wnear_swap(
     (tokenA_id == "near" && tokenB_id == WRAP_NEAR_CONTRACT_ID) ||
     (tokenA_id == WRAP_NEAR_CONTRACT_ID && tokenB_id == "near")
   );
+}
+export function getWnearToken(tokens: TokenMetadata[]) {
+  const NEAR = tokens.filter((token) => token.id === WRAP_NEAR_CONTRACT_ID)[0];
+  if (!NEAR) return;
+  const wnearToken = JSON.parse(JSON.stringify(NEAR));
+  wnearToken.icon = WNEAR_META_DATA.icon;
+  wnearToken.symbol = WNEAR_META_DATA.symbol;
+  wnearToken.name = "Wrapped NEAR fungible token";
+  NEAR.icon = NEAR_META_DATA.icon;
+  NEAR.symbol = "NEAR";
+  NEAR.name = "Near";
+  return wnearToken;
 }

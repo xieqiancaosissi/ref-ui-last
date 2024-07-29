@@ -1,4 +1,4 @@
-import { LoadingIcon } from "../icons";
+import { LoadingIcon } from "@/components/common/Icons";
 export default function Loading() {
   return (
     <div

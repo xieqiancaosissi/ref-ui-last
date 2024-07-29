@@ -1,13 +1,9 @@
 import { useMemo } from "react";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import { toPrecision } from "@/utils/numbers";
-import {
-  useAccountBalanceTokenStore,
-  useAccountTokenStore,
-  IAccountTokenStore,
-} from "@/stores/token";
 import { useAccountStore } from "@/stores/account";
-import { ITokenMetadata } from "@/hooks/useBalanceTokens";
+import { ITokenMetadata } from "@/interfaces/tokens";
+import { useLimitStore } from "@/stores/limitOrder";
 
 interface ISelectTokenBalanceProps {
   token: ITokenMetadata;
@@ -16,30 +12,14 @@ interface ISelectTokenBalanceProps {
 }
 export default function SelectTokenBalance(props: ISelectTokenBalanceProps) {
   const { isIn, setMaxAmount, token } = props;
-  const { accountId, walletLoading } = useAccountStore();
-  const accountBalanceTokenStore = useAccountBalanceTokenStore();
-  const accountTokenStore = useAccountTokenStore() as IAccountTokenStore;
-  const owner = accountTokenStore.getOwner();
-  const defaultBalanceLoading =
-    accountBalanceTokenStore.getDefaultBalancesLoading();
-  const autoBalanceLoading = accountBalanceTokenStore.getAutoBalancesLoading();
+  const accountStore = useAccountStore();
+  const walletLoading = accountStore.getWalletLoading();
+  const accountId = accountStore.getAccountId();
+  const limitStore = useLimitStore();
+  const balanceLoading = limitStore.getBalanceLoading();
   const loading = useMemo(() => {
-    if (walletLoading) return true;
-    if (
-      !walletLoading &&
-      accountId &&
-      accountId !== owner &&
-      (defaultBalanceLoading || autoBalanceLoading)
-    )
-      return true;
-    return false;
-  }, [
-    walletLoading,
-    accountId,
-    owner,
-    defaultBalanceLoading,
-    autoBalanceLoading,
-  ]);
+    return walletLoading || balanceLoading;
+  }, [walletLoading, balanceLoading]);
   return (
     <>
       {loading ? (
@@ -56,7 +36,7 @@ export default function SelectTokenBalance(props: ISelectTokenBalanceProps) {
           }}
           className={`${isIn ? "underline cursor-pointer" : ""}`}
         >
-          {toPrecision(token?.balance || "0", 3)}
+          {toPrecision(token?.balance || (accountId ? "0" : "-"), 3)}
         </span>
       )}
     </>

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Big from "big.js";
 import { twMerge } from "tailwind-merge";
 import dynamic from "next/dynamic";
-import { ITokenMetadata } from "@/hooks/useBalanceTokens";
+import { ITokenMetadata } from "@/interfaces/tokens";
 import { useSwapStore } from "@/stores/swap";
 import { toPrecision } from "@/utils/numbers";
 import {

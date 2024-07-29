@@ -1,4 +1,4 @@
-import { ITokenMetadata } from "@/hooks/useBalanceTokens";
+import { ITokenMetadata } from "@/interfaces/tokens";
 import { TokenPrice } from "@/db/RefDatabase";
 import React, { createContext } from "react";
 export interface ISelectTokenContext {

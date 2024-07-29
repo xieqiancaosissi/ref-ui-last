@@ -1,9 +1,8 @@
 import React, { useContext, useEffect, useMemo, useState } from "react";
 import _ from "lodash";
 import Big from "big.js";
-import Image from "next/image";
 import { CollectIcon, EmptyIcon, RiskIcon } from "./Icons";
-import { ITokenMetadata } from "../../../hooks/useBalanceTokens";
+import { ITokenMetadata } from "@/interfaces/tokens";
 import { useAccountStore } from "../../../stores/account";
 import { toPrecision } from "../../../utils/numbers";
 import { ButtonTextWrapper } from "../Button";

@@ -1,9 +1,8 @@
-import Image from "next/image";
 import { useEffect, useState } from "react";
 import Big from "big.js";
 import { twMerge } from "tailwind-merge";
 import dynamic from "next/dynamic";
-import { ITokenMetadata } from "@/hooks/useBalanceTokens";
+import { ITokenMetadata } from "@/interfaces/tokens";
 import { useSwapStore } from "@/stores/swap";
 import { getTokenUIId } from "@/services/swap/swapUtils";
 import { toInternationalCurrencySystemLongString_usd } from "@/utils/uiNumber";

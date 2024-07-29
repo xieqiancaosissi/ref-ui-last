@@ -1,17 +1,20 @@
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
-import { ITokenMetadata } from "@/hooks/useBalanceTokens";
 import { ArrowDownIcon } from "../../components/swap/icons";
 import { TokenMetadata } from "@/services/ft-contract";
 import { IPoolDcl } from "@/interfaces/swapDcl";
-import { useAccountTokenStore, IAccountTokenStore } from "@/stores/token";
 import {
   useLimitStore,
   usePersistLimitStore,
   IPersistLimitStore,
 } from "@/stores/limitOrder";
 import { sort_tokens_by_base } from "@/services/commonV3";
+import { useAccountStore } from "@/stores/account";
+import { getTokenBalance } from "@/services/token";
+import { toReadableNumber } from "@/utils/numbers";
+import { ITokenMetadata } from "@/interfaces/tokens";
+import { getTokenUIId } from "@/services/swap/swapUtils";
 const SelectDclTokenBox = dynamic(() => import("./SelectDclToken"), {
   ssr: false,
 });
@@ -23,28 +26,54 @@ export default function SelectDclPoolButton({
   isOut?: boolean;
 }) {
   const [show, setShow] = useState<boolean>(false);
-  const accountTokenStore = useAccountTokenStore() as IAccountTokenStore;
-  const defaultAccountBalances = accountTokenStore.getDefaultAccountTokens();
   const limitStore = useLimitStore();
   const persistLimitStore: IPersistLimitStore = usePersistLimitStore();
   const cachedDclPool = persistLimitStore.getDclPool();
   const selectedToken = isIn
     ? limitStore.getTokenIn()
     : limitStore.getTokenOut();
+  const accountStore = useAccountStore();
+  const walletLoading = accountStore.getWalletLoading();
+  const accountId = accountStore.getAccountId();
   useEffect(() => {
-    if (cachedDclPool?.pool_id && defaultAccountBalances?.length > 0) {
+    if (cachedDclPool?.pool_id) {
       const { token_x_metadata, token_y_metadata } = cachedDclPool;
       const tokens: TokenMetadata[] = sort_tokens_by_base([
         token_x_metadata as TokenMetadata,
         token_y_metadata as TokenMetadata,
       ]);
-      const tokensWithBalance = tokens.map((token) =>
-        defaultAccountBalances.find((t) => t.id == token.id)
-      ) as ITokenMetadata[];
-      limitStore.setTokenIn(tokensWithBalance[0]);
-      limitStore.setTokenOut(tokensWithBalance[1]);
+      getTokensWithBalance(tokens);
     }
-  }, [cachedDclPool?.pool_id, JSON.stringify(defaultAccountBalances || [])]);
+  }, [cachedDclPool?.pool_id, accountId, walletLoading]);
+  async function getTokensWithBalance(tokens: TokenMetadata[]) {
+    let TOKEN_IN: ITokenMetadata = tokens[0];
+    let TOKEN_OUT: ITokenMetadata = tokens[1];
+    const tokenInId = TOKEN_IN?.id;
+    const tokenOutId = TOKEN_OUT?.id;
+    if (accountId) {
+      limitStore.setBalanceLoading(true);
+      const in_pending = getTokenBalance(
+        getTokenUIId(TOKEN_IN) == "near" ? "NEAR" : tokenInId
+      );
+      const out_pending = getTokenBalance(
+        getTokenUIId(TOKEN_IN) ? "NEAR" : tokenOutId
+      );
+      const balances = await Promise.all([in_pending, out_pending]);
+      TOKEN_IN = {
+        ...TOKEN_IN,
+        balanceDecimal: balances[0],
+        balance: toReadableNumber(TOKEN_IN.decimals, balances[0]),
+      };
+      TOKEN_OUT = {
+        ...TOKEN_OUT,
+        balanceDecimal: balances[1],
+        balance: toReadableNumber(TOKEN_OUT.decimals, balances[1]),
+      };
+    }
+    limitStore.setBalanceLoading(false);
+    limitStore.setTokenIn(TOKEN_IN);
+    limitStore.setTokenOut(TOKEN_OUT);
+  }
   useEffect(() => {
     const event = (e: any) => {
       const path = e.composedPath();

@@ -18,10 +18,10 @@ import { REF_FI_CONTRACT_ID } from "@/utils/contract";
 import { registerTokenAction } from "./creator/token";
 import { checkTokenNeedsStorageDeposit } from "./swap/registerToken";
 import { storageDepositAction } from "./creator/storage";
-import { useAccountStore } from "@/stores/account";
 import { refFiViewFunction } from "@/utils/contract";
 import { extraStableTokenIds } from "./swap/swapConfig";
 import { useEffect, useState } from "react";
+import { NEAR_META_TX_DATA } from "@/utils/nearMetaData";
 
 const specialToken = "pixeltoken.near";
 const { WRAP_NEAR_CONTRACT_ID } = getConfig();
@@ -43,6 +43,9 @@ export async function ftGetTokenMetadata(
   accountPage?: boolean
 ) {
   try {
+    if (tokenId == "near" || tokenId == "NEAR") {
+      return NEAR_META_TX_DATA;
+    }
     let metadata: any = await db
       .allTokens()
       .where({ id: String(tokenId) })
@@ -336,4 +339,17 @@ export const getDepositableBalance = async (
   } else {
     return "";
   }
+};
+
+export const getTokenBalance = (tokenId: string) => {
+  if (tokenId === "NEAR") {
+    return getAccountNearBalance().then(({ available }: any) => available);
+  }
+  return viewFunction({
+    contractId: tokenId,
+    methodName: "ft_balance_of",
+    args: {
+      account_id: getAccountId(),
+    },
+  }).catch(() => "0");
 };

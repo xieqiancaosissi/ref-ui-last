@@ -8,7 +8,7 @@ import {
 } from "./icons";
 import { useOrderbookDataStore } from "@/stores/orderbook/orderbookDataStore";
 import { useAccountStore } from "@/stores/account";
-import { LoadingIcon } from "@/components/limit/icons";
+import { LoadingIcon } from "@/components/common/Icons";
 import Styles from "@/components/orderbook/orderbook.module.css";
 import ConnectConfirmModal from "./connectConfirmModal";
 import { storageDeposit } from "@/services/orderbook/contract";

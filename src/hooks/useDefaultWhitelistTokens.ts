@@ -1,11 +1,6 @@
 import { useEffect, useState } from "react";
 import { TokenMetadata } from "../services/ft-contract";
-import {
-  useTokenStore,
-  useAccountTokenStore,
-  ITokenStore,
-  IAccountTokenStore,
-} from "../stores/token";
+import { useTokenStore, ITokenStore } from "../stores/token";
 import { useAccountStore } from "../stores/account";
 import getConfigV2 from "../utils/configV2";
 import {
@@ -21,11 +16,10 @@ export const useDefaultWhitelistTokens = () => {
   const [accountWhitelistIds, setAccountWhitelistIds] = useState<string[]>();
   const [whitelistIdList, setWhitelistIdList] = useState<string[][]>([]);
   const tokenStore = useTokenStore() as ITokenStore;
-  const accountTokenStore = useAccountTokenStore() as IAccountTokenStore;
   const accountStore = useAccountStore();
   const accountId = accountStore.getAccountId();
   const walletLoading = accountStore.walletLoading;
-  const owner = accountTokenStore.getOwner();
+  const owner = tokenStore.getOwner();
   useEffect(() => {
     setGlobalWhitelistTokenIds();
   }, []);
@@ -67,7 +61,7 @@ export const useDefaultWhitelistTokens = () => {
     const whitelisted_tokens_ids =
       tokenStore.get_global_whitelisted_tokens_ids();
     const user_whitelisted_tokens_ids =
-      accountTokenStore.get_user_whitelisted_tokens_ids();
+      tokenStore.get_user_whitelisted_tokens_ids();
     return [whitelisted_tokens_ids || [], user_whitelisted_tokens_ids || []];
   }
   async function getWhiteListIdsFromServer() {
@@ -88,8 +82,8 @@ export const useDefaultWhitelistTokens = () => {
     setWhiteListTokens(tokens);
   }
   async function clearAccountWhitelistTokenIds() {
-    accountTokenStore.set_user_whitelisted_tokens_ids([]);
-    accountTokenStore.setOwner(accountId);
+    tokenStore.set_user_whitelisted_tokens_ids([]);
+    tokenStore.setOwner(accountId);
     setAccountWhitelistIds([]);
   }
   async function getTokenMetaDatas(
@@ -111,8 +105,8 @@ export const useDefaultWhitelistTokens = () => {
   }
   async function setAccountWhitelistTokenIds() {
     const accountWhitelist = await getAccountWhitelist();
-    accountTokenStore.set_user_whitelisted_tokens_ids(accountWhitelist || []);
-    accountTokenStore.setOwner(accountId);
+    tokenStore.set_user_whitelisted_tokens_ids(accountWhitelist || []);
+    tokenStore.setOwner(accountId);
     setAccountWhitelistIds(accountWhitelist || []);
   }
   return {

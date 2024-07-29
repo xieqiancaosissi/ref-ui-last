@@ -1,7 +1,7 @@
 import Big from "big.js";
 import { TokenMetadata } from "@/services/ft-contract";
 import { scientificNotationToString } from "@/utils/numbers";
-import { ITokenMetadata } from "@/hooks/useBalanceTokens";
+import { ITokenMetadata } from "@/interfaces/tokens";
 import { IPoolDcl } from "@/interfaces/swapDcl";
 import { LOG_BASE, POINTLEFTRANGE, POINTRIGHTRANGE } from "@/utils/constant";
 

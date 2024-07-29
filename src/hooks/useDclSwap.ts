@@ -3,7 +3,7 @@ import { useDebounce } from "react-use";
 import estimateDclSwap from "@/services/swap/estimateDclSwap";
 import { useSwapStore } from "@/stores/swap";
 import { IEstimateDclSwapView, IEstimateResult } from "@/interfaces/swapDcl";
-import { ITokenMetadata } from "./useBalanceTokens";
+import { ITokenMetadata } from "@/interfaces/tokens";
 import { is_near_wnear_swap } from "@/services/swap/swapUtils";
 const useDclSwap = ({
   tokenIn,

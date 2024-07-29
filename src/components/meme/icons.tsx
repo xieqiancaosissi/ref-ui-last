@@ -1163,7 +1163,7 @@ export function ArrowRightTopIcon(props: any) {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <path d="M1 9L9 1M9 1H3.66667M9 1V6.33333" stroke="#9EFF00" />
+      <path d="M1 9L9 1M9 1H3.66667M9 1V6.33333" stroke="currentColor" />
     </svg>
   );
 }
@@ -3169,7 +3169,7 @@ export function AcquireXREFIcon() {
     >
       <path
         d="M1 10L11 1M11 1H4.33333M11 1V7"
-        stroke="#7E8A93"
+        stroke="currentColor"
         strokeWidth="1.8"
       />
     </svg>

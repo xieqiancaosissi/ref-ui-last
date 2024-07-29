@@ -33,6 +33,7 @@ import { useAccountStore } from "@/stores/account";
 import { ButtonTextWrapper } from "../common/Button";
 import { showWalletSelectorModal } from "@/utils/wallet";
 import { useAppStore } from "@/stores/app";
+import { useRouter } from "next/router";
 
 const { MEME_TOKEN_XREF_MAP } = getMemeContractConfig();
 const { meme_winner_tokens, meme_nonListed_tokens } = getMemeDataConfig();
@@ -51,6 +52,7 @@ function VoteModel(props: any) {
     xrefContractConfig,
     donateBalances,
   } = useContext(MemeContext)!;
+  const router = useRouter();
   useEffect(() => {
     if (!isEmpty(xrefSeeds)) {
       setSelectedTab(
@@ -169,6 +171,9 @@ function VoteModel(props: any) {
   function showWalletSelector() {
     showWalletSelectorModal(appStore.setShowRiskModal);
   }
+  function toXref() {
+    router.push("/xref");
+  }
   if (!selectedTab) return null;
   return (
     <Modal
@@ -194,7 +199,7 @@ function VoteModel(props: any) {
         },
       }}
     >
-      <div className="flex flex-col bg-dark-10">
+      <div className="flex flex-col bg-dark-10 rounded-2xl">
         <div
           className="px-5 xs:px-3 md:px-3 py-6 lg:rounded-2xl xsm:rounded-t-2xl overflow-auto xsm:py-4"
           style={{
@@ -372,14 +377,11 @@ function VoteModel(props: any) {
             </div>
             <div className="flex justify-between text-sm mt-5">
               <div className="text-gray-60">Stake xREF</div>
-              <div className="text-primaryGreen flex justify-end items-center">
-                <a
-                  className="inline-flex items-center cursor-pointer"
-                  href="/xref"
-                  target="_blank"
-                >
-                  Acquire $xREF <ArrowRightTopIcon />
-                </a>
+              <div
+                onClick={toXref}
+                className="text-gray-60 flex justify-end items-center hover:text-primaryGreen hover:cursor-pointer"
+              >
+                Acquire $xREF <ArrowRightTopIcon />
               </div>
             </div>
             <div className="mb-8">

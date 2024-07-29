@@ -61,6 +61,12 @@ import { LOVE_TOKEN_DECIMAL } from "@/services/referendum";
 import Big from "big.js";
 import { ArrowRightUpIcon } from "../icon";
 import { useRouter } from "next/router";
+import ClassicAdd from "@/components/pools/detail/liquidity/classic/ClassicAdd";
+import ClassicRemove from "@/components/pools/detail/liquidity/classic/ClassicRemove";
+import { getPoolsDetailById } from "@/services/pool";
+import { useTokenMetadata } from "@/hooks/usePools";
+import { useRiskTokens } from "@/hooks/useRiskTokens";
+
 const { BLACK_TOKEN_LIST } = getConfig();
 export const StakeListContext = createContext<any>(null);
 export function YourLiquidityV1(props: any) {
@@ -85,6 +91,7 @@ export function YourLiquidityV1(props: any) {
   const isClientMobile = useClientMobile();
   const [count, setCount] = useState(0);
   const isSignedIn = accountStore.isSignedIn;
+  const { pureIdList } = useRiskTokens();
 
   useEffect(() => {
     // get all stable pools;
@@ -254,6 +261,7 @@ export function YourLiquidityV1(props: any) {
           setGeneralAddLiquidity,
           showV1EmptyBar,
           router,
+          pureIdList,
         }}
       >
         <LiquidityContainerStyle2></LiquidityContainerStyle2>
@@ -272,6 +280,7 @@ function LiquidityContainerStyle2() {
     stakeList,
     v2StakeList,
     router,
+    pureIdList,
   } = useContext(StakeListContext)!;
   const simplePoolsFinal = useMemo(() => {
     const activeSimplePools: PoolRPCView[] = pools.filter(
@@ -375,6 +384,7 @@ function YourClassicLiquidityLine(props: any) {
     stakeList,
     v2StakeList,
     router,
+    pureIdList,
   } = useContext(StakeListContext)!;
 
   const { set_your_classic_lp_all_in_farms } = useContext(
@@ -678,6 +688,7 @@ function YourClassicLiquidityLine(props: any) {
         stakeList,
         v2StakeList,
         router,
+        pureIdList,
       }}
     >
       <YourClassicLiquidityLinePage
@@ -710,6 +721,7 @@ function YourClassicLiquidityLinePage(props: any) {
     stakeList,
     v2StakeList,
     router,
+    pureIdList,
   } = useContext(LiquidityContextData)!;
   const lpDecimal = isStablePool(pool.id) ? getStablePoolDecimal(pool.id) : 24;
   const supportFarmV1 = getFarmsCount(pool.id.toString(), v1Farm);
@@ -719,6 +731,37 @@ function YourClassicLiquidityLinePage(props: any) {
 
   const farmStakeV1 = useFarmStake({ poolId: pool.id, stakeList });
   const farmStakeV2 = useFarmStake({ poolId: pool.id, stakeList: v2StakeList });
+
+  const [poolDetail, setPoolDetail] = useState<any>(null);
+  const { updatedMapList } = useTokenMetadata([poolDetail]);
+
+  const farmStakeTotal = useFarmStake({ poolId: Number(pool.id), stakeList });
+
+  const userTotalShare = BigNumber.sum(sharesNew, farmStakeTotal);
+
+  const userTotalShareToString = userTotalShare
+    .toNumber()
+    .toLocaleString("fullwide", { useGrouping: false });
+
+  const haveShare = Number(userTotalShareToString) > 0;
+
+  useEffect(() => {
+    if (pool.id) {
+      getPoolsDetailById({ pool_id: pool.id as any }).then((res) => {
+        setPoolDetail(res);
+      });
+    }
+  }, [pool]);
+
+  const [showAdd, setShowAdd] = useState(false);
+  const hideAdd = () => {
+    setShowAdd(false);
+  };
+
+  const [showRemove, setShowRemove] = useState(false);
+  const hideRemove = () => {
+    setShowRemove(false);
+  };
   return (
     <div
       className={`rounded-xl mt-3 bg-gray-20 px-4 bg-opacity-30 ${
@@ -896,8 +939,59 @@ function YourClassicLiquidityLinePage(props: any) {
         </div>
 
         {/* btn */}
-        <div className="col-span-2"></div>
+        <div className="col-span-2 frcc">
+          <div className={`pr-2 ${haveShare ? "w-1/2" : "w-full"} `}>
+            <div
+              className={`border-green-10 border font-bold rounded frcc w-23 h-8  mr-2.5 text-sm cursor-pointer hover:opacity-80 text-green-10 `}
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowAdd(true);
+              }}
+              // disabled={disable_add}
+            >
+              Add
+            </div>
+          </div>
+          {haveShare && (
+            <div className="pl-2 w-1/2">
+              <div
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (+userTotalShareToString == 0) return;
+                  setShowRemove(true);
+                }}
+                // disabled={Number(userTotalShareToString) == 0}
+                className={`w-full ${
+                  Number(userTotalShareToString) == 0
+                    ? "text-dark-200 border-gray-190  cursor-not-allowed opacity-40"
+                    : "text-dark-200 cursor-pointer border-dark-190"
+                } w-23 h-8 frcc text-sm font-bold border  rounded hover:text-white`}
+              >
+                Remove
+              </div>
+            </div>
+          )}
+        </div>
       </div>
+      {updatedMapList[0]?.token_account_ids && poolDetail && (
+        <>
+          <ClassicAdd
+            isOpen={showAdd}
+            onRequestClose={hideAdd}
+            poolDetail={poolDetail}
+            pureIdList={pureIdList}
+            updatedMapList={updatedMapList}
+          />
+
+          <ClassicRemove
+            isOpen={showRemove}
+            onRequestClose={hideRemove}
+            poolDetail={poolDetail}
+            pureIdList={pureIdList}
+            updatedMapList={updatedMapList}
+          />
+        </>
+      )}
     </div>
   );
 }

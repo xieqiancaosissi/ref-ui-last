@@ -254,7 +254,7 @@ function MemeVoteModal(props: any) {
               </div>
             </div>
             <div className="flex justify-between items-center text-sm mt-2 lg:hidden md:hidden">
-              <div className="text-primaryText">Meme</div>
+              <div className="text-gray-60">Meme</div>
               <div className="text-white relative" ref={dropdownRef}>
                 <button
                   className="rounded-3xl border border-memeBorderColor pt-2 pl-2 pr-3 pb-2 flex items-center justify-between cursor-pointer outline-none bg-memeModelgreyColor text-white"

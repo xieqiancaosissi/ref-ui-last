@@ -23,10 +23,11 @@ import {
   getMemeFarmingTokens,
   getMemeFarmingTotalAssetsList,
 } from "../../services/api";
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 function UserRankingModal(props: any) {
   const { isOpen, onRequestClose } = props;
   const cardWidth = isMobile() ? "90vw" : "52vw";
-  const cardHeight = isMobile() ? "588px" : "auto";
+  const cardHeight = isMobile() ? "588px" : "622px";
   const is_mobile = isMobile();
   const { allTokenMetadatas } = useContext(MemeContext)!;
   const [isLoading, setIsLoading] = useState(true);
@@ -283,7 +284,8 @@ function UserRankingModal(props: any) {
           >
             <div className="flex items-center">
               <div
-                className="cursor-pointer text-white flex items-center justify-end bg-dark-10 border border-dark-100 rounded-3xl pt-1.5 pb-1.5 pr-3 pl-1.5 w-max"
+                className="cursor-pointer text-white flex items-center justify-end bg-dark-10 border border-dark-100 
+                rounded-3xl pt-1.5 pb-1.5 pr-3 pl-1.5 w-max"
                 onClick={() => setIsOpenToken(!isOpenToken)}
               >
                 {allTokenMetadatas[selectedToken]?.icon ? (
@@ -308,10 +310,10 @@ function UserRankingModal(props: any) {
               /> */}
             </div>
             {isOpenToken && (
-              <div className="absolute top-11 right-0 z-10 bg-black bg-opacity-20 rounded-xl pb-1 pt-3 px-2 text-white w-60 border border-dark-10">
+              <div className="absolute top-11 right-0 z-10 bg-dark-10 rounded-xl pb-1 pt-3 px-2 text-white w-60">
                 <div
-                  className={`flex items-center justify-between mb-1.5 p-1.5 cursor-pointer rounded-lg hover:bg-gray-20 xsm:border-none
-                  ${selectedToken === "All" ? "border border-dark-10" : ""}`}
+                  className={`flex items-center justify-between mb-1.5 p-1.5 cursor-pointer rounded-lg hover:bg-dark-60 xsm:border-none
+                  ${selectedToken === "All" ? "border border-dark-80" : ""}`}
                   onClick={() => handleSelectToken("All")}
                 >
                   <div className="flex items-center">All</div>
@@ -321,8 +323,8 @@ function UserRankingModal(props: any) {
                     memeFarmingTokens.map((token, index) => (
                       <div
                         key={index}
-                        className={`flex items-center justify-between mb-1.5 p-1.5 cursor-pointer rounded-lg hover:bg-selectTokenV3BgColor
-                    ${selectedToken === token ? "border border-borderC" : ""}`}
+                        className={`flex items-center justify-between mb-1.5 p-1.5 cursor-pointer rounded-lg hover:bg-dark-60
+                    ${selectedToken === token ? "border border-dark-80" : ""}`}
                         onClick={() => handleSelectToken(token)}
                       >
                         <div className="flex items-center">
@@ -341,11 +343,23 @@ function UserRankingModal(props: any) {
           </div>
         </div>
         {isLoading ? (
-          <div style={{ minHeight: is_mobile ? "400px" : "468px" }}>...</div>
+          <div style={{ minHeight: is_mobile ? "400px" : "468px" }}>
+            <SkeletonTheme
+              baseColor="rgba(33, 43, 53, 0.3)"
+              highlightColor="#2A3643"
+            >
+              <Skeleton
+                style={{ width: "100%" }}
+                height={50}
+                count={7}
+                className="mt-4"
+              />
+            </SkeletonTheme>
+          </div>
         ) : (
           <>
             <div className="xsm:hidden" style={{ minHeight: "468px" }}>
-              <div className="bg-gray-60 rounded-2xl mb-6 text-white border border-memeBorderColor ">
+              <div className="bg-dark-40 rounded-2xl mb-6 text-white border border-dark-100">
                 {tableDate &&
                   tableDate.map((item: any, index: number) => (
                     <div
@@ -353,7 +367,7 @@ function UserRankingModal(props: any) {
                       className={`text-base py-4 px-6 h-16 flex items-center ${
                         index === tableDate.length - 1
                           ? ""
-                          : "border-b border-memePoolBoxBorderColor"
+                          : "border-b border-dark-100"
                       }`}
                     >
                       <div
@@ -420,7 +434,7 @@ function UserRankingModal(props: any) {
                             )}
                             {hoveredRow === index && (
                               <div
-                                className="absolute top-8 right-0 bg-boxBorder bg-opacity-80 px-3 pt-3 z-50 rounded-md border border-toolTipBoxBorderColor"
+                                className="absolute top-8 right-0 bg-dark-150 bg-opacity-80 px-3 pt-3 z-50 rounded-md"
                                 style={{
                                   maxHeight: "220px",
                                   overflow: "auto",
@@ -842,7 +856,7 @@ const PaginationComponent: React.FC<PaginationComponentProps> = ({
                 onClick={() => paginate(page)}
                 className={`mr-3.5 py-1 px-2 xsm:px-1.5 rounded-md xsm:h-7 ${
                   currentPage === page
-                    ? "bg-limitOrderInputColor bg-opacity-30 text-white"
+                    ? "bg-dark-90 text-white"
                     : "text-gray-60"
                 }`}
               >

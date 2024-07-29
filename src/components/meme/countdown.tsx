@@ -71,21 +71,21 @@ const Countdown: React.FC<CountdownProps> = ({ onCountdownFinish }) => {
             <div className="flex justify-center items-center xsm:-mt-7">
               <div className="mt-4 gradient-text flex flex-col justify-center items-center">
                 <h1>{days}</h1>
-                <p className="text-primaryText text-sm xsm:-mt-7">Days</p>
+                <p className="text-gray-60 text-sm xsm:-mt-7">Days</p>
               </div>
               <div className="text-white -mr-8 text-7xl xsm:text-4xl xsm:-mr-3 xsm:mt-8">
                 ：
               </div>
               <div className="mt-4 gradient-text flex flex-col justify-center items-center">
                 <h1>{hours}</h1>
-                <p className="text-primaryText text-sm xsm:-mt-7">Hours</p>
+                <p className="text-gray-60 text-sm xsm:-mt-7">Hours</p>
               </div>
               <div className="text-white -mr-6 text-7xl xsm:text-4xl xsm:-mr-3 xsm:mt-8">
                 ：
               </div>
               <div className="mt-4 gradient-text flex flex-col justify-center items-center">
                 <h1>{minutes}</h1>
-                <p className="text-primaryText text-sm xsm:-mt-7">Mins</p>
+                <p className="text-gray-60 text-sm xsm:-mt-7">Mins</p>
               </div>
             </div>
           </div>

@@ -20,8 +20,8 @@ function APY({ seed_id }: { seed_id: string }) {
     const farmList = seed.farmList || [];
     let farmStr = "";
     farmList.forEach((farm: FarmBoost) => {
-      farmStr += `<div class="flex items-center justify-between text-xs text-farmText mt-1">
-          <img src="${farm?.token_meta_data?.icon}" class="h-5 rounded-full" />
+      farmStr += `<div class="flex items-center justify-between text-xs text-white mt-1">
+          <img src="${farm?.token_meta_data?.icon}" class="h-4 rounded-full" />
           <span class="text-xs">${
             noShowMeme
               ? "-"
@@ -36,7 +36,7 @@ function APY({ seed_id }: { seed_id: string }) {
     const result =
       `<div class="px-2">
        <div>
-        <div class="flex items-center justify-between text-xs text-farmText gap-3.5">
+        <div class="flex items-center justify-between text-xs text-white gap-3.5">
           <span>Staking APR</span>
           <span class="text-white text-sm">${noShowMeme ? "-" : totalApr}</span>
         </div>` +

@@ -64,12 +64,10 @@ const Overview = () => {
   }, [lpSeeds]);
   function goFarmDetail(seed_id: string) {
     const lpSeed = lpSeeds[seed_id];
-    if (lpSeed && lpSeed.farmList && lpSeed.farmList[0] && lpSeed.pool) {
-      if (lpSeed && lpSeed.farmList && lpSeed.farmList[0] && lpSeed.pool) {
-        window.open(`/farms/${lpSeed.pool.id}-e`);
-      } else {
-        window.open(`/farms/${lpSeed.pool.id}-r`);
-      }
+    if (lpSeed?.farmList?.[0].status == "Ended") {
+      window.open(`/farms/${lpSeed?.pool?.id}-e`);
+    } else {
+      window.open(`/farms/${lpSeed?.pool?.id}-r`);
     }
   }
   const is_mobile = isMobile();

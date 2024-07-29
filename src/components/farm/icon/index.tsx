@@ -1269,3 +1269,19 @@ export const RefreshIcon = (props: any) => {
     </svg>
   );
 };
+
+export const ClockIcon = (props: any) => {
+  return (
+    <svg
+      {...props}
+      width="12"
+      height="12"
+      viewBox="0 0 12 12"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <circle cx="6" cy="6" r="5.5" stroke="#A199FF" />
+      <path d="M6 2V6H8.5" stroke="#A199FF" strokeWidth="1.2" />
+    </svg>
+  );
+};

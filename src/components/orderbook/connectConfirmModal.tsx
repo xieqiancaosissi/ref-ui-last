@@ -34,7 +34,7 @@ export default function ConnectConfirmModal(
           ) : (
             <div className="flex px-4 items-center pb-4 justify-end">
               <span
-                className={"cursor-pointer text-primaryText"}
+                className={"cursor-pointer text-gary-60"}
                 onClick={(e: any) => {
                   onRequestClose && onRequestClose(e);
                 }}

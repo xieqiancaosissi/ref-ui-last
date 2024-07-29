@@ -107,9 +107,9 @@ function CallBackModal(props: any) {
         },
       }}
     >
-      <div className="flex flex-col bg-dark-10">
+      <div className="flex flex-col bg-dark-10 rounded-2xl">
         <div
-          className="px-5 xs:px-3 md:px-3 py-6 rounded-2xl overflow-auto"
+          className="px-5 xs:px-3 md:px-3 py-6 overflow-auto rounded-2xl"
           style={{
             width: cardWidth,
             maxHeight: cardHeight,
@@ -162,8 +162,8 @@ function CallBackModal(props: any) {
 
             <div
               onClick={goNearblocks}
-              className={`flex flex-grow items-center justify-center cursor-pointer border border-purple-10 border-opacity-20  
-                text-white mt-12 rounded-xl h-12 text-base paceGrotesk-Bold focus:outline-none`}
+              className={`flex flex-grow items-center justify-center cursor-pointer bg-primaryGreen 
+                mt-12 rounded-xl h-12 text-base paceGrotesk-Bold focus:outline-none`}
             >
               Check on Nearblocks
             </div>

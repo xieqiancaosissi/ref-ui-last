@@ -18,6 +18,7 @@ import StakingChart from "./StakingChart";
 import { useHistory } from "react-router-dom";
 import { useAccountStore } from "@/stores/account";
 import { useScrollToTopOnFirstPage } from "@/services/meme";
+import { useRouter } from "next/router";
 
 const Staking = () => {
   const is_mobile = isMobile();
@@ -32,6 +33,10 @@ const Staking = () => {
   const [showRank, setShowRank] = useState(false);
   const { getIsSignedIn } = useAccountStore();
   const isSignedIn = getIsSignedIn();
+  const router = useRouter();
+  function toXref() {
+    router.push("/xref");
+  }
   return (
     <div className="mt-16 flex text-white xsm:block xsm:pl-0 xsm:pr-0">
       <div className="flex-1 text-center pb-4 mr-4 xsm:pr-0 xsm:pb-0 xsm:text-left xsm:mb-14 xsm:mr-0">
@@ -104,14 +109,13 @@ const Staking = () => {
           <p className="text-2xl mb-9 paceGrotesk-Bold xsm:text-xl xsm:ml-8 xsm:mb-0">
             xREF staking
           </p>
-          <a
-            className="absolute right-0 top-4 text-gray-50 text-sm flex items-center justify-center xsm:hidden"
-            href="/xref"
-            target="_blank"
+          <div
+            onClick={toXref}
+            className="absolute right-0 top-4 text-gray-50 text-sm flex items-center justify-center hover:text-primaryGreen hover:cursor-pointer xsm:hidden"
           >
             Acquire $xREF
             <AcquireXREFIcon />
-          </a>
+          </div>
           <div className="lg:hidden mr-8 flex items-center justify-center">
             <XREFStakingDetails />
             <p
@@ -199,14 +203,13 @@ const Staking = () => {
             >
               Donate
             </div>
-            <div className="lg:hidden flex items-center justify-center text-greenLight text-base">
-              <a
+            <div className="lg:hidden flex items-center justify-center text-greenLight text-base hover:cursor-pointer">
+              <div
+                onClick={toXref}
                 className="inline-flex items-center cursor-pointer"
-                href="/xref"
-                target="_blank"
               >
                 Acquire $xREF <ArrowRightTopIcon />
-              </a>
+              </div>
             </div>
           </div>
         </div>

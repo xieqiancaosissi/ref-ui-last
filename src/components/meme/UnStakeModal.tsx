@@ -187,7 +187,7 @@ function UnStakeModal(props: any) {
         },
       }}
     >
-      <div className="flex flex-col xsm:relative bg-dark-10">
+      <div className="flex flex-col xsm:relative bg-dark-10 rounded-2xl">
         <div
           className="px-5 xs:px-3 md:px-3 py-6 lg:rounded-2xl xsm:rounded-t-2xl overflow-auto"
           style={{
@@ -333,8 +333,12 @@ function UnStakeModal(props: any) {
             ) : null}
 
             <div
-              onClick={unStakeToken}
-              className={`flex flex-grow cursor-pointer items-center justify-center bg-primaryGreen text-boxBorder mt-6 rounded-xl h-12 text-base paceGrotesk-Bold focus:outline-none ${
+              onClick={() => {
+                if (!disabled) {
+                  unStakeToken();
+                }
+              }}
+              className={`flex flex-grow items-center justify-center bg-primaryGreen text-boxBorder mt-6 rounded-xl h-12 text-base paceGrotesk-Bold focus:outline-none ${
                 disabled || unStakeLoading
                   ? "opacity-40 cursor-not-allowed"
                   : "cursor-pointer"

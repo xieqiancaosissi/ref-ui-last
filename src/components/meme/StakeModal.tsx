@@ -228,9 +228,9 @@ function StakeModal(props: any) {
         },
       }}
     >
-      <div className="flex flex-col xsm:relative bg-dark-10">
+      <div className="flex flex-col xsm:relative bg-dark-10 rounded-2xl">
         <div
-          className="px-5 xs:px-3 md:px-3 py-6 lg:rounded-2xl xsm:rounded-t-2xl overflow-auto xsm:py-4"
+          className="px-5 xs:px-3 md:px-3 py-6 lg:rounded-2xl xsm:rounded-2xl overflow-auto xsm:py-4"
           style={{
             width: cardWidth,
             maxHeight: cardHeight,
@@ -381,12 +381,17 @@ function StakeModal(props: any) {
             </div>
             {/* operation */}
             <div
-              onClick={stakeToken}
-              className={`flex flex-grow items-center cursor-pointer justify-center bg-primaryGreen text-boxBorder mt-6 rounded-xl h-12 text-base paceGrotesk-Bold focus:outline-none ${
-                disabled || stakeLoading
-                  ? "opacity-40 cursor-not-allowed"
-                  : "cursor-pointer"
-              }`}
+              onClick={() => {
+                if (!disabled) {
+                  stakeToken();
+                }
+              }}
+              className={`flex flex-grow items-center justify-center bg-primaryGreen text-boxBorder mt-6 rounded-xl h-12 
+                text-base paceGrotesk-Bold focus:outline-none ${
+                  disabled || stakeLoading
+                    ? "opacity-40 cursor-not-allowed"
+                    : "cursor-pointer"
+                }`}
             >
               <ButtonTextWrapper
                 loading={stakeLoading}

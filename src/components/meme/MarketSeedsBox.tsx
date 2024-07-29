@@ -227,12 +227,14 @@ const MarketSeedsBox = ({
               {currentPage != 5 ? (
                 <div
                   onClick={() => {
-                    set_modal_action_seed_id(seed.seed_id);
-                    setIsStakeOpen(true);
+                    if (!stakeButtonDisabled) {
+                      set_modal_action_seed_id(seed.seed_id);
+                      setIsStakeOpen(true);
+                    }
                   }}
-                  className={`flex flex-grow items-center justify-center cursor-pointer rounded-xl h-12 paceGrotesk-Bold focus:outline-none xsm:w-full ${
+                  className={`flex flex-grow items-center justify-center rounded-xl h-12 paceGrotesk-Bold focus:outline-none xsm:w-full ${
                     stakeButtonDisabled
-                      ? "cursor-not-allowed"
+                      ? "bg-gray-40 text-dark-60 cursor-not-allowed"
                       : "bg-primaryGreen cursor-pointer"
                   }`}
                 >

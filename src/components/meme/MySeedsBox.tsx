@@ -309,10 +309,12 @@ const MySeedsBox = ({
                     <div
                       //   disabled={unStakeButtonDisabled}
                       onClick={() => {
-                        set_modal_action_seed_id(seed.seed_id);
-                        setIsUnStakeOpen(true);
+                        if (!unStakeButtonDisabled) {
+                          set_modal_action_seed_id(seed.seed_id);
+                          setIsUnStakeOpen(true);
+                        }
                       }}
-                      className={`flex flex-grow items-center cursor-pointer justify-center border border-primaryGreen
+                      className={`flex flex-grow items-center justify-center border border-primaryGreen
                          rounded-xl h-12 text-primaryGreen text-base paceGrotesk-Bold focus:outline-none w-1/2 xsm:w-full ${
                            unStakeButtonDisabled
                              ? "opacity-30 cursor-not-allowed"
@@ -327,16 +329,18 @@ const MySeedsBox = ({
                     <div
                       //   disabled={claimButtonDisabled || claim_id == seed_id}
                       onClick={() => {
-                        seedClaimAll({
-                          claim_id: seed.seed_id,
-                          seed: memeClaimButtonDisabled ? ({} as Seed) : seed,
-                          xrefSeed: xrefSeeds[MEME_TOKEN_XREF_MAP[seed_id]],
-                          xrefContractId: xrefClaimButtonDisabled
-                            ? ""
-                            : MEME_TOKEN_XREF_MAP[seed_id],
-                        });
+                        if (!claimButtonDisabled) {
+                          seedClaimAll({
+                            claim_id: seed.seed_id,
+                            seed: memeClaimButtonDisabled ? ({} as Seed) : seed,
+                            xrefSeed: xrefSeeds[MEME_TOKEN_XREF_MAP[seed_id]],
+                            xrefContractId: xrefClaimButtonDisabled
+                              ? ""
+                              : MEME_TOKEN_XREF_MAP[seed_id],
+                          });
+                        }
                       }}
-                      className={`flex flex-grow items-center cursor-pointer justify-center text-boxBorder rounded-xl h-12 text-base paceGrotesk-Bold focus:outline-none w-1/2 xsm:w-full ${
+                      className={`flex flex-grow items-center justify-center text-boxBorder rounded-xl h-12 text-base paceGrotesk-Bold focus:outline-none w-1/2 xsm:w-full ${
                         claimButtonDisabled
                           ? "bg-gray-40 cursor-not-allowed"
                           : "bg-primaryGreen cursor-pointer"

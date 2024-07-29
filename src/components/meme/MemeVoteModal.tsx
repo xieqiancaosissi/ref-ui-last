@@ -147,7 +147,7 @@ function MemeVoteModal(props: any) {
         },
       }}
     >
-      <div className="flex flex-col bg-dark-10">
+      <div className="flex flex-col bg-dark-10 rounded-2xl">
         <div
           className="px-5 xs:px-3 md:px-3 py-6 lg:rounded-2xl xsm:rounded-t-2xl overflow-auto xsm:py-4"
           style={{

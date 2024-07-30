@@ -544,7 +544,9 @@ function YourClassicLiquidityLinePage() {
             </span>
           </div>
           <div className="frcb mb-4">
-            <span className="text-xs text-gray-10">Your LP Tokens (Share)</span>
+            <span className="text-xs text-gray-10">
+              Your LP Tokens (Shares)
+            </span>
             <span className="text-xs text-white">
               {display_number_withCommas(lp_total)} (
               {display_percent(user_lp_percent)})

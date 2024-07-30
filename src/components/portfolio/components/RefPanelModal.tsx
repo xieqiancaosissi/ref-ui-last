@@ -11,6 +11,8 @@ import Tab from "./modal/Tab";
 import Orders from "./modal/Orders";
 import Positions from "./modal/Positions";
 import Farms from "./modal/Farms";
+import { useAccountStore } from "@/stores/account";
+import { getAssets } from "@/services/indexer";
 
 export const PortfolioData = createContext<PortfolioContextType | null>(null);
 export default function RefPanelModal({
@@ -20,6 +22,8 @@ export default function RefPanelModal({
   isOpen: boolean;
   onRequestClose: () => void;
 }) {
+  const accountStore = useAccountStore();
+  const isSignedIn = accountStore.isSignedIn;
   // variables only used in mobile site start
   const [main_active_tab, set_main_active_tab] = useState("Summary"); // Summary,positions
   // variables only used in mobile site end
@@ -74,6 +78,9 @@ export default function RefPanelModal({
   const [dcl_tokens_metas, set_dcl_tokens_metas] = useState<
     Record<string, TokenMetadata>
   >({});
+  const [activeDimension, setActiveDimension] = useState<
+    "M" | "W" | "H" | "ALL"
+  >("H");
   const [history_total_asset, set_history_total_asset] = useState<string>("0");
   const [history_total_asset_done, set_history_total_asset_done] =
     useState<boolean>(false);
@@ -86,6 +93,14 @@ export default function RefPanelModal({
     const tokenPriceList = await getBoostTokenPrices();
     setTokenPriceList(tokenPriceList);
   }
+  useEffect(() => {
+    if (isSignedIn) {
+      getAssets(activeDimension).then((res) => {
+        set_history_total_asset(res?.[0]?.assets || "0");
+        set_history_total_asset_done(true);
+      });
+    }
+  }, [activeDimension, isSignedIn]);
   return (
     <Modal
       isOpen={isOpen}
@@ -101,7 +116,7 @@ export default function RefPanelModal({
       }}
     >
       <div
-        style={{ width: "60vw", height: "72vh", overflow: "auto" }}
+        style={{ width: "900px", height: "72vh", overflow: "auto" }}
         className="text-white"
       >
         <div className="rounded-lg bg-dark-60 p-6">

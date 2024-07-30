@@ -6,7 +6,7 @@ import { ReturnIcon, WarningIcon } from "./icon";
 import { ExclamationIcon } from "@/components/common/Icons";
 import { FormattedMessage } from "react-intl";
 import { useHistory } from "react-router-dom";
-import useSelectTokens from "@/hooks/useSelectTokens";
+import useAllWhiteTokens from "@/hooks/useAllWhiteTokens";
 import { TokenMetadata } from "@/services/ft-contract";
 import { ftGetBalance, ftGetTokenMetadata } from "@/services/token";
 import { getBoostTokenPrices } from "@/services/farm";
@@ -109,7 +109,7 @@ export default function AddYourLiquidityPageV3() {
   const isSignedIn = accoutStore.isSignedIn;
   const nearBalance = useDepositableBalance("NEAR");
   const history = useHistory();
-  const { totalList: refTokens } = useSelectTokens();
+  const { totalList: refTokens } = useAllWhiteTokens();
   const OPEN_CREATE_POOL_ENTRY = false;
   const mobileDevice = isMobile();
 

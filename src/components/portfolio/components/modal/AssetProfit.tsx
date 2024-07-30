@@ -124,7 +124,8 @@ export default function AssetProfit() {
   }, [total_unClaimed_rewrads_value, total_fees_value]);
 
   function getTip() {
-    const result: string = `<div class="text-navHighLightText text-xs text-left w-64 xsm:w-52">Valor en USD de las comisiones no reclamadas de Pools DCL y recompensas no reclamadas de farms.</div>`;
+    const result: string = `<div class="text-navHighLightText text-xs text-left w-64 xsm:w-52">
+    USD value of unclaimed fees from DCL pools, and unclaimed farm rewards.</div>`;
     return result;
   }
   const show_total_proft = useMemo(() => {

@@ -19,7 +19,6 @@ import {
   IPostfixData,
   ISelectTokens,
 } from "@/interfaces/tokens";
-import { getTokenUIId } from "@/services/swap/swapUtils";
 const { HIDDEN_TOKEN_LIST } = getConfigV2();
 
 const useAllWhiteTokens = () => {
@@ -53,13 +52,6 @@ const useAllWhiteTokens = () => {
   const accountStore = useAccountStore();
   const accountId = accountStore.getAccountId();
   const walletLoading = accountStore.getWalletLoading();
-  const owner = tokenStore.getOwner();
-  const global_whitelisted_tokens_ids =
-    tokenStore.get_global_whitelisted_tokens_ids();
-  const user_whitelisted_tokens_ids =
-    tokenStore.get_user_whitelisted_tokens_ids();
-  const auto_whitelisted_postfix = tokenStore.get_auto_whitelisted_postfix();
-  const isCached = checkCache();
   useEffect(() => {
     getGlobalWhitelistTokenIds();
     getAutoWhitelistedPostfix();
@@ -71,41 +63,22 @@ const useAllWhiteTokens = () => {
     }
   }, [accountId, walletLoading]);
   useEffect(() => {
-    if (!walletLoading) {
-      if (owner == accountId && isCached) {
-        // get data from cache
-        getSelectTokensFromCache();
-        // update cache
-        getSelectTokensFromServer();
-      } else {
-        // get data from cache and update cache
-        getSelectTokensFromServer();
-      }
+    if (
+      globalWhitelistData.done &&
+      postfixData.done &&
+      listTokensData.done &&
+      accountWhitelistData.done
+    ) {
+      getAllWhiteTokens();
     }
   }, [
-    accountId,
-    walletLoading,
-    owner,
-    isCached,
     globalWhitelistData.done,
-    accountWhitelistData.done,
     postfixData.done,
     listTokensData.done,
-    JSON.stringify(global_whitelisted_tokens_ids || []),
-    JSON.stringify(user_whitelisted_tokens_ids || []),
-    JSON.stringify(auto_whitelisted_postfix || []),
+    JSON.stringify(accountWhitelistData || {}),
   ]);
-  async function getSelectTokensFromServer() {
-    if (
-      !(
-        globalWhitelistData.done &&
-        accountWhitelistData.done &&
-        postfixData.done &&
-        listTokensData.done
-      )
-    )
-      return initSelectTokensData;
-    tokenStore.setOwner(accountId || "");
+  async function getAllWhiteTokens() {
+    tokenStore.setOwner(accountId);
     const defaultWhitelistIds = [
       ...new Set([
         ...globalWhitelistData.globalWhitelist,
@@ -149,8 +122,6 @@ const useAllWhiteTokens = () => {
         };
       })
       .filter((token) => !HIDDEN_TOKEN_LIST.includes(token.id));
-    // init common tokens
-    initCommonTokens(defaultTokens);
     const reault = {
       defaultList: defaultTokens,
       autoList: autoTokens,
@@ -167,14 +138,27 @@ const useAllWhiteTokens = () => {
     return metadatas;
   }
   async function getGlobalWhitelistTokenIds() {
-    const globalWhitelist = await getGlobalWhitelist();
-    setGlobalWhitelistData({
-      globalWhitelist,
-      done: true,
+    const globalWhitelistInCache =
+      tokenStore.get_global_whitelisted_tokens_ids();
+    if (globalWhitelistInCache?.length) {
+      setGlobalWhitelistData({
+        globalWhitelist: globalWhitelistInCache,
+        done: true,
+      });
+    }
+    getGlobalWhitelist().then((globalWhitelist) => {
+      setGlobalWhitelistData({
+        globalWhitelist,
+        done: true,
+      });
+      tokenStore.set_global_whitelisted_tokens_ids(globalWhitelist);
     });
-    tokenStore.set_global_whitelisted_tokens_ids(globalWhitelist);
   }
   async function getAccountWhitelistTokenIds() {
+    setAccountWhitelistData({
+      accountWhitelist: [],
+      done: false,
+    });
     if (accountId) {
       const accountWhitelist = await getAccountWhitelist();
       setAccountWhitelistData({
@@ -191,12 +175,20 @@ const useAllWhiteTokens = () => {
     }
   }
   async function getAutoWhitelistedPostfix() {
-    const postfixList = await get_auto_whitelisted_postfix_list();
-    setPostfixData({
-      postfix: postfixList || [],
-      done: true,
+    const postfixListInCache = tokenStore.get_auto_whitelisted_postfix();
+    if (postfixListInCache?.length) {
+      setPostfixData({
+        postfix: postfixListInCache,
+        done: true,
+      });
+    }
+    get_auto_whitelisted_postfix_list().then((postfixList) => {
+      setPostfixData({
+        postfix: postfixList || [],
+        done: true,
+      });
+      tokenStore.set_auto_whitelisted_postfix(postfixList || []);
     });
-    tokenStore.set_auto_whitelisted_postfix(postfixList || []);
   }
   async function getAllTokens() {
     let allTokens = (await db.queryAllTokens()) || [];
@@ -215,49 +207,6 @@ const useAllWhiteTokens = () => {
       listTokens: allTokens,
       done: true,
     });
-  }
-  async function getSelectTokensFromCache() {
-    const defaultWhitelistIds = [
-      ...new Set([
-        ...global_whitelisted_tokens_ids,
-        ...user_whitelisted_tokens_ids,
-      ]),
-    ];
-    const defaultWhiteTokens = await getTokenMetaDatas(defaultWhitelistIds);
-    const white_list_token_map: Record<string, TokenMetadata> =
-      defaultWhiteTokens.reduce((sum, cur) => {
-        return { ...sum, [cur.id]: cur };
-      }, {});
-
-    const auto_whitelisted_tokens = listTokensData.listTokens.filter(
-      (token: TokenMetadata) =>
-        auto_whitelisted_postfix?.some((p) => token.id.includes(p)) &&
-        !white_list_token_map[token.id]
-    );
-    setSelectTokens({
-      defaultList: defaultWhiteTokens,
-      autoList: auto_whitelisted_tokens,
-      totalList: [...defaultWhiteTokens, ...auto_whitelisted_tokens],
-      done: true,
-    });
-  }
-  function initCommonTokens(defaultTokens: TokenMetadata[]) {
-    // init common tokens
-    if (
-      tokenStore.get_common_tokens().length === 0 &&
-      !tokenStore.get_common_tokens_is_edited()
-    ) {
-      const { INIT_COMMON_TOKEN_IDS } = getConfigV2();
-      const init_common_tokens = defaultTokens.filter(
-        (token) =>
-          getTokenUIId(token) == "near" ||
-          INIT_COMMON_TOKEN_IDS.includes(token.id)
-      );
-      tokenStore.set_common_tokens(init_common_tokens);
-    }
-  }
-  function checkCache() {
-    return !!global_whitelisted_tokens_ids.length;
   }
 
   return selectTokens;

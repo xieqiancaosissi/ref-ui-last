@@ -144,15 +144,19 @@ const config: Config = {
         primaryGreenGradient:
           "linear-gradient(90deg, #9EFF00 -6.25%, #5F9900 100%)",
         memeCardGradient: "linear-gradient(180deg, #213441 0%, #15242F 100%)",
+        farmMobileBgColor:
+          "linear-gradient(95.38deg, #9EFF00 5.46%, #FAFF00 100%)",
       }),
     },
     screens: {
       xs: { min: "300px", max: "600px" },
       sm: "769px",
+      xsm: { min: "300px", max: "1023px" },
       md: { min: "600px", max: "1023px" },
       lg: { min: "1024px" },
       xl: { min: "1280px" },
-      xsm: { min: "300px", max: "1023px" },
+      "2xl": { min: "1536px" },
+      "3xl": { min: "1792px" },
     },
   },
   plugins: [

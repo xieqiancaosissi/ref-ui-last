@@ -88,7 +88,9 @@ export default function CalcModelBooster(
     });
     setSymbols(symbolList.join("-"));
   }, [tokens]);
-  const cardWidth = isMobile() ? "90vw" : "30vw";
+  const cardWidth = isMobile() ? "100vw" : "420px";
+  const cardHeight = isMobile() ? "90vh" : "80vh";
+  const is_mobile = isMobile();
   async function getUserLpTokenInPool() {
     if (isSignedIn) {
       if (pool) {
@@ -193,11 +195,26 @@ export default function CalcModelBooster(
           backdropFilter: "blur(10px)",
           WebkitBackdropFilter: "blur(10px)",
         },
+        content: {
+          outline: "none",
+          ...(is_mobile
+            ? {
+                transform: "translateX(-50%)",
+                top: "auto",
+                bottom: "32px",
+              }
+            : {
+                transform: "translate(-50%, -50%)",
+              }),
+        },
       }}
     >
       <div
-        className="text-white bg-dark-10 rounded-lg p-5"
-        style={{ width: "420px" }}
+        className="text-white bg-dark-10 rlg:rounded-lg xs:rounded-t-2xl xs:border xs:border-modalGrayBg p-5"
+        style={{
+          width: cardWidth,
+          maxHeight: cardHeight,
+        }}
       >
         <div className="flex justify-between items-center">
           <label className="text-lg">ROI Calculator</label>

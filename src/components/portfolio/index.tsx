@@ -165,14 +165,22 @@ export default function Overview() {
         </div>
       </div>
       <div className="py-4">
-        {activeTab === "Wallet" ? <WalletPanel /> : null}
+        <div className={activeTab === "Wallet" ? "" : "hidden"}>
+          <WalletPanel />
+        </div>
+        <div className={activeTab === "Portfolio" ? "" : "hidden"}>
+          <RefPanel></RefPanel>
+          <OrderlyPanel></OrderlyPanel>
+          <BurrowPanel></BurrowPanel>
+        </div>
+        {/* {activeTab === "Wallet" ? <WalletPanel /> : null}
         {activeTab === "Portfolio" ? (
           <div className="px-1.5">
             <RefPanel></RefPanel>
             <OrderlyPanel></OrderlyPanel>
             <BurrowPanel></BurrowPanel>
           </div>
-        ) : null}
+        ) : null} */}
       </div>
     </OverviewData.Provider>
   );

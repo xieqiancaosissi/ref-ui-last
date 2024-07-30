@@ -156,7 +156,7 @@ export default function WalletConnect() {
                 className={`fixed top-[46px] bottom-[35px] right-0 bg-dark-10 z-50 ${
                   isOpen ? "block" : "hidden"
                 }`}
-                style={{ width: "20%" }}
+                style={{ width: "400px" }}
                 onClick={(e) => e.stopPropagation()} // Prevent click inside from closing
               >
                 <div className="bg-dark-140 border border-gray-200 p-3.5 w-full h-full">

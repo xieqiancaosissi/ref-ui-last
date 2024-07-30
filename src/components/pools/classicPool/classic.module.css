@@ -48,7 +48,7 @@
 .headDiv {
   @apply lg:frc text-gray-60 text-sm justify-between px-3 mt-8 mb-2 cursor-default xsm:w-full lg:w-276 xsm:hidden;
 }
-@media (min-width: 300px) and (max-width: 1023px) {
+@media (min-width: 300px) and (max-width: 1024px) {
   /* .headDiv > div:first-child {
   @apply w-109;
 } */
@@ -62,7 +62,7 @@
 } */
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 1025px) {
   .headDiv > div:first-child {
     @apply w-109;
   }

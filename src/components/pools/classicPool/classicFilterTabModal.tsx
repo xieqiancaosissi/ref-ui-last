@@ -19,18 +19,25 @@ export default function ClassicFilterTabModal(props: any) {
           overflow: "auto",
         },
         content: {
+          position: "absolute", //
+          bottom: "0", //
+          left: "50%", //
+          transform: "translate(-50%, 0%)", //
+          borderRadius: "24px 24px 0 0",
+          border: "1px solid #1D2932",
           outline: "none",
-          transform: "translate(-50%, 30%)",
+          width: "100%", //
         },
       }}
     >
       <div
-        className="h-77"
+        className="h-full"
         style={{
           background: "#1B242C",
-          border: "1px solid #1D2932",
           width: "100vw",
+          position: "absolute",
           borderRadius: "24px 24px 0 0",
+          top: 0,
         }}
       >
         <div className="text-xs cursor-pointer flex flex-col items-center">

@@ -44,7 +44,6 @@ export default function SelectTokenModal({
         (token) => !(token.id == t.id && token.symbol == t.symbol)
       )
     );
-    tokenStore.set_common_tokens_is_edited(true);
   }
   function getTokenUIPrice(tokenId: string) {
     const price = allTokenPrices[tokenId]?.price || "";

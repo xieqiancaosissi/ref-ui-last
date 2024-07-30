@@ -93,9 +93,9 @@ export const parsedTransactionSuccessValueNeth = (res: any) => {
   }
 };
 export const parsedTransactionSuccessValue = (res: any) => {
-  const status: any = res.status;
+  const status: any = res?.status;
 
-  const data: string | undefined = status.SuccessValue;
+  const data: string | undefined = status?.SuccessValue;
 
   if (data) {
     const buff = Buffer.from(data, "base64");

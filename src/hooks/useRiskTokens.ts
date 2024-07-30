@@ -1,8 +1,8 @@
 import { useMemo } from "react";
-import useSelectTokens from "./useSelectTokens";
+import useAllWhiteTokens from "@/hooks/useAllWhiteTokens";
 
 export const useRiskTokens = () => {
-  const { totalList } = useSelectTokens();
+  const { totalList } = useAllWhiteTokens();
 
   const { allRiskTokens, pureIdList } = useMemo(() => {
     const filteredTokens = totalList?.filter((token) => token.isRisk) || [];

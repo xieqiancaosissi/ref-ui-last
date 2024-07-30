@@ -144,6 +144,8 @@ const config: Config = {
         primaryGreenGradient:
           "linear-gradient(90deg, #9EFF00 -6.25%, #5F9900 100%)",
         memeCardGradient: "linear-gradient(180deg, #213441 0%, #15242F 100%)",
+        farmMobileBgColor:
+          "linear-gradient(95.38deg, #9EFF00 5.46%, #FAFF00 100%)",
       }),
     },
     screens: {

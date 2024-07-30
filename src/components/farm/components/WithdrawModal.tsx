@@ -14,6 +14,7 @@ import {
 } from "../../../utils/numbers";
 import { toRealSymbol, withdrawAllReward_boost } from "../../../services/farm";
 import { ButtonTextWrapper } from "@/components/common/Button";
+import { isMobile } from "@/utils/device";
 
 export default function Withdraw({
   isOpen,
@@ -24,6 +25,9 @@ export default function Withdraw({
   onRequestClose: () => void;
   rewardList: any;
 }) {
+  const cardWidth = isMobile() ? "100vw" : "430px";
+  const cardHeight = isMobile() ? "90vh" : "80vh";
+  const is_mobile = isMobile();
   const [selectAll, setSelectAll] = useState(false);
   const [checkedList, setCheckedList] = useState<Record<string, any>>({});
   const [withdrawLoading, setWithdrawLoading] = useState<boolean>(false);
@@ -136,10 +140,28 @@ export default function Withdraw({
           backdropFilter: "blur(10px)",
           WebkitBackdropFilter: "blur(10px)",
         },
+        content: {
+          outline: "none",
+          ...(is_mobile
+            ? {
+                transform: "translateX(-50%)",
+                top: "auto",
+                bottom: "32px",
+              }
+            : {
+                transform: "translate(-50%, -50%)",
+              }),
+        },
       }}
     >
-      <div style={{ width: "430px" }} className="text-white">
-        <div className="rounded-lg bg-dark-10 p-6">
+      <div
+        className="text-white"
+        style={{
+          width: cardWidth,
+          maxHeight: cardHeight,
+        }}
+      >
+        <div className="bg-dark-10 p-6 lg:rounded-lg xs:rounded-t-2xl xs:border xs:border-modalGrayBg">
           <div className="flex justify-between mb-6">
             <div className="text-lg">Withdraw</div>
             <ModalClose
@@ -229,14 +251,14 @@ export default function Withdraw({
               🤑 How to compound rewards?
             </span>
             <div className="flex items-center flex-wrap mt-4">
-              <div className="flex items-center text-xs text-gray-150 mr-5 mb-1">
+              <div className="flex items-center text-xs text-gray-150 mr-5 mb-1 xs:mr-3">
                 <label className="flex items-center justify-center w-3.5 h-3.5 rounded-full text-black bg-primaryGreen mr-1">
                   1
                 </label>
                 <div className="text-gray-150 mr-4">Withdraw</div>
                 {">>"}
               </div>
-              <div className="flex items-center text-xs text-gray-150 mr-5 mb-1">
+              <div className="flex items-center text-xs text-gray-150 mr-5 mb-1 xs:mr-3">
                 <label className="flex items-center justify-center w-4 h-4 rounded-full text-black bg-primaryGreen mr-1">
                   2
                 </label>

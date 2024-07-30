@@ -98,93 +98,125 @@ const RpcList = () => {
 
   return (
     <>
-      <div
-        style={{ zIndex: 100 }}
-        className="flex items-end fixed right-6 bottom-9 text-white"
-      >
+      {mobile ? (
         <div
-          onMouseEnter={() => {
-            setHover(true);
+          style={{
+            zIndex: 999999,
+            boxShadow: "0px 0px 10px 10px rgba(0, 0, 0, 0.15)",
           }}
-          onMouseLeave={() => {
-            setHover(false);
-          }}
-          className="relative"
+          className="fixed bottom-0 left-0 w-full h-8 bg-dark-10 mt-3"
         >
-          <div className="pt-3">
+          <div
+            className="flex items-center w-full h-full justify-between"
+            onClick={addCustomNetwork}
+          >
             <div
-              className="frcb px-2  bg-dark-10 bg-opacity-80 rounded cursor-pointer"
-              style={{
-                minWidth,
-                maxWidth: maxWith,
-                height: "22px",
-              }}
+              className={`flex items-center justify-between w-full flex-grow px-16`}
             >
-              <div className="flex items-center w-2/3">
-                <label className="text-xs w-full text-gray-10 cursor-pointer pr-2 whitespace-nowrap overflow-hidden overflow-ellipsis">
+              <div className="flex items-center w-3/4">
+                <label className="text-xs text-gray-60 mr-5">RPC</label>
+                <label className="text-xs text-gray-60 cursor-pointer pr-5 whitespace-nowrap overflow-hidden overflow-ellipsis">
                   {rpclist[currentEndPoint].simpleName}
                 </label>
               </div>
               <div className="flex items-center">
                 {displayCurrentRpc(responseTimeList, currentEndPoint)}
                 <FiChevronDown
-                  className={`text-gray-10 transform rotate-180 cursor-pointer ${
-                    hover ? "text-greenColor" : ""
-                  }`}
+                  className={`text-gray-60 transform rotate-180 cursor-pointer`}
                 ></FiChevronDown>
               </div>
             </div>
           </div>
+        </div>
+      ) : (
+        <div
+          style={{ zIndex: 100 }}
+          className="flex items-end fixed right-6 bottom-9 text-white"
+        >
           <div
-            className={`absolute py-2 bottom-7 flex flex-col w-full bg-dark-10 bg-opacity-80 rounded ${
-              hover ? "" : "hidden"
-            }`}
+            onMouseEnter={() => {
+              setHover(true);
+            }}
+            onMouseLeave={() => {
+              setHover(false);
+            }}
+            className="relative"
           >
-            {Object.entries(rpclist).map(([key, data]) => {
-              return (
-                <div
-                  key={key}
-                  className={`frcb px-2 py-1 text-gray-10 hover:bg-navHighLightBg  hover:text-white ${
-                    currentEndPoint == key ? "bg-navHighLightBg" : ""
-                  }`}
-                  style={{ minWidth, maxWidth: maxWith }}
-                  onClick={() => {
-                    switchPoint(key);
-                  }}
-                >
-                  <label
-                    className={`text-xs pr-5 whitespace-nowrap overflow-hidden overflow-ellipsis ${
-                      responseTimeList[key] && responseTimeList[key] != -1
-                        ? "cursor-pointer"
-                        : "cursor-pointer"
-                    }`}
-                  >
-                    {data.simpleName}
+            <div className="pt-3">
+              <div
+                className="frcb px-2  bg-dark-10 bg-opacity-80 rounded cursor-pointer"
+                style={{
+                  minWidth,
+                  maxWidth: maxWith,
+                  height: "22px",
+                }}
+              >
+                <div className="flex items-center w-2/3">
+                  <label className="text-xs w-full text-gray-10 cursor-pointer pr-2 whitespace-nowrap overflow-hidden overflow-ellipsis">
+                    {rpclist[currentEndPoint].simpleName}
                   </label>
-                  <div className={`flex items-center`}>
-                    {displayCurrentRpc(responseTimeList, key)}
-                  </div>
                 </div>
-              );
-            })}
+                <div className="flex items-center">
+                  {displayCurrentRpc(responseTimeList, currentEndPoint)}
+                  <FiChevronDown
+                    className={`text-gray-10 transform rotate-180 cursor-pointer ${
+                      hover ? "text-greenColor" : ""
+                    }`}
+                  ></FiChevronDown>
+                </div>
+              </div>
+            </div>
+            <div
+              className={`absolute py-2 bottom-7 flex flex-col w-full bg-dark-10 bg-opacity-80 rounded ${
+                hover ? "" : "hidden"
+              }`}
+            >
+              {Object.entries(rpclist).map(([key, data]) => {
+                return (
+                  <div
+                    key={key}
+                    className={`frcb px-2 py-1 text-gray-10 hover:bg-navHighLightBg  hover:text-white ${
+                      currentEndPoint == key ? "bg-navHighLightBg" : ""
+                    }`}
+                    style={{ minWidth, maxWidth: maxWith }}
+                    onClick={() => {
+                      switchPoint(key);
+                    }}
+                  >
+                    <label
+                      className={`text-xs pr-5 whitespace-nowrap overflow-hidden overflow-ellipsis ${
+                        responseTimeList[key] && responseTimeList[key] != -1
+                          ? "cursor-pointer"
+                          : "cursor-pointer"
+                      }`}
+                    >
+                      {data.simpleName}
+                    </label>
+                    <div className={`flex items-center`}>
+                      {displayCurrentRpc(responseTimeList, key)}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+          <div
+            onMouseEnter={() => {
+              setHoverSet(true);
+            }}
+            onMouseLeave={() => {
+              setHoverSet(false);
+            }}
+            onClick={addCustomNetwork}
+            style={{ height: "22px" }}
+            className="flex items-center bg-dark-10 bg-opacity-80 rounded  cursor-pointer ml-2 px-2 "
+          >
+            <MoreButtonIcon
+              className={`text-gray-10 ${hoverSet ? "text-greenColor" : ""}`}
+            ></MoreButtonIcon>
           </div>
         </div>
-        <div
-          onMouseEnter={() => {
-            setHoverSet(true);
-          }}
-          onMouseLeave={() => {
-            setHoverSet(false);
-          }}
-          onClick={addCustomNetwork}
-          style={{ height: "22px" }}
-          className="flex items-center bg-dark-10 bg-opacity-80 rounded  cursor-pointer ml-2 px-2 "
-        >
-          <MoreButtonIcon
-            className={`text-gray-10 ${hoverSet ? "text-greenColor" : ""}`}
-          ></MoreButtonIcon>
-        </div>
-      </div>
+      )}
       <ModalAddCustomNetWork
         isOpen={modalCustomVisible}
         onRequestClose={() => {

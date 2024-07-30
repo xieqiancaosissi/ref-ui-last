@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { FarmBoost, Seed } from "../../../services/farm";
-import { FarmAvatarIcon, FarmWithdrawIcon } from "../icon";
+import { FarmAvatarIcon, FarmWithdrawIcon, FarmWithdrawMobIcon } from "../icon";
 import { useAccountStore } from "../../../stores/account";
 import { ftGetTokenMetadata } from "@/services/token";
 import {
@@ -113,47 +113,80 @@ export default function WithDrawBox(props: {
     setIsWithdrawOpen(false);
   }
   return (
-    <div className="frcb mb-12 w-3/5">
-      <div className="frcc">
-        <FarmAvatarIcon className="mr-6" />
-        <div>
-          <p className="text-sm text-gray-50">Claimed Rewards</p>
-          <h1 className="text-3xl paceGrotesk-Bold frcc">
-            {yourReward}
-            {Object.values(rewardList).length > 0 ? (
-              <div className="flex items-center ml-3">
-                {Object.values(rewardList)
-                  .slice(0, maxLength)
-                  .map((reward: any, index: number) => {
-                    return (
-                      <img
-                        key={index}
-                        src={reward.rewardToken.icon}
-                        className={`w-5 h-5 rounded-full  bg-cardBg border border-green-10 ${
-                          index > 0 ? "-ml-1" : ""
-                        }`}
-                      ></img>
-                    );
-                  })}
-              </div>
-            ) : null}
-          </h1>
+    <>
+      <div className="frcb mb-12 w-3/5 xs:hidden">
+        <div className="frcc">
+          <FarmAvatarIcon className="mr-6" />
+          <div>
+            <p className="text-sm text-gray-50">Claimed Rewards</p>
+            <h1 className="text-3xl paceGrotesk-Bold frcc">
+              {yourReward}
+              {Object.values(rewardList).length > 0 ? (
+                <div className="flex items-center ml-3">
+                  {Object.values(rewardList)
+                    .slice(0, maxLength)
+                    .map((reward: any, index: number) => {
+                      return (
+                        <img
+                          key={index}
+                          src={reward.rewardToken.icon}
+                          className={`w-5 h-5 rounded-full  bg-cardBg border border-green-10 ${
+                            index > 0 ? "-ml-1" : ""
+                          }`}
+                        ></img>
+                      );
+                    })}
+                </div>
+              ) : null}
+            </h1>
+          </div>
         </div>
+        <div
+          className={styles.gradient_border_container}
+          onClick={() => {
+            showWithdrawModal();
+          }}
+        >
+          <p className="text-gray-10 text-base">Withdraw</p>
+          <FarmWithdrawIcon className="ml-2" />
+        </div>
+        <Withdraw
+          isOpen={isWithdrawOpen}
+          onRequestClose={hideWithdrawModal}
+          rewardList={rewardList}
+        />
       </div>
-      <div
-        className={styles.gradient_border_container}
-        onClick={() => {
-          showWithdrawModal();
-        }}
-      >
-        <p className="text-gray-10 text-base">Withdraw</p>
-        <FarmWithdrawIcon className="ml-2" />
+      <div className="lg:hidden md:hidden">
+        <div className="frcb mb-2.5">
+          <p className="text-2xl"> {yourReward}</p>
+          <div
+            className="border border-black p-1.5 rounded text-base pr-1.5 frcc font-medium"
+            onClick={() => {
+              showWithdrawModal();
+            }}
+          >
+            Withdraw
+            <FarmWithdrawMobIcon className="ml-1.5" />
+          </div>
+        </div>
+        {Object.values(rewardList).length > 0 ? (
+          <div className="flex items-center">
+            {Object.values(rewardList)
+              .slice(0, maxLength)
+              .map((reward: any, index: number) => {
+                return (
+                  <img
+                    key={index}
+                    src={reward.rewardToken.icon}
+                    className={`w-5 h-5 rounded-full  bg-cardBg border border-green-10 ${
+                      index > 0 ? "-ml-1" : ""
+                    }`}
+                  ></img>
+                );
+              })}
+          </div>
+        ) : null}
       </div>
-      <Withdraw
-        isOpen={isWithdrawOpen}
-        onRequestClose={hideWithdrawModal}
-        rewardList={rewardList}
-      />
-    </div>
+    </>
   );
 }

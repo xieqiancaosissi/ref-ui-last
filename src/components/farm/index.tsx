@@ -7,6 +7,7 @@ import {
   FarmAvatarIcon,
   FarmDownArrown,
   FarmInputCheck,
+  FarmSortMobIcon,
   FarmWithdrawIcon,
 } from "./icon";
 import {
@@ -1091,15 +1092,263 @@ export default function FarmsPage(props: any) {
   }
   return (
     <main className={`dark:text-white ${getUrlParams() ? "hidden" : ""}`}>
-      {/* title */}
-      <div className="bg-farmTitleBg fccc w-full pt-12 pb-1.5">
-        <WithDrawBox
-          userRewardList={user_unWithdraw_rewards}
-          tokenPriceList={tokenPriceList}
-          farmDisplayList={farm_display_List}
-        ></WithDrawBox>
-        <div className="frcb w-3/5">
-          <div className="frcc border border-dark-40 rounded-md p-0.5">
+      {/* pc */}
+      <div className="xs:hidden">
+        {/* title */}
+        <div className="bg-farmTitleBg fccc w-full pt-12 pb-1.5">
+          <WithDrawBox
+            userRewardList={user_unWithdraw_rewards}
+            tokenPriceList={tokenPriceList}
+            farmDisplayList={farm_display_List}
+          ></WithDrawBox>
+          <div className="frcb w-3/5">
+            <div className="frcc border border-dark-40 rounded-md p-0.5">
+              <SelectBox
+                list={farmTypeList}
+                containerClass="lg:mr-2.5 xsm:mr-1"
+                type="farm_type"
+                disabled={farmTab == "yours"}
+                selectedId={farm_type_selectedId}
+                setSelectedId={set_farm_type_selectedId}
+              ></SelectBox>
+            </div>
+            <div className="frcc">
+              <div className="frcc text-sm mr-10">
+                <p className="text-gray-60 mr-2">Sort by:</p>
+                {Object.keys(sortList).map((item, index) => {
+                  const value = sortList[item];
+                  const disabled =
+                    has_dcl_farms_in_display_list && item == "tvl";
+                  return (
+                    <div
+                      className={`flex items-center justify-between rounded-lg h-9  px-3 py-0.5 ml-1 text-xs ${
+                        sort == item ? "text-white" : "text-gray-60"
+                      } ${
+                        disabled
+                          ? "text-opacity-50 cursor-not-allowed"
+                          : "hover:bg-cardBg cursor-pointer"
+                      }`}
+                      key={index}
+                      onClick={() => {
+                        if (disabled) return;
+                        changeSort(item);
+                      }}
+                    >
+                      {value}
+                      <FarmDownArrown
+                        className="ml-2"
+                        strokeColor={sort === item ? "#9EFE01" : "#7E8A93"}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+              <div
+                className={`border border-gray-100 w-52 h-9 frc p-1 rounded ${
+                  keyWords ? "border border-borderLightBlueColor" : ""
+                }`}
+              >
+                <input
+                  ref={searchRef}
+                  type="text"
+                  className="border-none w-40 bg-transparent outline-none caret-white mr-1 ml-1 text-white text-sm"
+                  onWheel={(event) => searchRef.current?.blur()}
+                  onChange={({ target }) => searchByKeyWords(target.value)}
+                  placeholder="Search Farms by token"
+                ></input>
+                <span
+                  className={`${
+                    keyWords ? "text-lightGreenColor" : "text-gray-10"
+                  }`}
+                >
+                  <SearchIcon />
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+        {/* content */}
+        <div className="mx-auto w-3/5 pt-10">
+          {/* select */}
+          <div className="frcb mb-3.5">
+            <div className="frcc">
+              <SelectBox
+                list={filterTypeList}
+                type="filter"
+                disabled={farmTab == "yours"}
+                selectedId={filter_type_selectedId}
+                setSelectedId={set_filter_type_selectedId}
+              ></SelectBox>
+            </div>
+            {!homePageLoading && getUrlParams() ? null : !homePageLoading ? (
+              <div className="frcc">
+                {accountId ? (
+                  <div
+                    className="frcc cursor-pointer"
+                    onClick={() => {
+                      if (farmTab === "yours") {
+                        switchFarmTab("all");
+                      } else {
+                        switchFarmTab("yours");
+                        if (showEndedFarmList) {
+                          setShowEndedFarmList(false);
+                        }
+                      }
+                    }}
+                  >
+                    {farmTab === "yours" ? (
+                      <CheckboxSelected></CheckboxSelected>
+                    ) : (
+                      <Checkbox></Checkbox>
+                    )}
+                    <span className="ml-1.5 text-gray-10 text-sm">
+                      Staked only
+                    </span>
+                  </div>
+                ) : null}
+                <div
+                  className="frcc ml-6 cursor-pointer"
+                  onClick={() => {
+                    if (showEndedFarmList === true) {
+                      setShowEndedFarmList(false);
+                    } else {
+                      setShowEndedFarmList(true);
+                      if (farmTab === "yours") {
+                        setFarmTab("all");
+                      }
+                    }
+                  }}
+                >
+                  {showEndedFarmList === true ? (
+                    <CheckboxSelected></CheckboxSelected>
+                  ) : (
+                    <Checkbox></Checkbox>
+                  )}
+                  <span className="ml-1.5 text-gray-10 text-sm">
+                    Show Ended Farms
+                  </span>
+                </div>
+              </div>
+            ) : null}
+          </div>
+          {/* list */}
+          <div className="mb-8">
+            {homePageLoading && getUrlParams() ? null : homePageLoading ? (
+              <div className="flex justify-between">
+                <SkeletonTheme
+                  baseColor="rgba(33, 43, 53, 0.3)"
+                  highlightColor="#2A3643"
+                >
+                  <Skeleton
+                    width={356}
+                    height={200}
+                    count={2}
+                    className="mt-4"
+                  />
+                  <Skeleton
+                    width={356}
+                    height={200}
+                    count={2}
+                    className="mt-4"
+                  />
+                  <Skeleton
+                    width={356}
+                    height={200}
+                    count={2}
+                    className="mt-4"
+                  />
+                </SkeletonTheme>
+              </div>
+            ) : farm_display_List.filter((seed: any) => !seed.hidden).length ===
+              0 ? (
+              <NoContent />
+            ) : (
+              <>
+                <div className="grid sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-6 m-auto ">
+                  {farm_display_List.map((seed: Seed, index: number) => {
+                    return (
+                      <div
+                        key={seed.seed_id + index}
+                        className={
+                          seed.hidden
+                            ? "hidden"
+                            : index < 2
+                            ? "bg-farmItemBg rounded-lg"
+                            : "bg-gray-20 bg-opacity-30 rounded-lg"
+                        }
+                      >
+                        <FarmView
+                          seed={seed}
+                          all_seeds={farm_display_List}
+                          tokenPriceList={tokenPriceList}
+                          getDetailData={getDetailData}
+                          dayVolumeMap={dayVolumeMap}
+                          boostConfig={boostConfig || ({} as BoostConfig)}
+                          loveSeed={loveSeed || ({} as Seed)}
+                          user_seeds_map={user_seeds_map}
+                          user_unclaimed_map={user_unclaimed_map}
+                          user_unclaimed_token_meta_map={
+                            user_unclaimed_token_meta_map
+                          }
+                          maxLoveShareAmount={maxLoveShareAmount}
+                        ></FarmView>
+                      </div>
+                    );
+                  })}
+                  {showEndedFarmList ? (
+                    <>
+                      {farm_display_ended_List.map(
+                        (seed: Seed, index: number) => {
+                          return (
+                            <div
+                              key={seed.seed_id + index}
+                              className={
+                                seed.hidden
+                                  ? "hidden"
+                                  : "bg-gray-20 opacity-50 rounded-lg"
+                              }
+                            >
+                              <FarmView
+                                seed={seed}
+                                all_seeds={farm_display_List}
+                                tokenPriceList={tokenPriceList}
+                                getDetailData={getDetailData}
+                                dayVolumeMap={dayVolumeMap}
+                                boostConfig={boostConfig || ({} as BoostConfig)}
+                                loveSeed={loveSeed || ({} as Seed)}
+                                user_seeds_map={user_seeds_map}
+                                user_unclaimed_map={user_unclaimed_map}
+                                user_unclaimed_token_meta_map={
+                                  user_unclaimed_token_meta_map
+                                }
+                                maxLoveShareAmount={maxLoveShareAmount}
+                              ></FarmView>
+                            </div>
+                          );
+                        }
+                      )}
+                    </>
+                  ) : null}
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      </div>
+      {/* mobile */}
+      <div className="lg:hidden md:hidden">
+        <div className="bg-white bg-opacity-5 px-3 pb-3.5">
+          <div className="w-full bg-farmMobileBgColor p-4 rounded-tl-xl rounded-tr-xl text-black mb-3.5">
+            <p className="text-sm text-dark-230 text-opacity-80 mb-1">
+              Claimed Rewards
+            </p>
+            <WithDrawBox
+              userRewardList={user_unWithdraw_rewards}
+              tokenPriceList={tokenPriceList}
+              farmDisplayList={farm_display_List}
+            ></WithDrawBox>
+          </div>
+          <div className="mb-5 flex border border-dark-40 rounded-md">
             <SelectBox
               list={farmTypeList}
               containerClass="lg:mr-2.5 xsm:mr-1"
@@ -1109,15 +1358,36 @@ export default function FarmsPage(props: any) {
               setSelectedId={set_farm_type_selectedId}
             ></SelectBox>
           </div>
-          <div className="frcc">
-            <div className="frcc text-sm mr-10">
-              <p className="text-gray-60 mr-2">Sort by:</p>
+          <div className="flex items-center mb-4">
+            <div
+              className={`bg-gray-60 bg-opacity-15 w-8/12 h-9 frc p-2 rounded ${
+                keyWords ? "border border-borderLightBlueColor" : ""
+              }`}
+            >
+              <span
+                className={`${
+                  keyWords ? "text-lightGreenColor" : "text-gray-10"
+                }`}
+              >
+                <SearchIcon />
+              </span>
+              <input
+                ref={searchRef}
+                type="text"
+                className="border-none w-40 bg-transparent outline-none caret-white mr-1 ml-1 text-white text-sm"
+                onWheel={(event) => searchRef.current?.blur()}
+                onChange={({ target }) => searchByKeyWords(target.value)}
+                placeholder="Search Farms"
+              ></input>
+            </div>
+            <div className="ml-4 frcc">
+              <FarmSortMobIcon />
               {Object.keys(sortList).map((item, index) => {
                 const value = sortList[item];
                 const disabled = has_dcl_farms_in_display_list && item == "tvl";
                 return (
                   <div
-                    className={`flex items-center justify-between rounded-lg h-9  px-3 py-0.5 ml-1 text-xs ${
+                    className={`flex items-center rounded-lg h-9  px-3 py-0.5 ml-1 text-xs ${
                       sort == item ? "text-white" : "text-gray-60"
                     } ${
                       disabled
@@ -1131,53 +1401,22 @@ export default function FarmsPage(props: any) {
                     }}
                   >
                     {value}
-                    <FarmDownArrown
-                      className="ml-2"
-                      strokeColor={sort === item ? "#9EFE01" : "#7E8A93"}
-                    />
                   </div>
                 );
               })}
             </div>
-            <div
-              className={`border border-gray-100 w-52 h-9 frc p-1 rounded ${
-                keyWords ? "border border-borderLightBlueColor" : ""
-              }`}
-            >
-              <input
-                ref={searchRef}
-                type="text"
-                className="border-none w-40 bg-transparent outline-none caret-white mr-1 ml-1 text-white text-sm"
-                onWheel={(event) => searchRef.current?.blur()}
-                onChange={({ target }) => searchByKeyWords(target.value)}
-                placeholder="Search Farms by token"
-              ></input>
-              <span
-                className={`${
-                  keyWords ? "text-lightGreenColor" : "text-gray-10"
-                }`}
-              >
-                <SearchIcon />
-              </span>
-            </div>
           </div>
+          <SelectBox
+            list={filterTypeList}
+            type="filter"
+            disabled={farmTab == "yours"}
+            selectedId={filter_type_selectedId}
+            setSelectedId={set_filter_type_selectedId}
+          ></SelectBox>
         </div>
-      </div>
-      {/* content */}
-      <div className="mx-auto w-3/5 pt-10">
-        {/* select */}
-        <div className="frcb mb-3.5">
-          <div className="frcc">
-            <SelectBox
-              list={filterTypeList}
-              type="filter"
-              disabled={farmTab == "yours"}
-              selectedId={filter_type_selectedId}
-              setSelectedId={set_filter_type_selectedId}
-            ></SelectBox>
-          </div>
+        <div className="py-7 px-4">
           {!homePageLoading && getUrlParams() ? null : !homePageLoading ? (
-            <div className="frcc">
+            <div className="flex mb-6">
               {accountId ? (
                 <div
                   className="frcc cursor-pointer"
@@ -1226,18 +1465,18 @@ export default function FarmsPage(props: any) {
               </div>
             </div>
           ) : null}
-        </div>
-        {/* list */}
-        <div className="mb-8">
           {homePageLoading && getUrlParams() ? null : homePageLoading ? (
             <div className="flex justify-between">
               <SkeletonTheme
                 baseColor="rgba(33, 43, 53, 0.3)"
                 highlightColor="#2A3643"
               >
-                <Skeleton width={356} height={200} count={2} className="mt-4" />
-                <Skeleton width={356} height={200} count={2} className="mt-4" />
-                <Skeleton width={356} height={200} count={2} className="mt-4" />
+                <Skeleton
+                  style={{ width: "100%" }}
+                  height={200}
+                  count={2}
+                  className="mt-4"
+                />
               </SkeletonTheme>
             </div>
           ) : farm_display_List.filter((seed: any) => !seed.hidden).length ===
@@ -1245,7 +1484,7 @@ export default function FarmsPage(props: any) {
             <NoContent />
           ) : (
             <>
-              <div className="grid grid-cols-2 xs:grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-6 m-auto ">
+              <div className="grid grid-cols-1 gap-x-10 gap-y-6 m-auto ">
                 {farm_display_List.map((seed: Seed, index: number) => {
                   return (
                     <div

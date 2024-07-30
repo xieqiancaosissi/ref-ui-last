@@ -1285,3 +1285,60 @@ export const ClockIcon = (props: any) => {
     </svg>
   );
 };
+
+export const FarmWithdrawMobIcon = (props: any) => {
+  return (
+    <svg
+      {...props}
+      width="21"
+      height="21"
+      viewBox="0 0 21 21"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M0 9C0 7.34315 1.34315 6 3 6H17.7059C19.3627 6 20.7059 7.34315 20.7059 9V18C20.7059 19.6569 19.3627 21 17.7059 21H3C1.34315 21 0 19.6569 0 18V9Z"
+        fill="black"
+      />
+      <path
+        d="M11 11.7998C11 10.6952 11.8954 9.7998 13 9.7998H19.5714V16.4998H13C11.8954 16.4998 11 15.6044 11 14.4998V11.7998Z"
+        fill="#F4FF01"
+      />
+      <circle cx="14.5" cy="13" r="1.5" fill="black" />
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M17.0808 5.30003H10.6445C11.1017 3.96208 12.3698 3 13.8627 3C15.3555 3 16.6236 3.96208 17.0808 5.30003Z"
+        fill="black"
+      />
+      <path
+        d="M4 5C4 2.79086 5.79086 1 8 1C9.29953 1 10.4543 1.61971 11.185 2.57973"
+        stroke="black"
+        strokeWidth="1.5"
+      />
+    </svg>
+  );
+};
+
+export const FarmSortMobIcon = (props: any) => {
+  return (
+    <svg
+      {...props}
+      width="16"
+      height="12"
+      viewBox="0 0 16 12"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M10 1L10 10.7586C10 10.8477 10.1077 10.8923 10.1707 10.8293L14 7"
+        stroke="#7E8A93"
+        strokeWidth="1.5"
+        strokeLinecap="square"
+      />
+      <path d="M7 1.75L0 1.75" stroke="#7E8A93" strokeWidth="1.5" />
+      <path d="M7 5.75L2 5.75" stroke="#7E8A93" strokeWidth="1.5" />
+      <path d="M7 9.75H4" stroke="#7E8A93" strokeWidth="1.5" />
+    </svg>
+  );
+};

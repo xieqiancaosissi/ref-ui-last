@@ -4,7 +4,6 @@ import { motion } from "framer-motion";
 import _ from "lodash";
 import Input from "@/components/limit/Input";
 import { useAllDclPools } from "@/hooks/usePools";
-import useSelectTokens from "@/hooks/useSelectTokens";
 import RateContainer from "@/components/limit/RateContainer";
 import { useSwapStore } from "@/stores/swap";
 import {

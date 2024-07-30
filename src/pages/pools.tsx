@@ -213,7 +213,7 @@ export default function Farms() {
 
       {/* Mobile */}
       <div className="lg:hidden  my-4 px-4 box-border">
-        <div className="w-full flex items-center ">
+        <div className="w-full flex items-center">
           <div className={poolStyle.filterPoolType}>
             {poolTypeList.map((item, index) => {
               return (

@@ -23,7 +23,12 @@ import {
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import { divide } from "mathjs";
 import { WalletTokenList } from "./WalletTokenList";
-import { AuroraIcon, AuroraIconActive, MyNearWalltIcon, WalletWithdraw } from "./icon";
+import {
+  AuroraIcon,
+  AuroraIconActive,
+  MyNearWalltIcon,
+  WalletWithdraw,
+} from "./icon";
 
 export default function WalletPanel() {
   const {

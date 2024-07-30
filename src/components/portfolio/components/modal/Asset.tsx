@@ -211,11 +211,12 @@ function AssetPage() {
     display_increase_percent,
     increase_percent_done,
   } = useContext(AssetData)!;
+  console.log(increase_percent_done, "increase_percent_done");
   return (
     <div className="flex mb-1">
       <div className="bg-gray-20 bg-opacity-70 rounded-md p-4 w-1/5 mr-1">
         <div className="flex items-center mb-2">
-          <p className="text-gray-50 text-sm">TVL(Total Value Locked)</p>
+          <p className="text-gray-50 text-sm">Your Investment</p>
           <div
             className="text-white text-right ml-1"
             data-class="reactTip"
@@ -228,15 +229,15 @@ function AssetPage() {
           </div>
         </div>
         <div className="text-2xl pb-1">{total_user_invest_value}</div>
-        <div className="flex items-center text-gray-50 text-sm">
+        <div className="flex items-center text-gray-50 text-xs">
           {getCurrentDate()}
           <div
-            className={`flex items-center rounded-md px-2 py-0.5 ml-3 ${
+            className={`flex items-center text-xs rounded-md px-1 ml-1.5 bg-opacity-20 ${
               increase_percent_done ? "" : "hidden"
             } ${
               +increase_percent_original > 0
-                ? "text-primaryGreen"
-                : "text-error"
+                ? "text-primaryGreen bg-primaryGreen"
+                : "text-error bg-error"
             }`}
           >
             <ArrowUpIcon

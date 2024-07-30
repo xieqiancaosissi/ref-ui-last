@@ -1368,7 +1368,7 @@ function UserLiquidityLineStyleGroupPage() {
                 ) : null}
               </div>
             </div>
-            {joined_seeds || tip_seed ? (
+            {/* {joined_seeds || tip_seed ? (
               <div className="frcb mb-4">
                 <span className="text-xs text-gray-10">Unclaimed</span>
                 {joined_seeds ? (
@@ -1451,7 +1451,7 @@ function UserLiquidityLineStyleGroupPage() {
                   </div>
                 ) : null}
               </div>
-            ) : null}
+            ) : null} */}
 
             <div className="flex items-center justify-between">
               <span className="text-xs text-gray-10">Unclaimed Fees</span>

@@ -23,7 +23,7 @@ import {
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import { divide } from "mathjs";
 import { WalletTokenList } from "./WalletTokenList";
-import { AuroraIcon, AuroraIconActive } from "./icon";
+import { AuroraIcon, AuroraIconActive, MyNearWalltIcon, WalletWithdraw } from "./icon";
 
 export default function WalletPanel() {
   const {
@@ -198,9 +198,7 @@ export default function WalletPanel() {
               onClick={() => {
                 setActiveTab(item.tag);
               }}
-              className={`frcc border border-gray-100 rounded-md h-7 p-1.5 mr-2.5 ${
-                item.tag == "ref" ? "w-24" : "w-12"
-              } text-xs cursor-pointer hover:bg-portfolioLightGreyColor ${
+              className={`frcc border border-gray-100 rounded-md h-7 p-1.5 mr-2.5 text-xs cursor-pointer hover:bg-portfolioLightGreyColor ${
                 index != tabList.length - 1 ? "mr-0.5" : ""
               } ${
                 activeTab == item.tag
@@ -208,6 +206,7 @@ export default function WalletPanel() {
                   : "text-gray-60"
               }`}
             >
+              {item.tag == "near" && <MyNearWalltIcon className="mr-1" />}
               {item.tag == "ref" ? "REF(classic)" : item.name}
             </span>
           );
@@ -239,7 +238,7 @@ export default function WalletPanel() {
           <div className="w-2/6">Balance</div>
           <div className="w-1/5 flex items-center justify-end">Value</div>
         </div>
-        <div style={{ height: "40vh", overflow: "auto" }}>
+        <div style={{ height: "34vh", overflow: "auto" }} className="pr-2.5">
           {(!userTokens || !balances || !auroaBalances || !DCLAccountBalance) &&
           isSignedIn ? (
             <div className="flex justify-between">
@@ -247,7 +246,7 @@ export default function WalletPanel() {
                 baseColor="rgba(33, 43, 53, 0.3)"
                 highlightColor="#2A3643"
               >
-                <Skeleton width={320} height={60} count={4} className="mt-4" />
+                <Skeleton width={320} height={52} count={4} className="mt-4" />
               </SkeletonTheme>
             </div>
           ) : (

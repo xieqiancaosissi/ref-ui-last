@@ -988,7 +988,10 @@ function ClassicFarmRow({ seed }: { seed: Seed }) {
     const { affected_seeds = {} } = boostConfig || {};
     const { seed_id } = seed;
     const base = affected_seeds[seed_id];
-    const result: string = `<div class="text-navHighLightText text-xs w-52 xsm:w-32 text-left">farm_no_boost_tip</div>`;
+    const tip = base
+      ? "Your Power = Your staked LP Tokens * booster (by staking LOVE)"
+      : "Your Power = Your staked LP Tokens";
+    const result: string = `<div class="text-navHighLightText text-xs w-52 xsm:w-32 text-left">${tip}</div>`;
     return result;
   }
   function getYourTvl() {

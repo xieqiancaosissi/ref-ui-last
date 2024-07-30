@@ -433,3 +433,23 @@ export const getLimitOrderLogsByAccount = async (): Promise<any[]> => {
       return [];
     });
 };
+
+export const getAssets = async (dateType: "M" | "W" | "H" | "ALL" = "H") => {
+  const accountId = getAccountId();
+  return await fetch(
+    config.indexerUrl +
+      "/get-assets-by-account?" +
+      `account_id=${accountId}&dimension=${dateType}`,
+    {
+      method: "GET",
+      headers: getAuthenticationHeaders("/get-assets-by-account"),
+    }
+  )
+    .then((res) => res.json())
+    .then((res) => {
+      return res;
+    })
+    .catch(() => {
+      return [];
+    });
+};

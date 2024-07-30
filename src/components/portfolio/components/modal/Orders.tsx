@@ -45,6 +45,7 @@ import {
 } from "../icon";
 import { BlueCircleLoading } from "@/components/pools/icon";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import { useRouter } from "next/router";
 
 const { explorerUrl } = getConfig();
 export default function Orders(props: any) {
@@ -160,6 +161,7 @@ function OrderCard({
   const [activeSortBy, setActiveSortBy] = useState<"unclaim" | "created">(
     "created"
   );
+  const router = useRouter();
   const [sortOrderActive, setSorOrderActive] = useState<"asc" | "desc">("desc");
   const { total_active_orders_value, total_active_orders_quanity } =
     useTotalOrderData({
@@ -932,7 +934,7 @@ function OrderCard({
                 <span
                   onClick={() => {
                     localStorage.setItem(SWAP_MODE_KEY, SWAP_MODE.LIMIT);
-                    openUrl("/");
+                    openUrl("/limit");
                   }}
                   className="flex items-center justify-center text-xs text-gray-10 border border-gray-90 rounded-md px-1.5 cursor-pointer hover:text-white py-0.5"
                 >

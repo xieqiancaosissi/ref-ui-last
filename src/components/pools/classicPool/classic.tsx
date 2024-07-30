@@ -9,18 +9,20 @@ import PoolDocTips from "@/components/pools/poolDocTips/index";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 
 import NoContent from "@/components/common/NoContent/index";
+import ClassicFilterTabModal from "./classicFilterTabModal";
 
 export default function Classic({
   searchValue,
   pureIdList,
+  mobilePros,
 }: {
   searchValue: string;
   pureIdList: any;
+  mobilePros: any;
 }) {
   const [isActive, setActive] = useState("");
   const [sortMap, setSortMap] = useState({ key: "tvl", sort: "desc" });
   const [isChecked, setIsChecked] = useState(false);
-
   // pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(100);
@@ -62,11 +64,18 @@ export default function Classic({
     searchValue,
   });
 
+  const [classicOpen, setClassicOpen] = useState(false);
   // depency change init currentpage
   useEffect(() => {
     console.log(searchValue, "search");
     setCurrentPage(1);
   }, [sortMap.key, sortMap.sort, isChecked, isActive, searchValue]);
+
+  useEffect(() => {
+    if (mobilePros?.which == "classicTabChange") {
+      setActive(mobilePros.key.key);
+    }
+  }, [mobilePros]);
 
   return (
     <>
@@ -76,9 +85,9 @@ export default function Classic({
       />
       <div className="flex flex-col items-center  w-full mt-8">
         {/*  */}
-        <div className="frc w-276 justify-between">
+        <div className="frc lg:w-276 xsm:w-full justify-between">
           {/* head tab & hide low tvl pools*/}
-          <div className="text-xs cursor-pointer frcc">
+          <div className="text-xs cursor-pointer lg:frcc xsm:hidden">
             {tabList.map((item, index) => {
               return (
                 <div
@@ -101,7 +110,7 @@ export default function Classic({
               );
             })}
           </div>
-          <div className="text-white text-xs cursor-default">
+          <div className="text-white text-xs cursor-default xsm:hidden">
             <label className={styles.customCheckbox}>
               <input
                 type="checkbox"
@@ -118,7 +127,21 @@ export default function Classic({
             </label>
           </div>
         </div>
-
+        {/*  */}
+        <div className="text-white text-xs cursor-default ml-auto lg:hidden">
+          <label className={styles.customCheckbox}>
+            <input
+              type="checkbox"
+              checked={isChecked}
+              onChange={() => {
+                handleCheckboxChange(event);
+                setCurrentPage(1);
+              }}
+            />
+            <span className={styles.checkmark}></span>
+            <span className={styles.checkPlaceholder}>Hide low TVL pools</span>
+          </label>
+        </div>
         {/* pool header */}
         <header className={styles.headDiv}>
           <div>Pools</div>
@@ -148,40 +171,19 @@ export default function Classic({
           </div>
         </header>
 
-        {/* pool row */}
-        {/* {isLoading ? (
-          <SkeletonTheme
-            baseColor="rgba(33, 43, 53, 0.3)"
-            highlightColor="#2A3643"
-          >
-            <Skeleton
-              width={1100}
-              height={56.5}
-              count={poolList.length > 0 ? poolList.length + 1 : 5}
-              className="mt-4"
-            />
-          </SkeletonTheme>
-        ) : poolList.length > 0 ? (
-          <PoolRow
-            list={poolList}
-            loading={isLoading}
-            pureIdList={pureIdList}
-          />
-        ) : (
-          <div>暂无数据</div>
-        )} */}
         {poolList.length > 0 ? (
           <PoolRow
             list={poolList}
             loading={isLoading}
             pureIdList={pureIdList}
+            activeTab={sortMap}
           />
         ) : (
           <NoContent />
         )}
 
         {/* pagination */}
-        <div className="w-276 my-4">
+        <div className="lg:w-276 xsm:w-full my-4">
           <Pagination
             totalItems={totalItems}
             itemsPerPage={20}

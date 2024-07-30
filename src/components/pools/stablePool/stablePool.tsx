@@ -12,9 +12,11 @@ import NoContent from "@/components/common/NoContent";
 export default function Classic({
   searchValue,
   pureIdList,
+  mobilePros,
 }: {
   searchValue: string;
   pureIdList: any;
+  mobilePros: any;
 }) {
   const [isActive, setActive] = useState("");
   const [sortMap, setSortMap] = useState({ key: "tvl", sort: "desc" });

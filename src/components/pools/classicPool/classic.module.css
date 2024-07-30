@@ -46,17 +46,32 @@
 
 /* pool head */
 .headDiv {
-  @apply frc text-gray-60 text-sm justify-between px-3 mt-8 mb-2 cursor-default;
+  @apply lg:frc text-gray-60 text-sm justify-between px-3 mt-8 mb-2 cursor-default xsm:w-full lg:w-276 xsm:hidden;
 }
-
-.headDiv > div:first-child {
+@media (min-width: 300px) and (max-width: 1023px) {
+/* .headDiv > div:first-child {
   @apply w-109;
-}
+} */
 
 .headDiv > div:last-child {
   @apply frc flex-1 justify-around;
 }
-
+/* 
 .headDiv > div:last-child > div {
   @apply min-w-40 frcc;
+} */
 }
+
+@media (min-width: 1024px){
+  .headDiv > div:first-child {
+    @apply w-109;
+  }
+  
+  .headDiv > div:last-child {
+    @apply frc flex-1 justify-around;
+  }
+  
+  .headDiv > div:last-child > div {
+    @apply min-w-40 frcc;
+  }
+  }

@@ -8,6 +8,16 @@
   @apply flex items-center;
 }
 .chartsContent {
-  width: 32.8125rem;
-  @apply flex items-start h-43 overflow-hidden;
+  @apply flex items-start lg:h-43 overflow-hidden  xsm:bg-transparent xs:h-50 sm:h-95 md:h-140;
+}
+@media (min-width: 300px) and (max-width: 1023px) {
+ .chartsContent {
+  @apply frcc;
+  width: 90vw;
+ }
+}
+@media (min-width: 1024px){
+  .chartsContent {
+    width: 32.8125rem;
+  }
 }

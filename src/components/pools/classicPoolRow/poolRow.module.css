@@ -1,6 +1,9 @@
 .poolContainer {
-  @apply frcc w-276 h-15 mt-3 rounded-lg px-3 text-white text-sm font-medium;
+  @apply lg:frcc xsm:flex xsm:items-center xsm:justify-between xsm:py-4 lg:w-276 xsm:w-full lg:h-15 xsm:min-h-15 mt-3 rounded-lg px-3 text-white text-sm font-medium;
 }
+
+
+
 .notfarm {
   background: rgba(33, 43, 53, 0.3);
 }
@@ -13,15 +16,15 @@
 }
 
 .poolContainer > div:first-child {
-  @apply w-109;
+  @apply lg:w-109;
 }
 
 .poolContainer > div:last-child {
-  @apply frc flex-1 justify-around;
+  @apply frc lg:flex-1 justify-around;
 }
 
 .poolContainer > div:last-child > div {
-  @apply min-w-40 fccc;
+  @apply lg:min-w-40 lg:fccc;
 }
 
 .tokenImgContainer {

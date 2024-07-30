@@ -1,3 +1,22 @@
+export function MobileArrowUp(props: any) {
+  return (
+    <svg
+      width="12"
+      height="6"
+      viewBox="0 0 12 6"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M0 5.70703H2.91667L5.70711 2.82835L8.53304 5.70703L11.4142 5.70703L5.70711 -7.58171e-05L0 5.70703Z"
+        fill="white"
+      />
+    </svg>
+  );
+}
+
 export function SearchIcon(props: any) {
   return (
     <svg

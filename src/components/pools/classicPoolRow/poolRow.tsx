@@ -17,10 +17,12 @@ export default function PoolRow({
   list,
   loading,
   pureIdList,
+  activeTab,
 }: {
   list: Array<any>;
   loading: boolean;
   pureIdList: any;
+  activeTab: any;
 }) {
   const { isDealed, updatedMapList } = useTokenMetadata(list);
   const router = useRouter();
@@ -36,93 +38,191 @@ export default function PoolRow({
   }, [currentwatchListId]);
 
   return (
-    <div className="mb-2 min-h-90 overflow-auto hover:cursor-pointer">
-      {updatedMapList.map((item, index) => {
-        return (
-          <div
-            key={item.id + "_" + index}
-            className={`${styles.poolContainer} ${
-              item.is_farm ? styles.isfarm : styles.notfarm
-            }`}
-            onClick={() => toDetail(item)}
-          >
-            {/* tokens */}
-            <div className="flex items-center">
-              {/*render token icon */}
-              <div className={styles.tokenImgContainer}>
-                {item?.token_account_ids?.map((ite: any, ind: number) => (
-                  <TokenIconComponent
-                    key={ite.tokenId + ind}
-                    ite={ite}
-                    tokenIcons={tokenIcons}
-                    pureIdList={pureIdList}
-                    ind={ind}
-                  />
-                ))}
-              </div>
-              {/*  */}
-              <span className={styles.symbol}>
-                {item.token_symbols.join("-")}
-              </span>
-              {/* is collect */}
-              {renderStarList.includes(item.id.toString()) && (
-                <StartWatchList className="mr-2" />
-              )}
-              {/* dangerous */}
-              {checkIsHighRisk(pureIdList, item).risk && (
-                <span className="mr-2 frcc">
-                  <HoverTooltip
-                    tooltipText={checkIsHighRisk(pureIdList, item).tips || ""}
-                  >
-                    <DangerousIcon />
-                  </HoverTooltip>
+    <>
+      <div className="mb-2 min-h-90 overflow-auto hover:cursor-pointer xsm:hidden">
+        {updatedMapList.map((item, index) => {
+          return (
+            <div
+              key={item.id + "_" + index}
+              className={`${styles.poolContainer} ${
+                item.is_farm ? styles.isfarm : styles.notfarm
+              }`}
+              onClick={() => toDetail(item)}
+            >
+              {/* tokens */}
+              <div className="flex items-center">
+                {/*render token icon */}
+                <div className={styles.tokenImgContainer}>
+                  {item?.token_account_ids?.map((ite: any, ind: number) => (
+                    <TokenIconComponent
+                      key={ite.tokenId + ind}
+                      ite={ite}
+                      tokenIcons={tokenIcons}
+                      pureIdList={pureIdList}
+                      ind={ind}
+                    />
+                  ))}
+                </div>
+                {/*  */}
+                <span className={styles.symbol}>
+                  {item.token_symbols.join("-")}
                 </span>
-              )}
+                {/* is collect */}
+                {renderStarList.includes(item.id.toString()) && (
+                  <StartWatchList className="mr-2" />
+                )}
+                {/* dangerous */}
+                {checkIsHighRisk(pureIdList, item).risk && (
+                  <span className="mr-2 frcc">
+                    <HoverTooltip
+                      tooltipText={checkIsHighRisk(pureIdList, item).tips || ""}
+                    >
+                      <DangerousIcon />
+                    </HoverTooltip>
+                  </span>
+                )}
 
-              {/* tag */}
-              {item.is_farm && (
-                <div
-                  className={` bg-farmTagBg text-farmApyColor ${styles.tagPublicStyle}`}
-                >
-                  Farms
-                </div>
-              )}
-              {item.is_new && (
-                <div
-                  className={`bg-primaryGreen text-black ${styles.tagPublicStyle}`}
-                >
-                  News
-                </div>
-              )}
+                {/* tag */}
+                {item.is_farm && (
+                  <div
+                    className={` bg-farmTagBg text-farmApyColor ${styles.tagPublicStyle}`}
+                  >
+                    Farms
+                  </div>
+                )}
+                {item.is_new && (
+                  <div
+                    className={`bg-primaryGreen text-black ${styles.tagPublicStyle}`}
+                  >
+                    News
+                  </div>
+                )}
 
-              {item.top && (
-                <div
-                  className={`bg-topLinearGradient text-black ${styles.topStyle} mx-1`}
-                >
-                  Top
-                </div>
-              )}
-            </div>
-            <div>
-              {/* fee */}
-              <div>{formatPercentage(item.total_fee * 100)}</div>
-              {/* apr */}
+                {item.top && (
+                  <div
+                    className={`bg-topLinearGradient text-black ${styles.topStyle} mx-1`}
+                  >
+                    Top
+                  </div>
+                )}
+              </div>
               <div>
-                <span>{formatPercentage(item.apy)}</span>
-                {item.farm_apy > 0 && (
-                  <span className="text-farmApyColor text-xs mt-1">
-                    +{formatPercentage(item.farm_apy)}
+                {/* fee */}
+                <div>{formatPercentage(item.total_fee * 100)}</div>
+                {/* apr */}
+                <div>
+                  <span>{formatPercentage(item.apy)}</span>
+                  {item.farm_apy > 0 && (
+                    <span className="text-farmApyColor text-xs mt-1">
+                      +{formatPercentage(item.farm_apy)}
+                    </span>
+                  )}
+                </div>
+                {/* 24h */}
+                <div>{toInternationalCurrencySystem_usd(item.volume_24h)}</div>
+                {/* tvl */}
+                <div>{toInternationalCurrencySystem_number(item.tvl)}</div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      <div className="mb-2 min-h-90 overflow-auto hover:cursor-pointer xsm:w-full lg:hidden">
+        {updatedMapList.map((item, index) => {
+          return (
+            <div
+              key={item.id + "_" + index}
+              className={`${styles.poolContainer} ${
+                item.is_farm ? styles.isfarm : styles.notfarm
+              }`}
+              onClick={() => toDetail(item)}
+            >
+              {/* tokens */}
+              <div className="flex items-center">
+                {/*render token icon */}
+                <div className={styles.tokenImgContainer}>
+                  {item?.token_account_ids?.map((ite: any, ind: number) => (
+                    <TokenIconComponent
+                      key={ite.tokenId + ind}
+                      ite={ite}
+                      tokenIcons={tokenIcons}
+                      pureIdList={pureIdList}
+                      ind={ind}
+                    />
+                  ))}
+                </div>
+                {/*  */}
+                <div className={`${styles.symbol} flex flex-col`}>
+                  {item.token_symbols.join("-")}
+                  <div className="flex mt-1">
+                    {/* tag */}
+                    {item.is_farm && (
+                      <div
+                        className={` bg-farmTagBg text-farmApyColor ${styles.tagPublicStyle}`}
+                      >
+                        Farms
+                      </div>
+                    )}
+                    {item.is_new && (
+                      <div
+                        className={`bg-primaryGreen text-black ${styles.tagPublicStyle}`}
+                      >
+                        News
+                      </div>
+                    )}
+
+                    {item.top && (
+                      <div
+                        className={`bg-topLinearGradient text-black ${styles.topStyle} mx-1`}
+                      >
+                        Top
+                      </div>
+                    )}
+                  </div>
+                </div>
+                {/* is collect */}
+                {renderStarList.includes(item.id.toString()) && (
+                  <StartWatchList className="mr-2" />
+                )}
+                {/* dangerous */}
+                {checkIsHighRisk(pureIdList, item).risk && (
+                  <span className="mr-2 frcc">
+                    <HoverTooltip
+                      tooltipText={checkIsHighRisk(pureIdList, item).tips || ""}
+                    >
+                      <DangerousIcon />
+                    </HoverTooltip>
                   </span>
                 )}
               </div>
-              {/* 24h */}
-              <div>{toInternationalCurrencySystem_usd(item.volume_24h)}</div>
-              {/* tvl */}
-              <div>{toInternationalCurrencySystem_number(item.tvl)}</div>
+              <div>
+                {/* fee */}
+                <div className={`${activeTab.key != "fee" && "xsm:hidden"}`}>
+                  {formatPercentage(item.total_fee * 100)}
+                </div>
+                {/* apr */}
+                <div className={`${activeTab.key != "apr" && "xsm:hidden"}`}>
+                  <span>{formatPercentage(item.apy)}</span>
+                  {item.farm_apy > 0 && (
+                    <span className="text-farmApyColor text-xs mt-1">
+                      +{formatPercentage(item.farm_apy)}
+                    </span>
+                  )}
+                </div>
+                {/* 24h */}
+                <div className={`${activeTab.key != "24h" && "xsm:hidden"}`}>
+                  {toInternationalCurrencySystem_usd(item.volume_24h)}
+                </div>
+                {/* tvl */}
+                <div className={`${activeTab.key != "tvl" && "xsm:hidden"}`}>
+                  {toInternationalCurrencySystem_number(item.tvl)}
+                </div>
+              </div>
             </div>
-          </div>
-        );
-      })}
-    </div>
+          );
+        })}
+      </div>
+    </>
   );
 }

@@ -2,7 +2,7 @@
   @apply frcc w-full h-13 bg-dark-45 mb-2;
 }
 .dclTips > div {
-  @apply w-276 text-gray-60 text-sm flex items-center;
+  @apply w-276 text-gray-60 text-sm lg:flex items-center;
 }
 
 .learnMore {

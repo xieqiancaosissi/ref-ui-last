@@ -138,10 +138,7 @@ export default function Charts({
       <div className={styles.chartsContent}>
         <div
           ref={chartRef}
-          style={{
-            width: "100%",
-            height: "260px",
-          }}
+          className="xsm:w-full xsm:h-full lg:w-full lg:h-65"
         ></div>
       </div>
       {!chartsData && (

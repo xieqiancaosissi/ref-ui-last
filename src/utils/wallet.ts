@@ -22,23 +22,6 @@ export function showWalletSelectorModal(riskModalShow: any) {
   }
 }
 
-export const ledgerTipTrigger = async (wallet: any) => {
-  const handlePopTrigger = () => {
-    const el = document.getElementsByClassName(
-      "ledger-transaction-pop-up"
-    )?.[0];
-    if (el) {
-      el.setAttribute("style", "display:flex");
-    }
-  };
-
-  const isLedger = wallet === "ledger";
-
-  if (isLedger) {
-    handlePopTrigger();
-  }
-};
-
 export function addQueryParams(
   baseUrl: string,
   queryParams: {

@@ -6,7 +6,7 @@ import { usePersistSwapStore, IPersistSwapStore } from "../../stores/swap";
 import { INIT_SLIPPAGE_VALUE } from "@/utils/constant";
 import swapStyles from "./swap.module.css";
 import CustomTooltip from "@/components/customTooltip/customTooltip";
-import SupportLedgerGuide from "@/components/common/SupportLedgerGuide";
+import SupportLedgerGuide from "@/components/common/ledger/SupportLedgerGuide";
 import { useAccountStore } from "@/stores/account";
 import { getAccount } from "@/utils/near";
 

@@ -1,10 +1,3 @@
-import {
-  getAccountId,
-  getCurrentWallet,
-  ledgerTipTrigger,
-  addQueryParams,
-} from "@/utils/wallet";
-import { utils } from "near-api-js";
 import BN from "bn.js";
 
 export enum TRANSACTION_WALLET_TYPE {

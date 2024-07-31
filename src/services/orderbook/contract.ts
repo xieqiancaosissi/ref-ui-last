@@ -35,7 +35,8 @@ import { registerAccountOnToken } from "@/services/creator/token";
 import { ftViewFunction } from "@/services/ft-contract";
 import { executeMultipleTransactions } from "@/utils/near";
 import getConfig from "@/utils/config";
-import { ledgerTipTrigger, getAccountId } from "@/utils/wallet";
+import { getAccountId } from "@/utils/wallet";
+import { ledgerTipTrigger } from "@/components/common/ledger/ledger";
 export const REF_ORDERLY_NEW_USER_TIP = "REF_ORDERLY_NEW_USER_TIP_KEY";
 
 export const storageDeposit = async () => {

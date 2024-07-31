@@ -19,12 +19,17 @@ import { defaultTokenList, getAuroraConfig } from "@/utils/auroraConfig";
 import { Near, WalletConnection, keyStores } from "near-api-js";
 import getConfig from "@/utils/config";
 import getOrderlyConfig from "@/utils/orderlyConfig";
-import { nearMetadata } from "./wrap-near";
+import {
+  WRAP_NEAR_CONTRACT_ID,
+  nearMetadata,
+  nearWithdrawTransaction,
+} from "./wrap-near";
 import {
   formatWithCommas,
   scientificNotationToString,
   toInternationalCurrencySystem,
   toInternationalCurrencySystemLongString,
+  toNonDivisibleNumber,
   toPrecision,
   toReadableNumber,
 } from "@/utils/numbers";
@@ -35,12 +40,27 @@ import AbiCoder from "web3-eth-abi";
 import { getAccountId } from "@/utils/wallet";
 import { list_user_assets } from "./swapV3";
 import BigNumber from "bignumber.js";
-import { getStakedListByAccountId } from "./farm";
+import { Transaction, getStakedListByAccountId } from "./farm";
 import { ILock, get_account } from "./lplock";
 import { getSharesInPool } from "./pool";
+import { ftGetStorageBalance } from "./ft-contract";
+import { REF_FI_CONTRACT_ID, RefFiFunctionCallOptions } from "./xref";
+import {
+  STORAGE_TO_REGISTER_WITH_FT,
+  STORAGE_TO_REGISTER_WITH_MFT,
+  storageDepositAction,
+} from "./creator/storage";
+import { executeMultipleTransactions } from "./createPoolFn";
+import { toBufferBE } from "bigint-buffer";
+import { checkTokenNeedsStorageDeposit } from "./swap/registerToken";
+import { ONE_YOCTO_NEAR } from "@/utils/near";
+import { REF_UNI_V3_SWAP_CONTRACT_ID } from "@/utils/contract";
 
 const config = getConfig();
 const orderConfig = getOrderlyConfig();
+export const oneETH = new Big(10).pow(18);
+
+export const AuroraCallGas = "150000000000000";
 const keyStore = new keyStores.BrowserLocalStorageKeyStore();
 const near = new Near({
   keyStore,
@@ -384,6 +404,14 @@ export const useStakeListByAccountId = () => {
   };
 };
 
+export const getErc20Addr = async (token_id: string) => {
+  if (token_id === "aurora") return getAuroraConfig().WETH;
+
+  return (
+    await getAurora().getAuroraErc20Address(new AccountID(token_id))
+  ).unwrap();
+};
+
 export const useBatchTotalShares = (
   ids: (any | number)[],
   finalStakeList: Record<string, string>,
@@ -463,4 +491,252 @@ export const useBatchTotalShares = (
           .toNumber();
       }) || undefined,
   };
+};
+
+// TODO: error on sender
+export const batchWithdrawFromAurora = async (
+  // tokens: TokenMetadata[],
+  // readableAmounts: []
+  tokenMap: any
+) => {
+  const tokenIdList = Object.keys(tokenMap);
+
+  const transactions: Transaction[] = [];
+
+  const registerToken = async (tokenId: string) => {
+    const tokenRegistered = await ftGetStorageBalance(tokenId).catch(() => {
+      throw new Error(`${tokenId} doesn't exist.`);
+    });
+    const tokenOutActions: RefFiFunctionCallOptions[] = [];
+
+    if (tokenRegistered === null) {
+      tokenOutActions.push({
+        methodName: "storage_deposit",
+        args: {
+          registration_only: true,
+          account_id: getAccountId(),
+        },
+        gas: "30000000000000",
+        amount: STORAGE_TO_REGISTER_WITH_MFT,
+      });
+
+      transactions.push({
+        receiverId: tokenId,
+        functionCalls: tokenOutActions,
+      });
+    }
+  };
+
+  await Promise.all(tokenIdList.map((id) => registerToken(id)));
+
+  const tokens = await Promise.all(
+    tokenIdList.map((id) => ftGetTokenMetadata(id))
+  );
+
+  const actions = await Promise.all(
+    tokens.map((tk, i) =>
+      withdrawFromAurora({
+        token_id: tk.id,
+        amount: tokenMap[tk.id].amount,
+        decimal: tk.decimals,
+      })
+    )
+  );
+
+  actions.forEach((action) =>
+    transactions.push({
+      receiverId: "aurora",
+      functionCalls: [action],
+    })
+  );
+
+  if (!!tokenMap[WRAP_NEAR_CONTRACT_ID]) {
+    transactions.push(
+      nearWithdrawTransaction(tokenMap[WRAP_NEAR_CONTRACT_ID].amount)
+    );
+  }
+
+  return executeMultipleTransactions(transactions);
+};
+
+export async function withdrawFromAurora({
+  token_id,
+  amount,
+  decimal,
+}: {
+  token_id: string;
+  amount: string;
+  decimal: number;
+}) {
+  if (token_id === "aurora") {
+    const callAddress = toAddress(getAuroraConfig().ethBridgeAddress);
+
+    const input = `0x00${Buffer.from(getAccountId(), "utf-8").toString("hex")}`;
+
+    const value = new Big(oneETH).mul(amount).round(0, 0).toFixed(0);
+
+    return auroraCallToAction(callAddress, input, value);
+  } else {
+    const input = buildInput(Erc20Abi, "withdrawToNear", [
+      `0x${Buffer.from(getAccountId(), "utf-8").toString("hex")}`,
+      toNonDivisibleNumber(decimal, amount), // need to check decimals in real case
+    ]);
+    const erc20Addr = await getErc20Addr(token_id);
+
+    // await getAurora().call(toAddress(erc20Addr), input);
+
+    return auroraCallToAction(erc20Addr, input);
+  }
+}
+
+export function prepareInput(args: any) {
+  if (typeof args === "undefined") return Buffer.alloc(0);
+  if (typeof args === "string") return Buffer.from(parseHexString(args));
+  return Buffer.from(args);
+}
+
+export function prepareAmount(value: any) {
+  if (typeof value === "undefined") return toBufferBE(BigInt(0), 32);
+  const number = BigInt(value);
+  return toBufferBE(number, 32);
+}
+
+export function auroraCallToAction(contract: any, input: any, value?: string) {
+  const inner_args = new FunctionCallArgsV2({
+    contract: contract.toBytes(),
+    value: prepareAmount(value || "0"),
+    input: prepareInput(input),
+  });
+
+  const args = new CallArgs({
+    functionCallArgsV2: inner_args,
+  }).encode();
+
+  const action: RefFiFunctionCallOptions = {
+    methodName: "call",
+    args: prepareInput(args),
+    gas: AuroraCallGas,
+  };
+
+  return action;
+}
+
+export const batchWithdraw = async (tokenMap: any) => {
+  const transactions: Transaction[] = [];
+  const neededStorage = await checkTokenNeedsStorageDeposit();
+
+  if (neededStorage) {
+    transactions.push({
+      receiverId: REF_FI_CONTRACT_ID,
+      functionCalls: [storageDepositAction({ amount: neededStorage })],
+    });
+  }
+  const tokenIdList = Object.keys(tokenMap);
+  const ftBalancePromiseList: any[] = [];
+  tokenIdList.forEach(async (tokenId) => {
+    const promise = ftGetStorageBalance(tokenId);
+    ftBalancePromiseList.push(promise);
+  });
+  const ftBalanceList = await Promise.all(ftBalancePromiseList);
+  ftBalanceList.forEach((ftBalance, index) => {
+    if (!ftBalance) {
+      transactions.push({
+        receiverId: tokenIdList[index],
+        functionCalls: [
+          storageDepositAction({
+            registrationOnly: true,
+            amount: STORAGE_TO_REGISTER_WITH_FT,
+          }),
+        ],
+      });
+    }
+  });
+
+  const widthdrawActions: any[] = [];
+  let wNEARAction;
+  tokenIdList.forEach((tokenId) => {
+    const { decimals, amount } = tokenMap[tokenId];
+    const parsedAmount = toNonDivisibleNumber(decimals, amount);
+    widthdrawActions.push({
+      methodName: "withdraw",
+      args: {
+        token_id: tokenId,
+        amount: parsedAmount,
+        unregister: false,
+        skip_unwrap_near: false,
+      },
+      gas: "55000000000000",
+      amount: ONE_YOCTO_NEAR,
+    });
+    // if (tokenId === WRAP_NEAR_CONTRACT_ID) {
+    //   wNEARAction = {
+    //     receiverId: WRAP_NEAR_CONTRACT_ID,
+    //     functionCalls: [
+    //       {
+    //         methodName: 'near_withdraw',
+    //         args: {
+    //           amount: parsedAmount,
+    //         },
+    //         amount: ONE_YOCTO_NEAR,
+    //       },
+    //     ],
+    //   };
+    // }
+  });
+  transactions.push({
+    receiverId: REF_FI_CONTRACT_ID,
+    functionCalls: widthdrawActions,
+  });
+  if (wNEARAction) {
+    transactions.push(wNEARAction);
+  }
+  return executeMultipleTransactions(transactions);
+};
+
+export const batchWithdrawDCL = async (tokenMap: any) => {
+  const transactions: Transaction[] = [];
+  const neededStorage = await checkTokenNeedsStorageDeposit();
+  if (neededStorage) {
+    transactions.push({
+      receiverId: REF_FI_CONTRACT_ID,
+      functionCalls: [storageDepositAction({ amount: neededStorage })],
+    });
+  }
+  const tokenIdList = Object.keys(tokenMap);
+  const ftBalancePromiseList: any[] = [];
+  tokenIdList.forEach(async (tokenId) => {
+    const promise = ftGetStorageBalance(tokenId);
+    ftBalancePromiseList.push(promise);
+  });
+  const ftBalanceList = await Promise.all(ftBalancePromiseList);
+  ftBalanceList.forEach((ftBalance, index) => {
+    if (!ftBalance) {
+      transactions.push({
+        receiverId: tokenIdList[index],
+        functionCalls: [
+          storageDepositAction({
+            registrationOnly: true,
+            amount: STORAGE_TO_REGISTER_WITH_FT,
+          }),
+        ],
+      });
+    }
+  });
+
+  const widthdrawActions: any[] = [];
+  tokenIdList.forEach((tokenId) => {
+    const { decimals, amount } = tokenMap[tokenId];
+    const parsedAmount = toNonDivisibleNumber(decimals, amount);
+    widthdrawActions.push({
+      methodName: "withdraw_asset",
+      args: { token_id: tokenId, amount: parsedAmount },
+      gas: "55000000000000",
+    });
+  });
+  transactions.push({
+    receiverId: REF_UNI_V3_SWAP_CONTRACT_ID,
+    functionCalls: widthdrawActions,
+  });
+
+  return executeMultipleTransactions(transactions);
 };

@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
+import { useDebounce } from "react-use";
 import { motion } from "framer-motion";
 import { SetIcon, WarnIcon } from "../../components/swap/icons";
 import { QuestionIcon } from "../../components/common/Icons";
@@ -65,17 +66,21 @@ export default function SetPopup() {
       ledgerJudge();
     }
   }, [accountId]);
-  useEffect(() => {
-    if (
-      !isLedgerUser &&
-      !smartRoute &&
-      Number(priceImpact || 0) > PRICE_IMPACT_RED_VALUE
-    ) {
-      setHighPriceTip(true);
-    } else {
-      setHighPriceTip(false);
-    }
-  }, [isLedgerUser, smartRoute, priceImpact]);
+  useDebounce(
+    () => {
+      if (
+        !isLedgerUser &&
+        !smartRoute &&
+        Number(priceImpact || 0) > PRICE_IMPACT_RED_VALUE
+      ) {
+        setHighPriceTip(true);
+      } else {
+        setHighPriceTip(false);
+      }
+    },
+    500,
+    [isLedgerUser, smartRoute, priceImpact]
+  );
   async function ledgerJudge() {
     const account = await getAccount();
     const allKeys = await account.getAccessKeys();

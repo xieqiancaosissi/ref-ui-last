@@ -15,6 +15,7 @@ import {
 import { getPoolIndexTvlOR24H, getAllPoolData } from "@/services/pool";
 
 import { BlueCircleLoading } from "../icon";
+import { MobileArrowUp } from "../icon";
 
 export default function Charts({
   title,
@@ -109,11 +110,28 @@ export default function Charts({
     });
   }, [isActive]);
 
+  const [showTime, setShowTime] = useState(false);
+  const modalRef = useRef<any>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: any) => {
+      if (modalRef.current && !modalRef.current.contains(event.target)) {
+        setShowTime(false);
+      }
+    };
+
+    document.addEventListener("click", handleClickOutside, true);
+
+    return () => {
+      document.removeEventListener("click", handleClickOutside, true);
+    };
+  }, []);
+
   return (
     <div className="relative">
       {/* title & tab */}
       <div className={styles.chartsTitle}>
-        <div>
+        <div className="xsm: mb-10">
           <div className="text-gray-50 text-sm">{title}</div>
           <div className="text-white text-xl">
             $
@@ -124,27 +142,78 @@ export default function Charts({
             )}
           </div>
         </div>
-        <div className="text-xs cursor-pointer">
-          {timeTabList.map((item, index) => {
-            return (
-              <div
-                key={item.key + index}
-                className={`
+        <div className="text-xs cursor-pointer relative top-4">
+          {/* Mobile */}
+          <div
+            className="flex items-center justify-between text-white w-24 h-6 rounded px-3 text-sm font-normal xsm:bg-dark-70 lg:hidden"
+            onClick={() => {
+              setShowTime((pre) => !pre);
+            }}
+          >
+            {isActive}D<MobileArrowUp></MobileArrowUp>
+          </div>
+          {showTime && (
+            <div
+              ref={modalRef}
+              className="absolute top-7 lg:hidden"
+              style={{
+                zIndex: 99,
+              }}
+            >
+              {timeTabList.map((item, index) => {
+                return (
+                  <div
+                    key={item.key + index}
+                    className={`
                   ${
                     isActive == item.key
                       ? "text-white bg-gray-100 rounded"
                       : "text-gray-60"
                   }
-                   w-8 h-5 flex items-center justify-center ml-2
+                   lg:w-8 xsm:w-24 h-5 flex items-center justify-center lg:ml-2
                 `}
-                onClick={() => {
-                  setActive(item.key);
-                }}
-              >
-                {item.value}
-              </div>
-            );
-          })}
+                    onClick={() => {
+                      setActive(item.key);
+                      setShowTime(false);
+                    }}
+                  >
+                    {item.value}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+          {/* Mobile End */}
+
+          {/* PC */}
+          <div
+            className="frcc xsm:hidden"
+            style={{
+              zIndex: 99,
+            }}
+          >
+            {timeTabList.map((item, index) => {
+              return (
+                <div
+                  key={item.key + index}
+                  className={`
+                  ${
+                    isActive == item.key
+                      ? "text-white bg-gray-100 rounded"
+                      : "text-gray-60"
+                  }
+                   lg:w-8 xsm:w-16 h-5 flex items-center justify-center lg:ml-2
+                `}
+                  onClick={() => {
+                    setActive(item.key);
+                    setShowTime(false);
+                  }}
+                >
+                  {item.value}
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
       {/* main charts */}

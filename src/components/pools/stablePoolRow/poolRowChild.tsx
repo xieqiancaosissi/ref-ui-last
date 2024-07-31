@@ -52,7 +52,7 @@ export default function PoolRow(props: any) {
           onClick={() => toDetail(item)}
         >
           {/* pools---first child */}
-          <div className="flex items-center">
+          <div className="flex items-center xsm:hidden">
             <div className={styles.tokenImgContainer}>
               {item?.token_account_ids?.map((ite: any, ind: number) => {
                 // if tokenid in tokenIcons
@@ -95,8 +95,62 @@ export default function PoolRow(props: any) {
             )}
           </div>
 
+          {/* pools---first child for mobile*/}
+          <div
+            className="flex items-center justify-between w-full h-16 lg:hidden px-3 rounded-t-md"
+            style={{
+              background:
+                "linear-gradient(to bottom, rgba(33, 43, 53, 0.5), rgba(61, 84, 108, 0.5))",
+            }}
+          >
+            <div className={styles.tokenImgContainer}>
+              {item?.token_account_ids?.map((ite: any, ind: number) => {
+                // if tokenid in tokenIcons
+                return Reflect.has(tokenIcons, ite.tokenId) ? (
+                  // if token is near use new icon
+                  ite.tokenId != "wrap.near" ? (
+                    <img
+                      src={tokenIcons[ite.tokenId]}
+                      key={ite.tokenId + ind}
+                    />
+                  ) : (
+                    <NearIcon />
+                  )
+                ) : (
+                  <img src={ite.icon} key={ite.tokenId + ind} />
+                );
+              })}
+            </div>
+            <div>
+              <span className={`${styles.symbol}`}>
+                {item.token_symbols.join("-")}
+              </span>
+              <div className="w-full flex items-center justify-end mt-1">
+                {/* dangerous */}
+                {renderStarList.includes(item.id.toString()) && (
+                  <StartWatchList className="mr-2" />
+                )}
+                {/* tag */}
+                {item.is_farm && (
+                  <div
+                    className={` bg-farmTagBg text-farmApyColor ${styles.tagPublicStyle}`}
+                  >
+                    Farms
+                  </div>
+                )}
+                {item.is_new && (
+                  <div
+                    className={`bg-primaryGreen text-black ${styles.tagPublicStyle}`}
+                  >
+                    News
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
           {/* last child */}
-          <div className={styles.poolLast}>
+          <div className={`${styles.poolLast} xsm:hidden`}>
             {/* apr */}
             <div>
               <span>{formatPercentage(item.apy)}</span>
@@ -166,8 +220,86 @@ export default function PoolRow(props: any) {
             </div>
           </div>
 
+          {/* last child for mobile*/}
+          <div className={`${styles.poolLastForMobile} lg:hidden`}>
+            {/* apr */}
+            <div>
+              <div className="text-sm text-gray-60 font-normal">APR:</div>
+              <div>
+                <span>{formatPercentage(item.apy)}</span>
+                {item.farm_apy > 0 && (
+                  <span className="text-farmApyColor text-xs mt-1">
+                    +{formatPercentage(item.farm_apy)}
+                  </span>
+                )}
+              </div>
+            </div>
+
+            {/* 24h */}
+            <div>
+              <div className="text-sm text-gray-60 font-normal">
+                Volume (24h):
+              </div>
+              <div>{toInternationalCurrencySystem_usd(item.volume_24h)}</div>
+            </div>
+
+            {/* tvl */}
+            <div>
+              <div className="text-sm text-gray-60 font-normal">TVL:</div>
+              <div>{toInternationalCurrencySystem_number(item.tvl)}</div>
+            </div>
+
+            <div>
+              <div></div>
+              {/* tvl token amounts */}
+              <div className={styles.tokenCharts}>
+                {item?.token_account_ids?.map((ite: any, ind: number) => {
+                  return (
+                    <div key={ite + ind} className="frcc">
+                      <div
+                        className="flex my-1 rounded-xl cursor-pointer border border-transparent hover:border-chartsPink"
+                        style={{
+                          padding: "2px 0",
+                        }}
+                        onMouseEnter={() =>
+                          legendMouseEnter(item.id, ind, index)
+                        }
+                        onMouseLeave={() => {
+                          legendMouseEnter(null, 0, 0);
+                        }}
+                      >
+                        {/* token images */}
+                        {ite.tokenId != "wrap.near" ? (
+                          <img
+                            src={ite.icon}
+                            key={ite.tokenId + ind}
+                            className="w-4 h-4 rounded-full flex-shrink-0 border-dark-90 border"
+                          />
+                        ) : (
+                          <NearIconMini className="flex-shrink-0" />
+                        )}
+                        {/* token name */}
+                        <span className="ml-1">
+                          {toInternationalCurrencySystem_number(
+                            item.amounts[ind].substring(
+                              0,
+                              item.amounts[ind].length - ite.decimals
+                            )
+                          )}
+                        </span>
+                      </div>
+                      {ind < item?.token_account_ids.length - 1 && (
+                        <span className="ml-1">+</span>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+
           {/* hide farm div */}
-          <div className={styles.farmContainer}>
+          <div className={`${styles.farmContainer}`}>
             <div>
               <div className="frcc">
                 <span className=" text-gray-60">Shares:</span>

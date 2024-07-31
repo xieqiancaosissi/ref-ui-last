@@ -34,10 +34,10 @@ export default function ClassicFilterTabModal(props: any) {
           width: "100vw",
           position: "fixed",
           borderRadius: "24px 24px 0 0",
-          bottom: "32px",
+          bottom: "20px",
         }}
       >
-        <div className="text-xs cursor-pointer flex flex-col items-center">
+        <div className="text-xs cursor-pointer flex flex-col items-center px-2">
           {tabList.map((item, index) => {
             return (
               <div
@@ -50,7 +50,7 @@ export default function ClassicFilterTabModal(props: any) {
                   mt-3
                   px-3.5
                   text-sm
-                  rounded
+                  rounded-md
                   ${item.key == isActive ? "bg-gray-20" : ""}                  
                 `}
                 onClick={() => {

@@ -3,9 +3,9 @@ import styles from "./index.module.css";
 import { ExclamationIcon } from "@/components/common/Icons";
 export default function DocTips({ tips, src }: { tips: string; src: string }) {
   return (
-    <div className={`${styles.dclTips} xsm:my-2`}>
-      <div className="flex items-center pl-4">
-        <ExclamationIcon />
+    <div className={`${styles.dclTips}`}>
+      <div className="flex items-center lg:pl-4 xsm:pl-2">
+        <ExclamationIcon className="flex-shrink-0" />
         <span className="mx-1">
           {tips}
           <span

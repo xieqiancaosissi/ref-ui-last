@@ -4,7 +4,7 @@
 }
 
 .headDiv > div:first-child {
-  @apply w-109;
+  @apply lg:w-109;
 }
 
 .headDiv > div:last-child {

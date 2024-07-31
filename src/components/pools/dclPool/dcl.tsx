@@ -72,13 +72,15 @@ export default function Classic({
 
   return (
     <>
-      <PoolDocTips
-        tips="Discretized Concentrated Liquidity (DCL) pools."
-        src="https://guide.ref.finance/products/guides/liquidity-management/ref-v2-pools"
-      />
-      <div className="flex flex-col items-center  w-full mt-8">
+      <div className="xsm:hidden">
+        <PoolDocTips
+          tips="Discretized Concentrated Liquidity (DCL) pools."
+          src="https://guide.ref.finance/products/guides/liquidity-management/ref-v2-pools"
+        />
+      </div>
+      <div className="flex flex-col items-center  w-full lg:mt-8">
         {/*  */}
-        <div className="frc w-276 justify-between">
+        <div className="frc lg:w-276 xsm:w-full justify-between">
           {/* head tab & hide low tvl pools*/}
           <div className="text-xs cursor-pointer frcc"></div>
           <div className="text-white text-xs cursor-default">

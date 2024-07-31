@@ -1,5 +1,5 @@
 .poolContainer {
-  @apply flex items-center w-276 min-h-18 mt-3 rounded-lg text-white text-sm font-medium  justify-between flex-wrap;
+  @apply flex items-center lg:w-276 xsm:w-full min-h-18 mt-3 rounded-lg text-white text-sm font-medium  justify-between flex-wrap;
 }
 .notfarm {
   background: rgba(33, 43, 53, 0.3);
@@ -13,7 +13,7 @@
 }
 
 .poolContainer > div:first-child {
-  @apply w-109 shrink-0 ml-5;
+  @apply lg:w-109 shrink-0 ml-5;
 }
 
 .poolContainer:hover .farmContainer {
@@ -24,12 +24,22 @@
   @apply pb-3;
 }
 .poolLast {
-  @apply frc  mr-1;
+  @apply lg:frc  lg:mr-1 ;
 }
 
 .poolLast > div {
-  @apply w-40 flex flex-col justify-start shrink-0;
+  @apply lg:w-40 xsm:w-1/4 flex flex-col justify-start shrink-0;
 }
+
+.poolLastForMobile {
+  @apply xsm:flex xsm:flex-col xsm:justify-between w-full p-4;
+}
+
+.poolLastForMobile > div {
+  @apply flex items-center justify-between w-full my-2;
+}
+
+
 
 .tokenImgContainer {
   @apply flex items-center;
@@ -54,7 +64,7 @@
 }
 
 .symbol {
-  @apply text-base text-white font-medium pr-2;
+  @apply text-base text-white font-medium lg:pr-2;
 }
 
 .tagPublicStyle {
@@ -62,23 +72,22 @@
 }
 
 .tokenCharts {
-  @apply flex flex-wrap  w-44 text-gray-10 text-xs !important;
+  @apply flex flex-wrap  lg:w-44 xsm:w-full xsm:justify-end text-gray-10 text-xs !important;
 }
 .tokenCharts > div {
-  @apply w-19 !important;
+  @apply xsm:w-19 !important;
 }
 .tokenCharts > div:not(:last-child) {
-  @apply mr-3;
+  @apply lg:mr-3 xsm:mr-1;
 }
 
 .stableCharts {
-  @apply items-end !important;
+  @apply  xsm:hidden items-end !important;
 }
 
 /* farm style */
 .farmContainer {
-  @apply h-16 w-276 frcc p-3 bg-transparent;
-  display: none;
+  @apply h-16 lg:w-276 xsm:w-full frcc p-3 bg-transparent lg:hidden xsm:hidden;
 }
 
 .farmContainer > div:first-child {

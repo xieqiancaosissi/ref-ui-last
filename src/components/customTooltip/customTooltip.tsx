@@ -23,6 +23,10 @@ const CustomTooltip = ({
   style,
 }: Props) => {
   // const isMobile = useClientMobile();
+  const modifiedStyle = {
+    ...style,
+    marginTop: "8px",
+  };
 
   return (
     <ReactTooltip
@@ -33,7 +37,7 @@ const CustomTooltip = ({
       isOpen={isOpen}
       place={place}
       setIsOpen={setIsOpen}
-      style={style}
+      style={modifiedStyle}
       arrowColor="transparent"
     >
       {children}

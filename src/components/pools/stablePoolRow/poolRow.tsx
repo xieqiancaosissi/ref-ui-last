@@ -12,7 +12,7 @@ export default function PoolRow({
   const { updatedMapList } = useTokenMetadata(list);
 
   return (
-    <div className="mb-2 min-h-90 overflow-y-auto overflow-x-hidden hover:cursor-pointer">
+    <div className="xsm:w-full mb-2 min-h-90 overflow-y-auto overflow-x-hidden hover:cursor-pointer">
       {updatedMapList.map((item, index) => {
         return (
           <div key={item.id + index}>

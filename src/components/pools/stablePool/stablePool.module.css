@@ -46,15 +46,15 @@
 
 /* pool head */
 .headDiv {
-  @apply frc text-gray-60 text-sm justify-between px-3 mt-8 mb-2 cursor-default;
+  @apply frc text-gray-60 text-sm justify-between lg:px-3 mt-8 mb-2 cursor-default xsm:w-full;
 }
 
 .headDiv > div:first-child {
-  @apply w-109;
+  @apply lg:w-109 xsm:w-full;
 }
 
 .headDiv > div:last-child {
-  @apply frc flex-1 justify-around;
+  @apply frc flex-1 justify-around xsm:hidden;
 }
 
 .headDiv > div:last-child > div {

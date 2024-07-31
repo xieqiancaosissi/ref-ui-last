@@ -39,3 +39,18 @@ export const classicHeader = [
     value: "TVL",
   },
 ];
+
+export const stableHeader = [
+  {
+    key: "apr",
+    value: "APR",
+  },
+  {
+    key: "24h",
+    value: "Volume (24h)",
+  },
+  {
+    key: "tvl",
+    value: "TVL",
+  },
+];

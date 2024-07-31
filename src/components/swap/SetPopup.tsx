@@ -6,11 +6,17 @@ import { usePersistSwapStore, IPersistSwapStore } from "../../stores/swap";
 import { INIT_SLIPPAGE_VALUE } from "@/utils/constant";
 import swapStyles from "./swap.module.css";
 import CustomTooltip from "@/components/customTooltip/customTooltip";
+import SupportLedgerGuide from "@/components/common/SupportLedgerGuide";
+import { useAccountStore } from "@/stores/account";
+import { getAccount } from "@/utils/near";
 
 export default function SetPopup() {
   const [show, setShow] = useState<boolean>();
+  const [ledgerTip, setLedgerTip] = useState<boolean>(false);
   const slippageOptions = ["0.1", "0.5", "1"];
   const persistSwapStore: IPersistSwapStore = usePersistSwapStore();
+  const accountStore = useAccountStore();
+  const accountId = accountStore.getAccountId();
   const smartRoute = persistSwapStore.getSmartRoute();
   const slippageStore = persistSwapStore.getSlippage();
   const [slippage, setSlippage] = useState<string>(
@@ -46,14 +52,51 @@ export default function SetPopup() {
     }
     return status;
   }, [slippage]);
+  useEffect(() => {
+    if (accountId) {
+      ledgerJudge();
+    }
+  }, [accountId]);
+  async function ledgerJudge() {
+    const account = await getAccount();
+    const allKeys = await account.getAccessKeys();
+    const isWalletMeta = allKeys.some((k: any) => {
+      if (k.access_key.permission === "FullAccess") return false;
+      const meta =
+        k.access_key.permission.FunctionCall.method_names.includes(
+          "__wallet__metadata"
+        );
+      return meta;
+    });
+
+    const isSelectLedger =
+      window.selector.store.getState().selectedWalletId === "ledger";
+    const show = !!(isSelectLedger || isWalletMeta);
+    if (show && smartRoute) {
+      setShow(true);
+      setLedgerTip(true);
+      persistSwapStore.setSmartRoute(false);
+    } else {
+      setShow(false);
+      setLedgerTip(false);
+    }
+  }
+
   function switchSmartRoute() {
     persistSwapStore.setSmartRoute(!smartRoute);
   }
   function switchSet() {
     setShow(!show);
+    if (show) {
+      setLedgerTip(false);
+    }
   }
   function hideSet() {
     setShow(false);
+    setLedgerTip(false);
+  }
+  function hideLedgerTip() {
+    setLedgerTip(false);
   }
   function onchange(e: any) {
     const value = e.target.value;
@@ -75,103 +118,102 @@ export default function SetPopup() {
       <span className={swapStyles.swapControlButton} onClick={switchSet}>
         <SetIcon />
       </span>
-      <div
-        className={`right-0 top-9 rounded-lg border border-gray-140 bg-gray-40 p-4 ${
-          show ? "absolute" : "hidden"
-        }`}
-      >
-        {/* title */}
-        <span className="text-base font-bold text-gray-110 whitespace-nowrap">
-          Transaction Settings
-        </span>
-        {/* Slippage tolerance */}
-        <div className="my-6">
-          <span className="text-sm text-gray-50">Slippage tolerance</span>
-          <div className="flex items-stretch justify-between mt-2 gap-2 text-sm">
-            <div
-              className="flex items-center gap-1 border border-dark-50 rounded bg-black bg-opacity-20"
-              style={{ padding: "3px" }}
-            >
-              {slippageOptions.map((item) => {
-                return (
-                  <span
-                    className={`flex items-center justify-center  h-5 rounded px-2  cursor-pointer ${
-                      slippage == item
-                        ? "bg-gray-120 text-white"
-                        : "text-gray-50"
-                    }`}
-                    key={item}
-                    onClick={() => {
-                      setSlippage(item);
-                    }}
-                  >
-                    {item}%
-                  </span>
-                );
-              })}
+      <div className={`right-0 top-9 ${show ? "absolute" : "hidden"}`}>
+        <div className={`rounded-lg border border-gray-140 bg-gray-40 p-4`}>
+          {/* title */}
+          <span className="text-base font-bold text-gray-110 whitespace-nowrap">
+            Transaction Settings
+          </span>
+          {/* Slippage tolerance */}
+          <div className="my-6">
+            <span className="text-sm text-gray-50">Slippage tolerance</span>
+            <div className="flex items-stretch justify-between mt-2 gap-2 text-sm">
+              <div
+                className="flex items-center gap-1 border border-dark-50 rounded bg-black bg-opacity-20"
+                style={{ padding: "3px" }}
+              >
+                {slippageOptions.map((item) => {
+                  return (
+                    <span
+                      className={`flex items-center justify-center  h-5 rounded px-2  cursor-pointer ${
+                        slippage == item
+                          ? "bg-gray-120 text-white"
+                          : "text-gray-50"
+                      }`}
+                      key={item}
+                      onClick={() => {
+                        setSlippage(item);
+                      }}
+                    >
+                      {item}%
+                    </span>
+                  );
+                })}
+              </div>
+              <div
+                className="flex items-center gap-1 border border-dark-50 rounded bg-black bg-opacity-20 text-white"
+                style={{ padding: "3px 6px" }}
+              >
+                <input
+                  type="number"
+                  className="w-8 bg-transparent outline-none text-right"
+                  value={slippage}
+                  onChange={onchange}
+                />
+                %
+              </div>
             </div>
-            <div
-              className="flex items-center gap-1 border border-dark-50 rounded bg-black bg-opacity-20 text-white"
-              style={{ padding: "3px 6px" }}
-            >
-              <input
-                type="number"
-                className="w-8 bg-transparent outline-none text-right"
-                value={slippage}
-                onChange={onchange}
-              />
-              %
-            </div>
+            {/* Slippage Tip */}
+            {slippageStatus == 0 ? null : (
+              <div
+                className={`flex items-start gap-1  rounded px-1.5 py-1 text-xs  bg-opacity-15 mt-1.5 ${
+                  slippageStatus == 1
+                    ? "bg-yellow-10 text-yellow-10"
+                    : "bg-red-10 text-red-10"
+                }`}
+              >
+                <WarnIcon className="relative top-0.5 transform scale-75 flex-shrink-0" />
+                <span>
+                  {slippageStatus == 1
+                    ? "Be careful, please check the minimum you can receive"
+                    : "The slippage tolerance is invalid"}
+                </span>
+              </div>
+            )}
           </div>
-          {/* Slippage Tip */}
-          {slippageStatus == 0 ? null : (
+          {/* Smart Route switch */}
+          <div className="flexBetween">
+            <div className="flexBetween gap-1">
+              <span className="text-sm text-gray-50">Disable Smart Route</span>
+              <div
+                className="text-white text-right"
+                data-class="reactTip"
+                data-tooltip-id="smartTipId"
+                data-place="top"
+                data-tooltip-html={smartTip()}
+              >
+                <QuestionIcon className="text-gray-10 hover:text-white cursor-pointer" />
+                <CustomTooltip id="smartTipId" />
+              </div>
+            </div>
             <div
-              className={`flex items-start gap-1  rounded px-1.5 py-1 text-xs  bg-opacity-15 mt-1.5 ${
-                slippageStatus == 1
-                  ? "bg-yellow-10 text-yellow-10"
-                  : "bg-red-10 text-red-10"
+              className={`flex items-center relative h-4 rounded-2xl cursor-pointer p-px w-8 ${
+                smartRoute ? "bg-gray-130" : "bg-greenGradientDark"
               }`}
+              onClick={switchSmartRoute}
             >
-              <WarnIcon className="relative top-0.5 transform scale-75 flex-shrink-0" />
-              <span>
-                {slippageStatus == 1
-                  ? "Be careful, please check the minimum you can receive"
-                  : "The slippage tolerance is invalid"}
-              </span>
-            </div>
-          )}
-        </div>
-        {/* Smart Route switch */}
-        <div className="flexBetween">
-          <div className="flexBetween gap-1">
-            <span className="text-sm text-gray-50">Disable Smart Route</span>
-            <div
-              className="text-white text-right"
-              data-class="reactTip"
-              data-tooltip-id="smartTipId"
-              data-place="top"
-              data-tooltip-html={smartTip()}
-            >
-              <QuestionIcon className="text-gray-10 hover:text-white cursor-pointer" />
-              <CustomTooltip id="smartTipId" />
+              <motion.div
+                className="absolute rounded-full border border-gray-40 border-opacity-40"
+                variants={variants}
+                initial={smartRoute ? "off" : "on"}
+                animate={smartRoute ? "off" : "on"}
+              >
+                <span className="block w-3 h-3 bg-white rounded-full"></span>
+              </motion.div>
             </div>
           </div>
-          <div
-            className={`flex items-center relative h-4 rounded-2xl cursor-pointer p-px w-8 ${
-              smartRoute ? "bg-gray-130" : "bg-greenGradientDark"
-            }`}
-            onClick={switchSmartRoute}
-          >
-            <motion.div
-              className="absolute rounded-full border border-gray-40 border-opacity-40"
-              variants={variants}
-              initial={smartRoute ? "off" : "on"}
-              animate={smartRoute ? "off" : "on"}
-            >
-              <span className="block w-3 h-3 bg-white rounded-full"></span>
-            </motion.div>
-          </div>
         </div>
+        {ledgerTip ? <SupportLedgerGuide handleClose={hideLedgerTip} /> : null}
       </div>
     </div>
   );

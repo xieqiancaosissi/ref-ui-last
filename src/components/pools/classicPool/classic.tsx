@@ -75,14 +75,26 @@ export default function Classic({
     if (mobilePros?.which == "classicTabChange") {
       setActive(mobilePros.key.key);
     }
+
+    // value change
+    if (mobilePros?.which == "classicTabSortChange") {
+      setSortMap(mobilePros?.sortMap);
+    }
+
+    // sort arrow change
+    if (mobilePros?.which == "classicTabSortArrowChange") {
+      setSortMap({ key: sortMap.key, sort: mobilePros?.sort });
+    }
   }, [mobilePros]);
 
   return (
     <>
-      <PoolDocTips
-        tips="Classic pools are based on the Uniswap v2 algorithm."
-        src="https://guide.ref.finance/products/guides/liquidity-management/classic-pools"
-      />
+      <div className="xsm:hidden">
+        <PoolDocTips
+          tips="Classic pools are based on the Uniswap v2 algorithm."
+          src="https://guide.ref.finance/products/guides/liquidity-management/classic-pools"
+        />
+      </div>
       <div className="flex flex-col items-center  w-full mt-8">
         {/*  */}
         <div className="frc lg:w-276 xsm:w-full justify-between">
@@ -110,7 +122,29 @@ export default function Classic({
               );
             })}
           </div>
-          <div className="text-white text-xs cursor-default xsm:hidden">
+
+          <div className="flex items-center lg:hidden">
+            {tabList.map((item, index) => {
+              return (
+                <div
+                  key={item.key + "_stablepool_" + index}
+                  className={`w-10 h-5 frcc border border-gray-40 rounded-xl text-xs p-1 mx-0.5 ${
+                    isActive == item.key
+                      ? "bg-gray-100 text-white"
+                      : "text-gray-10 "
+                  }`}
+                  onClick={() => {
+                    setActive(item.key);
+                    setCurrentPage(1);
+                  }}
+                >
+                  {item.value}
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="text-white text-xs cursor-default">
             <label className={styles.customCheckbox}>
               <input
                 type="checkbox"
@@ -122,13 +156,13 @@ export default function Classic({
               />
               <span className={styles.checkmark}></span>
               <span className={styles.checkPlaceholder}>
-                Hide low TVL pools
+                Hide low TVL <span className="xsm:hidden">pools</span>
               </span>
             </label>
           </div>
         </div>
         {/*  */}
-        <div className="text-white text-xs cursor-default ml-auto lg:hidden">
+        {/* <div className="text-white text-xs cursor-default ml-auto lg:hidden">
           <label className={styles.customCheckbox}>
             <input
               type="checkbox"
@@ -139,9 +173,9 @@ export default function Classic({
               }}
             />
             <span className={styles.checkmark}></span>
-            <span className={styles.checkPlaceholder}>Hide low TVL pools</span>
+            <span className={styles.checkPlaceholder}>Hide low TVL</span>
           </label>
-        </div>
+        </div> */}
         {/* pool header */}
         <header className={styles.headDiv}>
           <div>Pools</div>

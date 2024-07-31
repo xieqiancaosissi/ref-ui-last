@@ -1,30 +1,45 @@
 .chartsContainter {
   @apply w-full fccc;
-  background: linear-gradient(
-    180deg,
-    rgba(33, 43, 53, 0) 0%,
-    rgba(33, 43, 53, 0.4) 100%
-  );
-  padding: 30px 0 6px 0;
+}
+
+@media (min-width: 1025px) {
+  .chartsContainter {
+    background: linear-gradient(
+      180deg,
+      rgba(33, 43, 53, 0) 0%,
+      rgba(33, 43, 53, 0.4) 100%
+    );
+    padding: 30px 0 6px 0;
+  }
 }
 
 .filterPoolType {
-  @apply text-xs cursor-pointer border border-gray-100 rounded lg:w-101 xsm:w-full xsm:max-w-78 h-9 flex items-center;
+  @apply text-xs cursor-pointer border border-gray-100 rounded lg:w-126 xsm:w-full xsm:justify-between h-9 flex items-center;
 }
 
 .filterSeacrhInputContainer {
   @apply border border-gray-100 w-58 h-9 frc p-1 rounded;
 }
 
+.filterSeacrhInputContainerForMobile {
+  @apply border border-gray-100 w-1/2 h-9 frc p-1 rounded-md;
+  background: rgba(126, 138, 147, 0.1);
+}
+
 .filterSearchInputBefore {
-  @apply frcc w-7 h-7   text-base rounded-md select-none cursor-pointer;
+  @apply frcc w-7 h-7  xsm:flex-shrink-0  text-base rounded-md select-none cursor-pointer;
 }
 
 .filterSearchInput {
-  @apply border-none w-40 bg-transparent outline-none caret-white mr-1 ml-1 text-white text-sm;
+  @apply border-none lg:w-40 xsm:w-full bg-transparent outline-none caret-white mr-1 ml-1 text-white lg:text-sm xsm:text-xs;
+}
+.filterSearchInputForMobile {
+  @apply border-none flex-1 bg-transparent outline-none caret-white mr-1 ml-1 text-white text-sm;
+  background: rgba(126, 138, 147, 0.1);
 }
 
-.filterSeacrhInputContainer:hover {
+.filterSeacrhInputContainer:hover,
+.filterSeacrhInputContainerForMobile:hover {
   @apply border border-green-10;
 }
 

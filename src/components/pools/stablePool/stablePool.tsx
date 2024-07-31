@@ -77,13 +77,26 @@ export default function Classic({
     setActivePools("");
   }, [searchValue]);
 
+  useEffect(() => {
+    // value change
+    if (mobilePros?.which == "stableTabSortChange") {
+      setSortMap(mobilePros?.sortMap);
+    }
+
+    // sort arrow change
+    if (mobilePros?.which == "stableTabSortArrowChange") {
+      setSortMap({ key: sortMap.key, sort: mobilePros?.sort });
+    }
+  }, [mobilePros]);
   return (
     <>
-      <PoolDocTips
-        tips="Stable pools, which can contain two or more tokens, use Curve's StableSwap algorithm."
-        src="https://guide.ref.finance/products/guides/liquidity-management/stable-and-rated-pools"
-      />
-      <div className="flex flex-col items-center  w-full mt-8">
+      <div className="xsm:hidden">
+        <PoolDocTips
+          tips="Stable pools, which can contain two or more tokens, use Curve's StableSwap algorithm."
+          src="https://guide.ref.finance/products/guides/liquidity-management/stable-and-rated-pools"
+        />
+      </div>
+      <div className="flex flex-col items-center  w-full lg:mt-8">
         {/*  */}
         {/* head tab & hide low tvl pools*/}
 
@@ -109,8 +122,8 @@ export default function Classic({
 
         {/* pool header */}
         <header className={styles.headDiv}>
-          <div className="flex items-center">
-            <span>Pools</span>
+          <div className="flex items-center xsm:w-full">
+            <span className="xsm:hidden">Pools</span>
             {poolsFilterList.map((item, index) => {
               return (
                 <div
@@ -127,7 +140,7 @@ export default function Classic({
               );
             })}
           </div>
-          <div>
+          <div className="xsm:hidden">
             {classicHeader.map((item, index) => {
               return item.key ? (
                 <div
@@ -182,7 +195,7 @@ export default function Classic({
         )}
 
         {/* pagination */}
-        <div className="w-276 my-4">
+        <div className="lg:w-276 xsm:w-full my-4">
           <Pagination
             totalItems={totalItems}
             itemsPerPage={20}

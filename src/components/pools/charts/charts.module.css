@@ -5,7 +5,7 @@
   @apply flex-col items-center;
 }
 .chartsTitle > div:last-child {
-  @apply flex items-center;
+  @apply lg:flex lg:items-center  xsm:fccc;
 }
 .chartsContent {
   @apply flex items-start lg:h-43 overflow-hidden  xsm:bg-transparent xs:h-50 sm:h-95 md:h-140;

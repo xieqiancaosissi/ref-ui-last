@@ -23,6 +23,7 @@ import {
 } from "../Tool";
 import { display_value } from "@/services/aurora";
 import { ArrowUpIcon, JumpUpperLeft } from "../icon";
+import { useRouter } from "next/router";
 const AssetData = createContext<AssetDataContextType | null>(null);
 export default function Asset() {
   const {
@@ -211,7 +212,7 @@ function AssetPage() {
     display_increase_percent,
     increase_percent_done,
   } = useContext(AssetData)!;
-  console.log(increase_percent_done, "increase_percent_done");
+  const router = useRouter();
   return (
     <div className="flex mb-1">
       <div className="bg-gray-20 bg-opacity-70 rounded-md p-4 w-1/5 mr-1">
@@ -257,7 +258,7 @@ function AssetPage() {
               className="cursor-pointer"
               onClick={() => {
                 localStorage.setItem("REF_FI_POOL_ACTIVE_TAB", "v2");
-                openUrl("/pools");
+                router.push("/pools").then(() => window.location.reload());
               }}
             />
           </div>
@@ -282,7 +283,7 @@ function AssetPage() {
               className="cursor-pointer"
               onClick={() => {
                 localStorage.setItem("REF_FI_POOL_ACTIVE_TAB", "v2");
-                openUrl("/pools");
+                router.push("/pools").then(() => window.location.reload());
               }}
             />
           </div>
@@ -293,7 +294,7 @@ function AssetPage() {
               className="text-sm text-gray-10 ml-1 underline cursor-pointer"
               onClick={() => {
                 localStorage.setItem("BOOST_FARM_TAB", "yours");
-                openUrl("/farms");
+                router.push("/farms").then(() => window.location.reload());
               }}
             >
               in farm
@@ -307,7 +308,7 @@ function AssetPage() {
               className="cursor-pointer"
               onClick={() => {
                 localStorage.setItem("REF_FI_POOL_ACTIVE_TAB", "v2");
-                openUrl("/xref");
+                router.push("/xref").then(() => window.location.reload());
               }}
             />
           </div>

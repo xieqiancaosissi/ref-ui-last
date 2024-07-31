@@ -17,6 +17,7 @@ import CustomTooltip from "@/components/customTooltip/customTooltip";
 import { ArrowJump } from "../Tool";
 import { REF_POOL_NAV_TAB_KEY } from "@/components/pools/detail/liquidity/dclYourLiquidity/RemovePoolV3";
 import { JumpUpperLeft } from "../icon";
+import { useRouter } from "next/router";
 const AssetProfitData = createContext<AssetProfitDataContextType | null>(null);
 export default function AssetProfit() {
   const {
@@ -162,6 +163,7 @@ function AssetProfitPage() {
     show_total_fees_value,
     show_total_unClaimed_rewrads_value,
   } = useContext(AssetProfitData)!;
+  const router = useRouter();
   return (
     <div className="flex mb-9">
       <div className="bg-gray-20 bg-opacity-70 rounded-md p-4 w-1/5 mr-1">
@@ -190,7 +192,7 @@ function AssetProfitPage() {
               className="cursor-pointer"
               onClick={() => {
                 sessionStorage.setItem(REF_POOL_NAV_TAB_KEY, "/yourliquidity");
-                openUrl("/yourliquidity");
+                router.push("/pools").then(() => window.location.reload());
               }}
             />
           </div>
@@ -203,7 +205,7 @@ function AssetProfitPage() {
               className="cursor-pointer"
               onClick={() => {
                 localStorage.setItem("farmV2Status", "my");
-                openUrl("/farms");
+                router.push("/farms").then(() => window.location.reload());
               }}
             />
           </div>

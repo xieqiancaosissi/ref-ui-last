@@ -115,10 +115,7 @@ export default function RefPanelModal({
         },
       }}
     >
-      <div
-        style={{ width: "900px", height: "72vh", overflow: "auto" }}
-        className="text-white"
-      >
+      <div style={{ width: "900px", height: "80vh" }} className="text-white">
         <div className="rounded-lg bg-dark-60 p-6">
           <div className="frcb mb-6">
             <div className="flex items-center">
@@ -205,18 +202,20 @@ export default function RefPanelModal({
               set_your_classic_lp_all_in_farms,
             }}
           >
-            <Asset></Asset>
-            <AssetProfit></AssetProfit>
-            <Tab></Tab>
-            <div className="pt-4">
-              <div className={`${activeTab == "1" ? "" : "hidden"}`}>
-                <Orders></Orders>
-              </div>
-              <div className={`${activeTab == "2" ? "" : "hidden"}`}>
-                <Positions></Positions>
-              </div>
-              <div className={`${activeTab == "3" ? "" : "hidden"}`}>
-                <Farms></Farms>
+            <div style={{ height: "70vh", overflow: "auto" }}>
+              <Asset></Asset>
+              <AssetProfit></AssetProfit>
+              <Tab></Tab>
+              <div className="pt-4">
+                <div className={`${activeTab == "1" ? "" : "hidden"}`}>
+                  <Orders></Orders>
+                </div>
+                <div className={`${activeTab == "2" ? "" : "hidden"}`}>
+                  <Positions></Positions>
+                </div>
+                <div className={`${activeTab == "3" ? "" : "hidden"}`}>
+                  <Farms></Farms>
+                </div>
               </div>
             </div>
           </PortfolioData.Provider>

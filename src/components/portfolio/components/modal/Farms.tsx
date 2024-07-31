@@ -308,7 +308,7 @@ export default function Farms(props: any) {
             <Skeleton
               style={{ width: "100%" }}
               height={40}
-              count={2}
+              count={4}
               className="mt-4"
             />
           </SkeletonTheme>

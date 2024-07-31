@@ -911,10 +911,18 @@ function OrderCard({
           <Skeleton
             style={{ width: "100%" }}
             height={40}
-            count={2}
+            count={4}
             className="mt-4"
           />
         </SkeletonTheme>
+      ) : noData_status ? (
+        <div className="w-full h-32 frcc bg-gray-20 bg-opacity-50 rounded-lg text-sm text-gray-60">
+          Your
+          <span className="text-white mx-1 underline cursor-pointer">
+            Limit Orders
+          </span>
+          will appear here
+        </div>
       ) : (
         <>
           <div
@@ -934,7 +942,7 @@ function OrderCard({
                 <span
                   onClick={() => {
                     localStorage.setItem(SWAP_MODE_KEY, SWAP_MODE.LIMIT);
-                    openUrl("/limit");
+                    router.push("/limit").then(() => window.location.reload());
                   }}
                   className="flex items-center justify-center text-xs text-gray-10 border border-gray-90 rounded-md px-1.5 cursor-pointer hover:text-white py-0.5"
                 >
@@ -959,12 +967,6 @@ function OrderCard({
           </div>
         </>
       )}
-      {/* pc no data */}
-      {/* {noData_status  ? (
-        <NoDataCard
-          text={intl.formatMessage({ id: 'active_order_appear_here_tip' })}
-        />
-      ) : null} */}
     </div>
   );
 }

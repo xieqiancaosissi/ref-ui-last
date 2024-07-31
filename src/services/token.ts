@@ -4,7 +4,7 @@ import { getAccount, viewFunction } from "../utils/near";
 import db from "@/db/RefDatabase";
 import metadataDefaults from "@/utils/tokenIconConfig";
 import { NEAR_META_DATA } from "@/utils/nearMetaData";
-import { TokenMetadata } from "./ft-contract";
+import { TokenMetadata, ftViewFunction } from "./ft-contract";
 import { Transaction } from "@/interfaces/swap";
 import { STORAGE_TO_REGISTER_WITH_FT } from "@/utils/constant";
 import {
@@ -321,6 +321,18 @@ export const useTokenBalances = () => {
   return balances;
 };
 
+export const farmGetBalance = (tokenId: string, account_id?: string) => {
+  if (tokenId === "NEAR") {
+    return getAccountNearBalance().then(({ available }: any) => available);
+  }
+  return ftViewFunction(tokenId, {
+    methodName: "ft_balance_of",
+    args: {
+      account_id: account_id || getAccountId(),
+    },
+  }).catch(() => "0");
+};
+
 export const getDepositableBalance = async (
   tokenId: string,
   decimals?: number
@@ -331,7 +343,7 @@ export const getDepositableBalance = async (
       return toReadableNumber(safeDecimals, available);
     });
   } else if (tokenId) {
-    return ftGetBalance(tokenId)
+    return farmGetBalance(tokenId)
       .then((res: string) => {
         return toReadableNumber(safeDecimals, res);
       })

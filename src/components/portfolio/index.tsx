@@ -137,7 +137,7 @@ export default function Overview() {
     >
       <div className="mt-4 bg-gray-20 py-2.5 pl-2 pr-4 rounded-3xl h-11 flex items-end justify-between mb-8">
         <div className="frcc">
-          <TotalAssetsIcon />
+          <TotalAssetsIcon className="w-9 w-11" />
           <p className="text-sm	ml-2 text-gray-50 mt-4">Total Assets</p>
         </div>
         <div className="text-primaryGreen text-base paceGrotesk-Bold">

@@ -437,6 +437,41 @@ export function WalletWithdraw(props: any) {
   );
 }
 
+export function DclBorder(props: any) {
+  return (
+    <svg
+      {...props}
+      width="77"
+      height="18"
+      viewBox="0 0 77 18"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <rect
+        x="0.5"
+        y="0.5"
+        width="76"
+        height="17"
+        rx="3.5"
+        stroke="url(#paint0_linear_5013_14918)"
+      />
+      <defs>
+        <linearGradient
+          id="paint0_linear_5013_14918"
+          x1="0"
+          y1="9"
+          x2="77"
+          y2="9"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stopColor="#004EE2" />
+          <stop offset="1" stopColor="#44DE1D" />
+        </linearGradient>
+      </defs>
+    </svg>
+  );
+}
+
 export function MyNearWalltIcon(props: any) {
   return (
     <svg

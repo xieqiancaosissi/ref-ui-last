@@ -73,7 +73,8 @@ import { getDCLAccountFee } from "@/services/indexer";
 import { get_unClaimed_fee_data } from "@/components/pools/detail/dcl/d3Chart/DetailFun";
 import { ButtonTextWrapper } from "@/components/common/Button";
 import { RemovePoolV3 } from "@/components/pools/detail/liquidity/dclYourLiquidity/RemovePoolV3";
-import { OrdersArrow, WaterDropIcon } from "../icon";
+import { DclBorder, OrdersArrow, WaterDropIcon } from "../icon";
+import { useRouter } from "next/router";
 
 const { REF_UNI_V3_SWAP_CONTRACT_ID } = getConfig();
 export function YourLiquidityV2(props: any) {
@@ -89,6 +90,7 @@ export function YourLiquidityV2(props: any) {
     setLiquidityLoadingDone,
     setLiquidityQuantity,
   } = props;
+  const router = useRouter();
   const [all_seeds, set_all_seeds] = useState<Seed[]>([]);
   const [tokenPriceList, setTokenPriceList] = useState<Record<string, any>>({});
   const [all_pools_map, set_all_pools_map] =
@@ -167,6 +169,7 @@ export function YourLiquidityV2(props: any) {
           poolDetail: all_pools_map?.[liquidity.pool_id],
           liquidityDetail: dcl_liquidities_details_map?.[lpt_id],
           liquidities_tokens_metas,
+          router,
         });
       })
     ).then((yourLiquidityList) => {
@@ -384,6 +387,7 @@ async function getYourLiquidityData({
   poolDetail,
   liquidities_tokens_metas,
   liquidityDetail,
+  router,
 }: {
   liquidity: UserLiquidityInfo;
   all_seeds: Seed[];
@@ -391,6 +395,7 @@ async function getYourLiquidityData({
   poolDetail: PoolInfo;
   liquidities_tokens_metas: Record<string, TokenMetadata>;
   liquidityDetail: UserLiquidityInfo;
+  router: any;
 }) {
   function get_your_liquidity_in_farm_range() {
     if (!related_seed_info.targetSeed || !related_seed_info.targetSeed.seed_id)
@@ -573,11 +578,11 @@ async function getYourLiquidityData({
       });
       let url;
       if (related_farms.length > 0 && actives.length == 0) {
-        url = `/v2farms/${link_params}-e`;
+        url = `/farms/${link_params}-e`;
       } else {
-        url = `/v2farms/${link_params}-r`;
+        url = `/farms/${link_params}-r`;
       }
-      openUrl(url);
+      router.push(url).then(() => window.location.reload());
     }
   }
   function getRateMapTokens() {
@@ -1207,10 +1212,13 @@ function UserLiquidityLineStyleGroupPage() {
     poolDetail,
     tokenFeeValue,
   } = useContext(GroupData)!;
+  const router = useRouter();
   const [switch_off, set_switch_off] = useState<boolean>(true);
   function goPoolDetailPage() {
     const params_str = get_pool_name(poolDetail.pool_id);
-    openUrl(`/poolV2/${params_str}`);
+    router
+      .push(`/pools/dcl/${params_str}`)
+      .then(() => window.location.reload());
   }
   return (
     <>
@@ -1241,8 +1249,9 @@ function UserLiquidityLineStyleGroupPage() {
               onClick={() => {
                 goPoolDetailPage();
               }}
-              className="frcc text-xs rounded-md px-1.5 cursor-pointer py-0.5  mr-1.5"
+              className="frcc text-xs rounded-md px-1.5 cursor-pointer py-0.5  mr-1.5 relative cursor-pointer"
             >
+              <DclBorder className="absolute top-0 left-0" />
               DCL Pools
               <OrdersArrow className="ml-1"></OrdersArrow>
             </span>

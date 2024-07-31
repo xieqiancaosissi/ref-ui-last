@@ -24,7 +24,6 @@
   @apply lg:min-w-40 lg:fccc xsm:flex xsm:items-center xsm:justify-between;
 } */
 
-
 .pcdiv1 {
   @apply w-109 xsm:hidden;
 }
@@ -37,7 +36,6 @@
   @apply min-w-40 fccc;
 }
 
-
 .mobilediv1 {
   @apply lg:hidden;
 }
@@ -49,8 +47,6 @@
 .mobilediv2 > div {
   @apply xsm:flex xsm:items-center xsm:justify-between;
 }
-
-
 
 .tokenImgContainer {
   @apply flex items-center;

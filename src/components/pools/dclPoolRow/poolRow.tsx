@@ -47,7 +47,7 @@ export default function PoolRow({
             onClick={() => toDetail(item)}
           >
             {/* tokens */}
-            <div className="flex items-center">
+            <div className="flex items-center xsm:hidden">
               <div className={styles.tokenImgContainer}>
                 {item?.token_account_ids?.map((ite: any, ind: number) => {
                   // if tokenid in tokenIcons
@@ -99,7 +99,8 @@ export default function PoolRow({
                 </div>
               )}
             </div>
-            <div>
+
+            <div className="xsm:hidden">
               {/* fee */}
               <div>{formatPercentage(item.total_fee * 100)}</div>
               {/* apr */}
@@ -115,6 +116,108 @@ export default function PoolRow({
               <div>{toInternationalCurrencySystem_usd(item.volume_24h)}</div>
               {/* tvl */}
               <div>{toInternationalCurrencySystem_number(item.tvl)}</div>
+            </div>
+            {/* PC END */}
+
+            {/* Mobile Start */}
+            <div
+              className="flex items-center justify-between w-full lg:hidden h-16 px-3 rounded-t-md"
+              style={{
+                background:
+                  "linear-gradient(to bottom, rgba(33, 43, 53, 0.5),rgba(61, 84, 108, 0.5))",
+              }}
+            >
+              <div className={styles.tokenImgContainer}>
+                {item?.token_account_ids?.map((ite: any, ind: number) => {
+                  // if tokenid in tokenIcons
+                  return Reflect.has(tokenIcons, ite.tokenId) ? (
+                    // if token is near use new icon
+                    ite.tokenId != "wrap.near" ? (
+                      <img
+                        src={tokenIcons[ite.tokenId]}
+                        key={ite.tokenId + ind}
+                      />
+                    ) : (
+                      <NearIcon />
+                    )
+                  ) : (
+                    <img src={ite.icon} key={ite.tokenId + ind} />
+                  );
+                })}
+              </div>
+              <div className="flex flex-col">
+                <div className="frcc mb-1">
+                  <span className={styles.symbol}>
+                    {item.token_symbols.join("-")}
+                  </span>
+                  {/* dangerous */}
+                  {checkIsHighRisk(pureIdList, item).risk && (
+                    <span className="mr-2 frcc">
+                      <HoverTooltip
+                        tooltipText={
+                          checkIsHighRisk(pureIdList, item).tips || ""
+                        }
+                      >
+                        <DangerousIcon />
+                      </HoverTooltip>
+                    </span>
+                  )}
+                </div>
+                {/* is collect */}
+                {renderStarList.includes(item.id.toString()) && (
+                  <StartWatchList className="mr-2" />
+                )}
+
+                {/* tag */}
+                {item.is_farm && (
+                  <div
+                    className={` bg-farmTagBg text-farmApyColor ${styles.tagPublicStyle}`}
+                  >
+                    Farms
+                  </div>
+                )}
+                {item.is_new && (
+                  <div
+                    className={`bg-primaryGreen text-black ${styles.tagPublicStyle}`}
+                  >
+                    News
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="lg:hidden">
+              {/* fee */}
+              <div>
+                <span className="text-gray-60 text-sm font-normal">Fee:</span>
+                {formatPercentage(item.total_fee * 100)}
+              </div>
+              {/* apr */}
+              <div className="mt-2">
+                <span className="text-gray-60 text-sm font-normal">
+                  Top Bin APR(24h):
+                </span>
+                <div>
+                  <span>{formatPercentage(item.apy)}</span>
+                  {item.farm_apy > 0 && (
+                    <span className="text-farmApyColor text-xs mt-1">
+                      +{formatPercentage(item.farm_apy)}
+                    </span>
+                  )}
+                </div>
+              </div>
+              {/* 24h */}
+              <div className="mt-2">
+                <span className="text-gray-60 text-sm font-normal">
+                  Volume (24h):
+                </span>
+                {toInternationalCurrencySystem_usd(item.volume_24h)}
+              </div>
+              {/* tvl */}
+              <div className="mt-2">
+                <span className="text-gray-60 text-sm font-normal">TVL:</span>
+                {toInternationalCurrencySystem_number(item.tvl)}
+              </div>
             </div>
           </div>
         );

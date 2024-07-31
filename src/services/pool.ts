@@ -2,7 +2,7 @@ import getConfig from "../utils/config";
 import { getAuthenticationHeaders } from "../services/signature";
 import { ftGetStorageBalance } from "./ft-contract";
 import { storageDepositForFTAction } from "./creator/storage";
-import { executeMultipleTransactions } from "./createPoolFn";
+import { executeMultipleTransactions } from "@/utils/near";
 import { refFiViewFunction } from "../utils/contract";
 import { getAccountId } from "../utils/wallet";
 import moment from "moment";

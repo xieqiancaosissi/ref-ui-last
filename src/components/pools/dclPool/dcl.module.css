@@ -1,6 +1,6 @@
 /* pool head */
 .headDiv {
-  @apply frc text-gray-60 text-sm justify-between px-3 mt-8 mb-2 cursor-default;
+  @apply frc text-gray-60 text-sm justify-between px-3 mt-8 mb-2 cursor-default xsm:hidden;
 }
 
 .headDiv > div:first-child {

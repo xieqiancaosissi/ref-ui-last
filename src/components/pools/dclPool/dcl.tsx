@@ -70,6 +70,17 @@ export default function Classic({
     setCurrentPage(1);
   }, [sortMap.key, sortMap.sort, isChecked, isActive, searchValue]);
 
+  useEffect(() => {
+    // value change
+    if (mobilePros?.which == "dclTabSortChange") {
+      setSortMap(mobilePros?.sortMap);
+    }
+
+    // sort arrow change
+    if (mobilePros?.which == "dclTabSortArrowChange") {
+      setSortMap({ key: sortMap.key, sort: mobilePros?.sort });
+    }
+  }, [mobilePros]);
   return (
     <>
       <div className="xsm:hidden">
@@ -159,7 +170,7 @@ export default function Classic({
         )}
 
         {/* pagination */}
-        <div className="w-276 my-4">
+        <div className="lg:w-276 xsm:w-full my-4">
           <Pagination
             totalItems={totalItems}
             itemsPerPage={20}

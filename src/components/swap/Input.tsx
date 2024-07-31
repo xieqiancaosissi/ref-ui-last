@@ -26,7 +26,7 @@ interface IInputProps {
 export default function Input(props: IInputProps) {
   const { className, disable, token, isIn, isOut, amountOut, isnearwnearSwap } =
     props;
-  const [amount, setAmount] = useState<string>("");
+  const [amount, setAmount] = useState<string>("1");
   const [showNearTip, setShowNearTip] = useState<boolean>(false);
   const swapStore = useSwapStore();
   const tokenOutAmount = swapStore.getTokenOutAmount();

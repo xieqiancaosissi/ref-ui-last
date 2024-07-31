@@ -24,6 +24,7 @@ import {
 } from "@/interfaces/tokens";
 import { getTokenUIId } from "@/services/swap/swapUtils";
 import { toReadableNumber } from "@/utils/numbers";
+import { COMMON_TOKENS_TAG } from "@/utils/constantLocal";
 const { HIDDEN_TOKEN_LIST } = getConfigV2();
 
 const useAllWhiteTokensWithBalances = () => {
@@ -302,19 +303,14 @@ const useAllWhiteTokensWithBalances = () => {
     };
     return reault;
   }
-  function initCommonTokens(defaultTokens: TokenMetadata[]) {
+  async function initCommonTokens(defaultTokens: TokenMetadata[]) {
     // init common tokens
-    if (
-      tokenStore.get_common_tokens().length === 0 &&
-      !tokenStore.get_common_tokens_is_edited()
-    ) {
+    const tag = tokenStore.get_common_tokens_tag();
+    if (tag !== COMMON_TOKENS_TAG) {
       const { INIT_COMMON_TOKEN_IDS } = getConfigV2();
-      const init_common_tokens = defaultTokens.filter(
-        (token) =>
-          getTokenUIId(token) == "near" ||
-          INIT_COMMON_TOKEN_IDS.includes(token.id)
-      );
+      const init_common_tokens = await getTokenMetaDatas(INIT_COMMON_TOKEN_IDS);
       tokenStore.set_common_tokens(init_common_tokens);
+      tokenStore.set_common_tokens_tag(COMMON_TOKENS_TAG);
     }
   }
   function checkCache() {

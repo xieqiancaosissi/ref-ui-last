@@ -12,13 +12,10 @@ const useLimitOrderPopUp = () => {
   const isSignedIn = accountStore.getIsSignedIn();
   useEffect(() => {
     if (txHash && isSignedIn) {
-      checkTransaction(txHash)
-        .then(async (res: any) => {
-          limitOrderPopUp(res, txHash);
-        })
-        .then(() => {
-          router.replace(pathname);
-        });
+      checkTransaction(txHash).then(async (res: any) => {
+        await limitOrderPopUp(res, txHash);
+        router.replace(pathname);
+      });
     }
   }, [txHash, isSignedIn]);
 };

@@ -5,6 +5,7 @@ import { CollectIcon, EmptyIcon, RiskIcon } from "./Icons";
 import { ITokenMetadata } from "@/interfaces/tokens";
 import { useAccountStore } from "../../../stores/account";
 import { toPrecision } from "../../../utils/numbers";
+import { toInternationalCurrencySystem_usd } from "../../../utils/uiNumber";
 import { ButtonTextWrapper } from "../Button";
 import { useTokenStore, ITokenStore } from "../../../stores/token";
 import { useSwapStore } from "../../../stores/swap";
@@ -33,6 +34,7 @@ export default function Table({
   const swapStore = useSwapStore();
   const allTokenPrices = swapStore.getAllTokenPrices();
   const isSignedIn = accountStore.isSignedIn;
+  const accountId = accountStore.getAccountId();
   const empty = useMemo(() => {
     if (tokens?.length == 0) {
       return true;
@@ -47,15 +49,36 @@ export default function Table({
       : "-";
     return result;
   }
+  function displayUSD(token: ITokenMetadata) {
+    if (!accountId) return "";
+    const p = Big(allTokenPrices?.[token.id]?.price || "0")
+      .mul(token.balance || 0)
+      .toFixed();
+    return toInternationalCurrencySystem_usd(p);
+  }
   function sortBy(tokenB: ITokenMetadata, tokenA: ITokenMetadata) {
+    const tokenA_usd = Big(allTokenPrices?.[tokenA.id]?.price || 0).mul(
+      tokenA.balance || 0
+    );
+    const tokenB_usd = Big(allTokenPrices?.[tokenB.id]?.price || 0).mul(
+      tokenB.balance || 0
+    );
     if (sort == "desc") {
-      return Big(tokenA.balance || 0)
-        .minus(tokenB.balance || 0)
-        .toNumber();
+      if (tokenA_usd.eq(0) && tokenB_usd.eq(0)) {
+        return Big(tokenA.balance || 0)
+          .minus(tokenB.balance || 0)
+          .toNumber();
+      } else {
+        return tokenA_usd.minus(tokenB_usd).toNumber();
+      }
     } else {
-      return Big(tokenB.balance || 0)
-        .minus(tokenA.balance || 0)
-        .toNumber();
+      if (tokenA_usd.eq(0) && tokenB_usd.eq(0)) {
+        return Big(tokenB.balance || 0)
+          .minus(tokenA.balance || 0)
+          .toNumber();
+      } else {
+        return tokenB_usd.minus(tokenA_usd).toNumber();
+      }
     }
   }
   function addToken() {
@@ -76,7 +99,6 @@ export default function Table({
       common_tokens.push(token);
       tokenStore.set_common_tokens(common_tokens);
     }
-    tokenStore.set_common_tokens_is_edited(true);
   }
   function isCollected(token: TokenMetadata) {
     const finded = common_tokens.find(
@@ -140,14 +162,19 @@ export default function Table({
                 </span>
               </div>
             </div>
-            <div className="flex items-center gap-2 text-sm text-white">
-              <span>{displayBalance(token.balance || "0")}</span>
+            <div className="flex items-start gap-2 text-sm text-white">
+              <div className="flex flex-col items-end">
+                <span>{displayBalance(token.balance || "0")}</span>
+                <span className="text-xs text-gray-60">
+                  {displayUSD(token)}
+                </span>
+              </div>
               <CollectIcon
                 onClick={(e: any) => {
                   e.stopPropagation();
                   addOrDeletCommonToken(token);
                 }}
-                className="cursor-pointer text-gray-60"
+                className="cursor-pointer text-gray-60 relative top-1"
                 collected={isCollected(token)}
               />
             </div>

@@ -56,7 +56,7 @@ export default function SelectDclPoolButton({
         getTokenUIId(TOKEN_IN) == "near" ? "NEAR" : tokenInId
       );
       const out_pending = getTokenBalance(
-        getTokenUIId(TOKEN_IN) ? "NEAR" : tokenOutId
+        getTokenUIId(TOKEN_OUT) == "near" ? "NEAR" : tokenOutId
       );
       const balances = await Promise.all([in_pending, out_pending]);
       TOKEN_IN = {

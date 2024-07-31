@@ -50,7 +50,7 @@ import {
   STORAGE_TO_REGISTER_WITH_MFT,
   storageDepositAction,
 } from "./creator/storage";
-import { executeMultipleTransactions } from "./createPoolFn";
+import { executeMultipleTransactions } from "@/utils/near";
 import { toBufferBE } from "bigint-buffer";
 import { checkTokenNeedsStorageDeposit } from "./swap/registerToken";
 import { ONE_YOCTO_NEAR } from "@/utils/near";

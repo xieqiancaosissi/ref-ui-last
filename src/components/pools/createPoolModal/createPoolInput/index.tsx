@@ -34,7 +34,7 @@ export default function PoolInput({
       <div className="flex flex-col items-start w-48 mb-2" onClick={showModal}>
         <h2 className="text-gray-50 text-sm font-normal mb-3">{title}</h2>
         <div className="w-full h-16 rounded bg-dark-60 flex items-center justify-between border border-transparent px-4 hover:border-green-10">
-          <div className="w-80 frcc">
+          <div className="w-35 frcc">
             {selectToken?.icon ? (
               <img
                 src={selectToken?.icon}

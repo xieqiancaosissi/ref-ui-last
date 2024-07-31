@@ -27,6 +27,7 @@ import SearchModalForMobile from "@/components/pools/searchModalForMobile/search
 import { getPoolsDetailById } from "@/services/pool";
 import { useRouter } from "next/router";
 import DocTips from "@/components/pools/poolDocTips";
+import { dclHeader } from "@/components/pools/dclPool/config";
 
 export default function Farms() {
   const router = useRouter();
@@ -122,7 +123,9 @@ export default function Farms() {
   const handleSort = (item: any) => {
     setSortMap({ key: item.key, sort: "desc" });
     setShowClassHeader(false);
-    setClassHeaderVal(item.key == "24h" ? "Volume" : item.value);
+    setClassHeaderVal(
+      item.value == "Top Bin APR(24h)" ? "Top Bin APR" : item.value
+    );
     if (isActive == "classic") {
       setMobilePros({
         which: "classicTabSortChange",
@@ -135,6 +138,16 @@ export default function Farms() {
     if (isActive == "stable") {
       setMobilePros({
         which: "stableTabSortChange",
+        sortMap: {
+          key: item.key,
+          sort: sortMap.sort,
+        },
+      });
+    }
+
+    if (isActive == "dcl") {
+      setMobilePros({
+        which: "dclTabSortChange",
         sortMap: {
           key: item.key,
           sort: sortMap.sort,
@@ -486,7 +499,78 @@ export default function Farms() {
                 )}
               </header>
             )}
+
+            {/*dcl sort */}
+            {isActive == "dcl" && (
+              <header
+                className="relative  flex-1 h-9 text-white border border-gray-40 rounded text-sm flex items-center mx-1"
+                style={{
+                  background: "rgba(126, 138, 147, 0.1)",
+                }}
+                ref={modalRef}
+              >
+                <div className="w-full h-full flex justify-between items-center pl-1 pr-2">
+                  <div className="frcc flex-1">
+                    <div
+                      className="bg-gray-20 frcc w-7 h-7 rounded mr-1"
+                      onClick={() => {
+                        setMobilePros({
+                          which: "dclTabSortArrowChange",
+                          sort: sortMap.sort === "desc" ? "asc" : "desc",
+                        });
+                        setSortMap((prevSortMap) => ({
+                          key: prevSortMap.key,
+                          sort: prevSortMap.sort === "desc" ? "asc" : "desc",
+                        }));
+                      }}
+                    >
+                      {sortMap.sort === "desc" ? <DownArrow /> : <UpArrow />}
+                    </div>
+                    <div
+                      className="flex-1 h-full"
+                      onClick={() => {
+                        setShowClassHeader((prev) => !prev);
+                      }}
+                    >
+                      {classHeaderVal}
+                    </div>
+                  </div>
+                  <div
+                    onClick={() => {
+                      setShowClassHeader((prev) => !prev);
+                    }}
+                  >
+                    <MobileArrowUp></MobileArrowUp>
+                  </div>
+                </div>
+                {showClassHeader && (
+                  <div
+                    className="absolute top-9 left-0 w-full bg-dark-70 rounded-b-md py-2 text-gray-50 text-sm"
+                    style={{
+                      zIndex: "99",
+                    }}
+                  >
+                    {dclHeader.map((item, index) => {
+                      return (
+                        <div
+                          key={item.key + Math.random() + index}
+                          className={`frcc select-none h-7  ${
+                            sortMap.key == item.key
+                              ? "text-white bg-gray-100 rounded"
+                              : "text-gray-60"
+                          }`}
+                          onClick={() => handleSort(item)}
+                        >
+                          <span>{item.value}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </header>
+            )}
           </div>
+
           {/* create pool */}
           {(isActive == "classic" || isActive == "dcl") && (
             <div

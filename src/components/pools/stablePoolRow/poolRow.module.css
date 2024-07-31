@@ -24,7 +24,7 @@
   @apply pb-3;
 }
 .poolLast {
-  @apply lg:frc  lg:mr-1 ;
+  @apply lg:frc  lg:mr-1;
 }
 
 .poolLast > div {
@@ -38,8 +38,6 @@
 .poolLastForMobile > div {
   @apply flex items-center justify-between w-full my-2;
 }
-
-
 
 .tokenImgContainer {
   @apply flex items-center;
@@ -82,7 +80,7 @@
 }
 
 .stableCharts {
-  @apply  xsm:hidden items-end !important;
+  @apply xsm:hidden items-end !important;
 }
 
 /* farm style */

@@ -1,6 +1,5 @@
 .chartsContainter {
   @apply w-full fccc;
- 
 }
 
 @media (min-width: 1025px) {
@@ -10,8 +9,7 @@
       rgba(33, 43, 53, 0) 0%,
       rgba(33, 43, 53, 0.4) 100%
     );
-  padding: 30px 0 6px 0;
-
+    padding: 30px 0 6px 0;
   }
 }
 
@@ -40,7 +38,8 @@
   background: rgba(126, 138, 147, 0.1);
 }
 
-.filterSeacrhInputContainer:hover,.filterSeacrhInputContainerForMobile:hover {
+.filterSeacrhInputContainer:hover,
+.filterSeacrhInputContainerForMobile:hover {
   @apply border border-green-10;
 }
 

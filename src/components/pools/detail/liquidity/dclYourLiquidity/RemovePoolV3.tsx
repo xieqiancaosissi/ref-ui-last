@@ -740,7 +740,7 @@ export const RemovePoolV3 = (props: any) => {
     >
       <div
         style={{ maxHeight: cardHeight, minWidth: cardWidth, width: "320px" }}
-        className={`bg-refPublicBoxDarkBg rounded-md overflow-auto p-7`}
+        className={`bg-dark-10 rounded-md overflow-auto p-7`}
       >
         {/* Title */}
         <div className="flex items-center justify-between">

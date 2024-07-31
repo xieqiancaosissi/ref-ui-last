@@ -104,12 +104,17 @@ export default function RecentTransaction(props: any) {
         key={tx.receipt_id + index}
         className={`text-sm grid grid-cols-9 hover:bg-poolRecentHover my-3`}
       >
-        <div className="col-span-3">
+        <div className="col-span-3 flex">
           <span className="col-span-1 text-white mr-1" title={swapInAmount}>
             {displayInAmount}
           </span>
 
-          <span className="text-gray-60">{toRealSymbol(swapIn.symbol)}</span>
+          <div
+            title={toRealSymbol(swapIn.symbol)}
+            className="text-gray-60 text-ellipsis overflow-hidden whitespace-nowrap"
+          >
+            {toRealSymbol(swapIn.symbol)}
+          </div>
         </div>
 
         <div className="col-span-3">

@@ -2,7 +2,14 @@ import { useEffect, useState } from "react";
 import { useAccountStore } from "@/stores/account";
 import { getAccountNearBalance } from "@/services/token";
 import poolStyle from "@/components/pools/pool.module.css";
-import { SearchIcon, Star, MobileArrowUp } from "@/components/pools/icon";
+import {
+  SearchIcon,
+  Star,
+  MobileArrowUp,
+  DownArrowSelect,
+  DownArrow,
+  UpArrow,
+} from "@/components/pools/icon";
 import Charts from "@/components/pools/charts/charts";
 import Classic from "@/components/pools/classicPool/classic";
 import Stable from "@/components/pools/stablePool/stablePool";
@@ -12,6 +19,7 @@ import _ from "lodash";
 import { useRiskTokens } from "@/hooks/useRiskTokens";
 import { usePoolStore } from "@/stores/pool";
 import ClassicFilterTabModal from "@/components/pools/classicPool/classicFilterTabModal";
+import { classicHeader } from "@/components/pools/classicPool/config";
 
 export default function Farms() {
   const accountStore = useAccountStore();
@@ -115,6 +123,19 @@ export default function Farms() {
     }
   }, [mobilePros]);
 
+  const [sortMap, setSortMap] = useState({ key: "tvl", sort: "desc" });
+  const [showClassHeader, setShowClassHeader] = useState(false);
+  const [classHeaderVal, setClassHeaderVal] = useState("TVL");
+  const handleSort = (item: any) => {
+    setSortMap({ key: item.key, sort: "desc" });
+
+    setShowClassHeader(false);
+    setClassHeaderVal(item.key == "24h" ? "Volume" : item.value);
+    setMobilePros({
+      which: "classicTabSortChange",
+      sortMap,
+    });
+  };
   return (
     <>
       {/* PC */}
@@ -242,7 +263,7 @@ export default function Farms() {
             })}
           </div>
           <div
-            className={`lg:hidden w-9 h-9 frcc border border-gray-90 rounded ml-0.5 mr-3 flex-shrink-0 ${
+            className={`lg:hidden w-9 h-9 frcc border border-gray-90 rounded ml-0.5  flex-shrink-0 ${
               isActive == "watchlist"
                 ? "text-white bg-poolsTypelinearGrayBg rounded"
                 : "text-gray-60"
@@ -255,7 +276,7 @@ export default function Farms() {
           </div>
         </div>
         {/* search & create pool */}
-        <div className="flex items-center my-4">
+        <div className="flex items-center justify-between my-4">
           {/* <div className={poolStyle.filterSeacrhInputContainer}>
             <div
               onClick={() => {
@@ -289,7 +310,7 @@ export default function Farms() {
 
           {/* isActive == 'classic' */}
           {isActive == "classic" && (
-            <div className="w-65 mx-1">
+            <div className="ml-1">
               <div
                 style={{
                   background: "rgba(126, 138, 147, 0.1)",
@@ -305,9 +326,74 @@ export default function Farms() {
             </div>
           )}
 
+          {isActive == "classic" && (
+            <header
+              className="relative w-34 h-9 text-white border border-gray-40 rounded text-sm flex items-center"
+              style={{
+                background: "rgba(126, 138, 147, 0.1)",
+              }}
+            >
+              <div className="w-full h-full flex justify-between items-center pl-1 pr-2">
+                <div className="frcc flex-1">
+                  <div
+                    className="bg-gray-20 frcc w-7 h-7 rounded-sm mr-1"
+                    onClick={() => {
+                      setMobilePros({
+                        which: "classicTabSortArrowChange",
+
+                        sort: sortMap.sort === "desc" ? "asc" : "desc",
+                      });
+                      setSortMap((prevSortMap) => ({
+                        key: prevSortMap.key,
+                        sort: prevSortMap.sort === "desc" ? "asc" : "desc",
+                      }));
+                    }}
+                  >
+                    {sortMap.sort === "desc" ? <DownArrow /> : <UpArrow />}
+                  </div>
+                  <div
+                    className="flex-1 h-full"
+                    onClick={() => {
+                      setShowClassHeader((prev) => !prev);
+                    }}
+                  >
+                    {classHeaderVal}
+                  </div>
+                </div>
+                <div
+                  onClick={() => {
+                    setShowClassHeader((prev) => !prev);
+                  }}
+                >
+                  <MobileArrowUp></MobileArrowUp>
+                </div>
+              </div>
+              {showClassHeader && (
+                <div
+                  className="absolute top-9 left-0 w-full bg-dark-10 rounded-b-md"
+                  style={{
+                    zIndex: "99",
+                  }}
+                >
+                  {classicHeader.map((item, index) => {
+                    return (
+                      <div
+                        key={item.key + Math.random() + index}
+                        className="frcc select-none h-7 "
+                        onClick={() => handleSort(item)}
+                      >
+                        <span>{item.value}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </header>
+          )}
+
           {/* create pool */}
           <div
-            className={`frcc w-9 h-9 border border-gray-40 rounded text-3xl mx-2 ${
+            className={`frcc w-9 h-9 border border-gray-40 rounded text-2xl ml-0.5 font-normal ${
               accountId && isActive == "classic"
                 ? "text-gray-60 cursor-pointer"
                 : "text-gray-40 bg-gray-60 cursor-not-allowed"

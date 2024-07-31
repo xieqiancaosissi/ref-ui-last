@@ -75,6 +75,16 @@ export default function Classic({
     if (mobilePros?.which == "classicTabChange") {
       setActive(mobilePros.key.key);
     }
+
+    // value change
+    if (mobilePros?.which == "classicTabSortChange") {
+      setSortMap(mobilePros?.sortMap);
+    }
+
+    // sort arrow change
+    if (mobilePros?.which == "classicTabSortArrowChange") {
+      setSortMap({ key: sortMap.key, sort: mobilePros?.sort });
+    }
   }, [mobilePros]);
 
   return (

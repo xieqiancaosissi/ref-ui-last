@@ -9,7 +9,7 @@
 }
 
 .filterPoolType {
-  @apply text-xs cursor-pointer border border-gray-100 rounded lg:w-101 xsm:w-full xsm:max-w-78 h-9 flex items-center;
+  @apply text-xs cursor-pointer border border-gray-100 rounded lg:w-101 xsm:w-full xsm:justify-between h-9 flex items-center;
 }
 
 .filterSeacrhInputContainer {

@@ -80,8 +80,21 @@ export default function Charts({
       ],
     };
     chartInstance.setOption(options);
+
+    const handleResize = () => {
+      if (chartInstance) {
+        chartInstance.resize();
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    // 清理函数
     return () => {
-      chartInstance.dispose();
+      window.removeEventListener("resize", handleResize);
+      if (chartInstance) {
+        chartInstance.dispose(); // 销毁ECharts实例
+      }
     };
   }, [chartsData]);
 

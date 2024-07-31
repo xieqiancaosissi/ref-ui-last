@@ -103,3 +103,27 @@ export const WalletCedeBridge = () => {
     </svg>
   );
 };
+
+export function LinkLine(props: any) {
+  return (
+    <svg
+      {...props}
+      width="304"
+      height="24"
+      viewBox="0 0 304 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        opacity="0.2"
+        d="M292 24C285.373 24 280 18.6274 280 12C280 5.37258 285.373 0 292 0C298.627 0 304 5.37258 304 12C304 18.6274 298.627 24 292 24Z"
+        fill="#9EFF00"
+      />
+      <path
+        d="M292 19C288.134 19 285 15.866 285 12C285 8.13401 288.134 5 292 5C295.866 5 299 8.13401 299 12C299 15.866 295.866 19 292 19Z"
+        fill="#9EFF00"
+      />
+      <path d="M280 12H0" stroke="#9EFF00" strokeDasharray="2 2" />
+    </svg>
+  );
+}

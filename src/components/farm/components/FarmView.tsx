@@ -663,7 +663,11 @@ export function FarmView(props: {
           goFarmDetailPage(seed);
         }}
         className={`relative rounded-2xl cursor-pointer p-5 ${
-          isEnded() || needForbidden ? styles.farmEnded : ""
+          isEnded() || needForbidden
+            ? styles.farmEnded
+            : isPending()
+            ? "bg-gray-20 bg-opacity-20"
+            : "bg-farmItemBg rounded-lg"
         }
         `}
       >

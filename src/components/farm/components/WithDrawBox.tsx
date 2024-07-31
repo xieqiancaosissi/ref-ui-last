@@ -12,6 +12,8 @@ import getConfig from "@/utils/config";
 import { NEAR_META_DATA } from "@/utils/nearMetaData";
 import Withdraw from "./WithdrawModal";
 import styles from "../farm.module.css";
+import { showWalletSelectorModal } from "@/utils/wallet";
+import { useAppStore } from "@/stores/app";
 
 const { WRAP_NEAR_CONTRACT_ID } = getConfig();
 
@@ -20,6 +22,7 @@ export default function WithDrawBox(props: {
   tokenPriceList: any;
   farmDisplayList: Seed[];
 }) {
+  const appStore = useAppStore();
   const { userRewardList, tokenPriceList, farmDisplayList } = props;
   const { getIsSignedIn } = useAccountStore();
   const isSignedIn = getIsSignedIn();
@@ -112,9 +115,12 @@ export default function WithDrawBox(props: {
   function hideWithdrawModal() {
     setIsWithdrawOpen(false);
   }
+  function showWalletSelector() {
+    showWalletSelectorModal(appStore.setShowRiskModal);
+  }
   return (
     <>
-      <div className="frcb mb-12 w-3/5 xs:hidden">
+      <div className="frcb mb-12 2xl:w-3/5 xl:w-9/12 lg:w-4/5 xsm:hidden">
         <div className="frcc">
           <FarmAvatarIcon className="mr-6" />
           <div>
@@ -141,33 +147,51 @@ export default function WithDrawBox(props: {
             </h1>
           </div>
         </div>
-        <div
-          className={styles.gradient_border_container}
-          onClick={() => {
-            showWithdrawModal();
-          }}
-        >
-          <p className="text-gray-10 text-base">Withdraw</p>
-          <FarmWithdrawIcon className="ml-2" />
-        </div>
+        {!isSignedIn ? (
+          <div
+            className="text-primaryGreen border border-primaryGreen px-2 py-1 rounded-md cursor-pointer"
+            onClick={showWalletSelector}
+          >
+            Connect Wallet
+          </div>
+        ) : (
+          <div
+            className={styles.gradient_border_container}
+            onClick={() => {
+              showWithdrawModal();
+            }}
+          >
+            <p className="text-gray-10 text-base">Withdraw</p>
+            <FarmWithdrawIcon className="ml-2" />
+          </div>
+        )}
         <Withdraw
           isOpen={isWithdrawOpen}
           onRequestClose={hideWithdrawModal}
           rewardList={rewardList}
         />
       </div>
-      <div className="lg:hidden md:hidden">
+      <div className="lg:hidden">
         <div className="frcb mb-2.5">
           <p className="text-2xl"> {yourReward}</p>
-          <div
-            className="border border-black p-1.5 rounded text-base pr-1.5 frcc font-medium"
-            onClick={() => {
-              showWithdrawModal();
-            }}
-          >
-            Withdraw
-            <FarmWithdrawMobIcon className="ml-1.5" />
-          </div>
+          {!isSignedIn ? (
+            <div
+              className="text-black border border-black px-2 py-1 rounded-md cursor-pointer"
+              onClick={showWalletSelector}
+            >
+              Connect Wallet
+            </div>
+          ) : (
+            <div
+              className="border border-black p-1.5 rounded text-base pr-1.5 frcc font-medium"
+              onClick={() => {
+                showWithdrawModal();
+              }}
+            >
+              Withdraw
+              <FarmWithdrawMobIcon className="ml-1.5" />
+            </div>
+          )}
         </div>
         {Object.values(rewardList).length > 0 ? (
           <div className="flex items-center">

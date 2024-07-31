@@ -1514,7 +1514,7 @@ export async function get_all_seeds() {
   const temp_list_farm: FarmBoost[][] = [];
   list_farm.forEach((farmList: FarmBoost[]) => {
     let temp_farmList: FarmBoost[] = [];
-    temp_farmList = farmList.filter((farm: FarmBoost) => {
+    temp_farmList = farmList?.filter((farm: FarmBoost) => {
       const id = farm?.farm_id?.split("@")[1];
       if (boostBlackList.indexOf(id) == -1) {
         return true;

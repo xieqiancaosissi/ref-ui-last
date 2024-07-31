@@ -291,7 +291,7 @@ const SeedsBox = () => {
           isOpen={isTxHashOpen}
           onRequestClose={() => {
             setIsTxHashOpen(false);
-            history.replace("/meme");
+            // history.replace("/meme");
           }}
           txParams={txParams}
         />

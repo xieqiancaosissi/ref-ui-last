@@ -20,6 +20,9 @@ import swapStyles from "../swap/swap.module.css";
 import AccessKeyModal from "./AccessKeyModal";
 import { useAppStore } from "@/stores/app";
 import { showWalletSelectorModal } from "@/utils/wallet";
+import { useClientMobile } from "@/utils/device";
+import Guider from "./Guider";
+import { LinkLine } from "./icons2";
 const Overview = dynamic(() => import("../portfolio"), { ssr: false });
 export default function WalletConnect() {
   const [accountId, setAccountId] = useState<string | undefined>();
@@ -27,13 +30,27 @@ export default function WalletConnect() {
   const [loading, setLoading] = useState<boolean>(true);
   const [tipVisible, setTipVisible] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const accountStore = useAccountStore();
   const [keyModalShow, setKeyModalShow] = useState<boolean>(false);
   const appStore = useAppStore();
-
+  const accountStore = useAccountStore();
+  const [hover, setHover] = useState(false);
+  const isSignedIn = accountStore.isSignedIn;
+  const isInMemePage = window.location.pathname.includes("meme");
+  const isMobile = useClientMobile();
+  const [showGuider, setShowGuider] = useState<boolean>(
+    !!(localStorage.getItem("ACCESS_MODAL_GUIDER") !== "1" && accountId)
+  );
   useEffect(() => {
     init();
   }, []);
+
+  useEffect(() => {
+    if (accountId) {
+      const guiderCondition =
+        localStorage.getItem("ACCESS_MODAL_GUIDER") !== "1";
+      setShowGuider(guiderCondition);
+    }
+  }, [accountId]);
 
   useEffect(() => {
     get_current_wallet();
@@ -116,6 +133,10 @@ export default function WalletConnect() {
     setKeyModalShow(false);
   }
 
+  function clearGuilder() {
+    setShowGuider(false);
+    localStorage.setItem("ACCESS_MODAL_GUIDER", "1");
+  }
   return (
     <div className="relative z-50">
       {!loading ? (
@@ -224,6 +245,83 @@ export default function WalletConnect() {
                   <Overview />
                 </div>
               </div>
+              {(isSignedIn && hover) || (showGuider && !isInMemePage) ? (
+                <div
+                  className={`absolute top-14 pt-2 right-0 w-64`}
+                  style={{ zIndex: showGuider ? "1000" : "40" }}
+                >
+                  <div
+                    className={`fixed top-[46px] bottom-[35px] right-0 bg-dark-10 z-40`}
+                    style={{ width: "400px" }}
+                    onClick={(e) => e.stopPropagation()} // Prevent click inside from closing
+                  >
+                    <div className="bg-dark-140 border border-gray-200 p-3.5 w-full h-full">
+                      <div className="frcb mb-3.5">
+                        <div className="frcc">
+                          {currentWallet?.metadata?.iconUrl ? (
+                            <Image
+                              src={currentWallet.metadata.iconUrl || ""}
+                              width={14}
+                              height={14}
+                              style={{
+                                width: "14px",
+                                height: "14px",
+                              }}
+                              alt=""
+                            />
+                          ) : null}
+                          <p className="ml-0.5 text-base text-gray-80">
+                            {currentWallet?.metadata?.name}
+                          </p>
+                        </div>
+                        <div className="flex gap-4">
+                          <KeyIcon
+                            onClick={showkeyModal}
+                            className={swapStyles.controlButton}
+                          />
+                          <ChangeIcon
+                            onClick={showWalletSelector}
+                            className={swapStyles.controlButton}
+                          />
+                          <DisconnectIcon
+                            onClick={signOut}
+                            className={swapStyles.controlButton}
+                          />
+                        </div>
+                      </div>
+                      <div className="frcc">
+                        <span className="text-xl text-lightWhite-10 font-bold whitespace-nowrap mr-3">
+                          {getAccountName(accountId)}
+                        </span>
+                        <div
+                          data-tooltip-id="copy-tooltip"
+                          data-tooltip-content={`${tipVisible ? "Copied" : ""}`}
+                        >
+                          <CopyToClipboard text={accountId}>
+                            <CopyIcon
+                              className={swapStyles.controlButton}
+                              onClick={() => {
+                                setTipVisible(true);
+                              }}
+                            />
+                          </CopyToClipboard>
+                          <Tooltip
+                            id="copy-tooltip"
+                            style={{
+                              color: "#fff",
+                              padding: "4px",
+                              fontSize: "12px",
+                              background: "#7E8A93",
+                            }}
+                            openOnClick
+                          />
+                        </div>
+                      </div>
+                      <Overview />
+                    </div>
+                  </div>
+                </div>
+              ) : null}
             </div>
           ) : (
             <div
@@ -242,6 +340,15 @@ export default function WalletConnect() {
 
       {accountId && keyModalShow ? (
         <AccessKeyModal isOpen={keyModalShow} onRequestClose={closeKeyModal} />
+      ) : null}
+      {showGuider && !isMobile && !isInMemePage ? (
+        <div>
+          <Guider clearGuilder={clearGuilder} />
+          <LinkLine
+            className="absolute"
+            style={{ zIndex: "1001", right: "108px", top: "70px" }}
+          />
+        </div>
       ) : null}
     </div>
   );

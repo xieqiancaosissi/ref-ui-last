@@ -302,26 +302,30 @@ export default function UserStakeBlock(props: {
         <p className="flex items-center text-gray-50 text-sm mb-1.5">
           Unclaimed rewards <QuestionMark className="ml-1.5"></QuestionMark>
         </p>
-        <div className="frcb">
-          <p className="text-2xl flex">
-            <FarmDetailsUnion className="mr-4" />
-            {unclaimedRewardsData.worth}
-          </p>
-          {unclaimedRewardsData.showClaimButton ? (
-            <div
-              className="border border-green-10 rounded frcc py-2 px-7 text-green-10 cursor-pointer"
-              onClick={(e) => {
-                e.stopPropagation();
-                claimReward();
-              }}
-            >
-              <ButtonTextWrapper
-                loading={claimLoading}
-                Text={() => <>Claim</>}
-              />
-            </div>
-          ) : null}
-        </div>
+        {isSignedIn ? (
+          <div className="frcb">
+            <p className="text-2xl flex">
+              <FarmDetailsUnion className="mr-4" />
+              {unclaimedRewardsData.worth}
+            </p>
+            {unclaimedRewardsData.showClaimButton ? (
+              <div
+                className="border border-green-10 rounded frcc py-2 px-7 text-green-10 cursor-pointer"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  claimReward();
+                }}
+              >
+                <ButtonTextWrapper
+                  loading={claimLoading}
+                  Text={() => <>Claim</>}
+                />
+              </div>
+            ) : null}
+          </div>
+        ) : (
+          <div className="opacity-50 mt-4">-</div>
+        )}
       </div>
     </>
   );

@@ -32,6 +32,9 @@ import {
 } from "../icon";
 import { CalcEle } from "./CalcEle";
 import { CalcIcon } from "../icon/FarmBoost";
+import { useAccountStore } from "@/stores/account";
+import { showWalletSelectorModal } from "@/utils/wallet";
+import { useAppStore } from "@/stores/app";
 
 const {
   STABLE_POOL_IDS,
@@ -84,6 +87,9 @@ export default function FarmsDetailStake(props: {
     unlock_timestamp,
     duration_sec,
   } = user_seeds_map[seed_id] || {};
+  const appStore = useAppStore();
+  const { getIsSignedIn } = useAccountStore();
+  const isSignedIn = getIsSignedIn();
   const freeAmount = toReadableNumber(DECIMALS, free_amount);
   const lockedAmount = toReadableNumber(DECIMALS, locked_amount);
   const [selectedLockData, setSelectedLockData] = useState<Lock | null>(null);
@@ -202,6 +208,9 @@ export default function FarmsDetailStake(props: {
       withdraw_amount: toNonDivisibleNumber(DECIMALS, amount),
     });
   }
+  function showWalletSelector() {
+    showWalletSelectorModal(appStore.setShowRiskModal);
+  }
   const isEnded = detailData?.farmList?.[0]?.status == "Ended";
   return (
     <div className="bg-dark-10 rounded-md p-5">
@@ -254,7 +263,7 @@ export default function FarmsDetailStake(props: {
           {amountAvailableCheck ? null : (
             <div className="flex justify-center mt-2.5">
               <div className="w-full bg-yellow-10 bg-opacity-10 rounded py-2 px-2.5 text-yellow-10 text-sm flex items-center">
-                {toReadableNumber(DECIMALS, min_deposit)}
+                {isSignedIn ? toReadableNumber(DECIMALS, min_deposit) : "0"}
                 <p className="ml-1 mr-2">available to stake,</p>
                 <p className="underline frcc">
                   Add liquidity <VEARROW className="ml-1.5"></VEARROW>
@@ -263,23 +272,35 @@ export default function FarmsDetailStake(props: {
             </div>
           )}
           <div className="mt-2.5 text-sm mb-6">
-            {displayLpBalance()}
+            {isSignedIn ? displayLpBalance() : "0"}
             <span className="text-gray-10 ml-1">available to stake</span>
           </div>
-          <div
-            onClick={() => {
-              if (!isDisabled) {
-                operationStake();
-              }
-            }}
-            className={`w-full h-11 frcc rounded paceGrotesk-Bold text-base ${
-              isDisabled
-                ? "cursor-not-allowed bg-gray-40 text-gray-50"
-                : "bg-greenGradient text-black cursor-pointer"
-            }`}
-          >
-            <ButtonTextWrapper loading={stakeLoading} Text={() => <>Stake</>} />
-          </div>
+          {isSignedIn ? (
+            <div
+              onClick={() => {
+                if (!isDisabled) {
+                  operationStake();
+                }
+              }}
+              className={`w-full h-11 frcc rounded paceGrotesk-Bold text-base ${
+                isDisabled
+                  ? "cursor-not-allowed bg-gray-40 text-gray-50"
+                  : "bg-greenGradient text-black cursor-pointer"
+              }`}
+            >
+              <ButtonTextWrapper
+                loading={stakeLoading}
+                Text={() => <>Stake</>}
+              />
+            </div>
+          ) : (
+            <div
+              className="frcc text-primaryGreen border border-primaryGreen py-2.5 rounded-md cursor-pointer"
+              onClick={showWalletSelector}
+            >
+              Connect Wallet
+            </div>
+          )}
           <div className="mt-5">
             <div
               className="flex items-center justify-between mb-2 cursor-pointer"

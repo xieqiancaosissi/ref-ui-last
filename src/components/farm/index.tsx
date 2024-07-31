@@ -40,6 +40,7 @@ import {
   get_pool_name,
   get_total_value_by_liquidity_amount_dcl,
   isPending,
+  openUrl,
 } from "../../services/commonV3";
 import { TokenMetadata } from "../../services/ft-contract";
 import { useHistory } from "react-router-dom";
@@ -512,7 +513,7 @@ export default function FarmsPage(props: any) {
         }
       });
       if (!targetFarms) {
-        history.replace("/farms");
+        openUrl("/farms");
       } else {
         getDetailData({
           detailData: targetFarms,
@@ -1093,7 +1094,7 @@ export default function FarmsPage(props: any) {
   return (
     <main className={`dark:text-white ${getUrlParams() ? "hidden" : ""}`}>
       {/* pc */}
-      <div className="xs:hidden">
+      <div className="xsm:hidden">
         {/* title */}
         <div className="bg-farmTitleBg fccc w-full pt-12 pb-1.5">
           <WithDrawBox
@@ -1101,7 +1102,7 @@ export default function FarmsPage(props: any) {
             tokenPriceList={tokenPriceList}
             farmDisplayList={farm_display_List}
           ></WithDrawBox>
-          <div className="frcb w-3/5">
+          <div className="frcb 2xl:w-3/5 xl:w-9/12 lg:w-4/5">
             <div className="frcc border border-dark-40 rounded-md p-0.5">
               <SelectBox
                 list={farmTypeList}
@@ -1168,7 +1169,7 @@ export default function FarmsPage(props: any) {
           </div>
         </div>
         {/* content */}
-        <div className="mx-auto w-3/5 pt-10">
+        <div className="mx-auto 2xl:w-3/5 xl:w-9/12 lg:w-4/5 pt-10">
           {/* select */}
           <div className="frcb mb-3.5">
             <div className="frcc">
@@ -1239,24 +1240,56 @@ export default function FarmsPage(props: any) {
                   baseColor="rgba(33, 43, 53, 0.3)"
                   highlightColor="#2A3643"
                 >
-                  <Skeleton
-                    width={356}
-                    height={200}
-                    count={2}
-                    className="mt-4"
-                  />
-                  <Skeleton
-                    width={356}
-                    height={200}
-                    count={2}
-                    className="mt-4"
-                  />
-                  <Skeleton
-                    width={356}
-                    height={200}
-                    count={2}
-                    className="mt-4"
-                  />
+                  <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 w-full">
+                    <div className="w-full">
+                      <Skeleton
+                        width="100%"
+                        height={200}
+                        count={2}
+                        className="mt-4"
+                      />
+                    </div>
+                    <div className="w-full">
+                      <Skeleton
+                        width="100%"
+                        height={200}
+                        count={2}
+                        className="mt-4"
+                      />
+                    </div>
+                    <div className="w-full">
+                      <Skeleton
+                        width="100%"
+                        height={200}
+                        count={2}
+                        className="mt-4"
+                      />
+                    </div>
+                    <div className="w-full">
+                      <Skeleton
+                        width="100%"
+                        height={200}
+                        count={2}
+                        className="mt-4"
+                      />
+                    </div>
+                    <div className="w-full">
+                      <Skeleton
+                        width="100%"
+                        height={200}
+                        count={2}
+                        className="mt-4"
+                      />
+                    </div>
+                    <div className="w-full">
+                      <Skeleton
+                        width="100%"
+                        height={200}
+                        count={2}
+                        className="mt-4"
+                      />
+                    </div>
+                  </div>
                 </SkeletonTheme>
               </div>
             ) : farm_display_List.filter((seed: any) => !seed.hidden).length ===
@@ -1264,18 +1297,12 @@ export default function FarmsPage(props: any) {
               <NoContent />
             ) : (
               <>
-                <div className="grid sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-6 m-auto ">
+                <div className="grid sm:grid-cols-1 lg:grid-cols-2 md: xl:grid-cols-3 gap-x-10 gap-y-6 m-auto ">
                   {farm_display_List.map((seed: Seed, index: number) => {
                     return (
                       <div
                         key={seed.seed_id + index}
-                        className={
-                          seed.hidden
-                            ? "hidden"
-                            : index < 2
-                            ? "bg-farmItemBg rounded-lg"
-                            : "bg-gray-20 bg-opacity-30 rounded-lg"
-                        }
+                        className={seed.hidden ? "hidden" : ""}
                       >
                         <FarmView
                           seed={seed}
@@ -1302,11 +1329,7 @@ export default function FarmsPage(props: any) {
                           return (
                             <div
                               key={seed.seed_id + index}
-                              className={
-                                seed.hidden
-                                  ? "hidden"
-                                  : "bg-gray-20 opacity-50 rounded-lg"
-                              }
+                              className={seed.hidden ? "hidden" : ""}
                             >
                               <FarmView
                                 seed={seed}
@@ -1336,7 +1359,7 @@ export default function FarmsPage(props: any) {
         </div>
       </div>
       {/* mobile */}
-      <div className="lg:hidden md:hidden">
+      <div className="lg:hidden">
         <div className="bg-white bg-opacity-5 px-3 pb-3.5">
           <div className="w-full bg-farmMobileBgColor p-4 rounded-tl-xl rounded-tr-xl text-black mb-3.5">
             <p className="text-sm text-dark-230 text-opacity-80 mb-1">

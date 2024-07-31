@@ -87,7 +87,7 @@ function CallBackModal(props: any) {
 
   if (!seed && !isXrefAction) return null;
   function goNearblocks() {
-    history.replace("/meme");
+    // history.replace("/meme");
     onRequestClose();
     openUrl(`${getConfig().explorerUrl}/txns/${txParams.txHash}`);
   }

@@ -70,9 +70,9 @@ const MarketSeedsBox = ({
   function goFarmDetail(seed_id: string) {
     const lpSeed = lpSeeds[seed_id];
     if (lpSeed?.farmList?.[0].status == "Ended") {
-      window.open(`/farms/${lpSeed?.pool?.id}-e`);
+      router.push(`/farms/${lpSeed?.pool?.id}-e`);
     } else {
-      window.open(`/farms/${lpSeed?.pool?.id}-r`);
+      router.push(`/farms/${lpSeed?.pool?.id}-r`);
     }
   }
   function comeSoonTip() {

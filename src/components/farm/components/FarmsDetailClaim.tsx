@@ -264,19 +264,19 @@ export default function UserStakeBlock(props: {
   }
   return (
     <>
-      <div className="bg-dark-10 rounded-md p-5 mb-2.5">
+      <div className="bg-dark-10 rounded-md p-5 mb-2.5 xsm:bg-dark-210">
         <div className="mb-5">
           <p className="flex items-center text-gray-50 text-sm mb-1.5">
             Your Power <QuestionMark className="ml-1.5"></QuestionMark>
           </p>
-          <p className="text-2xl">{showLpPower()}</p>
+          <p className="text-2xl xsm:text-primaryGreen">{showLpPower()}</p>
         </div>
         <div className="flex">
           <div className="flex-1">
             <p className="flex items-center text-gray-50 text-sm mb-1.5">
               Value
             </p>
-            <p className="text-2xl">
+            <p className="text-2xl xsm:text-white">
               {Number(yourTvl) == 0 ? (
                 <span className="opacity-50">$0</span>
               ) : (
@@ -289,7 +289,7 @@ export default function UserStakeBlock(props: {
               Your Share
             </p>
             <p
-              className={`text-2xl ${
+              className={`text-2xl xsm:text-white ${
                 getUserLpPercent() === "0%" ? "opacity-50" : ""
               }`}
             >
@@ -298,7 +298,10 @@ export default function UserStakeBlock(props: {
           </div>
         </div>
       </div>
-      <div className="bg-dark-10 rounded-md p-5" style={{ height: "108px" }}>
+      <div
+        className="bg-dark-10 rounded-md p-5 xsm:bg-dark-210 xsm:text-white"
+        style={{ height: "108px" }}
+      >
         <p className="flex items-center text-gray-50 text-sm mb-1.5">
           Unclaimed rewards <QuestionMark className="ml-1.5"></QuestionMark>
         </p>

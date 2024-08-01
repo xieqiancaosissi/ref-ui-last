@@ -14,7 +14,7 @@ export default function SelectBox(props: any) {
 
   const getClassName = (item: any) => {
     if (type === "filter") {
-      return `rounded-2xl border border-dark-40 py-1 px-3.5 text-sm mr-1 mb-1 xs:text-xs xs:px-2  ${
+      return `rounded-2xl border border-dark-40 py-1 px-3.5 text-sm mr-1 mb-1 xs:text-xs xs:px-2 xsm:mb-2  ${
         item.id === selectedId ? "bg-gray-100 text-white" : "text-gray-60"
       } ${disabled ? "cursor-not-allowed" : "cursor-pointer"}`;
     } else if (type === "farm_type") {
@@ -24,7 +24,7 @@ export default function SelectBox(props: any) {
           : "text-gray-60"
       } ${
         disabled ? "cursor-not-allowed" : "cursor-pointer"
-      } h-8 frcc text-sm w-25 xs:flex-1`;
+      } h-8 frcc text-sm w-25 xs:flex-1 `;
     } else {
       return "";
     }
@@ -32,7 +32,7 @@ export default function SelectBox(props: any) {
 
   return (
     <div
-      className={`frcb w-full ${
+      className={`lg:frcb w-full xsm:flex xsm:flex-wrap ${
         disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
       } `}
       tabIndex={Math.random()}

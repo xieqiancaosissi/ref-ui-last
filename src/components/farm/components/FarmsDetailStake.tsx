@@ -55,6 +55,7 @@ export default function FarmsDetailStake(props: {
   user_unclaimed_map: Record<string, any>;
   user_data_loading: Boolean;
   radio: string | number;
+  activeMobileTab?: string;
 }) {
   const {
     detailData,
@@ -67,6 +68,7 @@ export default function FarmsDetailStake(props: {
     user_seeds_map,
     user_unclaimed_token_meta_map,
     user_unclaimed_map,
+    activeMobileTab,
   } = props;
   const {
     pool,
@@ -100,7 +102,7 @@ export default function FarmsDetailStake(props: {
   const [amount, setAmount] = useState(
     stakeType == "freeToLock" ? freeAmount : ""
   );
-  const [activeTab, setActiveTab] = useState("Stake");
+  const [activeTab, setActiveTab] = useState(activeMobileTab || "stake");
   const [amountAvailableCheck, setAmountAvailableCheck] = useState(true);
   useEffect(() => {
     if (stakeType !== "free") {
@@ -213,32 +215,52 @@ export default function FarmsDetailStake(props: {
   }
   const isEnded = detailData?.farmList?.[0]?.status == "Ended";
   return (
-    <div className="bg-dark-10 rounded-md p-5">
-      <div className="flex items-center mb-4">
+    <div className="bg-dark-10 rounded-md p-5 xsm:p-0">
+      <div className="flex items-center mb-4 xsm:mb-7 xsm:border-b xsm:border-white xsm:border-opacity-10 xsm:px-4">
         <button
-          className={`text-lg pr-5 ${
-            activeTab === "Stake" ? styles.gradient_text : "text-gray-500"
+          className={`text-lg pr-5 xsm:flex-1 ${
+            activeTab === "stake" ? styles.gradient_text : "text-gray-500"
           } ${isEnded ? "hidden" : ""}`}
-          onClick={() => setActiveTab("Stake")}
+          onClick={() => setActiveTab("stake")}
         >
           Stake
         </button>
         <div
-          className={`h-4 bg-gray-50 ${Number(freeAmount) > 0 ? "" : "hidden"}`}
+          className={`h-4 bg-gray-50 xsm:hidden ${
+            Number(freeAmount) > 0 ? "" : "hidden"
+          }`}
           style={{ width: "2px" }}
         />
         <button
-          className={`text-lg pl-5 ${
-            activeTab === "Unstake" ? styles.gradient_text : "text-gray-500"
+          className={`text-lg pl-5 xsm:flex-1 ${
+            activeTab === "unstake" ? styles.gradient_text : "text-gray-500"
           }  ${Number(freeAmount) > 0 ? "" : "hidden"}`}
-          onClick={() => setActiveTab("Unstake")}
+          onClick={() => setActiveTab("unstake")}
         >
           Unstake
         </button>
       </div>
-      {activeTab === "Stake" && (
-        <div>
-          <div className="flex justify-between items-center h-16 px-3 bg-dark-60 rounded-lg">
+      {activeTab === "stake" && (
+        <div className="xsm:px-4">
+          <div className="lg:hidden mb-2.5 frcb">
+            <div>
+              {isSignedIn ? displayLpBalance() : "0"}
+              <span className="text-gray-10 ml-1">available to stake</span>
+            </div>
+            <div>
+              <span
+                onClick={() => {
+                  changeAmount(
+                    stakeType == "freeToLock" ? freeAmount : lpBalance
+                  );
+                }}
+                className={`text-sm text-gray-50 underline cursor-pointer hover:text-primaryGreen `}
+              >
+                Max
+              </span>
+            </div>
+          </div>
+          <div className="flex justify-between items-center h-16 px-3 bg-dark-60 rounded-lg xsm:mb-2.5">
             <input
               type="number"
               inputMode="decimal"
@@ -254,7 +276,7 @@ export default function FarmsDetailStake(props: {
                     stakeType == "freeToLock" ? freeAmount : lpBalance
                   );
                 }}
-                className={`text-sm text-gray-50 underline cursor-pointer hover:text-primaryGreen`}
+                className={`text-sm text-gray-50 underline cursor-pointer hover:text-primaryGreen xsm:hidden`}
               >
                 Max
               </span>
@@ -264,14 +286,54 @@ export default function FarmsDetailStake(props: {
             <div className="flex justify-center mt-2.5">
               <div className="w-full bg-yellow-10 bg-opacity-10 rounded py-2 px-2.5 text-yellow-10 text-sm flex items-center">
                 {isSignedIn ? toReadableNumber(DECIMALS, min_deposit) : "0"}
-                <p className="ml-1 mr-2">available to stake,</p>
-                <p className="underline frcc">
+                <p className="ml-1 mr-2">available to stake</p>
+                {/* <p className="underline frcc">
                   Add liquidity <VEARROW className="ml-1.5"></VEARROW>
-                </p>
+                </p> */}
               </div>
             </div>
           )}
-          <div className="mt-2.5 text-sm mb-6">
+          <div
+            className="lg:hidden bg-gary-20 rounded mb-6"
+            onClick={() => {
+              setShowCalc(!showCalc);
+            }}
+          >
+            <div className="frcb">
+              <div className="flex items-center mb-2">
+                <CalcIcon />
+                <label className="text-sm text-gray-10 ml-3 mr-4  cursor-pointer">
+                  ROI Calculator
+                </label>
+              </div>
+              <div
+                className={
+                  "cursor-pointer " +
+                  (showCalc
+                    ? "transform rotate-180 text-white"
+                    : "text-gray-10")
+                }
+                onClick={() => setShowCalc(!showCalc)}
+              >
+                <ArrowDownHollow />
+              </div>
+            </div>
+            {showCalc ? (
+              <div className={"w-full"}>
+                <CalcEle
+                  seed={detailData}
+                  tokenPriceList={tokenPriceList}
+                  lpTokenNumAmount={amount}
+                  loveSeed={loveSeed}
+                  boostConfig={boostConfig}
+                  user_seeds_map={user_seeds_map}
+                  user_unclaimed_map={user_unclaimed_map}
+                  user_unclaimed_token_meta_map={user_unclaimed_token_meta_map}
+                ></CalcEle>
+              </div>
+            ) : null}
+          </div>
+          <div className="mt-2.5 text-sm mb-6 xsm:hidden">
             {isSignedIn ? displayLpBalance() : "0"}
             <span className="text-gray-10 ml-1">available to stake</span>
           </div>
@@ -301,7 +363,7 @@ export default function FarmsDetailStake(props: {
               Connect Wallet
             </div>
           )}
-          <div className="mt-5">
+          <div className="mt-5 xsm:hidden">
             <div
               className="flex items-center justify-between mb-2 cursor-pointer"
               onClick={() => {
@@ -344,8 +406,8 @@ export default function FarmsDetailStake(props: {
         </div>
       )}
 
-      {activeTab === "Unstake" && (
-        <div>
+      {activeTab === "unstake" && (
+        <div className="xsm:px-4">
           <div className="flex justify-between items-center h-16 px-3 bg-dark-60 rounded-lg">
             <input
               type="number"

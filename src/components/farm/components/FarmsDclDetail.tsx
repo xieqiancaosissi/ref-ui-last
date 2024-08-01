@@ -11,6 +11,7 @@ import {
   claimRewardBySeed_boost,
 } from "@/services/farm";
 import { useRouter } from "next/router";
+import Modal from "react-modal";
 import {
   FarmDetailsPoolIcon,
   FarmDetailsUnion,
@@ -53,6 +54,7 @@ import { useAccountStore } from "@/stores/account";
 import getConfig from "@/utils/config";
 import { ButtonTextWrapper } from "@/components/common/Button";
 import { LOVE_TOKEN_DECIMAL } from "@/services/referendum";
+import { isMobile } from "@/utils/device";
 
 const { REF_VE_CONTRACT_ID, REF_UNI_V3_SWAP_CONTRACT_ID } = getConfig();
 
@@ -77,6 +79,9 @@ export default function FarmsDclDetail(props: {
     user_data_loading,
     all_seeds,
   } = props;
+  const cardWidth = isMobile() ? "100vw" : "430px";
+  const cardHeight = isMobile() ? "90vh" : "80vh";
+  const is_mobile = isMobile();
   const { seed_id } = detailData;
   const pool = detailData.pool;
   const [listLiquiditiesLoading, setListLiquiditiesLoading] = useState(true);
@@ -107,6 +112,7 @@ export default function FarmsDclDetail(props: {
   const [activeTab, setActiveTab] = useState("Stake");
   const [rangeSort, setRangeSort] = useState(true);
   const [claimLoading, setClaimLoading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const router = useRouter();
   const radio = getBoostMutil();
   useEffect(() => {
@@ -396,7 +402,7 @@ export default function FarmsDclDetail(props: {
     const display_left_price = left_price;
     const display_right_price = right_price;
     return (
-      <div className="flex items-center whitespace-nowrap xsm:flex-col xsm:items-end">
+      <div className="flex items-center whitespace-nowrap xsm:flex-col xsm:items-end xsm:items-start">
         <div className="flex items-center">
           <RefreshIcon
             className="cursor-pointer mr-1.5 lg:hidden"
@@ -404,7 +410,7 @@ export default function FarmsDclDetail(props: {
               setRangeSort(!rangeSort);
             }}
           ></RefreshIcon>
-          <span className="text-sm text-gray-50">
+          <span className="text-sm text-gray-50 xsm:text-white">
             1 {rangeSort ? token_x_metadata.symbol : token_y_metadata.symbol}=
           </span>
         </div>
@@ -413,7 +419,7 @@ export default function FarmsDclDetail(props: {
             {displayNumberToAppropriateDecimals(display_left_price)} ~{" "}
             {displayNumberToAppropriateDecimals(display_right_price)}
           </span>
-          <span className="text-sm text-gray-50">
+          <span className="text-sm text-gray-50 xsm:text-white">
             {rangeSort ? token_y_metadata.symbol : token_x_metadata.symbol}
           </span>
         </div>
@@ -981,205 +987,328 @@ export default function FarmsDclDetail(props: {
     });
     return result;
   }
+  const handleTabClick = (tab: string) => {
+    setActiveTab(tab);
+    setIsModalOpen(true);
+  };
   const stakeDisabled = !canStake || nft_stake_loading;
   return (
-    <main className="dark:text-white">
-      {/* title */}
-      <div className="w-full bg-farmTitleBg pt-8 pb-5">
-        <div className="w-3/5 m-auto">
-          <p
-            className="text-gray-60 text-sm mb-3 cursor-pointer"
-            onClick={goBacktoFarms}
-          >{`<  Farms`}</p>
-          <div className="ml-32">
-            <div className="frcb mb-5">
-              <div className="frcc">
-                {displayImgs()}
-                <p className="ml-1.5 text-2xl paceGrotesk-Bold">
-                  {displaySymbols()}
-                </p>
-                <FarmListDCLIcon className="ml-1" />
+    <>
+      {/* pc */}
+      <main className="dark:text-white xsm:hidden">
+        {/* title */}
+        <div className="w-full bg-farmTitleBg pt-8 pb-5">
+          <div className="m-auto 2xl:w-3/6 xl:w-4/6 lg:w-5/6">
+            <p
+              className="text-gray-60 text-sm mb-3 cursor-pointer"
+              onClick={goBacktoFarms}
+            >{`<  Farms`}</p>
+            <div className="ml-32">
+              <div className="frcb mb-5">
+                <div className="frcc">
+                  {displayImgs()}
+                  <p className="ml-1.5 text-2xl paceGrotesk-Bold">
+                    {displaySymbols()}
+                  </p>
+                  <FarmListDCLIcon className="ml-1" />
+                </div>
+                <div
+                  className="text-gray-60 text-sm frcc cursor-pointer"
+                  onClick={goPool}
+                >
+                  Pool
+                  <div className="w-5 h-5 frcc bg-gray-100 rounded ml-1.5">
+                    <FarmDetailsPoolIcon />
+                  </div>
+                </div>
               </div>
-              <div
-                className="text-gray-60 text-sm frcc cursor-pointer"
-                onClick={goPool}
-              >
-                Pool
-                <div className="w-5 h-5 frcc bg-gray-100 rounded ml-1.5">
-                  <FarmDetailsPoolIcon />
+              <div className="flex">
+                <div className="pr-6 text-sm relative w-max mr-6">
+                  <div className="border-r border-gray-50 border-opacity-30 absolute right-0 top-1/4 h-1/2 w-0" />
+                  <p className="text-gray-50 mb-1">APR</p>
+                  <p className="frcc">
+                    <CalcIcon
+                      onClick={(e: any) => {
+                        e.stopPropagation();
+                        setSeedDclCalcVisible(true);
+                      }}
+                      className="text-gray-50 mr-1.5 cursor-pointer hover:text-greenColor"
+                    />
+                    <div
+                      data-type="info"
+                      data-place="top"
+                      data-multiline={true}
+                      data-tooltip-html={getAprTip()}
+                      data-tooltip-id={
+                        "aprId" + detailData?.farmList?.[0].farm_id + "your"
+                      }
+                      data-class="reactTip"
+                    >
+                      <span> {get_total_apr()}</span>
+                      <CustomTooltip
+                        id={
+                          "aprId" + detailData?.farmList?.[0].farm_id + "your"
+                        }
+                      />
+                    </div>
+                  </p>
+                </div>
+                <div className="pr-6 text-sm relative w-max mr-6">
+                  <div className="border-r border-gray-50 border-opacity-30 absolute right-0 top-1/4 h-1/2 w-0" />
+                  <p className="text-gray-50 mb-1 flex items-center">
+                    Reward Range
+                    <QuestionMark className="ml-1.5"></QuestionMark>
+                  </p>
+                  <p className="frcc">
+                    <RefreshIcon
+                      className="cursor-pointer mr-1.5"
+                      onClick={() => {
+                        setRangeSort(!rangeSort);
+                      }}
+                    ></RefreshIcon>
+                    {getRange()}
+                  </p>
+                </div>
+                <div className="pr-6 text-sm relative w-max">
+                  <p className="text-gray-50 mb-1 flex items-center">
+                    Rewards per week{" "}
+                    <QuestionMark className="ml-1.5"></QuestionMark>
+                  </p>
+                  <p className="flex items-center">
+                    {totalTvlPerWeekDisplay()}
+                  </p>
                 </div>
               </div>
             </div>
-            <div className="flex">
-              <div className="pr-6 text-sm relative w-max mr-6">
-                <div className="border-r border-gray-50 border-opacity-30 absolute right-0 top-1/4 h-1/2 w-0" />
-                <p className="text-gray-50 mb-1">APR</p>
-                <p className="frcc">
-                  <CalcIcon
-                    onClick={(e: any) => {
-                      e.stopPropagation();
-                      setSeedDclCalcVisible(true);
-                    }}
-                    className="text-gray-50 mr-1.5 cursor-pointer hover:text-greenColor"
-                  />
-                  <div
-                    data-type="info"
-                    data-place="top"
-                    data-multiline={true}
-                    data-tooltip-html={getAprTip()}
-                    data-tooltip-id={
-                      "aprId" + detailData?.farmList?.[0].farm_id + "your"
-                    }
-                    data-class="reactTip"
-                  >
-                    <span> {get_total_apr()}</span>
-                    <CustomTooltip
-                      id={"aprId" + detailData?.farmList?.[0].farm_id + "your"}
-                    />
-                  </div>
-                </p>
-              </div>
-              <div className="pr-6 text-sm relative w-max mr-6">
-                <div className="border-r border-gray-50 border-opacity-30 absolute right-0 top-1/4 h-1/2 w-0" />
-                <p className="text-gray-50 mb-1 flex items-center">
-                  Reward Range
-                  <QuestionMark className="ml-1.5"></QuestionMark>
-                </p>
-                <p className="frcc">
-                  <RefreshIcon
-                    className="cursor-pointer mr-1.5"
-                    onClick={() => {
-                      setRangeSort(!rangeSort);
-                    }}
-                  ></RefreshIcon>
-                  {getRange()}
-                </p>
-              </div>
-              <div className="pr-6 text-sm relative w-max">
-                <p className="text-gray-50 mb-1 flex items-center">
-                  Rewards per week{" "}
-                  <QuestionMark className="ml-1.5"></QuestionMark>
-                </p>
-                <p className="flex items-center">{totalTvlPerWeekDisplay()}</p>
-              </div>
-            </div>
           </div>
+          {seedDclCalcVisible ? (
+            <CalcModelDcl
+              isOpen={seedDclCalcVisible}
+              onRequestClose={(e) => {
+                e.stopPropagation();
+                setSeedDclCalcVisible(false);
+              }}
+              seed={detailData}
+              tokenPriceList={tokenPriceList}
+              style={{
+                overlay: {
+                  backdropFilter: "blur(15px)",
+                  WebkitBackdropFilter: "blur(15px)",
+                },
+                content: {
+                  outline: "none",
+                  transform: "translate(-50%, -50%)",
+                },
+              }}
+            />
+          ) : null}
         </div>
-        {seedDclCalcVisible ? (
-          <CalcModelDcl
-            isOpen={seedDclCalcVisible}
-            onRequestClose={(e) => {
-              e.stopPropagation();
-              setSeedDclCalcVisible(false);
-            }}
-            seed={detailData}
-            tokenPriceList={tokenPriceList}
-            style={{
-              overlay: {
-                backdropFilter: "blur(15px)",
-                WebkitBackdropFilter: "blur(15px)",
-              },
-              content: {
-                outline: "none",
-                transform: "translate(-50%, -50%)",
-              },
-            }}
-          />
-        ) : null}
-      </div>
-      {/* content */}
-      <div className="w-3/5 pt-16 m-auto pb-8">
-        <div className="relative ml-80 bg-dark-10 rounded-md p-5 mb-2.5 w-2/5">
-          {/* <AddLiquidityEntryBar
-            detailData={detailData}
-            isEnded={isEnded}
-            loading={listLiquiditiesLoading}
-            inFarimg={listLiquidities_inFarimg}
-            unFarimg={listLiquidities_unFarimg}
-            unavailable={listLiquidities_unavailable}
-          ></AddLiquidityEntryBar> */}
-          {/* ${
-              listLiquiditiesLoading || isEnded ? "" : "blur-2"
-            } */}
-          <div className={`h-full`}>
-            <div className="flex items-center mb-8">
-              <button
-                className={`text-lg pr-5 ${
-                  activeTab === "Stake" ? styles.gradient_text : "text-gray-500"
-                }`}
-                onClick={() => setActiveTab("Stake")}
-              >
-                Stake
-              </button>
-              <div className="h-4 bg-gray-50" style={{ width: "2px" }} />
-              <button
-                className={`text-lg pl-5 ${
-                  activeTab === "Unstake"
-                    ? styles.gradient_text
-                    : "text-gray-500"
-                }`}
-                onClick={() => setActiveTab("Unstake")}
-              >
-                Unstake
-              </button>
-            </div>
-            <p className="text-gray-50 text-sm mb-1.5">Available</p>
-            <p className="text-2xl mb-11">{yp_unFarm_value}</p>
-            {activeTab === "Stake" && (
-              <>
-                {!isEnded ? (
-                  <div
-                    onClick={() => {
-                      if (!stakeDisabled) {
-                        batchStakeNFT();
-                      }
-                    }}
-                    className={` w-full h-11 frcc rounded paceGrotesk-Bold text-base  ${
-                      stakeDisabled
-                        ? "cursor-not-allowed bg-gray-40 text-gray-50"
-                        : "bg-greenGradient text-black cursor-pointer"
-                    }`}
-                  >
-                    <ButtonTextWrapper
-                      loading={nft_stake_loading}
-                      Text={() => <>Stake</>}
-                    />
-                  </div>
-                ) : null}
-              </>
-            )}
+        {/* content */}
+        <div className="2xl:w-3/6 xl:w-4/6 lg:w-5/6 pt-16 m-auto pb-8">
+          <div className="relative ml-80 bg-dark-10 rounded-md p-5 mb-2.5 w-2/5">
+            {listLiquiditiesLoading ||
+            (!listLiquiditiesLoading &&
+              listLiquidities_inFarimg.length == 0 &&
+              listLiquidities_unFarimg.length == 0) ? (
+              <AddLiquidityEntryBar
+                detailData={detailData}
+                isEnded={isEnded}
+                loading={listLiquiditiesLoading}
+                inFarimg={listLiquidities_inFarimg}
+                unFarimg={listLiquidities_unFarimg}
+                unavailable={listLiquidities_unavailable}
+              ></AddLiquidityEntryBar>
+            ) : null}
 
-            {activeTab === "Unstake" && (
-              <>
-                {canUnStake ? (
-                  <div
-                    onClick={() => {
-                      if (!nft_unStake_loading) {
-                        batchUnStakeNFT();
-                      }
-                    }}
-                    className={` w-full h-11 frcc rounded paceGrotesk-Bold text-base  ${
-                      nft_unStake_loading
-                        ? "cursor-not-allowed bg-gray-40 text-gray-50"
-                        : "text-green-10 border border-green-10 cursor-pointer"
-                    }`}
-                  >
-                    <ButtonTextWrapper
-                      loading={nft_unStake_loading}
-                      Text={() => <>Unstake</>}
-                    />
-                  </div>
-                ) : null}
-              </>
-            )}
+            <div
+              className={`h-full ${
+                !isSignedIn ||
+                listLiquiditiesLoading ||
+                (!listLiquiditiesLoading &&
+                  listLiquidities_inFarimg.length == 0 &&
+                  listLiquidities_unFarimg.length == 0)
+                  ? "blur-2"
+                  : "blur-0"
+              }`}
+            >
+              <div className="flex items-center mb-8">
+                <button
+                  className={`text-lg pr-5 ${
+                    activeTab === "Stake"
+                      ? styles.gradient_text
+                      : "text-gray-500"
+                  }`}
+                  onClick={() => setActiveTab("Stake")}
+                >
+                  Stake
+                </button>
+                <div className="h-4 bg-gray-50" style={{ width: "2px" }} />
+                <button
+                  className={`text-lg pl-5 ${
+                    activeTab === "Unstake"
+                      ? styles.gradient_text
+                      : "text-gray-500"
+                  }`}
+                  onClick={() => setActiveTab("Unstake")}
+                >
+                  Unstake
+                </button>
+              </div>
+              <p className="text-gray-50 text-sm mb-1.5">Available</p>
+              <p className="text-2xl mb-11">{yp_unFarm_value}</p>
+              {activeTab === "Stake" && (
+                <>
+                  {!isEnded ? (
+                    <div
+                      onClick={() => {
+                        if (!stakeDisabled) {
+                          batchStakeNFT();
+                        }
+                      }}
+                      className={` w-full h-11 frcc rounded paceGrotesk-Bold text-base  ${
+                        stakeDisabled
+                          ? "cursor-not-allowed bg-gray-40 text-gray-50"
+                          : "bg-greenGradient text-black cursor-pointer"
+                      }`}
+                    >
+                      <ButtonTextWrapper
+                        loading={nft_stake_loading}
+                        Text={() => <>Stake</>}
+                      />
+                    </div>
+                  ) : null}
+                </>
+              )}
+
+              {activeTab === "Unstake" && (
+                <>
+                  {canUnStake ? (
+                    <div
+                      onClick={() => {
+                        if (!nft_unStake_loading) {
+                          batchUnStakeNFT();
+                        }
+                      }}
+                      className={` w-full h-11 frcc rounded paceGrotesk-Bold text-base  ${
+                        nft_unStake_loading
+                          ? "cursor-not-allowed bg-gray-40 text-gray-50"
+                          : "text-green-10 border border-green-10 cursor-pointer"
+                      }`}
+                    >
+                      <ButtonTextWrapper
+                        loading={nft_unStake_loading}
+                        Text={() => <>Unstake</>}
+                      />
+                    </div>
+                  ) : null}
+                </>
+              )}
+            </div>
+          </div>
+          <div className="ml-80 bg-dark-10 rounded-md p-5  w-2/5">
+            <p className="flex items-center text-gray-50 text-sm mb-1.5">
+              Unclaimed rewards <QuestionMark className="ml-1.5"></QuestionMark>
+            </p>
+            <div className="frcb">
+              <p className="text-2xl frcc">
+                <FarmDetailsUnion className="mr-4" />
+                {unclaimedRewardsData.worth}
+              </p>
+              {unclaimedRewardsData.showClaimButton ? (
+                <div
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    claimReward();
+                  }}
+                  className="border border-green-10 rounded frcc py-1.5 px-7 text-green-10 cursor-pointer text-sm"
+                >
+                  <ButtonTextWrapper
+                    loading={claimLoading}
+                    Text={() => <>Claim</>}
+                  />
+                </div>
+              ) : null}
+            </div>
           </div>
         </div>
-        <div className="ml-80 bg-dark-10 rounded-md p-5  w-2/5">
+      </main>
+      {/* mobile */}
+      <div className="lg:hidden px-4">
+        <div className="text-sm text-gray-60 pt-4 pb-6 flex items-center">
+          <p onClick={goBacktoFarms}> {`Farms  >`}</p>
+          <p className="text-white ml-1">Details</p>
+        </div>
+        <div className="flex mb-1">{displayImgs()}</div>
+        <div className="text-white text-lg flex items-center justify-between mb-4">
+          <div className="flex items-center">
+            {displaySymbols()}
+            <FarmListDCLIcon className="ml-1" />
+          </div>
+          <div
+            className="text-gray-60 text-sm flex items-center"
+            onClick={goPool}
+          >
+            <p className="underline mr-1">Pool</p>
+            <FarmDetailsPoolIcon />
+          </div>
+        </div>
+        <div className="bg-dark-210 rounded-md p-3.5 mb-4">
+          <div className="frcb text-sm mb-4">
+            <p className="text-gray-50">APR</p>
+            <p className="text-white frcc">
+              <CalcIcon
+                onClick={(e: any) => {
+                  e.stopPropagation();
+                  setSeedDclCalcVisible(true);
+                }}
+                className="text-gray-50 mr-1.5 cursor-pointer hover:text-greenColor"
+              />
+              <div
+                data-type="info"
+                data-place="top"
+                data-multiline={true}
+                data-tooltip-html={getAprTip()}
+                data-tooltip-id={
+                  "aprId" + detailData?.farmList?.[0].farm_id + "your"
+                }
+                data-class="reactTip"
+              >
+                <span> {get_total_apr()}</span>
+                <CustomTooltip
+                  id={"aprId" + detailData?.farmList?.[0].farm_id + "your"}
+                />
+              </div>
+            </p>
+          </div>
+          <div className="flex items-start justify-between text-sm mb-4">
+            <p className="text-gray-50 frcc">
+              <QuestionMark className="mr-1.5"></QuestionMark>
+              Reward Range
+            </p>
+            <p className="text-white">
+              {/* <RefreshIcon
+                className="cursor-pointer mr-1.5"
+                onClick={() => {
+                  setRangeSort(!rangeSort);
+                }}
+              ></RefreshIcon> */}
+              {getRange()}
+            </p>
+          </div>
+          <div className="frcb text-sm mb-4">
+            <p className="text-gray-50 frcc">
+              <QuestionMark className="mr-1.5"></QuestionMark>
+              Rewards per week
+            </p>
+            <p className="text-white frcc">{totalTvlPerWeekDisplay()}</p>
+          </div>
+        </div>
+        <div className="bg-dark-210 rounded-md p-3.5 ">
           <p className="flex items-center text-gray-50 text-sm mb-1.5">
             Unclaimed rewards <QuestionMark className="ml-1.5"></QuestionMark>
           </p>
           <div className="frcb">
-            <p className="text-2xl frcc">
+            <p className="text-2xl frcc text-white">
               <FarmDetailsUnion className="mr-4" />
               {unclaimedRewardsData.worth}
             </p>
@@ -1199,46 +1328,230 @@ export default function FarmsDclDetail(props: {
             ) : null}
           </div>
         </div>
+        <div className="fixed bottom-8 left-0 w-full">
+          {listLiquiditiesLoading ||
+          (!listLiquiditiesLoading &&
+            listLiquidities_inFarimg.length == 0 &&
+            listLiquidities_unFarimg.length == 0) ? (
+            <AddLiquidityEntryMobileBar
+              detailData={detailData}
+              isEnded={isEnded}
+              loading={listLiquiditiesLoading}
+              inFarimg={listLiquidities_inFarimg}
+              unFarimg={listLiquidities_unFarimg}
+              unavailable={listLiquidities_unavailable}
+            ></AddLiquidityEntryMobileBar>
+          ) : (
+            <div className="bg-dark-230 rounded-t-2xl px-4 py-6 flex">
+              <div
+                className="flex-1 bg-primaryGreen rounded frcc mr-3.5 h-12"
+                onClick={() => handleTabClick("Stake")}
+              >
+                Stake
+              </div>
+              <div
+                className="flex-1 text-primaryGreen border border-primaryGreen rounded frcc h-12"
+                onClick={() => handleTabClick("Unstake")}
+              >
+                Unstake
+              </div>
+              {isModalOpen && (
+                <Modal
+                  isOpen={isModalOpen}
+                  onRequestClose={(e: any) => {
+                    e.stopPropagation();
+                    setIsModalOpen(false);
+                  }}
+                  style={{
+                    overlay: {
+                      backdropFilter: "blur(10px)",
+                      WebkitBackdropFilter: "blur(10px)",
+                    },
+                    content: {
+                      outline: "none",
+                      ...(is_mobile
+                        ? {
+                            transform: "translateX(-50%)",
+                            top: "auto",
+                            bottom: "32px",
+                          }
+                        : {
+                            transform: "translate(-50%, -50%)",
+                          }),
+                    },
+                  }}
+                >
+                  <div
+                    className="text-white"
+                    style={{
+                      width: cardWidth,
+                      maxHeight: cardHeight,
+                    }}
+                  >
+                    <div className="bg-dark-10 rounded-t-2xl border border-modalGrayBg">
+                      <div className="flex items-center mb-7 border-b border-white border-opacity-10 px-4">
+                        <button
+                          className={`text-lg pr-5 xsm:flex-1 ${
+                            activeTab === "Stake"
+                              ? styles.gradient_text
+                              : "text-gray-500"
+                          }`}
+                          onClick={() => setActiveTab("Stake")}
+                        >
+                          Stake
+                        </button>
+                        <div
+                          className={`h-4 bg-gray-50 xsm:hidden`}
+                          style={{ width: "2px" }}
+                        />
+                        <button
+                          className={`text-lg pl-5 xsm:flex-1 ${
+                            activeTab === "Unstake"
+                              ? styles.gradient_text
+                              : "text-gray-500"
+                          }`}
+                          onClick={() => setActiveTab("Unstake")}
+                        >
+                          Unstake
+                        </button>
+                      </div>
+                      <p className="text-gray-50 text-sm mb-2.5 mx-4">
+                        Available
+                      </p>
+                      <p className="text-2xl mb-20 text-gray-50 mx-4 bg-gray-10 bg-opacity-10 px-6 py-4 rounded">
+                        {yp_unFarm_value}
+                      </p>
+                      <div className="px-4 pb-4">
+                        {activeTab === "Stake" && (
+                          <>
+                            {!isEnded ? (
+                              <div
+                                onClick={() => {
+                                  if (!stakeDisabled) {
+                                    batchStakeNFT();
+                                  }
+                                }}
+                                className={` w-full h-11 frcc rounded paceGrotesk-Bold text-base  ${
+                                  stakeDisabled
+                                    ? "cursor-not-allowed bg-gray-40 text-gray-50"
+                                    : "bg-greenGradient text-black cursor-pointer"
+                                }`}
+                              >
+                                <ButtonTextWrapper
+                                  loading={nft_stake_loading}
+                                  Text={() => <>Stake</>}
+                                />
+                              </div>
+                            ) : null}
+                          </>
+                        )}
+
+                        {activeTab === "Unstake" && (
+                          <>
+                            {canUnStake ? (
+                              <div
+                                onClick={() => {
+                                  if (!nft_unStake_loading) {
+                                    batchUnStakeNFT();
+                                  }
+                                }}
+                                className={` w-full h-11 frcc rounded paceGrotesk-Bold text-base  ${
+                                  nft_unStake_loading
+                                    ? "cursor-not-allowed bg-gray-40 text-gray-50"
+                                    : "text-green-10 border border-green-10 cursor-pointer"
+                                }`}
+                              >
+                                <ButtonTextWrapper
+                                  loading={nft_unStake_loading}
+                                  Text={() => <>Unstake</>}
+                                />
+                              </div>
+                            ) : null}
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </Modal>
+              )}
+            </div>
+          )}
+        </div>
       </div>
-    </main>
+    </>
   );
 }
 
-// function AddLiquidityEntryBar(props: {
-//   loading: boolean;
-//   inFarimg: UserLiquidityInfo[];
-//   unFarimg: UserLiquidityInfo[];
-//   unavailable: UserLiquidityInfo[];
-//   detailData: Seed;
-//   isEnded: boolean;
-// }) {
-//   let tip: any;
-//   const { loading, inFarimg, unFarimg, unavailable, detailData, isEnded } =
-//     props;
-//   if (!loading && inFarimg.length == 0 && unFarimg.length == 0) {
-//     // if (unavailable.length == 0) {
-//     //   tip = <FormattedMessage id="add_lp_tokens_tip" />;
-//     // } else {
-//     //   tip =
-//     //     'The price range of your liquidity is out of reward range. Please add liquidity within reward range.';
-//     // }
-//     tip =
-//       "You don't have liquidity during the farm reward range, click 'Add Liquidity' to start farming.";
-//   }
-//   if (loading || !tip || isEnded) return null;
-//   return (
-//     <div
-//       className="absolute inset-0 bg-dark-45 bg-opacity-70 flex flex-col items-center justify-center z-50 border rounded-lg px-12"
-//       style={{
-//         border: "1px solid",
-//         borderImageSource: "linear-gradient(180deg, #00D1FF 0%, #9EFE01 100%)",
-//         borderImageSlice: "1",
-//       }}
-//     >
-//       <p className="text-base mb-6 text-center">{tip}</p>
-//       <div className="text-base frcc h-12 bg-AddLiquidityBg rounded w-72">
-//         Add Liquidity
-//       </div>
-//     </div>
-//   );
-// }
+function AddLiquidityEntryBar(props: {
+  loading: boolean;
+  inFarimg: UserLiquidityInfo[];
+  unFarimg: UserLiquidityInfo[];
+  unavailable: UserLiquidityInfo[];
+  detailData: Seed;
+  isEnded: boolean;
+}) {
+  let tip: any;
+  const { loading, inFarimg, unFarimg, unavailable, detailData, isEnded } =
+    props;
+  if (!loading && inFarimg.length == 0 && unFarimg.length == 0) {
+    // if (unavailable.length == 0) {
+    //   tip = <FormattedMessage id="add_lp_tokens_tip" />;
+    // } else {
+    //   tip =
+    //     'The price range of your liquidity is out of reward range. Please add liquidity within reward range.';
+    // }
+    tip =
+      "You don't have liquidity during the farm reward range, click 'Add Liquidity' to start farming.";
+  }
+  if (loading || !tip || isEnded) return null;
+  return (
+    <div
+      className="absolute inset-0 bg-dark-45 bg-opacity-70 flex flex-col items-center justify-center z-50 border rounded-lg px-12"
+      style={{
+        border: "1px solid",
+        borderImageSource: "linear-gradient(180deg, #00D1FF 0%, #9EFE01 100%)",
+        borderImageSlice: "1",
+      }}
+    >
+      <p className="text-base mb-6 text-center">{tip}</p>
+      <div className="text-base frcc h-12 bg-AddLiquidityBg rounded w-72">
+        Add Liquidity
+      </div>
+    </div>
+  );
+}
+
+function AddLiquidityEntryMobileBar(props: {
+  loading: boolean;
+  inFarimg: UserLiquidityInfo[];
+  unFarimg: UserLiquidityInfo[];
+  unavailable: UserLiquidityInfo[];
+  detailData: Seed;
+  isEnded: boolean;
+}) {
+  let tip: any;
+  const { loading, inFarimg, unFarimg, unavailable, detailData, isEnded } =
+    props;
+  if (!loading && inFarimg.length == 0 && unFarimg.length == 0) {
+    // if (unavailable.length == 0) {
+    //   tip = <FormattedMessage id="add_lp_tokens_tip" />;
+    // } else {
+    //   tip =
+    //     'The price range of your liquidity is out of reward range. Please add liquidity within reward range.';
+    // }
+    tip =
+      "You don't have liquidity during the farm reward range, click 'Add Liquidity' to start farming.";
+  }
+  if (loading || !tip || isEnded) return null;
+  return (
+    <div className="bg-dark-230 px-8 py-6 rounded-t-2xl text-gray-10">
+      <p className="text-center mb-4">
+        You need LP tokens to stake into the corresponding farm. First, add
+        liquidity to the pool to get LP tokens.
+      </p>
+      <div className="bg-AddLiquidityBg rounded h-11 frcc text-white text-sm">
+        Add Liquidity
+      </div>
+    </div>
+  );
+}

@@ -1,6 +1,6 @@
 import React from "react";
-import { CloseIconBold } from "./Icons";
-import { isMobile } from "../../utils/device";
+import { CloseIconBold } from "../Icons";
+import { isMobile } from "@/utils/device";
 export default function SupportLedgerGuide({
   handleClose,
 }: {

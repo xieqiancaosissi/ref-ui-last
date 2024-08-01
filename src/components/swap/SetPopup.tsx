@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
+import { useDebounce } from "react-use";
 import { motion } from "framer-motion";
 import { SetIcon, WarnIcon } from "../../components/swap/icons";
 import { QuestionIcon } from "../../components/common/Icons";
@@ -6,19 +7,27 @@ import { usePersistSwapStore, IPersistSwapStore } from "../../stores/swap";
 import { INIT_SLIPPAGE_VALUE } from "@/utils/constant";
 import swapStyles from "./swap.module.css";
 import CustomTooltip from "@/components/customTooltip/customTooltip";
-import SupportLedgerGuide from "@/components/common/SupportLedgerGuide";
+import SupportLedgerGuide from "@/components/common/ledger/SupportLedgerGuide";
 import { useAccountStore } from "@/stores/account";
+import { useSwapStore } from "@/stores/swap";
 import { getAccount } from "@/utils/near";
+import HighPriceImpactTip from "./HighPriceImpactTip";
+import { PRICE_IMPACT_RED_VALUE } from "@/utils/constant";
 
 export default function SetPopup() {
   const [show, setShow] = useState<boolean>();
+  const [isLedgerUser, setIsLedgerUser] = useState<boolean>(false);
   const [ledgerTip, setLedgerTip] = useState<boolean>(false);
+  const [highPriceTip, setHighPriceTip] = useState<boolean>(false);
   const slippageOptions = ["0.1", "0.5", "1"];
   const persistSwapStore: IPersistSwapStore = usePersistSwapStore();
   const accountStore = useAccountStore();
+  const swapStore = useSwapStore();
+  const priceImpact = swapStore.getPriceImpact();
   const accountId = accountStore.getAccountId();
   const smartRoute = persistSwapStore.getSmartRoute();
   const slippageStore = persistSwapStore.getSlippage();
+
   const [slippage, setSlippage] = useState<string>(
     slippageStore ? slippageStore.toString() : INIT_SLIPPAGE_VALUE
   );
@@ -57,6 +66,21 @@ export default function SetPopup() {
       ledgerJudge();
     }
   }, [accountId]);
+  useDebounce(
+    () => {
+      if (
+        !isLedgerUser &&
+        !smartRoute &&
+        Number(priceImpact || 0) > PRICE_IMPACT_RED_VALUE
+      ) {
+        setHighPriceTip(true);
+      } else {
+        setHighPriceTip(false);
+      }
+    },
+    500,
+    [isLedgerUser, smartRoute, priceImpact]
+  );
   async function ledgerJudge() {
     const account = await getAccount();
     const allKeys = await account.getAccessKeys();
@@ -71,8 +95,9 @@ export default function SetPopup() {
 
     const isSelectLedger =
       window.selector.store.getState().selectedWalletId === "ledger";
-    const show = !!(isSelectLedger || isWalletMeta);
-    if (show && smartRoute) {
+    const isLedgerUser = !!(isSelectLedger || isWalletMeta);
+    setIsLedgerUser(isLedgerUser);
+    if (isLedgerUser && smartRoute) {
       setShow(true);
       setLedgerTip(true);
       persistSwapStore.setSmartRoute(false);
@@ -98,6 +123,9 @@ export default function SetPopup() {
   function hideLedgerTip() {
     setLedgerTip(false);
   }
+  function hideHighPriceTip() {
+    setHighPriceTip(false);
+  }
   function onchange(e: any) {
     const value = e.target.value;
     setSlippage(value);
@@ -118,7 +146,7 @@ export default function SetPopup() {
       <span className={swapStyles.swapControlButton} onClick={switchSet}>
         <SetIcon />
       </span>
-      <div className={`right-0 top-9 ${show ? "absolute" : "hidden"}`}>
+      <div className={`right-0 top-9 z-10 ${show ? "absolute" : "hidden"}`}>
         <div className={`rounded-lg border border-gray-140 bg-gray-40 p-4`}>
           {/* title */}
           <span className="text-base font-bold text-gray-110 whitespace-nowrap">
@@ -215,6 +243,9 @@ export default function SetPopup() {
         </div>
         {ledgerTip ? <SupportLedgerGuide handleClose={hideLedgerTip} /> : null}
       </div>
+      {highPriceTip ? (
+        <HighPriceImpactTip handleClose={hideHighPriceTip} />
+      ) : null}
     </div>
   );
 }

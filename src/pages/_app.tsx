@@ -7,6 +7,7 @@ import Menu from "../components/menu";
 import { useEffect } from "react";
 import getConfig from "../utils/config";
 import { ALL_STABLE_POOL_IDS } from "@/services/swap/swapConfig";
+import LedgerTransactionModal from "@/components/common/ledger/ledgerTransactionModal";
 import "@/components/common/ModalDefaultStyle";
 import "@/components/modalGAPrivacy/modalGAPrivacy.css";
 import "@/components/customModal/customModal.css";
@@ -59,6 +60,7 @@ export default function App({ Component, pageProps }: AppProps) {
         <ToastContainerEle />
         <ModalGAPrivacy />
         <RiskModal />
+        <LedgerTransactionModal />
       </div>
     </IntlProvider>
   );

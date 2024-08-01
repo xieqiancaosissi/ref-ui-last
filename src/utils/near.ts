@@ -5,6 +5,7 @@ import { getCurrentWallet } from "../utils/wallet";
 import { Transaction } from "../interfaces/wallet";
 import getConfig from "../utils/config";
 import { getSelectedWalletId } from "../utils/wallet";
+import { ledgerTipTrigger } from "@/components/common/ledger/ledger";
 import {
   addQueryParams,
   TRANSACTION_WALLET_TYPE,
@@ -40,6 +41,7 @@ export const executeMultipleTransactions = async (
     });
   });
   const selectedWalletId = getSelectedWalletId();
+  ledgerTipTrigger();
   return (await getCurrentWallet())
     .signAndSendTransactions({
       transactions: wstransactions,

@@ -12,7 +12,8 @@ import {
   ORDERLY_ASSET_MANAGER,
 } from "./near";
 import getConfig from "@/utils/config";
-import { ledgerTipTrigger, getAccountId } from "@/utils/wallet";
+import { getAccountId } from "@/utils/wallet";
+import { ledgerTipTrigger } from "@/components/common/ledger/ledger";
 export const REF_ORDERLY_NEW_USER_TIP = "REF_ORDERLY_NEW_USER_TIP_KEY";
 /**
  * No matter which wallet you are using, you need to get the private key of the current wallet after logging in.
@@ -107,7 +108,7 @@ const addAccessKey = async () => {
   const wallet = await window.selector.wallet();
 
   if (wallet.id === "ledger") {
-    await ledgerTipTrigger(window.selector);
+    await ledgerTipTrigger();
   }
   if (wallet.id === "keypom") {
     keyStoreKeypom.setKey(getConfig().networkId, accountId, keyPairLedger);

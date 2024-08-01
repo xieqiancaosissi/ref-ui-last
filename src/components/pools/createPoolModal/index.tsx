@@ -52,6 +52,21 @@ export default function CreatePoolModal({
     }
   }, [token[0], token[1], createFee]);
 
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 1024); // 假设768px是移动端和PC端的分界点
+    };
+
+    window.addEventListener("resize", handleResize);
+    handleResize(); // 组件挂载时立即执行一次
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   return (
     <Modal
       isOpen={isOpen}
@@ -60,18 +75,33 @@ export default function CreatePoolModal({
         onRequestClose();
         setToken(["", ""]);
       }}
-      style={{
-        overlay: {
-          backdropFilter: "blur(10px)",
-          WebkitBackdropFilter: "blur(10px)",
-        },
-      }}
+      style={
+        isMobile
+          ? {
+              overlay: {
+                backdropFilter: "blur(10px)",
+                WebkitBackdropFilter: "blur(10px)",
+              },
+              content: {
+                transform: "translateX(-50%)",
+                top: "auto",
+                bottom: "32px",
+                width: "100vw",
+              },
+            }
+          : {
+              overlay: {
+                backdropFilter: "blur(10px)",
+                WebkitBackdropFilter: "blur(10px)",
+              },
+            }
+      }
     >
-      <div className="w-108">
+      <div className="lg:w-108 xsm:w-full">
         {/* for select token modal */}
         <InitData />
         {/* create pool title */}
-        <div className="h-13 px-4 flex items-center justify-between">
+        <div className="h-13 px-4 flex items-center justify-between xsm:hidden">
           <CreatePoolTitle />
           <CreatePoolClose
             className="hover:scale-110 hover:cursor-pointer"
@@ -81,10 +111,13 @@ export default function CreatePoolModal({
             }}
           />
         </div>
-        <div className="h-110 rounded-lg bg-dark-10 p-4 flex flex-col justify-between">
+        <div className="lg:h-110 xsm:w-full lg:rounded-lg xsm:rounded-xl bg-dark-10 p-4 flex flex-col justify-between">
+          <div className="text-white text-lg lg:hidden mb-7">
+            Create Classic pool
+          </div>
           <div>
             {/* select token */}
-            <div className="flex justify-between">
+            <div className="flex lg:justify-between xsm:flex-col">
               <TokenInput title="Token" index={0} handleToken={handleToken} />
               <TokenInput title="Pair" index={1} handleToken={handleToken} />
             </div>
@@ -94,7 +127,7 @@ export default function CreatePoolModal({
             {/* for tips */}
             {isSame && (
               <div
-                className="text-yellow-10 text-xs border h-11 w-100 rounded flex px-1 py-1 items-center mt-10"
+                className="text-yellow-10 text-xs border h-11 lg:w-100 xsm:w-full rounded flex px-1 py-1 items-center lg:mt-10 xsm:mt-4"
                 style={{
                   borderColor: "rgba(230, 180, 1, 0.3)",
                   backgroundColor: "rgba(230, 180, 1, 0.14)",
@@ -123,7 +156,7 @@ export default function CreatePoolModal({
               onClick={() => {
                 !isDisabled && createPool();
               }}
-              className={`w-full text-base font-bold frcc h-10 rounded-lg
+              className={`w-full text-base font-bold frcc h-10 rounded-lg xsm:my-4
                 ${
                   isDisabled
                     ? "text-gray-50 bg-gray-40 cursor-not-allowed"

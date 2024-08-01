@@ -19,16 +19,18 @@ export default function Fee({ getherFee }: { getherFee: (e: any) => void }) {
   }, [feeValue]);
   return (
     <>
-      <div className="flex items-center justify-between mt-4">
+      <div className="flex lg:items-center justify-between mt-4 xsm:flex-col xsm:justify-start">
         {/*  */}
-        <span className="frcc text-gray-60 font-normal text-sm">
+        <div className="lg:frcc text-gray-60 font-normal text-sm xsm:flex xsm:items-center xsm:mb-4">
           Total fee{" "}
           <Tips msg={`LP Tokens: 80% | Share: 20%`} extraStyles={"w-44"} />
-        </span>
+        </div>
 
         {/*  */}
-        <div className="frcc">
-          <div className={`frcc w-38 text-sm py-1  ${poolStyle.commonStyle}`}>
+        <div className="lg:frcc xsm:flex xsm:items-center xsm:justify-between">
+          <div
+            className={`frcc w-38 text-sm py-1  ${poolStyle.commonStyle} xsm:hidden`}
+          >
             {feeList.map((item, index) => {
               return (
                 <div
@@ -51,6 +53,39 @@ export default function Fee({ getherFee }: { getherFee: (e: any) => void }) {
               );
             })}
           </div>
+
+          <div
+            className={`flex items-center justify-between flex-1 text-sm py-1 mr-4  lg:hidden`}
+          >
+            {feeList.map((item, index) => {
+              return (
+                <div
+                  key={item.key + index}
+                  className={`
+                  ${isActive == item.key ? "text-white " : "text-gray-60"}
+                   h-5 frcc cursor-pointer
+                `}
+                  onClick={() => {
+                    setActive(item.key);
+                    setFeeValue(item.key);
+                  }}
+                >
+                  <div
+                    className={`w-4 h-4 rounded-full border  frcc mr-1 ${
+                      isActive == item.key
+                        ? "border-green-10"
+                        : "border-gray-60"
+                    }`}
+                  >
+                    {isActive == item.key && (
+                      <div className="w-3 h-3 rounded-full bg-green-10"></div>
+                    )}
+                  </div>
+                  {item.value}%
+                </div>
+              );
+            })}
+          </div>
           <div className={poolStyle.filterSeacrhInputContainer}>
             <input
               type="number"
@@ -65,7 +100,7 @@ export default function Fee({ getherFee }: { getherFee: (e: any) => void }) {
 
       {/*  */}
       <div
-        className={`w-100 h-20 p-4 mt-9 text-xs font-normal justify-between flex flex-col ${poolStyle.commonStyle}`}
+        className={`lg:w-100 xsm:w-full lg:h-20 xsm:min-h-20 p-4 mt-9 lg:text-xs xsm:text-sm font-normal justify-between flex flex-col ${poolStyle.commonStyle}`}
       >
         {bankList.map((item, index) => {
           return (

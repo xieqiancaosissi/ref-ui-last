@@ -35,7 +35,8 @@ import { registerAccountOnToken } from "@/services/creator/token";
 import { ftViewFunction } from "@/services/ft-contract";
 import { executeMultipleTransactions } from "@/utils/near";
 import getConfig from "@/utils/config";
-import { ledgerTipTrigger, getAccountId } from "@/utils/wallet";
+import { getAccountId } from "@/utils/wallet";
+import { ledgerTipTrigger } from "@/components/common/ledger/ledger";
 export const REF_ORDERLY_NEW_USER_TIP = "REF_ORDERLY_NEW_USER_TIP_KEY";
 
 const signAndSendTransactions = async (transactions: Transaction[]) => {
@@ -48,7 +49,7 @@ const announceLedgerAccessKey = async (accountId: string) => {
   const wallet = await window.selector.wallet();
 
   if (wallet.id === "ledger") {
-    await ledgerTipTrigger(window.selector);
+    await ledgerTipTrigger();
   }
   if (wallet.id === "keypom") {
     keyStoreKeypom.setKey(getConfig().networkId, accountId, keyPairLedger);

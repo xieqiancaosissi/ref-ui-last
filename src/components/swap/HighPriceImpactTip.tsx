@@ -72,8 +72,8 @@ function AnchorText({ handleClose }: { handleClose: () => any }) {
       </div>
       <div className="text-gray-150 text-sm pl-6 mt-2.5">
         The current price risk may be too high because you have{" "}
-        <span className="text-white font-extrabold">disabled Smart Router</span>,
-        if you want to get a better price, try{" "}
+        <span className="text-white font-extrabold">disabled Smart Router</span>
+        , if you want to get a better price, try{" "}
         <span className="text-white font-extrabold">turning it off</span>.
       </div>
     </div>

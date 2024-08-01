@@ -67,3 +67,12 @@
   -webkit-background-clip: text;
   color: transparent;
 }
+
+@media (max-width: 600px) {
+  .gradient_text {
+    height: 58px;
+    background: none;
+    color: #ffffff;
+    border-bottom: 2px #ffffff solid;
+  }
+}

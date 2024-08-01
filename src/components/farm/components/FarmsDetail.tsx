@@ -47,6 +47,7 @@ import {
 import UserStakeBlock from "./FarmsDetailClaim";
 import FarmsDetailStake from "./FarmsDetailStake";
 import { getPoolsDetailById } from "@/services/pool";
+import StakeMobile from "./StakeMobile";
 
 const ONLY_ZEROS = /^0*\.?0*$/;
 const {
@@ -94,6 +95,8 @@ export default function FarmsDetail(props: {
   const [showAddLiquidityEntry, setShowAddLiquidityEntry] = useState(false);
   const [serverTime, setServerTime] = useState<number>();
   const accountStore = useAccountStore();
+  const [isStakeMobileOpen, setStakeMobileOpen] = useState<boolean>(false);
+  const [activeTab, setActiveTab] = useState("Stake");
   const isSignedIn = accountStore.isSignedIn;
   function sortTokens(tokens: TokenMetadata[]) {
     tokens.sort((a: TokenMetadata, b: TokenMetadata) => {
@@ -507,7 +510,7 @@ export default function FarmsDetail(props: {
             data-place="top"
             data-tooltip-html={getRewardsPerWeekTip()}
           >
-            <div className="flex items-center">
+            <div className="flex items-center xsm:justify-end xsm:mt-1">
               {Object.entries(rewardTokenIconMap).map(([id, icon], index) => {
                 if (id === WRAP_NEAR_CONTRACT_ID) {
                   icon = NEAR_META_DATA.icon;
@@ -728,104 +731,245 @@ export default function FarmsDetail(props: {
     });
     return result;
   }
+  function showStakeMobile() {
+    setStakeMobileOpen(true);
+  }
+  function hideStakeMobile() {
+    setStakeMobileOpen(false);
+  }
   const radio = getBoostMutil();
   return (
-    <main className="dark:text-white">
-      {/* title */}
-      <div className="w-full bg-farmTitleBg pt-8 pb-5">
-        <div className="w-3/6 m-auto">
-          <p
-            className="text-gray-60 text-sm mb-3 cursor-pointer -ml-32"
-            onClick={goBacktoFarms}
-          >{`<  Farms`}</p>
-          <div className="frcb mb-5">
-            <div className="frcc">
-              {displayImgs()}
-              <p className="ml-1.5 text-2xl paceGrotesk-Bold flex items-center">
-                <p> {displaySymbols()}</p>
-                {showNewTag() ? <NewTag className="ml-1"></NewTag> : null}
-              </p>
+    <>
+      {/* pc */}
+      <main className="dark:text-white xsm:hidden">
+        {/* title */}
+        <div className="w-full bg-farmTitleBg pt-8 pb-5">
+          <div className="m-auto 2xl:w-3/6 xl:w-4/6 lg:w-5/6">
+            <p
+              className="text-gray-60 text-sm mb-3 cursor-pointer 2xl:-ml-32"
+              onClick={goBacktoFarms}
+            >{`<  Farms`}</p>
+            <div className="frcb mb-5">
+              <div className="frcc">
+                {displayImgs()}
+                <p className="ml-1.5 text-2xl paceGrotesk-Bold flex items-center">
+                  <p> {displaySymbols()}</p>
+                  {showNewTag() ? <NewTag className="ml-1"></NewTag> : null}
+                </p>
+              </div>
+              <div
+                className="text-gray-60 text-sm frcc cursor-pointer"
+                onClick={goPool}
+              >
+                Pool
+                <div className="w-5 h-5 frcc bg-gray-100 rounded ml-1.5">
+                  <FarmDetailsPoolIcon />
+                </div>
+              </div>
             </div>
-            <div
-              className="text-gray-60 text-sm frcc cursor-pointer"
-              onClick={goPool}
-            >
-              Pool
-              <div className="w-5 h-5 frcc bg-gray-100 rounded ml-1.5">
-                <FarmDetailsPoolIcon />
+            <div className="flex">
+              <div className="pr-6 text-sm relative w-max mr-6">
+                <div className="border-r border-gray-50 border-opacity-30 absolute right-0 top-1/4 h-1/2 w-0" />
+                <p className="text-gray-50 mb-1">Total staked</p>
+                <p>
+                  {`${
+                    detailData.seedTvl
+                      ? `$${toInternationalCurrencySystem(
+                          detailData.seedTvl,
+                          2
+                        )}`
+                      : "-"
+                  }`}
+                </p>
+              </div>
+              <div className="pr-6 text-sm relative w-max mr-6">
+                <div className="border-r border-gray-50 border-opacity-30 absolute right-0 top-1/4 h-1/2 w-0" />
+                <p className="text-gray-50 mb-1 flex items-center">
+                  APR
+                  <QuestionMark className="ml-1.5"></QuestionMark>
+                </p>
+                <p className="frcc">
+                  <div
+                    className={`text-xl text-white`}
+                    data-type="info"
+                    data-place="top"
+                    data-multiline={true}
+                    data-tooltip-html={getAprTip(yourApr ? true : false)}
+                    data-tooltip-id={
+                      "aprId" + detailData?.farmList?.[0]?.farm_id
+                    }
+                    data-class="reactTip"
+                  >
+                    {yourApr ? (
+                      <div className="flex flex-col cursor-pointer justify-center">
+                        <label className="text-white">{yourApr}</label>
+                        <span className="text-sm text-gray-10">
+                          ({getTotalApr()}
+                          {aprUpLimit})
+                        </span>
+                      </div>
+                    ) : (
+                      <>
+                        <label className="text-sm frcc cursor-pointer">
+                          {getTotalApr()}
+                        </label>
+                        {aprUpLimit}
+                      </>
+                    )}
+                    <CustomTooltip
+                      id={"aprId" + detailData?.farmList?.[0].farm_id}
+                    />
+                  </div>
+                  <CalcIcon
+                    onClick={(e: any) => {
+                      e.stopPropagation();
+                      setCalcVisible(true);
+                    }}
+                    className="text-gray-60 ml-1.5 cursor-pointer hover:text-primaryGreen"
+                  />
+                </p>
+              </div>
+              <div className="pr-6 text-sm relative w-max">
+                <p className="text-gray-50 mb-1 flex items-center">
+                  Rewards per week{" "}
+                  <QuestionMark className="ml-1.5"></QuestionMark>
+                </p>
+                <p className="flex items-center"> {totalTvlPerWeekDisplay()}</p>
               </div>
             </div>
           </div>
-          <div className="flex">
-            <div className="pr-6 text-sm relative w-max mr-6">
-              <div className="border-r border-gray-50 border-opacity-30 absolute right-0 top-1/4 h-1/2 w-0" />
-              <p className="text-gray-50 mb-1">Total staked</p>
-              <p>
-                {`${
-                  detailData.seedTvl
-                    ? `$${toInternationalCurrencySystem(detailData.seedTvl, 2)}`
-                    : "-"
-                }`}
-              </p>
-            </div>
-            <div className="pr-6 text-sm relative w-max mr-6">
-              <div className="border-r border-gray-50 border-opacity-30 absolute right-0 top-1/4 h-1/2 w-0" />
-              <p className="text-gray-50 mb-1 flex items-center">
-                APR
-                <QuestionMark className="ml-1.5"></QuestionMark>
-              </p>
-              <p className="frcc">
-                <div
-                  className={`text-xl text-white`}
-                  data-type="info"
-                  data-place="top"
-                  data-multiline={true}
-                  data-tooltip-html={getAprTip(yourApr ? true : false)}
-                  data-tooltip-id={"aprId" + detailData?.farmList?.[0]?.farm_id}
-                  data-class="reactTip"
-                >
-                  {yourApr ? (
-                    <div className="flex flex-col cursor-pointer justify-center">
-                      <label className="text-white">{yourApr}</label>
-                      <span className="text-sm text-gray-10">
-                        ({getTotalApr()}
-                        {aprUpLimit})
-                      </span>
-                    </div>
-                  ) : (
-                    <>
-                      <label className="text-sm frcc cursor-pointer">
-                        {getTotalApr()}
-                      </label>
-                      {aprUpLimit}
-                    </>
-                  )}
-                  <CustomTooltip
-                    id={"aprId" + detailData?.farmList?.[0].farm_id}
-                  />
-                </div>
-                <CalcIcon
-                  onClick={(e: any) => {
-                    e.stopPropagation();
-                    setCalcVisible(true);
-                  }}
-                  className="text-gray-60 ml-1.5 cursor-pointer hover:text-primaryGreen"
-                />
-              </p>
-            </div>
-            <div className="pr-6 text-sm relative w-max">
-              <p className="text-gray-50 mb-1 flex items-center">
-                Rewards per week{" "}
-                <QuestionMark className="ml-1.5"></QuestionMark>
-              </p>
-              <p className="flex items-center"> {totalTvlPerWeekDisplay()}</p>
+        </div>
+        {/* content */}
+        <div className="2xl:w-3/6 xl:w-4/6 lg:w-5/6 pt-16 m-auto pb-8 flex">
+          <div className="flex-1 mr-2.5 h-full">
+            <UserStakeBlock
+              detailData={detailData}
+              tokenPriceList={tokenPriceList}
+              lpBalance={lpBalance}
+              loveSeed={loveSeed}
+              boostConfig={boostConfig}
+              user_seeds_map={user_seeds_map}
+              user_unclaimed_map={user_unclaimed_map}
+              user_unclaimed_token_meta_map={user_unclaimed_token_meta_map}
+              user_data_loading={user_data_loading}
+              radio={radio}
+            ></UserStakeBlock>
+          </div>
+          <div className="relative flex-1 h-full">
+            {showAddLiquidityEntry ? (
+              <AddLiquidityEntryBar
+                detailData={detailData}
+                showAddLiquidityEntry={showAddLiquidityEntry}
+              ></AddLiquidityEntryBar>
+            ) : null}
+            <div className={`h-full ${showAddLiquidityEntry ? "blur-2" : ""}`}>
+              <FarmsDetailStake
+                detailData={detailData}
+                tokenPriceList={tokenPriceList}
+                stakeType="free"
+                serverTime={serverTime ?? 0}
+                lpBalance={lpBalance}
+                loveSeed={loveSeed}
+                boostConfig={boostConfig}
+                user_seeds_map={user_seeds_map}
+                user_unclaimed_map={user_unclaimed_map}
+                user_unclaimed_token_meta_map={user_unclaimed_token_meta_map}
+                user_data_loading={user_data_loading}
+                radio={radio}
+              ></FarmsDetailStake>
             </div>
           </div>
         </div>
-      </div>
-      {/* content */}
-      <div className="w-3/6 pt-16 m-auto pb-8 flex">
-        <div className="flex-1 mr-2.5 h-full">
+        {calcVisible ? (
+          <CalcModelBooster
+            isOpen={calcVisible}
+            onRequestClose={(e) => {
+              e.stopPropagation();
+              setCalcVisible(false);
+            }}
+            seed={detailData}
+            tokenPriceList={tokenPriceList}
+            loveSeed={loveSeed}
+            boostConfig={boostConfig}
+            user_seeds_map={user_seeds_map}
+            user_unclaimed_map={user_unclaimed_map}
+            user_unclaimed_token_meta_map={user_unclaimed_token_meta_map}
+          />
+        ) : null}
+      </main>
+      {/* mobile */}
+      <div className="lg:hidden px-4">
+        <div className="text-sm text-gray-60 pt-4 pb-6 flex items-center">
+          <p onClick={goBacktoFarms}> {`Farms  >`}</p>
+          <p className="text-white ml-1">Details</p>
+        </div>
+        <div className="flex mb-1">{displayImgs()}</div>
+        <div className="text-white text-lg flex items-center justify-between mb-4">
+          <div className="flex items-center">
+            {displaySymbols()}
+            {showNewTag() ? <NewTag className="ml-1"></NewTag> : null}
+          </div>
+          <div
+            className="text-gray-60 text-sm flex items-center"
+            onClick={goPool}
+          >
+            <p className="underline mr-1">Pool</p>
+            <FarmDetailsPoolIcon />
+          </div>
+        </div>
+        <div className="bg-dark-210 rounded-md p-3.5 mb-4">
+          <div className="frcb text-sm mb-4">
+            <p className="text-gray-50">Total staked</p>
+            <p className="text-white">{`${
+              detailData.seedTvl
+                ? `$${toInternationalCurrencySystem(detailData.seedTvl, 2)}`
+                : "-"
+            }`}</p>
+          </div>
+          <div className="frcb text-sm mb-4">
+            <p className="text-gray-50 flex items-center">
+              <QuestionMark className="mr-0.5"></QuestionMark>APR
+            </p>
+            <div className="text-white">
+              <div
+                className={`text-xl text-white`}
+                data-type="info"
+                data-place="top"
+                data-multiline={true}
+                data-tooltip-html={getAprTip(yourApr ? true : false)}
+                data-tooltip-id={"aprId" + detailData?.farmList?.[0]?.farm_id}
+                data-class="reactTip"
+              >
+                {yourApr ? (
+                  <div className="flex flex-col cursor-pointer justify-center">
+                    <label className="text-white">{yourApr}</label>
+                    <span className="text-sm text-gray-10">
+                      ({getTotalApr()}
+                      {aprUpLimit})
+                    </span>
+                  </div>
+                ) : (
+                  <>
+                    <label className="text-sm frcc cursor-pointer">
+                      {getTotalApr()}
+                    </label>
+                    {aprUpLimit}
+                  </>
+                )}
+                <CustomTooltip
+                  id={"aprId" + detailData?.farmList?.[0].farm_id}
+                />
+              </div>
+            </div>
+          </div>
+          <div className="flex items-start justify-between text-sm mb-1">
+            <p className="text-gray-50 flex items-center">
+              <QuestionMark className="mr-0.5"></QuestionMark>Rewards per week
+            </p>
+            <p className="text-white">{totalTvlPerWeekDisplay()}</p>
+          </div>
+        </div>
+        <div className={`${showAddLiquidityEntry ? "mb-56" : "mb-36"}`}>
           <UserStakeBlock
             detailData={detailData}
             tokenPriceList={tokenPriceList}
@@ -839,48 +983,57 @@ export default function FarmsDetail(props: {
             radio={radio}
           ></UserStakeBlock>
         </div>
-        <div className="relative flex-1 h-full">
+        <div className="fixed bottom-8 left-0 w-full">
           {showAddLiquidityEntry ? (
-            <AddLiquidityEntryBar
+            <AddLiquidityEntryMobileBar
               detailData={detailData}
               showAddLiquidityEntry={showAddLiquidityEntry}
-            ></AddLiquidityEntryBar>
+            ></AddLiquidityEntryMobileBar>
           ) : null}
-          <div className={`h-full ${showAddLiquidityEntry ? "blur-2" : ""}`}>
-            <FarmsDetailStake
-              detailData={detailData}
-              tokenPriceList={tokenPriceList}
-              stakeType="free"
-              serverTime={serverTime ?? 0}
-              lpBalance={lpBalance}
-              loveSeed={loveSeed}
-              boostConfig={boostConfig}
-              user_seeds_map={user_seeds_map}
-              user_unclaimed_map={user_unclaimed_map}
-              user_unclaimed_token_meta_map={user_unclaimed_token_meta_map}
-              user_data_loading={user_data_loading}
-              radio={radio}
-            ></FarmsDetailStake>
+          <div
+            className={`bg-dark-230 rounded-t-2xl px-4 py-6 flex ${
+              showAddLiquidityEntry ? "hidden" : ""
+            }`}
+          >
+            <div
+              className="flex-1 bg-primaryGreen rounded frcc mr-3.5 h-12"
+              onClick={() => {
+                setActiveTab("stake");
+                showStakeMobile();
+              }}
+            >
+              Stake
+            </div>
+            <div
+              className="flex-1 text-primaryGreen border border-primaryGreen rounded frcc h-12"
+              onClick={() => {
+                setActiveTab("unstake");
+                showStakeMobile();
+              }}
+            >
+              Unstake
+            </div>
           </div>
         </div>
-      </div>
-      {calcVisible ? (
-        <CalcModelBooster
-          isOpen={calcVisible}
-          onRequestClose={(e) => {
-            e.stopPropagation();
-            setCalcVisible(false);
-          }}
-          seed={detailData}
+        <StakeMobile
+          isOpen={isStakeMobileOpen}
+          onRequestClose={hideStakeMobile}
+          detailData={detailData}
           tokenPriceList={tokenPriceList}
+          stakeType="free"
+          serverTime={serverTime ?? 0}
+          lpBalance={lpBalance}
           loveSeed={loveSeed}
           boostConfig={boostConfig}
           user_seeds_map={user_seeds_map}
           user_unclaimed_map={user_unclaimed_map}
           user_unclaimed_token_meta_map={user_unclaimed_token_meta_map}
+          user_data_loading={user_data_loading}
+          radio={radio}
+          activeTab={activeTab}
         />
-      ) : null}
-    </main>
+      </div>
+    </>
   );
 }
 
@@ -934,6 +1087,52 @@ function AddLiquidityEntryBar(props: {
         liquidity to the pool to get LP tokens.
       </p>
       <div className="text-base frcc h-12 bg-AddLiquidityBg rounded w-72">
+        Add Liquidity
+      </div>
+    </div>
+  );
+}
+
+function AddLiquidityEntryMobileBar(props: {
+  detailData: Seed;
+  showAddLiquidityEntry: any;
+}) {
+  const { detailData, showAddLiquidityEntry } = props;
+  const [addLiquidityModalVisible, setAddLiquidityModalVisible] =
+    useState(false);
+  const poolA = detailData.pool;
+  const poolId = poolA?.id;
+  const [pool, setPool] = useState<Pool | null>(null);
+  const [tokens, setTokens] = useState<TokenMetadata[]>([]);
+  const [addLiquidityButtonLoading, setAddLiquidityButtonLoading] =
+    useState(true);
+
+  useEffect(() => {
+    if (poolId) {
+      getPoolsDetailById({ pool_id: poolId as any }).then((res) => {
+        setPool(res.data);
+      });
+    }
+  }, [poolId]);
+  const fetchedTokens = useTokens(pool?.token_account_ids || []);
+  useEffect(() => {
+    if (fetchedTokens) {
+      setTokens(fetchedTokens);
+      setAddLiquidityButtonLoading(!(fetchedTokens.length > 0 && pool));
+    }
+  }, [pool]);
+
+  const needForbidden =
+    (FARM_BLACK_LIST_V2 || []).indexOf(poolId?.toString() || "") > -1;
+  if (!showAddLiquidityEntry || needForbidden) return null;
+
+  return (
+    <div className="bg-dark-230 px-8 py-6 rounded-t-2xl text-gray-10">
+      <p className="text-center mb-4">
+        You need LP tokens to stake into the corresponding farm. First, add
+        liquidity to the pool to get LP tokens.
+      </p>
+      <div className="bg-AddLiquidityBg rounded h-11 frcc text-white text-sm">
         Add Liquidity
       </div>
     </div>

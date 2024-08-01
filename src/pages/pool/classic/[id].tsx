@@ -427,7 +427,7 @@ export default function ClassicPoolDetail() {
 
       {/* farm pc hidden*/}
       {seedFarms && isMobile && (
-        <div className="flex flex-col mt-4 relative z-30 rounded lg:hidden w-full">
+        <div className="flex flex-col mt-4 relative z-30 rounded lg:hidden w-88 mr-auto">
           <GradientFarmBorderMobile className="absolute -z-10 left-2"></GradientFarmBorderMobile>
           <div className="flex items-center px-6 pt-4 justify-between">
             <div className="text-white whitespace-nowrap text-base font-normal">

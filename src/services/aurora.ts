@@ -8,11 +8,8 @@ import {
 } from "@aurora-is-near/engine";
 import { useEffect, useState } from "react";
 import {
-  ftGetBalance,
   ftGetTokenMetadata,
-  getAccountNearBalance,
   getDepositableBalance,
-  getGlobalWhitelist,
   getWhitelistedTokensAndNearTokens,
 } from "./token";
 import { defaultTokenList, getAuroraConfig } from "@/utils/auroraConfig";
@@ -31,7 +28,6 @@ import {
   toInternationalCurrencySystemLongString,
   toNonDivisibleNumber,
   toPrecision,
-  toReadableNumber,
 } from "@/utils/numbers";
 import { useAccountStore } from "@/stores/account";
 import Big from "big.js";
@@ -67,9 +63,37 @@ const near = new Near({
   headers: {},
   ...config,
 });
+class AuroraWalletConnection extends WalletConnection {
+  async _completeSignInWithAccessKey() {
+    const currentUrl = new URL(window.location.href);
+    const publicKey = currentUrl.searchParams.get("public_key") || "";
+    const allKeys = (currentUrl.searchParams.get("all_keys") || "").split(",");
+    const accountId = currentUrl.searchParams.get("account_id") || "";
+    // TODO: Handle errors during login
+    if (accountId) {
+      this._authData = {
+        accountId,
+        allKeys,
+      };
+      window.localStorage.setItem(
+        this._authDataKey,
+        JSON.stringify(this._authData)
+      );
+      if (publicKey) {
+        await this._moveKeyFromTempToPermanent(accountId, publicKey);
+      }
+    }
+    // currentUrl.searchParams.delete('public_key');
+    // currentUrl.searchParams.delete('all_keys');
+    // currentUrl.searchParams.delete('account_id');
+    // currentUrl.searchParams.delete('meta');
+    // currentUrl.searchParams.delete('transactionHashes');
+    // window.history.replaceState({}, document.title, currentUrl.toString());
+  }
+}
 const getAurora = () => {
-  const aurora_walletConnection = new WalletConnection(near, "aurora");
-  const account = new WalletConnection(
+  const aurora_walletConnection = new AuroraWalletConnection(near, "aurora");
+  const account = new AuroraWalletConnection(
     near,
     orderConfig.ORDERLY_ASSET_MANAGER
   ).account();

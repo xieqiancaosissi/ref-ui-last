@@ -1,30 +1,13 @@
 import getConfig from "@/utils/config";
-import getOrderlyConfig from "@/utils/orderlyConfig";
 import { getAccount } from "@/utils/near";
-import { getAccountId, getCurrentWallet } from "@/utils/wallet";
+import { getAccountId } from "@/utils/wallet";
 import { ftGetTokenMetadata } from "./token";
-import { Near, WalletConnection, keyStores } from "near-api-js";
 import Big from "big.js";
 import { refFiViewFunction } from "@/utils/contract";
 import { shrinkToken } from "./burrow-utils";
 import { IToken } from "./burrow-interfaces";
-
-const config = getConfig();
-const orderlyConfig = getOrderlyConfig();
-const { BURROW_CONTRACT_ID, WRAP_NEAR_CONTRACT_ID } = getConfig();
-const NO_STORAGE_DEPOSIT_CONTRACTS = ["aurora"];
+const { BURROW_CONTRACT_ID } = getConfig();
 const lpTokenPrefix = "shadow_ref_v1";
-const keyStore = new keyStores.BrowserLocalStorageKeyStore();
-const near = new Near({
-  keyStore,
-  headers: {},
-  ...config,
-});
-export const wallet = new WalletConnection(
-  near,
-  orderlyConfig.ORDERLY_ASSET_MANAGER
-);
-
 export const burrowViewFunction = async ({
   methodName,
   args,
@@ -77,7 +60,8 @@ export async function getAssets() {
     {}
   );
   const config = await burrowViewFunction({ methodName: "get_config" });
-  const prices = await wallet.account().viewFunction({
+  const account = await getAccount();
+  const prices = await account.viewFunction({
     contractId: config?.oracle_account_id,
     methodName: "get_price_data",
   });
@@ -88,7 +72,7 @@ export async function getAssets() {
   const balances = accountId
     ? await Promise.all(
         tokenIds_normal.map((token_id: string) =>
-          wallet.account().viewFunction({
+          account.viewFunction({
             contractId: token_id,
             methodName: "ft_balance_of",
             args: {

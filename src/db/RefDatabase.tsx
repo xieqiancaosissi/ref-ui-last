@@ -408,15 +408,17 @@ class RefDatabase extends Dexie {
     );
   }
   public async checkTokenPrices() {
-    const priceList = await this.tokenPrices.limit(2).toArray();
-    return (
-      priceList.length > 0 &&
-      priceList.every(
-        (price) =>
-          Number(price.update_time) >=
-          Number(moment().unix()) - checkCacheSeconds
-      )
-    );
+    try {
+      const priceList = await this.tokenPrices.limit(2)?.toArray();
+      return (
+        priceList?.length > 0 &&
+        priceList.every(
+          (price) =>
+            Number(price.update_time) >=
+            Number(moment().unix()) - checkCacheSeconds
+        )
+      );
+    } catch (error) {}
   }
   public async checkBoostSeeds() {
     const boostSeeds = await this.boostSeeds.limit(2).toArray();

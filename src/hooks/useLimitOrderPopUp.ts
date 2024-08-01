@@ -9,14 +9,15 @@ const useLimitOrderPopUp = () => {
   const { txHash, pathname } = getURLInfo();
   const router = useRouter();
   const accountStore = useAccountStore();
-  const isSignedIn = accountStore.getIsSignedIn();
+  const account_id = accountStore.getAccountId();
+  const walletLoading = accountStore.getWalletLoading();
   useEffect(() => {
-    if (txHash && isSignedIn) {
+    if (txHash && account_id && !walletLoading) {
       checkTransaction(txHash).then(async (res: any) => {
         await limitOrderPopUp(res, txHash);
         router.replace(pathname);
       });
     }
-  }, [txHash, isSignedIn]);
+  }, [txHash, account_id, walletLoading]);
 };
 export default useLimitOrderPopUp;

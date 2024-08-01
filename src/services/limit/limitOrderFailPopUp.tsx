@@ -35,7 +35,10 @@ const LimitOrderFailPopUp = (txHash: string) => {
       closeOnClick: true,
       hideProgressBar: false,
       closeButton: (
-        <CloseIcon size="12" className=" text-dark-80 hover:text-white" />
+        <CloseIcon
+          size="12"
+          className="flex-shrink-0 text-dark-80 hover:text-white relative top-1 right-1"
+        />
       ),
       progressStyle: {
         background: "#FF4B76",

@@ -24,28 +24,29 @@ const limitOrderSuccessPopUp = ({
       target="_blank"
       rel="noopener noreferrer nofollow"
     >
-      <span className="mr-2.5 self-start relative" style={{ top: "6px" }}>
-        <PopSuccessfulIcon />
-      </span>
-      {!ONLY_ZEROS.test(swapAmount || "0") && (
-        <span className="mr-1 flex flex-col whitespace-nowrap">
-          <span>
-            {ONLY_ZEROS.test(limitOrderAmount || "0") ? (
-              <>Limit order filled.</>
-            ) : (
-              <>Limit order partially filled.</>
-            )}
-          </span>
-
-          {
-            <span className="">{`Sold ${swapAmount} ${tokenSymbol} for ${swapAmountOut} ${tokenOutSymbol}.`}</span>
-          }
+      <div className="flex items-center">
+        <span className="mr-2.5 self-start relative" style={{ top: "6px" }}>
+          <PopSuccessfulIcon />
         </span>
-      )}
-      {ONLY_ZEROS.test(swapAmount || "0") && (
-        <span className="mr-6 ">Limit order created.</span>
-      )}
+        {!ONLY_ZEROS.test(swapAmount || "0") && (
+          <span className="mr-1 flex flex-col">
+            <span>
+              {ONLY_ZEROS.test(limitOrderAmount || "0") ? (
+                <>Limit order filled.</>
+              ) : (
+                <>Limit order partially filled.</>
+              )}
+            </span>
 
+            {
+              <span className="">{`Sold ${swapAmount} ${tokenSymbol} for ${swapAmountOut} ${tokenOutSymbol}.`}</span>
+            }
+          </span>
+        )}
+        {ONLY_ZEROS.test(swapAmount || "0") && (
+          <span className="mr-6 ">Limit order created.</span>
+        )}
+      </div>
       <span
         className="underline decoration-1 text-gray-60 hover:text-white"
         style={{
@@ -61,7 +62,10 @@ const limitOrderSuccessPopUp = ({
       closeOnClick: true,
       hideProgressBar: false,
       closeButton: (
-        <CloseIcon className=" text-dark-80 hover:text-white" size="12" />
+        <CloseIcon
+          className="flex-shrink-0 text-dark-80 hover:text-white relative top-1 right-1"
+          size="12"
+        />
       ),
       progressStyle: {
         background: "#9DFD01",

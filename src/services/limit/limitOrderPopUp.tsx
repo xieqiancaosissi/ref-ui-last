@@ -38,7 +38,6 @@ const limitOrderPopUp = async (res: any, txHash: string) => {
   );
 
   const parsedInputArgs = JSON.parse(ft_transfer_call_args || "");
-
   const LimitOrderWithSwap = JSON.parse(
     parsedInputArgs?.msg || "{}"
   )?.LimitOrderWithSwap;
@@ -48,7 +47,6 @@ const limitOrderPopUp = async (res: any, txHash: string) => {
   }
   const ft_resolved_tx_outcome =
     res?.receipts_outcome?.[ft_resolved_id]?.outcome;
-
   const parsedValue = JSON.parse(
     parsedTransactionSuccessValue(ft_resolved_tx_outcome) || ""
   );

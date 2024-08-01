@@ -209,10 +209,10 @@ export default function SetPopup() {
               </div>
             )}
           </div>
-          {/* Smart Route switch */}
+          {/* Smart Router switch */}
           <div className="flexBetween">
             <div className="flexBetween gap-1">
-              <span className="text-sm text-gray-50">Disable Smart Route</span>
+              <span className="text-sm text-gray-50">Disable Smart Router</span>
               <div
                 className="text-white text-right"
                 data-class="reactTip"

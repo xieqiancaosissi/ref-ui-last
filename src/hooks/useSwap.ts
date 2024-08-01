@@ -105,10 +105,14 @@ const useSwap = ({
       slippage,
     })
       .then((estimateResult) => {
-        const todo: any =
-          estimateResult.source == "server"
-            ? { swapsToDoServer: estimateResult }
-            : { swapsToDo: estimateResult };
+        let todo: any;
+        if (estimateResult.source == "server") {
+          swapStore.setEstimates(undefined);
+          todo = { swapsToDoServer: estimateResult };
+        } else {
+          swapStore.setEstimatesServer(undefined);
+          todo = { swapsToDo: estimateResult };
+        }
         setSwapEstimateResult({
           quoteDone: true,
           tag: `${tokenIn.id}@${tokenOut.id}@${tokenInAmountNoRate}`,

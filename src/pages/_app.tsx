@@ -1,10 +1,12 @@
+import { useEffect, useState } from "react";
 import "@/styles/globals.css";
+import { useRouter } from "next/router";
 import { IntlProvider } from "react-intl";
 import type { AppProps } from "next/app";
+import LoadingBar from "react-top-loading-bar";
 import Modal from "react-modal";
 import dynamic from "next/dynamic";
 import Menu from "../components/menu";
-import { useEffect } from "react";
 import getConfig from "../utils/config";
 import { ALL_STABLE_POOL_IDS } from "@/services/swap/swapConfig";
 import LedgerTransactionModal from "@/components/common/ledger/ledgerTransactionModal";
@@ -28,6 +30,16 @@ const RiskModal = dynamic(
 );
 
 export default function App({ Component, pageProps }: AppProps) {
+  const [progress, setProgress] = useState(0);
+  const router = useRouter();
+  useEffect(() => {
+    router.events.on("routeChangeStart", () => {
+      setProgress(30);
+    });
+    router.events.on("routeChangeComplete", () => {
+      setProgress(100);
+    });
+  }, []);
   useEffect(() => {
     UIInit();
     DBInit();
@@ -50,6 +62,12 @@ export default function App({ Component, pageProps }: AppProps) {
   }
   return (
     <IntlProvider messages={{}} locale={"en"}>
+      <LoadingBar
+        color="#9EFF00"
+        height={3}
+        progress={progress}
+        onLoaderFinished={() => setProgress(0)}
+      />
       <div className="flex flex-col bg-primaryDark min-h-screen">
         <Menu />
         <div className="flex-grow mt-24">

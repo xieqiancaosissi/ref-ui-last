@@ -57,7 +57,10 @@ function AnchorDash() {
 }
 function AnchorText({ handleClose }: { handleClose: () => any }) {
   return (
-    <div className="rounded-lg border border-green-10 p-4 bg-gray-40">
+    <div
+      className="rounded-lg border border-green-10 p-4 bg-gray-40"
+      style={{ borderWidth: "0.5px" }}
+    >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3.5">
           <WarnIcon className="text-red-10" />

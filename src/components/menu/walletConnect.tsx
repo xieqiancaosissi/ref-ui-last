@@ -289,7 +289,7 @@ export default function WalletConnect() {
                           />
                         </div>
                       </div>
-                      <div className="frcc">
+                      <div className="frcc blur">
                         <span className="text-xl text-lightWhite-10 font-bold whitespace-nowrap mr-3">
                           {getAccountName(accountId)}
                         </span>
@@ -317,7 +317,9 @@ export default function WalletConnect() {
                           />
                         </div>
                       </div>
-                      <Overview />
+                      <div className="blur">
+                        <Overview />
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -346,7 +348,7 @@ export default function WalletConnect() {
           <Guider clearGuilder={clearGuilder} />
           <LinkLine
             className="absolute"
-            style={{ zIndex: "1001", right: "108px", top: "70px" }}
+            style={{ zIndex: "1001", right: "76px", top: "82px" }}
           />
         </div>
       ) : null}

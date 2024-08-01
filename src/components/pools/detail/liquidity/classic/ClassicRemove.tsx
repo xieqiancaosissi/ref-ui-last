@@ -347,7 +347,7 @@ export default function StableAdd(props: any) {
           <div>
             {!canSubmit && (
               <div
-                className="text-yellow-10 text-sm border h-11 w-full rounded flex px-2 py-1 items-center mb-2"
+                className="text-yellow-10 text-sm border h-11 w-full rounded flex px-2 py-1 items-center my-2"
                 style={{
                   borderColor: "rgba(230, 180, 1, 0.3)",
                   backgroundColor: "rgba(230, 180, 1, 0.14)",

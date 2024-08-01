@@ -9,6 +9,7 @@ import TvlAndVolumeCharts from "@/components/pools/detail/classic/TvlAndVolumeCh
 import OverallLocking from "@/components/pools/detail/classic/overallLocking";
 import PoolComposition from "@/components/pools/detail/classic/PoolComposition";
 import RecentTransaction from "@/components/pools/detail/classic/RecentTransaction";
+import RecentTransactionMobile from "@/components/pools/detail/classic/RecentTransactionMobile";
 import {
   addPoolToWatchList,
   removePoolFromWatchList,
@@ -525,7 +526,7 @@ export default function ClassicPoolDetail() {
                 Recent Transaction
                 <div className="h-0.5 w-42 bg-white mt-1 lg:hidden"></div>
               </span>
-              <div className="flex items-center mr-0.5">
+              <div className="flex items-center mr-0.5 xsm:hidden">
                 {TransactionTabList.map((item, index) => {
                   return (
                     <div
@@ -542,10 +543,36 @@ export default function ClassicPoolDetail() {
                   );
                 })}
               </div>
+
+              <div className="flex items-center mr-0.5 lg:hidden border border-gray-230 px-0.5 rounded">
+                {TransactionTabList.map((item, index) => {
+                  return (
+                    <div
+                      key={item.key + "_" + index}
+                      onClick={() => setTransactionActive(item.key)}
+                      className={`cursor-pointer  frcc text-sm font-medium px-2 py-1 rounded hover:text-white ${
+                        item.key == transactionActive
+                          ? "text-white bg-gray-40"
+                          : "text-gray-60 bg-transparent"
+                      } ${index == 0 ? "mr-2" : ""}`}
+                    >
+                      {item.value}
+                    </div>
+                  );
+                })}
+              </div>
             </div>
             {/*  */}
-            {poolDetail && updatedMapList?.length > 0 && (
+            {poolDetail && updatedMapList?.length > 0 && !isMobile && (
               <RecentTransaction
+                activeTab={transactionActive}
+                poolId={poolId}
+                updatedMapList={updatedMapList}
+              />
+            )}
+
+            {poolDetail && updatedMapList?.length > 0 && isMobile && (
+              <RecentTransactionMobile
                 activeTab={transactionActive}
                 poolId={poolId}
                 updatedMapList={updatedMapList}

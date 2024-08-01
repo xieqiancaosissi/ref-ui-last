@@ -55,11 +55,13 @@ export default function CalcModelDcl(
     liquidity?: UserLiquidityInfo;
   }
 ) {
+  const cardWidth = isMobile() ? "100vw" : "420px";
+  const cardHeight = isMobile() ? "90vh" : "80vh";
+  const is_mobile = isMobile();
   const { seed, tokenPriceList, liquidity } = props;
   const [lp_amount, set_lp_amount] = useState("0");
   const [lp_value, set_lp_value] = useState("0");
   const [one_lp_value, set_one_lp_value] = useState("");
-  const cardWidth = isMobile() ? "90vw" : "415px";
   useEffect(() => {
     get_one_lp_value();
   }, [seed, tokenPriceList]);
@@ -99,11 +101,26 @@ export default function CalcModelDcl(
           backdropFilter: "blur(10px)",
           WebkitBackdropFilter: "blur(10px)",
         },
+        content: {
+          outline: "none",
+          ...(is_mobile
+            ? {
+                transform: "translateX(-50%)",
+                top: "auto",
+                bottom: "32px",
+              }
+            : {
+                transform: "translate(-50%, -50%)",
+              }),
+        },
       }}
     >
       <div
-        className="text-white bg-dark-10 rounded-lg p-5"
-        style={{ width: "420px" }}
+        className="text-white bg-dark-10 rlg:rounded-lg xs:rounded-t-2xl xs:border xs:border-modalGrayBg p-5"
+        style={{
+          width: cardWidth,
+          maxHeight: cardHeight,
+        }}
       >
         <div className="flex justify-between items-center">
           <label className="text-lg">ROI Calculator</label>

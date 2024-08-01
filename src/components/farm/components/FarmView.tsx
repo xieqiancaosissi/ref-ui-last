@@ -940,7 +940,7 @@ export function FarmView(props: {
           id={"rewardPerWeekId" + (seed?.farmList?.[0]?.farm_id ?? "")}
           place="bottom"
         />
-        {isPending() ? (
+        {isPending() && moment.unix(getStartTime()).valueOf() > Date.now() ? (
           <div
             className="absolute bottom-0 text-purple-10 text-xs bg-purple-20 bg-opacity-20 w-full left-0 frcc"
             style={{

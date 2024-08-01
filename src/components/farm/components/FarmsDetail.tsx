@@ -81,8 +81,14 @@ export default function FarmsDetail(props: {
     user_unclaimed_map = {},
     user_unclaimed_token_meta_map = {},
   } = user_data;
-  const pool = detailData.pool;
+  const { pool, seed_id } = detailData;
   const { token_account_ids } = pool || {};
+  const DECIMALS =
+    pool && new Set(STABLE_POOL_IDS || []).has(pool.id?.toString())
+      ? LP_STABLE_TOKEN_DECIMALS
+      : LP_TOKEN_DECIMALS;
+  const { free_amount = "0" } = user_seeds_map[seed_id] || {};
+  const freeAmount = toReadableNumber(DECIMALS, free_amount);
   const tokens = sortTokens(useTokens(token_account_ids) || []);
   const router = useRouter();
   const [yourApr, setYourApr] = useState("");
@@ -96,7 +102,7 @@ export default function FarmsDetail(props: {
   const [serverTime, setServerTime] = useState<number>();
   const accountStore = useAccountStore();
   const [isStakeMobileOpen, setStakeMobileOpen] = useState<boolean>(false);
-  const [activeTab, setActiveTab] = useState("Stake");
+  const [activeTab, setActiveTab] = useState("stake");
   const isSignedIn = accountStore.isSignedIn;
   function sortTokens(tokens: TokenMetadata[]) {
     tokens.sort((a: TokenMetadata, b: TokenMetadata) => {
@@ -989,31 +995,36 @@ export default function FarmsDetail(props: {
               detailData={detailData}
               showAddLiquidityEntry={showAddLiquidityEntry}
             ></AddLiquidityEntryMobileBar>
-          ) : null}
-          <div
-            className={`bg-dark-230 rounded-t-2xl px-4 py-6 flex ${
-              showAddLiquidityEntry ? "hidden" : ""
-            }`}
-          >
+          ) : (
             <div
-              className="flex-1 bg-primaryGreen rounded frcc mr-3.5 h-12"
-              onClick={() => {
-                setActiveTab("stake");
-                showStakeMobile();
-              }}
+              className={`bg-dark-230 rounded-t-2xl px-4 py-6 flex ${
+                showAddLiquidityEntry ? "hidden" : ""
+              }`}
             >
-              Stake
+              <div
+                className={`flex-1 bg-primaryGreen rounded mr-3.5 h-12 ${
+                  isEnded() ? "hidden" : "frcc"
+                }`}
+                onClick={() => {
+                  setActiveTab("stake");
+                  showStakeMobile();
+                }}
+              >
+                Stake
+              </div>
+              <div
+                className={`flex-1 text-primaryGreen border border-primaryGreen rounded h-12 ${
+                  Number(freeAmount) > 0 ? "frcc" : "hidden"
+                }`}
+                onClick={() => {
+                  setActiveTab("unstake");
+                  showStakeMobile();
+                }}
+              >
+                Unstake
+              </div>
             </div>
-            <div
-              className="flex-1 text-primaryGreen border border-primaryGreen rounded frcc h-12"
-              onClick={() => {
-                setActiveTab("unstake");
-                showStakeMobile();
-              }}
-            >
-              Unstake
-            </div>
-          </div>
+          )}
         </div>
         <StakeMobile
           isOpen={isStakeMobileOpen}

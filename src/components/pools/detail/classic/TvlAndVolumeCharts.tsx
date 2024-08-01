@@ -28,6 +28,21 @@ export default function TvlAndVolumeCharts(props: any) {
     }
   }, [monthVolumeById]);
 
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 1024); //
+    };
+
+    window.addEventListener("resize", handleResize);
+    handleResize(); //
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   return (
     <div>
       {/* tab bar */}
@@ -42,7 +57,7 @@ export default function TvlAndVolumeCharts(props: any) {
                       ? "text-white bg-gray-100 rounded"
                       : "text-gray-60"
                   }
-                   w-18 h-8 frcc text-sm hover:text-white 
+                   lg:w-18 xsm:w-1/2 h-8 frcc text-sm hover:text-white 
                 `}
               onClick={() => {
                 setActive(item.key);
@@ -58,9 +73,11 @@ export default function TvlAndVolumeCharts(props: any) {
       {isFinished && (
         <div className={styles.chartsContent}>
           {isActive == "tvl" ? (
-            <TVlCharts {...{ poolId: props.poolId, xTvl, yTvl }} />
+            <TVlCharts {...{ poolId: props.poolId, xTvl, yTvl, isMobile }} />
           ) : (
-            <VolumeCharts {...{ poolId: props.poolId, xMonth, yMonth }} />
+            <VolumeCharts
+              {...{ poolId: props.poolId, xMonth, yMonth, isMobile }}
+            />
           )}
         </div>
       )}
@@ -71,7 +88,7 @@ export default function TvlAndVolumeCharts(props: any) {
 // tvl charts
 export function TVlCharts(props: any) {
   const chartRef = useRef(null);
-  const { xTvl, yTvl } = props;
+  const { xTvl, yTvl, isMobile } = props;
   const formatAxisLable = (str: string) => {
     const momentDate = moment(str, "MMM DD, YYYY");
     if (momentDate.isValid()) {
@@ -116,16 +133,26 @@ export function TVlCharts(props: any) {
         backgroundColor: "transparent",
         borderWidth: 0,
         borderColor: "transparent",
-        position: [600, 0],
+        position: isMobile ? [0, -10] : [600, 0],
         formatter(params: any) {
           let result = `<div style="display:flex;justify-content: space-between;font-size:14px;"> ${params[0].axisValue} </div>`; //
           for (let i = 0, l = params.length; i < l; i++) {
-            result += `<div style="display:flex;justify-content: space-between;"><span style="color:white;font-size:16px;font-weight:700;">$${toInternationalCurrencySystem_number(
-              params[i].value
-            )}</span></div>`;
+            if (isMobile) {
+              result += `<div style="display:flex;justify-content: space-between;margin-left:4px"><span style="color:#9efe01;font-size:16px;font-weight:700;">$${toInternationalCurrencySystem_number(
+                params[i].value
+              )}</span></div>`;
+            } else {
+              result += `<div style="display:flex;justify-content: space-between;"><span style="color:white;font-size:16px;font-weight:700;">$${toInternationalCurrencySystem_number(
+                params[i].value
+              )}</span></div>`;
+            }
           }
 
-          const formatDom = `<div style="height: 39px; width: 72px;display:flex; flex-direction:column;justify-content: space-between;align-items: center;font-weight: 400;font-family:SpaceGrotesk">${result}</div>`;
+          const formatDom = `<div style="height: 39px; width: 72px; ${
+            isMobile
+              ? "display:flex;align-items: center;"
+              : "display:flex; flex-direction:column;justify-content: space-between;align-items: center;"
+          }font-weight: 400;font-family:SpaceGrotesk">${result}</div>`;
           return formatDom;
         },
       },
@@ -173,7 +200,7 @@ export function TVlCharts(props: any) {
         },
         lineStyle: {
           color: "#9EFE01",
-          width: 2,
+          width: isMobile ? 1 : 2,
         },
         itemStyle: {
           normal: {
@@ -191,16 +218,29 @@ export function TVlCharts(props: any) {
     };
 
     chartInstance.setOption(options);
+
+    const handleResize = () => {
+      if (chartInstance) {
+        chartInstance.resize();
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    // 清理函数
     return () => {
-      chartInstance.dispose();
+      window.removeEventListener("resize", handleResize);
+      if (chartInstance) {
+        chartInstance.dispose(); // 销毁ECharts实例
+      }
     };
   }, []);
   return (
     <div
       ref={chartRef}
       style={{
-        width: "100%",
-        height: "540px",
+        width: isMobile ? "100vw" : "100%",
+        height: isMobile ? "360px" : "540px",
       }}
     ></div>
   );
@@ -209,7 +249,7 @@ export function TVlCharts(props: any) {
 // volume charts
 export function VolumeCharts(props: any) {
   const chartRef = useRef(null);
-  const { xMonth, yMonth } = props;
+  const { xMonth, yMonth, isMobile } = props;
 
   const formatAxisLable = (str: string) => {
     const momentDate = moment(str, "MMM DD, YYYY");
@@ -255,16 +295,26 @@ export function VolumeCharts(props: any) {
         backgroundColor: "transparent",
         borderWidth: 0,
         borderColor: "transparent",
-        position: [600, 0],
+        position: isMobile ? [0, -10] : [600, 0],
         formatter(params: any) {
           let result = `<div style="display:flex;justify-content: space-between;font-size:14px;"> ${params[0].axisValue} </div>`; //
           for (let i = 0, l = params.length; i < l; i++) {
-            result += `<div style="display:flex;justify-content: space-between;"><span style="color:white;font-size:16px;font-weight:700;">$${toInternationalCurrencySystem_number(
-              params[i].value
-            )}</span></div>`;
+            if (isMobile) {
+              result += `<div style="display:flex;justify-content: space-between;margin-left:4px"><span style="color:#9efe01;font-size:16px;font-weight:700;">$${toInternationalCurrencySystem_number(
+                params[i].value
+              )}</span></div>`;
+            } else {
+              result += `<div style="display:flex;justify-content: space-between;"><span style="color:white;font-size:16px;font-weight:700;">$${toInternationalCurrencySystem_number(
+                params[i].value
+              )}</span></div>`;
+            }
           }
 
-          const formatDom = `<div style="height: 39px; width: 72px;display:flex; flex-direction:column;justify-content: space-between;align-items: center;font-weight: 400;font-family:SpaceGrotesk">${result}</div>`;
+          const formatDom = `<div style="height: 39px; width: 72px; ${
+            isMobile
+              ? "display:flex;align-items: center;"
+              : "display:flex; flex-direction:column;justify-content: space-between;align-items: center;"
+          }font-weight: 400;font-family:SpaceGrotesk">${result}</div>`;
           return formatDom;
         },
       },
@@ -288,7 +338,7 @@ export function VolumeCharts(props: any) {
       series: {
         data: yMonth,
         type: "bar",
-        barWidth: 10,
+        barWidth: isMobile ? 5 : 10,
         itemStyle: {
           normal: {
             color: "#1D2932", // hover
@@ -305,16 +355,29 @@ export function VolumeCharts(props: any) {
     };
 
     chartInstance.setOption(options);
+
+    const handleResize = () => {
+      if (chartInstance) {
+        chartInstance.resize();
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    // 清理函数
     return () => {
-      chartInstance.dispose();
+      window.removeEventListener("resize", handleResize);
+      if (chartInstance) {
+        chartInstance.dispose(); // 销毁ECharts实例
+      }
     };
   }, []);
   return (
     <div
       ref={chartRef}
       style={{
-        width: "100%",
-        height: "540px",
+        width: isMobile ? "100vw" : "100%",
+        height: isMobile ? "360px" : "540px",
       }}
     ></div>
   );

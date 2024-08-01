@@ -6,6 +6,7 @@ import { FiExternalLink } from "react-icons/fi";
 import { openUrl } from "@/services/commonV3";
 import { FaAngleUp } from "@react-icons/all-files/fa/FaAngleUp";
 import { FaAngleDown } from "@react-icons/all-files/fa/FaAngleDown";
+import { ArrowUpWithYellow, ArrowTopRightIcon } from "../components/add/Icon";
 import {
   toInternationalCurrencySystem,
   toReadableNumber,
@@ -49,10 +50,17 @@ function DetailSymbol({
       </span>
 
       <span
-        className="cursor-pointer pl-2 py-0.5 text-gradientFrom"
+        className="cursor-pointer pl-2 py-0.5 text-gradientFrom xsm:hidden"
         onClick={() => openUrl(`/pool/classic/${id}`)}
       >
         <FiExternalLink />
+      </span>
+
+      <span
+        className="cursor-pointer pl-2 py-0.5 text-gradientFrom lg:hidden"
+        onClick={() => openUrl(`/pool/classic/${id}`)}
+      >
+        <ArrowTopRightIcon />
       </span>
     </div>
   );
@@ -62,10 +70,12 @@ export function PoolDetailCard({
   tokens_o,
   pool,
   poolDetail,
+  isMobile,
 }: {
   tokens_o: TokenMetadata[];
   pool: Pool;
   poolDetail: any;
+  isMobile?: boolean;
 }) {
   const tokens: TokenMetadata[] = tokens_o
     ? JSON.parse(JSON.stringify(tokens_o))
@@ -89,32 +99,46 @@ export function PoolDetailCard({
     return (
       <div className="flex items-center justify-between pt-4 text-gray-50 text-sm">
         <div>{title}</div>
-        <div title={valueTitle}>{value}</div>
+        <div title={valueTitle} className="xsm:text-white">
+          {value}
+        </div>
       </div>
     );
   };
 
   return (
-    <div className=" mt-3 text-xs w-full right-0">
-      <div className="detail-header flex items-center justify-between px-4">
+    <div className={`mt-3 text-xs w-full right-0`}>
+      <div className="detail-header flex items-center justify-between lg:px-4">
         <div className="flex items-center">
           <DetailIcons tokens={tokens} />
           <DetailSymbol tokens={tokens} id={pool.id} />
         </div>
         <div
-          className="cursor-pointer text-gray-50 flex items-center text-sm"
+          className={`cursor-pointer text-gray-50 flex items-center text-sm xsm:border xsm:border-gray-240 xsm:rounded xsm:p-1 ${
+            showDetail ? "xsm:border-green-10" : ""
+          }`}
           onClick={() => setShowDetail(!showDetail)}
         >
           <span>Pool Stats</span>
           <span>
             <div className="pl-1">
-              {showDetail ? <FaAngleUp /> : <FaAngleDown />}
+              {showDetail ? (
+                isMobile ? (
+                  <ArrowUpWithYellow />
+                ) : (
+                  <FaAngleUp />
+                )
+              ) : (
+                <FaAngleDown />
+              )}
             </div>
           </span>
         </div>
       </div>
       {!showDetail ? null : (
-        <div className="border border-gray-90 rounded px-4 pb-4 mt-3">
+        <div
+          className={`border border-gray-90 rounded px-4 pb-4 mt-3 xsm:bg-gray-230`}
+        >
           {" "}
           <DetailRow
             title={"TVL"}

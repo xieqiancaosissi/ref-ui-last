@@ -18,6 +18,25 @@ export function ArrowDown() {
   );
 }
 
+export function ArrowUpWithYellow() {
+  return (
+    <svg
+      width="12"
+      height="6"
+      viewBox="0 0 12 6"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M0 5.70703H2.91667L5.70711 2.82835L8.53304 5.70703L11.4142 5.70703L5.70711 -7.58171e-05L0 5.70703Z"
+        fill="#9EFF00"
+      />
+    </svg>
+  );
+}
+
 export function ChartIcon() {
   return (
     <svg
@@ -32,6 +51,31 @@ export function ChartIcon() {
         stroke="currentColor"
         strokeWidth="2"
         strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+export function ArrowTopRightIcon() {
+  return (
+    <svg
+      width="11"
+      height="11"
+      viewBox="0 0 11 11"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M2 1H10V9"
+        stroke="white"
+        strokeWidth="1.5"
+        strokeLinecap="square"
+      />
+      <path
+        d="M9 2L2 9"
+        stroke="white"
+        strokeWidth="1.5"
+        strokeLinecap="square"
       />
     </svg>
   );

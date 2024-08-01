@@ -615,7 +615,7 @@ export default function RecentTransaction(props: any) {
       : renderLimitOrderTransactions;
 
   return (
-    <div className="w-183 max-h-106 rounded-md overflow-auto ">
+    <div className="lg:w-183 xsm:w-full max-h-106 rounded-md overflow-auto ">
       <div
         className={`grid sticky top-0  px-4 pt-4 ${
           activeTab == "order" ? "grid-cols-12" : "grid-cols-9"

@@ -56,12 +56,11 @@ export default function CreatePoolModal({
 
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth <= 1024); // 假设768px是移动端和PC端的分界点
+      setIsMobile(window.innerWidth <= 1024); //
     };
 
     window.addEventListener("resize", handleResize);
-    handleResize(); // 组件挂载时立即执行一次
-
+    handleResize(); //
     return () => {
       window.removeEventListener("resize", handleResize);
     };

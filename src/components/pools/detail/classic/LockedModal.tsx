@@ -1,6 +1,5 @@
-import React, { useState, useContext, useMemo } from "react";
+import React, { useState, useContext, useMemo, useEffect } from "react";
 import Big from "big.js";
-import { isMobile } from "@/utils/device";
 import { toNonDivisibleNumber, toReadableNumber } from "@/utils/numbers";
 import { formatWithCommas_number } from "@/utils/uiNumber";
 import { lock_lp } from "@/services/lplock";
@@ -29,8 +28,7 @@ function LockedModal(props: any) {
   const [amount, setAmount] = useState<string>("");
   const [months, setMonths] = useState<string | number>("");
   const [isConfirmOpen, setIsConfirmOpen] = useState<boolean>(false);
-  const cardWidth = isMobile() ? "95vw" : "28vw";
-  const cardHeight = isMobile() ? "90vh" : "80vh";
+
   const balance = toReadableNumber(24, userShares);
   const [new_unlock_time_sec, isInValidMonths] = useMemo(() => {
     const new_unlock_time_sec = Big(new Date().getTime() / 1000).plus(
@@ -73,6 +71,24 @@ function LockedModal(props: any) {
   function closeConfirmModal() {
     setIsConfirmOpen(false);
   }
+
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 1024); //
+    };
+
+    window.addEventListener("resize", handleResize);
+    handleResize(); //
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  const cardWidth = isMobile ? "95vw" : "28vw";
+  const cardHeight = isMobile ? "90vh" : "80vh";
   return (
     <Modal
       isOpen={isOpen}
@@ -83,13 +99,20 @@ function LockedModal(props: any) {
           WebkitBackdropFilter: "blur(15px)",
           overflow: "auto",
         },
-        content: {
-          outline: "none",
-          transform: "translate(-50%, -50%)",
-        },
+        content: isMobile
+          ? {
+              transform: "translateX(-50%)",
+              top: "auto",
+              bottom: "32px",
+              width: "100vw",
+            }
+          : {
+              outline: "none",
+              transform: "translate(-50%, -50%)",
+            },
       }}
     >
-      <div className="w-108 min-h-110 rounded-lg bg-dark-10 px-4 py-5">
+      <div className="lg:w-108 xsm:w-full lg:min-h-110 rounded-lg bg-dark-10 px-4 py-5">
         {/* title */}
         <div className="flex items-center justify-between">
           <LockLpTitleIcon />

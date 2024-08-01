@@ -69,7 +69,7 @@ export default function PoolComposition(props: any) {
   }
 
   return (
-    <div className="w-183 min-h-42 rounded-md p-4 bg-refPublicBoxDarkBg">
+    <div className="lg:w-183 xsm:w-full min-h-42 rounded-md p-4 bg-refPublicBoxDarkBg">
       {/* title */}
       <div className="grid grid-cols-11">
         {title.map((item, index) => {

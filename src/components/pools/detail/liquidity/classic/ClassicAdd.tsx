@@ -59,8 +59,14 @@ export function myShares({
 
 export default function StableAdd(props: any) {
   const accountStore = useAccountStore();
-  const { isOpen, onRequestClose, poolDetail, pureIdList, updatedMapList } =
-    props;
+  const {
+    isOpen,
+    onRequestClose,
+    poolDetail,
+    pureIdList,
+    updatedMapList,
+    isMobile,
+  } = props;
   const [balancesList, setBalances] = useState<any>([]);
   const [inputValList, setInputValList] = useState<any>([]);
   const closeInit = () => {
@@ -256,14 +262,21 @@ export default function StableAdd(props: any) {
           WebkitBackdropFilter: "blur(15px)",
           overflow: "auto",
         },
-        content: {
-          outline: "none",
-          transform: "translate(-50%, -50%)",
-        },
+        content: isMobile
+          ? {
+              transform: "translateX(-50%)",
+              top: "auto",
+              bottom: "32px",
+              width: "100vw",
+            }
+          : {
+              outline: "none",
+              transform: "translate(-50%, -50%)",
+            },
       }}
     >
       <div>
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between mb-4 xsm:hidden">
           <AddLiqTitleIcon />
           <LpModalCloseIcon
             className="cursor-pointer hover:opacity-90"
@@ -273,7 +286,10 @@ export default function StableAdd(props: any) {
             }}
           />
         </div>
-        <div className="flex flex-col justify-between w-108 min-h-123 rounded-lg bg-dark-10 px-4 py-5">
+        <div className="flex flex-col justify-between lg:w-108 xsm:w-full min-h-123 rounded-lg bg-dark-10 px-4 py-5">
+          <div className="lg:hidden text-white font-medium text-lg mb-6">
+            Add Liquidity
+          </div>
           {updatedMapList[0]?.token_account_ids?.map(
             (ite: any, ind: number) => {
               return (
@@ -387,16 +403,26 @@ export default function StableAdd(props: any) {
               Connect Wallet
             </div>
           )}
+
+          {/*  */}
+          {poolDetail && isMobile && (
+            <PoolDetailCard
+              tokens_o={updatedMapList[0].token_account_ids}
+              pool={updatedMapList[0]}
+              poolDetail={poolDetail}
+              isMobile={true}
+            />
+          )}
         </div>
 
         {/*  */}
-        {/* {poolDetail && (
+        {poolDetail && !isMobile && (
           <PoolDetailCard
             tokens_o={updatedMapList[0].token_account_ids}
             pool={updatedMapList[0]}
             poolDetail={poolDetail}
           />
-        )} */}
+        )}
       </div>
     </Modal>
   );

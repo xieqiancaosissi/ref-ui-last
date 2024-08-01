@@ -1,5 +1,4 @@
-import React, { useState, useContext } from "react";
-import { isMobile } from "@/utils/device";
+import React, { useState, useContext, useEffect } from "react";
 import { toPrecision, toReadableNumber } from "@/utils/numbers";
 import { unlock_lp } from "@/services/lplock";
 import Modal from "react-modal";
@@ -17,8 +16,7 @@ function UnLockedModal(props: any) {
   const { pureIdList } = useRiskTokens();
   const { isOpen, onRequestClose, tokens, lockedData } = props;
   const [unlock_loading, set_unlock_loading] = useState<boolean>(false);
-  const cardWidth = isMobile() ? "95vw" : "28vw";
-  const cardHeight = isMobile() ? "90vh" : "80vh";
+
   const balance = toPrecision(
     toReadableNumber(24, lockedData?.locked_balance || "0"),
     8
@@ -31,6 +29,23 @@ function UnLockedModal(props: any) {
     });
   }
 
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 1024); //
+    };
+
+    window.addEventListener("resize", handleResize);
+    handleResize(); //
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  const cardWidth = isMobile ? "95vw" : "28vw";
+  const cardHeight = isMobile ? "90vh" : "80vh";
   return (
     <Modal
       isOpen={isOpen}
@@ -41,13 +56,20 @@ function UnLockedModal(props: any) {
           WebkitBackdropFilter: "blur(15px)",
           overflow: "auto",
         },
-        content: {
-          outline: "none",
-          transform: "translate(-50%, -50%)",
-        },
+        content: isMobile
+          ? {
+              transform: "translateX(-50%)",
+              top: "auto",
+              bottom: "32px",
+              width: "100vw",
+            }
+          : {
+              outline: "none",
+              transform: "translate(-50%, -50%)",
+            },
       }}
     >
-      <div className="w-108 h-92 rounded-lg bg-dark-10 px-4 py-5">
+      <div className="lg:w-108 xsm:w-full lg:h-92 rounded-lg bg-dark-10 px-4 py-5">
         {/* title */}
         <div className="flex items-center justify-between">
           <UnLockLpTitleIcon />

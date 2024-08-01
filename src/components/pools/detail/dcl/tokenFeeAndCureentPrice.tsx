@@ -12,13 +12,13 @@ export default function TokenFeeAndCureentPrice({
 }) {
   //
   return (
-    <div className="flex items-center text-white h-10 justify-around ml-9">
+    <div className="flex items-center text-white h-10 justify-around lg:ml-9">
       <div className="text-sm">
         <h3 className="text-gray-50 font-normal">Fee</h3>
         <p>{formatPercentage(poolDetail?.total_fee * 100)}</p>
       </div>
       <SplitRectangleIcon className="mx-7" />
-      <div className="text-sm min-w-45">
+      <div className="text-sm lg:min-w-45">
         <h3 className="text-gray-50 font-normal">Top Bin APR(24h)</h3>
         <p>{formatPercentage(poolDetail?.apy)}</p>
       </div>

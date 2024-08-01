@@ -38,13 +38,13 @@ export default function TokenFeeAndCureentPrice({
 
   const showRate = rate < 0.001 ? "< 0.001" : numberWithCommas(rate.toFixed(3));
   return (
-    <div className="flex items-center text-white h-10 justify-around ml-9">
+    <div className="flex items-center text-white h-10 lg:justify-around lg:ml-9 xsm:w-full xsm:justify-start">
       <div className="text-sm">
         <h3 className="text-gray-50 font-normal">Fee</h3>
         <p>{formatPercentage(poolDetail?.total_fee * 100)}</p>
       </div>
       <SplitRectangleIcon className="mx-7" />
-      <div className="text-sm min-w-45">
+      <div className="text-sm lg:min-w-45">
         <h3 className="text-gray-50 font-normal">Current Price</h3>
         <p>
           {/* dom render in html formatter above: 1 Near($5.2) = 7Ref */}
@@ -78,7 +78,7 @@ export default function TokenFeeAndCureentPrice({
         </p>
       </div>
       <ExchangeIcon
-        className="mt-auto ml-1 mb-1 cursor-pointer opacity-40 hover:opacity-100"
+        className="mt-auto lg:ml-1 xsm:ml-2 mb-1 cursor-pointer lg:opacity-40 lg:hover:opacity-100"
         onClick={() => exchange()}
       />
     </div>

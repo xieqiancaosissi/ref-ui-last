@@ -733,3 +733,24 @@ export const RemoveLiqTitleIcon = (props: any) => {
     </svg>
   );
 };
+
+export const AddLiqRightIcon = (props: any) => {
+  return (
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 14 14"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <circle cx="7" cy="7" r="7" fill="#9EFF00" />
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M10.7062 6.46411L11.242 6.99996L10.5349 7.70707L6.9994 11.2426L6.2923 10.5355L9.36379 7.464H2.8485V6.464L9.29187 6.464L6.2923 3.46443L6.9994 2.75732L10.5349 6.29286L10.7061 6.464L10.7062 6.464L10.7062 6.46411Z"
+        fill="black"
+      />
+    </svg>
+  );
+};

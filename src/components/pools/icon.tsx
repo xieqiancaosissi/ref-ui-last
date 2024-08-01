@@ -1272,3 +1272,50 @@ export const GradientFarmBorder = (props: any) => {
     </svg>
   );
 };
+
+export const GradientFarmBorderMobile = (props: any) => {
+  return (
+    <svg
+      width="351"
+      height="92"
+      viewBox="0 0 351 92"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <rect
+        x="0.5"
+        y="0.5"
+        width="350"
+        height="91"
+        rx="11.5"
+        fill="url(#paint0_radial_6680_9928)"
+        stroke="url(#paint1_linear_6680_9928)"
+      />
+      <defs>
+        <radialGradient
+          id="paint0_radial_6680_9928"
+          cx="0"
+          cy="0"
+          r="1"
+          gradientUnits="userSpaceOnUse"
+          gradientTransform="translate(89.6892 26.5) rotate(32.2696) scale(140.475 153.722)"
+        >
+          <stop stopColor="#0E3E48" />
+          <stop offset="1" stopColor="#001320" />
+        </radialGradient>
+        <linearGradient
+          id="paint1_linear_6680_9928"
+          x1="0"
+          y1="92"
+          x2="351"
+          y2="92"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stopColor="#9EFF01" />
+          <stop offset="1" stopColor="#FF43EC" />
+        </linearGradient>
+      </defs>
+    </svg>
+  );
+};

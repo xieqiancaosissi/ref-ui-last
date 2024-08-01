@@ -302,9 +302,9 @@ export default function DCLPoolDetail() {
       <div className="flex w-270 mt-2">
         {/* left */}
 
-        <div className="w-183">
+        <div className="lg:w-183 xsm:w-full">
           {/* charts */}
-          <div className="min-h-135">
+          <div className="lg:min-h-135 xsm:min-h-100">
             {poolDetail && updatedMapList?.length > 0 ? (
               <Charts poolDetail={poolDetail} tokenPriceList={tokenPriceList} />
             ) : (
@@ -313,7 +313,7 @@ export default function DCLPoolDetail() {
           </div>
 
           {/* tvl & Overall locking */}
-          <div className="-mt-20">
+          <div className="lg:-mt-20 xsm:-mt-10">
             {poolDetail && updatedMapList?.length > 0 && (
               <OverallLocking
                 poolDetail={poolDetail}

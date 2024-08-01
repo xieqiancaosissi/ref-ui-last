@@ -13,14 +13,14 @@
 }
 
 .chartsFilterPoolType {
-  @apply text-xs cursor-pointer border border-gray-100 rounded w-38 h-9 frcc relative;
+  @apply text-xs cursor-pointer border border-gray-100 rounded lg:w-38 xsm:w-full h-9 frcc relative mb-16;
   z-index: 10;
   top: 36px;
 }
 
 .chartsContent {
   width: 100%;
-  @apply flex items-start h-140 overflow-hidden;
+  @apply flex items-start lg:h-140 xsm:h-90 overflow-hidden;
 }
 
 .triangleDown {

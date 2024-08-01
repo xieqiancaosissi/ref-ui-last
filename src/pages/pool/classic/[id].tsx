@@ -15,6 +15,7 @@ import {
   getPoolsDetailById,
 } from "@/services/pool";
 import NoLiquidity from "@/components/pools/detail/liquidity/NoLiquidity";
+import NoLiquidityMobile from "@/components/pools/detail/liquidity/NoLiquidityMobile";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import NoContent from "@/components/common/NoContent";
 import { useWatchList } from "@/hooks/useWatchlist";
@@ -54,10 +55,14 @@ import { Images } from "@/components/pools/detail/liquidity/components/liquidity
 import ClassicAdd from "@/components/pools/detail/liquidity/classic/ClassicAdd";
 import ClassicRemove from "@/components/pools/detail/liquidity/classic/ClassicRemove";
 import { useRiskTokens } from "@/hooks/useRiskTokens";
-import { GradientFarmBorder } from "@/components/pools/icon";
+import {
+  GradientFarmBorder,
+  GradientFarmBorderMobile,
+} from "@/components/pools/icon";
 import { format_apy } from "@/utils/uiNumber";
 import { useAppStore } from "@/stores/app";
 import { showWalletSelectorModal } from "@/utils/wallet";
+import YourLiqMobile from "@/components/pools/detail/liquidity/classic/YourLiqMobile";
 
 export default function ClassicPoolDetail() {
   const router = useRouter();
@@ -302,15 +307,41 @@ export default function ClassicPoolDetail() {
     setShowRemove(false);
   };
 
+  const [showYourLiq, setShowYourLiq] = useState(false);
+  const hideYourLiq = () => {
+    setShowYourLiq(false);
+  };
+
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 1024); // ipad pro
+    };
+
+    window.addEventListener("resize", handleResize);
+    handleResize(); //
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   return (
-    <div className="w-full fccc h-full">
+    <div className="w-full fccc h-full px-3">
       {/* return */}
-      <div className="w-270 cursor-pointer text-base text-gray-60 mb-3 mt-8 hover:text-white">
-        <span onClick={() => router.push("/pools")}>{`<  Pools`}</span>
+      <div className="lg:w-270 xsm:w-full cursor-pointer text-base text-gray-60 mb-3 mt-8 hover:text-white">
+        <span
+          className="xsm:hidden"
+          onClick={() => router.push("/pools")}
+        >{`<  Pools`}</span>
+        <span className="lg:hidden" onClick={() => router.push("/pools")}>
+          {`Pools >`} <span className="text-white">Details</span>
+        </span>
       </div>
 
       {/* title */}
-      <div className="w-270 min-h-10 flex items-center">
+      <div className="lg:w-270 xsm:w-full min-h-10 flex items-center xsm:hidden">
         {poolDetail && updatedMapList?.length > 0 && (
           <>
             <TokenDetail {...poolDetail} updatedMapList={updatedMapList} />
@@ -337,24 +368,112 @@ export default function ClassicPoolDetail() {
               onClick={() => collectPool()}
             />
 
-            {/* fee */}
-            {updatedMapList && updatedMapList[0]?.token_account_ids && (
-              <TokenFeeAndCureentPrice
-                poolDetail={poolDetail}
-                tokenPriceList={tokenPriceList}
-                updatedMapList={updatedMapList}
-              />
-            )}
+            {/* pc fee */}
+            {updatedMapList &&
+              updatedMapList[0]?.token_account_ids &&
+              !isMobile && (
+                <TokenFeeAndCureentPrice
+                  poolDetail={poolDetail}
+                  tokenPriceList={tokenPriceList}
+                  updatedMapList={updatedMapList}
+                />
+              )}
           </>
         )}
       </div>
+
+      <div className="xsm:w-full min-h-10 flex items-center lg:hidden">
+        {poolDetail && updatedMapList?.length > 0 && (
+          <div className="flex items-center justify-between w-full">
+            <div className="frcc">
+              <TokenDetail {...poolDetail} updatedMapList={updatedMapList} />
+              {/*  */}
+              <span className=" text-2xl text-white font-bold ml-1 mr-2">
+                {poolDetail?.token_symbols
+                  ?.map((item: any) =>
+                    item == "wNEAR" ? (item = "NEAR") : item
+                  )
+                  .join("-")}
+              </span>
+
+              {/* farm tag */}
+              {poolDetail.is_farm && (
+                <div
+                  className={` bg-farmTagBg text-farmApyColor frcc text-xs italic w-13 h-5 rounded-xl mr-2`}
+                >
+                  Farms
+                </div>
+              )}
+            </div>
+            {/* watchlist */}
+            <CollectStar
+              iscollect={!accountId ? "false" : isCollect.toString()}
+              className="cursor-pointer"
+              onClick={() => collectPool()}
+            />
+          </div>
+        )}
+      </div>
+
+      {/* mobile */}
+      {updatedMapList && updatedMapList[0]?.token_account_ids && isMobile && (
+        <TokenFeeAndCureentPrice
+          poolDetail={poolDetail}
+          tokenPriceList={tokenPriceList}
+          updatedMapList={updatedMapList}
+        />
+      )}
+
+      {/* farm pc hidden*/}
+      {seedFarms && isMobile && (
+        <div className="flex flex-col mt-4 relative z-30 rounded lg:hidden w-full">
+          <GradientFarmBorderMobile className="absolute -z-10 left-2"></GradientFarmBorderMobile>
+          <div className="flex items-center px-6 pt-4 justify-between">
+            <div className="text-white whitespace-nowrap text-base font-normal">
+              Farm APR
+            </div>
+
+            <div className="rounded-lg flex items-center px-2 py-0.5">
+              <Images
+                className="mr-1"
+                tokens={seedFarms?.map((farm: any) => farm.token_meta_data)}
+                size="4"
+                isRewardDisplay
+              />
+              <span className="text-xs text-white">
+                {totalTvlPerWeekDisplay()}
+                /week
+              </span>
+            </div>
+          </div>
+
+          <div className="flex items-center px-6 pt-1 justify-between">
+            <div className="flex items-center text-lg farmTextGradient">
+              <span className="mr-2">{format_apy(poolDetail.farm_apy)}</span>
+              <Fire />
+            </div>
+
+            <div
+              className=" rounded text-white frcc w-28 h-8 text-sm cursor-pointer hover:opacity-90"
+              style={{
+                background: "linear-gradient(to bottom, #9EFF01, #5F9901)",
+              }}
+              onClick={() => {
+                openUrl(`/farms/${poolId}-r`);
+              }}
+            >
+              Farm Now!
+            </div>
+          </div>
+        </div>
+      )}
       {/* main */}
-      <div className="flex w-270 mt-2">
+      <div className="flex lg:w-270 xsm:w-full lg:mt-2">
         {/* left */}
 
-        <div className="w-183">
+        <div className="lg:w-183 xsm:w-full">
           {/* charts */}
-          <div className="min-h-135">
+          <div className="lg:min-h-135 xsm:min-h-100">
             {poolDetail ? (
               <TvlAndVolumeCharts poolId={poolId} />
             ) : (
@@ -363,7 +482,7 @@ export default function ClassicPoolDetail() {
           </div>
 
           {/* tvl & Overall locking */}
-          <div className="-mt-20">
+          <div className="lg:-mt-20 xsm:-mt-10">
             {poolDetail && updatedMapList?.length > 0 && (
               <OverallLocking
                 poolDetail={poolDetail}
@@ -374,9 +493,11 @@ export default function ClassicPoolDetail() {
 
           {/* Pool composition */}
           <div>
-            <h3 className="mt-12 mb-4 text-lg text-gray-50 font-bold">
+            <h3 className="mt-12 mb-4 text-lg lg:text-gray-50 xsm:text-white font-bold">
               Pool Composition
+              <div className="h-0.5 w-38 bg-white mt-1 lg:hidden"></div>
             </h3>
+
             {poolDetail && updatedMapList?.length > 0 ? (
               <PoolComposition
                 poolDetail={poolDetail}
@@ -388,16 +509,21 @@ export default function ClassicPoolDetail() {
                 baseColor="rgba(106, 114, 121, 0.3)"
                 highlightColor="#9eff00"
               >
-                <Skeleton width={732} height={60} count={2} />
+                <Skeleton
+                  width={isMobile ? "100%" : 732}
+                  height={60}
+                  count={2}
+                />
               </SkeletonTheme>
             )}
           </div>
 
           {/* Recent Transaction */}
-          <div>
+          <div className="xsm:mb-40">
             <div className="mt-12 mb-4 flex justify-between">
-              <span className="text-lg text-gray-50 font-bold">
+              <span className="text-lg lg:text-gray-50 xsm:text-white font-bold">
                 Recent Transaction
+                <div className="h-0.5 w-42 bg-white mt-1 lg:hidden"></div>
               </span>
               <div className="flex items-center mr-0.5">
                 {TransactionTabList.map((item, index) => {
@@ -428,8 +554,8 @@ export default function ClassicPoolDetail() {
           </div>
         </div>
 
-        {/* right liquidity */}
-        <div className="w-80 ml-auto">
+        {/* right liquidity mobile hidden*/}
+        <div className="lg:w-80 ml-auto xsm:hidden">
           {(!haveShare || !poolId) && (
             <NoLiquidity add={() => setShowAdd(true)} isLoading={false} />
           )}
@@ -580,6 +706,52 @@ export default function ClassicPoolDetail() {
         </div>
       </div>
 
+      {(!haveShare || !poolId) && isMobile && (
+        <NoLiquidityMobile add={() => setShowAdd(true)} isLoading={false} />
+      )}
+
+      {haveShare && pool?.id && updatedMapList?.length > 0 && isMobile && (
+        <div
+          className="h-24 frcc p-4 fixed bottom-8 z-50"
+          style={{
+            background: "#16232E",
+            width: "100vw",
+          }}
+        >
+          <div
+            className="w-full frcc h-12 text-black rounded text-base"
+            style={{
+              background: "linear-gradient(to right, #9EFF00, #5F9900)",
+            }}
+            onClick={() => {
+              setShowYourLiq(true);
+            }}
+          >
+            Your Liquidity
+          </div>
+        </div>
+      )}
+      {haveShare && pool?.id && updatedMapList?.length > 0 && isMobile && (
+        <YourLiqMobile
+          isOpen={showYourLiq}
+          onRequestClose={hideYourLiq}
+          shares={shares}
+          totalShares={pool.shareSupply}
+          poolId={pool.id}
+          pool={pool}
+          stakeList={stakeList}
+          lptAmount={lptAmount}
+          usdValue={usdValue}
+          haveShare={haveShare}
+          userTotalShareToString={userTotalShareToString}
+          tokenInfoPC={tokenInfoPC}
+          setShowRemove={setShowRemove}
+          setShowAdd={setShowAdd}
+          tokenAmountShareRaw={tokenAmountShareRaw}
+          updatedMapList={updatedMapList}
+        ></YourLiqMobile>
+      )}
+
       {/* add */}
       {updatedMapList[0]?.token_account_ids && poolDetail && (
         <>
@@ -589,6 +761,7 @@ export default function ClassicPoolDetail() {
             poolDetail={poolDetail}
             pureIdList={pureIdList}
             updatedMapList={updatedMapList}
+            isMobile={isMobile}
           />
 
           <ClassicRemove
@@ -597,6 +770,7 @@ export default function ClassicPoolDetail() {
             poolDetail={poolDetail}
             pureIdList={pureIdList}
             updatedMapList={updatedMapList}
+            isMobile={isMobile}
           />
         </>
       )}

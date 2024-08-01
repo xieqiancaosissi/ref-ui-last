@@ -22,6 +22,7 @@ import MyLockingDetailTip from "./myLockingDetails";
 import { getSharesInPool } from "@/services/pool";
 import LockedModal from "./LockedModal";
 import UnLockedModal from "./UnLockedModal";
+import { ArrowDown, ArrowUpWithYellow } from "../liquidity/components/add/Icon";
 
 export default function OverallLocking(props: any) {
   const { poolDetail, updatedMapList } = props;
@@ -157,15 +158,32 @@ export default function OverallLocking(props: any) {
     }
   }
 
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 1024); //
+    };
+
+    window.addEventListener("resize", handleResize);
+    handleResize(); //
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
   return (
     <div className="min-h-34">
       {poolDetail && (
-        <div className="flex items-center justify-around">
+        <div className="flex items-center lg:justify-around xsm:flex-wrap xsm:justify-between">
           {detailItem.map((item) => {
             return (
               <div
                 key={item.title}
-                className="w-45 h-17 text-white box-border flex flex-col justify-center pl-4 rounded-md bg-refPublicBoxDarkBg"
+                className="lg:w-45 xsm:my-0.5 h-17  text-white box-border flex flex-col justify-center pl-4 rounded-md bg-refPublicBoxDarkBg"
+                style={{
+                  width: !isMobile ? "" : "46vw",
+                }}
               >
                 <h3 className="text-sm text-gray-50 font-normal">
                   {item.title}
@@ -191,8 +209,8 @@ export default function OverallLocking(props: any) {
       {/* Overall locking */}
       <div className="w-full min-h-17 text-white  rounded-md mt-1 flex flex-col justify-center items-start px-4 bg-refPublicBoxDarkBg">
         {/* locking detail */}
-        <div className="flex items-center w-full h-17">
-          <div className="text-sm text-gray-50 font-normal mr-40">
+        <div className="flex items-center w-full h-17 xsm:justify-between">
+          <div className="text-sm text-gray-50 font-normal lg:mr-40">
             <h3 className="frcc">
               <span>Overall locking</span>
               <div className="pt-1 ml-1">
@@ -206,7 +224,7 @@ export default function OverallLocking(props: any) {
               <LockIcon />
             </p>
           </div>
-          <div className="flex-1 text-sm text-gray-50 font-normal">
+          <div className="lg:flex-1 text-sm text-gray-50 font-normal">
             <h3>My Locking</h3>
             <p className="text-lg font-bold text-primaryGreen flex items-center">
               {your_locked_percent?.displayPercent || "-"}
@@ -214,7 +232,7 @@ export default function OverallLocking(props: any) {
             </p>
           </div>
           <div
-            className={`text-right border border-gray-60 w-5 h-5 rounded-md frcc cursor-pointer ${styles.triangleWrapper}`}
+            className={`xsm:hidden text-right border border-gray-60 w-5 h-5 rounded-md frcc cursor-pointer ${styles.triangleWrapper}`}
             onClick={() => {
               setIsHidden(!isHidden);
             }}
@@ -223,30 +241,38 @@ export default function OverallLocking(props: any) {
               className={isHidden ? styles.triangleDown : styles.triangleUp}
             ></div>
           </div>
+          <div
+            className="lg:hidden"
+            onClick={() => {
+              setIsHidden(!isHidden);
+            }}
+          >
+            {isHidden ? <ArrowDown /> : <ArrowUpWithYellow />}
+          </div>
         </div>
         {/* hidden */}
-        {!isHidden && (
-          <div className="select-none w-175">
+        {!isHidden && !isMobile && (
+          <div className="select-none lg:w-175 xsm:w-full">
             {/*lock list */}
             <div
-              className="w-full max-h-60 rounded-lg overflow-y-auto p-4 text-sm text-gray-10 font-normal"
+              className="w-full lg:max-h-60 rounded-lg lg:overflow-y-auto p-4 text-sm text-gray-10 font-normal"
               style={{
                 background: "rgba(33, 43, 53, 0.5)",
               }}
             >
               {/*lock title */}
-              <div className="flex w-full ">
-                <span className="flex-1 mr-14 ">Phase locking</span>
+              <div className="flex w-full xsm:justify-between">
+                <span className="flex-1 lg:mr-14 ">Phase locking</span>
                 <span className="flex-1 ">Expiration time</span>
-                <span className="flex-1"></span>
+                <span className="xsm:hidden flex-1"></span>
               </div>
 
               {/*lock body */}
               <div>
                 {/* my lock */}
                 {your_locked_percent?.displayPercent && (
-                  <div className="flex w-full text-gray-50 mt-4">
-                    <div className="flex-1 mr-14 flex items-center">
+                  <div className="flex w-full text-gray-50 lg:mt-4 xsm:py-2 xsm:border-t-gray-240 xsm:border xsm:border-transparent">
+                    <div className="flex-1 mr-14 flex items-center ">
                       <OverallLockingPie percent={0} />
                       {/* tips */}
                       <MyLockingDetailTip
@@ -285,7 +311,7 @@ export default function OverallLocking(props: any) {
                     );
                     return (
                       <div
-                        className="flex w-full text-gray-50 mt-4"
+                        className="flex w-full text-gray-50 lg:mt-4 xsm:py-2 xsm:border-t-gray-240 xsm:border xsm:border-transparent"
                         key={accountId + "_" + index}
                       >
                         <div className="flex-1 mr-14 flex items-center">
@@ -328,6 +354,115 @@ export default function OverallLocking(props: any) {
           </div>
         )}
       </div>
+      {!isHidden && isMobile && (
+        <div className="select-none lg:w-175 xsm:w-full">
+          {/*lock list */}
+          <div
+            className="w-full lg:max-h-60 rounded-lg lg:overflow-y-auto p-4 text-sm text-gray-10 font-normal"
+            style={{
+              background: "rgba(33, 43, 53, 0.5)",
+            }}
+          >
+            {/*lock title */}
+            <div className="flex w-full xsm:justify-between mb-4">
+              <span className="flex-1 lg:mr-14 ">Phase locking</span>
+              <span className="flex-1 ">Expiration time</span>
+            </div>
+
+            {/*lock body */}
+            <div>
+              {/* my lock */}
+              {your_locked_percent?.displayPercent && (
+                <div className="flex w-full text-gray-50 lg:mt-4 xsm:py-2 xsm:border-t-gray-240 xsm:border xsm:border-transparent">
+                  <div className="frcc">
+                    <OverallLockingPie percent={0} />
+
+                    <div>
+                      <div className="flex-1 flex items-center ">
+                        {/* tips */}
+                        <MyLockingDetailTip
+                          poolDetail={poolDetail}
+                          your_locked_balance={your_locked_balance}
+                          accountId={accountId}
+                          updatedMapList={updatedMapList}
+                        >
+                          <span className="text-white mr-1 cursor-pointer">
+                            {your_locked_percent?.displayPercent || "-"}
+                          </span>
+                        </MyLockingDetailTip>
+
+                        <div
+                          className="w-15 h-4 frcc text-xs text-primaryGreen italic"
+                          style={{
+                            background: "rgba(154, 248, 1, 0.1)",
+                            borderRadius: "30px",
+                          }}
+                        >
+                          My Lock
+                        </div>
+                      </div>
+                      <span>Locked</span>
+                    </div>
+                  </div>
+
+                  <div className="flex-1 frcc">{your_unLocked_time}</div>
+                </div>
+              )}
+              {/*total lock item */}
+              {Object.entries(lp_locked_list)
+                .sort((b, a) => {
+                  return b[1].unlock_time_sec - a[1].unlock_time_sec;
+                })
+                .map(([account_id, lockedData], index) => {
+                  const { percent, displayPercent } = getSharesPercent(
+                    lockedData.locked_balance
+                  );
+                  return (
+                    <div
+                      className="flex w-full text-gray-50 lg:mt-4 xsm:py-2 xsm:border-t-gray-240 xsm:border xsm:border-transparent"
+                      key={accountId + "_" + index}
+                    >
+                      <div className="frcc">
+                        <OverallLockingPie percent={+percent} />
+                        <div>
+                          <div className="flex-1 mr-14 flex items-center">
+                            <span className="text-white mr-1">
+                              {displayPercent}
+                            </span>
+                          </div>
+                          <span>Locked</span>
+                        </div>
+                      </div>
+                      <div className="flex-1 frcc">
+                        {secToTime(lockedData.unlock_time_sec)}
+                      </div>
+                    </div>
+                  );
+                })}
+              {/*  */}
+            </div>
+            {/* btn */}
+            <div className="frcc my-4 text-xs font-bold cursor-pointer">
+              <div
+                onClick={openLockedModal}
+                className={`w-1/2 h-11 frcc border border-gray-40 rounded mx-1 ${
+                  lockButtonDisabled ? "opacity-40 cursor-not-allowed" : ""
+                }`}
+              >
+                <LockWithoutCircle /> <span className="ml-1">Lock</span>
+              </div>
+              <div
+                onClick={openUnLockedModal}
+                className={`w-1/2 h-11 frcc border border-gray-40 rounded mx-1 ${
+                  unLockButtonDisabled ? "opacity-40 cursor-not-allowed" : ""
+                }`}
+              >
+                <UnlockWithoutCircle /> <span className="ml-1">Unlock</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       {/*  */}
       {isLockedOpen && (
         <LockedModal

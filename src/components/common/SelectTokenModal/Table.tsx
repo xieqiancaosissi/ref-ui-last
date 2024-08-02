@@ -12,6 +12,7 @@ import { useSwapStore } from "../../../stores/swap";
 import { SelectTokenContext } from "./Context";
 import { TokenMetadata } from "@/services/ft-contract";
 import registerTokenAndExchange from "@/services/swap/registerToken";
+import { WalletBagIcon } from "./Icons";
 
 type ISort = "asc" | "desc";
 export default function Table({
@@ -165,9 +166,14 @@ export default function Table({
             <div className="flex items-start gap-2 text-sm text-white">
               <div className="flex flex-col items-end">
                 <span>{displayBalance(token.balance || "0")}</span>
-                <span className="text-xs text-gray-60">
-                  {displayUSD(token)}
-                </span>
+                {Big(token.balance || "0").eq(0) ? (
+                  <span className="text-xs text-gray-60">-</span>
+                ) : (
+                  <span className="flex items-center gap-1.5 text-xs text-primaryGreen">
+                    {displayUSD(token)}
+                    <WalletBagIcon />
+                  </span>
+                )}
               </div>
               <CollectIcon
                 onClick={(e: any) => {

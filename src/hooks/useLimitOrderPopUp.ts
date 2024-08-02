@@ -10,14 +10,15 @@ const useLimitOrderPopUp = () => {
   const router = useRouter();
   const accountStore = useAccountStore();
   const account_id = accountStore.getAccountId();
-  const walletLoading = accountStore.getWalletLoading();
   useEffect(() => {
-    if (txHash && account_id && !walletLoading) {
-      checkTransaction(txHash).then(async (res: any) => {
-        await limitOrderPopUp(res, txHash);
-        router.replace(pathname);
-      });
+    if (txHash && account_id) {
+      setTimeout(() => {
+        checkTransaction(txHash).then(async (res: any) => {
+          await limitOrderPopUp(res, txHash);
+          router.replace(pathname);
+        });
+      }, 1500);
     }
-  }, [txHash, account_id, walletLoading]);
+  }, [txHash, account_id]);
 };
 export default useLimitOrderPopUp;

@@ -5,7 +5,6 @@ import { useRouter } from "next/router";
 import { MenuContainer } from "./icons";
 import Bridge from "./bridge";
 import { menuData, IMenuChild, routeMapIds } from "./menuData";
-import { useAccountStore } from "@/stores/account";
 // CSR,
 const WalletConnect = dynamic(() => import("./walletConnect"), {
   ssr: false,
@@ -17,17 +16,16 @@ export default function Menu() {
   const [oneLevelMenuId, setOneLevelMenuId] = useState("trade");
   const [twoLevelMenuId, setTwoLevelMenuId] = useState("swap");
   const [twoLevelMenuShow, setTwoLevelMenuShow] = useState<boolean>(true);
+  const [oneLevelHoverId, setOneLevelHoverId] = useState<string>();
   const menuList = menuData();
   const router = useRouter();
-  const accountStore = useAccountStore();
-  const isSignedIn = accountStore.getIsSignedIn();
   const oneLevelData = useMemo(() => {
     let oneLevel;
-    if (oneLevelMenuId) {
-      oneLevel = menuList.find((item) => item.id === oneLevelMenuId);
+    if (oneLevelHoverId) {
+      oneLevel = menuList.find((item) => item.id === oneLevelHoverId);
     }
     return oneLevel;
-  }, [oneLevelMenuId, menuList]);
+  }, [oneLevelHoverId, menuList]);
   useEffect(() => {
     chooseMenuByRoute(router.route);
   }, [router.route]);
@@ -100,11 +98,16 @@ export default function Menu() {
             return (
               <div
                 key={menu.id}
-                className={`flex items-center gap-1.5 cursor-pointer font-bold text-base ${
+                className={`flex items-center gap-1.5 cursor-pointer font-bold text-base hover:text-green-10 ${
                   oneLevelMenuId === menu.id ? "text-green-10" : "text-gray-10"
                 }`}
                 onClick={() => {
-                  chooseOneLevelMenu(menu.id);
+                  if (menu.path && !menu.children) {
+                    chooseOneLevelMenu(menu.id);
+                  }
+                }}
+                onMouseEnter={() => {
+                  setOneLevelHoverId(menu.id);
                 }}
               >
                 {menu.icon}
@@ -131,6 +134,9 @@ export default function Menu() {
             width: extraWidth,
             margin: "0 auto",
           }}
+          onMouseLeave={() => {
+            setOneLevelHoverId("");
+          }}
         >
           {oneLevelData.children.map((item) => {
             return (
@@ -139,7 +145,7 @@ export default function Menu() {
                 onClick={() => {
                   chooseTwoLevelMenu(item);
                 }}
-                className={`flex items-center h-9 rounded cursor-pointer text-base gap-2 px-5 ${
+                className={`flex items-center h-9 rounded cursor-pointer text-base gap-2 px-5 hover:text-white ${
                   twoLevelMenuId === item.id ? "text-white" : "text-gray-10"
                 }`}
               >

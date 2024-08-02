@@ -310,6 +310,26 @@ export function XrefArrow(props: any) {
   );
 }
 
+export function XrefMobileArrow(props: any) {
+  return (
+    <svg
+      {...props}
+      width="6"
+      height="12"
+      viewBox="0 0 6 12"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M0 11.4141L-1.27492e-07 8.49739L2.87868 5.70696L-1.92271e-06 2.88102L-4.98931e-07 -0.000151634L5.70711 5.70696L0 11.4141Z"
+        fill="#6A7279"
+      />
+    </svg>
+  );
+}
+
 export function XrefIcon(props: any) {
   return (
     <svg

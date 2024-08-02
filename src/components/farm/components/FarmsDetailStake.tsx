@@ -104,6 +104,7 @@ export default function FarmsDetailStake(props: {
   );
   const [activeTab, setActiveTab] = useState(activeMobileTab || "stake");
   const [amountAvailableCheck, setAmountAvailableCheck] = useState(true);
+  const lpBalances = toReadableNumber(DECIMALS, free_amount);
   useEffect(() => {
     if (stakeType !== "free") {
       const goldList = [
@@ -430,7 +431,7 @@ export default function FarmsDetailStake(props: {
           </div>
           <div className="mt-2.5 text-sm mb-6 frcb">
             <p className="text-gray-10 ml-1">Lp Tokens</p>
-            <p> {toPrecision(lpBalance, 6)}</p>
+            <p> {toPrecision(lpBalances, 6)}</p>
           </div>
           <div
             onClick={() => {

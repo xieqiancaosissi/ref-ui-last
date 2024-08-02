@@ -215,7 +215,7 @@ function AssetPage() {
   const router = useRouter();
   return (
     <div className="flex mb-1">
-      <div className="bg-gray-20 bg-opacity-70 rounded-md p-4 w-1/5 mr-1">
+      <div className="bg-gray-20 bg-opacity-70 rounded-md p-4 w-1/4 mr-1">
         <div className="flex items-center mb-2">
           <p className="text-gray-50 text-sm">Your Investment</p>
           <div
@@ -250,7 +250,7 @@ function AssetPage() {
           </div>
         </div>
       </div>
-      <div className="bg-gray-20 bg-opacity-70 rounded-md p-4 w-4/5 flex">
+      <div className="bg-gray-20 bg-opacity-70 rounded-md p-4 w-3/4 flex">
         <div className="flex-1">
           <div className="flex items-center mb-2">
             <p className="text-gray-50 text-sm mr-1">DCL Pools</p>

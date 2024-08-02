@@ -8,7 +8,7 @@ import {
   getMftTokenId,
   getServerTime,
 } from "@/services/farm";
-import { FarmDetailsPoolIcon, QuestionMark } from "../icon";
+import { FarmDetailsBgIcon, FarmDetailsPoolIcon, QuestionMark } from "../icon";
 import { TokenMetadata } from "@/services/ft-contract";
 import {
   getEffectiveFarmList,
@@ -1085,20 +1085,18 @@ function AddLiquidityEntryBar(props: {
   if (!showAddLiquidityEntry || needForbidden) return null;
 
   return (
-    <div
-      className="absolute inset-0 bg-dark-45 bg-opacity-70 flex flex-col items-center justify-center z-50 border rounded-lg px-12"
-      style={{
-        border: "1px solid",
-        borderImageSource: "linear-gradient(180deg, #00D1FF 0%, #9EFE01 100%)",
-        borderImageSlice: "1",
-      }}
-    >
-      <p className="text-base mb-6">
-        You need LP tokens to stake into the corresponding farm. First, add
-        liquidity to the pool to get LP tokens.
-      </p>
-      <div className="text-base frcc h-12 bg-AddLiquidityBg rounded w-72">
-        Add Liquidity
+    <div className="absolute inset-0 bg-dark-45 bg-opacity-70 flex flex-col items-center justify-center z-50 border rounded-lg">
+      <div className="relative w-full h-full flex items-center justify-center">
+        <FarmDetailsBgIcon />
+        <div className="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center px-12">
+          <p className="text-base mb-6 text-center">
+            You need LP tokens to stake into the corresponding farm. First, add
+            liquidity to the pool to get LP tokens.
+          </p>
+          <div className="text-base flex items-center justify-center h-12 bg-AddLiquidityBg rounded w-72">
+            Add Liquidity
+          </div>
+        </div>
       </div>
     </div>
   );

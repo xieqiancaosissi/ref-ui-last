@@ -13,6 +13,7 @@ import {
 import { useRouter } from "next/router";
 import Modal from "react-modal";
 import {
+  FarmDetailsBgIcon,
   FarmDetailsPoolIcon,
   FarmDetailsUnion,
   FarmListDCLIcon,
@@ -1505,17 +1506,18 @@ function AddLiquidityEntryBar(props: {
   }
   if (loading || !tip || isEnded) return null;
   return (
-    <div
-      className="absolute inset-0 bg-dark-45 bg-opacity-70 flex flex-col items-center justify-center z-50 border rounded-lg px-12"
-      style={{
-        border: "1px solid",
-        borderImageSource: "linear-gradient(180deg, #00D1FF 0%, #9EFE01 100%)",
-        borderImageSlice: "1",
-      }}
-    >
-      <p className="text-base mb-6 text-center">{tip}</p>
-      <div className="text-base frcc h-12 bg-AddLiquidityBg rounded w-72">
-        Add Liquidity
+    <div className="absolute inset-0 bg-dark-45 bg-opacity-70 flex flex-col items-center justify-center z-50 border rounded-lg">
+      <div className="relative w-full h-full flex items-center justify-center">
+        <FarmDetailsBgIcon />
+        <div className="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center px-12">
+          <p className="text-base mb-6 text-center">
+            You don't have liquidity during the farm reward range, click 'Add
+            Liquidity' to start farming.
+          </p>
+          <div className="text-base flex items-center justify-center h-12 bg-AddLiquidityBg rounded w-72">
+            Add Liquidity
+          </div>
+        </div>
       </div>
     </div>
   );

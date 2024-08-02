@@ -1342,3 +1342,70 @@ export const FarmSortMobIcon = (props: any) => {
     </svg>
   );
 };
+
+export const FarmDetailsBgIcon = (props: any) => {
+  return (
+    <svg
+      {...props}
+      width="100%"
+      height="100%"
+      viewBox="0 0 100% 100%"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <g filter="url(#filter0_b_7132_32294)">
+        <rect
+          width="100%"
+          height="100%"
+          rx="8"
+          fill="#16212A"
+          fillOpacity="0.7"
+        />
+        <rect
+          x="0.5"
+          y="0.5"
+          width="99.8%"
+          height="99.8%"
+          rx="7.5"
+          stroke="url(#paint0_linear_7132_32294)"
+        />
+      </g>
+      <defs>
+        <filter
+          id="filter0_b_7132_32294"
+          x="-4"
+          y="-4"
+          width="104%"
+          height="104%"
+          filterUnits="userSpaceOnUse"
+          colorInterpolationFilters="sRGB"
+        >
+          <feFlood floodOpacity="0" result="BackgroundImageFix" />
+          <feGaussianBlur in="BackgroundImageFix" stdDeviation="2" />
+          <feComposite
+            in2="SourceAlpha"
+            operator="in"
+            result="effect1_backgroundBlur_7132_32294"
+          />
+          <feBlend
+            mode="normal"
+            in="SourceGraphic"
+            in2="effect1_backgroundBlur_7132_32294"
+            result="shape"
+          />
+        </filter>
+        <linearGradient
+          id="paint0_linear_7132_32294"
+          x1="209"
+          y1="0"
+          x2="209"
+          y2="268"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stopColor="#00D1FF" />
+          <stop offset="1" stopColor="#9EFE01" />
+        </linearGradient>
+      </defs>
+    </svg>
+  );
+};

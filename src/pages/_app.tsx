@@ -14,6 +14,8 @@ import "@/components/common/ModalDefaultStyle";
 import "@/components/modalGAPrivacy/modalGAPrivacy.css";
 import "@/components/customModal/customModal.css";
 import RpcList from "@/components/rpc";
+import { useAccountStore } from "@/stores/account";
+import { addUserWallet } from "@/services/indexer";
 const Footer = dynamic(() => import("../components/footer"), { ssr: false });
 const ModalGAPrivacy = dynamic(
   () => import("@/components/modalGAPrivacy/modalGAPrivacy"),
@@ -32,6 +34,8 @@ const RiskModal = dynamic(
 export default function App({ Component, pageProps }: AppProps) {
   const [progress, setProgress] = useState(0);
   const router = useRouter();
+  const accountStore = useAccountStore();
+  const accountId = accountStore.getAccountId();
   useEffect(() => {
     router.events.on("routeChangeStart", () => {
       setProgress(30);
@@ -44,6 +48,18 @@ export default function App({ Component, pageProps }: AppProps) {
     UIInit();
     DBInit();
   }, []);
+  useEffect(() => {
+    if (accountId) {
+      const selectedWalletId =
+        window.selector?.store?.getState()?.selectedWalletId;
+      if (selectedWalletId) {
+        addUserWallet({
+          account_id: accountId,
+          wallet_address: selectedWalletId,
+        });
+      }
+    }
+  }, [accountId]);
   function UIInit() {
     Modal.setAppElement("#root");
   }

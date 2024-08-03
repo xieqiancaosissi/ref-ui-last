@@ -56,11 +56,11 @@ export async function getWalletSelector({
       },
     ],
   };
+  const signInContractId = getOrderlyConfig().ORDERLY_ASSET_MANAGER;
+  let endPoint = "defaultRpc";
   const RPCLIST_system = getRpcSelectorList().RPC_LIST;
   const RPCLIST_custom = getCustomAddRpcSelectorList();
   const RPC_LIST = Object.assign(RPCLIST_system, RPCLIST_custom);
-  let endPoint = "defaultRpc";
-  const signInContractId = getOrderlyConfig().ORDERLY_ASSET_MANAGER;
   try {
     endPoint = window.localStorage.getItem("endPoint") || endPoint;
     if (!RPC_LIST[endPoint]) {

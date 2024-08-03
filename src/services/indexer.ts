@@ -453,3 +453,15 @@ export const getAssets = async (dateType: "M" | "W" | "H" | "ALL" = "H") => {
       return [];
     });
 };
+export const addUserWallet = async (params: any) => {
+  return await fetch(config.indexerUrl + "/add-user-wallet", {
+    method: "POST",
+    headers: {
+      "Content-type": "application/json; charset=UTF-8",
+      ...getAuthenticationHeaders("/add-user-wallet"),
+    },
+    body: JSON.stringify(params),
+  }).catch(async (res) => {
+    console.log("add user wallet failed", res);
+  });
+};

@@ -2,6 +2,7 @@ import { ITokenMetadata } from "@/interfaces/tokens";
 import { getTokenBalance, ftGetTokenMetadata } from "@/services/token";
 import { toReadableNumber } from "@/utils/numbers";
 import { getTokenUIId } from "@/services/swap/swapUtils";
+import { isRiskTokenBySuffix } from "@/utils/commonUtil";
 export function updateStoreBalance({
   token_in,
   token_out,
@@ -107,6 +108,7 @@ export async function setSwapTokenAndBalances({
   swapStore,
   persistSwapStore,
   tokenStore,
+  global_whitelisted_tokens_ids,
 }: {
   tokenInId: string;
   tokenOutId: string;
@@ -114,6 +116,7 @@ export async function setSwapTokenAndBalances({
   swapStore: any;
   persistSwapStore: any;
   tokenStore: any;
+  global_whitelisted_tokens_ids: string[];
 }) {
   let TOKEN_IN, TOKEN_OUT;
   const in_meta_pending = ftGetTokenMetadata(tokenInId, true);
@@ -146,6 +149,18 @@ export async function setSwapTokenAndBalances({
   } else {
     TOKEN_IN = metas[0];
     TOKEN_OUT = metas[1];
+  }
+  if (
+    !global_whitelisted_tokens_ids.includes(TOKEN_IN.id) &&
+    isRiskTokenBySuffix(TOKEN_IN)
+  ) {
+    TOKEN_IN.isRisk = true;
+  }
+  if (
+    !global_whitelisted_tokens_ids.includes(TOKEN_OUT.id) &&
+    isRiskTokenBySuffix(TOKEN_OUT)
+  ) {
+    TOKEN_OUT.isRisk = true;
   }
   swapStore.setTokenIn(TOKEN_IN);
   swapStore.setTokenOut(TOKEN_OUT);

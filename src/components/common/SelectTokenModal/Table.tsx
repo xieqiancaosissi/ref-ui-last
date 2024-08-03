@@ -1,7 +1,7 @@
-import React, { useContext, useEffect, useMemo, useState } from "react";
+import React, { useContext, useMemo, useState } from "react";
 import _ from "lodash";
 import Big from "big.js";
-import { CollectIcon, EmptyIcon, RiskIcon } from "./Icons";
+import { CollectIcon, EmptyIcon } from "./Icons";
 import { ITokenMetadata } from "@/interfaces/tokens";
 import { useAccountStore } from "../../../stores/account";
 import { toPrecision } from "../../../utils/numbers";
@@ -14,6 +14,10 @@ import { TokenMetadata } from "@/services/ft-contract";
 import registerTokenAndExchange from "@/services/swap/registerToken";
 import { WalletBagIcon } from "./Icons";
 import Loading from "@/components/limit/myOrders/loading";
+import {
+  TokenImgWithRiskTag,
+  RiskTipIcon,
+} from "@/components/common/imgContainer";
 
 type ISort = "asc" | "desc";
 export default function Table({
@@ -21,14 +25,12 @@ export default function Table({
   sort,
   hidden,
   enableAddToken,
-  riskTag,
   loading,
 }: {
   displayTokens: ITokenMetadata[];
   sort: ISort;
   hidden: boolean;
   enableAddToken?: boolean;
-  riskTag?: string;
   loading: boolean;
 }) {
   const [addTokenLoading, setAddTokenLoading] = useState<boolean>(false);
@@ -130,36 +132,11 @@ export default function Table({
                 }}
               >
                 <div className="flex items-center gap-2.5">
-                  <div
-                    className="flex items-center justify-center relative overflow-hidden rounded-full border border-gray-110"
-                    style={{
-                      width: "26px",
-                      height: "26px",
-                    }}
-                  >
-                    <img
-                      className="flex-shrink-0"
-                      src={token.icon || "/images/placeholder.svg"}
-                      alt=""
-                    />
-                    {riskTag ? (
-                      <span
-                        className="italic text-white bg-black bg-opacity-70 absolute bottom-0"
-                        style={{ width: "26px", height: "10px" }}
-                      >
-                        <label
-                          className="text-sm block transform scale-50 relative font-extrabold"
-                          style={{ top: "-5px", left: "-1px" }}
-                        >
-                          {riskTag}
-                        </label>
-                      </span>
-                    ) : null}
-                  </div>
+                  <TokenImgWithRiskTag token={token} />
                   <div className="flex flex-col gap-0.5">
                     <div className="flex items-center gap-1.5">
                       <span className="text-sm text-white">{token.symbol}</span>
-                      {token.isRisk ? <RiskIcon /> : null}
+                      {token.isRisk ? <RiskTipIcon /> : null}
                     </div>
                     <span className="text-xs text-gray-60">
                       $

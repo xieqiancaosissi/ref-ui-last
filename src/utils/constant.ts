@@ -22,3 +22,6 @@ export const V3_POOL_SPLITER = "|";
 export const POINTLEFTRANGE = -800000;
 export const POINTRIGHTRANGE = 800000;
 export const TIMESTAMP_DIVISOR = 1000000000;
+export const TKN_SUFFIX = "tkn";
+export const TKNX_SUFFIX = "tknx";
+export const MC_SUFFIX = "meme-cooking";

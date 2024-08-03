@@ -26,6 +26,7 @@ import { getTokenUIId } from "@/services/swap/swapUtils";
 import { toReadableNumber } from "@/utils/numbers";
 import { COMMON_TOKENS_TAG } from "@/utils/constantLocal";
 import { is_specific_suffix } from "@/utils/commonUtil";
+import { TKNX_SUFFIX, TKN_SUFFIX, MC_SUFFIX } from "@/utils/constant";
 const { HIDDEN_TOKEN_LIST } = getConfigV2();
 
 const useAllWhiteTokensWithBalances = () => {
@@ -316,12 +317,14 @@ const useAllWhiteTokensWithBalances = () => {
       .filter((token) => !HIDDEN_TOKEN_LIST.includes(token.id));
     // init common tokens
     initCommonTokens();
-    const tknTokens = autoTokens.filter((t) => is_specific_suffix(t.id, "tkn"));
+    const tknTokens = autoTokens.filter((t) =>
+      is_specific_suffix(t.id, TKN_SUFFIX)
+    );
     const tknxTokens = autoTokens.filter((t) =>
-      is_specific_suffix(t.id, "tknx")
+      is_specific_suffix(t.id, TKNX_SUFFIX)
     );
     const mcTokens = autoTokens.filter((t) =>
-      is_specific_suffix(t.id, "meme-cooking")
+      is_specific_suffix(t.id, MC_SUFFIX)
     );
     const reault = {
       defaultTokens,

@@ -7,6 +7,7 @@ import { TokenMetadata } from "@/services/ft-contract";
 import { useTokenStore, ITokenStore } from "@/stores/token";
 import CustomTooltip from "@/components/customTooltip/customTooltip";
 import { QuestionIcon } from "../Icons";
+import { is_specific_suffix } from "@/utils/commonUtil";
 export default function AssetTable() {
   const [sort, setSort] = useState<"asc" | "desc">("desc");
   const [tab, setTab] = useState<"default" | "tkn" | "tknx" | "mc">("default");
@@ -185,21 +186,18 @@ export default function AssetTable() {
           loading={!tknAccountTokens.done}
           sort={sort}
           hidden={tab !== "tkn"}
-          riskTag="TKN"
         />
         <Table
           displayTokens={tknxSearchResult}
           loading={!tknxAccountTokens.done}
           sort={sort}
           hidden={tab !== "tknx"}
-          riskTag="TKNX"
         />
         <Table
           displayTokens={mcSearchResult}
           loading={!mcAccountTokens.done}
           sort={sort}
           hidden={tab !== "mc"}
-          riskTag="MC"
         />
       </div>
     </div>

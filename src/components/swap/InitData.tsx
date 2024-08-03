@@ -20,8 +20,10 @@ export default function InitData() {
   const accountStore = useAccountStore();
   const accountId = accountStore.getAccountId();
   const walletLoading = accountStore.getWalletLoading();
+  const global_whitelisted_tokens_ids =
+    tokenStore.get_global_whitelisted_tokens_ids();
   useEffect(() => {
-    if (!walletLoading) {
+    if (!walletLoading && global_whitelisted_tokens_ids.length > 0) {
       const tokenInIdStore = persistSwapStore.getTokenInId();
       const tokenOutIdStore = persistSwapStore.getTokenOutId();
       const tokenInId = getTokenId({
@@ -39,9 +41,10 @@ export default function InitData() {
         swapStore,
         persistSwapStore,
         tokenStore,
+        global_whitelisted_tokens_ids,
       });
     }
-  }, [walletLoading, accountId]);
+  }, [walletLoading, accountId, global_whitelisted_tokens_ids?.length]);
   useEffect(() => {
     tokenStore.setDefaultAccountTokens(defaultAccountTokensHook || {});
   }, [JSON.stringify(defaultAccountTokensHook || {})]);

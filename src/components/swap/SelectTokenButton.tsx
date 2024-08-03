@@ -6,7 +6,8 @@ import { ITokenMetadata } from "@/interfaces/tokens";
 import { getTokenUIId } from "@/services/swap/swapUtils";
 import { setSwapTokenAndBalances } from "@/components/common/SelectTokenModal/tokenUtils";
 import { useAccountStore } from "@/stores/account";
-import { useTokenStore } from "@/stores/token";
+import { useTokenStore, ITokenStore } from "@/stores/token";
+import { TokenImgWithRiskTag } from "@/components/common/imgContainer";
 
 import {
   usePersistSwapStore,
@@ -26,13 +27,15 @@ export default function SelectTokenButton(props: ISelectTokenButtonProps) {
   const persistSwapStore: IPersistSwapStore = usePersistSwapStore();
   const accountStore = useAccountStore();
   const swapStore = useSwapStore();
-  const tokenStore = useTokenStore();
+  const tokenStore = useTokenStore() as ITokenStore;
   const tokenIn = swapStore.getTokenIn();
   const tokenOut = swapStore.getTokenOut();
   const accountId = accountStore.getAccountId();
+  const global_whitelisted_tokens_ids =
+    tokenStore.get_global_whitelisted_tokens_ids();
   const showToken = isIn ? tokenIn : tokenOut;
   useEffect(() => {
-    if (selectToken?.id) {
+    if (selectToken?.id && global_whitelisted_tokens_ids?.length > 0) {
       const selectTokenId = getTokenUIId(selectToken);
       setSwapTokenAndBalances({
         tokenInId: isIn ? selectTokenId : getTokenUIId(tokenIn),
@@ -41,9 +44,14 @@ export default function SelectTokenButton(props: ISelectTokenButtonProps) {
         swapStore,
         persistSwapStore,
         tokenStore,
+        global_whitelisted_tokens_ids,
       });
     }
-  }, [JSON.stringify(selectToken || {}), accountId]);
+  }, [
+    JSON.stringify(selectToken || {}),
+    accountId,
+    global_whitelisted_tokens_ids?.length,
+  ]);
   function showModal() {
     setIsOpen(true);
   }
@@ -60,32 +68,7 @@ export default function SelectTokenButton(props: ISelectTokenButtonProps) {
           className="flex items-center cursor-pointer flex-shrink-0"
           onClick={showModal}
         >
-          <div
-            className="flex items-center justify-center relative overflow-hidden rounded-full border border-gray-110"
-            style={{
-              width: "24px",
-              height: "24px",
-            }}
-          >
-            <img
-              className="flex-shrink-0 w-6 h-6"
-              src={showToken.icon || "/images/placeholder.svg"}
-              alt=""
-            />
-            {showToken.isRisk ? (
-              <span
-                className="italic text-white bg-black bg-opacity-70 absolute bottom-0"
-                style={{ width: "24px", height: "10px" }}
-              >
-                <label
-                  className="text-sm block transform scale-50 relative font-extrabold"
-                  style={{ top: "-5px", left: "-1px" }}
-                >
-                  TKN
-                </label>
-              </span>
-            ) : null}
-          </div>
+          <TokenImgWithRiskTag token={showToken} size="26" />
           <span className="text-white font-bold text-base ml-1.5 mr-2.5 ">
             {showToken.symbol}
           </span>

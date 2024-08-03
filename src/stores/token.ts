@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-import { ITokenMetadata } from "@/interfaces/tokens";
+import { ITokenMetadata, IUITokens } from "@/interfaces/tokens";
 export type ITokenStore = {
   get_global_whitelisted_tokens_ids: () => string[];
   set_global_whitelisted_tokens_ids: (whitelisted_tokens_ids: string[]) => void;
@@ -14,10 +14,14 @@ export type ITokenStore = {
   set_user_whitelisted_tokens_ids: (
     user_whitelisted_tokens_ids: string[]
   ) => void;
-  getDefaultAccountTokens: () => ITokenMetadata[];
-  setDefaultAccountTokens: (defaultAccountTokens: ITokenMetadata[]) => void;
-  getAutoAccountTokens: () => ITokenMetadata[];
-  setAutoAccountTokens: (autoAccountTokens: ITokenMetadata[]) => void;
+  getDefaultAccountTokens: () => IUITokens;
+  setDefaultAccountTokens: (defaultAccountTokens: IUITokens) => void;
+  getTknAccountTokens: () => IUITokens;
+  setTknAccountTokens: (tknAccountTokens: IUITokens) => void;
+  getTknxAccountTokens: () => IUITokens;
+  setTknxAccountTokens: (tknxAccountTokens: IUITokens) => void;
+  getMcAccountTokens: () => IUITokens;
+  setMcAccountTokens: (mcAccountTokens: IUITokens) => void;
   getOwner: () => string;
   setOwner: (owner: string) => void;
   getBalancesOwner: () => string;
@@ -32,8 +36,10 @@ export const useTokenStore = create(
       common_tokens: [],
       common_tokens_tag: "",
       user_whitelisted_tokens_ids: [],
-      defaultAccountTokens: [],
-      autoAccountTokens: [],
+      defaultAccountTokens: { data: [], done: false },
+      tknAccountTokens: { data: [], done: false },
+      tknxAccountTokens: { data: [], done: false },
+      mcAccountTokens: { data: [], done: false },
       owner: "",
       balancesOwner: "",
       get_global_whitelisted_tokens_ids: () => get().whitelisted_tokens_ids,
@@ -53,11 +59,17 @@ export const useTokenStore = create(
         user_whitelisted_tokens_ids: string[]
       ) => set({ user_whitelisted_tokens_ids }),
       getDefaultAccountTokens: () => get().defaultAccountTokens,
-      setDefaultAccountTokens: (defaultAccountTokens: ITokenMetadata[]) =>
+      setDefaultAccountTokens: (defaultAccountTokens: IUITokens) =>
         set({ defaultAccountTokens }),
-      getAutoAccountTokens: () => get().autoAccountTokens,
-      setAutoAccountTokens: (autoAccountTokens: ITokenMetadata[]) =>
-        set({ autoAccountTokens }),
+      getTknAccountTokens: () => get().tknAccountTokens,
+      setTknAccountTokens: (tknAccountTokens: IUITokens) =>
+        set({ tknAccountTokens }),
+      getTknxAccountTokens: () => get().tknxAccountTokens,
+      setTknxAccountTokens: (tknxAccountTokens: IUITokens) =>
+        set({ tknxAccountTokens }),
+      getMcAccountTokens: () => get().mcAccountTokens,
+      setMcAccountTokens: (mcAccountTokens: IUITokens) =>
+        set({ mcAccountTokens }),
       getOwner: () => get().owner,
       setOwner: (owner: string) => set({ owner }),
       getBalancesOwner: () => get().balancesOwner,

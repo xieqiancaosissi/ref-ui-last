@@ -27,7 +27,6 @@ export interface ITokenMetadata extends TokenMetadata {
 }
 
 export interface IUITokens {
-  defaultAccountTokens: ITokenMetadata[];
-  autoAccountTokens: ITokenMetadata[];
+  data: ITokenMetadata[];
   done: boolean;
 }

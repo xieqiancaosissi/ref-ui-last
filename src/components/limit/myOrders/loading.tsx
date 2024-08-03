@@ -5,7 +5,8 @@ export default function Loading() {
       className="flex flex-col relative items-center justify-center"
       style={{
         width: "100%",
-        height: "300px",
+        height: "150px",
+        marginTop: "20px",
       }}
     >
       <LoadingIcon />

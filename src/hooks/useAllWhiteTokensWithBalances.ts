@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { useDebounce } from "react-use";
+import { useDebounce, useThrottle } from "react-use";
 import { TokenMetadata } from "../services/ft-contract";
 import getConfigV2 from "../utils/configV2";
 import { useTokenStore, ITokenStore } from "../stores/token";
@@ -25,18 +25,12 @@ import {
 import { getTokenUIId } from "@/services/swap/swapUtils";
 import { toReadableNumber } from "@/utils/numbers";
 import { COMMON_TOKENS_TAG } from "@/utils/constantLocal";
+import { is_specific_suffix } from "@/utils/commonUtil";
 const { HIDDEN_TOKEN_LIST } = getConfigV2();
 
 const useAllWhiteTokensWithBalances = () => {
-  const initUITokensData = {
-    defaultAccountTokens: [],
-    autoAccountTokens: [],
-    done: false,
-  };
-  const initSelectTokensData = {
-    defaultList: [],
-    autoList: [],
-    totalList: [],
+  const initTokenAccountData = {
+    data: [],
     done: false,
   };
   const [globalWhitelistData, setGlobalWhitelistData] =
@@ -57,15 +51,23 @@ const useAllWhiteTokensWithBalances = () => {
     listTokens: [],
     done: false,
   });
-  const [UITokens, setUITokens] = useState<IUITokens>(initUITokensData);
+  const [defaultAccountTokensHook, setDefaultAccountTokensHook] =
+    useState<IUITokens>(initTokenAccountData);
+  const [tknAccountTokensHook, setTknAccountTokensHook] =
+    useState<IUITokens>(initTokenAccountData);
+  const [tknxAccountTokensHook, setTknxAccountTokensHook] =
+    useState<IUITokens>(initTokenAccountData);
+  const [mcAccountTokensHook, setMcAccountTokensHook] =
+    useState<IUITokens>(initTokenAccountData);
   const tokenStore = useTokenStore() as ITokenStore;
   const accountStore = useAccountStore();
   const accountId = accountStore.getAccountId();
   const walletLoading = accountStore.getWalletLoading();
   const balancesOwner = tokenStore.getBalancesOwner();
   const defaultAccountTokens = tokenStore.getDefaultAccountTokens();
-  const autoAccountTokens = tokenStore.getAutoAccountTokens();
-  const isCached = checkCache();
+  const tknAccountTokens = tokenStore.getTknAccountTokens();
+  const tknxAccountTokens = tokenStore.getTknxAccountTokens();
+  const mcAccountTokens = tokenStore.getMcAccountTokens();
   const sourceDataFetchDone = useMemo(() => {
     return !!(
       globalWhitelistData.done &&
@@ -83,25 +85,29 @@ const useAllWhiteTokensWithBalances = () => {
       getAccountWhitelistTokenIds();
     }
   }, [accountId, walletLoading]);
-  useEffect(() => {
+  useThrottle(() => {
+    // get data from cache
     if (!walletLoading) {
-      if (balancesOwner == accountId && isCached) {
-        // get data from cache
-        getUITokensFromCache();
+      if (balancesOwner == accountId) {
+        if (defaultAccountTokens.done) {
+          setDefaultAccountTokensHook(defaultAccountTokens);
+        }
+        if (tknAccountTokens.done) {
+          setTknAccountTokensHook(tknAccountTokens);
+        }
+        if (tknxAccountTokens.done) {
+          setTknxAccountTokensHook(tknxAccountTokens);
+        }
+        if (mcAccountTokens.done) {
+          setMcAccountTokensHook(mcAccountTokens);
+        }
       }
     }
-  }, [
-    accountId,
-    walletLoading,
-    balancesOwner,
-    JSON.stringify(defaultAccountTokens || []),
-    JSON.stringify(autoAccountTokens || []),
-  ]);
+  }, 500);
   useEffect(() => {
     if (!walletLoading && balancesOwner !== accountId) {
       // clear cache data
-      tokenStore.setDefaultAccountTokens([]);
-      tokenStore.setAutoAccountTokens([]);
+      clearCacheUITokens();
     }
   }, [accountId, walletLoading, balancesOwner]);
   useDebounce(
@@ -118,12 +124,11 @@ const useAllWhiteTokensWithBalances = () => {
       JSON.stringify(accountWhitelistData),
     ]
   );
-  function getUITokensFromCache() {
-    setUITokens({
-      defaultAccountTokens,
-      autoAccountTokens,
-      done: true,
-    });
+  function clearCacheUITokens() {
+    setDefaultAccountTokensHook(initTokenAccountData);
+    setTknAccountTokensHook(initTokenAccountData);
+    setTknxAccountTokensHook(initTokenAccountData);
+    setMcAccountTokensHook(initTokenAccountData);
   }
   async function getTokenMetaDatas(tokenIds: string[]) {
     const metadatas = (
@@ -203,26 +208,36 @@ const useAllWhiteTokensWithBalances = () => {
     });
   }
   async function getUITokensFromServer() {
-    setUITokens(initUITokensData);
-    const { defaultList, autoList, done } = await getSelectTokensFromServer();
+    clearCacheUITokens();
+    const { defaultTokens, tknTokens, tknxTokens, mcTokens, done } =
+      (await getTokensFromServer()) as {
+        defaultTokens: TokenMetadata[];
+        tknTokens: TokenMetadata[];
+        tknxTokens: TokenMetadata[];
+        mcTokens: TokenMetadata[];
+        done: boolean;
+      };
     if (done) {
+      tokenStore.setBalancesOwner(accountId);
       if (accountId) {
-        const d_pending = getTokensBalance(defaultList);
-        const a_pending = getTokensBalance(autoList);
-        const tokensWithBalances = await Promise.all([d_pending, a_pending]);
-        setUITokens({
-          defaultAccountTokens: tokensWithBalances[0],
-          autoAccountTokens: tokensWithBalances[1],
-          done: true,
+        getTokensBalance(defaultTokens).then((res) => {
+          setDefaultAccountTokensHook({ data: res, done: true });
+        });
+        getTokensBalance(tknTokens).then((res) => {
+          setTknAccountTokensHook({ data: res, done: true });
+        });
+        getTokensBalance(tknxTokens).then((res) => {
+          setTknxAccountTokensHook({ data: res, done: true });
+        });
+        getTokensBalance(mcTokens).then((res) => {
+          setMcAccountTokensHook({ data: res, done: true });
         });
       } else {
-        setUITokens({
-          defaultAccountTokens: defaultList,
-          autoAccountTokens: autoList,
-          done: true,
-        });
+        setDefaultAccountTokensHook({ data: defaultTokens, done: true });
+        setTknAccountTokensHook({ data: tknTokens, done: true });
+        setTknxAccountTokensHook({ data: tknxTokens, done: true });
+        setMcAccountTokensHook({ data: mcTokens, done: true });
       }
-      tokenStore.setBalancesOwner(accountId);
     }
   }
   async function getTokensBalance(tokens: TokenMetadata[]) {
@@ -239,7 +254,7 @@ const useAllWhiteTokensWithBalances = () => {
     }) as ITokenMetadata[];
     return tokensWithBalance;
   }
-  async function getSelectTokensFromServer() {
+  async function getTokensFromServer() {
     if (
       !(
         globalWhitelistData.done &&
@@ -248,7 +263,13 @@ const useAllWhiteTokensWithBalances = () => {
         listTokensData.done
       )
     )
-      return initSelectTokensData;
+      return {
+        defaultTokens: [],
+        tknTokens: [],
+        tknxTokens: [],
+        mcTokens: [],
+        done: false,
+      };
     tokenStore.setOwner(accountId);
     const defaultWhitelistIds = [
       ...new Set([
@@ -294,16 +315,24 @@ const useAllWhiteTokensWithBalances = () => {
       })
       .filter((token) => !HIDDEN_TOKEN_LIST.includes(token.id));
     // init common tokens
-    initCommonTokens(defaultTokens);
+    initCommonTokens();
+    const tknTokens = autoTokens.filter((t) => is_specific_suffix(t.id, "tkn"));
+    const tknxTokens = autoTokens.filter((t) =>
+      is_specific_suffix(t.id, "tknx")
+    );
+    const mcTokens = autoTokens.filter((t) =>
+      is_specific_suffix(t.id, "meme-cooking")
+    );
     const reault = {
-      defaultList: defaultTokens,
-      autoList: autoTokens,
-      totalList: [...defaultTokens, ...autoTokens],
+      defaultTokens,
+      tknTokens,
+      tknxTokens,
+      mcTokens,
       done: true,
     };
     return reault;
   }
-  async function initCommonTokens(defaultTokens: TokenMetadata[]) {
+  async function initCommonTokens() {
     // init common tokens
     const tag = tokenStore.get_common_tokens_tag();
     if (tag !== COMMON_TOKENS_TAG) {
@@ -313,10 +342,12 @@ const useAllWhiteTokensWithBalances = () => {
       tokenStore.set_common_tokens_tag(COMMON_TOKENS_TAG);
     }
   }
-  function checkCache() {
-    return !!defaultAccountTokens.length;
-  }
-  return UITokens;
+  return {
+    defaultAccountTokensHook,
+    tknAccountTokensHook,
+    tknxAccountTokensHook,
+    mcAccountTokensHook,
+  };
 };
 
 export default useAllWhiteTokensWithBalances;

@@ -4,6 +4,10 @@ import { ArrowDownIcon } from "../../components/swap/icons";
 import { useEffect, useState } from "react";
 import { ITokenMetadata } from "@/interfaces/tokens";
 import { getTokenUIId } from "@/services/swap/swapUtils";
+import { setSwapTokenAndBalances } from "@/components/common/SelectTokenModal/tokenUtils";
+import { useAccountStore } from "@/stores/account";
+import { useTokenStore } from "@/stores/token";
+
 import {
   usePersistSwapStore,
   useSwapStore,
@@ -20,21 +24,26 @@ export default function SelectTokenButton(props: ISelectTokenButtonProps) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [selectToken, setSelectToken] = useState<ITokenMetadata>();
   const persistSwapStore: IPersistSwapStore = usePersistSwapStore();
+  const accountStore = useAccountStore();
   const swapStore = useSwapStore();
+  const tokenStore = useTokenStore();
   const tokenIn = swapStore.getTokenIn();
   const tokenOut = swapStore.getTokenOut();
+  const accountId = accountStore.getAccountId();
   const showToken = isIn ? tokenIn : tokenOut;
   useEffect(() => {
     if (selectToken?.id) {
-      if (isIn) {
-        swapStore.setTokenIn(selectToken);
-        persistSwapStore.setTokenInId(getTokenUIId(selectToken));
-      } else if (isOut) {
-        swapStore.setTokenOut(selectToken);
-        persistSwapStore.setTokenOutId(getTokenUIId(selectToken));
-      }
+      const selectTokenId = getTokenUIId(selectToken);
+      setSwapTokenAndBalances({
+        tokenInId: isIn ? selectTokenId : getTokenUIId(tokenIn),
+        tokenOutId: isOut ? selectTokenId : getTokenUIId(tokenOut),
+        accountId,
+        swapStore,
+        persistSwapStore,
+        tokenStore,
+      });
     }
-  }, [JSON.stringify(selectToken || {})]);
+  }, [JSON.stringify(selectToken || {}), accountId]);
   function showModal() {
     setIsOpen(true);
   }

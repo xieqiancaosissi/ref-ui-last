@@ -35,6 +35,7 @@ export default function SelectTokenBalance(props: ISelectTokenBalanceProps) {
             if (isIn) setMaxAmount();
           }}
           className={`${isIn ? "underline cursor-pointer" : ""}`}
+          title={token?.balance || "0"}
         >
           {toPrecision(token?.balance || (accountId ? "0" : "-"), 3)}
         </span>

@@ -7,26 +7,46 @@ import { TokenMetadata } from "@/services/ft-contract";
 import { useTokenStore, ITokenStore } from "@/stores/token";
 import CustomTooltip from "@/components/customTooltip/customTooltip";
 import { QuestionIcon } from "../Icons";
-import Loading from "@/components/limit/myOrders/loading";
 export default function AssetTable() {
   const [sort, setSort] = useState<"asc" | "desc">("desc");
-  const [tab, setTab] = useState<"default" | "tkn">("default");
+  const [tab, setTab] = useState<"default" | "tkn" | "tknx" | "mc">("default");
   const tokenStore = useTokenStore() as ITokenStore;
-  const defaultDisplayTokens = tokenStore.getDefaultAccountTokens();
-  const autoDisplayTokens = tokenStore.getAutoAccountTokens();
+  const defaultAccountTokens = tokenStore.getDefaultAccountTokens();
+  const tknAccountTokens = tokenStore.getTknAccountTokens();
+  const tknxAccountTokens = tokenStore.getTknxAccountTokens();
+  const mcAccountTokens = tokenStore.getMcAccountTokens();
   const { searchText } = useContext(SelectTokenContext);
-  const [defaultTokens, autoTokens] = useMemo(() => {
+  const [
+    defaultSearchResult,
+    tknSearchResult,
+    tknxSearchResult,
+    mcSearchResult,
+  ] = useMemo(() => {
     if (searchText) {
-      const defaultSearchResult = defaultDisplayTokens.filter(filterFun);
-      const autoSearchResult = autoDisplayTokens.filter(filterFun);
-      return [defaultSearchResult, autoSearchResult];
+      const defaultSearchResult = defaultAccountTokens.data.filter(filterFun);
+      const tknSearchResult = tknAccountTokens.data.filter(filterFun);
+      const tknxSearchResult = tknxAccountTokens.data.filter(filterFun);
+      const mcSearchResult = mcAccountTokens.data.filter(filterFun);
+      return [
+        defaultSearchResult,
+        tknSearchResult,
+        tknxSearchResult,
+        mcSearchResult,
+      ];
     } else {
-      return [defaultDisplayTokens, autoDisplayTokens];
+      return [
+        defaultAccountTokens.data,
+        tknAccountTokens.data,
+        tknxAccountTokens.data,
+        mcAccountTokens.data,
+      ];
     }
   }, [
     searchText,
-    JSON.stringify(defaultDisplayTokens || []),
-    JSON.stringify(autoDisplayTokens || []),
+    JSON.stringify(defaultAccountTokens || {}),
+    JSON.stringify(tknAccountTokens || {}),
+    JSON.stringify(tknxAccountTokens || {}),
+    JSON.stringify(mcAccountTokens || {}),
   ]);
   function sortBalance() {
     if (sort == "asc") {
@@ -50,7 +70,20 @@ export default function AssetTable() {
     </div>
     `;
   }
-  const isLoading = !defaultDisplayTokens.length;
+  function tknxTip() {
+    return `
+    <div class="text-gray-110 text-xs text-left break-all w-62">
+        Created by any user on https://tkn.homes with the tknx.near suffix, poses high risks. Ref has not certified it. Exercise caution.
+    </div>
+    `;
+  }
+  function mcTip() {
+    return `
+    <div class="text-gray-110 text-xs text-left break-all w-62">
+    Created by any user on https://meme.cooking/create with the meme-cooking.near suffix, poses high risks. Ref has not certified it. Exercise caution.
+    </div>
+    `;
+  }
   return (
     <div className="mt-7">
       {/* title */}
@@ -86,6 +119,46 @@ export default function AssetTable() {
               <CustomTooltip id="tknTipId" />
             </div>
           </div>
+          <div
+            className={`flexBetween rounded-tr rounded-br gap-1 cursor-pointer px-1.5 ${
+              tab == "tknx" ? "bg-gray-100 text-white" : ""
+            }`}
+            onClick={() => {
+              setTab("tknx");
+            }}
+          >
+            <span>TKNX</span>
+            <div
+              className="text-white text-right"
+              data-class="reactTip"
+              data-tooltip-id="tknxTipId"
+              data-place="top"
+              data-tooltip-html={tknxTip()}
+            >
+              <QuestionIcon className="text-gray-60 hover:text-white" />
+              <CustomTooltip id="tknxTipId" />
+            </div>
+          </div>
+          <div
+            className={`flexBetween rounded-tr rounded-br gap-1 cursor-pointer px-1.5 ${
+              tab == "mc" ? "bg-gray-100 text-white" : ""
+            }`}
+            onClick={() => {
+              setTab("mc");
+            }}
+          >
+            <span>MC</span>
+            <div
+              className="text-white text-right"
+              data-class="reactTip"
+              data-tooltip-id="mcTipId"
+              data-place="top"
+              data-tooltip-html={mcTip()}
+            >
+              <QuestionIcon className="text-gray-60 hover:text-white" />
+              <CustomTooltip id="mcTipId" />
+            </div>
+          </div>
         </div>
         <div
           className="flex items-center gap-1.5 cursor-pointer pr-2"
@@ -97,21 +170,38 @@ export default function AssetTable() {
           />
         </div>
       </div>
-      {isLoading ? (
-        <Loading />
-      ) : (
-        <div className={`flex flex-col gap-1 mt-2`}>
-          {/* Default */}
-          <Table
-            tokens={defaultTokens}
-            sort={sort}
-            enableAddToken
-            hidden={tab !== "default"}
-          />
-          {/* TKN */}
-          <Table tokens={autoTokens} sort={sort} hidden={tab !== "tkn"} />
-        </div>
-      )}
+      <div className={`flex flex-col gap-1 mt-2`}>
+        {/* Default */}
+        <Table
+          displayTokens={defaultSearchResult}
+          loading={!defaultAccountTokens.done}
+          sort={sort}
+          enableAddToken
+          hidden={tab !== "default"}
+        />
+        {/* TKN */}
+        <Table
+          displayTokens={tknSearchResult}
+          loading={!tknAccountTokens.done}
+          sort={sort}
+          hidden={tab !== "tkn"}
+          riskTag="TKN"
+        />
+        <Table
+          displayTokens={tknxSearchResult}
+          loading={!tknxAccountTokens.done}
+          sort={sort}
+          hidden={tab !== "tknx"}
+          riskTag="TKNX"
+        />
+        <Table
+          displayTokens={mcSearchResult}
+          loading={!mcAccountTokens.done}
+          sort={sort}
+          hidden={tab !== "mc"}
+          riskTag="MC"
+        />
+      </div>
     </div>
   );
 }

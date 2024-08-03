@@ -10,7 +10,6 @@ import { SelectTokenContext } from "./Context";
 import { TokenMetadata } from "@/services/ft-contract";
 import { useSwapStore } from "@/stores/swap";
 import { formatTokenPrice } from "@/utils/uiNumber";
-import Loading from "@/components/limit/myOrders/loading";
 export default function SelectTokenModal({
   isOpen,
   onRequestClose,
@@ -28,7 +27,6 @@ export default function SelectTokenModal({
   const swapStore = useSwapStore();
   const common_tokens: ITokenMetadata[] = tokenStore.get_common_tokens();
   const allTokenPrices = swapStore.getAllTokenPrices();
-  const defaultDisplayTokens = tokenStore.getDefaultAccountTokens();
   useEffect(() => {
     setAddTokenError(false);
   }, [searchText]);
@@ -49,17 +47,7 @@ export default function SelectTokenModal({
     const price = allTokenPrices[tokenId]?.price || "";
     return formatTokenPrice(price);
   }
-  function getTokensWithBalance(token: TokenMetadata) {
-    const defaultAccountTokens = tokenStore.getDefaultAccountTokens();
-    const autoAccountTokens = tokenStore.getAutoAccountTokens();
-    const totalAccountTokens = defaultAccountTokens.concat(autoAccountTokens);
-    const target = totalAccountTokens.find(
-      (t) => t.id == token.id && t.symbol == token.symbol
-    );
-    return target || token;
-  }
   const cardWidth = isMobile() ? "95vw" : "430px";
-  const isLoading = !defaultDisplayTokens.length;
   return (
     <Modal
       isOpen={isOpen}
@@ -116,73 +104,67 @@ export default function SelectTokenModal({
               The token address was invalid
             </div>
           ) : null}
-          {isLoading ? (
-            <Loading />
-          ) : (
+          <div
+            className={`overflow-y-auto px-6 mt-2 pt-2 thinGrayscrollBar`}
+            style={{ height: "400px" }}
+          >
+            {/* common tokens */}
             <div
-              className={`overflow-y-auto px-6 mt-2 pt-2 thinGrayscrollBar`}
-              style={{ height: "400px" }}
+              className={`flex items-center gap-2 flex-wrap ${
+                searchText ? "hidden" : ""
+              }`}
             >
-              {/* common tokens */}
-              <div
-                className={`flex items-center gap-2 flex-wrap ${
-                  searchText ? "hidden" : ""
-                }`}
-              >
-                {common_tokens.map((token) => {
-                  return (
-                    <div
-                      className={`flex items-center gap-1.5 relative pl-2 pr-3.5 py-0.5 border border-gray-40 hover:bg-gray-40 cursor-pointer rounded-lg`}
+              {common_tokens.map((token) => {
+                return (
+                  <div
+                    className={`flex items-center gap-1.5 relative pl-2 pr-3.5 py-0.5 border border-gray-40 hover:bg-gray-40 cursor-pointer rounded-lg`}
+                    style={{
+                      minWidth: "90px",
+                    }}
+                    key={token.id}
+                    onMouseEnter={() => {
+                      setHoverCommonToken(token);
+                    }}
+                    onMouseLeave={() => {
+                      setHoverCommonToken(null);
+                    }}
+                    onClick={() => {
+                      onSelect(token);
+                      onRequestClose();
+                    }}
+                  >
+                    <img
+                      className="rounded-full"
                       style={{
-                        minWidth: "90px",
+                        width: "26px",
+                        height: "26px",
                       }}
-                      key={token.id}
-                      onMouseEnter={() => {
-                        setHoverCommonToken(token);
-                      }}
-                      onMouseLeave={() => {
-                        setHoverCommonToken(null);
-                      }}
-                      onClick={() => {
-                        onSelect(getTokensWithBalance(token));
-                        onRequestClose();
-                      }}
-                    >
-                      <img
-                        className="rounded-full"
-                        style={{
-                          width: "26px",
-                          height: "26px",
-                        }}
-                        src={token.icon || "/images/placeholder.svg"}
-                        alt=""
-                      />
-                      <div className="flex flex-col">
-                        <span className="text-sm text-white">
-                          {token.symbol}
-                        </span>
-                        <span className="text-xs text-gray-50">
-                          {getTokenUIPrice(token.id)}
-                        </span>
-                      </div>
-                      {hoverCommonToken?.id == token.id &&
-                      hoverCommonToken.symbol == token.symbol ? (
-                        <CloseButttonIcon
-                          onClick={(e: any) => {
-                            e.stopPropagation();
-                            delete_common_token(token);
-                          }}
-                          className="absolute -right-2 -top-2 cursor-pointer transform scale-75"
-                        />
-                      ) : null}
+                      src={token.icon || "/images/placeholder.svg"}
+                      alt=""
+                    />
+                    <div className="flex flex-col">
+                      <span className="text-sm text-white">{token.symbol}</span>
+                      <span className="text-xs text-gray-50">
+                        {getTokenUIPrice(token.id)}
+                      </span>
                     </div>
-                  );
-                })}
-              </div>
-              {/* assets table */}
-              <AssetTable />
+                    {hoverCommonToken?.id == token.id &&
+                    hoverCommonToken.symbol == token.symbol ? (
+                      <CloseButttonIcon
+                        onClick={(e: any) => {
+                          e.stopPropagation();
+                          delete_common_token(token);
+                        }}
+                        className="absolute -right-2 -top-2 cursor-pointer transform scale-75"
+                      />
+                    ) : null}
+                  </div>
+                );
+              })}
             </div>
-          )}
+            {/* assets table */}
+            <AssetTable />
+          </div>
         </SelectTokenContext.Provider>
       </div>
     </Modal>

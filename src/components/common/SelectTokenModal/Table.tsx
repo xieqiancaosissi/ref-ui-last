@@ -13,18 +13,23 @@ import { SelectTokenContext } from "./Context";
 import { TokenMetadata } from "@/services/ft-contract";
 import registerTokenAndExchange from "@/services/swap/registerToken";
 import { WalletBagIcon } from "./Icons";
+import Loading from "@/components/limit/myOrders/loading";
 
 type ISort = "asc" | "desc";
 export default function Table({
-  tokens,
+  displayTokens,
   sort,
   hidden,
   enableAddToken,
+  riskTag,
+  loading,
 }: {
-  tokens: ITokenMetadata[];
+  displayTokens: ITokenMetadata[];
   sort: ISort;
   hidden: boolean;
   enableAddToken?: boolean;
+  riskTag?: string;
+  loading: boolean;
 }) {
   const [addTokenLoading, setAddTokenLoading] = useState<boolean>(false);
   const { onSelect, onRequestClose, searchText, setAddTokenError } =
@@ -37,11 +42,11 @@ export default function Table({
   const isSignedIn = accountStore.isSignedIn;
   const accountId = accountStore.getAccountId();
   const empty = useMemo(() => {
-    if (tokens?.length == 0) {
+    if (displayTokens?.length == 0 && !loading) {
       return true;
     }
     return false;
-  }, [tokens?.length]);
+  }, [displayTokens?.length, loading]);
   function displayBalance(balance: string) {
     const result = isSignedIn
       ? 0 < Number(balance) && Number(balance) < 0.001
@@ -109,110 +114,116 @@ export default function Table({
   }
   return (
     <div className={`${hidden ? "hidden" : ""}`}>
-      {tokens?.sort(sortBy).map((token) => {
-        return (
-          <div
-            className={`flexBetween hover:bg-gray-40 rounded-md pl-2 pr-1.5 cursor-pointer`}
-            key={token.id + token.name}
-            style={{ height: "46px" }}
-            onClick={() => {
-              onSelect(token);
-              onRequestClose();
-            }}
-          >
-            <div className="flex items-center gap-2.5">
+      {loading ? (
+        <Loading />
+      ) : (
+        <>
+          {displayTokens?.sort(sortBy).map((token) => {
+            return (
               <div
-                className="flex items-center justify-center relative overflow-hidden rounded-full border border-gray-110"
-                style={{
-                  width: "26px",
-                  height: "26px",
+                className={`flexBetween hover:bg-gray-40 rounded-md pl-2 pr-1.5 cursor-pointer`}
+                key={token.id + token.name}
+                style={{ height: "46px" }}
+                onClick={() => {
+                  onSelect(token);
+                  onRequestClose();
                 }}
               >
-                <img
-                  className="flex-shrink-0"
-                  src={token.icon || "/images/placeholder.svg"}
-                  alt=""
-                />
-                {token.isRisk ? (
-                  <span
-                    className="italic text-white bg-black bg-opacity-70 absolute bottom-0"
-                    style={{ width: "26px", height: "10px" }}
+                <div className="flex items-center gap-2.5">
+                  <div
+                    className="flex items-center justify-center relative overflow-hidden rounded-full border border-gray-110"
+                    style={{
+                      width: "26px",
+                      height: "26px",
+                    }}
                   >
-                    <label
-                      className="text-sm block transform scale-50 relative font-extrabold"
-                      style={{ top: "-5px", left: "-1px" }}
-                    >
-                      TKN
-                    </label>
-                  </span>
-                ) : null}
-              </div>
-              <div className="flex flex-col gap-0.5">
-                <div className="flex items-center gap-1.5">
-                  <span className="text-sm text-white">{token.symbol}</span>
-                  {token.isRisk ? <RiskIcon /> : null}
+                    <img
+                      className="flex-shrink-0"
+                      src={token.icon || "/images/placeholder.svg"}
+                      alt=""
+                    />
+                    {riskTag ? (
+                      <span
+                        className="italic text-white bg-black bg-opacity-70 absolute bottom-0"
+                        style={{ width: "26px", height: "10px" }}
+                      >
+                        <label
+                          className="text-sm block transform scale-50 relative font-extrabold"
+                          style={{ top: "-5px", left: "-1px" }}
+                        >
+                          {riskTag}
+                        </label>
+                      </span>
+                    ) : null}
+                  </div>
+                  <div className="flex flex-col gap-0.5">
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-sm text-white">{token.symbol}</span>
+                      {token.isRisk ? <RiskIcon /> : null}
+                    </div>
+                    <span className="text-xs text-gray-60">
+                      $
+                      {toPrecision(
+                        allTokenPrices[token.id]?.price || "0",
+                        2,
+                        false,
+                        false
+                      )}
+                    </span>
+                  </div>
                 </div>
-                <span className="text-xs text-gray-60">
-                  $
-                  {toPrecision(
-                    allTokenPrices[token.id]?.price || "0",
-                    2,
-                    false,
-                    false
-                  )}
-                </span>
+                <div className="flex items-start gap-2 text-sm text-white">
+                  <div className="flex flex-col items-end">
+                    <span>{displayBalance(token.balance || "0")}</span>
+                    {Big(token.balance || "0").eq(0) ? (
+                      <span className="text-xs text-gray-60">-</span>
+                    ) : (
+                      <span className="flex items-center gap-1.5 text-xs text-primaryGreen">
+                        {displayUSD(token)}
+                        <WalletBagIcon />
+                      </span>
+                    )}
+                  </div>
+                  <CollectIcon
+                    onClick={(e: any) => {
+                      e.stopPropagation();
+                      addOrDeletCommonToken(token);
+                    }}
+                    className="cursor-pointer text-gray-60 relative top-1"
+                    collected={isCollected(token)}
+                  />
+                </div>
               </div>
-            </div>
-            <div className="flex items-start gap-2 text-sm text-white">
-              <div className="flex flex-col items-end">
-                <span>{displayBalance(token.balance || "0")}</span>
-                {Big(token.balance || "0").eq(0) ? (
-                  <span className="text-xs text-gray-60">-</span>
-                ) : (
-                  <span className="flex items-center gap-1.5 text-xs text-primaryGreen">
-                    {displayUSD(token)}
-                    <WalletBagIcon />
-                  </span>
-                )}
-              </div>
-              <CollectIcon
-                onClick={(e: any) => {
-                  e.stopPropagation();
-                  addOrDeletCommonToken(token);
-                }}
-                className="cursor-pointer text-gray-60 relative top-1"
-                collected={isCollected(token)}
-              />
-            </div>
-          </div>
-        );
-      })}
-      {empty ? (
-        <div
-          className="flex flex-col items-center justify-center"
-          style={{ marginTop: "47px" }}
-        >
-          <EmptyIcon />
-          <span
-            className="text-sm text-gray-10"
-            style={{ margin: "20px 0 8px 0" }}
-          >
-            No token found
-          </span>
-          {enableAddToken && isSignedIn ? (
+            );
+          })}
+          {empty ? (
             <div
-              className="flex items-center justify-center bg-greenGradient rounded mt-4 text-black font-bold text-base cursor-pointer mb-5"
-              style={{ height: "42px", width: "290px" }}
-              onClick={addToken}
+              className="flex flex-col items-center justify-center"
+              style={{ marginTop: "47px" }}
             >
-              <ButtonTextWrapper
-                loading={addTokenLoading}
-                Text={() => <>Add Token</>}
-              />
+              <EmptyIcon />
+              <span
+                className="text-sm text-gray-10"
+                style={{ margin: "20px 0 8px 0" }}
+              >
+                No token found
+              </span>
+              {enableAddToken && isSignedIn ? (
+                <div
+                  className="flex items-center justify-center bg-greenGradient rounded mt-4 text-black font-bold text-base cursor-pointer mb-5"
+                  style={{ height: "42px", width: "290px" }}
+                  onClick={addToken}
+                >
+                  <ButtonTextWrapper
+                    loading={addTokenLoading}
+                    Text={() => <>Add Token</>}
+                  />
+                </div>
+              ) : null}
             </div>
           ) : null}
-        </div>
-      ) : null}
+        </>
+      )}
     </div>
   );
 }

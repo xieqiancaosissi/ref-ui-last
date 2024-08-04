@@ -53,3 +53,4 @@ export interface HistoryOrderSwapInfo {
 }
 
 export type IOrderType = "active" | "history";
+export type Dimensions = "24H" | "7D" | "1M" | "1Y" | "All";

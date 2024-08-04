@@ -15,7 +15,6 @@ import { getAllTokenPrices } from "@/services/farm";
 import { SWitchButton } from "../components/swap/icons";
 import { RefreshIcon } from "../components/limit/icons";
 import Init from "../components/limit/Init";
-import RateChart from "../components/limit/RateChart";
 import ChartTopBar from "../components/limit/ChartTopBar";
 import { useLimitRateChartStore } from "@/stores/limitChart";
 import { getBestTvlPoolList } from "@/services/limit/limitUtils";
@@ -52,7 +51,6 @@ export default function LimitOrderPage() {
   const tokenIn = limitStore.getTokenIn();
   const tokenOut = limitStore.getTokenOut();
   const poolFetchLoading = limitStore.getPoolFetchLoading();
-  const chartTab = limitChartStore.getChartTab();
   useEffect(() => {
     getAllTokenPrices().then((res) => {
       swapStore.setAllTokenPrices(res);
@@ -107,15 +105,10 @@ export default function LimitOrderPage() {
       {/* init */}
       <Init />
       {/* charts and records container */}
-      <div style={{ width: "850px" }}>
+      <div style={{ width: "950px" }}>
         <ChartTopBar />
         <div className="border border-gray-30 rounded-lg mt-2.5">
-          <div className={`${chartTab == "PRICE" ? "" : "hidden"}`}>
-            <RateChart />
-          </div>
-          <div className={`${chartTab == "ORDER" ? "" : "hidden"}`}>
-            <LimitOrderChartAndTable />
-          </div>
+          <LimitOrderChartAndTable />
           <p
             className="flex items-center justify-center border-t border-gray-30 text-gray-60"
             style={{ height: "42px", fontSize: "13px" }}

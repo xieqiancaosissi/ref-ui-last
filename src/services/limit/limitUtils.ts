@@ -2,10 +2,15 @@ import Big from "big.js";
 import BigNumber from "bignumber.js";
 import _ from "lodash";
 import { ILimitStore } from "@/stores/limitOrder";
-import { toPrecision, toInternationalCurrencySystem } from "@/utils/numbers";
+import {
+  toPrecision,
+  toInternationalCurrencySystem,
+  scientificNotationToString,
+  toReadableNumber,
+  numberWithCommas,
+} from "@/utils/numbers";
 import { IPoolDcl } from "@/interfaces/swapDcl";
 import { ftGetTokenMetadata } from "@/services/token";
-import { toReadableNumber } from "@/utils/numbers";
 import { getAllTokenPrices } from "@/services/farm";
 
 export function setAmountOut({
@@ -94,3 +99,12 @@ export const isInvalid = function (v: any) {
 };
 
 export const GEARS = [15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1];
+export const priceFormatter = (price: string | number) => {
+  return numberWithCommas(
+    Number(price) === 0
+      ? 0
+      : Number(price) <= 0.01 && Number(price) > 0
+      ? toPrecision(scientificNotationToString(price.toString()), 6)
+      : new Big(scientificNotationToString(price.toString())).toFixed(4)
+  );
+};

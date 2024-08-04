@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState, useRef } from "react";
 import Big from "big.js";
-import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
 import { get_pointorder_range, get_pool } from "@/services/swapV3";
 import { ftGetTokenMetadata } from "@/services/token";
@@ -17,15 +16,18 @@ import { useLimitStore } from "@/stores/limitOrder";
 import { IPoolDcl } from "@/interfaces/swapDcl";
 import { sort_tokens_by_base } from "@/services/commonV3";
 import { fillDclPool } from "@/services/limit/limitUtils";
-const LimitOrderChart = dynamic(() => import("./LimitOrderChart"), {
-  ssr: false,
-});
+import RateChart from "@/components/limit/RateChart";
+import Loading from "@/components/limit/myOrders/loading";
 
 export default function LimitOrderChartAndTable() {
   // CONST start
   const limitOrderContainerHeight = "150";
   // CONST end
   const [orders, setOrders] = useState<IOrderPoint>();
+  const [ordersPending, setOrdersPending] = useState<{
+    orders: IOrderPoint;
+    pool_id: string;
+  }>();
   const [switch_token, set_switch_token] = useState<ISwitchToken>();
   const [buy_token_x_list, set_buy_token_x_list] =
     useState<IOrderPointItem[]>();
@@ -59,6 +61,13 @@ export default function LimitOrderChartAndTable() {
       fetch_points_data();
     }
   }, [pool_id]);
+  useEffect(() => {
+    if (pool_id && ordersPending?.pool_id == pool_id) {
+      setOrders(ordersPending.orders);
+      set_fetch_data_done(true);
+      setSwitchToken();
+    }
+  }, [JSON.stringify(ordersPending || {}), pool_id]);
   useEffect(() => {
     if (!(tokenIn && tokenOut && pool_id && fetch_data_done)) return;
     const { token_x, token_y } = pool;
@@ -161,9 +170,7 @@ export default function LimitOrderChartAndTable() {
 
   async function fetch_points_data() {
     const orders = await get_points_of_orders();
-    setOrders(orders);
-    set_fetch_data_done(true);
-    setSwitchToken();
+    setOrdersPending({ orders, pool_id });
   }
   async function setSwitchToken() {
     const { token_x_metadata, token_y_metadata } = pool;
@@ -398,64 +405,12 @@ export default function LimitOrderChartAndTable() {
     },
   };
   return (
-    <div className="flex items-stretch justify-between">
+    <div
+      className="flex items-stretch justify-between"
+      style={{ height: "420px" }}
+    >
       {/* chart area */}
-      <div className="flex-grow px-3 xsm:w-full pt-2.5">
-        {/* base data */}
-        <div className="flex items-center xsm:items-start justify-between xsm:flex-col-reverse">
-          <div className="flex items-end xsm:hidden">{get_rate_element()}</div>
-          <div className="flex items-end lg:hidden mt-2.5">
-            {get_rate_element_mobile()}
-          </div>
-          <div className="flex items-center justify-between xsm:w-full">
-            {/* control button*/}
-            <div className="control flex items-center border border-gray-70 rounded py-px h-5 w-12">
-              <div
-                className={`flex items-center justify-center w-1 h-full flex-grow border-r border-gray-70 text-gray-10 ${
-                  zoom == GEARS[GEARS.length - 1] || is_empty
-                    ? "text-opacity-30 cursor-not-allowed"
-                    : "cursor-pointer"
-                }`}
-                onClick={zoomOut}
-              >
-                <AddIcon></AddIcon>
-              </div>
-              <div
-                className={`flex items-center justify-center w-1 h-full flex-grow text-gray-10 ${
-                  zoom == GEARS[0] || is_empty
-                    ? "text-opacity-30 cursor-not-allowed"
-                    : "cursor-pointer"
-                }`}
-                onClick={zoomIn}
-              >
-                <SubIcon></SubIcon>
-              </div>
-            </div>
-            <div
-              onClick={() => {
-                set_show_view_all(true);
-              }}
-              className="text-xs text-white px-2 py-1 border border-v3SwapGray border-opacity-20 rounded-md lg:hidden"
-            >
-              View All
-            </div>
-          </div>
-        </div>
-        {/* chart */}
-        {is_empty ? (
-          <div
-            className="flex flex-col items-center justify-center gap-5"
-            style={{ height: "400px" }}
-          >
-            <EmptyIcon></EmptyIcon>
-            <span className="text-sm text-gray-60">
-              Not enough data for the chart right now.
-            </span>
-          </div>
-        ) : (
-          <LimitOrderChart />
-        )}
-      </div>
+      <RateChart />
       {/* table area */}
       <div className="lg:border-l lg:border-gray-30 pt-2.5">
         {is_mobile && show_view_all && (
@@ -505,100 +460,109 @@ export default function LimitOrderChartAndTable() {
               </span>
             </div>
           </div>
-          {is_empty ? (
-            <div
-              className="text-sm text-gray-60 flex items-center justify-center"
-              style={{ marginTop: "100px" }}
-            >
-              No order yet
-            </div>
+          {!fetch_data_done ? (
+            <Loading />
           ) : (
-            <div>
-              <div
-                ref={sellBoxRef}
-                className={`font-nunito ${
-                  sell_list?.length ? "p-3 xsm:px-5" : "p-1"
-                } pr-0 overflow-auto`}
-                style={{ maxHeight: `${limitOrderContainerHeight}px` }}
-              >
-                {sell_list?.map((item: IOrderPointItem, index) => {
-                  return (
-                    <div
-                      key={item.point! + index}
-                      className="grid grid-cols-3  justify-items-end text-xs py-1.5 pr-2"
-                    >
-                      <span className="text-red-20 justify-self-start">
-                        {formatPriceWithCommas(item.price!)}
-                      </span>
-                      <span className="text-white pr-3">
-                        {formatNumber(
-                          item.amount_x_readable! || item.amount_y_readable!
-                        )}
-                      </span>
-                      <span className="text-white">
-                        {formatNumber(
-                          item.accumulated_x_readable! ||
-                            item.accumulated_y_readable!
-                        )}
-                      </span>
-                    </div>
-                  );
-                })}
-              </div>
-              <div className="flex items-center mt-2.5 pl-3 xsm:pl-5 font-nunito">
-                <div className="flex items-center xsm:hidden">
-                  <span className="text-xs text-white mr-2">Market Pirce</span>
+            <>
+              {" "}
+              {is_empty ? (
+                <div
+                  className="text-sm text-gray-60 flex items-center justify-center"
+                  style={{ marginTop: "100px" }}
+                >
+                  No order yet
+                </div>
+              ) : (
+                <div>
                   <div
-                    className="flex items-center justify-center w-4 h-4 rounded border border-r-gray-90 cursor-pointer text-gray-50 hover:text-white"
-                    onClick={marketRefresh}
+                    ref={sellBoxRef}
+                    className={`font-nunito ${
+                      sell_list?.length ? "p-3 xsm:px-5" : "p-1"
+                    } pr-0 overflow-auto thinDarkscrollBar`}
+                    style={{ maxHeight: `${limitOrderContainerHeight}px` }}
                   >
-                    {market_loading ? (
-                      <motion.div variants={variants} animate="spin">
-                        <RefreshIcon className="text-white" />
-                      </motion.div>
-                    ) : (
-                      <RefreshIcon />
-                    )}
+                    {sell_list?.map((item: IOrderPointItem, index) => {
+                      return (
+                        <div
+                          key={item.point! + index}
+                          className="grid grid-cols-3  justify-items-end text-xs py-1.5 pr-2"
+                        >
+                          <span className="text-red-20 justify-self-start">
+                            {formatPriceWithCommas(item.price!)}
+                          </span>
+                          <span className="text-white pr-3">
+                            {formatNumber(
+                              item.amount_x_readable! || item.amount_y_readable!
+                            )}
+                          </span>
+                          <span className="text-white">
+                            {formatNumber(
+                              item.accumulated_x_readable! ||
+                                item.accumulated_y_readable!
+                            )}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <div className="flex items-center mt-2.5 pl-3 xsm:pl-5 font-nunito">
+                    <div className="flex items-center xsm:hidden">
+                      <span className="text-xs text-white mr-2">
+                        Market Pirce
+                      </span>
+                      <div
+                        className="flex items-center justify-center w-4 h-4 rounded border border-r-gray-90 cursor-pointer text-gray-50 hover:text-white"
+                        onClick={marketRefresh}
+                      >
+                        {market_loading ? (
+                          <motion.div variants={variants} animate="spin">
+                            <RefreshIcon className="text-white" />
+                          </motion.div>
+                        ) : (
+                          <RefreshIcon />
+                        )}
+                      </div>
+                    </div>
+                    <span
+                      className="lg:hidden text-sm text-white underline"
+                      onClick={marketRefresh}
+                    >
+                      Refresh Market Price
+                    </span>
+                  </div>
+                  <div
+                    className={`font-nunito ${
+                      buy_list?.length ? "p-3 xsm:px-5" : "p-1"
+                    } pr-0 overflow-auto thinDarkscrollBar`}
+                    style={{ maxHeight: `${limitOrderContainerHeight}px` }}
+                  >
+                    {buy_list?.map((item: IOrderPointItem, index) => {
+                      return (
+                        <div
+                          key={item.point! + index}
+                          className="grid grid-cols-3 justify-items-end text-xs py-1.5 pr-2"
+                        >
+                          <span className="text-primaryGreen justify-self-start">
+                            {formatPriceWithCommas(item.price!)}
+                          </span>
+                          <span className="text-white pr-3">
+                            {formatNumber(
+                              item.amount_x_readable! || item.amount_y_readable!
+                            )}
+                          </span>
+                          <span className="text-white">
+                            {formatNumber(
+                              item.accumulated_x_readable! ||
+                                item.accumulated_y_readable!
+                            )}
+                          </span>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
-                <span
-                  className="lg:hidden text-sm text-white underline"
-                  onClick={marketRefresh}
-                >
-                  Refresh Market Price
-                </span>
-              </div>
-              <div
-                className={`font-nunito ${
-                  buy_list?.length ? "p-3 xsm:px-5" : "p-1"
-                } pr-0 overflow-auto`}
-                style={{ maxHeight: `${limitOrderContainerHeight}px` }}
-              >
-                {buy_list?.map((item: IOrderPointItem, index) => {
-                  return (
-                    <div
-                      key={item.point! + index}
-                      className="grid grid-cols-3 justify-items-end text-xs py-1.5 pr-2"
-                    >
-                      <span className="text-primaryGreen justify-self-start">
-                        {formatPriceWithCommas(item.price!)}
-                      </span>
-                      <span className="text-white pr-3">
-                        {formatNumber(
-                          item.amount_x_readable! || item.amount_y_readable!
-                        )}
-                      </span>
-                      <span className="text-white">
-                        {formatNumber(
-                          item.accumulated_x_readable! ||
-                            item.accumulated_y_readable!
-                        )}
-                      </span>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
+              )}
+            </>
           )}
         </div>
       </div>

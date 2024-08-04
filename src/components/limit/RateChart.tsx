@@ -14,27 +14,16 @@ import {
   ComposedChart,
 } from "recharts";
 
-import { IoArrowUpOutline } from "../reactIcons";
 import moment from "moment";
 import { ChartNoData } from "./icons";
 import { LoadingIcon } from "@/components/common/Icons";
 import { numberWithCommas } from "@/utils/numbers";
 import { useClientMobile } from "../../utils/device";
 import { scientificNotationToString, toPrecision } from "../../utils/numbers";
+import { priceFormatter } from "@/services/limit/limitUtils";
 import Big from "big.js";
 import { useLimitStore } from "@/stores/limitOrder";
-
-type Dimensions = "24H" | "7D" | "1M" | "1Y" | "All";
-
-const priceFormatter = (price: string | number) => {
-  return numberWithCommas(
-    Number(price) === 0
-      ? 0
-      : Number(price) <= 0.01 && Number(price) > 0
-      ? toPrecision(scientificNotationToString(price.toString()), 6)
-      : new Big(scientificNotationToString(price.toString())).toFixed(4)
-  );
-};
+import { Dimensions } from "@/interfaces/limit";
 
 const REF_FI_SWAP_RATE_DIMENSIONS = "REF_FI_SWAP_RATE_DIMENSIONS";
 
@@ -302,48 +291,9 @@ function RateChart() {
       {/* chart base data start */}
       <div className="flex items-center justify-between pl-4 pr-3">
         <div className="frcs xs:flex xs:items-center xs:mb-2 xs:justify-between xs:flex-wrap mt-3">
-          <div className="frcs xsm:ml-0">
-            {diff && (
-              <span className="text-sm text-gray-60">1 {tokenIn.symbol} =</span>
-            )}
-            <span className="text-white text-2xl font-extrabold px-2.5">
-              {diff ? priceFormatter(diff.curPrice) : "-"}
-            </span>
-
-            {diff && (
-              <span className="mr-1.5  text-sm text-gray-60">
-                {tokenOut.symbol}
-              </span>
-            )}
-            {diff && (
-              <span
-                className={`frcs text-xs rounded px-1 py-0.5
-            ${
-              diff.direction === "up"
-                ? "text-primaryGreen bg-primaryGreen bg-opacity-10"
-                : diff.direction === "down"
-                ? "text-red-10 bg-red-10 bg-opacity-10"
-                : "text-gray-60 bg-gray-60 bg-opacity-10"
-            }
-            
-            `}
-              >
-                {diff.direction !== "unChange" && (
-                  <IoArrowUpOutline
-                    className={`${
-                      diff.direction === "down" ? "transform  rotate-180  " : ""
-                    } `}
-                  />
-                )}
-
-                {diff.percent}
-              </span>
-            )}
-          </div>
-
           {diff && (
             <>
-              <div className="xsm:hidden text-gray-60 frcs ml-8 text-sm">
+              <div className="xsm:hidden text-gray-60 frcs text-sm">
                 <span>
                   Low
                   {`(${displayDimension})`}

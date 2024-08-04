@@ -158,7 +158,7 @@ export default function RateContainer() {
             onKeyDown={(e) => symbolsArr.includes(e.key) && e.preventDefault()}
             onBlur={onBlurEvent}
           />
-          <span>USDC.e</span>
+          <span>{tokenOut?.symbol}</span>
         </div>
         <div className="flex items-center gap-1">
           <div

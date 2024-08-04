@@ -86,7 +86,7 @@ export default function App({ Component, pageProps }: AppProps) {
       />
       <div className="flex flex-col bg-primaryDark min-h-screen">
         <Menu />
-        <div className="flex-grow mt-24">
+        <div className="flex-grow mt-24 xsm:mt-10">
           <Component {...pageProps} />
         </div>
         <RpcList />

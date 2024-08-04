@@ -143,7 +143,7 @@ export default function WalletConnect() {
         <>
           {accountId ? (
             <div onClick={() => setIsOpen(!isOpen)}>
-              <div className="flex items-center justify-center rounded border border-gray-70 px-2.5 cursor-pointer gap-2 h-9">
+              <div className="flex items-center justify-center rounded border border-gray-70 px-2.5 cursor-pointer gap-2 h-9 xsm:h-8">
                 {currentWallet?.metadata?.iconUrl ? (
                   <Image
                     src={currentWallet?.metadata?.iconUrl || ""}

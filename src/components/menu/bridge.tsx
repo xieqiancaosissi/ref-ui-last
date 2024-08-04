@@ -21,7 +21,7 @@ export default function Bridge() {
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
     >
-      <div className="flex items-center justify-center h-9 rounded text-sm font-bold text-gray-10 px-2.5 cursor-pointer border border-gray-70 hover:text-white">
+      <div className="flex items-center justify-center lg:h-9 xsm:h-[26px] rounded text-sm font-bold text-gray-10 px-2.5 cursor-pointer border border-gray-70 hover:text-white">
         BRIDGE
       </div>
       {hover ? (

@@ -137,3 +137,60 @@ export function LinkLine(props: any) {
     </svg>
   );
 }
+export function LogoMobileIcon(props: any) {
+  return (
+    <svg
+      {...props}
+      width="23"
+      height="26"
+      viewBox="0 0 23 26"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M18.0528 0H0V5.39623H14.4226C15.6981 5.39623 16.8621 5.9498 16.8621 7.16255V10.3022C16.8621 11.872 15.6981 12.2642 14.4226 12.2642H5.88679L15.2075 26H22.7623L15.8943 16.1887H18.0528C18.0528 16.1887 22.7623 16.5814 22.7623 11.0871V4.80783C22.7623 0.883306 20.1031 0 18.0528 0Z"
+        fill="#9EFF00"
+      />
+      <path d="M0 26.0005V15.208L7.35849 26.0005H0Z" fill="#9EFF00" />
+    </svg>
+  );
+}
+
+export function MoreMobileIcon(props: any) {
+  return (
+    <svg
+      {...props}
+      width="16"
+      height="16"
+      viewBox="0 0 16 16"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <rect width="16" height="2" rx="1" fill="#7E8A93" />
+      <rect y="7" width="16" height="2" rx="1" fill="#7E8A93" />
+      <rect y="14" width="16" height="2" rx="1" fill="#7E8A93" />
+    </svg>
+  );
+}
+
+export function LogoSmallMobileIcon(props: any) {
+  return (
+    <svg
+      {...props}
+      width="10"
+      height="12"
+      viewBox="0 0 10 12"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M7.61676 0.785156H0.394531V2.94362H6.16446C6.67473 2.94362 7.14041 3.16505 7.14041 3.65014V4.90597C7.14041 5.53389 6.67473 5.69075 6.16446 5.69075H2.7496L6.47847 11.185H9.50081L6.75323 7.26054H7.61676C7.61676 7.26054 9.50081 7.41764 9.50081 5.21993V2.70827C9.50081 1.13847 8.43697 0.785156 7.61676 0.785156Z"
+        fill="#9EFF00"
+      />
+      <path
+        d="M0.394531 11.1861V6.86914L3.33837 11.1861H0.394531Z"
+        fill="#9EFF00"
+      />
+    </svg>
+  );
+}

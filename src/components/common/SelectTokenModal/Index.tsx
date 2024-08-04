@@ -47,7 +47,7 @@ export default function SelectTokenModal({
     const price = allTokenPrices[tokenId]?.price || "";
     return formatTokenPrice(price);
   }
-  const cardWidth = isMobile() ? "95vw" : "430px";
+  const cardWidth = isMobile() ? "100vw" : "430px";
   return (
     <Modal
       isOpen={isOpen}
@@ -60,7 +60,7 @@ export default function SelectTokenModal({
         style={{
           width: cardWidth,
         }}
-        className="rounded-lg bg-dark-70 py-6"
+        className="rounded-lg xsm:rounded-b-none bg-dark-70 py-6"
       >
         {/* title */}
         <div className="flexBetween px-6">
@@ -105,7 +105,7 @@ export default function SelectTokenModal({
             </div>
           ) : null}
           <div
-            className={`overflow-y-auto px-6 mt-2 pt-2 thinGrayscrollBar`}
+            className={`relative overflow-y-auto px-6 mt-2 pt-2 thinGrayscrollBar`}
             style={{ height: "400px" }}
           >
             {/* common tokens */}

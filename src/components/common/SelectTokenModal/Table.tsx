@@ -18,6 +18,7 @@ import {
   TokenImgWithRiskTag,
   RiskTipIcon,
 } from "@/components/common/imgContainer";
+import { isMobile } from "@/utils/device";
 
 type ISort = "asc" | "desc";
 export default function Table({
@@ -43,6 +44,7 @@ export default function Table({
   const allTokenPrices = swapStore.getAllTokenPrices();
   const isSignedIn = accountStore.isSignedIn;
   const accountId = accountStore.getAccountId();
+  const mobile = isMobile();
   const empty = useMemo(() => {
     if (displayTokens?.length == 0 && !loading) {
       return true;

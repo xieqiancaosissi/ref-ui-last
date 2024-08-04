@@ -33,6 +33,7 @@ export default function TradeRouteModal({
   const tokenOut = swapStore.getTokenOut();
   const best = swapStore.getBest();
   const { estimatesFromServer } = estimatesServer || {};
+  isMobile();
   useEffect(() => {
     if (estimatesServer) {
       getTokensDataOfEstimatesServer();
@@ -84,21 +85,12 @@ export default function TradeRouteModal({
         e.stopPropagation();
         onRequestClose();
       }}
-      style={{
-        overlay: {
-          backdropFilter: "blur(15px)",
-          WebkitBackdropFilter: "blur(15px)",
-        },
-      }}
     >
-      <div
-        style={{ width: "800px" }}
-        className="bg-dark-10 p-6 pb-8 rounded-lg"
-      >
+      <div className="bg-dark-10 p-6 lg:pb-8 rounded-lg rounded-b-none xsm:w-screen">
         {/* title */}
         <div className="flexBetween">
           <div className="flex items-center gap-3 text-white text-lg">
-            <RefMarketRouteIcon /> Trade Route
+            <RefMarketRouteIcon /> Trade Router
           </div>
           <CloseIcon
             className="text-gray-50 hover:text-white cursor-pointer"
@@ -108,126 +100,121 @@ export default function TradeRouteModal({
         <div className="flexBetween mt-10">
           <Token icon={tokenIn.icon} size="26" />
           <LeftBracket size={routeLength} />
-          <div className="w-full mx-2 xsm:overflow-x-auto relative">
-            {best == "v1" && estimates ? (
-              <>
-                {identicalRoutes.map((route, j) => {
-                  return (
-                    <div key={j} className="relative flexBetween my-3 ">
-                      <span className="text-xs text-gray-180">
-                        {percents[j]}%
-                      </span>
-                      {/* background line */}
-                      <div
-                        className="absolute border border-dashed left-8 opacity-30 border-gray-60 w-full"
-                        style={{
-                          width: "calc(100% - 32px)",
-                        }}
-                      ></div>
-                      {/* pools have passed  */}
-                      <div className="flex items-center">
-                        {route[0].tokens
-                          ?.slice(1, route[0].tokens.length)
-                          .map((t, i) => {
+          <div className="relative mx-2 xsm:overflow-x-auto">
+            <div className="w-[620px]">
+              {best == "v1" && estimates ? (
+                <>
+                  {identicalRoutes.map((route, j) => {
+                    return (
+                      <div key={j} className="relative flexBetween my-3">
+                        <span className="text-xs text-gray-180">
+                          {percents[j]}%
+                        </span>
+                        {/* background line */}
+                        <div
+                          className="absolute border border-dashed left-8 opacity-30 border-gray-60 w-full"
+                          style={{
+                            width: "calc(100% - 32px)",
+                          }}
+                        ></div>
+                        {/* pools have passed  */}
+                        <div className="flex items-center">
+                          {route[0].tokens
+                            ?.slice(1, route[0].tokens.length)
+                            .map((t, i) => {
+                              return (
+                                <>
+                                  <TradeRouteHub
+                                    poolId={Number(route[i].pool?.id)}
+                                    token={t}
+                                    contract="Ref_Classic"
+                                  />
+                                  {t.id !==
+                                    route[0].tokens?.[
+                                      route[0].tokens.length - 1
+                                    ]?.id && (
+                                    <div className="relative mx-3 z-10">
+                                      <PolygonArrowIcon />
+                                    </div>
+                                  )}
+                                </>
+                              );
+                            })}
+                        </div>
+                        <PolygonArrowIcon />
+                      </div>
+                    );
+                  })}
+                </>
+              ) : null}
+              {best == "v1" && estimatesFromServerUI ? (
+                <>
+                  {estimatesFromServerUI.routes.map((route, j) => {
+                    const { pools, tokens } = route;
+                    return (
+                      <div key={j} className="relative frcb my-3 ">
+                        <span className="text-xs text-gray-180">
+                          {percentsServer[j]}%
+                        </span>
+                        <div
+                          className="border border-dashed absolute left-5 opacity-30 border-gray-60 w-full px-3"
+                          style={{
+                            width: "calc(100% - 32px)",
+                          }}
+                        ></div>
+                        <div className="frcs">
+                          {tokens?.slice(1, tokens.length).map((t, i) => {
                             return (
                               <>
                                 <TradeRouteHub
-                                  poolId={Number(route[i].pool?.id)}
+                                  poolId={Number(pools[i].pool_id)}
                                   token={t}
                                   contract="Ref_Classic"
                                 />
-                                {t.id !==
-                                  route[0].tokens?.[route[0].tokens.length - 1]
-                                    ?.id && (
-                                  <div className="relative mx-3 z-10">
+                                {t.id !== tokens[tokens.length - 1]?.id && (
+                                  <div className="mx-3">
                                     <PolygonArrowIcon />
                                   </div>
                                 )}
                               </>
                             );
                           })}
-                      </div>
-                      <PolygonArrowIcon />
-                    </div>
-                  );
-                })}
-              </>
-            ) : null}
-            {best == "v1" && estimatesFromServerUI ? (
-              <div
-                className={`w-full  mx-2 xsm:overflow-x-auto hideScroll relative`}
-              >
-                {estimatesFromServerUI.routes.map((route, j) => {
-                  const { pools, tokens } = route;
-                  return (
-                    <div
-                      key={j}
-                      className="relative frcb my-3 "
-                      style={{
-                        width: isMobile() ? "620px" : "",
-                      }}
-                    >
-                      <span className="text-xs text-gray-180">
-                        {percentsServer[j]}%
-                      </span>
-                      <div
-                        className="border border-dashed absolute left-5 opacity-30 border-gray-60 w-full px-3"
-                        style={{
-                          width: "calc(100% - 32px)",
-                        }}
-                      ></div>
-                      <div className="frcs">
-                        {tokens?.slice(1, tokens.length).map((t, i) => {
-                          return (
-                            <>
-                              <TradeRouteHub
-                                poolId={Number(pools[i].pool_id)}
-                                token={t}
-                                contract="Ref_Classic"
-                              />
-                              {t.id !== tokens[tokens.length - 1]?.id && (
-                                <div className="mx-3">
-                                  <PolygonArrowIcon />
-                                </div>
-                              )}
-                            </>
-                          );
-                        })}
-                      </div>
+                        </div>
 
-                      <PolygonArrowIcon />
+                        <PolygonArrowIcon />
+                      </div>
+                    );
+                  })}
+                </>
+              ) : null}
+              {best == "v3" ? (
+                <>
+                  <div className="relative flexBetween my-3">
+                    <span className="text-xs text-gray-180">100%</span>
+                    {/* background line */}
+                    <div
+                      className="absolute border border-dashed left-8 opacity-30 border-gray-60 w-full"
+                      style={{
+                        width: "calc(100% - 32px)",
+                      }}
+                    ></div>
+                    {/* pools have passed  */}
+                    <div className="flex items-center">
+                      <TradeRouteHub
+                        poolId={getV3PoolId(
+                          tokenIn.id,
+                          tokenOut.id,
+                          +avgFee * 100
+                        )}
+                        token={tokenOut}
+                        contract="Ref_DCL"
+                      />
                     </div>
-                  );
-                })}
-              </div>
-            ) : null}
-            {best == "v3" ? (
-              <>
-                <div className="relative flexBetween my-3">
-                  <span className="text-xs text-gray-180">100%</span>
-                  {/* background line */}
-                  <div
-                    className="absolute border border-dashed left-8 opacity-30 border-gray-60 w-full"
-                    style={{
-                      width: "calc(100% - 32px)",
-                    }}
-                  ></div>
-                  {/* pools have passed  */}
-                  <div className="flex items-center">
-                    <TradeRouteHub
-                      poolId={getV3PoolId(
-                        tokenIn.id,
-                        tokenOut.id,
-                        +avgFee * 100
-                      )}
-                      token={tokenOut}
-                      contract="Ref_DCL"
-                    />
+                    <PolygonArrowIcon />
                   </div>
-                  <PolygonArrowIcon />
-                </div>
-              </>
-            ) : null}
+                </>
+              ) : null}
+            </div>
           </div>
           <RightBracket size={routeLength} />
           <Token icon={tokenOut.icon} size="26" />

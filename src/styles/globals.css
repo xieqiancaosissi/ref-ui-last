@@ -48,6 +48,7 @@ input::-webkit-inner-spin-button {
 
 ::-webkit-scrollbar {
   width: 4px;
+  height: 4px;
   border-radius: 2px;
 }
 
@@ -59,7 +60,7 @@ input::-webkit-inner-spin-button {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #030f16;
+  background: #2d3a45;
   border-radius: 2px;
 }
 

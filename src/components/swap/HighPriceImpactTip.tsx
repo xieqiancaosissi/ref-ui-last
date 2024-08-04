@@ -7,7 +7,10 @@ export default function HighPriceImpactTip({
   handleClose: any;
 }) {
   return (
-    <div className="absolute right-0" style={{ width: "390px", top: "100px" }}>
+    <div
+      className="absolute right-0 lg:w-[390px] xsm:w-[340px]"
+      style={{ top: "100px" }}
+    >
       <AnchorText handleClose={handleClose} />
       <AnchorDash />
       <AnchorDot />

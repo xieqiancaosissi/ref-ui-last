@@ -2,6 +2,7 @@ import { TokenMetadata } from "@/services/ft-contract";
 import { getRiskTagByToken } from "@/utils/commonUtil";
 import { RiskIcon } from "./SelectTokenModal/Icons";
 import CustomTooltip from "@/components/customTooltip/customTooltip";
+import { isMobile } from "@/utils/device";
 export function TokenImgWithRiskTag({
   token,
   size,
@@ -40,6 +41,8 @@ export function TokenImgWithRiskTag({
   );
 }
 export function RiskTipIcon() {
+  const mobile = isMobile();
+  if (mobile) return <RiskIcon />;
   function riskTip() {
     return `
     <div class="text-gray-110 text-xs text-left break-all">

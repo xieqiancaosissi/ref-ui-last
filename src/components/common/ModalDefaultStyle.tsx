@@ -1,4 +1,6 @@
 import Modal from "react-modal";
+import { isMobile } from "@/utils/device";
+const mobile = isMobile();
 Modal.defaultStyles = {
   overlay: {
     position: "fixed",
@@ -17,9 +19,9 @@ Modal.defaultStyles = {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    top: "50%",
+    ...(mobile ? { bottom: "32px" } : { top: "50%" }),
     left: "50%",
-    transform: "translate(-50%, -55%)",
+    transform: mobile ? "translate(-50%, 0)" : "translate(-50%, -55%)",
     outline: "none",
   },
 };

@@ -51,7 +51,7 @@ export default function SwapRouter() {
   }
   return (
     <div className="flexBetween">
-      <span>Route</span>
+      <span>Router</span>
       <div
         onClick={showDetailModal}
         className="flex items-center gap-1.5 border border-gray-90 rounded p-0.5 pr-1 text-xs text-gray-160 hover:text-white hover:bg-dark-10 cursor-pointer"
@@ -61,7 +61,7 @@ export default function SwapRouter() {
         {best == "v1" ? (
           <>
             {routeLength > 2 ? (
-              <span>{throughPoolsLength} Steps in the Route</span>
+              <span>{throughPoolsLength} Steps in the Router</span>
             ) : (
               <div className="flex items-center gap-1">
                 <OneRouter tokens={getDisplayTokensOfOnePath()} />

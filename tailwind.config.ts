@@ -111,6 +111,7 @@ const config: Config = {
       },
       width: {
         ...getStyleMapping(1800, 0),
+        "95vw": "95vw",
       },
       minWidth: {
         ...getStyleMapping(1800, 0),

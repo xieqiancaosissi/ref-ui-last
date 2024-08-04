@@ -23,7 +23,7 @@ export default function InitData() {
   const global_whitelisted_tokens_ids =
     tokenStore.get_global_whitelisted_tokens_ids();
   useEffect(() => {
-    if (!walletLoading && global_whitelisted_tokens_ids.length > 0) {
+    if (!walletLoading && global_whitelisted_tokens_ids?.length > 0) {
       const tokenInIdStore = persistSwapStore.getTokenInId();
       const tokenOutIdStore = persistSwapStore.getTokenOutId();
       const tokenInId = getTokenId({

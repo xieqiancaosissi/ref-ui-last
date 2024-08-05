@@ -50,9 +50,9 @@ export default function MenuMobile() {
     if (target) {
       const arr = target[0].split("-");
       setOneLevelMenuId(arr[0]);
+      setOneLevelHoverId(arr[0]);
       if (arr[1]) {
         setTwoLevelMenuId(arr[1]);
-        setOneLevelHoverId(arr[0]);
       } else {
         setTwoLevelMenuId("");
       }
@@ -67,11 +67,12 @@ export default function MenuMobile() {
   }
   function jump(menu: any) {
     if (menu.path) {
+      hideMoreEvent();
       router.push(menu.path!);
     } else if (menu.externalLink) {
+      hideMoreEvent();
       window.open(menu.externalLink);
     }
-    hideMoreEvent();
   }
   return (
     <div className="flex items-center px-4 h-[45px] bg-dark-240">

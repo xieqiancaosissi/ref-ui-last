@@ -6,7 +6,6 @@ import type { AppProps } from "next/app";
 import LoadingBar from "react-top-loading-bar";
 import Modal from "react-modal";
 import dynamic from "next/dynamic";
-import Menu from "../components/menu";
 import getConfig from "../utils/config";
 import { ALL_STABLE_POOL_IDS } from "@/services/swap/swapConfig";
 import LedgerTransactionModal from "@/components/common/ledger/ledgerTransactionModal";
@@ -30,6 +29,8 @@ const RiskModal = dynamic(
     ssr: false,
   }
 );
+const Menu = dynamic(() => import("../components/menu"), { ssr: false });
+// import Menu from "../components/menu";
 
 export default function App({ Component, pageProps }: AppProps) {
   const [progress, setProgress] = useState(0);

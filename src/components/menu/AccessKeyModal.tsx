@@ -25,8 +25,9 @@ const maxLength = 10;
 const maxOrderlyLength = 10;
 function AccessKeyModal(props: any) {
   const { isOpen, onRequestClose } = props;
-  const cardWidth = isMobile() ? "95vw" : "550px";
+  const cardWidth = isMobile() ? "100vw" : "550px";
   const cardHeight = isMobile() ? "90vh" : "100vh";
+  const is_mobile = isMobile();
   const [currentUsedKeys, setCurrentUsedKeys] = useState<string[]>([]);
   const accountId = getAccountId();
   const [tab, setTab] = useState<"accessKey" | "orderlyKey">("accessKey");
@@ -82,25 +83,37 @@ function AccessKeyModal(props: any) {
           backdropFilter: "blur(10px)",
           WebkitBackdropFilter: "blur(10px)",
         },
+        content: {
+          outline: "none",
+          ...(is_mobile
+            ? {
+                transform: "translateX(-50%)",
+                top: "auto",
+                bottom: "32px",
+              }
+            : {
+                transform: "translate(-50%, -50%)",
+              }),
+        },
       }}
     >
       <div
-        className="rounded-lg"
+        className="bg-dark-10 lg:rounded-lg xs:rounded-t-2xl xs:border xs:border-modalGrayBg"
         style={{
           width: cardWidth,
           maxHeight: cardHeight,
-          border: "1px solid #2D343D",
-          backgroundColor: "#1B242C",
         }}
       >
-        <div className="frcb pt-6 pl-6 pb-5 border-b border-dark-160">
-          <div className="flex items-center">
+        <div className="frcb pt-6 pl-6 pb-5 border-b border-white border-opacity-10 xsm:pt-0 xsm:pb-0 xsm:pr-6">
+          <div className="flex items-center w-full">
             <span
               onClick={() => {
                 setTab("accessKey");
               }}
-              className={`flex items-center gap-1.5 text-base pr-4 border-r border-gray-10 border-opacity-20 cursor-pointer ${
-                tab == "accessKey" ? "text-white" : "text-dark-80"
+              className={`flex items-center gap-1.5 text-base pr-4 lg:border-r border-gray-10 border-opacity-20 cursor-pointer xsm:w-1/2 xsm:justify-center xsm:pt-5 xsm:pb-2.5 ${
+                tab == "accessKey"
+                  ? "text-white xsm:border-b-2 xsm:border-white xsm:border-r-0"
+                  : "text-dark-80"
               }`}
             >
               <span className="paceGrotesk-Bold "> Approved</span>
@@ -119,8 +132,10 @@ function AccessKeyModal(props: any) {
               onClick={() => {
                 setTab("orderlyKey");
               }}
-              className={`flex items-center gap-1.5 pl-4 cursor-pointer ${
-                tab == "orderlyKey" ? "text-white" : "text-dark-80"
+              className={`flex items-center gap-1.5 pl-4 cursor-pointer xsm:w-1/2 xsm:justify-center xsm:pt-5 xsm:pb-2.5 ${
+                tab == "orderlyKey"
+                  ? "text-white xsm:border-b-2 xsm:border-white xsm:border-r-0"
+                  : "text-dark-80"
               }`}
             >
               <OrderlyIcon isActive={tab == "orderlyKey"} />
@@ -140,7 +155,7 @@ function AccessKeyModal(props: any) {
             </div>
           </div>
           <ModalClose
-            className="cursor-pointer mr-6"
+            className="cursor-pointer mr-6 xsm:hidden"
             onClick={onRequestClose}
           />
         </div>
@@ -224,13 +239,14 @@ function AuthorizedApps({
   const isDisabledAction =
     selectedWalletId && disbaledWallet.includes(selectedWalletId);
   return (
-    <div className={`py-4 ${hidden ? "hidden" : ""}`}>
-      <div className="frcb px-6 mb-3 xsm:px-3">
+    <div className={`py-2.5 ${hidden ? "hidden" : ""}`}>
+      <div className="frcb px-6 mb-3 xsm:px-4">
         <div className="flex items-center gap-1">
-          <span className="text-sm text-white paceGrotesk-Bold">
+          <span className="text-sm text-white lg:paceGrotesk-Bold xsm:text-gray-50">
             Approved Keys
+            <span className="lg:hidden">:</span>
           </span>
-          <span className="frcc text-xs text-white px-1 py-2 rounded-md bg-gray-60 bg-opacity-20 ml-2.5 paceGrotesk-Bold">
+          <span className="frcc text-xs text-white lg:px-1 py-2 rounded-md lg:bg-gray-60 lg:bg-opacity-20 lg:ml-2.5 lg:paceGrotesk-Bold ">
             {functionCallKeys.length}
           </span>
         </div>
@@ -245,7 +261,7 @@ function AuthorizedApps({
         ) : null}
       </div>
       <div
-        className="overflow-auto hide-scrollbar px-6 border-b border-gray1s"
+        className="overflow-auto hide-scrollbar px-6 border-b border-gray1s xsm:px-4"
         style={{ maxHeight: "290px" }}
       >
         {functionCallKeys.map((item) => {

@@ -20,10 +20,11 @@ import swapStyles from "../swap/swap.module.css";
 import AccessKeyModal from "./AccessKeyModal";
 import { useAppStore } from "@/stores/app";
 import { showWalletSelectorModal } from "@/utils/wallet";
-import { useClientMobile } from "@/utils/device";
+import { isMobile, useClientMobile } from "@/utils/device";
 import Guider from "./Guider";
 import { LinkLine } from "./icons2";
 const Overview = dynamic(() => import("../portfolio"), { ssr: false });
+const is_mobile = isMobile();
 export default function WalletConnect() {
   const [accountId, setAccountId] = useState<string | undefined>();
   const [currentWallet, setCurrentWallet] = useState<Wallet>();
@@ -176,11 +177,10 @@ export default function WalletConnect() {
               <div
                 className={`fixed top-[46px] bottom-[35px] right-0 bg-dark-10 z-50 ${
                   isOpen ? "block" : "hidden"
-                }`}
-                style={{ width: "400px" }}
+                } ${is_mobile ? "w-full" : "w-[400px]"}`}
                 onClick={(e) => e.stopPropagation()} // Prevent click inside from closing
               >
-                <div className="bg-dark-140 border border-gray-200 p-3.5 w-full h-full">
+                <div className="bg-dark-140 border border-gray-200 p-3.5 w-full h-full xsm:bg-dark-10">
                   <div className="frcb mb-3.5">
                     <div className="frcc">
                       {currentWallet?.metadata?.iconUrl ? (

@@ -19,6 +19,7 @@ import { Checkbox, CheckboxSelected, ModalClose } from "../farm/icon";
 import { ButtonTextWrapper } from "../common/Button";
 const MAXELOADTIMES = 3;
 const RpcList = () => {
+  const is_mobile = isMobile();
   const rpclist = getRpcList();
   const [hover, setHover] = useState(false);
   const [hoverSet, setHoverSet] = useState(false);
@@ -228,14 +229,21 @@ const RpcList = () => {
         rpclist={rpclist}
         style={{
           overlay: {
-            backdropFilter: "blur(15px)",
-            WebkitBackdropFilter: "blur(15px)",
-            zIndex: "999999",
+            backdropFilter: "blur(10px)",
+            WebkitBackdropFilter: "blur(10px)",
           },
-          //   content: {
-          //     outline: "none",
-          //     transform: "translate(-50%, -50%)",
-          //   },
+          content: {
+            outline: "none",
+            ...(is_mobile
+              ? {
+                  transform: "translateX(-50%)",
+                  top: "auto",
+                  bottom: "32px",
+                }
+              : {
+                  transform: "translate(-50%, -50%)",
+                }),
+          },
         }}
       ></ModalAddCustomNetWork>
     </>
@@ -360,7 +368,7 @@ const ModalAddCustomNetWork = (props: any) => {
   const [notSupportTestnetError, setNotSupportTestnetError] = useState(false);
   const [nameError, setNameError] = useState(false);
   const [isInEditStatus, setIsInEditStatus] = useState(false);
-  const cardWidth = isMobile() ? "90vw" : "350px";
+  const cardWidth = isMobile() ? "100vw" : "350px";
   const cardHeight = isMobile() ? "40vh" : "336px";
   useEffect(() => {
     hideCustomNetWork();
@@ -507,7 +515,7 @@ const ModalAddCustomNetWork = (props: any) => {
           }}
         ></div>
         <div
-          className="relative z-10 p-6 text-white bg-dark-10 rounded-lg"
+          className="relative z-10 p-6 text-white bg-dark-10 lg:rounded-lg xs:rounded-t-2xl xs:border xs:border-modalGrayBg"
           style={{
             width: cardWidth,
           }}

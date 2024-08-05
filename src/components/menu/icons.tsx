@@ -245,7 +245,7 @@ export function DownArrowIcon(props: any) {
         fillRule="evenodd"
         clipRule="evenodd"
         d="M0 0H2.91667L5.70711 2.87868L8.53304 -1.54972e-06L11.4142 0L5.70711 5.70711L0 0Z"
-        fill="white"
+        fill="currentColor"
       />
     </svg>
   );

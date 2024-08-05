@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import Big from "big.js";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
@@ -7,6 +7,8 @@ import { LogoMobileIcon, MoreMobileIcon, LogoSmallMobileIcon } from "./icons2";
 import Bridge from "./bridge";
 import { useRefPrice } from "../../hooks/useRefPrice";
 import { menuData, IMenuChild, routeMapIds } from "./menuData";
+import { RefAnalyticsIcon } from "@/components/footer/icons";
+import { DownArrowIcon } from "./icons";
 // CSR,
 const WalletConnect = dynamic(() => import("./walletConnect"), {
   ssr: false,
@@ -18,7 +20,6 @@ export default function MenuMobile() {
   const [showMoreMenu, setShowMoreMenu] = useState<boolean>(false);
   const [oneLevelMenuId, setOneLevelMenuId] = useState("trade");
   const [twoLevelMenuId, setTwoLevelMenuId] = useState("swap");
-  const [twoLevelMenuShow, setTwoLevelMenuShow] = useState<boolean>(true);
   const [oneLevelHoverId, setOneLevelHoverId] = useState<string>();
   const menuList = menuData();
   const router = useRouter();
@@ -30,51 +31,18 @@ export default function MenuMobile() {
         (el: any) => el.id == "menuContent" || el.id == "menuButton"
       );
       if (!el) {
-        setShowMoreMenu(false);
+        hideMoreEvent();
       }
     };
     document.addEventListener("click", clickEvent);
     return () => {
       document.removeEventListener("click", clickEvent);
     };
-  }, []);
-  const oneLevelData = useMemo(() => {
-    let oneLevel;
-    if (oneLevelHoverId) {
-      oneLevel = menuList.find((item) => item.id === oneLevelHoverId);
-    }
-    return oneLevel;
-  }, [oneLevelHoverId, menuList]);
+  }, [oneLevelMenuId]);
   useEffect(() => {
     chooseMenuByRoute(router.route);
   }, [router.route]);
-  function chooseOneLevelMenu(id: string) {
-    const choosedMenu = menuList.find((menu) => menu.id === id);
-    if (!choosedMenu) {
-      return;
-    }
-    if (oneLevelMenuId === id) {
-      if (choosedMenu?.children) {
-        setTwoLevelMenuShow(!twoLevelMenuShow);
-      }
-      return;
-    }
-    setOneLevelMenuId(id);
-    if (choosedMenu?.children) {
-      setTwoLevelMenuShow(true);
-    } else if (choosedMenu?.path) {
-      router.push(choosedMenu.path);
-      setTwoLevelMenuId("");
-    }
-  }
-  function chooseTwoLevelMenu(item: IMenuChild) {
-    setTwoLevelMenuId(item.id);
-    if (item.path) {
-      router.push(item.path);
-    } else if (item.externalLink) {
-      window.open(item.externalLink);
-    }
-  }
+
   function chooseMenuByRoute(route: string) {
     const target = Object.entries(routeMapIds).find(([, value]) => {
       return value.includes(route);
@@ -84,21 +52,34 @@ export default function MenuMobile() {
       setOneLevelMenuId(arr[0]);
       if (arr[1]) {
         setTwoLevelMenuId(arr[1]);
+        setOneLevelHoverId(arr[0]);
       } else {
         setTwoLevelMenuId("");
       }
     }
   }
-  function show() {
+  function showMoreEvent() {
     setShowMoreMenu(true);
+  }
+  function hideMoreEvent() {
+    setShowMoreMenu(false);
+    setOneLevelHoverId(oneLevelMenuId);
+  }
+  function jump(menu: any) {
+    if (menu.path) {
+      router.push(menu.path!);
+    } else if (menu.externalLink) {
+      window.open(menu.externalLink);
+    }
+    hideMoreEvent();
   }
   return (
     <div className="flex items-center px-4 h-[45px] bg-dark-240">
       <div className="flexBetween w-full">
         <LogoMobileIcon />
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 text-white">
           <WalletConnect />
-          <MoreMobileIcon onClick={show} id="menuButton" />
+          <MoreMobileIcon onClick={showMoreEvent} id="menuButton" />
         </div>
       </div>
       <div
@@ -144,6 +125,92 @@ export default function MenuMobile() {
             <div className="flex items-center gap-2">
               <BuyNearButton />
               <Bridge />
+            </div>
+          </div>
+          {/* menu list */}
+          <div className="mt-4 border-b border-gray-240">
+            {menuList.map((menu) => {
+              const hasChildren = !!menu.children;
+              const selected = oneLevelMenuId == menu.id;
+              const showChildren = oneLevelHoverId == menu.id;
+              return (
+                <div key={menu.id} className="border-t border-gray-240">
+                  <div
+                    className={`flex items-center justify-between px-8 text-gray-10 text-base h-[50px] ${
+                      selected ? "bg-gray-20 text-white" : ""
+                    }`}
+                    onClick={() => {
+                      if (hasChildren) {
+                        if (showChildren) {
+                          setOneLevelHoverId("");
+                        } else {
+                          setOneLevelHoverId(menu.id);
+                        }
+                      } else {
+                        jump(menu);
+                      }
+                    }}
+                  >
+                    <span className="flex items-center gap-1.5">
+                      {menu.icon}
+                      {menu.label}
+                    </span>
+                    <DownArrowIcon
+                      className={`${
+                        !hasChildren
+                          ? `transform -rotate-90 ${
+                              selected ? "text-white" : ""
+                            }`
+                          : showChildren
+                          ? "transform rotate-180 text-white"
+                          : ""
+                      }`}
+                    />
+                  </div>
+                  {hasChildren && showChildren ? (
+                    <div className="">
+                      {menu?.children?.map((child: IMenuChild, index) => {
+                        const selectedChild = child.id == twoLevelMenuId;
+                        return (
+                          <div
+                            onClick={() => {
+                              jump(child);
+                            }}
+                            className={`flex items-center gap-2.5 text-gray-10 h-[48px] pl-12 ${
+                              selectedChild ? "text-primaryGreen" : ""
+                            } ${
+                              index == (menu.children?.length ?? 0) - 1
+                                ? "mb-1.5"
+                                : ""
+                            }`}
+                            key={child.id}
+                          >
+                            {child.icon}
+                            {child.label}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ) : null}
+                </div>
+              );
+            })}
+          </div>
+          {/* footer */}
+          <div className="flex items-center justify-between absolute bottom-0 h-[50px] bg-gray-20 w-full left-0 px-4 text-gray-50 text-sm">
+            <div className="flex items-center gap-2">
+              <RefAnalyticsIcon />
+              <span className="text-sm">
+                <span className="text-white">Ref.</span> analytics
+              </span>
+            </div>
+            <div
+              onClick={() =>
+                window.open("https://guide.ref.finance/developers/audits")
+              }
+              className="underline"
+            >
+              Security
             </div>
           </div>
         </div>

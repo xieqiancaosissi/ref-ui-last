@@ -2,16 +2,7 @@
 // SMART ROUTE SWAP LOGIC
 ////////////////////////////////////////////////////////////////////////////
 import Big from "big.js";
-
-import { NEAR_META_DATA } from "../../../utils/nearMetaData";
-import db from "../../../db/RefDatabase";
-import metadataDefaults from "../../../utils/tokenIconConfig";
-
-const WRAP_NEAR_CONTRACT_ID = ["pub-testnet", "testnet"].includes(
-  process.env.NEXT_PUBLIC_NEAR_ENV
-)
-  ? "wrap.testnet"
-  : "wrap.near";
+import { ftGetTokenMetadata } from "../../../services/token";
 
 Big.RM = 0;
 Big.DP = 40;
@@ -1135,77 +1126,6 @@ async function getSmartRouteSwapActions(
 
   return actions;
 }
-
-const NEAR_ICON =
-  "https://near.org/wp-content/themes/near-19/assets/img/brand-icon.png";
-const BANANA_ID = "berryclub.ek.near";
-const CHEDDAR_ID = "token.cheddar.near";
-const CUCUMBER_ID = "farm.berryclub.ek.near";
-const HAPI_ID = "d9c2d319cd7e6177336b0a9c93c21cb48d84fb54.factory.bridge.near";
-const WOO_ID = "4691937a7508860f876c9c0a2a617e7d9e945d4b.factory.bridge.near";
-const SOL_ID = "sol.token.a11bd.near";
-const FRAX_ID = "853d955acef822db058eb8505911ed77f175b99e.factory.bridge.near";
-const BLACKDRAGON_ID = "blackdragon.tkn.near";
-const SOL_NATIVE_ID = "22.contract.portalbridge.near";
-const BABY_BLACKDRAGON_ID = "babyblackdragon.tkn.near";
-const INTEL_ID = "intel.tkn.near";
-
-const ftGetTokenMetadata = async (id) => {
-  try {
-    const metadata = await db.allTokens().where({ id }).first();
-    // if (!metadata) {
-    //   metadata = await ftViewFunction(id, {
-    //     methodName: 'ft_metadata',
-    //   });
-    //   await db.allTokens().put({
-    //     id,
-    //     name: metadata.name,
-    //     symbol: metadata.symbol,
-    //     decimals: metadata.decimals,
-    //     icon: metadata.icon,
-    //   });
-    // }
-    if (metadata.id === WRAP_NEAR_CONTRACT_ID) {
-      return {
-        ...metadata,
-        icon: NEAR_META_DATA.icon,
-        symbol: NEAR_META_DATA.symbol,
-      };
-    } else if (
-      !metadata.icon ||
-      metadata.icon === NEAR_ICON ||
-      metadata.id === BANANA_ID ||
-      metadata.id === CHEDDAR_ID ||
-      metadata.id === CUCUMBER_ID ||
-      metadata.id === HAPI_ID ||
-      metadata.id === WOO_ID ||
-      metadata.id === WRAP_NEAR_CONTRACT_ID ||
-      metadata.id === SOL_ID ||
-      metadata.id === BLACKDRAGON_ID ||
-      metadata.id === FRAX_ID ||
-      metadata.id === SOL_NATIVE_ID ||
-      metadata.id === BABY_BLACKDRAGON_ID ||
-      metadata.id === INTEL_ID
-    ) {
-      metadata.icon = metadataDefaults[id];
-      if (metadata.id === SOL_ID) {
-        metadata.symbol = "SOL.Allbridge";
-      }
-    }
-    return {
-      id,
-      ...metadata,
-    };
-  } catch (err) {
-    return {
-      id,
-      name: id,
-      symbol: id?.split(".")[0].slice(0, 8),
-      decimals: 6,
-      icon: null,
-    };
-  }
-};
 
 async function calculateSmartRouteV2PriceImpact(actions) {
   // the goal is to take a weighted average of the price impact per route, treating each one at a time.

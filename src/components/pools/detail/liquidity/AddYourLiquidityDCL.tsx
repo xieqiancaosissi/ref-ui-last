@@ -2086,7 +2086,7 @@ export default function AddYourLiquidityPageV3() {
                   </div>
                   <div
                     onClick={generate_new_user_chart}
-                    className="text-xs text-gray-60 border  border-gray-90 rounded-lg p-2 bg-dark-10 cursor-pointer hover:text-white hover:bg-opacity-80 hover:border-transparent"
+                    className="text-xs text-gray-60 border  border-gray-90 rounded-lg p-2 bg-dark-10 cursor-pointer hover:text-white hover:bg-opacity-80"
                   >
                     Generate
                   </div>

@@ -18,6 +18,7 @@ import { TotalAssetsIcon } from "../menu/icons";
 import { formatWithCommas_usd } from "@/utils/uiNumber";
 import BurrowPanel from "./components/BurrowPanel";
 import { XrefMobileArrow } from "../xref/icon";
+import FlipNumbers from "react-flip-numbers";
 
 export const OverviewData = createContext<OverviewContextType | null>(null);
 const is_mobile: boolean = !!isMobile();
@@ -83,6 +84,30 @@ export default function Overview() {
     orderly_asset_value,
     burrow_done,
     wallet_assets_value_done,
+    burrow_supplied_value,
+    burrow_borrowied_value,
+    burrow_rewards_value,
+  ]);
+
+  const [portfolioAssets, netPortfolioAssets] = useMemo(() => {
+    let portfolioAssets = "0";
+    let netPortfolioAssets = false;
+    if (ref_invest_value_done && ref_profit_value_done && burrow_done) {
+      portfolioAssets = Big(ref_invest_value)
+        .plus(ref_profit_value)
+        .plus(orderly_asset_value)
+        .plus(burrow_supplied_value)
+        .plus(burrow_rewards_value)
+        .minus(burrow_borrowied_value)
+        .toFixed();
+      netPortfolioAssets = true;
+    }
+    return [portfolioAssets, netPortfolioAssets];
+  }, [
+    ref_invest_value_done,
+    ref_profit_value_done,
+    orderly_asset_value,
+    burrow_done,
     burrow_supplied_value,
     burrow_borrowied_value,
     burrow_rewards_value,
@@ -160,7 +185,14 @@ export default function Overview() {
             <p className="text-sm	ml-2 text-gray-50 mt-4">Total Assets</p>
           </div>
           <div className="text-primaryGreen text-base paceGrotesk-Bold">
-            {formatWithCommas_usd(netWorth)}
+            <FlipNumbers
+              height={20}
+              width={12}
+              color="#9EFF00"
+              play
+              perspective={1000}
+              numbers={formatWithCommas_usd(netWorth)}
+            />
           </div>
         </div>
         <div className="border-b border-gray-70 -mx-3.5 px-7 flex items-center text-gray-50 text-sm paceGrotesk-Bold">
@@ -194,25 +226,26 @@ export default function Overview() {
             <div className="frcb mt-6 px-4">
               <p className="text-gray-50 text-sm">Total</p>
               <p className="text-base xsm:text-primaryGreen">
-                {/* {formatWithCommas_usd(ref_invest_value + burrow_supplied_value)} */}
+                {formatWithCommas_usd(portfolioAssets)}
               </p>
             </div>
           </div>
-          {/* {activeTab === "Wallet" ? <WalletPanel /> : null}
-        {activeTab === "Portfolio" ? (
-          <div className="px-1.5">
-            <RefPanel></RefPanel>
-            <OrderlyPanel></OrderlyPanel>
-            <BurrowPanel></BurrowPanel>
-          </div>
-        ) : null} */}
         </div>
       </div>
       <div className="lg:hidden">
         <div className="mt-6 bg-gray-20 rounded-[3rem] frcc py-3 mb-10">
           <TotalAssetsIcon className="w-8 w-9 mr-3" />
           <div className="text-xl text-primaryGreen mb-0.5">
-            <p> {formatWithCommas_usd(netWorth)}</p>
+            <p className="paceGrotesk-Bold">
+              <FlipNumbers
+                height={20}
+                width={12}
+                color="#9EFF00"
+                play
+                perspective={1000}
+                numbers={formatWithCommas_usd(netWorth)}
+              />
+            </p>
             <p className="text-gray-60 text-sm">Total Assets</p>
           </div>
         </div>
@@ -235,7 +268,7 @@ export default function Overview() {
           <div className="frcc text-base">
             <p className="text-gray-250 mr-4">Portfolio assets</p>
             <p className="text-white">
-              {/* {formatWithCommas_usd(ref_invest_value + burrow_supplied_value)} */}
+              {formatWithCommas_usd(portfolioAssets)}
             </p>
           </div>
           <div
@@ -283,7 +316,7 @@ export default function Overview() {
             <div className="frcb mt-6 px-4">
               <p className="text-gray-50 text-sm">Total</p>
               <p className="text-base xsm:text-primaryGreen">
-                {/* {formatWithCommas_usd(ref_invest_value + burrow_supplied_value)} */}
+                {formatWithCommas_usd(portfolioAssets)}
               </p>
             </div>
           </div>

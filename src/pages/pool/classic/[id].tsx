@@ -427,9 +427,17 @@ export default function ClassicPoolDetail() {
 
       {/* farm pc hidden*/}
       {seedFarms && isMobile && (
-        <div className="flex flex-col mt-4 relative z-30 rounded lg:hidden w-88 mr-auto">
-          <GradientFarmBorderMobile className="absolute -z-10 left-2"></GradientFarmBorderMobile>
-          <div className="flex items-center px-6 pt-4 justify-between">
+        <div
+          className="flex flex-col mt-4 relative z-30 rounded lg:hidden w-full mr-auto p-4"
+          style={{
+            backgroundImage: 'url("/images/fram.png")',
+            backgroundSize: "100% 100%",
+            backgroundRepeat: "no-repeat",
+            backgroundPosition: "center",
+          }}
+        >
+          {/* <GradientFarmBorderMobile className="absolute -z-10 left-2"></GradientFarmBorderMobile> */}
+          <div className="flex items-center  justify-between">
             <div className="text-white whitespace-nowrap text-base font-normal">
               Farm APR
             </div>
@@ -448,7 +456,7 @@ export default function ClassicPoolDetail() {
             </div>
           </div>
 
-          <div className="flex items-center px-6 pt-1 justify-between">
+          <div className="flex items-center mt-1 justify-between">
             <div className="flex items-center text-lg farmTextGradient">
               <span className="mr-2">{format_apy(poolDetail.farm_apy)}</span>
               <Fire />

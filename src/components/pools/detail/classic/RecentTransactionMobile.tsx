@@ -17,6 +17,7 @@ import {
 } from "../../icon";
 import styles from "./style.module.css";
 import Big from "big.js";
+import RecentTransactionModal from "./RecentTransactionModal";
 
 export default function RecentTransactionMobile(props: any) {
   const { activeTab, poolId, updatedMapList } = props;
@@ -27,23 +28,18 @@ export default function RecentTransactionMobile(props: any) {
 
   const [loadingStates, setLoadingStates] = useState<any>({});
   const [hoveredTx, setHoveredTx] = useState(null);
-  const closeTimeoutRef = useRef<any>(null);
   const [hoverIndex, setHoverIndex] = useState(0);
 
-  const handleMouseLeave = () => {
-    closeTimeoutRef.current = setTimeout(() => {
+  const handleMouseClick = (receipt_id: any, index: number) => {
+    if (receipt_id == hoveredTx && index == hoverIndex) {
       setHoveredTx(null);
       setHoverIndex(0);
-    }, 200);
-  };
-
-  const handleMouseClick = (receipt_id: any, index: number) => {
-    if (closeTimeoutRef.current) {
-      clearTimeout(closeTimeoutRef.current);
-      closeTimeoutRef.current = null;
+      setRecentIsOpen(false);
+    } else {
+      setHoveredTx(receipt_id);
+      setHoverIndex(index);
+      setRecentIsOpen(true);
     }
-    setHoveredTx(receipt_id);
-    setHoverIndex(index);
   };
 
   async function handleTxClick(receipt_id: any, url: string) {
@@ -77,8 +73,13 @@ export default function RecentTransactionMobile(props: any) {
     );
   }, [activeTab]);
 
+  const [recentIsOpen, setRecentIsOpen] = useState(false);
+
+  const [showItem, setShowItem] = useState(false);
   // swap
   const renderSwapTransactions = swapTransaction.map((tx, index) => {
+    if (index >= 5 && !showItem) return false;
+
     const swapIn = updatedMapList[0].token_account_ids.find(
       (t: any) => t.id === tx.token_in
     );
@@ -105,9 +106,9 @@ export default function RecentTransactionMobile(props: any) {
     return (
       <div
         key={tx.receipt_id + index}
-        className={`text-sm grid grid-cols-9 hover:bg-poolRecentHover my-3`}
+        className={`text-sm flex items-center bg-refPublicBoxDarkBg my-3 min-h-14 rounded-lg p-3`}
       >
-        <div className="col-span-3 flex">
+        <div className="w-1/3 flex flex-wrap break-words">
           <span className="col-span-1 text-white mr-1" title={swapInAmount}>
             {displayInAmount}
           </span>
@@ -120,7 +121,7 @@ export default function RecentTransactionMobile(props: any) {
           </div>
         </div>
 
-        <div className="col-span-3">
+        <div className="w-1/3 flex-wrap break-words">
           <span className="text-white" title={swapOutAmount}>
             {displayOutAmount}
           </span>
@@ -130,103 +131,34 @@ export default function RecentTransactionMobile(props: any) {
           </span>
         </div>
 
-        <div className="col-span-3 relative ">
+        <div className="w-1/3  flex-wrap">
           <span
             key={tx.receipt_id}
-            className="inline-flex items-center cursor-pointer"
+            className="flex flex-wrap break-words items-center cursor-pointer"
             onClick={() => {
-              handleMouseLeave();
               handleMouseClick(tx.receipt_id, index);
             }}
           >
-            {loadingStates[tx.receipt_id] ? (
-              <div className="hover:underline cursor-pointer text-gray-60 min-w-36">
-                {tx.timestamp}
-                <span className={styles.loadingDots}></span>
-              </div>
-            ) : (
-              <>
-                <span className="hover:underline cursor-pointer text-gray-60 min-w-36">
-                  {tx.timestamp}
-                </span>
-                <BlinkIcon className="opacity-40 hover:opacity-100 ml-2"></BlinkIcon>
-              </>
-            )}
-            {hoveredTx === tx.receipt_id && index == hoverIndex && (
-              <div className="bg-dark-70 w-41 h-25 absolute top-6 -right-2 bg-poolDetaileTxBgColor  p-2 shadow-lg rounded z-50">
-                <div className="flex flex-col">
-                  <div
-                    className="mb-2 px-3 py-2 hover:bg-dark-10 text-white rounded-md flex items-center"
-                    onMouseEnter={(e) => {
-                      const arrow = e.currentTarget.querySelector(
-                        ".arrow"
-                      ) as HTMLElement;
-                      if (arrow) {
-                        arrow.style.display = "block";
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      const arrow = e.currentTarget.querySelector(
-                        ".arrow"
-                      ) as HTMLElement;
-                      if (arrow) {
-                        arrow.style.display = "none";
-                      }
-                    }}
-                    onClick={() =>
-                      handleTxClick(
-                        tx.receipt_id,
-                        `${getConfig().explorerUrl}/txns`
-                      )
-                    }
-                  >
-                    <NearblocksIcon />
-                    <p className="ml-2">nearblocks</p>
-                    <div className="ml-3 arrow" style={{ display: "none" }}>
-                      <TxLeftArrow />
-                    </div>
-                  </div>
-                  <div
-                    className="px-3 py-2 hover:bg-dark-10 text-white rounded-md flex items-center"
-                    onMouseEnter={(e) => {
-                      const arrow = e.currentTarget.querySelector(
-                        ".arrow"
-                      ) as HTMLElement;
-                      if (arrow) {
-                        arrow.style.display = "block";
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      const arrow = e.currentTarget.querySelector(
-                        ".arrow"
-                      ) as HTMLElement;
-                      if (arrow) {
-                        arrow.style.display = "none";
-                      }
-                    }}
-                    onClick={() =>
-                      handleTxClick(
-                        tx.receipt_id,
-                        `${getConfig().pikespeakUrl}/transaction-viewer`
-                      )
-                    }
-                  >
-                    <PikespeakIcon />
-                    <p className="ml-2">Pikespeak...</p>
-                    <div className="ml-3 arrow" style={{ display: "none" }}>
-                      <TxLeftArrow />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
+            <span className="hover:underline cursor-pointer text-gray-60 frcc">
+              {tx.timestamp}
+              <BlinkIcon className="opacity-40 hover:opacity-100 ml-2"></BlinkIcon>
+            </span>
           </span>
         </div>
+
+        {hoveredTx === tx.receipt_id && index == hoverIndex && (
+          <RecentTransactionModal
+            isOpen={recentIsOpen}
+            onRequestClose={setRecentIsOpen}
+            receipt_id={tx.receipt_id}
+          />
+        )}
       </div>
     );
   });
 
   const renderLiquidityTransactions = liquidityTransactions.map((tx, index) => {
+    if (index >= 5 && !showItem) return false;
     const { amounts } = tx;
     const renderTokens: any[] = [];
     const amountsObj: any[] = JSON.parse(amounts.replace(/\'/g, '"'));
@@ -245,9 +177,9 @@ export default function RecentTransactionMobile(props: any) {
     return (
       <div
         key={tx.receipt_id + index}
-        className={`text-sm grid grid-cols-9 hover:bg-poolRecentHover my-3`}
+        className={`text-sm flex items-center bg-refPublicBoxDarkBg my-3 min-h-14 rounded-lg p-3`}
       >
-        <div className="col-span-3">
+        <div className="w-1/3 flex flex-wrap break-words">
           <span className="text-white">
             {(tx.method_name.toLowerCase().indexOf("add") > -1 ||
               tx.method_name.toLowerCase().indexOf("append") > -1) &&
@@ -257,7 +189,7 @@ export default function RecentTransactionMobile(props: any) {
           </span>
         </div>
 
-        <div className={` col-span-3`}>
+        <div className={`w-1/3 flex flex-wrap break-words`}>
           {renderTokens.map((renderToken, index) => {
             return (
               <>
@@ -276,98 +208,28 @@ export default function RecentTransactionMobile(props: any) {
           })}
         </div>
 
-        <div className={`col-span-3 relative `}>
+        <div className={`"w-1/3 flex flex-wrap relative `}>
           <span
             key={tx.receipt_id}
             className="inline-flex items-center cursor-pointer"
             onClick={() => {
-              handleMouseLeave();
               handleMouseClick(tx.receipt_id, index);
             }}
           >
-            {loadingStates[tx.receipt_id] ? (
-              <div className="hover:underline cursor-pointer text-gray-60 min-w-36">
-                {tx.timestamp}
-                <span className={styles.loadingDots}></span>
-              </div>
-            ) : (
-              <>
-                <span className="hover:underline cursor-pointer text-gray-60 min-w-36">
-                  {tx.timestamp}
-                </span>
-                <BlinkIcon className="opacity-40 hover:opacity-100 ml-2"></BlinkIcon>
-              </>
-            )}
-            {hoveredTx === tx.receipt_id && index == hoverIndex && (
-              <div className="bg-dark-70 w-41 h-25 absolute top-6 -right-2 bg-poolDetaileTxBgColor  p-2 shadow-lg rounded z-50">
-                <div className="flex flex-col">
-                  <div
-                    className="mb-2 px-3 py-2 hover:bg-dark-10 text-white rounded-md flex items-center"
-                    onMouseEnter={(e) => {
-                      const arrow = e.currentTarget.querySelector(
-                        ".arrow"
-                      ) as HTMLElement;
-                      if (arrow) {
-                        arrow.style.display = "block";
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      const arrow = e.currentTarget.querySelector(
-                        ".arrow"
-                      ) as HTMLElement;
-                      if (arrow) {
-                        arrow.style.display = "none";
-                      }
-                    }}
-                    onClick={() =>
-                      handleTxClick(
-                        tx.receipt_id,
-                        `${getConfig().explorerUrl}/txns`
-                      )
-                    }
-                  >
-                    <NearblocksIcon />
-                    <p className="ml-2">nearblocks</p>
-                    <div className="ml-3 arrow" style={{ display: "none" }}>
-                      <TxLeftArrow />
-                    </div>
-                  </div>
-                  <div
-                    className="px-3 py-2 hover:bg-dark-10 text-white rounded-md flex items-center"
-                    onMouseEnter={(e) => {
-                      const arrow = e.currentTarget.querySelector(
-                        ".arrow"
-                      ) as HTMLElement;
-                      if (arrow) {
-                        arrow.style.display = "block";
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      const arrow = e.currentTarget.querySelector(
-                        ".arrow"
-                      ) as HTMLElement;
-                      if (arrow) {
-                        arrow.style.display = "none";
-                      }
-                    }}
-                    onClick={() =>
-                      handleTxClick(
-                        tx.receipt_id,
-                        `${getConfig().pikespeakUrl}/transaction-viewer`
-                      )
-                    }
-                  >
-                    <PikespeakIcon />
-                    <p className="ml-2">Pikespeak...</p>
-                    <div className="ml-3 arrow" style={{ display: "none" }}>
-                      <TxLeftArrow />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
+            <span className="hover:underline cursor-pointer text-gray-60 frcc">
+              {tx.timestamp}
+              <BlinkIcon className="opacity-40 hover:opacity-100 ml-2"></BlinkIcon>
+            </span>
           </span>
         </div>
+
+        {hoveredTx === tx.receipt_id && index == hoverIndex && (
+          <RecentTransactionModal
+            isOpen={recentIsOpen}
+            onRequestClose={setRecentIsOpen}
+            receipt_id={tx.receipt_id}
+          />
+        )}
       </div>
     );
   });
@@ -375,11 +237,12 @@ export default function RecentTransactionMobile(props: any) {
   // liquidity
 
   return (
-    <div className="lg:w-183 xsm:w-full max-h-106 rounded-md overflow-auto ">
+    <div className="lg:w-183 xsm:w-full rounded-md overflow-auto ">
       <div
         className="grid grid-cols-9 sticky top-0  p-4  select-none"
         style={{
           zIndex: 10,
+          background: "#030f16",
         }}
       >
         {title.map((item: string, index: number) => {
@@ -393,11 +256,33 @@ export default function RecentTransactionMobile(props: any) {
           );
         })}
       </div>
-      <div className="px-4 pb-4 pt-2 bg-refPublicBoxDarkBg">
+      <div>
         {activeTab == "swap"
           ? renderSwapTransactions
           : renderLiquidityTransactions}
       </div>
+
+      {activeTab == "swap"
+        ? swapTransaction.length > 5 && (
+            <div
+              className="w-full h-12 frcc text-gray-10 border border-gray-190 rounded-lg"
+              onClick={() => {
+                setShowItem((pre) => !pre);
+              }}
+            >
+              {!showItem ? "Expand" : "Collapse"}
+            </div>
+          )
+        : liquidityTransactions.length > 5 && (
+            <div
+              className="w-full h-12 frcc text-gray-10 border border-gray-190 rounded-lg"
+              onClick={() => {
+                setShowItem((pre) => !pre);
+              }}
+            >
+              {!showItem ? "Expand" : "Collapse"}
+            </div>
+          )}
     </div>
   );
 }

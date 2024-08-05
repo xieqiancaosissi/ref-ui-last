@@ -855,7 +855,7 @@ export const PikespeakIcon = () => {
   );
 };
 
-export const TxLeftArrow = () => {
+export const TxLeftArrow = (props: any) => {
   return (
     <svg
       width="8"
@@ -863,10 +863,11 @@ export const TxLeftArrow = () => {
       viewBox="0 0 8 12"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      {...props}
     >
       <path
         d="M1.75 1.6543L6.34619 6.25049L1.75 10.8467"
-        stroke="white"
+        stroke={`${props.stroke ? props.stroke : "white"} `}
         strokeWidth="1.2"
         strokeLinecap="square"
       />

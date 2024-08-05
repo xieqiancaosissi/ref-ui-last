@@ -157,7 +157,7 @@ export default function Charts({
               ref={modalRef}
               className="absolute top-7 lg:hidden"
               style={{
-                zIndex: 99,
+                zIndex: 49,
               }}
             >
               {timeTabList.map((item, index) => {
@@ -189,7 +189,7 @@ export default function Charts({
           <div
             className="frcc xsm:hidden"
             style={{
-              zIndex: 99,
+              zIndex: 49,
             }}
           >
             {timeTabList.map((item, index) => {

@@ -1,6 +1,5 @@
 //@ts-nocheck
 import React, { useState, useEffect } from "react";
-import { isMobile } from "@/utils/device";
 import { ftGetTokenMetadata } from "@/services/token";
 import {
   get_pool,
@@ -141,7 +140,20 @@ export default function DclChart({
   );
   /** constant end */
   const accountId = getAccountId();
-  const is_mobile = isMobile();
+
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 1024); //
+    };
+
+    window.addEventListener("resize", handleResize);
+    handleResize(); //
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
   useEffect(() => {
     // get all token prices
     getBoostTokenPrices().then((result) => {
@@ -751,7 +763,7 @@ export default function DclChart({
     return data || [];
   }
   function hoverBox(e: any, d: IChartData) {
-    if (is_mobile) {
+    if (isMobile) {
       d3.select(`${randomId} .overBox`).attr("style", `display:block`);
     } else {
       d3.select(`${randomId} .overBox`).attr(
@@ -802,7 +814,7 @@ export default function DclChart({
     });
   }
   function LeaveBox(e: any, d: IChartData) {
-    if (is_mobile) {
+    if (isMobile) {
       d3.select(`${randomId} .overBox`).attr("style", `display:none`);
     } else {
       d3.select(`${randomId} .overBox`).attr(
@@ -814,7 +826,7 @@ export default function DclChart({
     }
   }
   function hoverUserBox(e: any) {
-    if (is_mobile) {
+    if (isMobile) {
       d3.select(`${randomId} .wholeOverBox`).attr("style", `display:block;`);
     } else {
       d3.select(`${randomId} .wholeOverBox`).attr(
@@ -826,7 +838,7 @@ export default function DclChart({
     }
   }
   function LeaveUserBox(e: any) {
-    if (is_mobile) {
+    if (isMobile) {
       d3.select(`${randomId} .wholeOverBox`).attr("style", `display:none;`);
     } else {
       d3.select(`${randomId} .wholeOverBox`).attr(
@@ -1121,7 +1133,7 @@ export default function DclChart({
       "style",
       `transform:translate(${x}px, -${axisHeight}px)`
     );
-    if (is_mobile) {
+    if (isMobile) {
       if (x > 290) {
         const tx = x > 320 ? "-95%" : x > 300 ? "-80%" : "-70%";
         d3.select(`${randomId} .currentLineDetail`).attr(
@@ -1527,7 +1539,7 @@ export default function DclChart({
         } ${randomId.slice(1)}`}
       >
         {/* control button area*/}
-        <div className="control flex items-center border border-gray-60 rounded-lg py-px h-6 w-16 absolute right-0 -top-28">
+        <div className="control flex items-center border border-gray-60 rounded-lg py-px h-6 w-16 absolute right-0 lg:-top-28 xsm:-top-32">
           <div
             className={`flex items-center justify-center w-1 h-full flex-grow border-r border-gray-60 ${
               is_in_max_zoom
@@ -1708,7 +1720,7 @@ export default function DclChart({
           </g>
         </svg>
         {/* show hover box then hover on the bin */}
-        <div className="overBox w-75 min-h-48 flex flex-col lg:absolute rounded-xl bg-modalGrayBg  p-4 xsm:hidden xsm:mt-4 z-10 lg:invisible">
+        <div className="overBox lg:w-75 xsm:w-full lg:min-h-48 flex flex-col absolute xsm:top-60 rounded-xl bg-modalGrayBg xsm:hidden  p-4  xsm:mt-4 z-10 lg:invisible">
           <div className="flex items-center justify-between my-2">
             <span className="text-xs text-gray-60">APR(24h)</span>
             <span className="text-xs text-white paceGrotesk-Bold">

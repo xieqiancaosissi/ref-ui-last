@@ -76,7 +76,7 @@ export function InputAmount({
   return (
     <div>
       <div
-        className={`rounded p-3 mt-3 border border-transparent h-22 flex flex-col justify-between ${
+        className={`rounded p-3 mt-3 border border-gray-90 h-22 flex flex-col justify-between ${
           disabled ? "" : "bg-black bg-opacity-20  hover:border-green-10"
         }`}
       >
@@ -122,7 +122,7 @@ export function InputAmount({
                   changeAmount(maxBalance);
                 }}
                 className={`mx-1 underline ${
-                  disabled ? "" : "cursor-pointer hover:text-white"
+                  disabled ? "" : "cursor-pointer hover:text-green-10"
                 }`}
               >
                 {getBalance()}

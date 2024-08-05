@@ -324,7 +324,7 @@ export function PointsComponent() {
           className="flex justify-center relative mb-5 mt-24 pt-4"
           style={{ height: is_mobile ? "auto" : "270px" }}
         >
-          <div className="absolute left-0 -top-24 inline-flex items-center justify-between bg-dark-10 rounded-lg border border-gray-100 p-0.5">
+          <div className="absolute left-0 lg:-top-24 xsm:-top-28 inline-flex items-center justify-between lg:bg-dark-10 rounded-lg border border-gray-100 p-0.5">
             <span
               onClick={() => {
                 setChartTab("liquidity");
@@ -399,14 +399,14 @@ export function PointsComponent() {
       <div className="lg:rounded-xl p-4">
         {/* price range mode area */}
         <div className="frcb">
-          <div className="text-white flex flex-col text-sm xsm:text-base font-gothamBold">
+          <div className="text-white flex lg:flex-col xsm:items-center text-sm xsm:text-base font-bold xsm:mb-8">
             Set Price Range
-            <span className="text-xs font-gotham text-gray-60">
+            <span className="text-xs font-gotham text-gray-60 xsm:ml-1">
               {getPair()}
             </span>
           </div>
 
-          <div className="rounded p-0.5 border frcs text-xs text-gray-10 border-gray-90">
+          <div className="rounded p-0.5 border frcs text-xs text-gray-10 border-gray-90 xsm:hidden">
             <span
               className={`whitespace-nowrap min-w-20 px-3 py-1.5 rounded-md cursor-pointer ${
                 priceRangeMode === "by_range"
@@ -434,13 +434,43 @@ export function PointsComponent() {
             </span>
           </div>
         </div>
+        <div className="rounded p-0.5 flex items-center lg:hidden">
+          <div className="text-white text-sm flex items-center">
+            <div
+              className="w-4 h-4 rounded-full border border-green-10 frcc mr-1"
+              onClick={() => {
+                setPriceRangeMode("by_range");
+              }}
+            >
+              {priceRangeMode === "by_range" && (
+                <div className="w-3 h-3 rounded-full bg-green-10"></div>
+              )}
+            </div>
+            By range
+          </div>
+
+          <div className="text-white text-sm flex items-center ml-10">
+            <div
+              className="w-4 h-4 rounded-full border border-green-10 frcc mr-1"
+              onClick={() => {
+                setPriceRangeMode("by_radius");
+                changeRadius(radius);
+              }}
+            >
+              {priceRangeMode === "by_radius" && (
+                <div className="w-3 h-3 rounded-full bg-green-10"></div>
+              )}
+            </div>
+            By Radius
+          </div>
+        </div>
         {/* content */}
         <div className="lg:grid lg:grid-cols-3 xsm:flex xsm:flex-col gap-3 pt-4 mt-3">
           {/* target price input box */}
           <div
             className={` ${
               priceRangeMode === "by_range" ? "hidden" : ""
-            } flex  items-center bg-black bg-opacity-20 rounded p-2.5 col-span-2`}
+            } flex  items-center bg-black bg-opacity-20 rounded p-2.5 col-span-2 border border-gray-90`}
           >
             <span className="text-sm text-gray-60 xs:text-xs md:text-xs whitespace-nowrap">
               Target Price
@@ -463,7 +493,7 @@ export function PointsComponent() {
           <div
             className={` ${
               priceRangeMode === "by_range" ? "hidden" : ""
-            } flex items-center bg-black bg-opacity-20 rounded p-2.5 col-span-1`}
+            } flex items-center bg-black bg-opacity-20 rounded p-2.5 col-span-1 border border-gray-90`}
           >
             <span className="text-sm text-gray-60 xs:text-xs md:text-xs whitespace-nowrap">
               Radius
@@ -477,7 +507,7 @@ export function PointsComponent() {
 
           {/* min price input box */}
           <div
-            className={`flex items-center rounded p-2.5 col-span-1`}
+            className={`flex items-center rounded p-2.5 col-span-1 border border-gray-90`}
             style={{
               background:
                 priceRangeMode == "by_range"
@@ -509,7 +539,7 @@ export function PointsComponent() {
 
           {/* max price input box */}
           <div
-            className={`flex items-center rounded p-2.5 col-span-1`}
+            className={`flex items-center rounded p-2.5 col-span-1 border border-gray-90`}
             style={{
               background:
                 priceRangeMode == "by_range"
@@ -541,7 +571,7 @@ export function PointsComponent() {
 
           {/* bin number input box */}
           <div
-            className={`flex items-center rounded p-2.5 col-span-1`}
+            className={`flex items-center rounded p-2.5 col-span-1 border border-gray-90`}
             style={{
               background:
                 priceRangeMode == "by_range"

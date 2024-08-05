@@ -66,7 +66,7 @@ export function SelectFeeTiers() {
           {hoverFeeBox && (
             <div className="absolute right-0 top-5 pt-4">
               <div
-                className=" rounded-md  right-0 top-3 px-4 py-6  xs:px-2 md:px-2 h-35 border-gray-100 flex flex-col justify-between"
+                className=" rounded-md  right-0 lg:top-3 px-4 py-6  xsm:px-2  lg:h-35 border-gray-100 flex flex-col justify-between"
                 style={{
                   border: "1.2px solid rgba(145, 162, 174, 0.2)",
                   width: mobileDevice ? "300px" : "418px",

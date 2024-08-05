@@ -745,7 +745,10 @@ export const RemovePoolV3 = (props: any) => {
         {/* Title */}
         <div className="flex items-center justify-between">
           <span className="text-xl text-white">Remove Liquidity</span>
-          <div className="cursor-pointer" onClick={props.onRequestClose}>
+          <div
+            className="cursor-pointer xsm:hidden"
+            onClick={props.onRequestClose}
+          >
             <ModalClose />
           </div>
         </div>

@@ -18,6 +18,7 @@ import {
 import styles from "./style.module.css";
 import Big from "big.js";
 import RecentTransactionModal from "./RecentTransactionModal";
+import { MoreExpand, MoreCollapse } from "../../icon";
 
 export default function RecentTransactionMobile(props: any) {
   const { activeTab, poolId, updatedMapList } = props;
@@ -141,7 +142,7 @@ export default function RecentTransactionMobile(props: any) {
           >
             <span className="hover:underline cursor-pointer text-gray-60 frcc">
               {tx.timestamp}
-              <BlinkIcon className="opacity-40 hover:opacity-100 ml-2"></BlinkIcon>
+              <BlinkIcon className="opacity-40 hover:opacity-100 ml-2 shrink-0"></BlinkIcon>
             </span>
           </span>
         </div>
@@ -218,7 +219,7 @@ export default function RecentTransactionMobile(props: any) {
           >
             <span className="hover:underline cursor-pointer text-gray-60 frcc">
               {tx.timestamp}
-              <BlinkIcon className="opacity-40 hover:opacity-100 ml-2"></BlinkIcon>
+              <BlinkIcon className="opacity-40 hover:opacity-100 ml-2 shrink-0"></BlinkIcon>
             </span>
           </span>
         </div>
@@ -237,7 +238,7 @@ export default function RecentTransactionMobile(props: any) {
   // liquidity
 
   return (
-    <div className="lg:w-183 xsm:w-full rounded-md overflow-auto ">
+    <div className="xsm:w-full rounded-md overflow-auto ">
       <div
         className="grid grid-cols-9 sticky top-0  p-4  select-none"
         style={{
@@ -271,6 +272,7 @@ export default function RecentTransactionMobile(props: any) {
               }}
             >
               {!showItem ? "Expand" : "Collapse"}
+              {!showItem ? <MoreExpand /> : <MoreCollapse />}
             </div>
           )
         : liquidityTransactions.length > 5 && (
@@ -281,6 +283,7 @@ export default function RecentTransactionMobile(props: any) {
               }}
             >
               {!showItem ? "Expand" : "Collapse"}
+              {!showItem ? <MoreExpand /> : <MoreCollapse />}
             </div>
           )}
     </div>

@@ -1321,3 +1321,53 @@ export const GradientFarmBorderMobile = (props: any) => {
     </svg>
   );
 };
+
+export const MoreExpand = (props: any) => {
+  return (
+    <svg
+      width="12"
+      height="10"
+      viewBox="0 0 12 10"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M0 1.55051e-06H1.91815L5.71 3.88014L9.53737 0L11.42 1.55051e-06L5.71 5.71L0 1.55051e-06Z"
+        fill="#91A2AE"
+      />
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M0 4H1.91815L5.71 7.88014L9.53737 4L11.42 4L5.71 9.71L0 4Z"
+        fill="#91A2AE"
+      />
+    </svg>
+  );
+};
+
+export const MoreCollapse = (props: any) => {
+  return (
+    <svg
+      width="12"
+      height="10"
+      viewBox="0 0 12 10"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M0 9.71094H1.91815L5.71 5.8308L9.53737 9.71094L11.42 9.71094L5.71 4.00094L0 9.71094Z"
+        fill="#9EFF00"
+      />
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M0 5.71094H1.91815L5.71 1.8308L9.53737 5.71094L11.42 5.71094L5.71 0.000937462L0 5.71094Z"
+        fill="#9EFF00"
+      />
+    </svg>
+  );
+};

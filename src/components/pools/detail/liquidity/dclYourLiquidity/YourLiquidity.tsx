@@ -440,12 +440,12 @@ export default function YourLiquidityBox(props: {
   }
 
   return (
-    <div className="ml-7 w-80 bg-refPublicBoxDarkBg p-4 rounded-xl xsm:p-0">
+    <div className="lg:ml-7 lg:w-80 xsm:w-full bg-refPublicBoxDarkBg p-4 rounded-xl">
       <div className="flex items-start justify-between">
-        <span className="text-white lg:font-bold lg:text-base xs:text-sm sm:text-sm">
+        <span className="text-white lg:font-bold lg:text-base xs:text-sm sm:text-sm xsm:hidden">
           Your Liquidity
         </span>
-        <span className="text-white font-bold xs:text-sm sm:text-sm lg:text-base">
+        <span className="text-white font-bold text-base xsm:text-green-10 xsm:mt-6">
           {getTotalLiquditiesTvl()}
         </span>
       </div>
@@ -565,18 +565,18 @@ export default function YourLiquidityBox(props: {
           </div>
         </div>
       </div>
-      <div className="flex items-center justify-between mt-7">
+      <div className="flex items-center justify-between mt-7 xsm:w-full">
         <div
           onClick={(e) => {
             e.stopPropagation();
             goAddliquidityV2();
           }}
-          className={`poolBtnStyleBase w-35 h-10  mr-2.5 text-sm cursor-pointer hover:opacity-90 `}
+          className={`poolBtnStyleBase lg:w-35 xsm:w-1/2 h-10  lg:mr-2.5 text-sm cursor-pointer hover:opacity-90 `}
         >
           Add
         </div>
         <div
-          className={`relative flex items-center flex-grow`}
+          className={`relative flex items-center flex-grow xsm:w-1/2 xsm:ml-1`}
           onMouseEnter={() => {
             if (is_in_farming) {
               setRemoveButtonTip(true);
@@ -594,7 +594,7 @@ export default function YourLiquidityBox(props: {
               removeLiquidity();
             }}
             // disabled={is_in_farming || !is_in_farming_done}
-            className={`poolBtnStyleDefaultBase w-35 h-10 text-sm cursor-pointer hover:opacity-90 ${
+            className={`poolBtnStyleDefaultBase lg:w-35 xsm:w-full h-10 text-sm cursor-pointer hover:opacity-90 ${
               is_in_farming || !is_in_farming_done
                 ? "opacity-30 pointer-events-none"
                 : ""

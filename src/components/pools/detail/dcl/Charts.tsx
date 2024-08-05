@@ -9,22 +9,19 @@ import {
 import { SplitRectangleIcon, ExchangeIcon } from "@/components/pools/icon";
 import moment from "moment";
 import DclChart from "./d3Chart/DclChart";
-import { isMobile } from "@/utils/device";
 import { TOKEN_LIST_FOR_RATE } from "@/services/commonV3";
 
 export default function TvlAndVolumeCharts(props: any) {
   const [rateDirection, setRateDirection] = useState(true);
-  const [isActive, setActive] = useState("tvl");
+  const [isActive, setActive] = useState("liquidity");
   const [isFinished, setIsFinished] = useState(false);
   const { poolDetail, tokenPriceList } = props;
   const { monthTVLById, xTvl, yTvl } = useV3MonthTVL(poolDetail.id);
   const { monthVolumeById, xMonth, yMonth } = useV3MonthVolume(poolDetail.id);
   const refDom: any = useRef(null);
   const [currentSort, setCurrenSort] = useState([0, 1]);
-  const svgDefaultWidth = isMobile()
-    ? document.documentElement.clientWidth - 32 || "330"
-    : 736;
-  const [svgWidth, setSvgWidth] = useState(svgDefaultWidth);
+  const [isMobile, setIsMobile] = useState(false);
+
   const exchange = () => {
     const [a, b] = currentSort;
     setCurrenSort([b, a]);
@@ -44,8 +41,8 @@ export default function TvlAndVolumeCharts(props: any) {
     },
   ];
   let timer: any;
+
   useEffect(() => {
-    if (isMobile()) return;
     if (refDom.current) {
       setSvgWidth(refDom?.current?.clientWidth || svgDefaultWidth);
       window.onresize = () => {
@@ -56,6 +53,7 @@ export default function TvlAndVolumeCharts(props: any) {
       };
     }
   }, [refDom.current]);
+
   useEffect(() => {
     if (poolDetail?.token_symbols) {
       if (TOKEN_LIST_FOR_RATE.indexOf(poolDetail?.token_symbols[0]) > -1) {
@@ -77,10 +75,27 @@ export default function TvlAndVolumeCharts(props: any) {
     setRateDirection(!rateDirection);
   }
 
+  const svgDefaultWidth = isMobile
+    ? document.documentElement.clientWidth - 32 || "330"
+    : 736;
+  const [svgWidth, setSvgWidth] = useState(svgDefaultWidth);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 1024); //
+    };
+
+    window.addEventListener("resize", handleResize);
+    handleResize(); //
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
   return (
     <div>
       {/* tab bar */}
-      <div className="flex justify-between mt-12 mb-5">
+      <div className="flex justify-between lg:mt-12 lg:mb-5">
         <div className={styles.chartsFilterPoolType}>
           {poolTypeList.map((item, index) => {
             return (
@@ -92,7 +107,7 @@ export default function TvlAndVolumeCharts(props: any) {
                       ? "text-white bg-gray-100 rounded"
                       : "text-gray-60"
                   }
-                   w-18 h-8 frcc text-sm hover:text-white 
+                   lg:w-18 xsm:w-1/3 h-8 frcc text-sm hover:text-white 
                 `}
                 onClick={() => {
                   setActive(item.key);
@@ -103,7 +118,9 @@ export default function TvlAndVolumeCharts(props: any) {
             );
           })}
         </div>
-        <div className="text-sm text-white">
+
+        {/* pc current price */}
+        <div className="text-sm text-white xsm:hidden">
           <h3 className="text-gray-50 font-normal text-right">Current Price</h3>
           <p className="frcc">
             <ExchangeIcon
@@ -149,15 +166,63 @@ export default function TvlAndVolumeCharts(props: any) {
           </p>
         </div>
       </div>
+      {/* mobile current price */}
+      <div className="text-sm text-white lg:hidden w-full">
+        <h3 className="text-gray-50 font-normal">Current Price</h3>
+        <p className="flex items-center">
+          {/* dom render in html formatter above: 1 Near($5.2) = 7Ref */}
+          <span className="mr-1">1</span>
+          {/* token left name */}
+          {poolDetail?.token_symbols[currentSort[0]] == "wNEAR"
+            ? "NEAR"
+            : poolDetail?.token_symbols[currentSort[0]]}
+          {/* usd price */}
+          {tokenPriceList && poolDetail && (
+            <span className="text-gray-50 font-normal">
+              (
+              {toInternationalCurrencySystem_usd(
+                tokenPriceList[poolDetail.token_account_ids[currentSort[0]]]
+                  .price
+              )}
+              )
+            </span>
+          )}
+          <span className="mx-1">=</span>
+          {/* token right amount */}
+          {tokenPriceList && poolDetail && (
+            <span className="mr-1">
+              {((tokenPriceList[poolDetail?.token_account_ids[currentSort[0]]]
+                .price /
+                tokenPriceList[poolDetail?.token_account_ids[currentSort[1]]]
+                  .price) *
+                100) /
+                100}
+            </span>
+          )}
+          {/* token right name */}
+          {poolDetail?.token_symbols[currentSort[1]] == "wNEAR"
+            ? "NEAR"
+            : poolDetail?.token_symbols[currentSort[1]]}
+          <ExchangeIcon
+            className="ml-1"
+            onClick={() => {
+              exchange();
+              switchRate();
+            }}
+          />
+        </p>
+      </div>
 
       {/* charts */}
       {isFinished && (
         <div className={styles.chartsContent} ref={refDom}>
           {isActive == "tvl" && poolDetail.id && (
-            <TVlCharts {...{ poolId: poolDetail.id, xTvl, yTvl }} />
+            <TVlCharts {...{ poolId: poolDetail.id, xTvl, yTvl, isMobile }} />
           )}
           {isActive == "24h" && poolDetail.id && (
-            <VolumeCharts {...{ poolId: poolDetail.id, xMonth, yMonth }} />
+            <VolumeCharts
+              {...{ poolId: poolDetail.id, xMonth, yMonth, isMobile }}
+            />
           )}
           {isActive == "liquidity" && poolDetail.id && (
             <DclChart
@@ -165,7 +230,7 @@ export default function TvlAndVolumeCharts(props: any) {
               config={{
                 controlHidden: true,
                 svgWidth,
-                svgHeight: isMobile() ? "250" : "450",
+                svgHeight: isMobile ? "250" : "450",
               }}
               reverse={!rateDirection}
             />
@@ -179,7 +244,7 @@ export default function TvlAndVolumeCharts(props: any) {
 // tvl charts
 export function TVlCharts(props: any) {
   const chartRef = useRef(null);
-  const { xTvl, yTvl } = props;
+  const { xTvl, yTvl, isMobile } = props;
   const formatAxisLable = (str: string) => {
     const momentDate = moment(str, "MMM DD, YYYY");
     if (momentDate.isValid()) {
@@ -224,16 +289,26 @@ export function TVlCharts(props: any) {
         backgroundColor: "transparent",
         borderWidth: 0,
         borderColor: "transparent",
-        position: [600, 0],
+        position: isMobile ? [0, -10] : [600, 0],
         formatter(params: any) {
           let result = `<div style="display:flex;justify-content: space-between;font-size:14px;"> ${params[0].axisValue} </div>`; //
           for (let i = 0, l = params.length; i < l; i++) {
-            result += `<div style="display:flex;justify-content: space-between;"><span style="color:white;font-size:16px;font-weight:700;">$${toInternationalCurrencySystem_number(
-              params[i].value
-            )}</span></div>`;
+            if (isMobile) {
+              result += `<div style="display:flex;justify-content: space-between;margin-left:4px"><span style="color:#9efe01;font-size:16px;font-weight:700;">$${toInternationalCurrencySystem_number(
+                params[i].value
+              )}</span></div>`;
+            } else {
+              result += `<div style="display:flex;justify-content: space-between;"><span style="color:white;font-size:16px;font-weight:700;">$${toInternationalCurrencySystem_number(
+                params[i].value
+              )}</span></div>`;
+            }
           }
 
-          const formatDom = `<div style="height: 39px; width: 72px;display:flex; flex-direction:column;justify-content: space-between;align-items: center;font-weight: 400;font-family:SpaceGrotesk">${result}</div>`;
+          const formatDom = `<div style="height: 39px; width: 72px; ${
+            isMobile
+              ? "display:flex;align-items: center;"
+              : "display:flex; flex-direction:column;justify-content: space-between;align-items: center;"
+          }font-weight: 400;font-family:SpaceGrotesk">${result}</div>`;
           return formatDom;
         },
       },
@@ -281,7 +356,7 @@ export function TVlCharts(props: any) {
         },
         lineStyle: {
           color: "#9EFE01",
-          width: 2,
+          width: isMobile ? 1 : 2,
         },
         itemStyle: {
           normal: {
@@ -299,16 +374,28 @@ export function TVlCharts(props: any) {
     };
 
     chartInstance.setOption(options);
+    const handleResize = () => {
+      if (chartInstance) {
+        chartInstance.resize();
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    // 清理函数
     return () => {
-      chartInstance.dispose();
+      window.removeEventListener("resize", handleResize);
+      if (chartInstance) {
+        chartInstance.dispose(); // 销毁ECharts实例
+      }
     };
   }, []);
   return (
     <div
       ref={chartRef}
       style={{
-        width: "100%",
-        height: "540px",
+        width: isMobile ? "100vw" : "100%",
+        height: isMobile ? "360px" : "540px",
       }}
     ></div>
   );
@@ -317,7 +404,7 @@ export function TVlCharts(props: any) {
 // volume charts
 export function VolumeCharts(props: any) {
   const chartRef = useRef(null);
-  const { xMonth, yMonth } = props;
+  const { xMonth, yMonth, isMobile } = props;
 
   const formatAxisLable = (str: string) => {
     const momentDate = moment(str, "MMM DD, YYYY");
@@ -396,7 +483,7 @@ export function VolumeCharts(props: any) {
       series: {
         data: yMonth,
         type: "bar",
-        barWidth: 10,
+        barWidth: isMobile ? 5 : 10,
         itemStyle: {
           normal: {
             color: "#1D2932", // hover
@@ -413,16 +500,28 @@ export function VolumeCharts(props: any) {
     };
 
     chartInstance.setOption(options);
+    const handleResize = () => {
+      if (chartInstance) {
+        chartInstance.resize();
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    // 清理函数
     return () => {
-      chartInstance.dispose();
+      window.removeEventListener("resize", handleResize);
+      if (chartInstance) {
+        chartInstance.dispose(); // 销毁ECharts实例
+      }
     };
   }, []);
   return (
     <div
       ref={chartRef}
       style={{
-        width: "100%",
-        height: "540px",
+        width: isMobile ? "100vw" : "100%",
+        height: isMobile ? "360px" : "540px",
       }}
     ></div>
   );

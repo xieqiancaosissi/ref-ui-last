@@ -304,7 +304,7 @@ function AssetPage() {
         <div className="frcc">
           <PoolTotalValIcon />
           <div className="ml-5 h-14 flex flex-col justify-between">
-            <p className="text-gray-50 text-sm">Yours Pools Value</p>
+            <p className="text-gray-50 text-sm">Your Pool Value</p>
             <div className="frcc">
               <span className="text-white text-2xl">{tabList[0].value}</span>
               <div
@@ -325,7 +325,7 @@ function AssetPage() {
         <div className="frcc">
           <FarmTotalValIcon />
           <div className="ml-5 h-14 flex flex-col justify-between">
-            <p className="text-gray-50 text-sm">Yours Farms Value</p>
+            <p className="text-gray-50 text-sm">Your Farm Value</p>
             <div className="frcc">
               <span className="text-white text-2xl">{tabList[1].value}</span>
               <div
@@ -346,7 +346,7 @@ function AssetPage() {
         <div className="frcc">
           <StakeTotalValIcon />
           <div className="ml-5 h-14 flex flex-col justify-between">
-            <p className="text-gray-50 text-sm">Yours Stake Value</p>
+            <p className="text-gray-50 text-sm">Your Stake Value</p>
             <div className="frcc">
               <span className="text-white text-2xl">
                 {show_total_xref_value}

@@ -81,10 +81,12 @@ export function UnclaimedFeesBox(props: any) {
   return (
     <>
       {/* for pc */}
-      <div className="p-4 ml-7 bg-refPublicBoxDarkBg w-80 rounded-xl mt-3.5">
+      <div className="p-4 lg:ml-7 bg-refPublicBoxDarkBg lg:w-80 xsm:w-full rounded-xl mt-3.5 ">
         <div className="flex  font-bold text-white text-base items-start justify-between">
-          <span className="">Unclaimed Fees</span>
-          <span className="text-green-10">{getTotalLiquditiesFee()}</span>
+          <span className="xsm:hidden">Unclaimed Fees</span>
+          <span className="text-green-10 xsm:text-base">
+            {getTotalLiquditiesFee()}
+          </span>
         </div>
         <div className="flex flex-col items-start mt-4">
           <div className="flex flex-col w-full text-sm text-white">
@@ -105,7 +107,7 @@ export function UnclaimedFeesBox(props: any) {
           </div>
 
           <div
-            className={`flex items-center font-bold justify-center h-11 w-full rounded text-sm ${
+            className={`flex items-center font-bold justify-center h-11 w-full rounded text-sm xsm:mt-48 ${
               total_amount_x_y == 0
                 ? "border-gray-90 text-gray-60 cursor-not-allowed border"
                 : "hover:opacity-90 cursor-pointer text-green-10 border border-green-10 "

@@ -368,7 +368,7 @@ export default function RecentTransaction(props: any) {
   // liquidity
 
   return (
-    <div className="lg:w-183 xsm:w-full max-h-106 rounded-md overflow-auto ">
+    <div className="lg:w-183 max-h-106 rounded-md overflow-auto ">
       <div
         className="grid grid-cols-9 sticky top-0  px-4 pt-4  select-none"
         style={{

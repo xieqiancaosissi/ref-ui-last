@@ -17,7 +17,7 @@ import { secToTime } from "@/utils/time";
 import { getSharesInPool } from "@/services/pool";
 
 export default function OverallLocking(props: any) {
-  const { poolDetail, updatedMapList } = props;
+  const { poolDetail, updatedMapList, isMobile } = props;
   const detailItem = [
     {
       title: "TVL",
@@ -40,14 +40,17 @@ export default function OverallLocking(props: any) {
   return (
     <div className="min-h-10">
       {poolDetail && (
-        <div className="flex items-center justify-around">
+        <div className="flex items-center lg:justify-between xsm:flex-wrap xsm:justify-between">
           {detailItem.map((item, index) => {
             return (
               <div
                 key={item.title}
-                className={`flex-1 h-17 text-white box-border flex flex-col justify-center pl-4 rounded-md bg-refPublicBoxDarkBg ${
-                  index == 1 ? "mx-1" : ""
+                className={`lg:w-1/3 xsm:my-0.5 h-17  text-white box-border flex flex-col justify-center pl-4 rounded-md bg-refPublicBoxDarkBg ${
+                  index == 1 && "mx-2"
                 }`}
+                style={{
+                  width: !isMobile ? "" : "46vw",
+                }}
               >
                 <h3 className="text-sm text-gray-50 font-normal">
                   {item.title}

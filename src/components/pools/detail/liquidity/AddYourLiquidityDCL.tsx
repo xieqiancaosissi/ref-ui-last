@@ -1896,11 +1896,11 @@ export default function AddYourLiquidityPageV3() {
     >
       <div
         style={{ width: mobileDevice ? "" : "1080px" }}
-        className="flex flex-col  2xl:w-3/5 xs:w-full md:w-full xsm:px-0 m-auto text-white rounded-2xl mt-10"
+        className="flex flex-col  2xl:w-3/5 xs:w-full md:w-full xsm:px-0 m-auto text-white rounded-2xl lg:mt-10"
       >
         {/* head */}
         <div
-          className=" xs:w-full max-w-max text-gray-10 flex items-center mb-5 cursor-pointer hover:text-white"
+          className=" xs:w-full max-w-max text-gray-10 flex items-center lg:mb-5 cursor-pointer hover:text-white"
           onClick={() => toDetail()}
         >
           <div

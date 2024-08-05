@@ -62,7 +62,7 @@ export function NoDataComponent() {
             <span className="text-xs font-gotham text-gray-10"></span>
           </div>
 
-          <div className="rounded p-0.5 border frcs text-xs text-gray-10 border-gray-90">
+          <div className="rounded p-0.5 border frcs text-xs text-gray-10 border-gray-90 xsm:hidden">
             <span
               className={`whitespace-nowrap min-w-20 px-3 py-1.5 rounded-md cursor-pointer ${
                 priceRangeMode === "by_range"
@@ -87,6 +87,35 @@ export function NoDataComponent() {
             >
               By Radius
             </span>
+          </div>
+        </div>
+        <div className="rounded p-0.5 flex items-center lg:hidden">
+          <div className="text-white text-sm flex items-center">
+            <div
+              className="w-4 h-4 rounded-full border border-green-10 frcc mr-1"
+              onClick={() => {
+                setPriceRangeMode("by_range");
+              }}
+            >
+              {priceRangeMode === "by_range" && (
+                <div className="w-3 h-3 rounded-full bg-green-10"></div>
+              )}
+            </div>
+            By range
+          </div>
+
+          <div className="text-white text-sm flex items-center ml-10">
+            <div
+              className="w-4 h-4 rounded-full border border-green-10 frcc mr-1"
+              onClick={() => {
+                setPriceRangeMode("by_radius");
+              }}
+            >
+              {priceRangeMode === "by_radius" && (
+                <div className="w-3 h-3 rounded-full bg-green-10"></div>
+              )}
+            </div>
+            By Radius
           </div>
         </div>
         {/* content */}

@@ -11,6 +11,7 @@ import OverallLocking from "@/components/pools/detail/dcl/overallLocking";
 import PoolComposition from "@/components/pools/detail/dcl/PoolComposition";
 import { useTokenMetadata } from "@/hooks/usePools";
 import RecentTransaction from "@/components/pools/detail/dcl/RecentTransaction";
+import RecentTransactionMobile from "@/components/pools/detail/dcl/RecentTransactionMobile";
 import { addPoolToWatchList, removePoolFromWatchList } from "@/services/pool";
 import NoLiquidity from "@/components/pools/detail/liquidity/NoLiquidity";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
@@ -33,7 +34,6 @@ import {
   UserLiquidityInfo,
   get_all_seeds,
 } from "@/services/commonV3";
-import { isMobile } from "@/utils/device";
 import { useAccountStore } from "@/stores/account";
 import { list_farmer_seeds, get_seed } from "@/services/farm";
 import { Seed } from "@/services/farm";
@@ -43,6 +43,8 @@ import { UnclaimedFeesBox } from "@/components/pools/detail/liquidity/UnclaimedF
 import { RelatedFarmsBox } from "@/components/pools/detail/liquidity/RelatedFarmsBox";
 import { useAppStore } from "@/stores/app";
 import { showWalletSelectorModal } from "@/utils/wallet";
+import NoLiquidityMobile from "@/components/pools/detail/liquidity/NoLiquidityMobile";
+import YourLiqAndClaimMobile from "@/components/pools/detail/liquidity/dclYourLiquidity/YourLiqAndClaimMobile";
 
 const YourLiquidityBox = dynamic(
   () =>
@@ -257,15 +259,46 @@ export default function DCLPoolDetail() {
     get_user_list_liquidities();
   }, [isSignedIn]);
 
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 1024); // ipad pro
+    };
+
+    window.addEventListener("resize", handleResize);
+    handleResize(); //
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  const [showAdd, setShowAdd] = useState(false);
+  const hideAdd = () => {
+    setShowAdd(false);
+  };
+
+  const [showYourLiq, setShowYourLiq] = useState(false);
+  const [showYourLiqType, setShowYourLiqType] = useState("liq");
+  const hideYourLiq = () => {
+    setShowYourLiq(false);
+  };
   return (
-    <div className="w-full fccc h-full">
+    <div className="w-full fccc h-full  px-3">
       {/* return */}
-      <div className="w-270 cursor-pointer text-base text-gray-60 mb-3 mt-8 hover:text-white">
-        <span onClick={() => router.push("/pools")}>{`<  Pools`}</span>
+      <div className="lg:w-270 xsm:w-full cursor-pointer text-base text-gray-60 mb-3 lg:mt-8 hover:text-white">
+        <span
+          className="xsm:hidden"
+          onClick={() => router.push("/pools")}
+        >{`<  Pools`}</span>
+        <span className="lg:hidden" onClick={() => router.push("/pools")}>
+          {`Pools >`} <span className="text-white">Details</span>
+        </span>
       </div>
 
-      {/* title */}
-      <div className="w-270 min-h-10 flex items-center">
+      {/*pc title */}
+      <div className="lg:w-270  min-h-10 flex items-center xsm:hidden">
         {poolDetail && updatedMapList?.length > 0 && (
           <>
             <TokenDetail {...poolDetail} updatedMapList={updatedMapList} />
@@ -275,7 +308,6 @@ export default function DCLPoolDetail() {
                 ?.map((item: any) => (item == "wNEAR" ? (item = "NEAR") : item))
                 .join("-")}
             </span>
-            <DCLIcon className="mr-2" />
 
             {/* farm tag */}
             {poolDetail.is_farm && (
@@ -293,13 +325,53 @@ export default function DCLPoolDetail() {
               onClick={() => collectPool()}
             />
 
-            {/* fee */}
+            {/* pc fee */}
             <TokenFeeAndCureentPrice poolDetail={poolDetail} />
           </>
         )}
       </div>
+
+      {/* mobile title */}
+      <div className="xsm:w-full min-h-10 flex items-center lg:hidden">
+        {poolDetail && updatedMapList?.length > 0 && (
+          <div className="flex items-center justify-between w-full">
+            <div className="frcc">
+              <TokenDetail {...poolDetail} updatedMapList={updatedMapList} />
+              {/*  */}
+              <span className=" text-2xl text-white font-bold ml-1 mr-2">
+                {poolDetail?.token_symbols
+                  ?.map((item: any) =>
+                    item == "wNEAR" ? (item = "NEAR") : item
+                  )
+                  .join("-")}
+              </span>
+
+              {/* farm tag */}
+              {poolDetail.is_farm && (
+                <div
+                  className={` bg-farmTagBg text-farmApyColor frcc text-xs italic w-13 h-5 rounded-xl mr-2`}
+                >
+                  Farms
+                </div>
+              )}
+            </div>
+            {/* watchlist */}
+            <CollectStar
+              iscollect={!accountId ? "false" : isCollect.toString()}
+              className="cursor-pointer"
+              onClick={() => collectPool()}
+            />
+          </div>
+        )}
+      </div>
+
+      {/* mobile */}
+      {updatedMapList && updatedMapList[0]?.token_account_ids && isMobile && (
+        <TokenFeeAndCureentPrice poolDetail={poolDetail} />
+      )}
+
       {/* main */}
-      <div className="flex w-270 mt-2">
+      <div className="flex lg:w-270 xsm:w-full mt-2">
         {/* left */}
 
         <div className="lg:w-183 xsm:w-full">
@@ -313,19 +385,21 @@ export default function DCLPoolDetail() {
           </div>
 
           {/* tvl & Overall locking */}
-          <div className="lg:-mt-20 xsm:-mt-10">
+          <div className="lg:-mt-20">
             {poolDetail && updatedMapList?.length > 0 && (
               <OverallLocking
                 poolDetail={poolDetail}
                 updatedMapList={updatedMapList}
+                isMobile={isMobile}
               />
             )}
           </div>
 
           {/* Pool composition */}
           <div>
-            <h3 className="mt-12 mb-4 text-lg text-gray-50 font-bold">
+            <h3 className="mt-12 mb-4 text-lg lg:text-gray-50 xsm:text-white font-bold">
               Pool Composition
+              <div className="h-0.5 w-38 bg-white mt-1 lg:hidden"></div>
             </h3>
             {poolDetail && tokens.length > 0 && updatedMapList?.length > 0 ? (
               <PoolComposition
@@ -339,18 +413,23 @@ export default function DCLPoolDetail() {
                 baseColor="rgba(106, 114, 121, 0.3)"
                 highlightColor="#9eff00"
               >
-                <Skeleton width={732} height={60} count={2} />
+                <Skeleton
+                  width={isMobile ? "100%" : 732}
+                  height={60}
+                  count={2}
+                />
               </SkeletonTheme>
             )}
           </div>
 
           {/* Recent Transaction */}
-          <div className="mb-8">
+          <div className="mb-8 xsm:mb-40">
             <div className="mt-12 mb-4 flex justify-between">
-              <span className="text-lg text-gray-50 font-bold">
+              <span className="text-lg lg:text-gray-50 xsm:text-white font-bold">
                 Recent Transaction
+                <div className="h-0.5 w-42 bg-white mt-1 lg:hidden"></div>
               </span>
-              <div className="flex items-center mr-0.5">
+              <div className="flex items-center mr-0.5 xsm:hidden">
                 {TransactionTabList.map((item, index) => {
                   return (
                     <div
@@ -360,7 +439,7 @@ export default function DCLPoolDetail() {
                         item.key == transactionActive
                           ? "text-white bg-gray-40"
                           : "text-gray-60 bg-transparent"
-                      } ${index == 1 ? "mx-2" : ""}`}
+                      } ${index == 0 ? "mr-2" : ""}`}
                     >
                       {item.value}
                     </div>
@@ -368,20 +447,53 @@ export default function DCLPoolDetail() {
                 })}
               </div>
             </div>
+
+            <div className="flex items-center lg:hidden border border-gray-230 p-1 rounded  my-4">
+              {TransactionTabList.map((item, index) => {
+                return (
+                  <div
+                    key={item.key + "_" + index}
+                    onClick={() => setTransactionActive(item.key)}
+                    className={`cursor-pointer  frcc text-sm font-medium  rounded w-1/3 h-10 ${
+                      item.key == transactionActive
+                        ? "text-white bg-gray-40"
+                        : "text-gray-60 bg-transparent"
+                    } ${index == 0 ? "mr-2" : ""}`}
+                  >
+                    {item.value}
+                  </div>
+                );
+              })}
+            </div>
             {/*  */}
-            {poolDetail && tokens.length > 0 && updatedMapList?.length > 0 && (
-              <RecentTransaction
-                activeTab={transactionActive}
-                poolId={poolId}
-                updatedMapList={updatedMapList}
-                tokens={tokens.map((t: any) => t.meta)}
-              />
-            )}
+            {poolDetail &&
+              tokens.length > 0 &&
+              updatedMapList?.length > 0 &&
+              !isMobile && (
+                <RecentTransaction
+                  activeTab={transactionActive}
+                  poolId={poolId}
+                  updatedMapList={updatedMapList}
+                  tokens={tokens.map((t: any) => t.meta)}
+                />
+              )}
+
+            {poolDetail &&
+              tokens.length > 0 &&
+              updatedMapList?.length > 0 &&
+              isMobile && (
+                <RecentTransactionMobile
+                  activeTab={transactionActive}
+                  poolId={poolId}
+                  updatedMapList={updatedMapList}
+                  tokens={tokens.map((t: any) => t.meta)}
+                />
+              )}
           </div>
         </div>
 
         {/* right liquidity */}
-        <div className="w-80 ml-auto pt-12">
+        <div className="w-80 ml-auto pt-12 xsm:hidden">
           {user_liquidities.length == 0 ? (
             <NoLiquidity add={() => addLiquidity()} isLoading={showSkection} />
           ) : (
@@ -398,7 +510,7 @@ export default function DCLPoolDetail() {
                   tokenPriceList={tokenPriceList}
                   liquidities={user_liquidities}
                 />
-                {!isMobile() ? (
+                {!isMobile ? (
                   <RelatedFarmsBox
                     poolDetail={poolDetailV3}
                     tokenPriceList={tokenPriceList}
@@ -411,8 +523,56 @@ export default function DCLPoolDetail() {
         </div>
       </div>
 
-      {/* dcl add liquidity */}
-      {/* <AddYourLiquidityPageV3></AddYourLiquidityPageV3> */}
+      {(user_liquidities.length == 0 || !poolId) && isMobile && (
+        <NoLiquidityMobile add={() => setShowAdd(true)} isLoading={false} />
+      )}
+
+      {user_liquidities.length >= 1 && poolId && isMobile && (
+        <div
+          className="h-24 frcc p-4 fixed bottom-8 z-50"
+          style={{
+            background: "#16232E",
+            width: "100vw",
+          }}
+        >
+          <div
+            className="w-full frcc h-12 text-black rounded text-base"
+            style={{
+              background: "linear-gradient(to right, #9EFF00, #5F9900)",
+            }}
+            onClick={() => {
+              setShowYourLiq(true);
+              setShowYourLiqType("liq");
+            }}
+          >
+            Your Liquidity
+          </div>
+
+          <div
+            className="w-full frcc h-12 ml-1 text-green-10 border border-green-10 rounded text-base"
+            onClick={() => {
+              setShowYourLiq(true);
+              setShowYourLiqType("claim");
+            }}
+          >
+            Unclaimed Fees
+          </div>
+        </div>
+      )}
+
+      {isMobile && poolDetailV3 && (
+        <YourLiqAndClaimMobile
+          isOpen={showYourLiq}
+          onRequestClose={hideYourLiq}
+          showYourLiqType={showYourLiqType}
+          setShowYourLiqType={setShowYourLiqType}
+          poolDetailV3={poolDetailV3}
+          tokenPriceList={tokenPriceList}
+          user_liquidities={user_liquidities}
+          matched_seeds={matched_seeds}
+          sole_seed={sole_seed}
+        />
+      )}
     </div>
   );
 }

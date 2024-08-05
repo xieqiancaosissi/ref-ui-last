@@ -69,9 +69,9 @@ export default function PoolComposition(props: any) {
   }
 
   return (
-    <div className="lg:w-183 xsm:w-full min-h-42 rounded-md p-4 bg-refPublicBoxDarkBg">
+    <div className="lg:w-183 xsm:w-full min-h-42 rounded-md lg:p-4 xsm:px-4 xsm:py-2 bg-refPublicBoxDarkBg">
       {/* title */}
-      <div className="grid grid-cols-11">
+      <div className="grid grid-cols-11 xsm:hidden">
         {title.map((item, index) => {
           return (
             <span
@@ -85,8 +85,9 @@ export default function PoolComposition(props: any) {
           );
         })}
       </div>
+
       {/* pair */}
-      <div>
+      <div className="xsm:hidden">
         {tokens.map((item: any, index: number) => {
           return (
             <div
@@ -132,6 +133,70 @@ export default function PoolComposition(props: any) {
               {/* price */}
               <div className="col-span-3 flex items-center text-sm text-white font-normal">
                 {displayTvl(item)}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* pair */}
+      <div className="lg:hidden">
+        {tokens.map((item: any, index: number) => {
+          return (
+            <div
+              className="flex my-3 hover:opacity-90"
+              key={item.meta.id + index}
+            >
+              <div className="mt-1">
+                {TokenIconComponent({ ite: item.meta })}
+              </div>
+              {/* token */}
+              <div
+                className={`${
+                  index < tokens.length - 1
+                    ? "border border-b-gray-240 border-transparent"
+                    : ""
+                } ml-3 flex-1 pb-3`}
+              >
+                <div>
+                  <h4 className="text-base text-white font-medium flex items-center justify-between">
+                    {item.meta.symbol == "wNEAR" ? "NEAR" : item.meta.symbol}
+                    {(TokenLinks as any)[item.meta.symbol] ? (
+                      <HoverTooltip tooltipText={"AwesomeNear Verified Token"}>
+                        <a
+                          className=""
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            openUrl((TokenLinks as any)[item.meta.symbol]);
+                          }}
+                        >
+                          <FiArrowUpRight className="text-white" />
+                        </a>
+                        {/* <CustomTooltip id={"nearVerifiedId1" + i} /> */}
+                      </HoverTooltip>
+                    ) : null}
+                  </h4>
+                  <p
+                    className="text-xs text-gray-60 underline cursor-pointer"
+                    title={item.meta.id}
+                    onClick={() => toSwap(tokens)}
+                  >
+                    {item.meta.id}
+                  </p>
+                </div>
+
+                <div className="mt-3 w-2/3 flex justify-between items-center">
+                  {/* amounts */}
+                  <div className="flex items-center text-sm text-white font-normal">
+                    <span className="text-gray-50 mr-1"> Fee:</span>
+                    {displayAmount(item.amount)}
+                  </div>
+                  {/* price */}
+                  <div className="flex items-center text-sm text-white font-normal">
+                    <span className="text-gray-50 mr-1"> Value:</span>
+                    {displayTvl(item)}
+                  </div>
+                </div>
               </div>
             </div>
           );

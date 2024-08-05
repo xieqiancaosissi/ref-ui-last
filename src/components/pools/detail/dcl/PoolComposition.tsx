@@ -181,19 +181,21 @@ export default function PoolComposition(props: any) {
                     title={item.meta.id}
                     onClick={() => toSwap(tokens)}
                   >
-                    {item.meta.id}
+                    {item.meta.id.length > 30
+                      ? item.meta.id.substring(0, 30) + "..."
+                      : item.meta.id}
                   </p>
                 </div>
 
-                <div className="mt-3 w-2/3 flex justify-between items-center">
+                <div className="mt-3 flex items-center">
                   {/* amounts */}
                   <div className="flex items-center text-sm text-white font-normal">
-                    <span className="text-gray-50 mr-1"> Fee:</span>
+                    <span className="text-gray-50 mr-1">Amount:</span>
                     {displayAmount(item.amount)}
                   </div>
                   {/* price */}
-                  <div className="flex items-center text-sm text-white font-normal">
-                    <span className="text-gray-50 mr-1"> Value:</span>
+                  <div className="flex items-center text-sm text-white font-normal ml-10">
+                    <span className="text-gray-50 mr-1">Value:</span>
                     {displayTvl(item)}
                   </div>
                 </div>

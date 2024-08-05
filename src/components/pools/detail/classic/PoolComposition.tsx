@@ -158,7 +158,7 @@ export default function PoolComposition(props: any) {
                   <div className="mt-3 w-2/3 flex justify-between items-center">
                     {/* amounts */}
                     <div className="flex items-center text-sm text-white font-normal">
-                      <span className="text-gray-50 mr-1"> Fee:</span>
+                      <span className="text-gray-50 mr-1"> Amount:</span>
                       {+tokenAmount > 0 && +tokenAmount < 0.01
                         ? "< 0.01"
                         : toInternationalCurrencySystem(tokenAmount, 2)}

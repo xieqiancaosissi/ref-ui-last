@@ -121,7 +121,7 @@ export function InputAmount({
                   if (disabled) return;
                   changeAmount(maxBalance);
                 }}
-                className={`mx-1 underline ${
+                className={`mx-1 underline xsm:text-green-10 ${
                   disabled ? "" : "cursor-pointer hover:text-green-10"
                 }`}
               >

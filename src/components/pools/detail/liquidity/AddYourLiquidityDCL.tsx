@@ -2043,7 +2043,7 @@ export default function AddYourLiquidityPageV3() {
                     return (
                       <div
                         key={index + "_" + Math.random()}
-                        className={`flex xsm:flex-grow flex-col  rounded-xl items-center border  justify-center py-3 ${
+                        className={`flex xsm:flex-grow flex-col  lg:rounded-xl xsm:rounded items-center border  justify-center py-3 ${
                           disabled ? "opacity-40" : "cursor-pointer "
                         } ${
                           (index === 0 && liquidityShape === "Spot") ||

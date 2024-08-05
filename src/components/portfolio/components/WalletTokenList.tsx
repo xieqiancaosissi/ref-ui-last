@@ -71,7 +71,7 @@ export const WalletTokenList = ({
     }
   };
   return (
-    <div className="flex items-center w-full mb-6">
+    <div className="flex items-center w-full mb-6 text-white">
       <div className="w-3/6 flex items-center">
         <img className="w-6 h-6 rounded-3xl mr-2.5" src={token.icon} alt={""} />
         <div className="text-sm">

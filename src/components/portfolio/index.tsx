@@ -5,6 +5,7 @@ import React, {
   useContext,
   useMemo,
 } from "react";
+import Modal from "react-modal";
 import Big from "big.js";
 import { useAccountStore } from "@/stores/account";
 import { isMobile } from "@/utils/device";
@@ -16,6 +17,7 @@ import OrderlyPanel from "./components/OrderlyPanel";
 import { TotalAssetsIcon } from "../menu/icons";
 import { formatWithCommas_usd } from "@/utils/uiNumber";
 import BurrowPanel from "./components/BurrowPanel";
+import { XrefMobileArrow } from "../xref/icon";
 
 export const OverviewData = createContext<OverviewContextType | null>(null);
 const is_mobile: boolean = !!isMobile();
@@ -50,6 +52,10 @@ export default function Overview() {
     useState<boolean>(false);
   const [userTokens, setUserTokens] = useState<any[]>([]);
   const [activeTab, setActiveTab] = useState<string>("Wallet");
+
+  const [isWalletPanelOpen, setIsWalletPanelOpen] = useState<boolean>(false);
+  const [isPortfolioPanelOpen, setIsPortfolioPanelOpen] =
+    useState<boolean>(false);
 
   const [netWorth, netWorthDone] = useMemo(() => {
     let netWorth = "0";
@@ -101,6 +107,18 @@ export default function Overview() {
     const tokenPriceList = await getBoostTokenPrices();
     setTokenPriceList(tokenPriceList);
   }
+  function showWalletPanelModal() {
+    setIsWalletPanelOpen(true);
+  }
+  function hideWalletPanelModal() {
+    setIsWalletPanelOpen(false);
+  }
+  function showPortfolioPanelModal() {
+    setIsPortfolioPanelOpen(true);
+  }
+  function hidePortfolioPanelModal() {
+    setIsPortfolioPanelOpen(false);
+  }
   // console.log(wallet_assets_value,'wallet_assets_value')
   // console.log(ref_invest_value,'ref_invest_value')
   // console.log(ref_profit_value,'ref_profit_value')
@@ -135,45 +153,52 @@ export default function Overview() {
         burrow_done,
       }}
     >
-      <div className="mt-4 bg-gray-20 py-2.5 pl-2 pr-4 rounded-3xl h-11 flex items-end justify-between mb-8 text-white">
-        <div className="frcc">
-          <TotalAssetsIcon className="w-9 w-11" />
-          <p className="text-sm	ml-2 text-gray-50 mt-4">Total Assets</p>
+      <div className="xsm:hidden">
+        <div className="mt-4 bg-gray-20 py-2.5 pl-2 pr-4 rounded-3xl h-11 flex items-end justify-between mb-8 text-white">
+          <div className="frcc">
+            <TotalAssetsIcon className="w-9 w-11" />
+            <p className="text-sm	ml-2 text-gray-50 mt-4">Total Assets</p>
+          </div>
+          <div className="text-primaryGreen text-base paceGrotesk-Bold">
+            {formatWithCommas_usd(netWorth)}
+          </div>
         </div>
-        <div className="text-primaryGreen text-base paceGrotesk-Bold">
-          {formatWithCommas_usd(netWorth)}
+        <div className="border-b border-gray-70 -mx-3.5 px-7 flex items-center text-gray-50 text-sm paceGrotesk-Bold">
+          <div
+            className={`mr-10 pb-1.5 cursor-pointer  ${
+              activeTab === "Wallet" ? "text-white border-white border-b-2" : ""
+            }`}
+            onClick={() => setActiveTab("Wallet")}
+          >
+            Wallet
+          </div>
+          <div
+            className={`pb-1.5 cursor-pointer ${
+              activeTab === "Portfolio"
+                ? "text-white border-b-2 border-white"
+                : ""
+            }`}
+            onClick={() => setActiveTab("Portfolio")}
+          >
+            Portfolio
+          </div>
         </div>
-      </div>
-      <div className="border-b border-gray-70 -mx-3.5 px-7 flex items-center text-gray-50 text-sm paceGrotesk-Bold">
-        <div
-          className={`mr-10 pb-1.5 cursor-pointer  ${
-            activeTab === "Wallet" ? "text-white border-white border-b-2" : ""
-          }`}
-          onClick={() => setActiveTab("Wallet")}
-        >
-          Wallet
-        </div>
-        <div
-          className={`pb-1.5 cursor-pointer ${
-            activeTab === "Portfolio"
-              ? "text-white border-b-2 border-white"
-              : ""
-          }`}
-          onClick={() => setActiveTab("Portfolio")}
-        >
-          Portfolio
-        </div>
-      </div>
-      <div className="py-4">
-        <div className={activeTab === "Wallet" ? "" : "hidden"}>
-          <WalletPanel />
-        </div>
-        <div className={activeTab === "Portfolio" ? "" : "hidden"}>
-          <RefPanel></RefPanel>
-          <OrderlyPanel></OrderlyPanel>
-          <BurrowPanel></BurrowPanel>
-        </div>
-        {/* {activeTab === "Wallet" ? <WalletPanel /> : null}
+        <div className="py-4">
+          <div className={activeTab === "Wallet" ? "" : "hidden"}>
+            <WalletPanel />
+          </div>
+          <div className={activeTab === "Portfolio" ? "" : "hidden"}>
+            <RefPanel></RefPanel>
+            <OrderlyPanel></OrderlyPanel>
+            <BurrowPanel></BurrowPanel>
+            <div className="frcb mt-6 px-4">
+              <p className="text-gray-50 text-sm">Total</p>
+              <p className="text-base xsm:text-primaryGreen">
+                {/* {formatWithCommas_usd(ref_invest_value + burrow_supplied_value)} */}
+              </p>
+            </div>
+          </div>
+          {/* {activeTab === "Wallet" ? <WalletPanel /> : null}
         {activeTab === "Portfolio" ? (
           <div className="px-1.5">
             <RefPanel></RefPanel>
@@ -181,10 +206,147 @@ export default function Overview() {
             <BurrowPanel></BurrowPanel>
           </div>
         ) : null} */}
+        </div>
+      </div>
+      <div className="lg:hidden">
+        <div className="mt-6 bg-gray-20 rounded-[3rem] frcc py-3 mb-10">
+          <TotalAssetsIcon className="w-8 w-9 mr-3" />
+          <div className="text-xl text-primaryGreen mb-0.5">
+            <p> {formatWithCommas_usd(netWorth)}</p>
+            <p className="text-gray-60 text-sm">Total Assets</p>
+          </div>
+        </div>
+        <div className="px-3.5 frcb mb-9">
+          <div className="frcc text-base">
+            <p className="text-gray-250 mr-4">Wallet assets</p>
+            <p className="text-white">
+              {formatWithCommas_usd(wallet_assets_value)}
+            </p>
+          </div>
+          <div
+            onClick={() => {
+              showWalletPanelModal();
+            }}
+          >
+            <XrefMobileArrow />
+          </div>
+        </div>
+        <div className="px-3.5 frcb">
+          <div className="frcc text-base">
+            <p className="text-gray-250 mr-4">Portfolio assets</p>
+            <p className="text-white">
+              {/* {formatWithCommas_usd(ref_invest_value + burrow_supplied_value)} */}
+            </p>
+          </div>
+          <div
+            onClick={() => {
+              showPortfolioPanelModal();
+            }}
+          >
+            <XrefMobileArrow />
+          </div>
+        </div>
+        {/* WalletPanelOpen */}
+        <div className={`${isWalletPanelOpen ? "block" : "hidden"}`}>
+          <div
+            className={`fixed top-0 left-0 w-full h-full bg-black bg-opacity-50  ${
+              isWalletPanelOpen ? "block" : "hidden"
+            }`}
+            style={{
+              backdropFilter: "blur(12px)",
+              WebkitBackdropFilter: "blur(12px)",
+            }}
+            onClick={hideWalletPanelModal}
+          ></div>
+          <div className="fixed bottom-8 left-0 w-full bg-dark-10 py-6 px-4 z-50 rounded-t-2xl border border-modalGrayBg">
+            <div className="mb-6 text-lg text-white">Wallet Assets</div>
+            <WalletPanel />
+          </div>
+        </div>
+        {/* PortfolioPanel */}
+        <div className={`${isPortfolioPanelOpen ? "block" : "hidden"}`}>
+          <div
+            className={`fixed top-0 left-0 w-full h-full bg-black bg-opacity-50  ${
+              isPortfolioPanelOpen ? "block" : "hidden"
+            }`}
+            style={{
+              backdropFilter: "blur(12px)",
+              WebkitBackdropFilter: "blur(12px)",
+            }}
+            onClick={hidePortfolioPanelModal}
+          ></div>
+          <div className="fixed bottom-8 left-0 w-full bg-dark-10 py-6 px-4 z-50 rounded-t-2xl border border-modalGrayBg">
+            <div className="mb-6 text-lg text-white">Portfolio Assets</div>
+            <RefPanel></RefPanel>
+            <OrderlyPanel></OrderlyPanel>
+            <BurrowPanel></BurrowPanel>
+            <div className="frcb mt-6 px-4">
+              <p className="text-gray-50 text-sm">Total</p>
+              <p className="text-base xsm:text-primaryGreen">
+                {/* {formatWithCommas_usd(ref_invest_value + burrow_supplied_value)} */}
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
     </OverviewData.Provider>
   );
 }
+
+// function WalletPanelModal({
+//   isOpen,
+//   onRequestClose,
+// }: {
+//   isOpen: boolean;
+//   onRequestClose: () => void;
+// }) {
+//   const cardWidth = isMobile() ? "100vw" : "430px";
+//   const cardHeight = isMobile() ? "90vh" : "80vh";
+//   const is_mobile = isMobile();
+
+//   return (
+//     <Modal
+//       isOpen={isOpen}
+//       onRequestClose={(e) => {
+//         e.stopPropagation();
+//         onRequestClose();
+//       }}
+//       style={{
+//         overlay: {
+//           backdropFilter: "blur(10px)",
+//           WebkitBackdropFilter: "blur(10px)",
+//         },
+//         content: {
+//           outline: "none",
+//           ...(is_mobile
+//             ? {
+//                 transform: "translateX(-50%)",
+//                 top: "auto",
+//                 bottom: "32px",
+//               }
+//             : {
+//                 transform: "translate(-50%, -50%)",
+//               }),
+//         },
+//       }}
+//     >
+//       <div
+//         className="text-white"
+//         style={{
+//           width: cardWidth,
+//           maxHeight: cardHeight,
+//         }}
+//       >
+//         <div className="bg-dark-10 p-6 rounded-t-2xl border border-modalGrayBg">
+//           <div className="flex justify-between mb-6">
+//             <div className="text-lg">Wallet Assets</div>
+//           </div>
+//           <WalletPanel />
+//         </div>
+//       </div>
+//     </Modal>
+//   );
+// }
 
 export interface OverviewContextType {
   tokenPriceList: any;

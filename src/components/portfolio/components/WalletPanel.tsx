@@ -203,7 +203,7 @@ export default function WalletPanel() {
               onClick={() => {
                 setActiveTab(item.tag);
               }}
-              className={`frcc border border-gray-100 rounded-md h-7 p-1.5 mr-2.5 text-xs cursor-pointer hover:bg-portfolioLightGreyColor ${
+              className={`frcc border border-gray-100 rounded-md h-7 p-1.5 mr-2.5 text-xs cursor-pointer hover:bg-portfolioLightGreyColor xsm:h-9 ${
                 index != tabList.length - 1 ? "mr-0.5" : ""
               } ${
                 activeTab == item.tag
@@ -229,13 +229,21 @@ export default function WalletPanel() {
           )
         ) : null}
         <div
-          className={`flex flex-col ml-2.5 ${
+          className={`flex flex-col ml-2.5 xsm:hidden ${
             activeTab == "aurora" ? "" : "hidden"
           }`}
         >
           <p className="text-xs text-gray-60"> Mapping Account</p>
           <p className="text-xs text-white">{displayAuroraAddress}</p>
         </div>
+      </div>
+      <div
+        className={`flex mb-4 lg:hidden ${
+          activeTab == "aurora" ? "" : "hidden"
+        }`}
+      >
+        <p className="text-xs text-gray-60 mr-1"> Mapping Account:</p>
+        <p className="text-xs text-white">{displayAuroraAddress}</p>
       </div>
       <div className="bg-gray-20 bg-opacity-40 p-4 rounded">
         <div className="flex items-center text-gray-50 text-xs w-full mb-5">
@@ -314,7 +322,7 @@ export default function WalletPanel() {
       </div>
       <div className="frcb mt-6 px-4">
         <p className="text-gray-50 text-sm">Total</p>
-        <p className="text-base">{showTotalValue()}</p>
+        <p className="text-base xsm:text-primaryGreen">{showTotalValue()}</p>
       </div>
     </>
   );

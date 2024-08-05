@@ -165,19 +165,19 @@ export default function WalletConnect() {
               </div>
               {/* Click menu */}
               <div
-                className={`fixed top-[46px] left-0 w-full h-[calc(100%-82px)] bg-black bg-opacity-50 ${
+                className={`fixed top-[46px] left-0 w-full h-[calc(100%-78px)] bg-black bg-opacity-50  ${
                   isOpen ? "block" : "hidden"
                 }`}
                 style={{
-                  backdropFilter: "blur(10px)",
-                  WebkitBackdropFilter: "blur(10px)",
+                  backdropFilter: "blur(12px)",
+                  WebkitBackdropFilter: "blur(12px)",
                 }}
                 onClick={handleBackdropClick}
               ></div>
               <div
                 className={`fixed top-[46px] bottom-[35px] right-0 bg-dark-10 z-50 ${
                   isOpen ? "block" : "hidden"
-                } ${is_mobile ? "w-full" : "w-[400px]"}`}
+                } ${is_mobile ? "w-full h-[45vh]" : "w-[400px] h-auto"}`}
                 onClick={(e) => e.stopPropagation()} // Prevent click inside from closing
               >
                 <div className="bg-dark-140 border border-gray-200 p-3.5 w-full h-full xsm:bg-dark-10">

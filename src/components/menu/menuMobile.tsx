@@ -201,7 +201,12 @@ export default function MenuMobile() {
           <div className="flex items-center justify-between absolute bottom-0 h-[50px] bg-gray-20 w-full left-0 px-4 text-gray-50 text-sm">
             <div className="flex items-center gap-2">
               <RefAnalyticsIcon />
-              <span className="text-sm">
+              <span
+                className="text-sm"
+                onClick={() => {
+                  window.open("https://www.ref.finance/");
+                }}
+              >
                 <span className="text-white">Ref.</span> analytics
               </span>
             </div>

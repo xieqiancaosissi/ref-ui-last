@@ -90,7 +90,16 @@ export default function MenuPc() {
         className="grid grid-cols-3 items-center text-white px-5 border-b border-white border-opacity-10 bg-primaryDark"
         style={{ height: "46px" }}
       >
-        <Image src="/images/logo.svg" width={127} height={17} alt="" />
+        <Image
+          src="/images/logo.svg"
+          width={127}
+          height={17}
+          alt=""
+          className="cursor-pointer"
+          onClick={() => {
+            window.open("https://www.ref.finance/");
+          }}
+        />
         {/* one level menu */}
         <div className="justify-self-center flex items-center gap-12">
           {menuList.map((menu) => {

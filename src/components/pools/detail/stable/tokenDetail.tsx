@@ -18,7 +18,7 @@ export default function TokenDetail({
       {updatedMapList.map((item: any, index: any) => {
         return (
           <div
-            className={styles.tokenImgContainer}
+            className={`${styles.tokenImgContainer} shrink-0`}
             key={"poolTokendetail_" + index}
           >
             {item?.token_account_ids?.map((ite: any, ind: number) => (

@@ -73,8 +73,14 @@ export function myShares({
 export default function StableAdd(props: any) {
   const accountStore = useAccountStore();
   const appStore = useAppStore();
-  const { isOpen, onRequestClose, poolDetail, pureIdList, updatedMapList } =
-    props;
+  const {
+    isOpen,
+    onRequestClose,
+    poolDetail,
+    pureIdList,
+    updatedMapList,
+    isMobile,
+  } = props;
   const [balancesList, setBalances] = useState<any>([]);
   const [inputValList, setInputValList] = useState<any>([]);
 
@@ -322,12 +328,16 @@ export default function StableAdd(props: any) {
         },
         content: {
           outline: "none",
-          transform: "translate(-50%, -50%)",
+          top: isMobile ? "auto" : "50%",
+          left: isMobile ? "auto" : "50%",
+          transform: isMobile ? "none" : "translate(-50%, -50%)",
+          bottom: isMobile ? "32px" : "auto",
+          width: isMobile ? "100%" : "auto",
         },
       }}
     >
       <div>
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between mb-4 xsm:hidden">
           <RemoveLiqTitleIcon />
           <LpModalCloseIcon
             className="cursor-pointer hover:opacity-90"
@@ -339,6 +349,9 @@ export default function StableAdd(props: any) {
         </div>
 
         <div className="w-108 min-h-123 rounded-lg bg-dark-10 px-4 py-5">
+          <div className="lg:hidden text-white font-medium text-lg mb-6">
+            Remove Liquidity
+          </div>
           {/* tab */}
           <div className="w-full bg-dark-10 h-11 frcc rounded border border-gray-40 p-1 mb-5">
             {removeTab.map((item: any, index: number) => {
@@ -412,7 +425,7 @@ export default function StableAdd(props: any) {
                     extraStyles={"w-50"}
                   />
                 </div>
-                <div className="frcc">
+                <div className="frcc xsm:hidden">
                   <div
                     className={`frcc w-38 text-sm py-1  ${poolStyle.commonStyle}`}
                   >
@@ -449,6 +462,47 @@ export default function StableAdd(props: any) {
                   </div>
                 </div>
               </div>
+              <div
+                className={`flex items-center justify-between flex-1 text-sm py-1 mt-2 lg:hidden`}
+              >
+                {feeList.map((item, index) => {
+                  return (
+                    <div
+                      key={item.key + index}
+                      className={`
+                  ${isActive == item.key ? "text-white " : "text-gray-60"}
+                   h-5 frcc cursor-pointer
+                `}
+                      onClick={() => {
+                        setActive(item.key);
+                        setFeeValue(item.key);
+                      }}
+                    >
+                      <div
+                        className={`w-4 h-4 rounded-full border  frcc mr-1 ${
+                          isActive == item.key
+                            ? "border-green-10"
+                            : "border-gray-60"
+                        }`}
+                      >
+                        {isActive == item.key && (
+                          <div className="w-3 h-3 rounded-full bg-green-10"></div>
+                        )}
+                      </div>
+                      {item.value}%
+                    </div>
+                  );
+                })}
+                <div className={poolStyle.filterSeacrhInputContainer}>
+                  <input
+                    type="number"
+                    className={poolStyle.filterSearchInput}
+                    value={feeValue}
+                    onChange={inputChange}
+                  />
+                  <span className="text-gray-50 text-sm">%</span>
+                </div>
+              </div>
 
               <div className="flex items-center justify-between mt-6">
                 <div className="text-sm text-gray-50 frcc">
@@ -463,16 +517,24 @@ export default function StableAdd(props: any) {
                       <>
                         <div
                           key={ite.tokenId}
-                          className="flex h-13 mt-2 p-2 w-45 shrink-0 items-center rounded"
-                          style={{ background: "rgba(33, 43, 53, 0.4)" }}
+                          className="flex lg:h-13 xsm:h-12 mt-2 p-2 lg:w-45 xsm:w-5/12 shrink-0 items-center rounded bg-gray-230"
                         >
                           <Icon icon={ite.icon} className="h-7 w-7 mr-2" />
-                          <span className="text-gray-50 text-base">
+                          <span className="text-gray-50 text-base xsm:hidden">
                             {ite.symbol}
                           </span>
-                          <span className="text-base text-white ml-2">
+                          <span className="text-base text-white ml-2 xsm:hidden">
                             {calcTokenReceived(receiveAmounts[ind], ite)}
                           </span>
+
+                          <div className="lg:hidden flex flex-col justify-center">
+                            <span className="text-sm text-white">
+                              {calcTokenReceived(receiveAmounts[ind], ite)}
+                            </span>
+                            <span className="text-gray-50 text-sm">
+                              {ite.symbol}
+                            </span>
+                          </div>
                         </div>
                         <span className="text-gray-50 text-lg">
                           {ind < updatedMapList[0]?.token_account_ids.length - 1
@@ -529,7 +591,7 @@ export default function StableAdd(props: any) {
                     extraStyles={"w-50"}
                   />
                 </div>
-                <div className="frcc">
+                <div className="frcc xsm:hidden">
                   <div
                     className={`frcc w-38 text-sm py-1  ${poolStyle.commonStyle}`}
                   >
@@ -564,6 +626,47 @@ export default function StableAdd(props: any) {
                     />
                     <span className="text-gray-50 text-sm">%</span>
                   </div>
+                </div>
+              </div>
+              <div
+                className={`flex items-center justify-between flex-1 text-sm py-1 mt-2 lg:hidden`}
+              >
+                {feeList.map((item, index) => {
+                  return (
+                    <div
+                      key={item.key + index}
+                      className={`
+                  ${isActive == item.key ? "text-white " : "text-gray-60"}
+                   h-5 frcc cursor-pointer
+                `}
+                      onClick={() => {
+                        setActive(item.key);
+                        setFeeValue(item.key);
+                      }}
+                    >
+                      <div
+                        className={`w-4 h-4 rounded-full border  frcc mr-1 ${
+                          isActive == item.key
+                            ? "border-green-10"
+                            : "border-gray-60"
+                        }`}
+                      >
+                        {isActive == item.key && (
+                          <div className="w-3 h-3 rounded-full bg-green-10"></div>
+                        )}
+                      </div>
+                      {item.value}%
+                    </div>
+                  );
+                })}
+                <div className={poolStyle.filterSeacrhInputContainer}>
+                  <input
+                    type="number"
+                    className={poolStyle.filterSearchInput}
+                    value={feeValue}
+                    onChange={inputChange}
+                  />
+                  <span className="text-gray-50 text-sm">%</span>
                 </div>
               </div>
 

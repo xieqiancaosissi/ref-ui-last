@@ -18,7 +18,7 @@ export const TokenIconComponent = ({
 
   if (hasCustomIcon && !isNearToken) {
     return (
-      <div className={`relative`}>
+      <div className={`relative shrink-0`}>
         <img src={tokenIcons[ite.tokenId]} alt="" style={iconStyle} />
         {pureIdList.includes(ite.tokenId) && (
           <TknIcon
@@ -39,7 +39,7 @@ export const TokenIconComponent = ({
   }
 
   return (
-    <div className={`relative z-${ind + 2}`}>
+    <div className={`relative shrink-0 z-${ind + 2}`}>
       <img src={ite.icon} alt="" style={iconStyle} />
       {pureIdList.includes(ite.tokenId) && (
         <TknIcon

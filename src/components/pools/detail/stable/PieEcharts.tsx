@@ -11,7 +11,7 @@ import BigNumber from "bignumber.js";
 import { colorMap } from "@/utils/config";
 export default function StablePoolRowCharts(props: any) {
   const chartRef = useRef(null);
-  const { updatedMapList, poolDetail, tokenPriceList } = props;
+  const { updatedMapList, poolDetail, tokenPriceList, isMobile } = props;
   const [sumToken, setSumToken] = useState(0);
   useEffect(() => {
     const chartInstanceNew = charts.init(chartRef.current);
@@ -31,8 +31,10 @@ export default function StablePoolRowCharts(props: any) {
             value: tokenAmount,
             privateIcon: ite.icon,
             itemStyle: {
-              color: "rgba(255,255,255,.3)",
-            },
+              color: isMobile
+                ? colorMap[ite.symbol] || "black"
+                : "rgba(255,255,255,.3)",
+            }, //mobile do not use rgba(255,255,255,.3)
             emphasis: {
               itemStyle: {
                 color: colorMap[ite.symbol] || "black",
@@ -127,15 +129,20 @@ export default function StablePoolRowCharts(props: any) {
   }
 
   return (
-    <div className="flex w-full pl-20 items-start">
+    <div
+      className="flex xsm:flex-col w-full lg:pl-20 xsm:mb-12 xsm:p-2 items-start xsm:rounded-md"
+      style={{
+        background: isMobile && "rgba(33, 43, 53, 0.3)",
+      }}
+    >
       <div
         ref={chartRef}
         style={{
-          width: "302px",
+          width: isMobile ? "100%" : "302px",
           height: "302px",
         }}
       ></div>
-      <div className="flex items-start mt-16">
+      <div className="flex items-start lg:mt-16 xsm:w-full xsm:hidden">
         <div>
           {updatedMapList.map((item: any, index: number) => {
             return item?.token_account_ids?.map((ite: any, ind: number) => {
@@ -154,7 +161,7 @@ export default function StablePoolRowCharts(props: any) {
                   </h4>
                   {/* amounts */}
                   {sumToken ? (
-                    <div className=" text-white  ml-6">
+                    <div className=" text-white  lg:ml-6">
                       {+tokenAmount > 0 && +tokenAmount < 0.01
                         ? "< 0.01"
                         : toInternationalCurrencySystem(tokenAmount, 2) +
@@ -163,7 +170,7 @@ export default function StablePoolRowCharts(props: any) {
                           )})`}
                     </div>
                   ) : (
-                    <div className=" text-white  ml-6">0</div>
+                    <div className=" text-white  lg:ml-6">0</div>
                   )}
                 </div>
               );
@@ -171,25 +178,91 @@ export default function StablePoolRowCharts(props: any) {
           })}
           <div className="flex items-center m-3 hover:opacity-90 text-sm font-normal">
             <h4 className=" text-gray-60  text-left w-13">TVL</h4>
-            <div className="text-white  ml-6">
+            <div className="text-white  lg:ml-6">
               {toInternationalCurrencySystem_usd(poolDetail?.tvl)}
             </div>
           </div>
         </div>
         <div className="text-white ml-20 text-sm">
           <div className="flex m-3">
-            <h4 className=" text-gray-60  text-left w-40 flex items-center">
+            <h4 className=" text-gray-60  text-left lg:w-40 flex items-center">
               Liquidity utilisation
               <HoverTip
                 msg={"24H Volume / Liquidity ratio"}
                 extraStyles={"w-43"}
               />
             </h4>
-            <div className="text-white  ml-6">{utilisationDisplay || "-"}</div>
+            <div className="text-white  lg:ml-6">
+              {utilisationDisplay || "-"}
+            </div>
           </div>
           <div className="flex m-3">
-            <h4 className=" text-gray-60  text-left w-40">Daily volume</h4>
-            <div className="text-white  ml-6">
+            <h4 className=" text-gray-60  text-left lg:w-40">Daily volume</h4>
+            <div className="text-white  lg:ml-6">
+              {toInternationalCurrencySystem_usd(poolDetail?.volume_24h)}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* mobile */}
+      <div className="flex flex-col items-start lg:mt-16 xsm:w-full lg:hidden">
+        <div className="w-full">
+          {updatedMapList.map((item: any, index: number) => {
+            return item?.token_account_ids?.map((ite: any, ind: number) => {
+              const tokenAmount = toReadableNumber(
+                ite.decimals,
+                item.supplies[ite.tokenId]
+              );
+              return (
+                <div
+                  className="flex items-center m-3 hover:opacity-90 text-sm font-normal justify-between"
+                  key={ite.tokenId + ind}
+                >
+                  {/* token */}
+                  <h4 className=" text-gray-60  text-left w-13">
+                    {item.token_symbols[ind]}
+                  </h4>
+                  {/* amounts */}
+                  {sumToken ? (
+                    <div className=" text-white  lg:ml-6">
+                      {+tokenAmount > 0 && +tokenAmount < 0.01
+                        ? "< 0.01"
+                        : toInternationalCurrencySystem(tokenAmount, 2) +
+                          `  (${formatPercentage(
+                            (+tokenAmount / sumToken) * 100
+                          )})`}
+                    </div>
+                  ) : (
+                    <div className=" text-white  lg:ml-6">0</div>
+                  )}
+                </div>
+              );
+            });
+          })}
+          <div className="flex items-center mx-3 hover:opacity-90 text-sm font-normal justify-between">
+            <h4 className=" text-gray-60  text-left w-13">TVL</h4>
+            <div className="text-white  lg:ml-6">
+              {toInternationalCurrencySystem_usd(poolDetail?.tvl)}
+            </div>
+          </div>
+        </div>
+        <div className="text-white text-sm w-full">
+          <div className="flex m-3 items-center justify-between">
+            <h4 className=" text-gray-60  text-left lg:w-40 flex items-center">
+              Liquidity utilisation
+              <HoverTip
+                msg={"24H Volume / Liquidity ratio"}
+                extraStyles={"w-43"}
+              />
+            </h4>
+            <div className="text-white  lg:ml-6">
+              {utilisationDisplay || "-"}
+            </div>
+          </div>
+          <div className="flex m-3 items-center justify-between">
+            <h4 className=" text-gray-60  text-left lg:w-40">Daily volume</h4>
+            <div className="text-white  lg:ml-6">
               {toInternationalCurrencySystem_usd(poolDetail?.volume_24h)}
             </div>
           </div>

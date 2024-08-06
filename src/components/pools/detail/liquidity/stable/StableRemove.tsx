@@ -348,7 +348,7 @@ export default function StableAdd(props: any) {
           />
         </div>
 
-        <div className="w-108 min-h-123 rounded-lg bg-dark-10 px-4 py-5">
+        <div className="lg:w-108 xsm:w-full min-h-123 rounded-lg bg-dark-10 px-4 py-5">
           <div className="lg:hidden text-white font-medium text-lg mb-6">
             Remove Liquidity
           </div>
@@ -563,7 +563,7 @@ export default function StableAdd(props: any) {
                         >
                           <input
                             type="number"
-                            className="h-16 p-3 w-74 text-white"
+                            className="h-16 p-3 lg:w-74 text-white"
                             style={{ fontSize: "26px" }}
                             value={inputValList[ind]}
                             onChange={(e) => changeVal(e, ind)}

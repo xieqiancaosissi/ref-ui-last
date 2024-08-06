@@ -116,7 +116,7 @@ export default function StablePoolDetail() {
             <>
               <TokenDetail {...poolDetail} updatedMapList={updatedMapList} />
               {/*  */}
-              <span className=" text-2xl text-white font-bold ml-1 mr-2 text-ellipsis overflow-hidden whitespace-nowrap">
+              <span className=" text-2xl text-white font-bold ml-1 mr-2 flex-wrap">
                 {poolDetail?.token_symbols
                   ?.map((item: any) =>
                     item == "wNEAR" ? (item = "NEAR") : item
@@ -127,7 +127,7 @@ export default function StablePoolDetail() {
               {/* farm tag */}
               {poolDetail.is_farm && (
                 <div
-                  className={` bg-farmTagBg text-farmApyColor frcc text-xs italic w-13 h-5 rounded-xl mr-2`}
+                  className={` bg-farmTagBg text-farmApyColor frcc text-xs italic w-13 h-5 rounded-xl mr-2 xsm:px-1`}
                 >
                   Farms
                 </div>

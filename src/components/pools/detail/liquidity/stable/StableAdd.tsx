@@ -254,17 +254,17 @@ export default function StableAdd(props: any) {
             }}
           />
         </div>
-        <div className="w-108 min-h-123 rounded-lg bg-dark-10 px-4 py-5">
+        <div className="lg:w-108 xsm:w-full min-h-123 rounded-lg bg-dark-10 px-4 py-5">
           <div className="lg:hidden text-white font-medium text-lg mb-6">
             Add Liquidity
           </div>
-          <div className="max-h-60 overflow-y-auto">
+          <div className="max-h-60 overflow-y-auto xsm:w-full">
             {updatedMapList[0]?.token_account_ids?.map(
               (ite: any, ind: number) => {
                 return (
-                  <div key={ite.tokenId}>
-                    <div className="mb-6">
-                      <div className="flex items-center justify-between text-gray-50 mb-2 text-sm">
+                  <div key={ite.tokenId} className="xsm:w-full">
+                    <div className="mb-6 xsm:w-full">
+                      <div className="flex items-center justify-between text-gray-50 mb-2 text-sm xsm:w-full">
                         <span>
                           Balance:{" "}
                           <span
@@ -297,7 +297,7 @@ export default function StableAdd(props: any) {
                       >
                         <input
                           type="number"
-                          className="h-16 p-3 w-74 text-white"
+                          className="h-16 p-3 lg:w-74 text-white"
                           style={{ fontSize: "26px" }}
                           value={inputValList[ind]}
                           onChange={(e) => changeVal(e, ind)}

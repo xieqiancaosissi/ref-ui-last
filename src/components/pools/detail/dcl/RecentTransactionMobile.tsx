@@ -474,7 +474,9 @@ export default function RecentTransactionMobile(props: any) {
           }}
         >
           {!showItem ? "Expand" : "Collapse"}
-          {!showItem ? <MoreExpand /> : <MoreCollapse />}
+          <span className="ml-1">
+            {!showItem ? <MoreExpand /> : <MoreCollapse />}
+          </span>
         </div>
       )}
       {activeTab == "liquidity" && liquidityTransactions.length > 5 && (
@@ -485,7 +487,9 @@ export default function RecentTransactionMobile(props: any) {
           }}
         >
           {!showItem ? "Expand" : "Collapse"}
-          {!showItem ? <MoreExpand /> : <MoreCollapse />}
+          <span className="ml-1">
+            {!showItem ? <MoreExpand /> : <MoreCollapse />}
+          </span>
         </div>
       )}
 
@@ -497,7 +501,9 @@ export default function RecentTransactionMobile(props: any) {
           }}
         >
           {!showItem ? "Expand" : "Collapse"}
-          {!showItem ? <MoreExpand /> : <MoreCollapse />}
+          <span className="ml-1">
+            {!showItem ? <MoreExpand /> : <MoreCollapse />}
+          </span>
         </div>
       )}
     </div>

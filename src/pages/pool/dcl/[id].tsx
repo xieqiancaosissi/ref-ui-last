@@ -524,7 +524,7 @@ export default function DCLPoolDetail() {
       </div>
 
       {(user_liquidities.length == 0 || !poolId) && isMobile && (
-        <NoLiquidityMobile add={() => setShowAdd(true)} isLoading={false} />
+        <NoLiquidityMobile add={() => setShowYourLiq(true)} isLoading={false} />
       )}
 
       {user_liquidities.length >= 1 && poolId && isMobile && (

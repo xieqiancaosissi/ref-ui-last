@@ -77,7 +77,11 @@ export default function MenuMobile() {
   return (
     <div className="flex items-center px-4 h-[45px] bg-dark-240">
       <div className="flexBetween w-full">
-        <LogoMobileIcon />
+        <LogoMobileIcon
+          onClick={() => {
+            window.open("https://www.ref.finance/");
+          }}
+        />
         <div className="flex items-center gap-4 text-white">
           <WalletConnect />
           <MoreMobileIcon onClick={showMoreEvent} id="menuButton" />
@@ -204,7 +208,7 @@ export default function MenuMobile() {
               <span
                 className="text-sm"
                 onClick={() => {
-                  window.open("https://www.ref.finance/");
+                  window.open("https://stats.ref.finance/");
                 }}
               >
                 <span className="text-white">Ref.</span> analytics

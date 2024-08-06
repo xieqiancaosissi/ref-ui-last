@@ -31,6 +31,7 @@ import { PortfolioRefIcon } from "./icon";
 import getConfig from "@/utils/config";
 import { BeatLoader } from "react-spinners";
 import RefPanelModal from "./RefPanelModal";
+import { useRouter } from "next/router";
 const { XREF_TOKEN_ID } = getConfig();
 function RefPanel() {
   const {
@@ -41,6 +42,7 @@ function RefPanel() {
     is_mobile,
     accountId,
   } = useContext(OverviewData) as OverviewContextType;
+  const router = useRouter();
   const [isRefModalOpen, setIsRefModalOpen] = useState<boolean>(false);
   // get xref
   const [xref_value, xref_value_done] = useXref() as [string, boolean];
@@ -101,7 +103,12 @@ function RefPanel() {
     }
   }, [invest_value_done, total_profit_done]);
   function showRefModal() {
-    setIsRefModalOpen(true);
+    if (is_mobile) {
+      router.push("./portfolio").then(() => window.location.reload());
+    } else {
+      setIsRefModalOpen(true);
+    }
+    // setIsRefModalOpen(true);
   }
   function hideRefModal() {
     setIsRefModalOpen(false);

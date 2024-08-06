@@ -17,29 +17,23 @@ export default function OrderTab({
   orderType: IOrderType;
   setOrderType: (orderType: IOrderType) => void;
 }) {
+  const isHistoryTab = orderType === "history";
+  const isActiveTab = orderType === "active";
   if (isMobile()) {
     return (
       <div className="frcb w-full">
-        <div className="text-white font-gothamBold">
+        <div className="text-white font-gothamBold text-lg underline underline-offset-[12px]">
           <FormattedMessage
             id="your_orders"
             defaultMessage={"Your orders"}
           ></FormattedMessage>
         </div>
 
-        <div
-          className="flex text-13px p-1 rounded-xl text-white "
-          style={{
-            border: "1.5px solid rgba(145, 162, 174, 0.2)",
-          }}
-        >
+        <div className="flex text-[13px] p-1 rounded text-white border border-gray-70">
           <button
-            className={`px-3 rounded-lg py-1 ${
-              orderType === "active" ? "text-white" : "text-gray-10"
+            className={`pl-3 pr-1 rounded py-1 relative ${
+              orderType === "active" ? "text-white bg-gray-100" : "text-gray-10"
             } `}
-            style={{
-              background: orderType === "active" ? "#324451" : "",
-            }}
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
@@ -47,21 +41,26 @@ export default function OrderTab({
               setOrderType("active");
             }}
           >
-            <span className="frcs">
+            <div className="flex items-center">
               <FormattedMessage id="active" defaultMessage={"Active"} />
-              {activeOrderList && activeOrderList.length > 0
-                ? ` (${activeOrderList.length})`
-                : null}
-            </span>
+              <span
+                className={`flex items-center justify-center h-[18px] px-2 font-extrabold rounded-full text-xs text-black relative -top-1 ${
+                  isActiveTab ? "bg-primaryGreen" : "bg-gray-10"
+                }`}
+              >
+                {activeOrderList && activeOrderList.length > 0
+                  ? `${activeOrderList.length}`
+                  : null}
+              </span>
+            </div>
           </button>
 
           <button
-            className={`px-3 py-1 rounded-lg ${
-              orderType === "history" ? "text-white" : "text-gray-10"
+            className={`pl-3 pr-1 py-1 rounded ${
+              orderType === "history"
+                ? "text-white bg-gray-100"
+                : "text-gray-10"
             } `}
-            style={{
-              background: orderType === "history" ? "#324451" : "",
-            }}
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
@@ -69,12 +68,18 @@ export default function OrderTab({
               sessionStorage.setItem(ORDER_TYPE_KEY, "history");
             }}
           >
-            <span className="frcs">
+            <div className="frcs">
               <FormattedMessage id="history" defaultMessage={"History"} />
-              {historyOrderList && historyOrderList.length > 0
-                ? ` (${historyOrderList.length})`
-                : null}
-            </span>
+              <span
+                className={`flex items-center justify-center h-[18px] px-2 bg-gray-10 font-extrabold rounded-full text-xs text-black relative -top-1 ${
+                  isHistoryTab ? "bg-primaryGreen" : "bg-gray-10"
+                }`}
+              >
+                {historyOrderList && historyOrderList.length > 0
+                  ? `${historyOrderList.length}`
+                  : null}
+              </span>
+            </div>
           </button>
         </div>
       </div>

@@ -27,7 +27,8 @@ import { Dimensions } from "@/interfaces/limit";
 
 const REF_FI_SWAP_RATE_DIMENSIONS = "REF_FI_SWAP_RATE_DIMENSIONS";
 
-export default function RateChartContainer() {
+export default function RateChartContainer(props: any) {
+  const { set_show_view_all } = props;
   const limitStore = useLimitStore();
   const tokenIn = limitStore.getTokenIn();
   const tokenOut = limitStore.getTokenOut();
@@ -289,11 +290,11 @@ function RateChart() {
   return (
     <div className="w-full xsm:mt-5 text-white">
       {/* chart base data start */}
-      <div className="flex items-center justify-between pl-4 pr-3">
-        <div className="frcs xs:flex xs:items-center xs:mb-2 xs:justify-between xs:flex-wrap mt-3">
+      <div className="flex xsm:flex-col-reverse items-center justify-between pl-4 pr-3 mt-3 xsm:pl-0 xsm:pr-0 xsm:-mt-2">
+        <div className="frcs xsm:justify-start xsm:w-full xsm:mt-4 xs:flex xs:items-center xs:mb-2 xs:justify-between xs:flex-wrap">
           {diff && (
             <>
-              <div className="xsm:hidden text-gray-60 frcs text-sm">
+              <div className=" text-gray-60 frcs text-sm">
                 <span>
                   Low
                   {`(${displayDimension})`}
@@ -307,7 +308,7 @@ function RateChart() {
                 </span>
               </div>
 
-              <div className="xsm:hidden text-gray-60 frcs text-sm ml-7">
+              <div className="text-gray-60 frcs text-sm ml-7">
                 <span>
                   High
                   {`(${displayDimension})`}
@@ -323,12 +324,12 @@ function RateChart() {
             </>
           )}
         </div>
-        <div className="frcs">
+        <div className="frcs  xsm:flex xsm:items-center xsm:justify-between xsm:w-full xsm:p-0.5 xsm:rounded xsm:border xsm:border-gray-70">
           {dimensionList.map((d) => {
             return (
               <div
                 key={d}
-                className={`text-xs mx-1 xsm:mx-0.5 p-1 cursor-pointer ${
+                className={`flex items-center justify-center text-xs mx-1 xsm:mx-0 p-1 cursor-pointer xsm:flex-grow ${
                   d === displayDimension
                     ? "text-white rounded bg-gray-100"
                     : "text-gray-60"
@@ -346,9 +347,9 @@ function RateChart() {
           })}
         </div>
       </div>
-
+      {/* for pc */}
       {diff && (
-        <div className="mt-2 xsm:hidden text-gray-60 pl-4">
+        <div className="mt-2 xsm:hidden text-gray-60 pl-4 ">
           <div
             className="flex items-center text-xs"
             style={{ fontSize: "10px" }}

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import Modal from "react-modal";
 import CustomTooltip from "@/components/customTooltip/customTooltip";
 import { TipIcon, SelectedIcon } from "./icons";
 import { ArrowDownIcon } from "../../components/swap/icons";
@@ -6,6 +7,7 @@ import { V3_POOL_FEE_LIST } from "@/services/swapV3";
 import { toInternationalCurrencySystem_usd } from "@/utils/uiNumber";
 import { toPrecision, calculateFeePercent } from "@/utils/numbers";
 import { usePersistLimitStore, IPersistLimitStore } from "@/stores/limitOrder";
+import { isMobile } from "@/utils/device";
 
 export default function FeeTiers(props: any) {
   const [showFeeTiers, setShowFeeTiers] = useState(false);
@@ -51,7 +53,7 @@ export default function FeeTiers(props: any) {
     `;
   }
   return (
-    <div className="bg-dark-60 rounded border border-transparent hover:border-green-10 p-3.5">
+    <div className="xsm:flex xsm:items-center xsm:justify-between bg-dark-60 rounded border border-transparent hover:border-green-10 p-3.5 xsm:py-2">
       <div className="flex items-center gap-1">
         <span className="text-sm text-gray-50 whitespace-nowrap">
           Fee Tiers
@@ -68,7 +70,7 @@ export default function FeeTiers(props: any) {
         </div>
       </div>
       <div
-        className="relative flexBetween mt-2.5 cursor-pointer"
+        className="relative flexBetween mt-2.5 cursor-pointer xsm:gap-1.5 xsm:mt-0"
         id="feeTierId"
         onClick={switchStatus}
       >
@@ -88,6 +90,90 @@ export default function FeeTiers(props: any) {
 }
 
 function FeeTiersSelector({
+  showFeeTiers,
+  onHide,
+}: {
+  showFeeTiers: boolean;
+  onHide: any;
+}) {
+  const mobile = isMobile();
+  if (mobile)
+    return (
+      <FeeTiersSelectorMobile showFeeTiers={showFeeTiers} onHide={onHide} />
+    );
+  return <FeeTiersSelectorPc showFeeTiers={showFeeTiers} onHide={onHide} />;
+}
+function FeeTiersSelectorMobile({
+  showFeeTiers,
+  onHide,
+}: {
+  showFeeTiers: boolean;
+  onHide: any;
+}) {
+  const persistLimitStore: IPersistLimitStore = usePersistLimitStore();
+  const allDclPools = persistLimitStore.getAllDclPools();
+  const dclPool = persistLimitStore.getDclPool();
+  const [token_x, token_y] = dclPool?.pool_id?.split("|") || [];
+  return (
+    <Modal
+      isOpen={showFeeTiers}
+      onRequestClose={(e) => {
+        e.stopPropagation();
+        onHide();
+      }}
+    >
+      <div className="w-screen rounded-t-lg bg-dark-10 p-4">
+        {V3_POOL_FEE_LIST.map((fee) => {
+          const feeDisplay = toPrecision(
+            calculateFeePercent(fee / 100).toString(),
+            2
+          );
+          const pool_id = `${token_x}|${token_y}|${fee}`;
+          const pool = allDclPools?.find((p) => p.pool_id == pool_id);
+          const isSelected = pool?.pool_id == dclPool?.pool_id;
+          const isNoPool = !pool?.pool_id;
+          return (
+            <div
+              key={fee}
+              className={`flexBetween text-xs text-white text-opacity-40 gap-20 whitespace-nowrap hover:bg-dark-10 px-2.5 py-1.5 rounded-md select-none h-[50px] ${
+                isNoPool ? "cursor-not-allowed" : "cursor-pointer"
+              } ${isSelected ? "bg-gray-20" : ""}`}
+              onClick={(e) => {
+                e.stopPropagation();
+                if (!isNoPool && fee !== dclPool.fee) {
+                  persistLimitStore.setDclPool(pool);
+                } else if (fee == dclPool.fee) {
+                  onHide();
+                }
+              }}
+            >
+              <div className="flex flex-col">
+                <span className="text-white font-bold text-sm">
+                  {feeDisplay}%
+                </span>
+                <span>
+                  TVL{" "}
+                  {!pool ? "-" : toInternationalCurrencySystem_usd(pool?.tvl)}
+                </span>
+              </div>
+              <div>
+                {isNoPool ? <span>No pool</span> : null}
+                {isSelected ? (
+                  <div className="flex items-center justify-center w-[18px] h-[18px] rounded-full border border-green-10">
+                    <span className="w-3 h-3 rounded-full bg-green-10"></span>
+                  </div>
+                ) : !isNoPool ? (
+                  <div className="flex items-center justify-center w-[18px] h-[18px] rounded-full border border-gray-70" />
+                ) : null}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </Modal>
+  );
+}
+function FeeTiersSelectorPc({
   showFeeTiers,
   onHide,
 }: {

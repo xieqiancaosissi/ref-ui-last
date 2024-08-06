@@ -130,7 +130,7 @@ export default function RateContainer() {
     `;
   }
   return (
-    <div className="bg-dark-60 rounded border border-transparent hover:border-green-10 p-3.5 text-sm text-gray-50">
+    <div className="bg-dark-60 rounded border border-transparent hover:border-green-10 p-3.5 xsm:py-1.5 text-sm text-gray-50">
       <div className="flexBetween">
         <div className="flex items-center gap-0.5">
           <span>Buy in rate</span>

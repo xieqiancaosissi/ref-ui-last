@@ -6,7 +6,7 @@ import {
   V3_POOL_SPLITER,
   pointToPrice,
 } from "@/services/swapV3";
-import { MyOrderInstantSwapArrowRight } from "../../icons2";
+import { MyOrderInstantSwapArrowRight, MyOrderMobileArrow } from "../../icons2";
 import {
   calculateFeePercent,
   toPrecision,
@@ -23,6 +23,9 @@ import Unclaim from "./unclaim";
 import Created from "./created";
 import Actions from "./actions";
 import SwapBanner from "./swapBanner";
+import UnclaimTip from "./unclaimTip";
+import { MobileInfoBanner } from "../widget";
+import { ONLY_ZEROS } from "@/utils/numbers";
 export default function ActiveLine({
   tokensMap,
   order,
@@ -218,6 +221,7 @@ export default function ActiveLine({
   );
   return (
     <Fragment>
+      {/* For PC */}
       <tr>
         <td colSpan={9}>
           <div className="pb-2.5"></div>
@@ -301,6 +305,82 @@ export default function ActiveLine({
           </tr>
         </>
       )}
+      {/* For Mobile */}
+      <div
+        className="w-full mb-4 md:hidden lg:hidden"
+        style={{
+          zIndex: 20 - index,
+        }}
+      >
+        {/* title */}
+        <div className="rounded-t-xl bg-orderMobileTop px-3 pt-3">
+          <div className="flex items-center relative justify-between">
+            {<SellTokenAmount sellToken={sellToken} orderIn={orderIn} />}
+            <MyOrderMobileArrow />
+            <BuyTokenAmount buyToken={buyToken} buyAmount={buyAmount} />
+          </div>
+
+          {<Created order={order} />}
+        </div>
+        {/*  content */}
+        <div className="rounded-b-xl p-3 bg-cardBg">
+          <MobileInfoBanner text={"Fee Tiers"} value={feeTier} />
+
+          <MobileInfoBanner
+            text={`1 ${
+              sort ? buyToken.symbol : tokensMap[order.sell_token].symbol
+            } Price`}
+            value={orderRate}
+          />
+
+          <MobileInfoBanner
+            text={"Claimed"}
+            value={
+              <Unclaim
+                buyToken={buyToken}
+                order={order}
+                claimedAmount={claimedAmount}
+                unClaimedAmount={unClaimedAmount}
+                displayPercents={displayPercents}
+                pendingAmount={pendingAmount}
+              />
+            }
+          />
+
+          <UnclaimTip
+            claimedAmount={claimedAmount}
+            unClaimedAmount={unClaimedAmount}
+            pendingAmount={pendingAmount}
+            order={order}
+            displayPercents={displayPercents}
+          />
+
+          <div className="flex items-center w-full xs:mt-2">
+            <Actions order={order} />
+            <ClaimButton unClaimedAmount={unClaimedAmount} order={order} />
+          </div>
+        </div>
+
+        {/* swap banner */}
+        {!ONLY_ZEROS.test(swapIn || "0") ? (
+          <SwapBanner
+            order={order}
+            totalIn={totalIn}
+            totalOut={totalOut}
+            swapIn={swapIn}
+            swapOut={swapOut}
+            sellToken={sellToken}
+            buyToken={buyToken}
+            sort={sort}
+            claimedAmountIn={claimedAmountIn}
+            claimedAmount={claimedAmount}
+            unClaimedAmountIn={unClaimedAmountIn}
+            unClaimedAmount={unClaimedAmount}
+            orderTx={orderTx}
+            isHoverOn={hoverOn === index}
+          />
+        ) : null}
+      </div>
     </Fragment>
   );
 }

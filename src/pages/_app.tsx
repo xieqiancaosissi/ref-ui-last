@@ -30,7 +30,6 @@ const RiskModal = dynamic(
   }
 );
 const Menu = dynamic(() => import("../components/menu"), { ssr: false });
-// import Menu from "../components/menu";
 
 export default function App({ Component, pageProps }: AppProps) {
   const [progress, setProgress] = useState(0);

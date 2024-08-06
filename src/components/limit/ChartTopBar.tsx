@@ -20,31 +20,45 @@ export default function ChartTopBar() {
     limitStore.setTokenIn(tokenOut);
     limitStore.setTokenOut(tokenIn);
   }
+  function showOrderTable() {
+    limitStore.setShowViewAll(true);
+  }
   if (!(tokenIn && tokenOut)) return null;
   return (
-    <div className="flex items-center gap-3 pl-1.5">
-      <div className="frcs">
-        <Images
-          borderStyle="1px solid #273342"
-          size="6"
-          tokens={[tokenIn, tokenOut]}
-          uId={"swap-chart-header"}
-          allowSameToken
-          className="xsm:text-sm"
-        />
+    <div className="flex xsm:flex-col xsm:items-start items-center gap-3 xsm:gap-0 pl-1.5">
+      <div className="flex items-center justify-between xsm:w-full">
+        <div className="frcs">
+          <Images
+            borderStyle="1px solid #273342"
+            size="6"
+            tokens={[tokenIn, tokenOut]}
+            uId={"swap-chart-header"}
+            allowSameToken
+            className="xsm:text-sm"
+          />
 
-        <Symbols
-          className="ml-2 mr-2.5"
-          tokens={[tokenIn, tokenOut]}
-          size="4"
-          separator="/"
-        />
+          <Symbols
+            className="ml-2 mr-2.5"
+            tokens={[tokenIn, tokenOut]}
+            size="4"
+            separator="/"
+          />
+          <div className="lg:hidden">
+            <RateExchange onChange={switchTokens} />
+          </div>
+        </div>
+        <span
+          onClick={showOrderTable}
+          className="lg:hidden flex items-center justify-center rounded border border-gray-10 border-opacity-20 px-2 h-6 text-xs text-white"
+        >
+          View All
+        </span>
       </div>
-      <div className="frcs xsm:ml-0">
+      <div className="frcs xsm:ml-0 xsm:mt-5">
         {diff && (
           <span className="text-sm text-gray-60">1 {tokenIn.symbol} =</span>
         )}
-        <span className="text-white text-2xl font-extrabold px-2.5">
+        <span className="text-white xsm:text-primaryGreen text-2xl font-extrabold px-2.5">
           {diff ? priceFormatter(diff.curPrice) : "-"}
         </span>
 
@@ -69,7 +83,7 @@ export default function ChartTopBar() {
             {diff.direction !== "unChange" && (
               <IoArrowUpOutline
                 className={`${
-                  diff.direction === "down" ? "transform  rotate-180  " : ""
+                  diff.direction === "down" ? "transform  rotate-180" : ""
                 } `}
               />
             )}
@@ -78,7 +92,19 @@ export default function ChartTopBar() {
           </span>
         )}
       </div>
-      <RateExchange onChange={switchTokens} />
+      {/* for pc */}
+      <div className="xsm:hidden">
+        <RateExchange onChange={switchTokens} />
+      </div>
+      {/* for mobile */}
+      {diff && (
+        <div className="lg:hidden flex items-center justify-center rounded bg-dark-250 bg-opacity-80 w-full h-[30px] xsm:mt-2">
+          <div className="flex items-center text-xs text-gray-260 text-opacity-75">
+            Last Updated
+            <span className="ml-1">{diff.lastUpdate}</span>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

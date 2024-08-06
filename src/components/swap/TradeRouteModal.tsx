@@ -33,7 +33,6 @@ export default function TradeRouteModal({
   const tokenOut = swapStore.getTokenOut();
   const best = swapStore.getBest();
   const { estimatesFromServer } = estimatesServer || {};
-  isMobile();
   useEffect(() => {
     if (estimatesServer) {
       getTokensDataOfEstimatesServer();

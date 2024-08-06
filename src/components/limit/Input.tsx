@@ -113,7 +113,7 @@ export default function Input(props: IInputProps) {
   return (
     <div
       className={twMerge(
-        `flex items-center flex-col bg-dark-60 rounded w-full p-3.5 border border-transparent hover:border-green-10`,
+        `flex items-center flex-col bg-dark-60 rounded w-full p-3.5 border border-transparent hover:border-green-10 xsm:bg-black xsm:bg-opacity-20`,
         className
       )}
     >

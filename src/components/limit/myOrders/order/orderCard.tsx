@@ -272,6 +272,7 @@ export default function OrderCard({
           setHistoryOrderHoverOn(-1);
         }}
       >
+        {/* active head pc */}
         {isActive && (
           <>
             <tr
@@ -374,7 +375,7 @@ export default function OrderCard({
             </tr>
           </>
         )}
-
+        {/* history head pc */}
         {isHistory && (
           <>
             <tr
@@ -482,7 +483,7 @@ export default function OrderCard({
             </tr>
           </>
         )}
-
+        {/* active content */}
         {isActive &&
           activeOrderList?.sort(activeOrderSorting).map((order, index) => {
             return (
@@ -501,6 +502,7 @@ export default function OrderCard({
               />
             );
           })}
+        {/* history content*/}
         {isHistory &&
           historyOrderList?.sort(historyOrderSorting).map((order, index) => {
             return (
@@ -519,6 +521,7 @@ export default function OrderCard({
               />
             );
           })}
+        {/* historySwapInfo head */}
         {isHistory && historySwapInfo && historySwapInfo.length > 0 && (
           <tr
             onMouseEnter={() => {
@@ -562,6 +565,7 @@ export default function OrderCard({
             </td>
           </tr>
         )}
+        {/* historySwapInfo content  */}
         {isHistory &&
           showHistoryInfo &&
           historySwapInfoList &&

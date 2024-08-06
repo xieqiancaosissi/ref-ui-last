@@ -59,6 +59,7 @@ const config: Config = {
           230: "#243039",
           240: "#25313E",
           250: "#7D93A3",
+          260: "#7E8A94",
         },
         dark: {
           10: "#1B242C",
@@ -85,6 +86,8 @@ const config: Config = {
           220: "#0D1115",
           230: "#16232E",
           240: "#04121F",
+          250: "#131F28",
+          260: "#4C6171",
         },
         green: {
           10: "#9EFE01",
@@ -152,7 +155,8 @@ const config: Config = {
         memeCardGradient: "linear-gradient(180deg, #213441 0%, #15242F 100%)",
         farmMobileBgColor:
           "linear-gradient(95.38deg, #9EFF00 5.46%, #FAFF00 100%)",
-        
+        limitOrderMobileBg:
+          "linear-gradient(180deg, #1B242C 0%, rgba(27, 36, 44, 0) 100%)",
       }),
     },
     screens: {

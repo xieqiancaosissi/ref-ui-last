@@ -16,7 +16,6 @@ import { SWitchButton } from "../components/swap/icons";
 import { RefreshIcon } from "../components/limit/icons";
 import Init from "../components/limit/Init";
 import ChartTopBar from "../components/limit/ChartTopBar";
-import { useLimitRateChartStore } from "@/stores/limitChart";
 import { getBestTvlPoolList } from "@/services/limit/limitUtils";
 const CreateOrderButton = dynamic(
   () => import("@/components/limit/CreateOrderButton"),
@@ -44,7 +43,6 @@ export default function LimitOrderPage() {
   const allPools = useAllDclPools();
   const persistLimitStore: IPersistLimitStore = usePersistLimitStore();
   const limitStore = useLimitStore();
-  const limitChartStore = useLimitRateChartStore();
   const dclPool = persistLimitStore.getDclPool();
   const allDclPools = persistLimitStore.getAllDclPools();
   const swapStore = useSwapStore();
@@ -99,20 +97,17 @@ export default function LimitOrderPage() {
     },
   };
   return (
-    <main className="flex items-start justify-center mt-6 gap-5">
+    <main className="flex xsm:flex-col-reverse xsm:mx-3 items-start justify-center mt-6 xsm:mt-0 gap-5">
       {/* popup */}
       <LimitOrderPopup />
       {/* init */}
       <Init />
       {/* charts and records container */}
-      <div style={{ width: "950px" }}>
+      <div className="lg:w-[950px]">
         <ChartTopBar />
-        <div className="border border-gray-30 rounded-lg mt-2.5">
+        <div className="border border-gray-30 xsm:border-none rounded-lg mt-2.5">
           <LimitOrderChartAndTable />
-          <p
-            className="flex items-center justify-center border-t border-gray-30 text-gray-60"
-            style={{ height: "42px", fontSize: "13px" }}
-          >
+          <p className="flex items-center justify-center border-t xsm:border-none lg:h-[42px] xsm:bg-dark-250 xsm:rounded xsm:p-3 xsm:text-xs xsm:text-dark-260 border-gray-30 text-gray-60">
             The price is from the Ref AMM and for reference only. There is no
             guarente that your limit order will be immediately filled.
           </p>
@@ -120,10 +115,7 @@ export default function LimitOrderPage() {
         <MyOrders />
       </div>
       {/* create order container */}
-      <div
-        className="rounded-lg bg-dark-10 p-3.5 mt-2"
-        style={{ width: "420px" }}
-      >
+      <div className="rounded-lg lg:bg-dark-10 xsm:bg-limitOrderMobileBg p-3.5 mt-2 lg:w-[420px]">
         <div className="flexBetween px-px">
           <span className="font-bold text-xl bg-textWhiteGradient bg-clip-text text-transparent">
             Limit Order
@@ -152,7 +144,7 @@ export default function LimitOrderPage() {
           </div>
         </div>
         <Input token={tokenOut} isOut />
-        <div className="flex items-stretch gap-0.5 mt-0.5 select-none">
+        <div className="flex xsm:flex-col items-stretch gap-0.5 mt-0.5 xsm:mt-2 select-none">
           <RateContainer />
           <FeeTiers />
         </div>

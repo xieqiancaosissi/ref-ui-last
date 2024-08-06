@@ -227,6 +227,7 @@ export default function HistoryLine({
   );
   return (
     <Fragment>
+      {/* For PC */}
       <tr>
         <td>
           <div className="pb-2.5"></div>
@@ -308,14 +309,13 @@ export default function HistoryLine({
           />
         </td>
       </tr>
-
       {hoverOn === index &&
         (new Big(order.original_deposit_amount || "0")
           .minus(order.original_amount || "0")
           .gt(0) ||
           Number(claimedAmountIn) > 0) && (
           <>
-            <tr className="xs:flex z-20 relative  xs:flex-col whitespace-nowrap xs:bottom-0 w-full text-sm text-gray-10 rounded-xl">
+            <tr className="relative z-20 whitespace-nowrap  w-full text-sm text-gray-10 rounded-xl">
               <SwapBanner
                 order={order}
                 totalIn={totalIn}
@@ -331,6 +331,7 @@ export default function HistoryLine({
             </tr>
           </>
         )}
+      {/* For Mobile */}
       <div
         className="w-full relative mb-4 md:hidden lg:hidden"
         style={{

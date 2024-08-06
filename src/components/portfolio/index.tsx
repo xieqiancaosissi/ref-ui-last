@@ -326,61 +326,6 @@ export default function Overview() {
   );
 }
 
-// function WalletPanelModal({
-//   isOpen,
-//   onRequestClose,
-// }: {
-//   isOpen: boolean;
-//   onRequestClose: () => void;
-// }) {
-//   const cardWidth = isMobile() ? "100vw" : "430px";
-//   const cardHeight = isMobile() ? "90vh" : "80vh";
-//   const is_mobile = isMobile();
-
-//   return (
-//     <Modal
-//       isOpen={isOpen}
-//       onRequestClose={(e) => {
-//         e.stopPropagation();
-//         onRequestClose();
-//       }}
-//       style={{
-//         overlay: {
-//           backdropFilter: "blur(10px)",
-//           WebkitBackdropFilter: "blur(10px)",
-//         },
-//         content: {
-//           outline: "none",
-//           ...(is_mobile
-//             ? {
-//                 transform: "translateX(-50%)",
-//                 top: "auto",
-//                 bottom: "32px",
-//               }
-//             : {
-//                 transform: "translate(-50%, -50%)",
-//               }),
-//         },
-//       }}
-//     >
-//       <div
-//         className="text-white"
-//         style={{
-//           width: cardWidth,
-//           maxHeight: cardHeight,
-//         }}
-//       >
-//         <div className="bg-dark-10 p-6 rounded-t-2xl border border-modalGrayBg">
-//           <div className="flex justify-between mb-6">
-//             <div className="text-lg">Wallet Assets</div>
-//           </div>
-//           <WalletPanel />
-//         </div>
-//       </div>
-//     </Modal>
-//   );
-// }
-
 export interface OverviewContextType {
   tokenPriceList: any;
   isSignedIn: boolean;

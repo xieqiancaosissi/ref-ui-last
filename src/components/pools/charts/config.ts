@@ -1,3 +1,4 @@
+import { isMobile } from "@/utils/device";
 import {
   addThousandSeparator,
   toInternationalCurrencySystem_number,
@@ -77,7 +78,7 @@ export const chartsOtherConfig = (chartsKind: string) => {
     grid: {
       left: "-8%",
       right: "8%",
-      bottom: "20%",
+      bottom: isMobile() ? "20%" : "30%",
       containLabel: true,
     },
     axisPointer: {

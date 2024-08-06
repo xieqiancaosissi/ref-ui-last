@@ -114,11 +114,7 @@ export default function RecentTransaction(props: any) {
   }, [activeTab]);
 
   // swap
-  console.log(
-    swapTransaction,
-    "swapTransactionswapTransactionswapTransaction",
-    updatedMapList[0].token_account_ids
-  );
+
   const renderSwapTransactions = swapTransaction.map((tx, index) => {
     const swapIn = updatedMapList[0].token_account_ids.find(
       (t: any) => t.id === tx.token_in
@@ -408,7 +404,7 @@ export default function RecentTransaction(props: any) {
   // liquidity
 
   return (
-    <div className="w-215 max-h-106 rounded-md overflow-auto ">
+    <div className="lg:w-215 xsm:w-full max-h-106 rounded-md overflow-auto ">
       <div
         className={`grid grid-cols-9 sticky top-0  px-4 pt-4 select-none`}
         style={{

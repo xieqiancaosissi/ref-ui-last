@@ -32,11 +32,11 @@ export default function ShareContainer(props: any) {
     router.push(`/sauce/${type}/${router.query.id}`);
   };
   return (
-    <div className="my-5 w-270 flex justify-between items-center">
+    <div className="lg:my-5 xsm:mt-5 xsm:mb-2 lg:w-270 xsm:w-full flex justify-between items-center">
       {/* left */}
       <div className="text-gray-60 text-sm font-normal flex">
         {/* get share */}
-        <div className="frcc">
+        <div className="frcc xsm:hidden">
           <HoverTip
             msg={"Shares available / Total shares"}
             extraStyles={"w-46"}
@@ -47,7 +47,20 @@ export default function ShareContainer(props: any) {
           </p>
         </div>
 
-        <div className="frcc ml-10">
+        <div className="flex flex-col items-start lg:hidden">
+          <div className="frcc">
+            <HoverTip
+              msg={"Shares available / Total shares"}
+              extraStyles={"w-46"}
+            />
+            <span>Shares</span>
+          </div>
+          <p className="ml-2">
+            <ShareNumber id={poolDetail.id} />
+          </p>
+        </div>
+
+        <div className="lg:frcc lg:ml-10 xsm:flex xsm:mt-auto">
           {countV1 > endedFarmCountV1 || Number(farmStakeV1) > 0 ? (
             <ShareInFarmV2
               farmStake={farmStakeV1}
@@ -67,7 +80,7 @@ export default function ShareContainer(props: any) {
         </div>
       </div>
       {/* right liquidity button */}
-      <div className="flex items-center justify-end">
+      <div className="flex items-center justify-end xsm:hidden">
         <div
           className="bg-primaryGreen text-black rounded p-2 h-7 opacity-90 frcc border border-transparent text-sm cursor-pointer hover:opacity-100"
           onClick={() => setShowAdd(true)}

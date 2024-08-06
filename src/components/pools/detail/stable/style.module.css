@@ -1,5 +1,5 @@
 .tokenImgContainer {
-  @apply flex items-center;
+  @apply flex items-center xsm:min-w-24;
 }
 
 .tokenImgContainer img {

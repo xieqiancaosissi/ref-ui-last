@@ -319,7 +319,7 @@ export function VolumeCharts(props: any) {
         },
       },
       grid: {
-        left: "-8%",
+        left: "-6%",
         right: "2%",
         bottom: "20%",
         containLabel: true,

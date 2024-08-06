@@ -168,7 +168,7 @@ export default function StablePoolDetail() {
         )}
 
         {/* Recent Transaction */}
-        <div className="mb-10 xsm:mb-40">
+        <div className="mb-10 xsm:mb-40 xsm:w-full">
           <div className="mb-4 flex justify-between lg:w-215 xsm:w-full">
             <span className="text-lg lg:text-gray-50 xsm:text-white font-bold">
               Recent Transaction

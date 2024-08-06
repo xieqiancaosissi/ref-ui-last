@@ -11,13 +11,30 @@ import BigNumber from "bignumber.js";
 import { colorMap } from "@/utils/config";
 export default function StablePoolRowCharts(props: any) {
   const chartRef = useRef(null);
-  const { updatedMapList, poolDetail, tokenPriceList, isMobile } = props;
+  const { updatedMapList, poolDetail, tokenPriceList } = props;
   const [sumToken, setSumToken] = useState(0);
+
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 1024); //
+    };
+
+    window.addEventListener("resize", handleResize);
+    handleResize(); //
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   useEffect(() => {
     const chartInstanceNew = charts.init(chartRef.current);
     const waitSetList: any = updatedMapList;
     const chartsData: any = [];
     let sumToken = 0;
+
     waitSetList?.length > 0 &&
       waitSetList.map((item: any, index: number) => {
         item?.token_account_ids?.map((ite: any, ind: number) => {
@@ -35,37 +52,72 @@ export default function StablePoolRowCharts(props: any) {
                 ? colorMap[ite.symbol] || "black"
                 : "rgba(255,255,255,.3)",
             }, //mobile do not use rgba(255,255,255,.3)
+            label: isMobile
+              ? {
+                  formatter(params: any) {
+                    return `{bg|}\n{title|${
+                      params.data.name
+                    }}\n{amount|${toInternationalCurrencySystem(
+                      params.data.value,
+                      2
+                    )}}\n{percent|${params.percent}%}\n`;
+                  },
+                  rich: {
+                    bg: {
+                      height: 18,
+                      backgroundColor: {
+                        image:
+                          ite.symbol == "NEAR" ? "/images/near.png" : ite.icon,
+                      },
+                    },
+                    title: {
+                      fontSize: "12px",
+                      color: "#91A2AE",
+                    },
+                    amount: {
+                      color: "#fff",
+                      fontSize: "10px",
+                    },
+                    percent: {
+                      fontSize: "10px",
+                      color: "#fff",
+                    },
+                  },
+                }
+              : {},
             emphasis: {
               itemStyle: {
                 color: colorMap[ite.symbol] || "black",
               },
               label: {
                 formatter(params: any) {
-                  return `{bg|}\n\n{title|${
+                  return `{bg|}${isMobile ? "\n" : "\n\n"}{title|${
                     params.data.name
-                  }}\n\n{amount|${toInternationalCurrencySystem(
+                  }}${
+                    isMobile ? "\n" : "\n\n"
+                  }{amount|${toInternationalCurrencySystem(
                     params.data.value,
                     2
                   )}}\n{percent|${params.percent}%}\n`;
                 },
                 rich: {
                   bg: {
-                    height: 34,
+                    height: isMobile ? 18 : 34,
                     backgroundColor: {
                       image:
                         ite.symbol == "NEAR" ? "/images/near.png" : ite.icon,
                     },
                   },
                   title: {
-                    fontSize: "16px",
-                    color: "#fff",
+                    fontSize: isMobile ? "12px" : "16px",
+                    color: isMobile ? "#91A2AE" : "#fff",
                   },
                   amount: {
                     color: "#fff",
-                    fontSize: "26px",
+                    fontSize: isMobile ? "10px" : "26px",
                   },
                   percent: {
-                    fontSize: "14px",
+                    fontSize: isMobile ? "10px" : "14px",
                     color: "#fff",
                   },
                 },
@@ -84,11 +136,11 @@ export default function StablePoolRowCharts(props: any) {
       series: [
         {
           type: "pie",
-          radius: ["50%", "62%"],
+          radius: isMobile ? ["40%", "50%"] : ["50%", "62%"],
           avoidLabelOverlap: false,
           label: {
-            show: false,
-            position: "center",
+            show: isMobile ? true : false,
+            position: isMobile ? "outside" : "center",
           },
           emphasis: {
             label: {
@@ -97,7 +149,7 @@ export default function StablePoolRowCharts(props: any) {
             },
           },
           labelLine: {
-            show: false,
+            show: isMobile ? true : false,
           },
           itemStyle: {
             borderRadius: 1,
@@ -108,12 +160,22 @@ export default function StablePoolRowCharts(props: any) {
       ],
     };
     chartInstanceNew.setOption(options);
-
-    // clear
-    return () => {
-      chartInstanceNew.dispose();
+    const handleResize = () => {
+      if (chartInstanceNew) {
+        chartInstanceNew.resize();
+      }
     };
-  }, [poolDetail]);
+
+    window.addEventListener("resize", handleResize);
+
+    // 清理函数
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      if (chartInstanceNew) {
+        chartInstanceNew.dispose(); // 销毁ECharts实例
+      }
+    };
+  }, [poolDetail, isMobile]);
 
   //
   let utilisationDisplay;
@@ -132,7 +194,7 @@ export default function StablePoolRowCharts(props: any) {
     <div
       className="flex xsm:flex-col w-full lg:pl-20 xsm:mb-12 xsm:p-2 items-start xsm:rounded-md"
       style={{
-        background: isMobile && "rgba(33, 43, 53, 0.3)",
+        background: isMobile ? "rgba(33, 43, 53, 0.3)" : "",
       }}
     >
       <div

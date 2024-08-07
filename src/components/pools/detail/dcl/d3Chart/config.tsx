@@ -1,6 +1,7 @@
 import { IChartConfig, IChartItemConfig } from "./interfaces";
 export function get_custom_config_for_chart(): IChartConfig {
   const env: string = process.env.NEXT_PUBLIC_NEAR_ENV || "mainnet";
+
   if (env == "pub-testnet") {
     return {};
   } else if (env == "testnet") {
@@ -62,6 +63,46 @@ export function get_custom_config_for_chart(): IChartConfig {
         },
       "a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.factory.bridge.near|wrap.near|2000":
         // NEAR<>USDC.e@2000
+        {
+          bin: 5,
+          range: 100,
+          rangeGear: [180, 160, 140, 120, 100, 80, 60, 40, 20, 10],
+          colors: ["#707C84", "#2775CA"],
+        },
+      "token.burrow.near%7Cwrap.near%7C400":
+        // NEAR<>USDC.e@2000
+        {
+          bin: 5,
+          range: 100,
+          rangeGear: [180, 160, 140, 120, 100, 80, 60, 40, 20, 10],
+          colors: ["#707C84", "#2775CA"],
+        },
+      "a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.factory.bridge.near%7Ctoken.burrow.near%7C400":
+        //usdce-brrr
+        {
+          bin: 5,
+          range: 100,
+          rangeGear: [180, 160, 140, 120, 100, 80, 60, 40, 20, 10],
+          colors: ["#707C84", "#2775CA"],
+        },
+      "a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.factory.bridge.near|token.v2.ref-finance.near|400":
+        // USDC.e-REF
+        {
+          bin: 5,
+          range: 100,
+          rangeGear: [180, 160, 140, 120, 100, 80, 60, 40, 20, 10],
+          colors: ["#707C84", "#2775CA"],
+        },
+      "dac17f958d2ee523a2206206994597c13d831ec7.factory.bridge.near|token.v2.ref-finance.near|400":
+        // USDT.e-REF
+        {
+          bin: 5,
+          range: 100,
+          rangeGear: [180, 160, 140, 120, 100, 80, 60, 40, 20, 10],
+          colors: ["#707C84", "#2775CA"],
+        },
+      "usdt.tether-token.near|wrap.near|2000":
+        // USDt-Near
         {
           bin: 5,
           range: 100,

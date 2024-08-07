@@ -96,7 +96,7 @@ export default function RefPanelMobille() {
     }
   }, [activeDimension, isSignedIn]);
   return (
-    <div className="text-white mx-4">
+    <div className="text-white mx-4 pb-8">
       <div className="text-gray-60 text-sm mb-6">
         {`Account > Portfolio > `}
         <span className="text-white">Ref.finance</span>
@@ -181,7 +181,7 @@ export default function RefPanelMobille() {
         <Asset></Asset>
         <AssetProfit></AssetProfit>
         <Tab></Tab>
-        <div className="pt-4">
+        <div className="pt-4 py-8">
           <div className={`${activeTab == "1" ? "" : "hidden"}`}>
             <Orders></Orders>
           </div>

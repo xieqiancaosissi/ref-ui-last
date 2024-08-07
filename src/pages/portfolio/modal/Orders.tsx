@@ -768,7 +768,7 @@ function OrderCard({
             </div>
           </div>
           <div className={`${isActive ? "" : "hidden"}`}>
-            <div className="bg-dark-270 rounded-xl px-3.5 py-4 bg-opacity-70 mt-0.5 pb-4">
+            <div className="bg-dark-270 rounded-xl px-3.5 py-4 bg-opacity-70 pb-4">
               {swapBanner}
               <div
                 className="border border-dark-190 rounded-lg frcc h-9 mt-5 cursor-pointer"

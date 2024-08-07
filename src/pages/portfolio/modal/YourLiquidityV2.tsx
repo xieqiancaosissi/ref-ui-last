@@ -1296,10 +1296,10 @@ function UserLiquidityLineStyleGroupPage({
             </p>
           </div>
           <div className="frcb">
-            <span className="text-xs text-gray-10">Price Range</span>
-            <div className="flex items-center text-xs text-white">
+            <div className="text-xs text-gray-1 frcc">
+              Price Range
               <div
-                className={`flex items-center justify-center bg-opacity-15 rounded-md h-5 px-1 mr-2 ${
+                className={`ml-1 flex items-center justify-center bg-opacity-15 rounded-md h-5 px-1 mr-2 ${
                   isInRange ? "bg-blue-20" : "bg-warn"
                 }`}
               >
@@ -1316,7 +1316,9 @@ function UserLiquidityLineStyleGroupPage({
                   {isInRange ? "In range" : "Out of range"}
                 </span>
               </div>
-              <div className="flex items-center flex-wrap">
+            </div>
+            <div className="text-right text-xs text-white">
+              <div className="text-right justify-end flex-wrap">
                 {intersectionRangeList.map((range: string[], i: number) => {
                   return (
                     <div
@@ -1333,7 +1335,7 @@ function UserLiquidityLineStyleGroupPage({
                       </span>
                       {intersectionRangeList.length > 1 &&
                         i < intersectionRangeList.length - 1 && (
-                          <span className="mr-1">,</span>
+                          <span className=""></span>
                         )}
                     </div>
                   );

@@ -54,7 +54,7 @@ import useTokens from "@/hooks/useTokens";
 import { LOVE_TOKEN_DECIMAL } from "@/services/referendum";
 import CustomTooltip from "@/components/customTooltip/customTooltip";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
-import { FarmView } from "@/components/farm/components/FarmView";
+import { FarmView } from "./FarmView";
 import { get24hVolumes } from "@/services/indexer";
 import { getVeSeedShare } from "@/services/farm";
 
@@ -519,6 +519,23 @@ function ClassicFarms() {
               .toFixed();
       return yourTvl;
     }
+
+    if (pool) {
+      const { tvl, shares_total_supply } = pool;
+      const amount = new BigNumber(free_amount || 0)
+        .plus(locked_amount || 0)
+        .toFixed();
+      const poolShares = toReadableNumber(seed_decimal, shares_total_supply);
+      const yourLpAmount = toReadableNumber(seed_decimal, amount);
+      const yourTvl =
+        +poolShares == 0
+          ? "0"
+          : new BigNumber(yourLpAmount)
+              .multipliedBy(tvl)
+              .dividedBy(poolShares)
+              .toFixed();
+      return "$" + toInternationalCurrencySystem(yourTvl, 2);
+    }
   }
 
   const [detailData, setDetailData] = useState<Seed | null>(null);
@@ -566,6 +583,7 @@ function ClassicFarms() {
       setMaxLoveShareAmount(amountStr_readable);
     }
   }
+
   return (
     <div className="grid grid-cols-2 xs:grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-6 m-auto mt-8">
       {classicSeeds.map((seed: Seed, index: number) => {

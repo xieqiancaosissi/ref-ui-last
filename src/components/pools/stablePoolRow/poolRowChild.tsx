@@ -20,6 +20,9 @@ export default function PoolRow(props: any) {
   const { userTotalShare } = useYourliquidity(item.id);
   const formatePool = formatePoolData(item, userTotalShare);
   const toDetail = (item: any) => {
+    if (item.degens) {
+      router.push(`/pool/degen/${item.id}`);
+    }
     router.push(`/pool/stable/${item.id}`);
   };
   const { currentwatchListId } = useWatchList();

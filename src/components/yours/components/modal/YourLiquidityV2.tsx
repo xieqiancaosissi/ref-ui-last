@@ -378,7 +378,7 @@ export function YourLiquidityV2(props: any) {
   ];
   return (
     <div>
-      <div className="w-full grid grid-cols-12 px-4">
+      <div className="w-full grid grid-cols-12 px-4 xsm:hidden">
         {titleList.map((item: any, index: any) => {
           return (
             <span
@@ -1277,8 +1277,9 @@ function UserLiquidityLineStyleGroupPage() {
 
   return (
     <>
+      {/* PC */}
       <div
-        className={`rounded-xl mt-3 bg-gray-20 px-4 bg-opacity-30 ${
+        className={`rounded-xl mt-3 bg-gray-20 lg:px-4 bg-opacity-30 xsm:hidden ${
           switch_off ? "" : "pb-4"
         }`}
         onMouseEnter={() => set_switch_off(false)}
@@ -1479,20 +1480,9 @@ function UserLiquidityLineStyleGroupPage() {
                   </div>
                 ) : null}
               </span>
-              {/* <div className="flex items-center">
-                <WaterDropIcon className="m-1.5"></WaterDropIcon>
-                <span className="text-xs text-primaryGreen paceGrotesk-Bold">
-                  {tokenFeeValue}
-                </span>
-              </div> */}
             </div>
           </div>
-          {/* <UpDownButton
-              set_switch_off={() => {
-                set_switch_off(!switch_off);
-              }}
-              switch_off={switch_off}
-            ></UpDownButton> */}
+
           {/* hide block */}
           <div
             className={`col-span-12 flex justify-between ${styles.claimRow}`}
@@ -1597,31 +1587,359 @@ function UserLiquidityLineStyleGroupPage() {
             </div>
           </div>
         </div>
-
-        {showRemoveBox ? (
-          <RemovePoolV3
-            isOpen={showRemoveBox}
-            onRequestClose={() => {
-              setShowRemoveBox(false);
-            }}
-            listLiquidities={liquidities_list}
-            tokenMetadata_x_y={tokenMetadata_x_y}
-            poolDetail={poolDetail}
-            tokenPriceList={tokenPriceList}
-            userLiquidity={(list_liquidities as any)[0]}
-            style={{
-              overlay: {
-                backdropFilter: "blur(15px)",
-                WebkitBackdropFilter: "blur(15px)",
-              },
-              content: {
-                outline: "none",
-                transform: "translate(-50%, -50%)",
-              },
-            }}
-          ></RemovePoolV3>
-        ) : null}
       </div>
+
+      {/* Mobile */}
+      <div
+        className={`rounded-xl mt-3 bg-gray-20 lg:px-4 bg-opacity-30 lg:hidden ${
+          switch_off ? "" : "pb-4"
+        }`}
+        onMouseEnter={() => set_switch_off(false)}
+        onMouseLeave={() => set_switch_off(true)}
+      >
+        <div className={`${styles.dclPoolRowContainer}`}>
+          <div
+            className={`min-h-44 w-full`}
+            onClick={() => {
+              openUrl(`/pool/dcl/${poolDetail.pool_id}`);
+            }}
+          >
+            {/* token icon and symbol */}
+            <div
+              className="w-full flex items-center justify-between h-16 px-4 rounded-t-md"
+              style={{
+                background:
+                  "linear-gradient(to right, rgba(33, 43, 53, 0.5), rgba(61, 84, 108, 0.5))",
+              }}
+            >
+              <div className="flex items-center flex-shrink-0 mr-2.5">
+                <img
+                  src={tokens[0]?.icon}
+                  className="w-7 h-7 border border-black rounded-full"
+                />
+                <img
+                  src={tokens[1]?.icon}
+                  className="relative -ml-1.5 w-7 h-7 border border-black rounded-full"
+                />
+              </div>
+              <div className="flex flex-col items-end">
+                <span className="text-white font-bold text-base">
+                  {tokens[0]?.symbol}-{tokens[1]?.symbol}
+                </span>
+                <div
+                  className="frcc w-8 h-4 border border-black text-white rounded-2xl italic"
+                  style={{
+                    fontSize: "10px",
+                    background: "linear-gradient(to right,#004DE4, #4EF400)",
+                  }}
+                >
+                  DCL
+                </div>
+              </div>
+            </div>
+
+            <div className="p-4">
+              {/* mobile fee tiers */}
+              <div className="flex items-start justify-between">
+                <span className="text-sm text-gray-60">Fee Tiers:</span>
+                <span className="text-sm text-white">{+fee / 10000}%</span>
+              </div>
+              {/* mobile arp 24h  */}
+              <div className="flex items-start justify-between mt-4">
+                <span className="text-sm text-gray-60">ARP(24h):</span>
+                <div className="fccc">
+                  <div className="text-sm mr-0.5">{accountAPR || "-"}</div>
+                  {joined_seeds ? (
+                    <div className="flex items-center gap-2 text-xs">
+                      {(Object.values(joined_seeds) as IUserJoinedSeedDetail[])
+                        .sort(sort_joined_seeds)
+                        .map(
+                          (
+                            joined_seed_info: IUserJoinedSeedDetail,
+                            index: number
+                          ) => {
+                            const length = Object.values(joined_seeds).length;
+                            const { seed_apr, seed_status } = joined_seed_info;
+                            if (seed_status == "ended") return null;
+                            if (length == 1) {
+                              return (
+                                <div
+                                  className="frcs gap-1 text-gray-10 whitespace-nowrap text-sm"
+                                  key={index + "id"}
+                                >
+                                  <span>Farm APR</span>
+                                  <span>{seed_apr}</span>
+                                </div>
+                              );
+                            } else {
+                              return (
+                                <div
+                                  className="frcs gap-1 text-gray-10 whitespace-nowrap text-sm"
+                                  key={index + "id"}
+                                >
+                                  <span>
+                                    ({seed_status == "run" ? "new" : "pre."})
+                                    APR
+                                  </span>
+                                  <span>{seed_apr}</span>
+                                </div>
+                              );
+                            }
+                          }
+                        )}
+                    </div>
+                  ) : tip_seed ? (
+                    <div className="frcs gap-1 text-gray-10 text-sm">
+                      <span>Farm APR</span>
+                      <span>0%</span>
+                    </div>
+                  ) : null}
+                </div>
+              </div>
+              {/* mobile your liq */}
+              <div className="flex items-start justify-between mt-4">
+                <span className="text-sm text-gray-60">Your Liquidity:</span>
+                <div className="frcc">
+                  <span className="text-white text-sm font-medium">
+                    {your_liquidity || "-"}
+                  </span>
+                  <span>
+                    {joined_seeds ? (
+                      <div className="flex items-center gap-2 text-sm">
+                        {(
+                          Object.values(joined_seeds) as IUserJoinedSeedDetail[]
+                        )
+                          .sort(sort_joined_seeds)
+                          .map(
+                            (
+                              joined_seed_info: IUserJoinedSeedDetail,
+                              index: number
+                            ) => {
+                              const length = Object.values(joined_seeds).length;
+                              const {
+                                seed_status,
+                                value_of_investment,
+                                go_farm_url_link,
+                              }: any = joined_seed_info;
+                              if (seed_status == "ended") return null;
+                              if (length == 1) {
+                                return (
+                                  <div
+                                    key={"in farm" + index}
+                                    className="frcs gap-1 text-primaryText whitespace-nowrap"
+                                  >
+                                    {value_of_investment} in{" "}
+                                    <a
+                                      className="cursor-pointer underline"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        openUrl(go_farm_url_link);
+                                      }}
+                                    >
+                                      farm
+                                    </a>
+                                  </div>
+                                );
+                              } else {
+                                return (
+                                  <div
+                                    key={"in farm" + index}
+                                    className="frcs gap-1 text-primaryText whitespace-nowrap"
+                                  >
+                                    {value_of_investment} in{" "}
+                                    <a
+                                      className={`cursor-pointer underline text-primaryText hover:text-greenColor`}
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        openUrl(go_farm_url_link);
+                                      }}
+                                    >
+                                      farm (
+                                      {seed_status == "run"
+                                        ? "new"
+                                        : seed_status == "would_ended"
+                                        ? "pre."
+                                        : "ended"}
+                                      )
+                                    </a>
+                                  </div>
+                                );
+                              }
+                            }
+                          )}
+                      </div>
+                    ) : null}
+                  </span>
+                  {/* <div className="flex items-center">
+                <WaterDropIcon className="m-1.5"></WaterDropIcon>
+                <span className="text-xs text-primaryGreen paceGrotesk-Bold">
+                  {tokenFeeValue}
+                </span>
+              </div> */}
+                </div>
+              </div>
+              {/* mobile price range */}
+              <div className="flex items-start justify-between mt-4">
+                <span className="text-sm text-gray-60">Price range:</span>
+                <div className="flex items-start justify-between">
+                  <span
+                    className={`whitespace-nowrap text-xs mr-1 ${
+                      isInRange ? "text-green-10" : "text-warn"
+                    }`}
+                  >
+                    {isInRange ? "In range" : "Out of range"}
+                  </span>
+                  <div className="flex flex-col items-end flex-wrap">
+                    {intersectionRangeList.map((range: string[], i: number) => {
+                      return (
+                        <div
+                          className="text-white whitespace-nowrap text-sm"
+                          key={i + "id"}
+                        >
+                          <span>
+                            {displayNumberToAppropriateDecimals(range[0])}
+                          </span>
+                          <span className="mx-1">-</span>
+
+                          <span>
+                            {displayNumberToAppropriateDecimals(range[1])}
+                          </span>
+                          {intersectionRangeList.length > 1 &&
+                            i < intersectionRangeList.length - 1 && (
+                              <span className="mr-1">,</span>
+                            )}
+                        </div>
+                      );
+                    })}
+                    <div className="text-sm ml-1 text-gray-10">
+                      {ratedMapTokens}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {/* mobile unclaim */}
+              <div className="flex items-start justify-between mt-4">
+                <span className="text-sm text-gray-10 mr-2.5">
+                  Unclaimed Fees:
+                </span>
+                <div className="flex items-center">
+                  <img
+                    src={tokenMetadata_x_y && tokenMetadata_x_y[0].icon}
+                    className="w-5 h-5 border border-greenColor rounded-full mr-1.5"
+                  />
+                  <span className="text-sm text-white mr-5">
+                    {tokenFeeLeft || "-"}
+                  </span>
+                  <img
+                    src={tokenMetadata_x_y && tokenMetadata_x_y[1].icon}
+                    className="w-5 h-5 border border-greenColor rounded-full mr-1.5"
+                  />
+                  <span className="text-sm text-white">
+                    {tokenFeeRight || "-"}
+                  </span>
+                  {/* <span className="text-xs text-primaryGreen pl-3.5  ml-3.5">
+                  {tokenFeeValue}
+                </span> */}
+                </div>
+              </div>
+            </div>
+            {/* button */}
+            <div className="flex items-center justify-between p-4 mt-2 w-full">
+              <div
+                className={`${
+                  !canClaim
+                    ? "text-dark-200 border-gray-190  cursor-not-allowed opacity-40"
+                    : "text-green-10 border-green-10  cursor-pointer hover:opacity-90"
+                } w-25 h-8 frcc text-sm font-bold border  rounded mr-1`}
+                onClick={claimRewards}
+              >
+                <ButtonTextWrapper
+                  loading={claim_loading}
+                  Text={() => <> Claim</>}
+                />
+              </div>
+              <div
+                onClick={() => toDclLiq(poolDetail.pool_id)}
+                className="w-25 h-8 frcc text-sm font-bold text-green-10 border border-green-10 rounded mr-1 cursor-pointer hover:opacity-90"
+              >
+                Add
+              </div>
+
+              <div
+                className={`relative flex items-center w-25 ${
+                  joined_seeds_done ? "" : "hidden"
+                }`}
+                onMouseEnter={() => {
+                  if (!!joined_seeds) {
+                    setRemoveButtonTip(true);
+                  }
+                }}
+                onMouseLeave={() => {
+                  if (!!joined_seeds) {
+                    setRemoveButtonTip(false);
+                  }
+                }}
+              >
+                <div
+                  onClick={(e) => {
+                    if (!!joined_seeds) return;
+                    e.stopPropagation();
+                    setShowRemoveBox(true);
+                  }}
+                  className={`${
+                    !!joined_seeds
+                      ? "text-dark-200 border-gray-190  cursor-not-allowed opacity-40"
+                      : "text-dark-200 cursor-pointer border-dark-190"
+                  } w-25 h-8 frcc text-sm font-bold border  rounded hover:text-white`}
+                >
+                  Remove
+                </div>
+                <div
+                  className={`${
+                    removeButtonTip ? "" : "hidden"
+                  } absolute z-50 right-0 -top-12 border border-gray-60 rounded-md px-2 py-1.5 text-xs text-farmText w-56 bg-dark-70`}
+                >
+                  You have liquidity in farm, please unstake from{" "}
+                  <a
+                    className="underline cursor-pointer"
+                    onClick={() => {
+                      localStorage.setItem("BOOST_FARM_TAB", "yours");
+                      openUrl("/farms");
+                    }}
+                  >
+                    Your Farm
+                  </a>{" "}
+                  first.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {showRemoveBox ? (
+        <RemovePoolV3
+          isOpen={showRemoveBox}
+          onRequestClose={() => {
+            setShowRemoveBox(false);
+          }}
+          listLiquidities={liquidities_list}
+          tokenMetadata_x_y={tokenMetadata_x_y}
+          poolDetail={poolDetail}
+          tokenPriceList={tokenPriceList}
+          userLiquidity={(list_liquidities as any)[0]}
+          style={{
+            overlay: {
+              backdropFilter: "blur(15px)",
+              WebkitBackdropFilter: "blur(15px)",
+            },
+            content: {
+              outline: "none",
+              transform: "translate(-50%, -50%)",
+            },
+          }}
+        ></RemovePoolV3>
+      ) : null}
     </>
   );
 }

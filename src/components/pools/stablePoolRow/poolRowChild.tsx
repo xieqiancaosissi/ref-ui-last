@@ -13,11 +13,14 @@ import { formatePoolData } from "../detail/stable/FormatterPool";
 import { useYourliquidity } from "@/hooks/useStableShares";
 import { useWatchList } from "@/hooks/useWatchlist";
 import { StartWatchList } from "@/components/pools/icon";
+import { openUrl } from "@/services/commonV3";
+import { ShareInFarm } from "../detail/stable/ShareInFarm";
 
 export default function PoolRow(props: any) {
   const { item, index } = props;
   const router = useRouter();
-  const { userTotalShare } = useYourliquidity(item.id);
+  const { shares, shadowBurrowShare, farmStakeV2, userTotalShare } =
+    useYourliquidity(item.id);
   const formatePool = formatePoolData(item, userTotalShare);
   const toDetail = (item: any) => {
     if (item.degens) {
@@ -319,6 +322,23 @@ export default function PoolRow(props: any) {
                   Remove
                 </div> */}
               </div>
+              {shadowBurrowShare?.stakeAmount && (
+                <div
+                  className={`cursor-pointer`}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    openUrl(`https://app.burrow.finance/`);
+                  }}
+                >
+                  <ShareInFarm
+                    farmStake={shadowBurrowShare?.stakeAmount}
+                    userTotalShare={userTotalShare}
+                    inStr={"in Burrow"}
+                    forStable
+                  />
+                </div>
+              )}
             </div>
           </div>
         </div>

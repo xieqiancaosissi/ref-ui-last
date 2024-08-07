@@ -83,13 +83,12 @@ export default function Tab() {
   }
   return (
     <div
-      className="frcc fixed bg-dark-45 w-full h-17 "
+      className="frcc lg:fixed lg:bg-dark-45 w-full h-17 lg:border-b-dark-270 lg:border-b xsm:mt-12"
       style={{
-        borderBottom: "1px solid rgba(145, 162, 174, 0.2)",
         top: "232px",
       }}
     >
-      <div className="flex items-center w-276">
+      <div className="flex items-center lg:w-276 xsm:w-full">
         <div className={styles.filterPoolType}>
           {tabList.map(
             (
@@ -111,7 +110,7 @@ export default function Tab() {
                     ? "text-white bg-poolsTypelinearGrayBg rounded"
                     : "text-gray-60"
                 }
-                 w-29 h-8 frcc text-base relative
+                 lg:w-29 xsm:w-1/2 lg:h-8 xsm:h-9 frcc text-base relative
               `}
                   onClick={() => {
                     switchTab(tab.tag);
@@ -125,13 +124,16 @@ export default function Tab() {
                         }`}
                       >
                         {tab.name || <FormattedMessage id={tab.id} />}
+                        <span className="lg:hidden">({tab.quantity})</span>
                       </span>
                       <div
-                        className={
-                          tab.tag == activeTab
-                            ? styles.tagActive
-                            : styles.tagDisable
-                        }
+                        className={`
+                          ${
+                            tab.tag == activeTab
+                              ? styles.tagActive
+                              : styles.tagDisable
+                          }
+                        `}
                       >
                         {tab.quantity}
                       </div>

@@ -1093,3 +1093,10 @@ export const checkFarmStake = ({
 
   return tempFarmStake;
 };
+
+export const get_shadow_records = () => {
+  return refFiViewFunction({
+    methodName: "get_shadow_records",
+    args: { account_id: getAccountId() },
+  });
+};

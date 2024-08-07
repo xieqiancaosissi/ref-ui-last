@@ -14,10 +14,10 @@ import { TIMESTAMP_DIVISOR } from "@/utils/constant";
 import moment from "moment";
 import { MyOrderInstantSwapArrowRight } from "../../icons2";
 import { TOKEN_LIST_FOR_RATE } from "@/services/commonV3";
-import { HiOutlineExternalLink } from "@/components/reactIcons";
 import getConfig from "@/utils/config";
 import { getTxId } from "@/services/indexer";
 import { MobileInfoBanner } from "../widget";
+import { ArrowTopRightIcon } from "../../icons2";
 import {
   NearblocksIcon,
   PikespeakIcon,
@@ -113,7 +113,7 @@ export default function HistorySwapInfoLine({
     <span className="flex py-4 pl-3  flex-shrink-0 items-center">
       <img
         src={sellToken.icon}
-        className="border border-gradientFrom rounded-full w-7 h-7"
+        className="border border-gradientFrom rounded-full w-7 h-7 xsm:w-6 xsm:h-6"
         alt=""
       />
 
@@ -135,7 +135,7 @@ export default function HistorySwapInfoLine({
     <span className="flex items-center col-span-1 ">
       <img
         src={buyToken.icon}
-        className="border flex-shrink-0 border-gradientFrom rounded-full w-7 h-7"
+        className="border flex-shrink-0 border-gradientFrom rounded-full w-7 h-7 xsm:w-6 xsm:h-6"
         alt=""
       />
 
@@ -224,7 +224,7 @@ export default function HistorySwapInfoLine({
         ).format("HH:mm")}
       </span>
 
-      <span className="lg:hidden text-center relative bottom-2">
+      <span className="lg:hidden text-center">
         {moment(
           Math.floor(Number(timestamp) / TIMESTAMP_DIVISOR) * 1000
         ).format("YYYY-MM-DD HH:mm")}
@@ -240,7 +240,7 @@ export default function HistorySwapInfoLine({
       <div className="relative">
         {!!orderTx && (
           <a
-            className="flex items-center text-gray-10 cursor-pointer"
+            className="flex items-center text-gray-10 cursor-pointer hover:text-white"
             onMouseEnter={() => handleMouseEnter(orderTx)}
             onMouseLeave={handleMouseLeave}
             target="_blank"
@@ -255,7 +255,7 @@ export default function HistorySwapInfoLine({
               <>
                 Tx
                 <span className="ml-1.5">
-                  <HiOutlineExternalLink />
+                  <ArrowTopRightIcon />
                 </span>
               </>
             )}
@@ -263,7 +263,7 @@ export default function HistorySwapInfoLine({
               <div className="w-44 absolute -bottom-2 left-14 bg-dark-70 border border-gray-70 rounded-lg p-2 shadow-lg z-50">
                 <div className="flex flex-col">
                   <div
-                    className="mb-2 px-3 py-2 hover:bg-poolDetaileTxHoverColor text-white rounded-md flex items-center"
+                    className="mb-2 px-3 py-2  text-white rounded-md flex items-center"
                     onMouseEnter={(e) => {
                       const arrow = e.currentTarget.querySelector(
                         ".arrow"
@@ -291,7 +291,7 @@ export default function HistorySwapInfoLine({
                     </div>
                   </div>
                   <div
-                    className="px-3 py-2 hover:bg-poolDetaileTxHoverColor text-white rounded-md flex items-center"
+                    className="px-3 py-2  text-white rounded-md flex items-center"
                     onMouseEnter={(e) => {
                       const arrow = e.currentTarget.querySelector(
                         ".arrow"
@@ -363,33 +363,32 @@ export default function HistorySwapInfoLine({
           <td className=""></td>
           <td className="rounded-r-xl">{actions}</td>
         </tr>
-
-        {/* {hover && !ONLY_ZEROS.test(swapIn || '0') ? swapBanner : null} */}
       </Fragment>
 
       <div
-        className="w-full relative mb-4 md:hidden lg:hidden"
-        style={{
-          zIndex: 20 - index,
-        }}
+        className="w-full relative mb-4 md:hidden lg:hidden bg-dark-290 rounded-lg"
+        style={
+          {
+            // zIndex: 20 - index,
+          }
+        }
       >
-        <MobileHistoryOrderStamp state={"swapped"}></MobileHistoryOrderStamp>
-
         {/* title */}
-        <div className="rounded-t-xl relative bg-orderMobileTop px-3 pt-3">
+        <div className="rounded-t-xl relative bg-portfolioMobileBg px-3 pt-3">
           <div className="flex items-center relative justify-between">
             {sellTokenAmount}
             <MyOrderMobileArrow />
             {buyTokenAmount}
           </div>
-
-          {created}
-
-          <div className="absolute right-4 bottom-2.5 z-50  text-xs">
-            <div className="relative">
+          <div className="grid grid-cols-3 pb-1.5">
+            <div className="flex items-center justify-center bg-gray-290 rounded-xl text-xs text-gray-10 justify-self-start px-2 py-0.5">
+              Swapped
+            </div>
+            {created}
+            <div className="relative z-50 justify-self-end">
               {!!orderTx && (
                 <a
-                  className="flex items-center text-gray-10 cursor-pointer"
+                  className="flex items-center text-gray-10 cursor-pointer hover:text-white text-xs bg-black bg-opacity-20 rounded py-0.5 px-1.5"
                   onMouseEnter={() => handleMouseEnter(orderTx)}
                   onMouseLeave={handleMouseLeave}
                   target="_blank"
@@ -404,15 +403,15 @@ export default function HistorySwapInfoLine({
                     <>
                       Tx
                       <span className="ml-1.5">
-                        <HiOutlineExternalLink />
+                        <ArrowTopRightIcon />
                       </span>
                     </>
                   )}
                   {hoveredTx === orderTx && (
-                    <div className="w-44 absolute top-6 right-0 bg-poolDetaileTxBgColor border border-poolDetaileTxBorderColor rounded-lg p-2 shadow-lg z-50">
+                    <div className="w-44 absolute top-6 right-0 bg-dark-70 border border-gray-70 rounded-lg p-2 shadow-lg z-50">
                       <div className="flex flex-col">
                         <div
-                          className="mb-2 px-3 py-2 hover:bg-poolDetaileTxHoverColor text-white rounded-md flex items-center"
+                          className="mb-2 px-3 py-2  text-white rounded-md flex items-center"
                           onMouseEnter={(e) => {
                             const arrow = e.currentTarget.querySelector(
                               ".arrow"
@@ -446,7 +445,7 @@ export default function HistorySwapInfoLine({
                           </div>
                         </div>
                         <div
-                          className="px-3 py-2 hover:bg-poolDetaileTxHoverColor text-white rounded-md flex items-center"
+                          className="px-3 py-2  text-white rounded-md flex items-center"
                           onMouseEnter={(e) => {
                             const arrow = e.currentTarget.querySelector(
                               ".arrow"
@@ -488,7 +487,7 @@ export default function HistorySwapInfoLine({
           </div>
         </div>
         {/*  content */}
-        <div className="rounded-b-xl p-3 pb-1 bg-cardBg">
+        <div className="rounded-b-xl p-3 pb-1">
           <MobileInfoBanner
             text={
               <FormattedMessage id="fee_tiers" defaultMessage={"Fee Tiers"} />

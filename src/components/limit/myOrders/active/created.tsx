@@ -18,7 +18,7 @@ export default function Created({ order }: { order: UserOrderInfo }) {
         ).format("HH:mm")}
       </span>
 
-      <span className="lg:hidden text-center relative bottom-2">
+      <span className="lg:hidden text-center">
         {moment(
           Math.floor(Number(order.created_at) / TIMESTAMP_DIVISOR) * 1000
         ).format("YYYY-MM-DD HH:mm")}

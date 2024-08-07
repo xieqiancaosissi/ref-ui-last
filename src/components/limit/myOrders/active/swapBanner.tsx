@@ -123,19 +123,19 @@ export default function SwapBanner({
   return (
     <td
       colSpan={9}
-      className={`text-gray-10 w-full relative px-3 pb-4 ${
+      className={`text-gray-10 w-full relative px-3 pb-4 xsm:px-0 xsm:py-0 xsm:block ${
         isHoverOn ? "rounded-b-lg" : ""
       }`}
     >
-      <div className="flex justify-between items-start border border-gray-30 rounded-sm bg-dark-210 px-3.5 py-4">
-        <div className="flex flex-col gap-4">
+      <div className="flex justify-between items-start border border-gray-30 rounded-sm bg-dark-210 px-3.5 py-4 xsm:bg-gray-20 xsm:bg-opacity-30 xsm:rounded-lg xsm:w-full xsm:mt-0.5 xsm:border-none">
+        <div className="flex flex-col gap-4 xsm:w-full">
           {new Big(order.original_deposit_amount || "0")
             .minus(order.original_amount || "0")
             .gt(0) && (
             <>
               {/* Initial Order */}
-              <div className="flex items-center gap-2 text-sm">
-                <span className="flex items-center w-35">
+              <div className="flex items-center gap-2 text-sm xsm:text-[13px] xsm:justify-between">
+                <span className="flex items-center lg:w-35">
                   <FormattedMessage
                     id="initial_order"
                     defaultMessage={"Initial Order"}
@@ -153,7 +153,7 @@ export default function SwapBanner({
                   )}
                 </span>
 
-                <div className="flex items-center text-sm">
+                <div className="flex items-center text-sm xsm:text-[13px]">
                   <span title={totalIn} className="text-white">
                     {Number(totalIn) > 0 && Number(totalIn) < 0.01
                       ? "< 0.01"
@@ -181,8 +181,8 @@ export default function SwapBanner({
                 </div>
               </div>
               {/* Instant Swap */}
-              <div className="flex items-center gap-2 text-sm">
-                <span className="flex items-center w-35">
+              <div className="flex items-center gap-2 text-sm xsm:text-[13px] xsm:justify-between">
+                <span className="flex items-center lg:w-35">
                   <FormattedMessage
                     id={isMobile() ? "filled_via_swap" : "instants_swap"}
                     defaultMessage={
@@ -201,9 +201,9 @@ export default function SwapBanner({
                 </span>
 
                 <span className="frcb xsm:justify-start lg:min-w-p300">
-                  <div className="frcs text-sm  pr-2 text-gray-10">
+                  <div className="frcs text-sm  pr-2 xsm:pr-1.5 text-gray-10 xsm:text-[13px]">
                     <BsCheckCircle
-                      className="mr-1.5"
+                      className="mr-1.5 xsm:mr-0"
                       fill="#42bb17"
                       stroke="#42BB17"
                     />
@@ -244,7 +244,7 @@ export default function SwapBanner({
           )}
           {/* Executing */}
           <div className="flex items-start gap-2 xsm:hidden">
-            <span className="xsm:text-gray-10 w-35">
+            <span className="xsm:text-gray-10 lg:w-35">
               <FormattedMessage
                 id="executing_capital"
                 defaultMessage={"Executing"}
@@ -253,7 +253,7 @@ export default function SwapBanner({
 
             <div className="flex flex-col">
               <span className="frcb min-w-p300">
-                <div className="frcs text-sm pr-2 text-gray-10">
+                <div className="frcs text-sm pr-2 text-gray-10 xsm:text-[13px]">
                   <BsCheckCircle
                     className="mr-1.5"
                     fill="#9EFE01"
@@ -300,7 +300,7 @@ export default function SwapBanner({
               </span>
 
               <span className="pt-4  frcb min-w-p300">
-                <div className="frcs text-sm pr-2 text-gray-10">
+                <div className="frcs text-sm pr-2 text-gray-10 xsm:text-[13px]">
                   <span className="mr-1.5">
                     <FilledEllipse></FilledEllipse>
                   </span>
@@ -350,8 +350,8 @@ export default function SwapBanner({
             </div>
           </div>
           {/* for mobile */}
-          <div className="lg:hidden flex items-center justify-end">
-            <div className="flex  max-w-max text-gray-10 bg-black bg-opacity-20 rounded-md px-2 py-1 items-center justify-end lg:hidden">
+          <div className="lg:hidden flex items-center justify-end text-xs -mt-3">
+            <div className="flex  max-w-max text-dark-260 bg-dark-220 rounded px-2 py-1 items-center justify-end lg:hidden">
               <span className="">1</span>
 
               <span className="ml-1.5">
@@ -416,7 +416,7 @@ export default function SwapBanner({
                 <div className="w-44 absolute -bottom-5 left-16 bg-dark-70 border border-gray-70 rounded-lg p-2 z-50">
                   <div className="flex flex-col">
                     <div
-                      className="mb-2 px-3 py-2 hover:bg-poolDetaileTxHoverColor text-white rounded-md flex items-center"
+                      className="mb-2 px-3 py-2  text-white rounded-md flex items-center"
                       onMouseEnter={(e) => {
                         const arrow = e.currentTarget.querySelector(
                           ".arrow"
@@ -447,7 +447,7 @@ export default function SwapBanner({
                       </div>
                     </div>
                     <div
-                      className="px-3 py-2 hover:bg-poolDetaileTxHoverColor text-white rounded-md flex items-center"
+                      className="px-3 py-2  text-white rounded-md flex items-center"
                       onMouseEnter={(e) => {
                         const arrow = e.currentTarget.querySelector(
                           ".arrow"

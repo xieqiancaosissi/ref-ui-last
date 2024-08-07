@@ -26,6 +26,15 @@ import SwapBanner from "./swapBanner";
 import UnclaimTip from "./unclaimTip";
 import { MobileInfoBanner } from "../widget";
 import { ONLY_ZEROS } from "@/utils/numbers";
+import { getTxId } from "@/services/indexer";
+import { HiOutlineExternalLink } from "@/components/reactIcons";
+import { ArrowTopRightIcon } from "../../icons2";
+import {
+  NearblocksIcon,
+  PikespeakIcon,
+  TxLeftArrow,
+} from "@/components/pools/icon";
+import getConfig from "@/utils/config";
 export default function ActiveLine({
   tokensMap,
   order,
@@ -43,6 +52,41 @@ export default function ActiveLine({
   hoverOn: number;
   setHoverOn: React.Dispatch<React.SetStateAction<number>>;
 }) {
+  const [loadingStates, setLoadingStates] = useState<Record<string, any>>({});
+  const [hoveredTx, setHoveredTx] = useState(null);
+  const closeTimeoutRef = useRef(null) as any;
+  const handleMouseEnter = (receipt_id: any) => {
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current);
+      closeTimeoutRef.current = null;
+    }
+    setHoveredTx(receipt_id);
+  };
+  const handleMouseLeave = () => {
+    closeTimeoutRef.current = setTimeout(() => {
+      setHoveredTx(null);
+    }, 200);
+  };
+  async function handleTxClick(receipt_id: string, url: string) {
+    setLoadingStates((prevStates) => ({ ...prevStates, [receipt_id]: true }));
+    try {
+      const data = await getTxId(receipt_id);
+      if (data && data.receipts && data.receipts.length > 0) {
+        const txHash = data.receipts[0].originated_from_transaction_hash;
+        window.open(`${url}/${txHash}`, "_blank", "noopener,noreferrer");
+      }
+    } catch (error) {
+      console.error(
+        "An error occurred while fetching transaction data:",
+        error
+      );
+    } finally {
+      setLoadingStates((prevStates) => ({
+        ...prevStates,
+        [receipt_id]: false,
+      }));
+    }
+  }
   const buyToken = tokensMap[order.buy_token];
   const sellToken = tokensMap[order.sell_token];
   const calPoint =
@@ -64,10 +108,7 @@ export default function ActiveLine({
       p = new BigNumber(1).dividedBy(price).toFixed();
     }
     return (
-      <span
-        className="whitespace-nowrap  col-span-1 flex items-start xs:flex-row xs:items-center flex-col relative  xs:right-0"
-        style={{ minWidth: "100px" }}
-      >
+      <span className="whitespace-nowrap  col-span-1 flex items-start xs:flex-row xs:items-center flex-col relative  xs:right-0">
         <span className="mr-1 text-white text-sm" title={p}>
           {toPrecision(p, 2)}
         </span>
@@ -312,55 +353,157 @@ export default function ActiveLine({
           zIndex: 20 - index,
         }}
       >
-        {/* title */}
-        <div className="rounded-t-xl bg-orderMobileTop px-3 pt-3">
-          <div className="flex items-center relative justify-between">
-            {<SellTokenAmount sellToken={sellToken} orderIn={orderIn} />}
-            <MyOrderMobileArrow />
-            <BuyTokenAmount buyToken={buyToken} buyAmount={buyAmount} />
+        <div className="bg-dark-290 rounded-lg">
+          {/* title */}
+          <div className="relative rounded-t-xl bg-portfolioMobileBg px-3 pt-3">
+            <div className="flex items-center justify-center">
+              {<SellTokenAmount sellToken={sellToken} orderIn={orderIn} />}
+              <MyOrderMobileArrow className="mx-4" />
+              <BuyTokenAmount buyToken={buyToken} buyAmount={buyAmount} />
+            </div>
+            <div className="grid  grid-cols-3 pb-1.5">
+              <span />
+              {<Created order={order} />}
+              <div className="relative z-50 text-xs rounded justify-self-end">
+                {!!orderTx && (
+                  <a
+                    className="flex items-center text-gray-10 cursor-pointer hover:text-white bg-black bg-opacity-20 py-0.5 px-1.5"
+                    onMouseEnter={() => handleMouseEnter(orderTx)}
+                    onMouseLeave={handleMouseLeave}
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                  >
+                    {loadingStates[orderTx] ? (
+                      <>
+                        Tx
+                        <span className="loading-dots"></span>
+                      </>
+                    ) : (
+                      <>
+                        Tx
+                        <span className="ml-1.5">
+                          <ArrowTopRightIcon />
+                        </span>
+                      </>
+                    )}
+                    {hoveredTx === orderTx && (
+                      <div className="w-44 absolute top-6 right-0 bg-dark-70 border border-gray-70 rounded-lg p-2 shadow-lg z-50">
+                        <div className="flex flex-col">
+                          <div
+                            className="mb-2 px-3 py-2  text-white rounded-md flex items-center"
+                            onMouseEnter={(e) => {
+                              const arrow = e.currentTarget.querySelector(
+                                ".arrow"
+                              ) as HTMLElement;
+                              if (arrow) {
+                                arrow.style.display = "block";
+                              }
+                            }}
+                            onMouseLeave={(e) => {
+                              const arrow = e.currentTarget.querySelector(
+                                ".arrow"
+                              ) as HTMLElement;
+                              if (arrow) {
+                                arrow.style.display = "none";
+                              }
+                            }}
+                            onClick={() =>
+                              handleTxClick(
+                                orderTx,
+                                `${getConfig().explorerUrl}/txns`
+                              )
+                            }
+                          >
+                            <NearblocksIcon />
+                            <p className="ml-2 text-sm">nearblocks</p>
+                            <div
+                              className="ml-3 arrow"
+                              style={{ display: "none" }}
+                            >
+                              <TxLeftArrow />
+                            </div>
+                          </div>
+                          <div
+                            className="px-3 py-2  text-white rounded-md flex items-center"
+                            onMouseEnter={(e) => {
+                              const arrow = e.currentTarget.querySelector(
+                                ".arrow"
+                              ) as HTMLElement;
+                              if (arrow) {
+                                arrow.style.display = "block";
+                              }
+                            }}
+                            onMouseLeave={(e) => {
+                              const arrow = e.currentTarget.querySelector(
+                                ".arrow"
+                              ) as HTMLElement;
+                              if (arrow) {
+                                arrow.style.display = "none";
+                              }
+                            }}
+                            onClick={() =>
+                              handleTxClick(
+                                orderTx,
+                                `${getConfig().pikespeakUrl}/transaction-viewer`
+                              )
+                            }
+                          >
+                            <PikespeakIcon />
+                            <p className="ml-2 text-sm">Pikespeak...</p>
+                            <div
+                              className="ml-3 arrow"
+                              style={{ display: "none" }}
+                            >
+                              <TxLeftArrow />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </a>
+                )}
+              </div>
+            </div>
           </div>
+          {/*  content */}
+          <div className="rounded-b-xl p-3">
+            <MobileInfoBanner text={"Fee Tiers"} value={feeTier} />
 
-          {<Created order={order} />}
-        </div>
-        {/*  content */}
-        <div className="rounded-b-xl p-3 bg-cardBg">
-          <MobileInfoBanner text={"Fee Tiers"} value={feeTier} />
+            <MobileInfoBanner
+              text={`1 ${
+                sort ? buyToken.symbol : tokensMap[order.sell_token].symbol
+              } Price`}
+              value={orderRate}
+            />
 
-          <MobileInfoBanner
-            text={`1 ${
-              sort ? buyToken.symbol : tokensMap[order.sell_token].symbol
-            } Price`}
-            value={orderRate}
-          />
+            <MobileInfoBanner
+              text={"Claimed"}
+              value={
+                <Unclaim
+                  buyToken={buyToken}
+                  order={order}
+                  claimedAmount={claimedAmount}
+                  unClaimedAmount={unClaimedAmount}
+                  displayPercents={displayPercents}
+                  pendingAmount={pendingAmount}
+                />
+              }
+            />
 
-          <MobileInfoBanner
-            text={"Claimed"}
-            value={
-              <Unclaim
-                buyToken={buyToken}
-                order={order}
-                claimedAmount={claimedAmount}
-                unClaimedAmount={unClaimedAmount}
-                displayPercents={displayPercents}
-                pendingAmount={pendingAmount}
-              />
-            }
-          />
+            <UnclaimTip
+              claimedAmount={claimedAmount}
+              unClaimedAmount={unClaimedAmount}
+              pendingAmount={pendingAmount}
+              order={order}
+              displayPercents={displayPercents}
+            />
 
-          <UnclaimTip
-            claimedAmount={claimedAmount}
-            unClaimedAmount={unClaimedAmount}
-            pendingAmount={pendingAmount}
-            order={order}
-            displayPercents={displayPercents}
-          />
-
-          <div className="flex items-center w-full xs:mt-2">
-            <Actions order={order} />
-            <ClaimButton unClaimedAmount={unClaimedAmount} order={order} />
+            <div className="flex items-center w-full mt-2 gap-4">
+              <Actions order={order} />
+              <ClaimButton unClaimedAmount={unClaimedAmount} order={order} />
+            </div>
           </div>
         </div>
-
         {/* swap banner */}
         {!ONLY_ZEROS.test(swapIn || "0") ? (
           <SwapBanner

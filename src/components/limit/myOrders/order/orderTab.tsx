@@ -31,7 +31,7 @@ export default function OrderTab({
 
         <div className="flex text-[13px] p-1 rounded text-white border border-gray-70">
           <button
-            className={`pl-3 pr-1 rounded py-1 relative ${
+            className={`px-3 rounded py-1 relative ${
               orderType === "active" ? "text-white bg-gray-100" : "text-gray-10"
             } `}
             onClick={(e) => {
@@ -43,20 +43,14 @@ export default function OrderTab({
           >
             <div className="flex items-center">
               <FormattedMessage id="active" defaultMessage={"Active"} />
-              <span
-                className={`flex items-center justify-center h-[18px] px-2 font-extrabold rounded-full text-xs text-black relative -top-1 ${
-                  isActiveTab ? "bg-primaryGreen" : "bg-gray-10"
-                }`}
-              >
-                {activeOrderList && activeOrderList.length > 0
-                  ? `${activeOrderList.length}`
-                  : null}
-              </span>
+              {activeOrderList && activeOrderList.length > 0
+                ? `(${activeOrderList.length})`
+                : null}
             </div>
           </button>
 
           <button
-            className={`pl-3 pr-1 py-1 rounded ${
+            className={`px-3 py-1 rounded ${
               orderType === "history"
                 ? "text-white bg-gray-100"
                 : "text-gray-10"
@@ -70,15 +64,9 @@ export default function OrderTab({
           >
             <div className="frcs">
               <FormattedMessage id="history" defaultMessage={"History"} />
-              <span
-                className={`flex items-center justify-center h-[18px] px-2 bg-gray-10 font-extrabold rounded-full text-xs text-black relative -top-1 ${
-                  isHistoryTab ? "bg-primaryGreen" : "bg-gray-10"
-                }`}
-              >
-                {historyOrderList && historyOrderList.length > 0
-                  ? `${historyOrderList.length}`
-                  : null}
-              </span>
+              {historyOrderList && historyOrderList.length > 0
+                ? `(${historyOrderList.length})`
+                : null}
             </div>
           </button>
         </div>

@@ -14,7 +14,7 @@ export default function ClaimButton({
   const [claimLoading, setClaimLoading] = useState<boolean>(false);
   return (
     <button
-      className={`rounded border  xs:text-sm xs:w-full ml-1.5 ${
+      className={`rounded border xs:text-sm xs:w-full ml-1.5 lg:h-[32px] lg:text-[13px] lg:w-[90px] xsm:text-sm xsm:flex-grow xsm:h-[38px] ${
         ONLY_ZEROS.test(unClaimedAmount)
           ? "border-dark-190 text-dark-200 cursor-not-allowed opacity-40"
           : `border-green-10 text-green-10`
@@ -31,11 +31,6 @@ export default function ClaimButton({
           order_id: order.order_id,
           undecimal_amount: "0",
         });
-      }}
-      style={{
-        height: "32px",
-        fontSize: "13px",
-        width: "90px",
       }}
     >
       <ButtonTextWrapper

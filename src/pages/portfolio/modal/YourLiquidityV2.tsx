@@ -77,6 +77,7 @@ import { PortfolioContextType, PortfolioData } from "../RefPanelMobilePage";
 import {
   DclBorder,
   OrdersArrow,
+  PositionsMobileIcon,
   WaterDropIcon,
 } from "@/components/portfolio/components/icon";
 
@@ -110,7 +111,7 @@ export function YourLiquidityV2(props: any) {
   >([]);
   const [liquidities_tokens_metas, set_liquidities_tokens_metas] =
     useState<Record<string, TokenMetadata>>();
-
+  const [activeIndex, setActiveIndex] = useState(null);
   const accountStore = useAccountStore();
   const isSignedIn = accountStore.isSignedIn;
   useRemoveLiquidityUrlHandle();
@@ -363,6 +364,9 @@ export function YourLiquidityV2(props: any) {
       setYourLpValueV2 && setYourLpValueV2(total_value.toFixed());
     }
   }
+  const handleToggle = (index: any) => {
+    setActiveIndex(index === activeIndex ? null : index);
+  };
   return (
     <div>
       {groupYourLiquidity &&
@@ -375,6 +379,8 @@ export function YourLiquidityV2(props: any) {
                 liquidities_list={liquidity.map((l: any) => l.liquidityDetail)}
                 tokenPriceList={tokenPriceList}
                 all_seeds={all_seeds}
+                isActive={index === activeIndex}
+                onToggle={() => handleToggle(index)}
               />
             );
           }
@@ -693,11 +699,15 @@ function UserLiquidityLineStyleGroup({
   liquidities_list,
   tokenPriceList,
   all_seeds,
+  isActive,
+  onToggle,
 }: {
   groupYourLiquidityList: any[];
   liquidities_list: UserLiquidityInfo[];
   tokenPriceList: any;
   all_seeds: Seed[];
+  isActive: any;
+  onToggle: any;
 }) {
   const publicData = groupYourLiquidityList[0];
   const {
@@ -1194,11 +1204,20 @@ function UserLiquidityLineStyleGroup({
         tokenFeeValue,
       }}
     >
-      <UserLiquidityLineStyleGroupPage></UserLiquidityLineStyleGroupPage>
+      <UserLiquidityLineStyleGroupPage
+        isActive={isActive}
+        onToggle={onToggle}
+      ></UserLiquidityLineStyleGroupPage>
     </GroupData.Provider>
   );
 }
-function UserLiquidityLineStyleGroupPage() {
+function UserLiquidityLineStyleGroupPage({
+  isActive,
+  onToggle,
+}: {
+  isActive: any;
+  onToggle: any;
+}) {
   const {
     tip_seed,
     tokens,
@@ -1225,163 +1244,163 @@ function UserLiquidityLineStyleGroupPage() {
       .then(() => window.location.reload());
   }
   return (
-    <>
+    <div className="mb-4">
       <div
-        className={`rounded-xl mt-3 bg-gray-20 px-4 bg-opacity-30 ${
-          switch_off ? "" : "pb-4"
-        }`}
+        className={`rounded-lg bg-dark-270 mb-0.5 ${switch_off ? "" : "pb-4"}`}
+        onClick={onToggle}
       >
-        <div className="frcb h-14">
-          <div className="flex items-center">
-            <div className="flex items-center flex-shrink-0 mr-2.5">
-              <img
-                src={tokens[0]?.icon}
-                className="w-6 h-6 border border-black rounded-full"
-              ></img>
-              <img
-                src={tokens[1]?.icon}
-                className="relative -ml-1.5 w-7 h-7 border border-black rounded-full"
-              ></img>
-            </div>
-            <span className="text-white font-bold text-sm paceGrotesk-Bold">
+        <div className="bg-portfolioMobileBg pt-4 pb-2.5 pl-3 pr-3 rounded-t-lg frcb">
+          <div className="flex items-center flex-shrink-0 mr-2.5">
+            <img
+              src={tokens[0]?.icon}
+              className="w-6 h-6 border border-black rounded-full"
+            ></img>
+            <img
+              src={tokens[1]?.icon}
+              className="relative -ml-1.5 w-6 h-6 border border-black rounded-full"
+            ></img>
+          </div>
+          <div className="">
+            <span className="text-white font-bold text-sm paceGrotesk-Bold flex justify-end mb-1">
               {tokens[0]?.symbol}-{tokens[1]?.symbol}
             </span>
-            <span className="frcc text-xs text-gray-10 bg-gray-60 bg-opacity-15 rounded-md px-1.5 mx-1.5 py-0.5">
-              {+fee / 10000}%
-            </span>
-            <span
-              onClick={() => {
-                goPoolDetailPage();
-              }}
-              className="frcc text-xs rounded-md px-1.5 cursor-pointer py-0.5  mr-1.5 relative cursor-pointer"
-            >
-              <DclBorder className="absolute top-0 left-0" />
-              DCL Pools
-              <OrdersArrow className="ml-1"></OrdersArrow>
-            </span>
-          </div>
-          <div className="flex items-center">
-            <div className="flex flex-col items-end mr-5">
-              <span className="text-white text-sm paceGrotesk-Bold">
-                {your_liquidity || "-"}
+            <div className="frcc">
+              <span className="frcc text-xs text-gray-10 bg-gray-60 bg-opacity-15 rounded-md h-4 mr-1.5 px-1">
+                {+fee / 10000}%
               </span>
-              <div className="flex items-center">
-                <WaterDropIcon className="m-1.5"></WaterDropIcon>
-                <span className="text-xs text-primaryGreen paceGrotesk-Bold">
-                  {tokenFeeValue}
+              <span
+                onClick={() => {
+                  goPoolDetailPage();
+                }}
+                className="frcc text-xs rounded-md px-1.5 cursor-pointer py-0.5 relative cursor-pointer"
+              >
+                <DclBorder className="absolute top-0 left-0" />
+                DCL Pools
+                <OrdersArrow className="ml-1"></OrdersArrow>
+              </span>
+            </div>
+          </div>
+        </div>
+        <div className="p-3.5">
+          <div className="frcb mb-5">
+            <p className="text-sm text-gray-60">Your liquidity:</p>
+            <p className="text-xl text-white paceGrotesk-Bold">
+              {your_liquidity || "-"}
+            </p>
+          </div>
+          <div className="frcb mb-3">
+            <p className="text-sm text-gray-60">Earning Fee:</p>
+            <p className="text-sm text-white frcc">
+              <WaterDropIcon className="m-1.5"></WaterDropIcon>
+              <span className="text-primaryGreen">{tokenFeeValue}</span>
+            </p>
+          </div>
+          <div className="frcb">
+            <div className="text-xs text-gray-1 frcc">
+              Price Range
+              <div
+                className={`ml-1 flex items-center justify-center bg-opacity-15 rounded-md h-5 px-1 mr-2 ${
+                  isInRange ? "bg-blue-20" : "bg-warn"
+                }`}
+              >
+                <span
+                  className={`flex-shrink-0 w-1.5 h-1.5 rounded-full mr-1.5 ${
+                    isInRange ? "bg-blue-20" : "bg-warn"
+                  }`}
+                ></span>
+                <span
+                  className={`whitespace-nowrap text-xs ${
+                    isInRange ? "text-blue-20" : "text-warn"
+                  }`}
+                >
+                  {isInRange ? "In range" : "Out of range"}
                 </span>
               </div>
             </div>
-            <UpDownButton
-              set_switch_off={() => {
-                set_switch_off(!switch_off);
-              }}
-              switch_off={switch_off}
-            ></UpDownButton>
+            <div className="text-right text-xs text-white">
+              <div className="text-right justify-end flex-wrap">
+                {intersectionRangeList.map((range: string[], i: number) => {
+                  return (
+                    <div
+                      className="text-white whitespace-nowrap text-xs"
+                      key={i + "id"}
+                    >
+                      <span>
+                        {displayNumberToAppropriateDecimals(range[0])}
+                      </span>
+                      <span className="mx-1">-</span>
+
+                      <span>
+                        {displayNumberToAppropriateDecimals(range[1])}
+                      </span>
+                      {intersectionRangeList.length > 1 &&
+                        i < intersectionRangeList.length - 1 && (
+                          <span className=""></span>
+                        )}
+                    </div>
+                  );
+                })}
+                <span className="text-xs ml-1 text-gray-10">
+                  {ratedMapTokens}
+                </span>
+              </div>
+            </div>
           </div>
         </div>
-        <div className={`${switch_off ? "hidden" : ""}`}>
-          <div className="bg-dark-210 rounded-xl px-3.5 py-5 bg-opacity-70 mt-2">
-            <div className="frcb mb-4">
-              <span className="text-xs text-gray-10">Price Range</span>
-              <div className="flex items-center text-xs text-white">
-                <div
-                  className={`flex items-center justify-center bg-opacity-15 rounded-md h-5 px-1 mr-2 ${
-                    isInRange ? "bg-blue-20" : "bg-warn"
-                  }`}
-                >
-                  <span
-                    className={`flex-shrink-0 w-1.5 h-1.5 rounded-full mr-1.5 ${
-                      isInRange ? "bg-blue-20" : "bg-warn"
-                    }`}
-                  ></span>
-                  <span
-                    className={`whitespace-nowrap text-xs ${
-                      isInRange ? "text-blue-20" : "text-warn"
-                    }`}
-                  >
-                    {isInRange ? "In range" : "Out of range"}
-                  </span>
-                </div>
-                <div className="flex items-center flex-wrap">
-                  {intersectionRangeList.map((range: string[], i: number) => {
-                    return (
-                      <div
-                        className="text-white whitespace-nowrap text-xs"
-                        key={i + "id"}
-                      >
-                        <span>
-                          {displayNumberToAppropriateDecimals(range[0])}
-                        </span>
-                        <span className="mx-1">-</span>
-
-                        <span>
-                          {displayNumberToAppropriateDecimals(range[1])}
-                        </span>
-                        {intersectionRangeList.length > 1 &&
-                          i < intersectionRangeList.length - 1 && (
-                            <span className="mr-1">,</span>
-                          )}
-                      </div>
-                    );
-                  })}
-                  <span className="text-xs ml-1 text-gray-10">
-                    {ratedMapTokens}
-                  </span>
-                </div>
-              </div>
-            </div>
-            <div className="frcb mb-4">
-              <span className="text-xs text-gray-10">APR(24h)</span>
-              <div className="flex items-center">
-                <span className="text-xs mr-2">{accountAPR || "-"}</span>
-                {joined_seeds ? (
-                  <div className="flex items-center gap-2 text-xs">
-                    {(Object.values(joined_seeds) as IUserJoinedSeedDetail[])
-                      .sort(sort_joined_seeds)
-                      .map(
-                        (
-                          joined_seed_info: IUserJoinedSeedDetail,
-                          index: number
-                        ) => {
-                          const length = Object.values(joined_seeds).length;
-                          const { seed_apr, seed_status } = joined_seed_info;
-                          if (seed_status == "ended") return null;
-                          if (length == 1) {
-                            return (
-                              <div
-                                className="frcs gap-1 text-gray-10 whitespace-nowrap"
-                                key={index + "id"}
-                              >
-                                <span>Farm APR</span>
-                                <span>{seed_apr}</span>
-                              </div>
-                            );
-                          } else {
-                            return (
-                              <div
-                                className="frcs gap-1 text-gray-10 whitespace-nowrap"
-                                key={index + "id"}
-                              >
-                                <span>
-                                  ({seed_status == "run" ? "new" : "pre."}) APR
-                                </span>
-                                <span>{seed_apr}</span>
-                              </div>
-                            );
-                          }
+      </div>
+      <div className={`${isActive ? "" : "hidden"}`}>
+        <div className="rounded-lg bg-dark-270 p-3.5">
+          <div className="frcb mb-4">
+            <span className="text-xs text-gray-10">APR(24h)</span>
+            <div className="flex items-center">
+              <span className="text-xs mr-2">{accountAPR || "-"}</span>
+              {joined_seeds ? (
+                <div className="flex items-center gap-2 text-xs">
+                  {(Object.values(joined_seeds) as IUserJoinedSeedDetail[])
+                    .sort(sort_joined_seeds)
+                    .map(
+                      (
+                        joined_seed_info: IUserJoinedSeedDetail,
+                        index: number
+                      ) => {
+                        const length = Object.values(joined_seeds).length;
+                        const { seed_apr, seed_status } = joined_seed_info;
+                        if (seed_status == "ended") return null;
+                        if (length == 1) {
+                          return (
+                            <div
+                              className="frcs gap-1 text-gray-10 whitespace-nowrap"
+                              key={index + "id"}
+                            >
+                              <span>Farm APR</span>
+                              <span>{seed_apr}</span>
+                            </div>
+                          );
+                        } else {
+                          return (
+                            <div
+                              className="frcs gap-1 text-gray-10 whitespace-nowrap"
+                              key={index + "id"}
+                            >
+                              <span>
+                                ({seed_status == "run" ? "new" : "pre."}) APR
+                              </span>
+                              <span>{seed_apr}</span>
+                            </div>
+                          );
                         }
-                      )}
-                  </div>
-                ) : tip_seed ? (
-                  <div className="frcs gap-1 text-gray-10 text-xs">
-                    <span>Farm APR</span>
-                    <span>0%</span>
-                  </div>
-                ) : null}
-              </div>
+                      }
+                    )}
+                </div>
+              ) : tip_seed ? (
+                <div className="frcs gap-1 text-gray-10 text-xs">
+                  <span>Farm APR</span>
+                  <span>0%</span>
+                </div>
+              ) : null}
             </div>
-            {/* {joined_seeds || tip_seed ? (
+          </div>
+          {/* {joined_seeds || tip_seed ? (
               <div className="frcb mb-4">
                 <span className="text-xs text-gray-10">Unclaimed</span>
                 {joined_seeds ? (
@@ -1466,32 +1485,37 @@ function UserLiquidityLineStyleGroupPage() {
               </div>
             ) : null} */}
 
-            <div className="flex items-center justify-between">
-              <span className="text-xs text-gray-10">Unclaimed Fees</span>
-              <div className="flex items-center">
-                <img
-                  src={tokenMetadata_x_y && tokenMetadata_x_y[0].icon}
-                  className="w-5 h-5 border border-greenColor rounded-full mr-1.5"
-                ></img>
-                <span className="text-xs text-white mr-5 paceGrotesk-Bold">
-                  {tokenFeeLeft || "-"}
-                </span>
-                <img
-                  src={tokenMetadata_x_y && tokenMetadata_x_y[1].icon}
-                  className="w-5 h-5 border border-greenColor rounded-full mr-1.5"
-                ></img>
-                <span className="text-xs text-white paceGrotesk-Bold">
-                  {tokenFeeRight || "-"}
-                </span>
-                <span className="text-xs text-primaryGreen pl-3.5  ml-3.5">
-                  {tokenFeeValue}
-                </span>
-              </div>
+          <div className="flex items-center justify-between">
+            <span className="text-xs text-gray-10">Unclaimed Fees</span>
+            <div className="flex items-center">
+              <img
+                src={tokenMetadata_x_y && tokenMetadata_x_y[0].icon}
+                className="w-5 h-5 border border-greenColor rounded-full mr-1.5"
+              ></img>
+              <span className="text-xs text-white mr-5 paceGrotesk-Bold">
+                {tokenFeeLeft || "-"}
+              </span>
+              <img
+                src={tokenMetadata_x_y && tokenMetadata_x_y[1].icon}
+                className="w-5 h-5 border border-greenColor rounded-full mr-1.5"
+              ></img>
+              <span className="text-xs text-white paceGrotesk-Bold">
+                {tokenFeeRight || "-"}
+              </span>
+              <span className="text-xs text-primaryGreen pl-3.5  ml-3.5">
+                {tokenFeeValue}
+              </span>
             </div>
+          </div>
+          <div
+            className="border border-dark-190 rounded-lg frcc h-9 mt-5 cursor-pointer"
+            onClick={onToggle}
+          >
+            <PositionsMobileIcon />
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }
 interface IUserJoinedSeed {

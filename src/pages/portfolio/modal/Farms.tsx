@@ -53,7 +53,10 @@ import { LOVE_TOKEN_DECIMAL } from "@/services/referendum";
 import CustomTooltip from "@/components/customTooltip/customTooltip";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import { PortfolioContextType, PortfolioData } from "../RefPanelMobilePage";
-import { OrdersArrow } from "@/components/portfolio/components/icon";
+import {
+  OrdersArrow,
+  PositionsMobileIcon,
+} from "@/components/portfolio/components/icon";
 
 const { REF_VE_CONTRACT_ID, REF_UNI_V3_SWAP_CONTRACT_ID } = getConfig();
 export const FarmCommonDatas = createContext<FarmCommonDataContext | null>(
@@ -295,6 +298,10 @@ export default function Farms(props: any) {
           your_list_liquidities,
         }}
       >
+        <p className="text-sm text-gray-50 mb-6">
+          Amount:
+          <span className="text-white ml-1">{total_farms_value}</span>
+        </p>
         <div className={`${activeTab == "3" ? "" : "hidden"}`}>
           <ClassicFarms></ClassicFarms>
           <DclFarms></DclFarms>
@@ -749,6 +756,7 @@ function DclFarmRowPage() {
   );
 }
 function ClassicFarms() {
+  const [activeIndex, setActiveIndex] = useState(null);
   const { set_classic_farms_value_done, set_classic_farms_value } = useContext(
     PortfolioData
   ) as PortfolioContextType;
@@ -791,16 +799,34 @@ function ClassicFarms() {
       return yourTvl;
     }
   }
+  const handleToggle = (index: any) => {
+    setActiveIndex(index === activeIndex ? null : index);
+  };
   return (
     <>
-      {classicSeeds.map((seed: Seed) => {
-        return <ClassicFarmRow seed={seed} key={seed.seed_id}></ClassicFarmRow>;
+      {classicSeeds.map((seed: Seed, index) => {
+        return (
+          <ClassicFarmRow
+            seed={seed}
+            key={seed.seed_id}
+            isActive={index === activeIndex}
+            onToggle={() => handleToggle(index)}
+          ></ClassicFarmRow>
+        );
       })}
     </>
   );
 }
 const ClassicData = createContext<ClassicDataContext | null>(null);
-function ClassicFarmRow({ seed }: { seed: Seed }) {
+function ClassicFarmRow({
+  seed,
+  isActive,
+  onToggle,
+}: {
+  seed: Seed;
+  isActive: any;
+  onToggle: any;
+}) {
   const {
     user_seeds_map,
     user_unclaimed_map,
@@ -1027,11 +1053,20 @@ function ClassicFarmRow({ seed }: { seed: Seed }) {
         getUserLpPercent,
       }}
     >
-      <ClassicFarmRowPage></ClassicFarmRowPage>
+      <ClassicFarmRowPage
+        isActive={isActive}
+        onToggle={onToggle}
+      ></ClassicFarmRowPage>
     </ClassicData.Provider>
   );
 }
-function ClassicFarmRowPage() {
+function ClassicFarmRowPage({
+  isActive,
+  onToggle,
+}: {
+  isActive: any;
+  onToggle: any;
+}) {
   const {
     switch_off,
     set_switch_off,
@@ -1045,53 +1080,47 @@ function ClassicFarmRowPage() {
     getUserLpPercent,
   } = useContext(ClassicData)!;
   return (
-    <div
-      className={`rounded-xl mt-3 bg-gray-20 px-4 bg-opacity-30 ${
-        switch_off ? "" : "pb-4"
-      }`}
-    >
-      <div className="frcb h-14">
-        <div className="flex items-center">
+    <div className="mb-4">
+      <div
+        className={`rounded-lg bg-dark-270 mb-0.5 ${switch_off ? "" : "pb-4"}`}
+        onClick={onToggle}
+      >
+        <div className="bg-portfolioMobileBg pt-4 pb-2.5 pl-3 pr-3 rounded-t-lg frcb">
           <div className="flex items-center flex-shrink-0 mr-2.5">
             {displayImgs()}
           </div>
-          <span className="text-white font-bold text-sm paceGrotesk-Bold">
-            {displaySymbols()}
-          </span>
-          <span className="ml-2 frcc text-xs text-gray-10 px-1 rounded-md border border-gray-90 mr-1.5">
-            Classic
-            <span
-              className="ml-1.5"
-              onClick={() => {
-                goFarmDetailPage(seed);
-              }}
-            >
-              <OrdersArrow></OrdersArrow>
+          <div className="flex flex-col justify-end items-end">
+            <span className="text-white font-bold text-sm paceGrotesk-Bold">
+              {displaySymbols()}
             </span>
-          </span>
-        </div>
-        <div className="flex items-center">
-          <div className="flex flex-col items-end mr-5">
-            <span className="text-white text-sm paceGrotesk-Bold">
-              {getYourTvl()}
-            </span>
-            <div className="flex items-center">
-              <FarmListRewards className="ml-1 mr-1" />
-              <span className="text-xs text-farmApyColor paceGrotesk-Bold">
-                {unclaimedRewardsData.worth}
+            <span className="w-16 ml-2 frcc text-xs text-gray-10 px-1 rounded-md border border-gray-90">
+              Classic
+              <span
+                className="ml-1.5"
+                onClick={() => {
+                  goFarmDetailPage(seed);
+                }}
+              >
+                <OrdersArrow></OrdersArrow>
               </span>
-            </div>
+            </span>
           </div>
-          <UpDownButton
-            set_switch_off={() => {
-              set_switch_off(!switch_off);
-            }}
-            switch_off={switch_off}
-          ></UpDownButton>
+        </div>
+        <div className="p-3.5">
+          <div className="frcb mb-5">
+            <p className="text-sm text-gray-60">Your Farming:</p>
+            <p className="text-xl text-white">{getYourTvl()}</p>
+          </div>
+          <div className="frcb">
+            <p className="text-sm text-gray-60">Rewards:</p>
+            <p className="text-sm text-farmApyColor">
+              {unclaimedRewardsData.worth}
+            </p>
+          </div>
         </div>
       </div>
-      <div className={`${switch_off ? "hidden" : ""}`}>
-        <div className="bg-dark-210 rounded-xl px-3.5 py-5 bg-opacity-70 mt-2">
+      <div className={`${isActive ? "" : "hidden"}`}>
+        <div className="bg-dark-270 rounded-xl px-3.5 py-4 bg-opacity-70 mt-0.5 pb-4">
           <div className="frcb mb-3">
             <span className="text-xs text-gray-10">USD Value Staked</span>
             <span className="text-xs text-white">{getYourTvl()}</span>
@@ -1149,6 +1178,12 @@ function ClassicFarmRowPage() {
                 {unclaimedRewardsData && unclaimedRewardsData.worth}
               </span>
             </div>
+          </div>
+          <div
+            className="border border-dark-190 rounded-lg frcc h-9 mt-5 cursor-pointer"
+            onClick={onToggle}
+          >
+            <PositionsMobileIcon />
           </div>
         </div>
       </div>

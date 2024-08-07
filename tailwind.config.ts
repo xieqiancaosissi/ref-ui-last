@@ -88,7 +88,8 @@ const config: Config = {
           240: "#04121F",
           250: "#131F28",
           260: "#4C6171",
-          270: "rgba(145, 162, 174, 0.2)",
+          270: "#121D26",
+          280: "rgba(145, 162, 174, 0.2)",
         },
         green: {
           10: "#9EFE01",
@@ -158,6 +159,8 @@ const config: Config = {
           "linear-gradient(95.38deg, #9EFF00 5.46%, #FAFF00 100%)",
         limitOrderMobileBg:
           "linear-gradient(180deg, #1B242C 0%, rgba(27, 36, 44, 0) 100%)",
+        portfolioMobileBg:
+          "linear-gradient(360deg, rgba(33, 43, 53, 0.5) 0%, rgba(61, 84, 108, 0.5) 100%)",
       }),
     },
     screens: {

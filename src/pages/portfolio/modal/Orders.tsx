@@ -43,6 +43,7 @@ import {
   GreenCircleIcon,
   OrdersArrow,
   OrdersExclamationMark,
+  PositionsMobileIcon,
   PurpleCircleIcon,
 } from "@/components/portfolio/components/icon";
 
@@ -156,6 +157,7 @@ function OrderCard({
   } = useContext(PortfolioData) as PortfolioContextType;
   const accountStore = useAccountStore();
   const accountId = getAccountId();
+  const [activeIndex, setActiveIndex] = useState(null);
   const isSignedIn = !!accountId || accountStore.isSignedIn;
   const [activeSortBy, setActiveSortBy] = useState<"unclaim" | "created">(
     "created"
@@ -228,9 +230,13 @@ function OrderCard({
   function ActiveLine({
     order,
     index,
+    isActive,
+    onToggle,
   }: {
     order: UserOrderInfo;
     index: number;
+    isActive: any;
+    onToggle: any;
   }) {
     const tx_record = activeOrderTxMap[order.order_id];
     const { tokenPriceList } = useContext(
@@ -353,7 +359,7 @@ function OrderCard({
     const getUnclaimAmountTip = () => {
       return `
         <div 
-          class="flex flex-col text-xs min-w-36 text-gray-10 z-50"
+          class="flex flex-col text-xs text-gray-60"
         >
         ${
           ONLY_ZEROS.test(claimedAmount)
@@ -408,44 +414,44 @@ function OrderCard({
         ? display_amount(orderIn)
         : buyAmountToSellAmount(order.unclaimed_amount || "0", order, price);
     const sellTokenAmount = (
-      <div className="flex items-center whitespace-nowrap w-28 justify-between xsm:w-1 xsm:flex-grow">
-        <span className="flex flex-shrink-0 items-center">
+      <div className="frcc mb-1.5">
+        <span className="frcc">
           <img
             src={sellToken.icon}
             className="border border-gradientFrom rounded-full w-7 h-7"
             alt=""
           />
 
-          <div className="flex   xs:flex-row flex-col ml-2">
-            <span className="text-white text-sm mr-2" title={orderIn}>
+          <div className="frcc ml-1">
+            <span className="text-white text-base mr-1" title={orderIn}>
               {Number(orderIn) > 0 && Number(orderIn) < 0.01
                 ? "< 0.01"
                 : toPrecision(orderIn, 2)}
             </span>
 
-            <span className="text-gray-10 text-xs xs:relative xs:top-0.5">
+            <span className="text-gray-10 text-base">
               {toRealSymbol(sellToken.symbol)}
             </span>
           </div>
         </span>
 
-        <span className="text-white text-lg xs:hidden pl-2  pr-1">
+        <span className="text-white text-lg ml-4 mr-4">
           <MyOrderInstantSwapArrowRight />
         </span>
       </div>
     );
 
     const buyTokenAmount = (
-      <span className="flex items-center ml-6 xsm:w-1 xsm:flex-grow xsm:m-0 xsm:justify-end">
+      <span className="frcc mb-1.5">
         <img
           src={buyToken.icon}
           className="border flex-shrink-0 border-gradientFrom rounded-full w-7 h-7"
           alt=""
         />
 
-        <div className="flex xs:flex-row flex-col ml-2">
+        <div className="frcc ml-1">
           <span
-            className="text-white mr-2 text-sm whitespace-nowrap"
+            className="text-white mr-1 text-base whitespace-nowrap"
             title={buyAmount}
           >
             {Number(buyAmount) > 0 && Number(buyAmount) < 0.01
@@ -453,7 +459,7 @@ function OrderCard({
               : toPrecision(buyAmount, 2)}
           </span>
 
-          <span className="text-gray-10 text-xs xs:relative xs:top-0.5">
+          <span className="text-gray-10 text-base">
             {toRealSymbol(buyToken.symbol)}
           </span>
         </div>
@@ -463,7 +469,7 @@ function OrderCard({
     const fee = Number(order.pool_id.split(V3_POOL_SPLITER)[2]);
 
     const feeTier = (
-      <span className="text-xs text-gray-10 px-1 py-0.5 rounded-md bg-gray-60 bg-opacity-15 ml-5">
+      <span className="text-sm text-white">
         {`${toPrecision(calculateFeePercent(fee / 100).toString(), 2)}% `}
       </span>
     );
@@ -476,16 +482,16 @@ function OrderCard({
         p = new BigNumber(1).dividedBy(price).toFixed();
       }
       return (
-        <span className="whitespace-nowrap flex items-start xs:flex-row xs:items-center flex-col w-32">
+        <span className="">
           <span className="mr-1 text-white text-sm" title={p}>
             {toPrecision(p, 2)}
           </span>
-          <span className="text-gray-10 text-xs xs:hidden">
+          {/* <span className="text-gray-10 text-xs">
             {`${toRealSymbol(
               sort ? sellToken?.symbol : buyToken.symbol
             )}/${toRealSymbol(sort ? buyToken.symbol : sellToken.symbol)}`}
-          </span>
-          <span className="text-white text-sm lg:hidden md:hidden">
+          </span> */}
+          <span className="text-white text-sm">
             {`${toRealSymbol(sort ? sellToken.symbol : buyToken.symbol)}`}
           </span>
         </span>
@@ -502,7 +508,7 @@ function OrderCard({
         data-tooltip-html={getUnclaimAmountTip()}
         data-tooltip-id={"unclaim_tip_" + order.order_id}
       >
-        <span className="mr-1 xsm:ml-2.5 xsm:mr-3.5">
+        <span className="ml-1">
           <OrdersExclamationMark color="dark" />
         </span>
         <div className="flex items-center w-full">
@@ -536,13 +542,13 @@ function OrderCard({
     );
 
     const unclaim = (
-      <span className="flex items-center w-44 whitespace-nowrap mr-1">
-        <div className="xs:hidden">{unclaimTip}</div>
+      <span className="flex items-center w-full whitespace-nowrap">
+        {unclaimTip}
       </span>
     );
     const created = (
-      <div className="flex items-center justify-end text-xs text-gray-10">
-        <span className="mr-1">Created </span>
+      <div className="flex items-center justify-end text-xs text-dark-260">
+        {/* <span className="mr-1">Created </span> */}
         {moment(
           Math.floor(Number(order.created_at) / TIMESTAMP_DIVISOR) * 1000
         ).format("YYYY-MM-DD HH:mm")}
@@ -664,15 +670,16 @@ function OrderCard({
         <div className="flex items-start justify-between">
           <span className="text-sm text-gray-10">Executing</span>
           <div>
-            <div className="flex items-center mb-6">
-              <div className="flex items-center w-24">
+            <div className="flex items-center mb-6 w-full">
+              {/* <div className="flex items-center mr-1">
                 <GreenCircleIcon></GreenCircleIcon>
                 <span className="text-xs text-gray-10 ml-1.5">Claimed</span>
-              </div>
-              <div className="flex items-center w-22">
+              </div> */}
+              <div className="flex items-center mr-1 flex-grow">
+                <GreenCircleIcon></GreenCircleIcon>
                 <span
                   title={sellAmountToClaimedAmount}
-                  className="text-white text-sm"
+                  className="text-white text-sm ml-1"
                 >
                   {display_amount(sellAmountToClaimedAmount)}
                 </span>
@@ -683,7 +690,7 @@ function OrderCard({
               <span className="mx-2 text-gray-10">
                 <MyOrderInstantSwapArrowRight />
               </span>
-              <div className="flex items-center justify-end w-24">
+              <div className="flex items-center justify-end flex-grow">
                 <span title={claimedAmount} className="text-sm text-white">
                   {display_amount(claimedAmount)}
                 </span>
@@ -693,14 +700,15 @@ function OrderCard({
               </div>
             </div>
             <div className="flex items-center">
-              <div className="flex items-center w-22">
+              {/* <div className="flex items-center">
                 <PurpleCircleIcon></PurpleCircleIcon>
                 <span className="text-xs text-gray-10 ml-1.5">Filled</span>
-              </div>
-              <div className="flex items-center w-24">
+              </div> */}
+              <div className="flex items-center flex-grow">
+                <PurpleCircleIcon></PurpleCircleIcon>
                 <span
                   title={sellAmountToUnClaimedAmount}
-                  className="text-white text-sm"
+                  className="text-white text-sm ml-1"
                 >
                   {sellAmountToUnClaimedAmount}
                 </span>
@@ -711,7 +719,7 @@ function OrderCard({
               <span className="mx-2 text-gray-10">
                 <MyOrderInstantSwapArrowRight />
               </span>
-              <div className="flex items-center justify-end w-24">
+              <div className="flex items-center justify-end flex-grow">
                 <span title={unClaimedAmount} className="text-sm text-white">
                   {display_amount(unClaimedAmount)}
                 </span>
@@ -729,32 +737,46 @@ function OrderCard({
     return (
       <>
         <div
-          className={`rounded-lg mt-2.5 bg-gray-20 px-3 ${
+          className={`rounded-lg mt-5 ${
             switch_off ? "bg-opacity-30" : "pb-4 bg-opacity-80"
           }`}
         >
-          <div className={`flex items-center justify-between h-14`}>
-            <div className="flex items-center">
-              {sellTokenAmount}
-              {buyTokenAmount}
-              {feeTier}
+          <div className={`bg-dark-270 rounded-lg`} onClick={onToggle}>
+            <div className="bg-portfolioMobileBg  pt-3 pb-1 rounded-t-lg">
+              <div className="frcc ">
+                {sellTokenAmount}
+                {buyTokenAmount}
+              </div>
+              <div className="frcc">{created}</div>
             </div>
-            <div className="flex items-center">
-              {orderRate}
-              {unclaim}
-              <UpDownButton
-                set_switch_off={() => {
-                  set_switch_off(!switch_off);
-                }}
-                switch_off={switch_off}
-              ></UpDownButton>
+            <div className="py-4 px-3">
+              <div className="frcb mb-3">
+                <p className="text-sm text-gray-60">Fee Tiers</p>
+                <p>{feeTier}</p>
+              </div>
+              <div className="frcb mb-3">
+                <p className="text-sm text-gray-60">
+                  1
+                  <span className="mx-0.5">
+                    {toRealSymbol(sort ? buyToken.symbol : sellToken.symbol)}{" "}
+                  </span>
+                  Price
+                </p>
+                <p>{orderRate}</p>
+              </div>
+              <div>{unclaim}</div>
             </div>
           </div>
-          <div className={`${switch_off ? "hidden" : ""}`}>
-            <div className="bg-dark-210 rounded-xl px-3.5 py-4 bg-opacity-70 mt-3 mb-4">
+          <div className={`${isActive ? "" : "hidden"}`}>
+            <div className="bg-dark-270 rounded-xl px-3.5 py-4 bg-opacity-70 pb-4">
               {swapBanner}
+              <div
+                className="border border-dark-190 rounded-lg frcc h-9 mt-5 cursor-pointer"
+                onClick={onToggle}
+              >
+                <PositionsMobileIcon />
+              </div>
             </div>
-            {created}
           </div>
         </div>
       </>
@@ -787,6 +809,9 @@ function OrderCard({
     isSignedIn;
   const noData_status =
     !loading_status && (activeOrder?.length === 0 || !isSignedIn);
+  const handleToggle = (index: any) => {
+    setActiveIndex(index === activeIndex ? null : index);
+  };
   return (
     <div className="flex flex-col">
       {loading_status || noData_status ? (
@@ -816,6 +841,12 @@ function OrderCard({
               loading_status || noData_status ? "hidden" : ""
             }`}
           >
+            <p className="text-sm text-gray-50">
+              Amount:
+              <span className="text-white ml-1">
+                {total_active_orders_value}
+              </span>
+            </p>
             <span
               onClick={() => {
                 localStorage.setItem(SWAP_MODE_KEY, SWAP_MODE.LIMIT);
@@ -836,6 +867,8 @@ function OrderCard({
                     index={index}
                     key={index + "order"}
                     order={order}
+                    isActive={index === activeIndex}
+                    onToggle={() => handleToggle(index)}
                   />
                 );
               })}

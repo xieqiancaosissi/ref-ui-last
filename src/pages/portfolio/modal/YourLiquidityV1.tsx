@@ -498,31 +498,100 @@ function YourClassicLiquidityLinePage() {
     seed_status,
   } = useContext(LiquidityContextData)!;
   return (
-    <div
-      className={`rounded-xl mt-3 bg-gray-20 px-4 bg-opacity-30 ${
-        switch_off ? "" : "pb-4"
-      }`}
-    >
-      <div className="frcb h-14">
-        <div className="flex items-center">
-          <div className="flex items-center">{Images}</div>
-          <span className="text-sm text-white paceGrotesk-Bold mx-2.5">
-            {Symbols}
-          </span>
-          <span className="frcc text-xs text-gray-10 px-1 rounded-md border border-gray-90 mr-1.5">
-            Classic
-            <span
-              className="ml-1.5"
-              onClick={() => {
-                openUrl(`/pools/${pool.id}`);
-              }}
-            >
-              <OrdersArrow></OrdersArrow>
-            </span>
-          </span>
+    <div className="mb-4">
+      <div
+        className={`rounded-lg bg-dark-270 mb-0.5 ${switch_off ? "" : "pb-4"}`}
+      >
+        <div className="bg-portfolioMobileBg pt-4 pb-2.5 pl-3 pr-3 rounded-t-lg">
+          <div className="frcb flex-shrink-0 mr-2.5">
+            <div className="flex items-center">{Images}</div>
+            <div>
+              <span className="text-sm text-white paceGrotesk-Bold">
+                {Symbols}
+              </span>
+              <div className="w-full flex items-center justify-end ">
+                <span className="w-16 frcc text-xs text-gray-10 px-1 rounded-md border border-gray-90">
+                  Classic
+                  <span
+                    className="ml-1.5"
+                    onClick={() => {
+                      openUrl(`/pools/${pool.id}`);
+                    }}
+                  >
+                    <OrdersArrow></OrdersArrow>
+                  </span>
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
-        <div className="flex items-center">
-          <span className="text-sm text-white paceGrotesk-Bold mr-5">
+        <div className="p-3.5">
+          <div className="frcb mb-5">
+            <p className="text-sm text-gray-60">Your liquidity:</p>
+            <p className="text-xl text-white paceGrotesk-Bold">
+              {display_value(lp_total_value)}
+            </p>
+          </div>
+          <div className="frcb mb-3">
+            <p className="text-sm text-gray-60">Your LP Tokens (Share)</p>
+            <p className="text-sm text-white frcc">
+              {display_number_withCommas(lp_total)} (
+              {display_percent(user_lp_percent)})
+            </p>
+          </div>
+          <div className="frcb">
+            <p className="text-sm text-gray-60">Usage</p>
+            <p className="text-sm text-white frcc">
+              <div className="flex items-center text-sm text-white">
+                <div
+                  className={`flex items-center pl-3.5 ${
+                    +lp_in_vote > 0 || +lp_in_pool > 0
+                      ? "border-r border-gray-10 pr-3.5"
+                      : ""
+                  } ${+lp_in_farm > 0 ? "" : "hidden"}`}
+                >
+                  {display_number_withCommas(lp_in_farm)} in{" "}
+                  <span
+                    className="flex items-center"
+                    onClick={() => {
+                      openUrl(`/farms/${pool.id}-${seed_status}`);
+                    }}
+                  >
+                    <label className="underline cursor-pointer mx-1">
+                      farm
+                    </label>{" "}
+                    <OrdersArrow className="cursor-pointer text-primaryText hover:text-white"></OrdersArrow>
+                  </span>
+                </div>
+                <div
+                  className={`flex items-center pl-3.5 ${
+                    +lp_in_pool > 0 ? "pr-3.5 border-r border-orderTypeBg" : ""
+                  } ${+lp_in_vote > 0 ? "" : "hidden"}`}
+                >
+                  {display_number_withCommas(lp_in_vote)} locked in{" "}
+                  <span
+                    className="flex items-center"
+                    onClick={() => {
+                      openUrl("/referendum");
+                    }}
+                  >
+                    <label className="underline cursor-pointer mx-1">
+                      VOTE
+                    </label>{" "}
+                    <OrdersArrow className="cursor-pointer text-primaryText hover:text-white"></OrdersArrow>
+                  </span>
+                </div>
+                <div
+                  className={`flex items-center pl-3.5 ${
+                    +lp_in_pool > 0 ? "" : "hidden"
+                  }`}
+                >
+                  {display_number_withCommas(lp_in_pool)} Holding
+                </div>
+              </div>
+            </p>
+          </div>
+          {/* <span className="text-sm text-white paceGrotesk-Bold mr-5">
             {display_value(lp_total_value)}
           </span>
           <UpDownButton
@@ -530,7 +599,7 @@ function YourClassicLiquidityLinePage() {
               set_switch_off(!switch_off);
             }}
             switch_off={switch_off}
-          ></UpDownButton>
+          ></UpDownButton> */}
         </div>
       </div>
       <div className={`${switch_off ? "hidden" : ""}`}>

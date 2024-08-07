@@ -57,23 +57,22 @@ export default function Positions(props: any) {
     v1LiquidityLoadingDone && v2LiquidityLoadingDone && total_quantity > 0;
   return (
     <div className="text-white">
-      <div className="xsm:border-b xsm:border-cardBg">
-        {/* liquidities list */}
-        <div className={`${activeTab == "2" ? "" : "hidden"}`}>
-          <YourLiquidityV2
-            setYourLpValueV2={setYourLpValueV2}
-            setLpValueV2Done={setLpValueV2Done}
-            setLiquidityLoadingDone={setV2LiquidityLoadingDone}
-            setLiquidityQuantity={setV2LiquidityQuantity}
-          ></YourLiquidityV2>
-          <YourLiquidityV1
-            setLpValueV1Done={setLpValueV1Done}
-            setYourLpValueV1={setYourLpValueV1}
-            setLiquidityLoadingDone={setV1LiquidityLoadingDone}
-            setLiquidityQuantity={setV1LiquidityQuantity}
-          ></YourLiquidityV1>
-        </div>
+      {/* liquidities list */}
+      <div className={`${activeTab == "2" ? "" : "hidden"}`}>
+        <YourLiquidityV2
+          setYourLpValueV2={setYourLpValueV2}
+          setLpValueV2Done={setLpValueV2Done}
+          setLiquidityLoadingDone={setV2LiquidityLoadingDone}
+          setLiquidityQuantity={setV2LiquidityQuantity}
+        ></YourLiquidityV2>
+        <YourLiquidityV1
+          setLpValueV1Done={setLpValueV1Done}
+          setYourLpValueV1={setYourLpValueV1}
+          setLiquidityLoadingDone={setV1LiquidityLoadingDone}
+          setLiquidityQuantity={setV1LiquidityQuantity}
+        ></YourLiquidityV1>
       </div>
+
       {/* pc loading */}
       {loading_status || noData_status ? (
         <SkeletonTheme

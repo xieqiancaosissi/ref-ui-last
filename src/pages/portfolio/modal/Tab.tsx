@@ -128,8 +128,10 @@ export default function Tab() {
               <div className="frcc">
                 <div className={`relative flex items-center`}>
                   <span
-                    className={`text-sm  whitespace-nowrap ${
-                      tab.tag == activeTab ? "text-white " : "text-gray-10"
+                    className={`whitespace-nowrap ${
+                      tab.tag == activeTab
+                        ? "text-white text-lg"
+                        : "text-gray-10 text-base"
                     }`}
                   >
                     {tab.name || <FormattedMessage id={tab.id} />}

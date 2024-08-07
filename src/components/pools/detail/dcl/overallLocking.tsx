@@ -46,7 +46,7 @@ export default function OverallLocking(props: any) {
               <div
                 key={item.title}
                 className={`lg:w-1/3 xsm:my-0.5 h-17  text-white box-border flex flex-col justify-center pl-4 rounded-md bg-refPublicBoxDarkBg ${
-                  index == 1 && "ml-1"
+                  index == 1 && "mx-0.5"
                 }`}
                 style={{
                   width: !isMobile ? "" : "48%",

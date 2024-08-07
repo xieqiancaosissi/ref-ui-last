@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { Component, useEffect, useRef, useState } from "react";
 import { useAccountStore } from "@/stores/account";
 import { getAccountNearBalance } from "@/services/token";
 import poolStyle from "@/components/pools/pool.module.css";
@@ -14,6 +14,7 @@ import Charts from "@/components/pools/charts/charts";
 import Classic from "@/components/pools/classicPool/classic";
 import Stable from "@/components/pools/stablePool/stablePool";
 import Dcl from "@/components/pools/dclPool/dcl";
+import Degen from "@/components/pools/degenPool/degenPool";
 import CreatePool from "@/components/pools/createPoolModal/index";
 import _ from "lodash";
 import { useRiskTokens } from "@/hooks/useRiskTokens";
@@ -93,6 +94,10 @@ export default function Farms() {
       Component: Stable,
     },
     {
+      id: "degen",
+      Component: Degen,
+    },
+    {
       id: "dcl",
       Component: Dcl,
     },
@@ -144,6 +149,15 @@ export default function Farms() {
         },
       });
     }
+    if (isActive == "degen") {
+      setMobilePros({
+        which: "degenTabSortChange",
+        sortMap: {
+          key: item.key,
+          sort: sortMap.sort,
+        },
+      });
+    }
 
     if (isActive == "dcl") {
       setMobilePros({
@@ -168,7 +182,11 @@ export default function Farms() {
         }
 
         if (k.pool_kind == "RATED_SWAP") {
-          router.push(`/pool/stable/${k.id}`);
+          if (k.degens) {
+            router.push(`/pool/degen/${k.id}`);
+          } else {
+            router.push(`/pool/stable/${k.id}`);
+          }
         }
       }
     }
@@ -500,6 +518,76 @@ export default function Farms() {
               </header>
             )}
 
+            {/*stable sort */}
+            {isActive == "degen" && (
+              <header
+                className="relative  flex-1 h-9 text-white border border-gray-40 rounded text-sm flex items-center mx-1"
+                style={{
+                  background: "rgba(126, 138, 147, 0.1)",
+                }}
+                ref={modalRef}
+              >
+                <div className="w-full h-full flex justify-between items-center pl-1 pr-2">
+                  <div className="frcc flex-1">
+                    <div
+                      className="bg-gray-20 frcc w-7 h-7 rounded mr-1"
+                      onClick={() => {
+                        setMobilePros({
+                          which: "degenTabSortArrowChange",
+                          sort: sortMap.sort === "desc" ? "asc" : "desc",
+                        });
+                        setSortMap((prevSortMap) => ({
+                          key: prevSortMap.key,
+                          sort: prevSortMap.sort === "desc" ? "asc" : "desc",
+                        }));
+                      }}
+                    >
+                      {sortMap.sort === "desc" ? <DownArrow /> : <UpArrow />}
+                    </div>
+                    <div
+                      className="flex-1 h-full"
+                      onClick={() => {
+                        setShowClassHeader((prev) => !prev);
+                      }}
+                    >
+                      {classHeaderVal}
+                    </div>
+                  </div>
+                  <div
+                    onClick={() => {
+                      setShowClassHeader((prev) => !prev);
+                    }}
+                  >
+                    <MobileArrowUp></MobileArrowUp>
+                  </div>
+                </div>
+                {showClassHeader && (
+                  <div
+                    className="absolute top-9 left-0 w-full bg-dark-70 rounded-b-md py-2 text-gray-50 text-sm"
+                    style={{
+                      zIndex: "99",
+                    }}
+                  >
+                    {stableHeader.map((item, index) => {
+                      return (
+                        <div
+                          key={item.key + Math.random() + index}
+                          className={`frcc select-none h-7  ${
+                            sortMap.key == item.key
+                              ? "text-white bg-gray-100 rounded"
+                              : "text-gray-60"
+                          }`}
+                          onClick={() => handleSort(item)}
+                        >
+                          <span>{item.value}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </header>
+            )}
+
             {/*dcl sort */}
             {isActive == "dcl" && (
               <header
@@ -618,7 +706,7 @@ export default function Farms() {
         </div>
       )}
 
-      {isActive == "stable" && (
+      {(isActive == "stable" || isActive == "degen") && (
         <div className="sticky bottom-8 lg:hidden">
           <DocTips
             tips="Stable pools, which can contain two or more tokens, use Curve's StableSwap algorithm."

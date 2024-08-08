@@ -38,7 +38,7 @@ export default function TokenFeeAndCureentPrice({
 
   const showRate = rate < 0.001 ? "< 0.001" : numberWithCommas(rate.toFixed(3));
   return (
-    <div className="flex items-center text-white h-10 lg:justify-around lg:ml-9 xsm:w-full xsm:justify-start">
+    <div className="flex items-center text-white h-10 lg:justify-around  xsm:w-full xsm:justify-start">
       <div className="text-sm">
         <h3 className="text-gray-50 font-normal">Fee</h3>
         <p>{formatPercentage(poolDetail?.total_fee * 100)}</p>

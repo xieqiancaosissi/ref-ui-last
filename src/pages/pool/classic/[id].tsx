@@ -343,44 +343,50 @@ export default function ClassicPoolDetail() {
 
       {/* title */}
       <div className="lg:w-270 xsm:w-full min-h-10 flex items-center xsm:hidden">
-        {poolDetail && updatedMapList?.length > 0 && (
-          <>
-            <TokenDetail {...poolDetail} updatedMapList={updatedMapList} />
-            {/*  */}
-            <span className=" text-2xl text-white font-bold ml-1 mr-2">
-              {poolDetail?.token_symbols
-                ?.map((item: any) => (item == "wNEAR" ? (item = "NEAR") : item))
-                .join("-")}
-            </span>
+        <div className="w-183 flex flex-wrap">
+          {poolDetail && updatedMapList?.length > 0 && (
+            <>
+              <TokenDetail {...poolDetail} updatedMapList={updatedMapList} />
+              {/*  */}
+              <span className="text-2xl text-white font-bold ml-1 mr-2">
+                {poolDetail?.token_symbols
+                  ?.map((item: any) =>
+                    item == "wNEAR" ? (item = "NEAR") : item
+                  )
+                  .join("-")}
+              </span>
 
-            {/* farm tag */}
-            {poolDetail.is_farm && (
-              <div
-                className={` bg-farmTagBg text-farmApyColor frcc text-xs italic w-13 h-5 rounded-xl mr-2`}
-              >
-                Farms
-              </div>
-            )}
-
-            {/* watchlist */}
-            <CollectStar
-              iscollect={!accountId ? "false" : isCollect.toString()}
-              className="cursor-pointer"
-              onClick={() => collectPool()}
-            />
-
-            {/* pc fee */}
-            {updatedMapList &&
-              updatedMapList[0]?.token_account_ids &&
-              !isMobile && (
-                <TokenFeeAndCureentPrice
-                  poolDetail={poolDetail}
-                  tokenPriceList={tokenPriceList}
-                  updatedMapList={updatedMapList}
-                />
+              {/* farm tag */}
+              {poolDetail.is_farm && (
+                <div
+                  className={` bg-farmTagBg text-farmApyColor frcc text-xs italic w-13 h-5 rounded-xl mr-2`}
+                >
+                  Farms
+                </div>
               )}
-          </>
-        )}
+
+              {/* watchlist */}
+              <div className="lg:mr-9">
+                <CollectStar
+                  iscollect={!accountId ? "false" : isCollect.toString()}
+                  className="cursor-pointer"
+                  onClick={() => collectPool()}
+                />
+              </div>
+
+              {/* pc fee */}
+              {updatedMapList &&
+                updatedMapList[0]?.token_account_ids &&
+                !isMobile && (
+                  <TokenFeeAndCureentPrice
+                    poolDetail={poolDetail}
+                    tokenPriceList={tokenPriceList}
+                    updatedMapList={updatedMapList}
+                  />
+                )}
+            </>
+          )}
+        </div>
       </div>
 
       <div className="xsm:w-full min-h-10 flex items-center lg:hidden">

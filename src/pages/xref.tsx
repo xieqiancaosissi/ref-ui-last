@@ -424,7 +424,7 @@ export default function XrefPage(props: any) {
 }
 
 const pageStyle = {
-  backgroundImage: `url('https://assets.ref.finance/images/XrefBg.png')`,
+  backgroundImage: `url('https://img.ref.finance/images/XrefBg.png')`,
   backgroundSize: "cover",
   backgroundPosition: "center",
   backgroundAttachment: "fixed",

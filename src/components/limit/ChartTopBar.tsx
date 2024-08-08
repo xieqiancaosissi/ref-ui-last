@@ -1,5 +1,5 @@
 import React from "react";
-import { useLimitStore } from "@/stores/limitOrder";
+import { useLimitOrderChartStore } from "@/stores/limitChart";
 import {
   Images,
   Symbols,
@@ -9,19 +9,19 @@ import useTokenRate24h from "@/hooks/useTokenRate24h";
 import { priceFormatter } from "@/services/limit/limitUtils";
 import { IoArrowUpOutline } from "../reactIcons";
 export default function ChartTopBar() {
-  const limitStore = useLimitStore();
-  const tokenIn = limitStore.getTokenIn();
-  const tokenOut = limitStore.getTokenOut();
+  const limitChartStore = useLimitOrderChartStore();
+  const tokenIn = limitChartStore.getTokenIn();
+  const tokenOut = limitChartStore.getTokenOut();
   const diff = useTokenRate24h({
     base_token: tokenOut,
     token: tokenIn,
   });
   function switchTokens() {
-    limitStore.setTokenIn(tokenOut);
-    limitStore.setTokenOut(tokenIn);
+    limitChartStore.setTokenIn(tokenOut);
+    limitChartStore.setTokenOut(tokenIn);
   }
   function showOrderTable() {
-    limitStore.setShowViewAll(true);
+    limitChartStore.setShowViewAll(true);
   }
   if (!(tokenIn && tokenOut)) return null;
   return (

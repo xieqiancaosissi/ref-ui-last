@@ -17,7 +17,6 @@ export interface Diff {
   lastUpdate: string;
 }
 
-export type IChartTab = "PRICE" | "ORDER";
 export interface IOrderPoint {
   [point: string]: IOrderPointItem;
 }

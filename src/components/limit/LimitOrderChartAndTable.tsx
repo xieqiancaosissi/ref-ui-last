@@ -1,17 +1,17 @@
-import React, { useEffect, useMemo, useState, useRef } from "react";
+import React from "react";
 import Modal from "react-modal";
 import RateChart from "@/components/limit/RateChart";
 import LimitOrderTable from "./LimitOrderTable";
 import { isMobile } from "@/utils/device";
-import { useLimitStore } from "@/stores/limitOrder";
+import { useLimitOrderChartStore } from "@/stores/limitChart";
 
 export default function LimitOrderChartAndTable() {
-  const limitStore = useLimitStore();
-  const showViewOrder = limitStore.getShowViewAll();
+  const limitChartStore = useLimitOrderChartStore();
+  const showViewOrder = limitChartStore.getShowViewAll();
   const mobile = isMobile();
   function closeOrderTable(e: any) {
     e.stopPropagation();
-    limitStore.setShowViewAll(false);
+    limitChartStore.setShowViewAll(false);
   }
   return (
     <div className="flex items-stretch justify-between xsm:overflow-x-hidden">

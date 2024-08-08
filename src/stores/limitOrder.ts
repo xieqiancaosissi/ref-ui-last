@@ -28,8 +28,6 @@ export interface ILimitStore {
   setRateDiff: (rateDiff: string) => void;
   getBalanceLoading: () => boolean;
   setBalanceLoading: (balanceLoading: boolean) => void;
-  getShowViewAll: () => boolean;
-  setShowViewAll: (showViewAll: boolean) => void;
   onAmountInChangeTrigger: ({
     amount,
     limitStore,
@@ -105,9 +103,6 @@ export const useLimitStore = create<ILimitStore>((set: any, get: any) => ({
   poolFetchLoading: false,
   rateDiff: "",
   balanceLoading: true,
-  showViewAll: false,
-  getShowViewAll: () => get().showViewAll,
-  setShowViewAll: (showViewAll: boolean) => set({ showViewAll }),
   getBalanceLoading: () => get().balanceLoading,
   setBalanceLoading: (balanceLoading: boolean) => set({ balanceLoading }),
   onAmountInChangeTrigger: ({

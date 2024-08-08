@@ -22,23 +22,22 @@ import { useClientMobile } from "../../utils/device";
 import { scientificNotationToString, toPrecision } from "../../utils/numbers";
 import { priceFormatter } from "@/services/limit/limitUtils";
 import Big from "big.js";
-import { useLimitStore } from "@/stores/limitOrder";
+import { useLimitOrderChartStore } from "@/stores/limitChart";
 import { Dimensions } from "@/interfaces/limit";
 
 const REF_FI_SWAP_RATE_DIMENSIONS = "REF_FI_SWAP_RATE_DIMENSIONS";
 
 export default function RateChartContainer(props: any) {
-  const { set_show_view_all } = props;
-  const limitStore = useLimitStore();
-  const tokenIn = limitStore.getTokenIn();
-  const tokenOut = limitStore.getTokenOut();
+  const limitChartStore = useLimitOrderChartStore();
+  const tokenIn = limitChartStore.getTokenIn();
+  const tokenOut = limitChartStore.getTokenOut();
   if (!(tokenIn && tokenOut)) return null;
   return <RateChart />;
 }
 function RateChart() {
-  const limitStore = useLimitStore();
-  const tokenIn = limitStore.getTokenIn();
-  const tokenOut = limitStore.getTokenOut();
+  const limitChartStore = useLimitOrderChartStore();
+  const tokenIn = limitChartStore.getTokenIn();
+  const tokenOut = limitChartStore.getTokenOut();
   const dimensionList = ["24H", "7D", "1M", "1Y", "All"] as Dimensions[];
 
   const isMobile = useClientMobile();

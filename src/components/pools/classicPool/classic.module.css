@@ -4,7 +4,7 @@
 
 /* hide low tvl checkbox styles */
 .customCheckbox {
-  @apply frcc cursor-default;
+  @apply flex items-center justify-end cursor-default;
 }
 
 .customCheckbox input {
@@ -41,7 +41,7 @@
 }
 
 .checkPlaceholder {
-  @apply select-none font-normal text-sm;
+  @apply select-none font-normal lg:text-sm xsm:text-xs;
 }
 
 /* pool head */

@@ -12,6 +12,8 @@ import {
 import { IPoolDcl } from "@/interfaces/swapDcl";
 import { ftGetTokenMetadata } from "@/services/token";
 import { getAllTokenPrices } from "@/services/farm";
+import getConfigV3 from "@/utils/configV3";
+const { DEFAULT_LIMIT_POOL_ID } = getConfigV3();
 
 export function setAmountOut({
   tokenInAmount,
@@ -65,6 +67,13 @@ export async function fillDclPool(p: IPoolDcl) {
 
 export function getBestTvlPoolList(pools: IPoolDcl[]) {
   if (!pools?.length) return [];
+  const index = pools.findIndex(
+    (p: IPoolDcl) => p.pool_id == DEFAULT_LIMIT_POOL_ID
+  );
+  if (index !== -1) {
+    const [removed] = _.pullAt(pools, index);
+    pools.unshift(removed);
+  }
   const accPools = pools.reduce((acc, p) => {
     const { token_x, token_y } = p;
     const key = `${token_x}|${token_y}`;

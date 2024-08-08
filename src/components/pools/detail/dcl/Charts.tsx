@@ -298,6 +298,7 @@ export function TVlCharts(props: any) {
         borderWidth: 0,
         borderColor: "transparent",
         position: isMobile ? [0, -100] : [600, -124],
+        extraCssText: "z-index: 2;",
         formatter(params: any) {
           let result = `<div style="display:flex;justify-content: space-between;font-size:14px;"> ${params[0].axisValue} </div>`; //
           for (let i = 0, l = params.length; i < l; i++) {
@@ -468,6 +469,7 @@ export function VolumeCharts(props: any) {
         borderWidth: 0,
         borderColor: "transparent",
         position: isMobile ? [0, -100] : [600, -124],
+        extraCssText: "z-index: 2;",
         formatter(params: any) {
           let result = `<div style="display:flex;justify-content: space-between;font-size:14px;"> ${params[0].axisValue} </div>`; //
           for (let i = 0, l = params.length; i < l; i++) {

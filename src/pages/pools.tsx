@@ -208,6 +208,11 @@ export default function Farms() {
     };
   }, []);
 
+  const handleKeyDown = (e: any) => {
+    if (e.code == "Enter" && keyWordsType == "id" && searchValue) {
+      BlinkById();
+    }
+  };
   return (
     <>
       {/* PC Start */}
@@ -240,6 +245,8 @@ export default function Farms() {
                 `}
                       onClick={() => {
                         setActive(item.key);
+                        setKeyWordsType("token");
+                        setSearchValue("");
                       }}
                     >
                       {item.key == "watchlist" && <Star />}
@@ -255,7 +262,7 @@ export default function Farms() {
                   <div
                     onClick={() => {
                       keyWordsType == "token"
-                        ? setKeyWordsType("id")
+                        ? isActive != "dcl" && setKeyWordsType("id")
                         : setKeyWordsType("token");
                       setSearchValue("");
                     }}
@@ -272,6 +279,7 @@ export default function Farms() {
                     className={poolStyle.filterSearchInput}
                     placeholder={`Search pool by ${keyWordsType}`}
                     onChange={sendSearchValue}
+                    onKeyDown={(e) => handleKeyDown(e)}
                     value={searchValue}
                   />
                   <span className="hover:scale-110" onClick={() => BlinkById()}>
@@ -326,6 +334,8 @@ export default function Farms() {
                 `}
                     onClick={() => {
                       setActive(item.key);
+                      setKeyWordsType("token");
+                      setSearchValue("");
                     }}
                   >
                     {item.key == "watchlist" && <Star />}
@@ -343,6 +353,8 @@ export default function Farms() {
             }`}
             onClick={() => {
               setActive("watchlist");
+              setKeyWordsType("token");
+              setSearchValue("");
             }}
           >
             <Star />
@@ -355,7 +367,7 @@ export default function Farms() {
               <div
                 onClick={() => {
                   keyWordsType == "token"
-                    ? setKeyWordsType("id")
+                    ? isActive != "dcl" && setKeyWordsType("id")
                     : setKeyWordsType("token");
                   setSearchValue("");
                 }}

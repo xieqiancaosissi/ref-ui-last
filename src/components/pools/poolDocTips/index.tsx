@@ -7,7 +7,7 @@ export default function DocTips({ tips, src }: { tips: string; src: string }) {
       <div className="flex items-center lg:pl-4 xsm:pl-2">
         <ExclamationIcon className="flex-shrink-0" />
         <span className="mx-1">
-          {tips}
+          {tips} &nbsp;
           <span
             className={styles.learnMore}
             onClick={() => {

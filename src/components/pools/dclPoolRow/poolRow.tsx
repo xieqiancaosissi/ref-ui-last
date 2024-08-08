@@ -163,28 +163,29 @@ export default function PoolRow({
                     </span>
                   )}
                 </div>
-                {/* is collect */}
-                {renderStarList.includes(item.id.toString()) && (
-                  <StartWatchList className="mr-2" />
-                )}
-
-                {/* tag */}
-                {item.is_farm && (
-                  <div
-                    className={` bg-farmTagBg text-farmApyColor ${styles.tagPublicStyle}`}
-                  >
-                    Farms
-                  </div>
-                )}
-                {item.is_new && (
-                  <div
-                    className={`bg-primaryGreen text-black ${
-                      styles.tagPublicStyle
-                    }  ${item.is_farm ? "-ml-1.5" : ""}`}
-                  >
-                    News
-                  </div>
-                )}
+                <div className="frcc">
+                  {/* is collect */}
+                  {renderStarList.includes(item.id.toString()) && (
+                    <StartWatchList className="mr-2" />
+                  )}
+                  {/* tag */}
+                  {item.is_farm && (
+                    <div
+                      className={` bg-farmTagBg text-farmApyColor ${styles.tagPublicStyle}`}
+                    >
+                      Farms
+                    </div>
+                  )}
+                  {item.is_new && (
+                    <div
+                      className={`bg-primaryGreen text-black ${
+                        styles.tagPublicStyle
+                      }  ${item.is_farm ? "-ml-1.5" : ""}`}
+                    >
+                      News
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
 

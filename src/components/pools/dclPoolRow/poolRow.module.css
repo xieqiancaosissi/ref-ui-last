@@ -76,7 +76,7 @@
 }
 
 .symbol {
-  @apply text-base text-white font-medium px-2;
+  @apply text-base text-white font-medium lg:px-2;
 }
 
 .tagPublicStyle {

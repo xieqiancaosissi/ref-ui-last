@@ -126,7 +126,7 @@ export function SelectTokenDCL({
 
   return (
     <div
-      className="outline-none relative my-auto flex-shrink-0"
+      className="outline-none relative my-auto flex-shrink-0 bg-dark-10"
       onMouseLeave={() => {
         if (!mobileDevice) {
           setHoverSelectToken(false);
@@ -170,7 +170,7 @@ export function SelectTokenDCL({
         <div
           className={`${
             className ||
-            "pt-2  absolute top-8 outline-none xs:text-white xs:font-bold xs:fixed xs:bottom-0 xs:w-full  right-0"
+            "pt-2  absolute top-8 outline-none xsm:text-white xsm:font-bold xsm:fixed xsm:bottom-0 xsm:w-full  right-0"
           }    `}
           onMouseLeave={() => {
             if (!mobileDevice) {
@@ -200,16 +200,14 @@ export function SelectTokenDCL({
             ></div>
           )}
           <div
-            className="border border-gray-100 overflow-auto xs:absolute xs:w-full xs:bottom-0 xs:pb-8 xs:rounded-2xl rounded-lg bg-dark-10 px-2 py-3 "
+            className="border border-gray-100 overflow-auto xsm:absolute xsm:w-full xsm:bottom-0 xsm:pb-8 xsm:rounded-2xl rounded-lg bg-dark-10 px-2 py-3 "
             style={{
               zIndex: mobileDevice ? 300 : "",
               maxHeight: mobileDevice ? `${48 * 10 + 78}px` : "",
               minHeight: mobileDevice ? `${48 * 5 + 78}px` : "",
             }}
           >
-            <div className="text-sm text-gray-60 xs:text-white xs:text-base  ml-1.5   pb-2">
-              Instrument
-            </div>
+            <p className="text-base text-white px-2.5 mt-2 mb-4">Instrument</p>
             {renderList}
           </div>
         </div>

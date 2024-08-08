@@ -113,7 +113,7 @@ export default function Classic({
         </div>
         {/* pool header */}
         <header className={styles.headDiv}>
-          <div>Pools</div>
+          <div>Pair</div>
           <div>
             {dclHeader.map((item, index) => {
               return (

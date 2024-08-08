@@ -7,6 +7,8 @@ import { PoolInfo } from "@/services/swapV3";
 import { sort_tokens_by_base } from "@/services/commonV3";
 import { useAllPoolsV2 } from "@/hooks/usePools";
 import { Symbols, Images, IconLeftV3 } from "./liquidityComComp";
+import { SearchIcon } from "@/components/common/Icons";
+import { CloseButttonIcon } from "@/components/common/SelectTokenModal/Icons";
 export function SelectTokenDCL({
   selectTokenIn,
   selectTokenOut,
@@ -101,7 +103,7 @@ export function SelectTokenDCL({
     return (
       <div
         key={p.pool_id}
-        className="flex items-center text-sm xs:text-base min-w-max px-1.5 bg-opacity-90 py-3 bg-dark-10 rounded-lg hover:bg-gray-100 cursor-pointer"
+        className="flex items-center text-sm xs:text-base min-w-max px-1.5 bg-opacity-90 py-3 rounded-lg hover:bg-dark-10 cursor-pointer"
         onClick={() => {
           handleSelect(p);
           setHoverSelectToken(false);
@@ -124,9 +126,17 @@ export function SelectTokenDCL({
     }
   }, [hoverSelectToken]);
 
+  const [searchText, setSearchText] = useState<string>("");
+  function changeSearchText(e: any) {
+    setSearchText(e.target.value);
+  }
+  function clearSearchText() {
+    setSearchText("");
+  }
+
   return (
     <div
-      className="outline-none relative my-auto flex-shrink-0"
+      className="outline-none relative my-auto flex-shrink-0 bg-dark-10"
       onMouseLeave={() => {
         if (!mobileDevice) {
           setHoverSelectToken(false);
@@ -170,7 +180,7 @@ export function SelectTokenDCL({
         <div
           className={`${
             className ||
-            "pt-2  absolute top-8 outline-none xs:text-white xs:font-bold xs:fixed xs:bottom-0 xs:w-full  right-0"
+            "pt-2  absolute top-8 outline-none xsm:text-white xsm:font-bold xsm:fixed xsm:bottom-0 xsm:w-full  right-0"
           }    `}
           onMouseLeave={() => {
             if (!mobileDevice) {
@@ -200,16 +210,48 @@ export function SelectTokenDCL({
             ></div>
           )}
           <div
-            className="border border-gray-100 overflow-auto xs:absolute xs:w-full xs:bottom-0 xs:pb-8 xs:rounded-2xl rounded-lg bg-dark-10 px-2 py-3 "
+            className="overflow-auto xsm:absolute xsm:w-full xsm:bottom-0 xsm:pb-8 xsm:rounded-2xl rounded-lg bg-dark-70 px-2 pb-3 lg:w-70 xsm:hidden"
             style={{
               zIndex: mobileDevice ? 300 : "",
-              maxHeight: mobileDevice ? `${48 * 10 + 78}px` : "",
+              maxHeight: mobileDevice ? `${48 * 10 + 78}px` : "380px",
               minHeight: mobileDevice ? `${48 * 5 + 78}px` : "",
             }}
           >
-            <div className="text-sm text-gray-60 xs:text-white xs:text-base  ml-1.5   pb-2">
-              Instrument
+            <div
+              className="sticky top-0 bg-dark-70"
+              style={{
+                zIndex: 100,
+              }}
+            >
+              <p className="text-base text-white px-2.5 mb-4 py-3">
+                Instrument
+              </p>
+              {/* <div className="flex items-center justify-between border border-gray-90 rounded-md bg-black bg-opacity-40 px-2.5 h-10 mx-2.5">
+                <SearchIcon />
+                <input
+                  className="mx-1.5 outline-none text-sm text-white flex-grow bg-transparent"
+                  placeholder="Search token"
+                  onChange={changeSearchText}
+                  value={searchText}
+                />
+                <CloseButttonIcon
+                  onClick={clearSearchText}
+                  className={`cursor-pointer ${searchText ? "" : "hidden"}`}
+                />
+              </div> */}
             </div>
+            {renderList}
+          </div>
+
+          <div
+            className="overflow-auto xsm:absolute xsm:w-full xsm:bottom-0 xsm:pb-8 xsm:rounded-2xl rounded-lg bg-dark-70 px-2 py-3 lg:w-70 lg:hidden"
+            style={{
+              zIndex: mobileDevice ? 300 : "",
+              maxHeight: mobileDevice ? `${48 * 10 + 78}px` : "380px",
+              minHeight: mobileDevice ? `${48 * 5 + 78}px` : "",
+            }}
+          >
+            <p className="text-base text-white px-2.5 mt-2 mb-4">Instrument</p>
             {renderList}
           </div>
         </div>

@@ -107,7 +107,7 @@ export default function LimitOrderPage() {
         <ChartTopBar />
         <div className="border border-gray-30 xsm:border-none rounded-lg mt-2.5">
           <LimitOrderChartAndTable />
-          <p className="flex items-center justify-center border-t xsm:border-none lg:h-[42px] xsm:bg-dark-250 xsm:rounded xsm:p-3 xsm:text-xs xsm:text-dark-260 border-gray-30 text-gray-60">
+          <p className="flex items-center justify-center border-t xsm:border-none lg:h-[42px] xsm:bg-dark-250 xsm:rounded xsm:p-3 xsm:text-xs xsm:text-dark-260 border-gray-30 text-gray-60 lg:text-[13px]">
             The price is from the Ref AMM and for reference only. There is no
             guarente that your limit order will be immediately filled.
           </p>

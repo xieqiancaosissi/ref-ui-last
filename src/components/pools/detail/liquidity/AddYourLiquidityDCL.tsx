@@ -39,6 +39,7 @@ import { ArrowDownV3, TokenPairIcon } from "@/components/pools/icon";
 
 import Big from "big.js";
 import { SelectTokenDCL } from "./components/SelectToken";
+import { SelectDclTokenModal } from "@/components/limit/SelectDclToken";
 import { CurveShape, SpotShape, BidAskShape } from "./icon";
 import DclChart from "../dcl/d3Chart/DclChart";
 import {
@@ -1953,7 +1954,7 @@ export default function AddYourLiquidityPageV3() {
                       setTokenY(token);
                     }}
                     notNeedSortToken={true}
-                    className="pt-6  absolute top-5 outline-none  z-20  right-0 text-white    xs:text-white xs:font-bold xs:fixed xs:bottom-0 xs:w-full "
+                    className="pt-6  absolute top-5 outline-none  z-20  right-0 text-white  xs:text-white xs:font-bold xs:fixed xs:bottom-0 xs:w-full "
                     selected={
                       <div
                         className={` text-sm rounded-lg frcc cursor-pointer py-3   ${

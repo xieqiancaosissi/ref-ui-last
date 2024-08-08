@@ -4,13 +4,15 @@ export default function AddLiqTip(props: any) {
   const { tips } = props;
   return (
     <div
-      className="h-13 w-full px-3 py-1 rounded border text-white text-sm my-2"
+      className="max-h-13 w-full px-3 py-2 rounded  text-white text-xs my-2 items-start flex"
       style={{
+        borderWidth: "0.5px",
         borderColor: "rgba(154, 249, 1, 0.6)",
-        background: "rgba(154, 249, 1, 0.1)",
+        background: "rgba(158, 255, 0, 0.1)",
       }}
     >
-      👀 {tips}
+      <span className="mr-2">👀</span>
+      {tips}
     </div>
   );
 }

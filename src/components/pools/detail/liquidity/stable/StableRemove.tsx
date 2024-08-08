@@ -510,42 +510,87 @@ export default function StableAdd(props: any) {
                 </div>
               </div>
 
-              <div className="flex flex-wrap items-center justify-between">
-                {updatedMapList[0]?.token_account_ids?.map(
-                  (ite: any, ind: number) => {
-                    return (
-                      <>
-                        <div
-                          key={ite.tokenId}
-                          className="flex lg:h-13 xsm:h-12 mt-2 p-2 lg:w-45 xsm:w-5/12 shrink-0 items-center rounded bg-gray-230"
-                        >
-                          <Icon icon={ite.icon} className="h-7 w-7 mr-2" />
-                          <span className="text-gray-50 text-base xsm:hidden">
-                            {ite.symbol}
-                          </span>
-                          <span className="text-base text-white ml-2 xsm:hidden">
-                            {calcTokenReceived(receiveAmounts[ind], ite)}
-                          </span>
-
-                          <div className="lg:hidden flex flex-col justify-center">
-                            <span className="text-sm text-white">
-                              {calcTokenReceived(receiveAmounts[ind], ite)}
-                            </span>
-                            <span className="text-gray-50 text-sm">
+              {updatedMapList[0]?.token_account_ids?.length <= 2 && (
+                <div className="flex flex-wrap items-center justify-between">
+                  {updatedMapList[0]?.token_account_ids?.map(
+                    (ite: any, ind: number) => {
+                      return (
+                        <>
+                          <div
+                            key={ite.tokenId}
+                            className="flex lg:h-13 xsm:h-12 mt-2 p-2 lg:w-45 xsm:w-5/12 shrink-0 items-center rounded bg-gray-230"
+                          >
+                            <Icon icon={ite.icon} className="h-7 w-7 mr-2" />
+                            <span className="text-gray-50 text-base xsm:hidden">
                               {ite.symbol}
                             </span>
+                            <span className="text-base text-white ml-2 xsm:hidden">
+                              {calcTokenReceived(receiveAmounts[ind], ite)}
+                            </span>
+
+                            <div className="lg:hidden flex flex-col justify-center">
+                              <span className="text-sm text-white">
+                                {calcTokenReceived(receiveAmounts[ind], ite)}
+                              </span>
+                              <span className="text-gray-50 text-sm">
+                                {ite.symbol}
+                              </span>
+                            </div>
                           </div>
-                        </div>
-                        <span className="text-gray-50 text-lg">
-                          {ind < updatedMapList[0]?.token_account_ids.length - 1
-                            ? "+"
-                            : ""}
-                        </span>
-                      </>
-                    );
-                  }
-                )}
-              </div>
+                          <span className="text-gray-50 text-lg">
+                            {ind <
+                            updatedMapList[0]?.token_account_ids.length - 1
+                              ? "+"
+                              : ""}
+                          </span>
+                        </>
+                      );
+                    }
+                  )}
+                </div>
+              )}
+
+              {updatedMapList[0]?.token_account_ids?.length > 2 && (
+                <div className="flex items-center justify-between bg-gray-230 rounded mt-4">
+                  {updatedMapList[0]?.token_account_ids?.map(
+                    (ite: any, ind: number) => {
+                      return (
+                        <>
+                          <div
+                            key={ite.tokenId}
+                            className="flex lg:h-13 xsm:h-12 mt-2 p-1 shrink-0 items-center rounded "
+                          >
+                            <Icon icon={ite.icon} className="h-6 w-6 mr-1" />
+                            <div className="flex flex-col">
+                              <span className="text-gray-50 text-sm xsm:hidden">
+                                {ite.symbol}
+                              </span>
+                              <span className="text-sm text-white xsm:hidden">
+                                {calcTokenReceived(receiveAmounts[ind], ite)}
+                              </span>
+                            </div>
+
+                            <div className="lg:hidden flex flex-col justify-center">
+                              <span className="text-sm text-white">
+                                {calcTokenReceived(receiveAmounts[ind], ite)}
+                              </span>
+                              <span className="text-gray-50 text-sm">
+                                {ite.symbol}
+                              </span>
+                            </div>
+                          </div>
+                          <span className="text-gray-50 text-lg">
+                            {ind <
+                            updatedMapList[0]?.token_account_ids.length - 1
+                              ? "+"
+                              : ""}
+                          </span>
+                        </>
+                      );
+                    }
+                  )}
+                </div>
+              )}
             </div>
           )}
 

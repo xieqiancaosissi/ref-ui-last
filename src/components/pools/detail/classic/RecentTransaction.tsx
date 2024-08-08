@@ -4,6 +4,7 @@ import {
   toReadableNumber,
   numberWithCommas,
   toPrecision,
+  toInternationalCurrencySystem,
 } from "@/utils/numbers";
 import { formatNumber } from "@/utils/uiNumber";
 import { toRealSymbol } from "@/services/farm";
@@ -69,8 +70,34 @@ export default function RecentTransaction(props: any) {
   useEffect(() => {
     setTitle(
       activeTab == "swap"
-        ? ["From", "To", "Time"]
-        : ["Action", "Amount", "Time"]
+        ? [
+            {
+              key: "From",
+              colSpan: "w-1/3",
+            },
+            {
+              key: "To",
+              colSpan: "w-1/3",
+            },
+            {
+              key: "Time",
+              colSpan: "w-1/3",
+            },
+          ]
+        : [
+            {
+              key: "Action",
+              colSpan: "w-1/6",
+            },
+            {
+              key: "Amount",
+              colSpan: "w-1/2",
+            },
+            {
+              key: "Time",
+              colSpan: "w-1/3",
+            },
+          ]
     );
   }, [activeTab]);
 
@@ -90,21 +117,21 @@ export default function RecentTransaction(props: any) {
     const displayInAmount =
       Number(swapInAmount) < 0.01
         ? "<0.01"
-        : numberWithCommas(toPrecision(swapInAmount, 6));
+        : toInternationalCurrencySystem(swapInAmount, 6);
 
     const swapOutAmount = toReadableNumber(swapOut.decimals, tx.swap_out);
 
     const displayOutAmount =
       Number(swapOutAmount) < 0.01
         ? "<0.01"
-        : numberWithCommas(toPrecision(swapOutAmount, 6));
+        : toInternationalCurrencySystem(swapOutAmount, 6);
 
     return (
       <div
         key={tx.receipt_id + index}
-        className={`text-sm grid grid-cols-9 hover:bg-poolRecentHover my-3`}
+        className={`text-sm flex hover:bg-poolRecentHover my-3`}
       >
-        <div className="col-span-3 flex">
+        <div className="w-1/3 flex flex-wrap pr-1">
           <span className="col-span-1 text-white mr-1" title={swapInAmount}>
             {displayInAmount}
           </span>
@@ -117,7 +144,7 @@ export default function RecentTransaction(props: any) {
           </div>
         </div>
 
-        <div className="col-span-3">
+        <div className="w-1/3 flex-wrap flex items-center justify-start pr-1">
           <span className="text-white" title={swapOutAmount}>
             {displayOutAmount}
           </span>
@@ -127,7 +154,7 @@ export default function RecentTransaction(props: any) {
           </span>
         </div>
 
-        <div className="col-span-3 relative ">
+        <div className="w-1/3 relative flex-wrap">
           <span
             key={tx.receipt_id}
             className="inline-flex items-center cursor-pointer"
@@ -240,9 +267,9 @@ export default function RecentTransaction(props: any) {
     return (
       <div
         key={tx.receipt_id + index}
-        className={`text-sm grid grid-cols-9 hover:bg-poolRecentHover my-3`}
+        className={`text-sm flex hover:bg-poolRecentHover my-3`}
       >
-        <div className="col-span-3">
+        <div className="w-1/6 flex flex-wrap">
           <span className="text-white">
             {(tx.method_name.toLowerCase().indexOf("add") > -1 ||
               tx.method_name.toLowerCase().indexOf("append") > -1) &&
@@ -252,12 +279,12 @@ export default function RecentTransaction(props: any) {
           </span>
         </div>
 
-        <div className={` col-span-3`}>
+        <div className={`w-6/12 flex items-center flex-wrap`}>
           {renderTokens.map((renderToken, index) => {
             return (
               <>
                 <span className="text-white" title={renderToken.amount}>
-                  {formatNumber(renderToken.amount)}
+                  {toInternationalCurrencySystem(renderToken.amount)}
                 </span>
 
                 <span className="ml-1 text-gray-60">
@@ -271,7 +298,7 @@ export default function RecentTransaction(props: any) {
           })}
         </div>
 
-        <div className={`col-span-3 relative `}>
+        <div className={`w-1/3 relative `}>
           <span
             key={tx.receipt_id}
             className="inline-flex items-center cursor-pointer"
@@ -370,19 +397,19 @@ export default function RecentTransaction(props: any) {
   return (
     <div className="lg:w-183 max-h-106 rounded-md overflow-auto ">
       <div
-        className="grid grid-cols-9 sticky top-0  px-4 pt-4  select-none"
+        className="flex sticky top-0  px-4 xsm:pt-4 lg:py-3  select-none"
         style={{
           zIndex: 10,
           background: "#08141C",
         }}
       >
-        {title.map((item: string, index: number) => {
+        {title.map((item: any, index: number) => {
           return (
             <span
-              key={item + "_" + index}
-              className="col-span-3 text-gray-60 text-sm"
+              key={item.key + "_" + index}
+              className={`${item.colSpan} text-gray-60 text-sm`}
             >
-              {item}
+              {item.key}
             </span>
           );
         })}

@@ -146,7 +146,9 @@ export default function PoolRow(props: any) {
                 )}
                 {item.is_new && (
                   <div
-                    className={`bg-primaryGreen text-black ${styles.tagPublicStyle}`}
+                    className={`bg-primaryGreen text-black ${
+                      styles.tagPublicStyle
+                    }  ${item.is_farm ? "-ml-1.5" : ""}`}
                   >
                     News
                   </div>

@@ -4,6 +4,7 @@ import {
   toReadableNumber,
   numberWithCommas,
   toPrecision,
+  toInternationalCurrencySystem,
 } from "@/utils/numbers";
 import { formatNumber } from "@/utils/uiNumber";
 import { toRealSymbol } from "@/services/farm";
@@ -25,9 +26,9 @@ export default function RecentTransaction(props: any) {
     pool_id: poolId,
   });
   const [containerWidth, setContainerWidth] = useState([
-    "col-span-2",
-    "col-span-4",
-    "col-span-3",
+    "w-3/12",
+    "w-1/2",
+    "w-3/12",
   ]);
   const [loadingStates, setLoadingStates] = useState<any>({});
   const [hoveredTx, setHoveredTx] = useState(null);
@@ -78,15 +79,15 @@ export default function RecentTransaction(props: any) {
         titleList = [
           {
             key: "From",
-            colSpan: "col-span-3",
+            colSpan: "w-1/3",
           },
           {
             key: "To",
-            colSpan: "col-span-3",
+            colSpan: "w-1/3",
           },
           {
             key: "Time",
-            colSpan: "col-span-3",
+            colSpan: "w-1/3",
           },
         ];
         break;
@@ -130,21 +131,21 @@ export default function RecentTransaction(props: any) {
     const displayInAmount =
       Number(swapInAmount) < 0.01
         ? "<0.01"
-        : numberWithCommas(toPrecision(swapInAmount, 6));
+        : toInternationalCurrencySystem(swapInAmount, 6);
 
     const swapOutAmount = toReadableNumber(swapOut.decimals, tx.swap_out);
 
     const displayOutAmount =
       Number(swapOutAmount) < 0.01
         ? "<0.01"
-        : numberWithCommas(toPrecision(swapOutAmount, 6));
+        : toInternationalCurrencySystem(swapOutAmount, 6);
 
     return (
       <div
         key={tx.receipt_id + index}
-        className={`text-sm grid grid-cols-9 hover:bg-poolRecentHover my-3`}
+        className={`text-sm flex hover:bg-poolRecentHover my-3`}
       >
-        <div className="col-span-3">
+        <div className="w-1/3">
           <span className="col-span-1 text-white mr-1" title={swapInAmount}>
             {displayInAmount}
           </span>
@@ -152,7 +153,7 @@ export default function RecentTransaction(props: any) {
           <span className="text-gray-60">{toRealSymbol(swapIn.symbol)}</span>
         </div>
 
-        <div className="col-span-3">
+        <div className="w-1/3">
           <span className="text-white" title={swapOutAmount}>
             {displayOutAmount}
           </span>
@@ -162,7 +163,7 @@ export default function RecentTransaction(props: any) {
           </span>
         </div>
 
-        <div className="col-span-3 relative ">
+        <div className="w-1/3 relative ">
           <span
             key={tx.receipt_id}
             className="inline-flex items-center cursor-pointer"
@@ -274,10 +275,7 @@ export default function RecentTransaction(props: any) {
     });
 
     return (
-      <div
-        key={tx.receipt_id + index}
-        className={`text-sm grid grid-cols-9 hover:bg-poolRecentHover my-3`}
-      >
+      <div key={tx.receipt_id + index} className={`text-sm flex  my-3`}>
         <div className={containerWidth[0]}>
           <span className="text-white">
             {(tx.method_name.toLowerCase().indexOf("add") > -1 ||
@@ -288,12 +286,14 @@ export default function RecentTransaction(props: any) {
           </span>
         </div>
 
-        <div className={`${containerWidth[1]} break-words`}>
+        <div
+          className={`${containerWidth[1]} flex-wrap flex items-center justify-start pr-2`}
+        >
           {renderTokens.map((renderToken, index) => {
             return (
               <>
                 <span className="text-white" title={renderToken.amount}>
-                  {formatNumber(renderToken.amount)}
+                  {toInternationalCurrencySystem(renderToken.amount)}
                 </span>
 
                 <span className="ml-1 text-gray-60">
@@ -406,7 +406,7 @@ export default function RecentTransaction(props: any) {
   return (
     <div className="lg:w-215 xsm:w-full max-h-106 rounded-md overflow-auto ">
       <div
-        className={`grid grid-cols-9 sticky top-0  px-4 pt-4 select-none`}
+        className={`flex sticky top-0  px-4 xsm:pt-4 lg:py-3 select-none`}
         style={{
           zIndex: 10,
           background: "#08141C",

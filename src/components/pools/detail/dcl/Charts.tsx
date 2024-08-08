@@ -120,24 +120,27 @@ export default function TvlAndVolumeCharts(props: any) {
         </div>
 
         {/* pc current price */}
-        <div className="text-sm text-white xsm:hidden">
-          <h3 className="text-gray-50 font-normal text-right">Current Price</h3>
-          <p className="frcc">
-            <ExchangeIcon
-              className="mt-auto mr-1 mb-1 cursor-pointer opacity-40 hover:opacity-100"
-              onClick={() => {
-                exchange();
-                switchRate();
-              }}
-            />
-            {/* dom render in html formatter above: 1 Near($5.2) = 7Ref */}
-            <span className="mr-1">1</span>
-            {/* token left name */}
-            {poolDetail?.token_symbols[currentSort[0]] == "wNEAR"
-              ? "NEAR"
-              : poolDetail?.token_symbols[currentSort[0]]}
-            {/* usd price */}
-            {/* {tokenPriceList && poolDetail && (
+        {isActive == "liquidity" && (
+          <div className="text-sm text-white xsm:hidden">
+            <h3 className="text-gray-50 font-normal text-right">
+              Current Price
+            </h3>
+            <p className="frcc">
+              <ExchangeIcon
+                className="mt-auto mr-1 mb-1 cursor-pointer opacity-40 hover:opacity-100"
+                onClick={() => {
+                  exchange();
+                  switchRate();
+                }}
+              />
+              {/* dom render in html formatter above: 1 Near($5.2) = 7Ref */}
+              <span className="mr-1">1</span>
+              {/* token left name */}
+              {poolDetail?.token_symbols[currentSort[0]] == "wNEAR"
+                ? "NEAR"
+                : poolDetail?.token_symbols[currentSort[0]]}
+              {/* usd price */}
+              {/* {tokenPriceList && poolDetail && (
               <span className="text-gray-50 font-normal">
                 (
                 {toInternationalCurrencySystem_usd(
@@ -147,6 +150,50 @@ export default function TvlAndVolumeCharts(props: any) {
                 )
               </span>
             )} */}
+              <span className="mx-1">=</span>
+              {/* token right amount */}
+              {tokenPriceList && poolDetail && (
+                <span className="mr-1">
+                  {((tokenPriceList[
+                    poolDetail?.token_account_ids[currentSort[0]]
+                  ].price /
+                    tokenPriceList[
+                      poolDetail?.token_account_ids[currentSort[1]]
+                    ].price) *
+                    100) /
+                    100}
+                </span>
+              )}
+              {/* token right name */}
+              {poolDetail?.token_symbols[currentSort[1]] == "wNEAR"
+                ? "NEAR"
+                : poolDetail?.token_symbols[currentSort[1]]}
+            </p>
+          </div>
+        )}
+      </div>
+      {/* mobile current price */}
+      {isActive == "liquidity" && (
+        <div className="text-sm text-white lg:hidden w-full">
+          <h3 className="text-gray-50 font-normal">Current Price</h3>
+          <p className="flex items-center">
+            {/* dom render in html formatter above: 1 Near($5.2) = 7Ref */}
+            <span className="mr-1">1</span>
+            {/* token left name */}
+            {poolDetail?.token_symbols[currentSort[0]] == "wNEAR"
+              ? "NEAR"
+              : poolDetail?.token_symbols[currentSort[0]]}
+            {/* usd price */}
+            {tokenPriceList && poolDetail && (
+              <span className="text-gray-50 font-normal">
+                (
+                {toInternationalCurrencySystem_usd(
+                  tokenPriceList[poolDetail.token_account_ids[currentSort[0]]]
+                    .price
+                )}
+                )
+              </span>
+            )}
             <span className="mx-1">=</span>
             {/* token right amount */}
             {tokenPriceList && poolDetail && (
@@ -163,55 +210,16 @@ export default function TvlAndVolumeCharts(props: any) {
             {poolDetail?.token_symbols[currentSort[1]] == "wNEAR"
               ? "NEAR"
               : poolDetail?.token_symbols[currentSort[1]]}
+            <ExchangeIcon
+              className="ml-1"
+              onClick={() => {
+                exchange();
+                switchRate();
+              }}
+            />
           </p>
         </div>
-      </div>
-      {/* mobile current price */}
-      <div className="text-sm text-white lg:hidden w-full">
-        <h3 className="text-gray-50 font-normal">Current Price</h3>
-        <p className="flex items-center">
-          {/* dom render in html formatter above: 1 Near($5.2) = 7Ref */}
-          <span className="mr-1">1</span>
-          {/* token left name */}
-          {poolDetail?.token_symbols[currentSort[0]] == "wNEAR"
-            ? "NEAR"
-            : poolDetail?.token_symbols[currentSort[0]]}
-          {/* usd price */}
-          {tokenPriceList && poolDetail && (
-            <span className="text-gray-50 font-normal">
-              (
-              {toInternationalCurrencySystem_usd(
-                tokenPriceList[poolDetail.token_account_ids[currentSort[0]]]
-                  .price
-              )}
-              )
-            </span>
-          )}
-          <span className="mx-1">=</span>
-          {/* token right amount */}
-          {tokenPriceList && poolDetail && (
-            <span className="mr-1">
-              {((tokenPriceList[poolDetail?.token_account_ids[currentSort[0]]]
-                .price /
-                tokenPriceList[poolDetail?.token_account_ids[currentSort[1]]]
-                  .price) *
-                100) /
-                100}
-            </span>
-          )}
-          {/* token right name */}
-          {poolDetail?.token_symbols[currentSort[1]] == "wNEAR"
-            ? "NEAR"
-            : poolDetail?.token_symbols[currentSort[1]]}
-          <ExchangeIcon
-            className="ml-1"
-            onClick={() => {
-              exchange();
-              switchRate();
-            }}
-          />
-        </p>
-      </div>
+      )}
 
       {/* charts */}
       {isFinished && (
@@ -289,7 +297,7 @@ export function TVlCharts(props: any) {
         backgroundColor: "transparent",
         borderWidth: 0,
         borderColor: "transparent",
-        position: isMobile ? [0, -10] : [600, 0],
+        position: isMobile ? [0, -100] : [600, -124],
         formatter(params: any) {
           let result = `<div style="display:flex;justify-content: space-between;font-size:14px;"> ${params[0].axisValue} </div>`; //
           for (let i = 0, l = params.length; i < l; i++) {
@@ -374,6 +382,15 @@ export function TVlCharts(props: any) {
     };
 
     chartInstance.setOption(options);
+
+    chartInstance.dispatchAction({
+      type: "showTip",
+
+      seriesIndex: 0,
+
+      dataIndex: xTvl.length - 1,
+    });
+
     const handleResize = () => {
       if (chartInstance) {
         chartInstance.resize();
@@ -450,16 +467,26 @@ export function VolumeCharts(props: any) {
         backgroundColor: "transparent",
         borderWidth: 0,
         borderColor: "transparent",
-        position: [600, 0],
+        position: isMobile ? [0, -100] : [600, -124],
         formatter(params: any) {
           let result = `<div style="display:flex;justify-content: space-between;font-size:14px;"> ${params[0].axisValue} </div>`; //
           for (let i = 0, l = params.length; i < l; i++) {
-            result += `<div style="display:flex;justify-content: space-between;"><span style="color:white;font-size:16px;font-weight:700;">$${toInternationalCurrencySystem_number(
-              params[i].value
-            )}</span></div>`;
+            if (isMobile) {
+              result += `<div style="display:flex;justify-content: space-between;margin-left:4px"><span style="color:#9efe01;font-size:16px;font-weight:700;">$${toInternationalCurrencySystem_number(
+                params[i].value
+              )}</span></div>`;
+            } else {
+              result += `<div style="display:flex;justify-content: space-between;"><span style="color:white;font-size:16px;font-weight:700;">$${toInternationalCurrencySystem_number(
+                params[i].value
+              )}</span></div>`;
+            }
           }
 
-          const formatDom = `<div style="height: 39px; width: 72px;display:flex; flex-direction:column;justify-content: space-between;align-items: center;font-weight: 400;font-family:SpaceGrotesk">${result}</div>`;
+          const formatDom = `<div style="height: 39px; width: 72px; ${
+            isMobile
+              ? "display:flex;align-items: center;"
+              : "display:flex; flex-direction:column;justify-content: space-between;align-items: center;"
+          }font-weight: 400;font-family:SpaceGrotesk">${result}</div>`;
           return formatDom;
         },
       },
@@ -500,6 +527,15 @@ export function VolumeCharts(props: any) {
     };
 
     chartInstance.setOption(options);
+
+    chartInstance.dispatchAction({
+      type: "showTip",
+
+      seriesIndex: 0,
+
+      dataIndex: xMonth.length - 1,
+    });
+
     const handleResize = () => {
       if (chartInstance) {
         chartInstance.resize();

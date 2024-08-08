@@ -155,8 +155,8 @@ export default function Classic({
                 }}
               />
               <span className={styles.checkmark}></span>
-              <span className={styles.checkPlaceholder}>
-                Hide low TVL <span className="xsm:hidden">pools</span>
+              <span className={`${styles.checkPlaceholder}`}>
+                Hide low TVL pools
               </span>
             </label>
           </div>
@@ -178,7 +178,7 @@ export default function Classic({
         </div> */}
         {/* pool header */}
         <header className={styles.headDiv}>
-          <div>Pools</div>
+          <div>Pair</div>
           <div>
             {classicHeader.map((item, index) => {
               return (

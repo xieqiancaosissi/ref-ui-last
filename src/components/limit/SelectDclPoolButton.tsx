@@ -9,6 +9,7 @@ import {
   usePersistLimitStore,
   IPersistLimitStore,
 } from "@/stores/limitOrder";
+import { useLimitOrderChartStore } from "@/stores/limitChart";
 import { sort_tokens_by_base } from "@/services/commonV3";
 import { useAccountStore } from "@/stores/account";
 import { getTokenBalance } from "@/services/token";
@@ -35,6 +36,7 @@ export default function SelectDclPoolButton({
 }) {
   const [show, setShow] = useState<boolean>(false);
   const limitStore = useLimitStore();
+  const limitChartStore = useLimitOrderChartStore();
   const persistLimitStore: IPersistLimitStore = usePersistLimitStore();
   const cachedDclPool = persistLimitStore.getDclPool();
   const selectedToken = isIn
@@ -51,6 +53,8 @@ export default function SelectDclPoolButton({
         token_x_metadata as TokenMetadata,
         token_y_metadata as TokenMetadata,
       ]);
+      limitChartStore.setTokenIn(tokens[0]);
+      limitChartStore.setTokenOut(tokens[1]);
       getTokensWithBalance(tokens);
     }
   }, [cachedDclPool?.pool_id, accountId, walletLoading]);

@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState, useRef } from "react";
 import Big from "big.js";
 import { motion } from "framer-motion";
+import { TokenMetadata } from "@/services/ft-contract";
 import { get_pointorder_range, get_pool } from "@/services/swapV3";
 import { ftGetTokenMetadata } from "@/services/token";
 import { getPriceByPoint } from "../../services/commonV3";
@@ -11,11 +12,11 @@ import { IOrderPoint, ISwitchToken, IOrderPointItem } from "@/interfaces/limit";
 import { RefreshIcon } from "./icons2";
 import { formatNumber, GEARS } from "@/services/limit/limitUtils";
 import { useLimitOrderChartStore } from "@/stores/limitChart";
-import { useLimitStore } from "@/stores/limitOrder";
 import { IPoolDcl } from "@/interfaces/swapDcl";
 import { sort_tokens_by_base } from "@/services/commonV3";
 import { fillDclPool } from "@/services/limit/limitUtils";
 import Loading from "@/components/limit/myOrders/loading";
+import { isMobile } from "@/utils/device";
 
 export default function LimitOrderTable() {
   // CONST start
@@ -38,21 +39,32 @@ export default function LimitOrderTable() {
   const [fetch_data_done, set_fetch_data_done] = useState(false);
   const [market_loading, set_market_loading] = useState<boolean>(false);
   const persistLimitStore: IPersistLimitStore = usePersistLimitStore();
-  const limitOrderChartStore = useLimitOrderChartStore();
-  const limitStore = useLimitStore();
-  const tokenIn = limitStore.getTokenIn();
-  const tokenOut = limitStore.getTokenOut();
-  const buy_list = limitOrderChartStore.get_buy_list();
-  const sell_list = limitOrderChartStore.get_sell_list();
+  const cachedDclPool = persistLimitStore.getDclPool();
+  const limitChartStore = useLimitOrderChartStore();
+  const tokenIn = limitChartStore.getTokenIn();
+  const tokenOut = limitChartStore.getTokenOut();
+  const buy_list = limitChartStore.get_buy_list();
+  const sell_list = limitChartStore.get_sell_list();
   const pool = persistLimitStore.getDclPool();
   const pool_id = persistLimitStore.getDclPool()?.pool_id;
   const left_point = -800000;
   const right_point = 800000;
   const sellBoxRef: any = useRef(null);
+  const mobile = isMobile();
+  const dclTokens = useMemo(() => {
+    if (cachedDclPool?.pool_id) {
+      const { token_x_metadata, token_y_metadata } = cachedDclPool;
+      const tokens: TokenMetadata[] = sort_tokens_by_base([
+        token_x_metadata as TokenMetadata,
+        token_y_metadata as TokenMetadata,
+      ]);
+      return tokens;
+    }
+  }, [cachedDclPool?.pool_id]);
   useEffect(() => {
     if (pool_id) {
       set_fetch_data_done(false);
-      limitOrderChartStore.set_zoom(GEARS[0]);
+      limitChartStore.set_zoom(GEARS[0]);
       fetch_points_data();
     }
   }, [pool_id]);
@@ -85,16 +97,16 @@ export default function LimitOrderTable() {
       sell_token_x_list &&
       fetch_data_done
     ) {
-      limitOrderChartStore.set_buy_list(buy_token_x_list);
-      limitOrderChartStore.set_sell_list(sell_token_x_list);
+      limitChartStore.set_buy_list(buy_token_x_list);
+      limitChartStore.set_sell_list(sell_token_x_list);
     } else if (
       switch_token == "Y" &&
       buy_token_y_list &&
       sell_token_y_list &&
       fetch_data_done
     ) {
-      limitOrderChartStore.set_buy_list(buy_token_y_list);
-      limitOrderChartStore.set_sell_list(sell_token_y_list);
+      limitChartStore.set_buy_list(buy_token_y_list);
+      limitChartStore.set_sell_list(sell_token_y_list);
     }
   }, [
     switch_token,
@@ -152,8 +164,8 @@ export default function LimitOrderTable() {
     return [];
   }, [switch_token, pool_id]);
   useEffect(() => {
-    limitOrderChartStore.set_cur_pairs(cur_pairs!);
-    limitOrderChartStore.set_cur_token_symbol(cur_token_symbol!);
+    limitChartStore.set_cur_pairs(cur_pairs!);
+    limitChartStore.set_cur_token_symbol(cur_token_symbol!);
   }, [cur_pairs, cur_token_symbol]);
   async function fetch_points_data() {
     const orders = await get_points_of_orders();
@@ -324,19 +336,45 @@ export default function LimitOrderTable() {
   return (
     <div className="flex items-stretch justify-between xsm:overflow-x-hidden xsm:bg-dark-10 xsm:w-screen xsm:rounded-t-lg lg:h-[420px] lg:w-[260px] flex-shrink-0">
       {/* table area */}
-      <div className="lg:border-l lg:border-gray-30 pt-2.5 w-full">
+      <div className="lg:border-l lg:border-gray-30 pt-2.5 xsm:pt-5 w-full">
         <div>
-          <div className="text-sm text-white font-extrabold pl-3">
+          <div className="flex items-center justify-between text-sm text-white font-extrabold pl-3 xsm:px-4 xsm:mb-2">
             Limit Orders
+            {mobile && dclTokens ? (
+              <div className="flex items-center rounded border border-gray-70 p-[3px]">
+                <span
+                  className={`px-2 h-5 rounded ${
+                    dclTokens[0].id == tokenIn.id ? "bg-gray-100" : ""
+                  }`}
+                  onClick={() => {
+                    limitChartStore.setTokenIn(dclTokens[0]);
+                    limitChartStore.setTokenOut(dclTokens[1]);
+                  }}
+                >
+                  {dclTokens[0].symbol}
+                </span>
+                <span
+                  className={`px-2 h-5 rounded ${
+                    dclTokens[1].id == tokenIn.id ? "bg-gray-100" : ""
+                  }`}
+                  onClick={() => {
+                    limitChartStore.setTokenIn(dclTokens[1]);
+                    limitChartStore.setTokenOut(dclTokens[0]);
+                  }}
+                >
+                  {dclTokens[1].symbol}
+                </span>
+              </div>
+            ) : null}
           </div>
-          <div className="flex items-center justify-between p-3 xsm:px-5 border-b border-limitOrderFeeTiersBorderColor">
+          <div className="grid grid-cols-3 p-3 xsm:px-5 border-b border-gray-240">
             <div className="flex flex-col">
               <span className="text-sm text-gray-180">Price</span>
               <span className="text-xs text-gray-180" style={{ zoom: 0.85 }}>
                 {cur_pairs}
               </span>
             </div>
-            <div className="flex flex-col items-end">
+            <div className="flex flex-col items-end pr-3">
               <span className="text-sm text-gray-180">Qty</span>
               <span className="text-xs text-gray-180" style={{ zoom: 0.85 }}>
                 {cur_token_symbol}
@@ -376,7 +414,7 @@ export default function LimitOrderTable() {
                       return (
                         <div
                           key={item.point! + index}
-                          className="grid grid-cols-3  justify-items-end text-xs py-1.5 pr-2"
+                          className="grid grid-cols-3  justify-items-end text-xs py-1.5 lg:pr-2"
                         >
                           <span className="text-red-20 justify-self-start">
                             {formatPriceWithCommas(item.price!)}
@@ -397,13 +435,24 @@ export default function LimitOrderTable() {
                     })}
                   </div>
                   <div className="flex items-center mt-2.5 pl-3 xsm:pl-5 font-nunito">
-                    <div className="flex items-center xsm:hidden">
-                      <span className="text-xs text-white mr-2">
-                        Market Pirce
+                    <div
+                      className="flex items-center"
+                      onClick={() => {
+                        if (mobile) {
+                          marketRefresh();
+                        }
+                      }}
+                    >
+                      <span className="text-xs text-white mr-2 xsm:underline xsm:text-sm">
+                        {mobile ? "Refresh Market Price" : "Market Pirce"}
                       </span>
                       <div
-                        className="flex items-center justify-center w-4 h-4 rounded border border-r-gray-90 cursor-pointer text-gray-50 hover:text-white"
-                        onClick={marketRefresh}
+                        className="flex items-center justify-center w-4 h-4 rounded border border-gray-90 cursor-pointer text-gray-50 hover:text-white"
+                        onClick={() => {
+                          if (!mobile) {
+                            marketRefresh();
+                          }
+                        }}
                       >
                         {market_loading ? (
                           <motion.div variants={variants} animate="spin">
@@ -414,12 +463,6 @@ export default function LimitOrderTable() {
                         )}
                       </div>
                     </div>
-                    <span
-                      className="lg:hidden text-sm text-white underline"
-                      onClick={marketRefresh}
-                    >
-                      Refresh Market Price
-                    </span>
                   </div>
                   <div
                     className={`font-nunito ${
@@ -431,7 +474,7 @@ export default function LimitOrderTable() {
                       return (
                         <div
                           key={item.point! + index}
-                          className="grid grid-cols-3 justify-items-end text-xs py-1.5 pr-2"
+                          className="grid grid-cols-3 justify-items-end text-xs py-1.5 lg:pr-2"
                         >
                           <span className="text-primaryGreen justify-self-start">
                             {formatPriceWithCommas(item.price!)}

@@ -110,7 +110,8 @@ const Pagination = ({
   const pageNumbersListForMobile = useMemo(() => {
     return (
       <div className="lg:hidden">
-        <span className="text-green-10">{currentPage}</span>/
+        <span className="text-green-10">{currentPage}</span>
+        <span className="mx-1">/</span>
         <span className="text-gray-10">{pageCount}</span>
       </div>
     );

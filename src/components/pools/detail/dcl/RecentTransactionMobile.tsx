@@ -4,6 +4,7 @@ import {
   toReadableNumber,
   numberWithCommas,
   toPrecision,
+  toInternationalCurrencySystem,
 } from "@/utils/numbers";
 import { toRealSymbol } from "@/services/farm";
 import getConfig from "@/utils/config";
@@ -160,14 +161,14 @@ export default function RecentTransactionMobile(props: any) {
     const displayInAmount =
       Number(swapInAmount) < 0.01
         ? "<0.01"
-        : numberWithCommas(toPrecision(swapInAmount, 6));
+        : toInternationalCurrencySystem(swapInAmount, 6);
 
     const swapOutAmount = toReadableNumber(swapOut.decimals, tx.amount_out);
 
     const displayOutAmount =
       Number(swapOutAmount) < 0.01
         ? "<0.01"
-        : numberWithCommas(toPrecision(swapOutAmount, 6));
+        : toInternationalCurrencySystem(swapOutAmount, 6);
     return (
       <div
         key={tx.receipt_id + index}
@@ -234,14 +235,14 @@ export default function RecentTransactionMobile(props: any) {
     const displayInAmount =
       Number(AmountIn) < 0.01 && Number(AmountIn) > 0
         ? "<0.01"
-        : numberWithCommas(toPrecision(AmountIn, 6));
+        : toInternationalCurrencySystem(AmountIn, 6);
 
     const AmountOut = toReadableNumber(swapOut.decimals, tx.amount_y);
 
     const displayOutAmount =
       Number(AmountOut) < 0.01 && Number(AmountOut) > 0
         ? "<0.01"
-        : numberWithCommas(toPrecision(AmountOut, 6));
+        : toInternationalCurrencySystem(AmountOut, 6);
 
     return (
       <div
@@ -336,7 +337,7 @@ export default function RecentTransactionMobile(props: any) {
       const displayInAmount =
         Number(AmountIn) < 0.01
           ? "<0.01"
-          : numberWithCommas(toPrecision(AmountIn, 3));
+          : toInternationalCurrencySystem(AmountIn, 3);
 
       const price = pointToPrice({
         tokenA: swapIn,
@@ -351,7 +352,7 @@ export default function RecentTransactionMobile(props: any) {
       const displayOutAmount =
         Number(AmountOut) < 0.01
           ? "<0.01"
-          : numberWithCommas(toPrecision(AmountOut, 3));
+          : toInternationalCurrencySystem(AmountOut, 3);
 
       const display_price = reverse ? reverse_price(price) : price;
       return (
@@ -395,7 +396,7 @@ export default function RecentTransactionMobile(props: any) {
           <div className="w-3/12 flex flex-wrap break-words">
             <div className="frcs flex-wrap">
               <span className="text-white mr-1" title={price}>
-                {numberWithCommas(toPrecision(display_price, 4))}
+                {toInternationalCurrencySystem(display_price, 4)}
               </span>
 
               <span className="text-gray-60">

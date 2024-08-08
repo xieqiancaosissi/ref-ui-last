@@ -8,30 +8,25 @@
   @apply bg-transparent;
 }
 
-
-
 @media (min-width: 1025px) {
-  
-.isfarm {
-  background: radial-gradient(
-    24.64% 177.05% at 11.82% 0%,
-    rgba(250, 255, 0, 0.21) 0%,
-    rgba(33, 43, 53, 0.09) 80.5%
-  );
-}
+  .isfarm {
+    background: radial-gradient(
+      24.64% 177.05% at 11.82% 0%,
+      rgba(250, 255, 0, 0.21) 0%,
+      rgba(33, 43, 53, 0.09) 80.5%
+    );
+  }
 }
 
 @media (max-width: 1024px) {
-   
-.isfarm {
-  background: radial-gradient(
-    60% 107.05% at 86.82% 0%,
-    rgba(250, 255, 0, 0.2) 0%,
-    rgba(18, 29, 38, 0.2) 80.5%
-  );
-}
+  .isfarm {
+    background: radial-gradient(
+      60% 107.05% at 86.82% 0%,
+      rgba(250, 255, 0, 0.2) 0%,
+      rgba(18, 29, 38, 0.2) 80.5%
+    );
   }
-
+}
 
 .poolContainer > div:first-child {
   @apply lg:w-109 shrink-0 ml-5;

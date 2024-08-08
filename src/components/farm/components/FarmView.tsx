@@ -58,6 +58,8 @@ import styles from "../farm.module.css";
 import CalcModelDcl from "./CalcModelDcl";
 import Countdown, { zeroPad } from "react-countdown";
 import { useRouter } from "next/router";
+import LPTip from "./LPTip";
+import getConfigV2 from "@/utils/configV2";
 
 const {
   REF_VE_CONTRACT_ID,
@@ -656,6 +658,10 @@ export function FarmView(props: {
     }
     router.push(`/farms/${mft_id}-${status}`);
   }
+  const configV2 = getConfigV2();
+  const is_support_lp = configV2.SUPPORT_SHADOW_POOL_IDS.includes(
+    (pool?.id || "").toString()
+  );
   return (
     <>
       <div
@@ -904,6 +910,7 @@ export function FarmView(props: {
               <p className="text-gray-60 text-sm">APR</p>
               <p className="text-sm frcc">
                 {getTotalApr()}
+                {is_support_lp ? <LPTip seed_id={seed.seed_id} /> : null}
                 <CalcIcon
                   onClick={(e: any) => {
                     e.stopPropagation();

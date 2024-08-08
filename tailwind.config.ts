@@ -109,6 +109,7 @@ const config: Config = {
         yellow: {
           10: "#E6B401",
           20: "#9DFE01",
+          30: "#D2FF39",
         },
         purple: {
           10: "#A199FF",

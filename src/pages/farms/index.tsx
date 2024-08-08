@@ -4,6 +4,7 @@ import FarmsPage from "@/components/farm";
 import FarmsDetail from "@/components/farm/components/FarmsDetail";
 import { useRouter } from "next/router";
 import FarmsDclDetail from "@/components/farm/components/FarmsDclDetail";
+import { FarmsContextData } from "@/components/farm/components/FarmsContext";
 
 export default function FarmsBoosterPage(props: any) {
   const router = useRouter();
@@ -76,37 +77,39 @@ export default function FarmsBoosterPage(props: any) {
 
   return (
     <>
-      <FarmsPage
-        getDetailData={getDetailData}
-        getDetailData_user_data={getDetailData_user_data}
-        getDetailData_boost_config={getDetailData_boost_config}
-        getDayVolumeMap={getDayVolumeMap}
-      ></FarmsPage>
-      {showDetailPage ? (
-        <FarmsDetail
-          detailData={detailData}
-          tokenPriceList={tokenPriceList}
-          emptyDetailData={emptyDetailData}
-          boostConfig={boostConfig || ({} as BoostConfig)}
-          loveSeed={loveSeed || ({} as Seed)}
-          user_data={user_data}
-          user_data_loading={user_data_loading}
-          dayVolumeMap={dayVolumeMap}
-        ></FarmsDetail>
-      ) : null}
-      {showDclDetailPage ? (
-        <FarmsDclDetail
-          detailData={detailData}
-          tokenPriceList={tokenPriceList}
-          emptyDetailData={emptyDetailData}
-          boostConfig={boostConfig || ({} as BoostConfig)}
-          loveSeed={loveSeed || ({} as Seed)}
-          user_data={user_data}
-          user_data_loading={user_data_loading}
-          dayVolumeMap={dayVolumeMap}
-          all_seeds={all_seeds}
-        ></FarmsDclDetail>
-      ) : null}
+      <FarmsContextData.Provider value={{ user_data }}>
+        <FarmsPage
+          getDetailData={getDetailData}
+          getDetailData_user_data={getDetailData_user_data}
+          getDetailData_boost_config={getDetailData_boost_config}
+          getDayVolumeMap={getDayVolumeMap}
+        ></FarmsPage>
+        {showDetailPage ? (
+          <FarmsDetail
+            detailData={detailData}
+            tokenPriceList={tokenPriceList}
+            emptyDetailData={emptyDetailData}
+            boostConfig={boostConfig || ({} as BoostConfig)}
+            loveSeed={loveSeed || ({} as Seed)}
+            user_data={user_data}
+            user_data_loading={user_data_loading}
+            dayVolumeMap={dayVolumeMap}
+          ></FarmsDetail>
+        ) : null}
+        {showDclDetailPage ? (
+          <FarmsDclDetail
+            detailData={detailData}
+            tokenPriceList={tokenPriceList}
+            emptyDetailData={emptyDetailData}
+            boostConfig={boostConfig || ({} as BoostConfig)}
+            loveSeed={loveSeed || ({} as Seed)}
+            user_data={user_data}
+            user_data_loading={user_data_loading}
+            dayVolumeMap={dayVolumeMap}
+            all_seeds={all_seeds}
+          ></FarmsDclDetail>
+        ) : null}
+      </FarmsContextData.Provider>
     </>
   );
 }

@@ -117,6 +117,7 @@ export interface UserSeedInfo {
   boost_ratios: any;
   duration_sec: number;
   free_amount: string;
+  shadow_amount: string;
   locked_amount: string;
   unlock_timestamp: string;
   x_locked_amount: string;
@@ -143,10 +144,26 @@ interface StakeOptions {
   msg?: string;
 }
 
+interface StakeOptiones {
+  amount: string;
+  pool_id?: number;
+  amountByTransferInFarm?: string | number;
+  seed_id?: string;
+  token_id?: string;
+  msg?: string;
+}
+
 interface UnStakeOptions {
   seed_id: string;
   unlock_amount: string;
   withdraw_amount: string;
+}
+
+interface UnStakeOptiones {
+  seed_id: string;
+  unlock_amount: string;
+  withdraw_amount: string;
+  amountByTransferInFarm?: string | number;
 }
 
 export interface IStakeInfo {
@@ -1099,4 +1116,145 @@ export const get_shadow_records = () => {
     methodName: "get_shadow_records",
     args: { account_id: getAccountId() },
   });
+};
+
+export const stake_boost_shadow = async ({
+  pool_id,
+  amount,
+  amountByTransferInFarm,
+  seed_id,
+}: StakeOptiones) => {
+  const transactions: Transaction[] = [];
+  let toFarmingAmount = amount;
+  if (amountByTransferInFarm && Big(amountByTransferInFarm).gt(0)) {
+    toFarmingAmount = Big(toFarmingAmount)
+      .plus(amountByTransferInFarm)
+      .toFixed();
+    transactions.push({
+      receiverId: REF_FARM_BOOST_CONTRACT_ID,
+      functionCalls: [
+        {
+          methodName: "unlock_and_withdraw_seed",
+          args: {
+            seed_id,
+            unlock_amount: "0",
+            withdraw_amount: amountByTransferInFarm,
+          },
+          amount: ONE_YOCTO_NEAR,
+          gas: "200000000000000",
+        },
+      ],
+    });
+  }
+  const shadowRecords = await get_shadow_records();
+  if (pool_id) {
+    transactions.push({
+      receiverId: REF_FI_CONTRACT_ID,
+      functionCalls: [
+        {
+          methodName: "shadow_action",
+          args: {
+            action: "ToFarming",
+            pool_id,
+            amount: toFarmingAmount,
+            msg: "",
+          },
+          amount: shadowRecords[pool_id] ? ONE_YOCTO_NEAR : "0.01",
+          gas: "300000000000000",
+        },
+      ],
+    });
+  }
+
+  const neededStorage = await checkTokenNeedsStorageDeposit_boost();
+  if (neededStorage) {
+    transactions.unshift({
+      receiverId: REF_FARM_BOOST_CONTRACT_ID,
+      functionCalls: [storageDepositAction({ amount: neededStorage })],
+    });
+  }
+
+  return executeFarmMultipleTransactions(transactions);
+};
+
+export const unStake_boost_shadow = async ({
+  seed_id,
+  unlock_amount,
+  withdraw_amount,
+  amountByTransferInFarm,
+}: UnStakeOptiones) => {
+  const transactions: Transaction[] = [];
+  if (amountByTransferInFarm && Big(amountByTransferInFarm).gt(0)) {
+    transactions.push({
+      receiverId: REF_FARM_BOOST_CONTRACT_ID,
+      functionCalls: [
+        {
+          methodName: "unlock_and_withdraw_seed",
+          args: {
+            seed_id,
+            unlock_amount,
+            withdraw_amount: amountByTransferInFarm,
+          },
+          amount: ONE_YOCTO_NEAR,
+          gas: "200000000000000",
+        },
+      ],
+    });
+  }
+  const pool_id = +seed_id.split("@")[1];
+  if (
+    amountByTransferInFarm &&
+    Big(withdraw_amount).gt(amountByTransferInFarm)
+  ) {
+    transactions.push({
+      receiverId: REF_FI_CONTRACT_ID,
+      functionCalls: [
+        {
+          methodName: "shadow_action",
+          args: {
+            action: "FromFarming",
+            pool_id,
+            amount: Big(withdraw_amount)
+              .minus(amountByTransferInFarm)
+              .toFixed(0),
+            msg: "",
+          },
+          amount: ONE_YOCTO_NEAR,
+          gas: "300000000000000",
+        },
+      ],
+    });
+  } else if (
+    amountByTransferInFarm &&
+    Big(withdraw_amount).lt(amountByTransferInFarm)
+  ) {
+    const shadowRecords = await get_shadow_records();
+    transactions.push({
+      receiverId: REF_FI_CONTRACT_ID,
+      functionCalls: [
+        {
+          methodName: "shadow_action",
+          args: {
+            action: "ToFarming",
+            pool_id,
+            amount: Big(amountByTransferInFarm)
+              .minus(withdraw_amount)
+              .toFixed(0),
+            msg: "",
+          },
+          amount: shadowRecords[pool_id] ? ONE_YOCTO_NEAR : "0.003",
+          gas: "300000000000000",
+        },
+      ],
+    });
+  }
+  const neededStorage = await checkTokenNeedsStorageDeposit_boost();
+  if (neededStorage) {
+    transactions.unshift({
+      receiverId: REF_FARM_BOOST_CONTRACT_ID,
+      functionCalls: [storageDepositAction({ amount: neededStorage })],
+    });
+  }
+
+  return executeFarmMultipleTransactions(transactions);
 };

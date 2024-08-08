@@ -6,6 +6,9 @@ import {
   getMftTokenId,
   get_config,
   unStake_boost,
+  stake_boost_shadow,
+  mftGetBalance,
+  unStake_boost_shadow,
 } from "@/services/farm";
 import { useEffect, useState } from "react";
 import styles from "../farm.module.css";
@@ -35,6 +38,7 @@ import { CalcIcon } from "../icon/FarmBoost";
 import { useAccountStore } from "@/stores/account";
 import { showWalletSelectorModal } from "@/utils/wallet";
 import { useAppStore } from "@/stores/app";
+import getConfigV2 from "@/utils/configV2";
 
 const {
   STABLE_POOL_IDS,
@@ -42,6 +46,7 @@ const {
   REF_VE_CONTRACT_ID,
   FARM_BLACK_LIST_V2,
 } = getConfig();
+const configV2 = getConfigV2();
 export default function FarmsDetailStake(props: {
   detailData: Seed;
   tokenPriceList: any;
@@ -69,6 +74,7 @@ export default function FarmsDetailStake(props: {
     user_unclaimed_token_meta_map,
     user_unclaimed_map,
     activeMobileTab,
+    user_data_loading,
   } = props;
   const {
     pool,
@@ -105,6 +111,33 @@ export default function FarmsDetailStake(props: {
   const [activeTab, setActiveTab] = useState(activeMobileTab || "stake");
   const [amountAvailableCheck, setAmountAvailableCheck] = useState(true);
   const lpBalances = toReadableNumber(DECIMALS, free_amount);
+  const [sharesInfo, setSharesInfo] = useState<{
+    sharesInPool: string | number;
+    amountByShadowInFarm: string | number;
+    amountByTransferInFarm: string | number;
+  }>({
+    sharesInPool: "0",
+    amountByShadowInFarm: "0",
+    amountByTransferInFarm: "0",
+  });
+  useEffect(() => {
+    if (!user_data_loading) {
+      getSharesInfo();
+    }
+  }, [Object.keys(user_seeds_map).length, user_data_loading]);
+  async function getSharesInfo() {
+    const { seed_id } = detailData;
+    const { free_amount, shadow_amount } = user_seeds_map[seed_id] || {};
+    const poolId = pool?.id || "";
+    const sharesInPool = await mftGetBalance(getMftTokenId(poolId.toString()));
+    const amountByShadowInFarm = shadow_amount;
+    const amountByTransferInFarm = free_amount;
+    setSharesInfo({
+      sharesInPool: sharesInPool || "0",
+      amountByShadowInFarm: amountByShadowInFarm || "0",
+      amountByTransferInFarm: amountByTransferInFarm || "0",
+    });
+  }
   useEffect(() => {
     if (stakeType !== "free") {
       const goldList = [
@@ -193,23 +226,41 @@ export default function FarmsDetailStake(props: {
         },
       });
     }
-    if (pool && pool.id) {
+    if (
+      configV2.SUPPORT_SHADOW_POOL_IDS.includes((pool?.id || "").toString())
+    ) {
+      stake_boost_shadow({
+        pool_id: +(pool?.id || ""),
+        amount: toNonDivisibleNumber(DECIMALS, amount),
+        amountByTransferInFarm: sharesInfo.amountByTransferInFarm,
+        seed_id,
+      });
+    } else {
       stake_boost({
-        token_id: getMftTokenId(pool.id.toString()),
+        token_id: getMftTokenId((pool?.id || "").toString()),
         amount: toNonDivisibleNumber(DECIMALS, amount),
         msg,
       });
-    } else {
-      setStakeLoading(false);
     }
   }
   function operationUnStake() {
     setUnStakeLoading(true);
-    unStake_boost({
-      seed_id,
-      unlock_amount: "0",
-      withdraw_amount: toNonDivisibleNumber(DECIMALS, amount),
-    });
+    if (
+      configV2.SUPPORT_SHADOW_POOL_IDS.includes((pool?.id || "").toString())
+    ) {
+      unStake_boost_shadow({
+        seed_id,
+        unlock_amount: "0",
+        withdraw_amount: toNonDivisibleNumber(DECIMALS, amount),
+        amountByTransferInFarm: sharesInfo.amountByTransferInFarm,
+      });
+    } else {
+      unStake_boost({
+        seed_id,
+        unlock_amount: "0",
+        withdraw_amount: toNonDivisibleNumber(DECIMALS, amount),
+      });
+    }
   }
   function showWalletSelector() {
     showWalletSelectorModal(appStore.setShowRiskModal);

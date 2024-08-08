@@ -48,6 +48,9 @@ import UserStakeBlock from "./FarmsDetailClaim";
 import FarmsDetailStake from "./FarmsDetailStake";
 import { getPoolsDetailById } from "@/services/pool";
 import StakeMobile from "./StakeMobile";
+import LPTip from "./LPTip";
+import getConfigV2 from "@/utils/configV2";
+import ShadowTip from "./ShadowTip";
 
 const ONLY_ZEROS = /^0*\.?0*$/;
 const {
@@ -102,6 +105,7 @@ export default function FarmsDetail(props: {
   const [serverTime, setServerTime] = useState<number>();
   const accountStore = useAccountStore();
   const [isStakeMobileOpen, setStakeMobileOpen] = useState<boolean>(false);
+  const [showActivateBox, setShowActivateBox] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState("stake");
   const isSignedIn = accountStore.isSignedIn;
   function sortTokens(tokens: TokenMetadata[]) {
@@ -744,6 +748,10 @@ export default function FarmsDetail(props: {
     setStakeMobileOpen(false);
   }
   const radio = getBoostMutil();
+  const configV2 = getConfigV2();
+  const is_support_lp = configV2.SUPPORT_SHADOW_POOL_IDS.includes(
+    (pool?.id || "").toString()
+  );
   return (
     <>
       {/* pc */}
@@ -826,6 +834,9 @@ export default function FarmsDetail(props: {
                       id={"aprId" + detailData?.farmList?.[0].farm_id}
                     />
                   </div>
+                  {is_support_lp ? (
+                    <LPTip seed_id={detailData.seed_id} />
+                  ) : null}
                   <CalcIcon
                     onClick={(e: any) => {
                       e.stopPropagation();
@@ -886,6 +897,41 @@ export default function FarmsDetail(props: {
             </div>
           </div>
         </div>
+        {+freeAmount > 0 && is_support_lp ? (
+          <div className="2xl:w-3/6 xl:w-4/6 lg:w-5/6 m-auto flex text-sm -mt-5 text-gray-60">
+            <span>How to get Ref’s farm APR + Burrow lending APR?</span>
+            <span>
+              Step 1.{" "}
+              <a
+                className="text-yellow-30 underline cursor-pointer relative"
+                tabIndex={99}
+                onBlur={() => {
+                  setShowActivateBox(false);
+                }}
+                onClick={() => {
+                  setShowActivateBox(!showActivateBox);
+                }}
+              >
+                Activate
+                <ShadowTip show={showActivateBox} seed_id={seed_id} />
+              </a>{" "}
+              the {`Burrow's`} extra rewards
+            </span>
+            <span>
+              Step 2. Go to supply LP on{" "}
+              <a
+                className="text-yellow-30 text-sm underline cursor-pointer"
+                onClick={() => {
+                  const shadow_id = `shadow_ref_v1-${pool?.id}`;
+                  const url = `https://app.burrow.finance/tokenDetail/${shadow_id}`;
+                  window.open(url);
+                }}
+              >
+                Burrow
+              </a>
+            </span>
+          </div>
+        ) : null}
         {calcVisible ? (
           <CalcModelBooster
             isOpen={calcVisible}

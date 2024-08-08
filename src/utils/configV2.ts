@@ -46,6 +46,7 @@ export default function getConfigV2(
         ],
         ORDRRBOOK_COLLATTERAL_TOKEN:
           "a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.factory.bridge.near",
+        SUPPORT_SHADOW_POOL_IDS: ["4179"],
       };
     case "pub-testnet":
       return {
@@ -89,6 +90,7 @@ export default function getConfigV2(
           "3e2210e1184b45b64c8a434c0a7e7b23cc04ea7eb7a6c3c32520d03d4afcb8af",
         ],
         ORDRRBOOK_COLLATTERAL_TOKEN: "usdc.orderly.testnet",
+        SUPPORT_SHADOW_POOL_IDS: ["1919"],
       };
     case "testnet":
       return {
@@ -123,6 +125,7 @@ export default function getConfigV2(
         ],
         NATIVE_TOKENS: ["usdtt.fakes.testnet", "usdcc.fakes.testnet"],
         ORDRRBOOK_COLLATTERAL_TOKEN: "usdc.orderly.testnet",
+        SUPPORT_SHADOW_POOL_IDS: ["269", "711"],
       };
     default:
       return {
@@ -168,6 +171,7 @@ export default function getConfigV2(
         ],
         ORDRRBOOK_COLLATTERAL_TOKEN:
           "a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.factory.bridge.near",
+        SUPPORT_SHADOW_POOL_IDS: ["4179"],
       };
   }
 }

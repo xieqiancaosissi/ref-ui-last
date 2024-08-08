@@ -71,16 +71,13 @@ export default function MenuPc() {
     }
   }
   // for stable detail css style
-  const [extraBack, setExtraBack] = useState("transparent");
   const [extraWidth, setExtraWidth] = useState("60%");
   useEffect(() => {
-    setExtraBack("transparent");
     setExtraWidth("60%");
     if (
       router.route.indexOf("pool/stable") != -1 ||
       router.route.indexOf("yours") != -1
     ) {
-      setExtraBack("rgba(33, 43, 53, 0.4)");
       setExtraWidth("100%");
     }
   }, [router.route]);
@@ -138,7 +135,6 @@ export default function MenuPc() {
           }`}
           style={{
             height: "46px",
-            background: extraBack,
             width: extraWidth,
             margin: "0 auto",
           }}

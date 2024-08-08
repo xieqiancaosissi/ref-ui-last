@@ -80,7 +80,7 @@ export default function ShareContainer(props: any) {
               userTotalShare={userTotalShare}
               version={"Classic"}
               poolId={poolDetail.id}
-              onlyEndedFarm={false}
+              onlyEndedFarm={countV2 === endedFarmCountV2}
             />
           ) : null}
         </div>

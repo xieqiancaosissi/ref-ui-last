@@ -83,9 +83,10 @@ export default function Tab() {
   }
   return (
     <div
-      className="frcc lg:fixed lg:bg-dark-45 w-full h-17 lg:border-b-dark-280 lg:border-b xsm:mt-12"
+      className="frcc lg:fixed lg:bg-dark-45 w-full h-17 xsm:mt-12"
       style={{
-        top: "232px",
+        top: "184px",
+        zIndex: "51",
       }}
     >
       <div className="flex items-center lg:w-276 xsm:w-full">

@@ -20,7 +20,7 @@ import { TokenMetadata } from "@/services/ft-contract";
 import Big from "big.js";
 import { MyOrderInstantSwapArrowRight } from "../../icons2";
 import { TOKEN_LIST_FOR_RATE } from "@/services/commonV3";
-import { HiOutlineExternalLink } from "@/components/reactIcons";
+import { ArrowTopRightIcon } from "../../icons2";
 import getConfig from "@/utils/config";
 import { SellTokenAmount, BuyTokenAmount } from "./tokenAmountUI";
 import {
@@ -333,28 +333,31 @@ export default function HistoryLine({
         )}
       {/* For Mobile */}
       <div
-        className="w-full relative mb-4 md:hidden lg:hidden"
+        className="w-full relative mb-4 md:hidden lg:hidden bg-dark-290 rounded-lg"
         style={{
           zIndex: 20 - index,
         }}
       >
-        <MobileHistoryOrderStamp
-          state={
-            ONLY_ZEROS.test(order.cancel_amount)
-              ? "filled"
-              : new Big(order.original_deposit_amount).eq(order.cancel_amount)
-              ? "cancel"
-              : "partially_filled"
-          }
-        />
-
         {/* title */}
-        <div className="rounded-t-xl relative bg-orderMobileTop px-3 pt-3">
-          <div className="absolute right-4 bottom-2.5 z-50  text-xs">
-            <div className="relative">
+        <div className="rounded-t-xl relative bg-portfolioMobileBg px-3 pt-3">
+          <div className="flex items-center relative justify-between">
+            <SellTokenAmount sellToken={sellToken} orderIn={orderIn} />
+            <MyOrderMobileArrow />
+            <BuyTokenAmount buyToken={buyToken} buyAmount={buyAmount} />
+          </div>
+          <div className="grid grid-cols-3 pb-1.5">
+            <div className="flex items-center justify-center bg-gray-290 rounded-xl text-xs text-gray-10 justify-self-start px-2 py-0.5">
+              {ONLY_ZEROS.test(order.cancel_amount)
+                ? "Filled"
+                : new Big(order.original_deposit_amount).eq(order.cancel_amount)
+                ? "Canceled"
+                : "Partially Filled"}
+            </div>
+            <Created order={order} />
+            <div className="relative z-50  text-xs justify-self-end">
               {!!orderTx && (
                 <a
-                  className="flex items-center text-gray-10 cursor-pointer"
+                  className="flex items-center text-gray-10 cursor-pointer bg-black bg-opacity-20 rounded py-0.5 px-1.5 hover:text-white"
                   onMouseEnter={() => handleMouseEnter(orderTx)}
                   onMouseLeave={handleMouseLeave}
                   target="_blank"
@@ -369,7 +372,7 @@ export default function HistoryLine({
                     <>
                       Tx
                       <span className="ml-1.5">
-                        <HiOutlineExternalLink />
+                        <ArrowTopRightIcon />
                       </span>
                     </>
                   )}
@@ -377,7 +380,7 @@ export default function HistoryLine({
                     <div className="w-44 absolute top-6 right-0 bg-dark-70 border border-gray-70 rounded-lg p-2 shadow-lg z-50">
                       <div className="flex flex-col">
                         <div
-                          className="mb-2 px-3 py-2 hover:bg-poolDetaileTxHoverColor text-white rounded-md flex items-center"
+                          className="mb-2 px-3 py-2  text-white rounded-md flex items-center"
                           onMouseEnter={(e) => {
                             const arrow = e.currentTarget.querySelector(
                               ".arrow"
@@ -411,7 +414,7 @@ export default function HistoryLine({
                           </div>
                         </div>
                         <div
-                          className="px-3 py-2 hover:bg-poolDetaileTxHoverColor text-white rounded-md flex items-center"
+                          className="px-3 py-2  text-white rounded-md flex items-center"
                           onMouseEnter={(e) => {
                             const arrow = e.currentTarget.querySelector(
                               ".arrow"
@@ -451,17 +454,9 @@ export default function HistoryLine({
               )}
             </div>
           </div>
-
-          <div className="flex items-center relative justify-between">
-            <SellTokenAmount sellToken={sellToken} orderIn={orderIn} />
-            <MyOrderMobileArrow />
-            <BuyTokenAmount buyToken={buyToken} buyAmount={buyAmount} /> .
-          </div>
-
-          <Created order={order} />
         </div>
         {/*  content */}
-        <div className="rounded-b-xl p-3 bg-gray-20">
+        <div className="rounded-b-xl p-3">
           <MobileInfoBanner
             text={
               <FormattedMessage id="fee_tiers" defaultMessage={"Fee Tiers"} />

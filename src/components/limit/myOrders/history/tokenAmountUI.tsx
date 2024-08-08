@@ -12,7 +12,7 @@ export function SellTokenAmount({
     <span className="flex py-4 pl-3  flex-shrink-0 items-center">
       <img
         src={sellToken.icon}
-        className="border border-gradientFrom rounded-full w-7 h-7"
+        className="border border-gradientFrom rounded-full w-7 h-7 xsm:w-6 xsm:h-6"
         alt=""
       />
 
@@ -41,7 +41,7 @@ export function BuyTokenAmount({
     <span className="flex items-center col-span-1 ">
       <img
         src={buyToken.icon}
-        className="border flex-shrink-0 border-gradientFrom rounded-full w-7 h-7"
+        className="border flex-shrink-0 border-gradientFrom rounded-full w-7 h-7 xsm:w-6 xsm:h-6"
         alt=""
       />
 

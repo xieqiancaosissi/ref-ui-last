@@ -204,6 +204,25 @@ export function SelectedIcon(props: any) {
     </svg>
   );
 }
+export function SelectedIconBig(props: any) {
+  return (
+    <svg
+      {...props}
+      width="19"
+      height="15"
+      viewBox="0 0 19 15"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M2 6.44444L7.35714 12L17 2"
+        stroke="#00FFC2"
+        strokeWidth="3"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
 
 export function RightArrowIcon() {
   return (

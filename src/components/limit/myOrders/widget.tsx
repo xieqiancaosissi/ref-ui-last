@@ -9,8 +9,8 @@ export const MobileInfoBanner = ({
 }) => {
   return (
     <div className="flex mb-4 items-center justify-between whitespace-nowrap">
-      <span className="text-xs text-gray-10">{text}</span>
-      <span className="text-white text-sm">{value}</span>
+      <span className="text-[13px] text-gray-60">{text}</span>
+      <span className="text-[13px] text-white">{value}</span>
     </div>
   );
 };

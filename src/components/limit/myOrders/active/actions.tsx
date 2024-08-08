@@ -7,7 +7,7 @@ export default function Actions({ order }: { order: UserOrderInfo }) {
   const [cancelLoading, setCancelLoading] = useState<boolean>(false);
   return (
     <button
-      className={`border rounded xs:text-sm xs:w-full justify-self-end border-dark-190 text-dark-200`}
+      className={`border rounded xs:text-sm xs:w-full justify-self-end border-dark-190 text-dark-200 lg:h-[32px] lg:text-[13px] lg:w-[90px] xsm:text-sm xsm:flex-grow xsm:h-[38px]`}
       onClick={(e) => {
         e.preventDefault();
         e.stopPropagation();
@@ -15,11 +15,6 @@ export default function Actions({ order }: { order: UserOrderInfo }) {
         cancel_order({
           order_id: order.order_id,
         });
-      }}
-      style={{
-        height: "32px",
-        fontSize: "13px",
-        width: "90px",
       }}
     >
       <ButtonTextWrapper

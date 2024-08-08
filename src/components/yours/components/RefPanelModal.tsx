@@ -76,7 +76,7 @@ export default function RefPanelModal() {
     setTokenPriceList(tokenPriceList);
   }
   return (
-    <div className="text-white w-full">
+    <div className="text-white w-full xsm:px-3">
       <PortfolioData.Provider
         value={{
           main_active_tab,
@@ -150,13 +150,13 @@ export default function RefPanelModal() {
       >
         <Asset></Asset>
         <Tab></Tab>
-        <div className="h-46 w-full"></div>
+        <div className="h-46 w-full xsm:hidden"></div>
 
         <div
-          className="pt-4 h-162 flex justify-center"
+          className="lg:pt-4 lg:h-162 flex justify-center xsm:w-full xsm:mb-10"
           style={{ overflow: "auto" }}
         >
-          <div className="w-276">
+          <div className="lg:w-276 xsm:w-full">
             <div className={`${activeTab == "1" ? "" : "hidden"}`}>
               <Positions></Positions>
             </div>

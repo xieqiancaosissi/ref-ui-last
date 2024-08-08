@@ -12,6 +12,9 @@ import {
 import Big from "big.js";
 import _ from "lodash";
 import { StablePool } from "@/interfaces/swap";
+import { get_shadow_records } from "@/services/farm";
+import { percent } from "@/utils/numbers";
+import { getAccountId } from "@/utils/wallet";
 
 const FEE_DIVISOR = 10000;
 export const useFarmStake = ({
@@ -85,6 +88,13 @@ export const useYourliquidity = (poolId: number) => {
     .toNumber()
     .toLocaleString("fullwide", { useGrouping: false });
 
+  const { poolShadowRecord } = useShadowRecord(poolId);
+  const { shadow_in_farm, shadow_in_burrow } = poolShadowRecord || {};
+  const shadowBurrowShare = processShare(
+    shares,
+    shadow_in_burrow,
+    farmStakeTotal
+  );
   return {
     pool,
     shares,
@@ -96,9 +106,35 @@ export const useYourliquidity = (poolId: number) => {
     farmStakeV2,
     userTotalShare,
     userTotalShareToString,
+    shadowBurrowShare,
   };
 };
 
+export const useShadowRecord = (poolId: any) => {
+  const [shadowRecords, setShadowRecords] = useState<any>({});
+  useEffect(() => {
+    get_shadow_records().then((res) => {
+      setShadowRecords(res);
+    });
+  }, [getAccountId()]);
+  return { shadowRecords, poolShadowRecord: shadowRecords[poolId] };
+};
+const processShare = (share: any, stakeAmount = "0", farmStakeTotal: any) => {
+  const totalShare = share
+    ? BigNumber.sum(share, farmStakeTotal)
+    : BigNumber("0");
+  const totalShareString = totalShare
+    .toNumber()
+    .toLocaleString("fullwide", { useGrouping: false });
+  const sharePercent = totalShare.isGreaterThan(0)
+    ? percent(
+        stakeAmount,
+        totalShare.toNumber().toLocaleString("fullwide", { useGrouping: false })
+      ).toString()
+    : "0";
+
+  return { totalShare, totalShareString, sharePercent, stakeAmount };
+};
 export const getAddLiquidityShares = async (
   pool_id: number,
   amounts: string[],

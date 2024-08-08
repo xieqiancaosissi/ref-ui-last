@@ -531,7 +531,7 @@ export default function OrderCard({
           >
             <td colSpan={8}>
               <div
-                className="inline-flex max-w-max items-center ml-4 text-gray-10 mt-7  mb-3"
+                className="inline-flex max-w-max items-center ml-4 text-gray-10 mt-7 mb-3 xsm:mt-0 xsm:ml-1 xsm:text-gray-10 xsm:text-sm"
                 data-class="reactTip"
                 data-tooltip-id={"real_time_order_tip"}
                 data-place={"top"}

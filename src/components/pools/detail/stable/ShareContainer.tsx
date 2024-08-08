@@ -5,16 +5,18 @@ import {
   useCanFarmV2,
   useYourliquidity,
 } from "@/hooks/useStableShares";
-import { ShareInFarmV2 } from "./ShareInFarm";
+import { ShareInFarm, ShareInFarmV2 } from "./ShareInFarm";
 import ShareNumber from "./ShareNumber";
 import {
   AddLiquidityIconStable,
   RemoveLiquidityIconStable,
 } from "../liquidity/icon";
 import { useRouter } from "next/router";
+import { openUrl } from "@/services/commonV3";
 
 export default function ShareContainer(props: any) {
   const { poolDetail, setShowAdd, setShowRemove } = props;
+
   const router = useRouter();
   const { farmCount: countV1, endedFarmCount: endedFarmCountV1 } = useCanFarmV1(
     poolDetail.id,
@@ -25,9 +27,13 @@ export default function ShareContainer(props: any) {
     poolDetail.id,
     true
   );
-  const { farmStakeV1, farmStakeV2, userTotalShare } = useYourliquidity(
-    poolDetail.id
-  );
+  const {
+    farmStakeV1,
+    farmStakeV2,
+    userTotalShare,
+    shares,
+    shadowBurrowShare,
+  } = useYourliquidity(poolDetail.id);
   const toSauce = (type: string) => {
     router.push(`/sauce/${type}/${router.query.id}`);
   };
@@ -78,6 +84,23 @@ export default function ShareContainer(props: any) {
             />
           ) : null}
         </div>
+        {shadowBurrowShare?.stakeAmount && (
+          <div
+            className={`cursor-pointer`}
+            onClick={(e) => {
+              e.stopPropagation();
+              e.preventDefault();
+              openUrl(`https://app.burrow.finance/`);
+            }}
+          >
+            <ShareInFarm
+              farmStake={shadowBurrowShare?.stakeAmount}
+              userTotalShare={userTotalShare}
+              inStr={"in Burrow"}
+              forStable
+            />
+          </div>
+        )}
       </div>
       {/* right liquidity button */}
       <div className="flex items-center justify-end xsm:hidden">

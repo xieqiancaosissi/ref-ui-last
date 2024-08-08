@@ -5,17 +5,20 @@ import BigNumber from "bignumber.js";
 import { useRouter } from "next/router";
 import { StableFarmIcon } from "../../icon";
 import { FiArrowUpRight } from "react-icons/fi";
+import { ArrowRightUpIcon } from "@/components/yours/components/icon";
 
 export const ShareInFarm = ({
   farmStake,
   userTotalShare,
   forStable,
   version,
+  inStr,
 }: {
   farmStake: string | number;
   userTotalShare: BigNumber;
   forStable?: boolean;
   version?: string;
+  inStr?: string;
 }) => {
   const farmShare = Number(farmStake).toLocaleString("fullwide", {
     useGrouping: false,
@@ -37,11 +40,7 @@ export const ShareInFarm = ({
 
   return (
     <div
-      className={`items-center inline-flex text-xs  rounded-full py-0.5 border  ${
-        hover
-          ? "border-gradientFrom text-gradientFrom"
-          : "border-transparent text-gradientFrom"
-      }  px-2 cursor-pointer`}
+      className={`items-start inline-flex text-xs rounded-full py-0.5 cursor-pointer mb-1.5`}
       onMouseEnter={() => setHovet(true)}
       onMouseLeave={() => setHovet(false)}
     >
@@ -51,24 +50,23 @@ export const ShareInFarm = ({
           forStable ? `${hover ? "text-white" : "text-gray-10"}` : ""
         }`}
       >
-        <span
-          className={`${
-            hundredPercent ? "w-9" : zeroPercent ? "w-6" : "w-11"
-          } text-center`}
-        >
+        <span className={`text-left`}>
           {`${
             Number(farmSharePercent) < 0.1 && Number(farmSharePercent) > 0
               ? "< 0.1"
               : toPrecision(farmSharePercent, 2, false, false)
           }% `}{" "}
         </span>
-        <span>
-          &nbsp;
-          <FormattedMessage id="in_farm" defaultMessage="in Farm" />
+        &nbsp;
+        <span className="underline mr-1">
+          {inStr ? (
+            inStr
+          ) : (
+            <FormattedMessage id="in_farm" defaultMessage="in Farm" />
+          )}
         </span>
-
+        <ArrowRightUpIcon></ArrowRightUpIcon>
         {version && <span className={`ml-1 w-4`}>{version}</span>}
-
         {hover && forStable && (
           <span className="ml-0.5">{/* <HiOutlineExternalLink /> */}</span>
         )}

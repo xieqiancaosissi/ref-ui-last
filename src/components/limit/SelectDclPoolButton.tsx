@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import dynamic from "next/dynamic";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import { ArrowDownIcon } from "../../components/swap/icons";
@@ -15,9 +15,17 @@ import { getTokenBalance } from "@/services/token";
 import { toReadableNumber } from "@/utils/numbers";
 import { ITokenMetadata } from "@/interfaces/tokens";
 import { getTokenUIId } from "@/services/swap/swapUtils";
+import { generateRandomString } from "@/utils/numbers";
+import { isMobile } from "@/utils/device";
 const SelectDclTokenBox = dynamic(() => import("./SelectDclToken"), {
   ssr: false,
 });
+const SelectDclTokenModal = dynamic(
+  () => import("./SelectDclToken").then((mod) => mod.SelectDclTokenModal),
+  {
+    ssr: false,
+  }
+);
 export default function SelectDclPoolButton({
   isIn,
   isOut,
@@ -35,6 +43,7 @@ export default function SelectDclPoolButton({
   const accountStore = useAccountStore();
   const walletLoading = accountStore.getWalletLoading();
   const accountId = accountStore.getAccountId();
+  const mobile = isMobile();
   useEffect(() => {
     if (cachedDclPool?.pool_id) {
       const { token_x_metadata, token_y_metadata } = cachedDclPool;
@@ -74,10 +83,14 @@ export default function SelectDclPoolButton({
     limitStore.setTokenIn(TOKEN_IN);
     limitStore.setTokenOut(TOKEN_OUT);
   }
+  const id = useMemo(() => {
+    return `setDclToken-${generateRandomString(5)}`;
+  }, []);
   useEffect(() => {
+    if (mobile) return;
     const event = (e: any) => {
       const path = e.composedPath();
-      const el = path.find((el: any) => el.id == "setDclToken");
+      const el = path.find((el: any) => el.id == id);
       if (!el) {
         hideBox();
       }
@@ -87,9 +100,6 @@ export default function SelectDclPoolButton({
       document.removeEventListener("click", event);
     };
   }, []);
-  function showBox() {
-    setShow(true);
-  }
   function hideBox() {
     setShow(false);
   }
@@ -102,12 +112,11 @@ export default function SelectDclPoolButton({
   }
   return (
     <div
-      id="setDclToken"
-      className="flex items-center cursor-pointer flex-shrink-0 relative id"
-      onClick={switchBox}
+      id={id}
+      className="flex items-center cursor-pointer flex-shrink-0 relative"
     >
       {selectedToken ? (
-        <>
+        <div className="flex items-center" onClick={switchBox}>
           <div
             className="flex items-center justify-center relative overflow-hidden rounded-full border border-gray-110"
             style={{
@@ -125,13 +134,21 @@ export default function SelectDclPoolButton({
             {selectedToken.symbol}
           </span>
           <ArrowDownIcon className="text-gray-50" />
-        </>
+        </div>
       ) : (
         <SkeletonTheme baseColor="#212B35" highlightColor="#2A3643">
           <Skeleton height={20} width={80} />
         </SkeletonTheme>
       )}
-      <SelectDclTokenBox show={show} onSelect={selectEvent} />
+      {mobile ? (
+        <SelectDclTokenModal
+          show={show}
+          onSelect={selectEvent}
+          onRequestClose={hideBox}
+        />
+      ) : (
+        <SelectDclTokenBox show={show} onSelect={selectEvent} />
+      )}
     </div>
   );
 }

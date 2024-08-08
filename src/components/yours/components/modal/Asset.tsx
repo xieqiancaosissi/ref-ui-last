@@ -292,16 +292,15 @@ function AssetPage() {
   ]);
   return (
     <div
-      className="w-full h-35 fixed frcc"
+      className="w-full lg:h-35 lg:fixed lg:frcc lg:bg-dark-45"
       style={{
-        background: "rgba(33, 43, 53, 0.4)",
         top: "92px",
         zIndex: "10",
       }}
     >
-      <div className="w-276 flex items-center justify-between">
+      <div className="lg:w-276 xsm:w-full flex xsm:flex-col items-center justify-between">
         {/* pools value */}
-        <div className="frcc">
+        <div className="lg:frcc xsm:hidden xsm:h-19">
           <PoolTotalValIcon />
           <div className="ml-5 h-14 flex flex-col justify-between">
             <p className="text-gray-50 text-sm">Your Pool Value</p>
@@ -322,7 +321,7 @@ function AssetPage() {
           </div>
         </div>
         {/* farms value */}
-        <div className="frcc">
+        <div className="lg:frcc xsm:hidden xsm:h-19">
           <FarmTotalValIcon />
           <div className="ml-5 h-14 flex flex-col justify-between">
             <p className="text-gray-50 text-sm">Your Farm Value</p>
@@ -343,7 +342,7 @@ function AssetPage() {
           </div>
         </div>
         {/* stake value */}
-        <div className="frcc">
+        <div className="lg:frcc xsm:hidden xsm:h-19">
           <StakeTotalValIcon />
           <div className="ml-5 h-14 flex flex-col justify-between">
             <p className="text-gray-50 text-sm">Your Stake Value</p>
@@ -363,6 +362,75 @@ function AssetPage() {
                 <ArrowRightUpIcon />
               </div>
             </div>
+          </div>
+        </div>
+
+        {/* Mobile */}
+
+        {/* pools value */}
+        <div className="xsm:flex xsm:justify-between xsm:h-19 lg:hidden xsm:bg-dark-45 xsm:w-full xsm:p-4 xsm:rounded-md">
+          <div className="flex  items-center">
+            <PoolTotalValIcon />
+            <div className="ml-5 h-14 flex flex-col justify-between">
+              <p className="text-gray-50 text-sm">Your Pool Value</p>
+              <span className="text-white text-2xl">{tabList[0].value}</span>
+            </div>
+          </div>
+
+          <div
+            className="frcc ml-2"
+            onClick={() => {
+              openUrl("/pools");
+            }}
+          >
+            <span className="underline cursor-pointer text-gray-160 text-sm mr-1.5 hover:text-gray-60">
+              Add Liquidity
+            </span>
+            <ArrowRightUpIcon />
+          </div>
+        </div>
+        {/* farms value */}
+        <div className="xsm:flex xsm:justify-between xsm:h-19 lg:hidden xsm:bg-dark-45 xsm:w-full xsm:p-4 my-2 xsm:rounded-md">
+          <div className="flex  items-center">
+            <FarmTotalValIcon />
+            <div className="ml-5 h-14 flex flex-col justify-between">
+              <p className="text-gray-50 text-sm">Your Farm Value</p>
+              <span className="text-white text-2xl">{tabList[1].value}</span>
+            </div>
+          </div>
+          <div
+            className="frcc ml-2"
+            onClick={() => {
+              openUrl("/farms");
+            }}
+          >
+            <span className="underline cursor-pointer text-gray-160 text-sm mr-1.5 hover:text-gray-60">
+              Stake farms
+            </span>
+            <ArrowRightUpIcon />
+          </div>
+        </div>
+        {/* stake value */}
+        <div className="xsm:flex xsm:justify-between xsm:h-19 lg:hidden xsm:bg-dark-45 xsm:w-full xsm:p-4 xsm:rounded-md">
+          <div className="flex  items-center">
+            <StakeTotalValIcon />
+            <div className="ml-5 h-14 flex flex-col justify-between">
+              <p className="text-gray-50 text-sm">Your Stake Value</p>
+              <span className="text-white text-2xl">
+                {show_total_xref_value}
+              </span>
+            </div>
+          </div>
+          <div
+            className="frcc ml-2"
+            onClick={() => {
+              openUrl("/xref");
+            }}
+          >
+            <span className="underline cursor-pointer text-gray-160 text-sm mr-1.5 hover:text-gray-60">
+              Stake
+            </span>
+            <ArrowRightUpIcon />
           </div>
         </div>
       </div>

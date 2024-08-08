@@ -56,34 +56,50 @@ export default function Positions(props: any) {
 
   const [poolType, setPoolType] = useState("dcl");
   return (
-    <div className="text-white">
-      <div className="flex mt-4 mb-12 cursor-pointer select-none">
+    <div className="text-white xsm:pb-10">
+      <div className="flex mt-4 lg:mb-12 xsm:mb-8 cursor-pointer select-none">
         <div
-          className={`p-2 h-6 text-sm font-medium frcc rounded ${
+          className={`p-2 h-6 lg:text-sm xsm:text-lg font-medium frcc rounded ${
             poolType == "dcl"
-              ? "text-white bg-gray-40"
-              : "text-gray-60 bg-dark-10"
+              ? "text-white lg:bg-gray-40"
+              : "text-gray-60 lg:bg-dark-10"
           }`}
           onClick={() => {
             setPoolType("dcl");
           }}
         >
-          {`DCL (${v2LiquidityQuantity})`}
+          <span className="xsm:hidden">{`DCL (${v2LiquidityQuantity})`}</span>
+          <span className="lg:hidden">
+            {`DCL Pools (${v2LiquidityQuantity})`}
+            <div
+              className={`h-0.5 w-28 ${
+                poolType == "dcl" ? "bg-white" : "bg-transparent"
+              } mt-1 lg:hidden`}
+            ></div>
+          </span>
         </div>
         <div
-          className={`p-2 ml-2 h-6 text-sm font-medium frcc rounded ${
+          className={`p-2 ml-2 h-6 lg:text-sm xsm:text-lg font-medium frcc rounded ${
             poolType == "classic"
-              ? "text-white bg-gray-40"
-              : "text-gray-60 bg-dark-10"
+              ? "text-white lg:bg-gray-40"
+              : "text-gray-60 lg:bg-dark-10"
           }`}
           onClick={() => {
             setPoolType("classic");
           }}
         >
-          {`Classic (${v1LiquidityQuantity})`}
+          <span className="xsm:hidden">{`Classic (${v1LiquidityQuantity})`}</span>
+          <span className="lg:hidden">
+            {`Classic Pools (${v1LiquidityQuantity})`}
+            <div
+              className={`h-0.5 w-38 ${
+                poolType == "classic" ? "bg-white" : "bg-transparent"
+              } mt-1 lg:hidden`}
+            ></div>
+          </span>
         </div>
       </div>
-      <div className="xsm:border-b xsm:border-cardBg">
+      <div className="">
         {/* liquidities list */}
         <div
           className={`${activeTab == "1" && poolType == "dcl" ? "" : "hidden"}`}

@@ -83,7 +83,7 @@ export async function getWalletSelector({
       setupNearMobileWallet({
         dAppMetadata: {
           name: "ref finance",
-          logoUrl: "https://assets.ref.finance/images/REF-black-logo.png",
+          logoUrl: "https://img.ref.finance/images/REF-black-logo.png",
           url: "https://app.ref.finance",
         },
       }),

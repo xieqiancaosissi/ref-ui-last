@@ -132,7 +132,7 @@ export default function SetPopup() {
   }
   function smartTip() {
     return `
-    <div class="text-gray-110 text-xs text-left break-all w-62">
+    <div class="text-gray-110 text-xs text-left w-62">
     By design, Ledger cannot handle large transactions (i.e. Auto Router: trade across multiple pools at once) because of its memory limitation. When activated, the 'Support Ledger' option will limit transactions to their simplest form (to the detriment of potential optimal prices found by our Auto Router), so transactions of a reasonable size can be signed.
     </div>
     `;

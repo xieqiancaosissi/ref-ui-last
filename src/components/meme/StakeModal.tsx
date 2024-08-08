@@ -1,5 +1,6 @@
 import React, { useState, useContext, useMemo } from "react";
 import Big from "big.js";
+import { useRouter } from "next/router";
 import { isMobile } from "../../utils/device";
 import { ModalCloseIcon, ArrowRightIcon } from "./icons";
 import { InputAmount } from "./InputBox";
@@ -22,6 +23,7 @@ import {
   getSeedApr,
 } from "./tool";
 import { ButtonTextWrapper } from "../common/Button";
+import { usePersistSwapStore } from "@/stores/swap";
 const is_mobile = isMobile();
 const { MEME_TOKEN_XREF_MAP } = getMemeContractConfig();
 const progressConfig = getMemeUiConfig();
@@ -50,6 +52,8 @@ function StakeModal(props: any) {
   const [xrefAmount, setXrefAmount] = useState("");
   const [stakeLoading, setStakeLoading] = useState(false);
   const [selectedTab, setSelectedTab] = useState<"meme" | "xref">("meme");
+  const persistSwapStore = usePersistSwapStore();
+  const router = useRouter();
   const { seed, xrefSeed } = useMemo(() => {
     return {
       seed: seeds[seed_id],
@@ -310,12 +314,22 @@ function StakeModal(props: any) {
             <div className="text-sm mt-5 text-primaryGreen flex justify-end items-center">
               <a
                 className="inline-flex items-center cursor-pointer"
-                href={`${
-                  selectedTab === "meme"
-                    ? `/#near|${seed?.token_meta_data?.id}`
-                    : "/xref"
-                }`}
-                target="_blank"
+                // href={`${
+                //   selectedTab === "meme"
+                //     ? `/#near|${seed?.token_meta_data?.id}`
+                //     : "/xref"
+                // }`}
+                onClick={() => {
+                  if (selectedTab === "meme") {
+                    persistSwapStore.setTokenInId("near");
+                    if (seed?.token_meta_data?.id) {
+                      persistSwapStore.setTokenOutId(seed.token_meta_data.id!);
+                    }
+                    router.push("/");
+                  } else {
+                    router.push("/xref");
+                  }
+                }}
                 rel="noreferrer"
               >
                 Acquire{" "}

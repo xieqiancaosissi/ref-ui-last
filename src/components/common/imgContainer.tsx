@@ -45,7 +45,7 @@ export function RiskTipIcon() {
   if (mobile) return <RiskIcon />;
   function riskTip() {
     return `
-    <div class="text-gray-110 text-xs text-left break-all">
+    <div class="text-gray-110 text-xs text-left">
     Uncertified token, higher risk.
     </div>
     `;

@@ -48,76 +48,69 @@ export default function StablePoolRowCharts(props: any) {
             value: tokenAmount,
             privateIcon: ite.icon,
             itemStyle: {
-              color: isMobile
-                ? colorMap[ite.symbol] || "black"
-                : "rgba(255,255,255,.3)",
+              color: colorMap[ite.symbol] || "black",
             }, //mobile do not use rgba(255,255,255,.3)
-            label: isMobile
-              ? {
-                  formatter(params: any) {
-                    return `{bg|}\n{title|${
-                      params.data.name
-                    }}\n{amount|${toInternationalCurrencySystem(
-                      params.data.value,
-                      2
-                    )}}\n{percent|${params.percent}%}\n`;
+            label: {
+              formatter(params: any) {
+                return `{bg|}\n{title|${
+                  params.data.name
+                }}\n{amount|${toInternationalCurrencySystem(
+                  params.data.value,
+                  2
+                )}}\n{percent|${params.percent}%}\n`;
+              },
+              rich: {
+                bg: {
+                  height: 18,
+                  backgroundColor: {
+                    image: ite.symbol == "NEAR" ? "/images/near.png" : ite.icon,
                   },
-                  rich: {
-                    bg: {
-                      height: 18,
-                      backgroundColor: {
-                        image:
-                          ite.symbol == "NEAR" ? "/images/near.png" : ite.icon,
-                      },
-                    },
-                    title: {
-                      fontSize: "12px",
-                      color: "#91A2AE",
-                    },
-                    amount: {
-                      color: "#fff",
-                      fontSize: "10px",
-                    },
-                    percent: {
-                      fontSize: "10px",
-                      color: "#fff",
-                    },
-                  },
-                }
-              : {},
+                },
+                title: {
+                  fontSize: "12px",
+                  color: "#91A2AE",
+                },
+                amount: {
+                  color: "#fff",
+                  fontSize: "10px",
+                },
+                percent: {
+                  fontSize: "10px",
+                  color: "#fff",
+                },
+              },
+            },
             emphasis: {
               itemStyle: {
                 color: colorMap[ite.symbol] || "black",
               },
               label: {
                 formatter(params: any) {
-                  return `{bg|}${isMobile ? "\n" : "\n\n"}{title|${
+                  return `{bg|}${"\n"}{title|${
                     params.data.name
-                  }}${
-                    isMobile ? "\n" : "\n\n"
-                  }{amount|${toInternationalCurrencySystem(
+                  }}${"\n"}{amount|${toInternationalCurrencySystem(
                     params.data.value,
                     2
                   )}}\n{percent|${params.percent}%}\n`;
                 },
                 rich: {
                   bg: {
-                    height: isMobile ? 18 : 34,
+                    height: isMobile ? 18 : 24,
                     backgroundColor: {
                       image:
                         ite.symbol == "NEAR" ? "/images/near.png" : ite.icon,
                     },
                   },
                   title: {
-                    fontSize: isMobile ? "12px" : "16px",
-                    color: isMobile ? "#91A2AE" : "#fff",
+                    fontSize: "12px",
+                    color: "#91A2AE",
                   },
                   amount: {
                     color: "#fff",
-                    fontSize: isMobile ? "10px" : "26px",
+                    fontSize: isMobile ? "10px" : "12px",
                   },
                   percent: {
-                    fontSize: isMobile ? "10px" : "14px",
+                    fontSize: isMobile ? "10px" : "12px",
                     color: "#fff",
                   },
                 },
@@ -136,11 +129,11 @@ export default function StablePoolRowCharts(props: any) {
       series: [
         {
           type: "pie",
-          radius: isMobile ? ["40%", "50%"] : ["50%", "62%"],
+          radius: ["40%", "50%"],
           avoidLabelOverlap: false,
           label: {
-            show: isMobile ? true : false,
-            position: isMobile ? "outside" : "center",
+            show: true,
+            position: "outside",
           },
           emphasis: {
             label: {
@@ -149,7 +142,7 @@ export default function StablePoolRowCharts(props: any) {
             },
           },
           labelLine: {
-            show: isMobile ? true : false,
+            show: true,
           },
           itemStyle: {
             borderRadius: 1,
@@ -204,26 +197,42 @@ export default function StablePoolRowCharts(props: any) {
           height: "302px",
         }}
       ></div>
+      {/* pc */}
       <div className="flex items-start lg:mt-16 xsm:w-full xsm:hidden">
         <div>
           {updatedMapList.map((item: any, index: number) => {
-            return item?.token_account_ids?.map((ite: any, ind: number) => {
-              const tokenAmount = toReadableNumber(
-                ite.decimals,
-                item.supplies[ite.tokenId]
-              );
+            // 提取tokenIds和对应的symbols，以及计算tokenAmounts
+            const tokenIdsAndSymbols = item.token_account_ids?.map(
+              (ite: any, ind: number) => {
+                const tokenAmount = toReadableNumber(
+                  ite.decimals,
+                  item.supplies[ite.tokenId]
+                );
+                return {
+                  tokenId: ite.tokenId,
+                  symbol: item.token_symbols[ind],
+                  tokenAmount,
+                };
+              }
+            );
+
+            // 根据tokenAmount进行排序
+            tokenIdsAndSymbols?.sort(
+              (a: any, b: any) => b.tokenAmount - a.tokenAmount
+            ); // 降序排序
+
+            return tokenIdsAndSymbols?.map((tokenInfo: any, ind: number) => {
+              const { tokenId, symbol, tokenAmount } = tokenInfo;
               return (
                 <div
                   className="flex items-center m-3 hover:opacity-90 text-sm font-normal"
-                  key={ite.tokenId + ind}
+                  key={tokenId + ind}
                 >
                   {/* token */}
-                  <h4 className=" text-gray-60  text-left w-13">
-                    {item.token_symbols[ind]}
-                  </h4>
+                  <h4 className="text-gray-60 text-left w-13">{symbol}</h4>
                   {/* amounts */}
                   {sumToken ? (
-                    <div className=" text-white  lg:ml-6">
+                    <div className="text-white lg:ml-6">
                       {+tokenAmount > 0 && +tokenAmount < 0.01
                         ? "< 0.01"
                         : toInternationalCurrencySystem(tokenAmount, 2) +
@@ -232,7 +241,7 @@ export default function StablePoolRowCharts(props: any) {
                           )})`}
                     </div>
                   ) : (
-                    <div className=" text-white  lg:ml-6">0</div>
+                    <div className="text-white lg:ml-6">0</div>
                   )}
                 </div>
               );
@@ -271,23 +280,36 @@ export default function StablePoolRowCharts(props: any) {
       <div className="flex flex-col items-start lg:mt-16 xsm:w-full lg:hidden">
         <div className="w-full">
           {updatedMapList.map((item: any, index: number) => {
-            return item?.token_account_ids?.map((ite: any, ind: number) => {
-              const tokenAmount = toReadableNumber(
-                ite.decimals,
-                item.supplies[ite.tokenId]
-              );
+            // 提取tokenIds、symbols和tokenAmounts
+            const tokenInfos = item.token_account_ids?.map(
+              (ite: any, ind: number) => {
+                const tokenAmount = toReadableNumber(
+                  ite.decimals,
+                  item.supplies[ite.tokenId]
+                );
+                return {
+                  tokenId: ite.tokenId,
+                  symbol: item.token_symbols[ind],
+                  tokenAmount,
+                };
+              }
+            );
+
+            // 根据tokenAmount进行排序（降序）
+            tokenInfos?.sort((a: any, b: any) => b.tokenAmount - a.tokenAmount);
+
+            return tokenInfos?.map((tokenInfo: any, ind: number) => {
+              const { tokenId, symbol, tokenAmount } = tokenInfo;
               return (
                 <div
                   className="flex items-center m-3 hover:opacity-90 text-sm font-normal justify-between"
-                  key={ite.tokenId + ind}
+                  key={tokenId + ind}
                 >
                   {/* token */}
-                  <h4 className=" text-gray-60  text-left w-13">
-                    {item.token_symbols[ind]}
-                  </h4>
+                  <h4 className="text-gray-60 text-left w-13">{symbol}</h4>
                   {/* amounts */}
                   {sumToken ? (
-                    <div className=" text-white  lg:ml-6">
+                    <div className="text-white lg:ml-6">
                       {+tokenAmount > 0 && +tokenAmount < 0.01
                         ? "< 0.01"
                         : toInternationalCurrencySystem(tokenAmount, 2) +
@@ -296,7 +318,7 @@ export default function StablePoolRowCharts(props: any) {
                           )})`}
                     </div>
                   ) : (
-                    <div className=" text-white  lg:ml-6">0</div>
+                    <div className="text-white lg:ml-6">0</div>
                   )}
                 </div>
               );

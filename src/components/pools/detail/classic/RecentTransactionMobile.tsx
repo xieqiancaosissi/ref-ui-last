@@ -4,6 +4,7 @@ import {
   toReadableNumber,
   numberWithCommas,
   toPrecision,
+  toInternationalCurrencySystem,
 } from "@/utils/numbers";
 import { formatNumber } from "@/utils/uiNumber";
 import { toRealSymbol } from "@/services/farm";
@@ -95,21 +96,21 @@ export default function RecentTransactionMobile(props: any) {
     const displayInAmount =
       Number(swapInAmount) < 0.01
         ? "<0.01"
-        : numberWithCommas(toPrecision(swapInAmount, 6));
+        : toInternationalCurrencySystem(swapInAmount, 6);
 
     const swapOutAmount = toReadableNumber(swapOut.decimals, tx.swap_out);
 
     const displayOutAmount =
       Number(swapOutAmount) < 0.01
         ? "<0.01"
-        : numberWithCommas(toPrecision(swapOutAmount, 6));
+        : toInternationalCurrencySystem(swapOutAmount, 6);
 
     return (
       <div
         key={tx.receipt_id + index}
         className={`text-sm flex items-center bg-refPublicBoxDarkBg my-3 min-h-14 rounded-lg p-3`}
       >
-        <div className="w-1/3 flex flex-wrap break-words">
+        <div className="w-1/3 flex items-center flex-wrap ">
           <span className="col-span-1 text-white mr-1" title={swapInAmount}>
             {displayInAmount}
           </span>
@@ -122,7 +123,7 @@ export default function RecentTransactionMobile(props: any) {
           </div>
         </div>
 
-        <div className="w-1/3 flex-wrap break-words">
+        <div className="w-1/3 flex items-center flex-wrap px-1">
           <span className="text-white" title={swapOutAmount}>
             {displayOutAmount}
           </span>
@@ -132,10 +133,10 @@ export default function RecentTransactionMobile(props: any) {
           </span>
         </div>
 
-        <div className="w-1/3  flex-wrap">
+        <div className="w-1/3 flex items-center  flex-wrap">
           <span
             key={tx.receipt_id}
-            className="flex flex-wrap break-words items-center cursor-pointer"
+            className="flex flex-wrap  items-center cursor-pointer"
             onClick={() => {
               handleMouseClick(tx.receipt_id, index);
             }}
@@ -180,7 +181,7 @@ export default function RecentTransactionMobile(props: any) {
         key={tx.receipt_id + index}
         className={`text-sm flex items-center bg-refPublicBoxDarkBg my-3 min-h-14 rounded-lg p-3`}
       >
-        <div className="w-1/3 flex flex-wrap break-words">
+        <div className="w-1/3 flex items-center flex-wrap">
           <span className="text-white">
             {(tx.method_name.toLowerCase().indexOf("add") > -1 ||
               tx.method_name.toLowerCase().indexOf("append") > -1) &&
@@ -190,12 +191,12 @@ export default function RecentTransactionMobile(props: any) {
           </span>
         </div>
 
-        <div className={`w-1/3 flex flex-wrap break-words`}>
+        <div className={`w-1/3 flex items-center flex-wrap px-1`}>
           {renderTokens.map((renderToken, index) => {
             return (
               <>
                 <span className="text-white" title={renderToken.amount}>
-                  {formatNumber(renderToken.amount)}
+                  {toInternationalCurrencySystem(renderToken.amount)}
                 </span>
 
                 <span className="ml-1 text-gray-60">
@@ -209,7 +210,7 @@ export default function RecentTransactionMobile(props: any) {
           })}
         </div>
 
-        <div className={`"w-1/3 flex flex-wrap relative `}>
+        <div className={`"w-1/3 flex items-center flex-wrap relative `}>
           <span
             key={tx.receipt_id}
             className="inline-flex items-center cursor-pointer"

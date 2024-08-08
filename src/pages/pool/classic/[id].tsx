@@ -389,7 +389,7 @@ export default function ClassicPoolDetail() {
             <div className="frcc">
               <TokenDetail {...poolDetail} updatedMapList={updatedMapList} />
               {/*  */}
-              <span className=" text-2xl text-white font-bold ml-1 mr-2">
+              <span className=" text-2xl text-white font-bold ml-1 mr-2 text-ellipsis overflow-hidden whitespace-nowrap">
                 {poolDetail?.token_symbols
                   ?.map((item: any) =>
                     item == "wNEAR" ? (item = "NEAR") : item

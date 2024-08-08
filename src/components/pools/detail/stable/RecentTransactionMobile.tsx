@@ -4,6 +4,7 @@ import {
   toReadableNumber,
   numberWithCommas,
   toPrecision,
+  toInternationalCurrencySystem,
 } from "@/utils/numbers";
 import { formatNumber } from "@/utils/uiNumber";
 import { toRealSymbol } from "@/services/farm";
@@ -149,14 +150,14 @@ export default function RecentTransactionMobile(props: any) {
     const displayInAmount =
       Number(swapInAmount) < 0.01
         ? "<0.01"
-        : numberWithCommas(toPrecision(swapInAmount, 6));
+        : toInternationalCurrencySystem(swapInAmount, 6);
 
     const swapOutAmount = toReadableNumber(swapOut.decimals, tx.swap_out);
 
     const displayOutAmount =
       Number(swapOutAmount) < 0.01
         ? "<0.01"
-        : numberWithCommas(toPrecision(swapOutAmount, 6));
+        : toInternationalCurrencySystem(swapOutAmount, 6);
 
     return (
       <div
@@ -241,7 +242,7 @@ export default function RecentTransactionMobile(props: any) {
             return (
               <>
                 <span className="text-white" title={renderToken.amount}>
-                  {formatNumber(renderToken.amount)}
+                  {toInternationalCurrencySystem(renderToken.amount)}
                 </span>
 
                 <span className="ml-1 text-gray-60">

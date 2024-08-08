@@ -1,13 +1,19 @@
 import React, { useState, useEffect, useContext, useMemo } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
-import { UpDownButton, useTotalLiquidityData } from "../components/Tool";
+import {
+  UpDownButton,
+  useTotalLiquidityData,
+} from "../../../components/portfolioMobile/components/Tool";
 import { useAccountStore } from "@/stores/account";
 import { getAccountId } from "@/utils/wallet";
 import { BlueCircleLoading } from "@/components/pools/icon";
 import { YourLiquidityV2 } from "./YourLiquidityV2";
 import { YourLiquidityV1 } from "./YourLiquidityV1";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
-import { PortfolioContextType, PortfolioData } from "../RefPanelMobilePage";
+import {
+  PortfolioContextType,
+  PortfolioData,
+} from "../../../pages/portfolioMobile";
 
 export default function Positions(props: any) {
   const {

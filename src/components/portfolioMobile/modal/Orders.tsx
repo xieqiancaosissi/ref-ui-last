@@ -25,7 +25,7 @@ import {
   SWAP_MODE_KEY,
   UpDownButton,
   useTotalOrderData,
-} from "../components/Tool";
+} from "../../../components/portfolioMobile/components/Tool";
 import Big from "big.js";
 import { toRealSymbol } from "@/services/farm";
 import { MyOrderInstantSwapArrowRight } from "@/components/limit/icons2";
@@ -38,7 +38,10 @@ import ExclamationTip from "@/components/limit/myOrders/exclamationTip";
 import { BlueCircleLoading } from "@/components/pools/icon";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import { useRouter } from "next/router";
-import { PortfolioContextType, PortfolioData } from "../RefPanelMobilePage";
+import {
+  PortfolioContextType,
+  PortfolioData,
+} from "../../../pages/portfolioMobile";
 import {
   GreenCircleIcon,
   OrdersArrow,

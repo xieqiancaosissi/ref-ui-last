@@ -5,8 +5,11 @@ import {
   useTotalFarmData,
   useTotalLiquidityData,
   useTotalOrderData,
-} from "../components/Tool";
-import { PortfolioContextType, PortfolioData } from "../RefPanelMobilePage";
+} from "../../../components/portfolioMobile/components/Tool";
+import {
+  PortfolioContextType,
+  PortfolioData,
+} from "../../../pages/portfolioMobile";
 export default function Tab() {
   const {
     activeTab,

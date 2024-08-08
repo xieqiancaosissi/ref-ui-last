@@ -7,12 +7,41 @@ import { getBoostTokenPrices } from "@/services/farm";
 import { useAccountStore } from "@/stores/account";
 import { getAssets } from "@/services/indexer";
 import { PortfolioRefIcon } from "@/components/portfolio/components/icon";
-import Asset from "./modal/Asset";
-import AssetProfit from "./modal/AssetProfit";
-import Tab from "./modal/Tab";
-import Orders from "./modal/Orders";
-import Positions from "./modal/Positions";
-import Farms from "./modal/Farms";
+import dynamic from "next/dynamic";
+
+const Asset = dynamic(
+  () => import("../components/portfolioMobile/modal/Asset"),
+  {
+    ssr: false,
+  }
+);
+const AssetProfit = dynamic(
+  () => import("../components/portfolioMobile/modal/AssetProfit"),
+  {
+    ssr: false,
+  }
+);
+const Tab = dynamic(() => import("../components/portfolioMobile/modal/Tab"), {
+  ssr: false,
+});
+const Orders = dynamic(
+  () => import("../components/portfolioMobile/modal/Orders"),
+  {
+    ssr: false,
+  }
+);
+const Positions = dynamic(
+  () => import("../components/portfolioMobile/modal/Positions"),
+  {
+    ssr: false,
+  }
+);
+const Farms = dynamic(
+  () => import("../components/portfolioMobile/modal/Farms"),
+  {
+    ssr: false,
+  }
+);
 
 export const PortfolioData = createContext<PortfolioContextType | null>(null);
 export default function RefPanelMobille() {

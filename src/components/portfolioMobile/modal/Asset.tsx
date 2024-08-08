@@ -19,10 +19,13 @@ import {
   REF_FI_POOL_ACTIVE_TAB,
   display_number_ordinary,
   display_percentage,
-} from "../components/Tool";
+} from "../../../components/portfolioMobile/components/Tool";
 import { display_value } from "@/services/aurora";
 import { useRouter } from "next/router";
-import { PortfolioContextType, PortfolioData } from "../RefPanelMobilePage";
+import {
+  PortfolioContextType,
+  PortfolioData,
+} from "../../../pages/portfolioMobile";
 import {
   ArrowUpIcon,
   JumpUpperLeft,

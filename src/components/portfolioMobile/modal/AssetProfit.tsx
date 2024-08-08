@@ -13,10 +13,13 @@ import { UserLiquidityInfo, openUrl } from "@/services/commonV3";
 import { display_value } from "@/services/aurora";
 import { QuestionMark } from "@/components/farm/icon";
 import CustomTooltip from "@/components/customTooltip/customTooltip";
-import { ArrowJump } from "../components/Tool";
+import { ArrowJump } from "../../../components/portfolioMobile/components/Tool";
 import { REF_POOL_NAV_TAB_KEY } from "@/components/pools/detail/liquidity/dclYourLiquidity/RemovePoolV3";
 import { useRouter } from "next/router";
-import { PortfolioContextType, PortfolioData } from "../RefPanelMobilePage";
+import {
+  PortfolioContextType,
+  PortfolioData,
+} from "../../../pages/portfolioMobile";
 import { JumpUpperLeft } from "@/components/portfolio/components/icon";
 const AssetProfitData = createContext<AssetProfitDataContextType | null>(null);
 export default function AssetProfit() {

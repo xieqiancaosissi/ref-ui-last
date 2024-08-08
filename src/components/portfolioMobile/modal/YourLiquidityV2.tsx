@@ -58,7 +58,7 @@ import {
   FarmStampNew,
   UpDownButton,
   get_detail_the_liquidity_refer_to_seed,
-} from "../components/Tool";
+} from "../../../components/portfolioMobile/components/Tool";
 import { getAccountId } from "@/utils/wallet";
 import {
   formatNumber,
@@ -73,7 +73,10 @@ import { get_unClaimed_fee_data } from "@/components/pools/detail/dcl/d3Chart/De
 import { ButtonTextWrapper } from "@/components/common/Button";
 import { RemovePoolV3 } from "@/components/pools/detail/liquidity/dclYourLiquidity/RemovePoolV3";
 import { useRouter } from "next/router";
-import { PortfolioContextType, PortfolioData } from "../RefPanelMobilePage";
+import {
+  PortfolioContextType,
+  PortfolioData,
+} from "../../../pages/portfolioMobile";
 import {
   DclBorder,
   OrdersArrow,

@@ -30,7 +30,7 @@ import {
   getEndedFarmsCount,
   getFarmsCount,
   getRealEndedFarmsCount,
-} from "../components/Tool";
+} from "../../../components/portfolioMobile/components/Tool";
 import { TokenMetadata } from "@/services/ft-contract";
 import {
   calculateFairShare,
@@ -48,7 +48,10 @@ import { useHistory } from "react-router-dom";
 import { useFarmStake } from "@/hooks/useStableShares";
 import { useLpLocker } from "@/services/lplock";
 import Link from "next/link";
-import { PortfolioContextType, PortfolioData } from "../RefPanelMobilePage";
+import {
+  PortfolioContextType,
+  PortfolioData,
+} from "../../../pages/portfolioMobile";
 import { OrdersArrow } from "@/components/portfolio/components/icon";
 
 const { BLACK_TOKEN_LIST } = getConfig();

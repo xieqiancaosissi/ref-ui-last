@@ -31,7 +31,10 @@ import {
 } from "@/services/commonV3";
 import { getAccountId } from "@/utils/wallet";
 import { useAccountStore } from "@/stores/account";
-import { UpDownButton, useTotalFarmData } from "../components/Tool";
+import {
+  UpDownButton,
+  useTotalFarmData,
+} from "../../../components/portfolioMobile/components/Tool";
 import { ftGetTokenMetadata } from "@/services/token";
 import { TokenMetadata } from "@/services/ft-contract";
 import BigNumber from "bignumber.js";
@@ -52,7 +55,10 @@ import useTokens from "@/hooks/useTokens";
 import { LOVE_TOKEN_DECIMAL } from "@/services/referendum";
 import CustomTooltip from "@/components/customTooltip/customTooltip";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
-import { PortfolioContextType, PortfolioData } from "../RefPanelMobilePage";
+import {
+  PortfolioContextType,
+  PortfolioData,
+} from "../../../pages/portfolioMobile";
 import {
   OrdersArrow,
   PositionsMobileIcon,

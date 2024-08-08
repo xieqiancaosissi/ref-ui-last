@@ -4,6 +4,7 @@ import Big from "big.js";
 import { isMobile } from "@/utils/device";
 import { LpModalCloseIcon } from "../../icon";
 import { secToTime } from "@/utils/time";
+import { ButtonTextWrapper } from "@/components/common/Button";
 function LockedConfirmModal(props: any) {
   const { isOpen, onRequestClose, months, onLock } = props;
   const [lockLoading, setLockLoading] = useState(false);
@@ -57,7 +58,10 @@ function LockedConfirmModal(props: any) {
               lockLoading ? "opacity-40" : ""
             }`}
           >
-            Got it!
+            <ButtonTextWrapper
+              loading={lockLoading}
+              Text={() => <span className="frcc">Got it!</span>}
+            />
           </div>
         </div>
       </div>

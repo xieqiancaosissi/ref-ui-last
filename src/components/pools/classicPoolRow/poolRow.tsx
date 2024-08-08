@@ -94,7 +94,7 @@ export default function PoolRow({
                   <div
                     className={`bg-primaryGreen text-black ${styles.tagPublicStyle}`}
                   >
-                    News
+                    New
                   </div>
                 )}
 
@@ -170,7 +170,7 @@ export default function PoolRow({
                           item.is_farm ? "-ml-1.5" : ""
                         } text-black ${styles.tagPublicStyle}`}
                       >
-                        News
+                        New
                       </div>
                     )}
 

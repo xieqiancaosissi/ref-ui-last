@@ -321,7 +321,11 @@ export default function StableAdd(props: any) {
               className="flex items-center text-sm text-gray-50"
               onClick={() => setRadio("init")}
             >
-              <div className="w-3 h-3 p-0.5 border border-green-10 rounded-full">
+              <div
+                className={`w-3 h-3 p-0.5 border ${
+                  radioActive == "init" ? "border-green-10" : "border-gray-60"
+                } rounded-full`}
+              >
                 {radioActive == "init" && (
                   <div className="bg-green-10 rounded-full w-full h-full"></div>
                 )}
@@ -335,7 +339,11 @@ export default function StableAdd(props: any) {
               className="flex items-center text-sm text-gray-50"
               onClick={() => setRadio("max")}
             >
-              <div className="w-3 h-3 p-0.5 border border-green-10 rounded-full">
+              <div
+                className={`w-3 h-3 p-0.5 border ${
+                  radioActive == "max" ? "border-green-10" : "border-gray-60"
+                } rounded-full`}
+              >
                 {radioActive == "max" && (
                   <div className="bg-green-10 rounded-full w-full h-full"></div>
                 )}

@@ -13,12 +13,14 @@ export const ShareInFarm = ({
   forStable,
   version,
   inStr,
+  from,
 }: {
   farmStake: string | number;
   userTotalShare: BigNumber;
   forStable?: boolean;
   version?: string;
   inStr?: string;
+  from?: string;
 }) => {
   const farmShare = Number(farmStake).toLocaleString("fullwide", {
     useGrouping: false,
@@ -40,7 +42,9 @@ export const ShareInFarm = ({
 
   return (
     <div
-      className={`items-start inline-flex text-xs rounded-full py-0.5 cursor-pointer mb-1.5`}
+      className={`items-start inline-flex text-xs rounded-full py-0.5 cursor-pointer ${
+        from == "stable" ? "ml-1.5" : "mb-1.5"
+      }`}
       onMouseEnter={() => setHovet(true)}
       onMouseLeave={() => setHovet(false)}
     >

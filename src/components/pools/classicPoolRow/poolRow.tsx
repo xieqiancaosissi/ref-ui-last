@@ -166,7 +166,9 @@ export default function PoolRow({
                     )}
                     {item.is_new && (
                       <div
-                        className={`bg-primaryGreen text-black ${styles.tagPublicStyle}`}
+                        className={`bg-primaryGreen ${
+                          item.is_farm ? "-ml-1.5" : ""
+                        } text-black ${styles.tagPublicStyle}`}
                       >
                         News
                       </div>
@@ -174,7 +176,9 @@ export default function PoolRow({
 
                     {item.top && (
                       <div
-                        className={`bg-topLinearGradient text-black ${styles.topStyle} mx-1`}
+                        className={`bg-topLinearGradient  ${
+                          item.is_farm || item.is_new ? "-ml-1.5" : ""
+                        } text-black ${styles.topStyle} mx-1`}
                       >
                         Top
                       </div>

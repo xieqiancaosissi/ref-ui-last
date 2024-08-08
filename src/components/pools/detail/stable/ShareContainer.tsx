@@ -80,7 +80,7 @@ export default function ShareContainer(props: any) {
               userTotalShare={userTotalShare}
               version={"Classic"}
               poolId={poolDetail.id}
-              onlyEndedFarm={endedFarmCountV2 === countV2}
+              onlyEndedFarm={false}
             />
           ) : null}
         </div>
@@ -98,6 +98,7 @@ export default function ShareContainer(props: any) {
               userTotalShare={userTotalShare}
               inStr={"in Burrow"}
               forStable
+              from={"stable"}
             />
           </div>
         )}

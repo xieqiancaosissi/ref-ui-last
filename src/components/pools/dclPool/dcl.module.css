@@ -28,7 +28,7 @@
 
 /* hide low tvl checkbox styles */
 .customCheckbox {
-  @apply frcc cursor-default;
+  @apply frcc cursor-pointer;
 }
 
 .customCheckbox input {

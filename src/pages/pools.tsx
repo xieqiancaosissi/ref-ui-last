@@ -282,7 +282,10 @@ export default function Farms() {
                     onKeyDown={(e) => handleKeyDown(e)}
                     value={searchValue}
                   />
-                  <span className="hover:scale-110" onClick={() => BlinkById()}>
+                  <span
+                    className="hover:scale-110 cursor-pointer"
+                    onClick={() => BlinkById()}
+                  >
                     <SearchIcon />
                   </span>
                 </div>

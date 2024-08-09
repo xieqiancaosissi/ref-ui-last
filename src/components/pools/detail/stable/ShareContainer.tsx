@@ -34,6 +34,7 @@ export default function ShareContainer(props: any) {
     shares,
     shadowBurrowShare,
   } = useYourliquidity(poolDetail.id);
+
   const toSauce = (type: string) => {
     router.push(`/sauce/${type}/${router.query.id}`);
   };
@@ -86,7 +87,9 @@ export default function ShareContainer(props: any) {
         </div>
         {shadowBurrowShare?.stakeAmount && (
           <div
-            className={`cursor-pointer`}
+            className={`cursor-pointer ${
+              !(countV2 > endedFarmCountV2) ? "hidden" : ""
+            }`}
             onClick={(e) => {
               e.stopPropagation();
               e.preventDefault();

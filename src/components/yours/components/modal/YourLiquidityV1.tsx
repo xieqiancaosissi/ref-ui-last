@@ -67,7 +67,14 @@ import { getPoolsDetailById } from "@/services/pool";
 import { useTokenMetadata } from "@/hooks/usePools";
 import { useRiskTokens } from "@/hooks/useRiskTokens";
 import { useYourliquidity } from "@/hooks/useStableShares";
-import { ShareInFarm } from "@/components/pools/detail/stable/ShareInFarm";
+import {
+  ShareInFarm,
+  ShareInBurrow,
+  PoolAvailableAmount,
+} from "@/components/pools/detail/stable/ShareInFarm";
+import { FiArrowUpRight } from "react-icons/fi";
+import { useFarmStakeAmount } from "@/hooks/useStableShares";
+import getConfigV2 from "@/utils/configV2";
 
 const { BLACK_TOKEN_LIST } = getConfig();
 export const StakeListContext = createContext<any>(null);
@@ -855,379 +862,110 @@ function YourClassicLiquidityLinePage(props: any) {
   const hideRemove = () => {
     setShowRemove(false);
   };
+
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 1024); //
+    };
+
+    window.addEventListener("resize", handleResize);
+    handleResize(); //
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
   return (
     <div
-      className={`rounded-xl mt-3 bg-gray-20 lg:px-4 bg-opacity-30 pb-4 ${
+      className={`rounded-xl mt-3 bg-gray-20 lg:px-4 bg-opacity-30 ${
         switch_off ? "" : "pb-4"
       }`}
     >
       {/* pc */}
-      <div
-        className="w-full min-h-17 grid grid-cols-12 py-4 xsm:hidden"
-        onClick={() => {
-          openUrl(
-            props?.type == "stable"
-              ? `/pool/stable/${pool.id}`
-              : `/pool/classic/${pool.id}`
-          );
-        }}
-      >
-        <div className="flex flex-col justify-center col-span-1">
-          <div className="flex pl-2">{Images}</div>
-          <span className="text-xs text-gray-10 mt-1">
-            {props?.type == "stable" ? "Stable Pool" : ""}
-          </span>
-        </div>
-        {/*  */}
-        <div className="col-span-2">{Symbols}</div>
-        {/*  */}
-        <div className="flex  items-center text-xs text-white col-span-5">
-          <div className="w-30">
-            <span className="text-base font-medium">
-              {display_number_withCommas(lp_total)}
-            </span>
-            <span className="text-sm text-gray-10 font-normal ml-1.5">
-              ({display_percent(user_lp_percent)})
-            </span>
-          </div>
-
-          <div className="flex flex-col text-xs ml-9 text-gray-10 relative z-10">
-            {supportFarmV1 > endedFarmV1 ||
-              (Number(farmStakeV1) > 0 && (
-                <div
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    router.push(`/farms`);
-                  }}
-                  className="text-gray-10 mb-1.5 flex"
-                >
-                  <span>
-                    {toPrecision(
-                      toReadableNumber(
-                        lpDecimal,
-                        scientificNotationToString(farmStakeV1.toString())
-                      ),
-                      2
-                    )}
-                  </span>
-                  <span className="mx-1">in</span>
-                  <div className="text-gray-10 flex items-center hover:cursor-pointer flex-shrink-0">
-                    <span className="underline mr-1">Legacy Farms</span>
-                    <ArrowRightUpIcon></ArrowRightUpIcon>
-                  </div>
-                </div>
-              ))}
-
-            {(supportFarmV2 > endedFarmV2 || Number(farmStakeV2) > 0) && (
-              <div
-                // to={{
-                //   pathname: `/v2farms/${pool.id}-${
-                //     props.onlyEndedFarmV2 ? 'e' : 'r'
-                //   }`,
-                // }}
-                // target="_blank"
-                // rel="noopener noreferrer nofollow"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  // openUrl(`/farms/${pool.id}-r`);
-                  router.push(
-                    `/farms/${pool.id}-${
-                      endedFarmV2 === supportFarmV2 ? "e" : "r"
-                    }`
-                  );
-                }}
-                className="text-gray-10 mb-1.5 flex"
-              >
-                <span>
-                  {toPrecision(
-                    toReadableNumber(
-                      lpDecimal,
-                      scientificNotationToString(farmStakeV2.toString())
-                    ),
-                    2
-                  )}
-                </span>
-                <span className="mx-1">in</span>
-                <div className="text-gray-10 flex items-center hover:cursor-pointer flex-shrink-0">
-                  <span className="underline mr-1">Classic Farms</span>
-                  <ArrowRightUpIcon></ArrowRightUpIcon>
-                  {/* <span className="ml-0.5">
-                    <VEARROW />
-                  </span> */}
-                </div>
-              </div>
-            )}
-            {shadowBurrowShare?.stakeAmount && (
-              <div
-                className={`cursor-pointer`}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  e.preventDefault();
-                  openUrl(`https://app.burrow.finance/`);
-                }}
-              >
-                <ShareInFarm
-                  farmStake={shadowBurrowShare?.stakeAmount}
-                  userTotalShare={userTotalShare}
-                  inStr={"in Burrow"}
-                  forStable
-                />
-              </div>
-            )}
-            {Big(LpLocked).gt(0) ? (
-              <div className="text-gray-10">
-                <span>
-                  {toPrecision(
-                    toReadableNumber(
-                      lpDecimal,
-                      scientificNotationToString(LpLocked.toString())
-                    ),
-                    2
-                  )}
-                </span>
-                <span className="mx-1">in</span>
-                <span>Locked</span>
-              </div>
-            ) : null}
-            {Number(getVEPoolId()) === Number(pool.id) &&
-            !!getConfig().REF_VE_CONTRACT_ID ? (
-              <div
-                onClick={(e) => {
-                  e.stopPropagation();
-                  e.preventDefault();
-                  openUrl("/referendum");
-                }}
-                className="text-gray-10 mb-1.5 flex whitespace-nowrap items-center"
-              >
-                <span>
-                  {toPrecision(
-                    ONLY_ZEROS.test(
-                      toNonDivisibleNumber(
-                        LOVE_TOKEN_DECIMAL,
-                        toReadableNumber(24, lptAmount || "0")
-                      )
-                    )
-                      ? "0"
-                      : toReadableNumber(24, lptAmount || "0"),
-                    2
-                  )}
-                </span>
-                <span className="mx-1">locked</span>
-                <span className="mr-1">in</span>
-                <div className="text-gray-10 flex items-center hover:text-gradientFrom flex-shrink-0">
-                  <span className="underline">VOTE</span>
-                </div>
-              </div>
-            ) : null}
-
-            {ONLY_ZEROS.test(sharesNew) ||
-            (supportFarmV1 === 0 && supportFarmV2 === 0) ? null : (
-              <div>
-                <span
-                  className={"text-gradientFrom"}
-                  title={toReadableNumber(
-                    isStablePool(pool.id) ? getStablePoolDecimal(pool.id) : 24,
-                    sharesNew
-                  )}
-                >
-                  {toPrecision(
-                    toReadableNumber(
-                      isStablePool(pool.id)
-                        ? getStablePoolDecimal(pool.id)
-                        : 24,
-                      sharesNew
-                    ),
-                    2
-                  )}
-                </span>
-
-                <span className="ml-1">Available</span>
-              </div>
-            )}
-          </div>
-        </div>
-        {/*  */}
-        <div className="flex items-center col-span-2">
-          <span className="text-base text-white font-medium">
-            {display_value(lp_total_value)}
-          </span>
-        </div>
-
-        {/* btn */}
-        <div className="col-span-2 frcc">
-          <div className={`pr-2 ${haveShare ? "w-1/2" : "w-full"} `}>
-            <div
-              className={`border-green-10 border font-bold rounded frcc w-23 h-8  mr-2.5 text-sm cursor-pointer hover:opacity-80 text-green-10 `}
-              onClick={(e) => {
-                e.stopPropagation();
-                setShowAdd(true);
-              }}
-              // disabled={disable_add}
-            >
-              Add
-            </div>
-          </div>
-          {haveShare && (
-            <div className="pl-2 w-1/2">
-              <div
-                onClick={(e) => {
-                  e.stopPropagation();
-                  if (+userTotalShareToString == 0) return;
-                  setShowRemove(true);
-                }}
-                // disabled={Number(userTotalShareToString) == 0}
-                className={`w-full ${
-                  Number(userTotalShareToString) == 0
-                    ? "text-dark-200 border-gray-190  cursor-not-allowed opacity-40"
-                    : "text-dark-200 cursor-pointer border-dark-190"
-                } w-23 h-8 frcc text-sm font-bold border  rounded hover:text-white`}
-              >
-                Remove
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* mobile */}
-      <div
-        className="w-full min-h-17 lg:hidden"
-        onClick={() => {
-          openUrl(
-            props?.type == "stable"
-              ? `/pool/stable/${pool.id}`
-              : `/pool/classic/${pool.id}`
-          );
-        }}
-      >
+      {!isMobile && (
         <div
-          className="flex justify-between items-center rounded-md h-16 p-4"
-          style={{
-            background:
-              "linear-gradient(to right, rgba(33, 43, 53, 0.5), rgba(61, 84, 108, 0.5))",
+          className="w-full min-h-17 grid grid-cols-12 py-4 xsm:hidden"
+          onClick={() => {
+            openUrl(
+              props?.type == "stable"
+                ? `/pool/stable/${pool.id}`
+                : `/pool/classic/${pool.id}`
+            );
           }}
         >
-          <div className="flex flex-col justify-center items-center">
-            <div className="flex">{ImagesMob}</div>
-            {props?.type == "stable" && (
-              <div
-                className={`-mt-0.5 border border-dark-40 frcc italic px-1 rounded-2xl z-0`}
-                style={{
-                  background: "#25445A",
-                  color: "#6F98B7",
-                  fontSize: "10px",
-                }}
-              >
-                Stable Pool
-              </div>
-            )}
+          <div className="flex flex-col justify-center col-span-1">
+            <div className="flex pl-2">{Images}</div>
+            <span className="text-xs text-gray-10 mt-1">
+              {props?.type == "stable" ? "Stable Pool" : ""}
+            </span>
           </div>
-          <div>{SymbolsMobWithoutNum}</div>
-        </div>
-        {/* Token */}
-        <div className="flex justify-between mt-4 px-4">
-          <span className="text-gray-60 text-sm">Token:</span>
-          <div>{SymbolsMob}</div>
-        </div>
-
-        {/* USD Value */}
-        <div className="flex justify-between mt-4 px-4">
-          <span className="text-gray-60 text-sm">USD Value:</span>
-          <span className="text-sm text-white font-normal">
-            {display_value(lp_total_value)}
-          </span>
-        </div>
-
-        {/*LP Token  */}
-        <div className="flex  justify-between text-xs text-white mt-4 px-4">
-          <span className="text-gray-60 text-sm">LP Token(shares):</span>
-          <div className="flex flex-col items-end">
-            <div className="">
-              <span className="text-sm text-white font-normal">
+          {/*  */}
+          <div className="flex flex-col items-start col-span-2">{Symbols}</div>
+          {/*  */}
+          <div className="flex  items-center text-xs text-white col-span-5">
+            <div className="w-30">
+              <span className="text-base font-medium">
                 {display_number_withCommas(lp_total)}
               </span>
-              <span className="text-sm text-white font-normal ml-0.5">
+              <span className="text-sm text-gray-10 font-normal ml-1.5">
                 ({display_percent(user_lp_percent)})
               </span>
             </div>
 
-            <div className="flex flex-col text-xs  text-gray-10 relative z-10 mt-2">
+            <div className="flex flex-col text-xs ml-9 text-gray-10 relative z-10">
               {supportFarmV1 > endedFarmV1 ||
                 (Number(farmStakeV1) > 0 && (
-                  <div
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      router.push(`/farms`);
-                    }}
-                    className="text-gray-10 mb-1.5 flex"
-                  >
-                    <span>
-                      {toPrecision(
-                        toReadableNumber(
-                          lpDecimal,
-                          scientificNotationToString(farmStakeV1.toString())
-                        ),
-                        2
-                      )}
-                    </span>
-                    <span className="mx-1">in</span>
-                    <div className="text-gray-10 flex items-center hover:cursor-pointer flex-shrink-0">
-                      <span className="underline mr-1">Legacy Farms</span>
-                      <ArrowRightUpIcon></ArrowRightUpIcon>
-                    </div>
-                  </div>
+                  <PoolFarmAmount
+                    pool={pool}
+                    farmVersion={"v1"}
+                    supportFarmV1={supportFarmV1}
+                    endedFarmV1={endedFarmV1}
+                    farmStakeV1={farmStakeV1}
+                    lpDecimal={lpDecimal}
+                    supportFarmV2={supportFarmV2}
+                    endedFarmV2={endedFarmV2}
+                    farmStakeV2={farmStakeV2}
+                  />
                 ))}
 
               {(supportFarmV2 > endedFarmV2 || Number(farmStakeV2) > 0) && (
-                <div
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    router.push(
-                      `/farms/${pool.id}-${
-                        endedFarmV2 === supportFarmV2 ? "e" : "r"
-                      }`
-                    );
-                  }}
-                  className="text-gray-10 mb-1.5 flex"
-                >
-                  <span>
-                    {toPrecision(
-                      toReadableNumber(
-                        lpDecimal,
-                        scientificNotationToString(farmStakeV2.toString())
-                      ),
-                      2
-                    )}
-                  </span>
-                  <span className="mx-1">in</span>
-                  <div className="text-gray-10 flex items-center hover:cursor-pointer flex-shrink-0">
-                    <span className="underline mr-1">Classic Farms</span>
-                    <ArrowRightUpIcon></ArrowRightUpIcon>
-                    {/* <span className="ml-0.5">
-                    <VEARROW />
-                  </span> */}
+                <PoolFarmAmount
+                  pool={pool}
+                  farmVersion={"v2"}
+                  supportFarmV1={supportFarmV1}
+                  endedFarmV1={endedFarmV1}
+                  farmStakeV1={farmStakeV1}
+                  lpDecimal={lpDecimal}
+                  supportFarmV2={supportFarmV2}
+                  endedFarmV2={endedFarmV2}
+                  farmStakeV2={farmStakeV2}
+                />
+              )}
+              {shadowBurrowShare?.stakeAmount &&
+                getConfigV2().SUPPORT_SHADOW_POOL_IDS.includes(
+                  pool.id?.toString()
+                ) && (
+                  <div
+                    className={`cursor-pointer ${
+                      !(supportFarmV2 > endedFarmV2) ? "hidden" : ""
+                    }`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      e.preventDefault();
+                      openUrl(`https://app.burrow.finance/`);
+                    }}
+                  >
+                    <ShareInBurrow
+                      farmStake={shadowBurrowShare?.stakeAmount}
+                      userTotalShare={userTotalShare}
+                      inStr={"in Burrow"}
+                      forStable
+                      onlyShowStake
+                      poolId={pool.id}
+                    />
                   </div>
-                </div>
-              )}
-
-              {shadowBurrowShare?.stakeAmount && (
-                <div
-                  className={`cursor-pointer flex items-end justify-end`}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    openUrl(`https://app.burrow.finance/`);
-                  }}
-                >
-                  <ShareInFarm
-                    farmStake={shadowBurrowShare?.stakeAmount}
-                    userTotalShare={userTotalShare}
-                    inStr={"in Burrow"}
-                    forStable
-                  />
-                </div>
-              )}
-
+                )}
               {Big(LpLocked).gt(0) ? (
                 <div className="text-gray-10">
                   <span>
@@ -1243,7 +981,6 @@ function YourClassicLiquidityLinePage(props: any) {
                   <span>Locked</span>
                 </div>
               ) : null}
-
               {Number(getVEPoolId()) === Number(pool.id) &&
               !!getConfig().REF_VE_CONTRACT_ID ? (
                 <div
@@ -1277,69 +1014,277 @@ function YourClassicLiquidityLinePage(props: any) {
 
               {ONLY_ZEROS.test(sharesNew) ||
               (supportFarmV1 === 0 && supportFarmV2 === 0) ? null : (
-                <div className="flex justify-end items-center">
-                  <span
-                    className={"text-gray-60 text-xs"}
-                    title={toReadableNumber(
-                      isStablePool(pool.id)
-                        ? getStablePoolDecimal(pool.id)
-                        : 24,
-                      sharesNew
-                    )}
-                  >
-                    {toPrecision(
-                      toReadableNumber(
-                        isStablePool(pool.id)
-                          ? getStablePoolDecimal(pool.id)
-                          : 24,
-                        sharesNew
-                      ),
-                      2
-                    )}
-                  </span>
-
-                  <span className="ml-1">Available</span>
+                <div className="flex items-center">
+                  <PoolAvailableAmount
+                    shares={sharesNew}
+                    pool={pool}
+                    className={"text-gray-10"}
+                  />
+                  &nbsp;available
                 </div>
               )}
             </div>
           </div>
-        </div>
-
-        {/* btn */}
-        <div className="flex items-center justify-between mt-4 px-4">
-          <div className={`${haveShare ? "w-38" : "w-full"} `}>
-            <div
-              className={`border-green-10 border font-bold rounded frcc h-8 text-sm cursor-pointer hover:opacity-80 text-green-10 `}
-              onClick={(e) => {
-                e.stopPropagation();
-                setShowAdd(true);
-              }}
-              // disabled={disable_add}
-            >
-              Add
-            </div>
+          {/*  */}
+          <div className="flex items-center col-span-2">
+            <span className="text-base text-white font-medium">
+              {display_value(lp_total_value)}
+            </span>
           </div>
-          {haveShare && (
-            <div className="w-38">
+
+          {/* btn */}
+          <div className="col-span-2 frcc">
+            <div className={`pr-2 ${haveShare ? "w-1/2" : "w-full"} `}>
               <div
+                className={`border-green-10 border font-bold rounded frcc w-23 h-8  mr-2.5 text-sm cursor-pointer hover:opacity-80 text-green-10 `}
                 onClick={(e) => {
                   e.stopPropagation();
-                  if (+userTotalShareToString == 0) return;
-                  setShowRemove(true);
+                  setShowAdd(true);
                 }}
-                // disabled={Number(userTotalShareToString) == 0}
-                className={`w-full ${
-                  Number(userTotalShareToString) == 0
-                    ? "text-dark-200 border-gray-190  cursor-not-allowed opacity-40"
-                    : "text-dark-200 cursor-pointer border-dark-190"
-                }  h-8 frcc text-sm font-bold border  rounded hover:text-white`}
+                // disabled={disable_add}
               >
-                Remove
+                Add
               </div>
             </div>
-          )}
+            {haveShare && (
+              <div className="pl-2 w-1/2">
+                <div
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (+userTotalShareToString == 0) return;
+                    setShowRemove(true);
+                  }}
+                  // disabled={Number(userTotalShareToString) == 0}
+                  className={`w-full ${
+                    Number(userTotalShareToString) == 0
+                      ? "text-dark-200 border-gray-190  cursor-not-allowed opacity-40"
+                      : "text-dark-200 cursor-pointer border-dark-190"
+                  } w-23 h-8 frcc text-sm font-bold border  rounded hover:text-white`}
+                >
+                  Remove
+                </div>
+              </div>
+            )}
+          </div>
         </div>
-      </div>
+      )}
+
+      {/* mobile */}
+      {isMobile && (
+        <div
+          className="w-full min-h-17 lg:hidden"
+          onClick={() => {
+            openUrl(
+              props?.type == "stable"
+                ? `/pool/stable/${pool.id}`
+                : `/pool/classic/${pool.id}`
+            );
+          }}
+        >
+          <div
+            className="flex justify-between items-center rounded-md h-16 p-4"
+            style={{
+              background:
+                "linear-gradient(to right, rgba(33, 43, 53, 0.5), rgba(61, 84, 108, 0.5))",
+            }}
+          >
+            <div className="flex flex-col justify-center items-center">
+              <div className="flex">{ImagesMob}</div>
+              {props?.type == "stable" && (
+                <div
+                  className={`-mt-0.5 border border-dark-40 frcc italic px-1 rounded-2xl z-0`}
+                  style={{
+                    background: "#25445A",
+                    color: "#6F98B7",
+                    fontSize: "10px",
+                  }}
+                >
+                  Stable Pool
+                </div>
+              )}
+            </div>
+            <div>{SymbolsMobWithoutNum}</div>
+          </div>
+          {/* Token */}
+          <div className="flex justify-between mt-4 px-4">
+            <span className="text-gray-60 text-sm">Token:</span>
+            <div>{SymbolsMob}</div>
+          </div>
+
+          {/* USD Value */}
+          <div className="flex justify-between mt-4 px-4">
+            <span className="text-gray-60 text-sm">USD Value:</span>
+            <span className="text-sm text-white font-normal">
+              {display_value(lp_total_value)}
+            </span>
+          </div>
+
+          {/*LP Token  */}
+          <div className="flex  justify-between text-xs text-white mt-4 px-4">
+            <span className="text-gray-60 text-sm">LP Token(shares):</span>
+            <div className="flex flex-col items-end">
+              <div className="">
+                <span className="text-sm text-white font-normal">
+                  {display_number_withCommas(lp_total)}
+                </span>
+                <span className="text-sm text-white font-normal ml-0.5">
+                  ({display_percent(user_lp_percent)})
+                </span>
+              </div>
+
+              <div className="flex flex-col text-xs  text-gray-10 relative z-10 mt-2">
+                {supportFarmV1 > endedFarmV1 ||
+                  (Number(farmStakeV1) > 0 && (
+                    <PoolFarmAmount
+                      pool={pool}
+                      farmVersion={"v1"}
+                      supportFarmV1={supportFarmV1}
+                      endedFarmV1={endedFarmV1}
+                      farmStakeV1={farmStakeV1}
+                      lpDecimal={lpDecimal}
+                      supportFarmV2={supportFarmV2}
+                      endedFarmV2={endedFarmV2}
+                      farmStakeV2={farmStakeV2}
+                    />
+                  ))}
+
+                {(supportFarmV2 > endedFarmV2 || Number(farmStakeV2) > 0) && (
+                  <PoolFarmAmount
+                    pool={pool}
+                    farmVersion={"v2"}
+                    supportFarmV1={supportFarmV1}
+                    endedFarmV1={endedFarmV1}
+                    farmStakeV1={farmStakeV1}
+                    lpDecimal={lpDecimal}
+                    supportFarmV2={supportFarmV2}
+                    endedFarmV2={endedFarmV2}
+                    farmStakeV2={farmStakeV2}
+                  />
+                )}
+
+                {shadowBurrowShare?.stakeAmount &&
+                  getConfigV2().SUPPORT_SHADOW_POOL_IDS.includes(
+                    pool.id?.toString()
+                  ) && (
+                    <div
+                      className={`cursor-pointer flex items-end justify-end ${
+                        !(supportFarmV2 > endedFarmV2) ? "hidden" : ""
+                      }`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        openUrl(`https://app.burrow.finance/`);
+                      }}
+                    >
+                      <ShareInBurrow
+                        farmStake={shadowBurrowShare?.stakeAmount}
+                        userTotalShare={userTotalShare}
+                        inStr={"in Burrow"}
+                        forStable
+                        onlyShowStake
+                        poolId={pool.id}
+                      />
+                    </div>
+                  )}
+
+                {Big(LpLocked).gt(0) ? (
+                  <div className="text-gray-10">
+                    <span>
+                      {toPrecision(
+                        toReadableNumber(
+                          lpDecimal,
+                          scientificNotationToString(LpLocked.toString())
+                        ),
+                        2
+                      )}
+                    </span>
+                    <span className="mx-1">in</span>
+                    <span>Locked</span>
+                  </div>
+                ) : null}
+
+                {Number(getVEPoolId()) === Number(pool.id) &&
+                !!getConfig().REF_VE_CONTRACT_ID ? (
+                  <div
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      e.preventDefault();
+                      openUrl("/referendum");
+                    }}
+                    className="text-gray-10 mb-1.5 flex whitespace-nowrap items-center"
+                  >
+                    <span>
+                      {toPrecision(
+                        ONLY_ZEROS.test(
+                          toNonDivisibleNumber(
+                            LOVE_TOKEN_DECIMAL,
+                            toReadableNumber(24, lptAmount || "0")
+                          )
+                        )
+                          ? "0"
+                          : toReadableNumber(24, lptAmount || "0"),
+                        2
+                      )}
+                    </span>
+                    <span className="mx-1">locked</span>
+                    <span className="mr-1">in</span>
+                    <div className="text-gray-10 flex items-center hover:text-gradientFrom flex-shrink-0">
+                      <span className="underline">VOTE</span>
+                    </div>
+                  </div>
+                ) : null}
+
+                {ONLY_ZEROS.test(sharesNew) ||
+                (supportFarmV1 === 0 && supportFarmV2 === 0) ? null : (
+                  <div className="flex items-center">
+                    <PoolAvailableAmount
+                      shares={sharesNew}
+                      pool={pool}
+                      className={"text-gray-10"}
+                    />
+                    &nbsp;available
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* btn */}
+          <div className="flex items-center justify-between mt-4 px-4">
+            <div className={`${haveShare ? "w-38" : "w-full"} `}>
+              <div
+                className={`border-green-10 border font-bold rounded frcc h-8 text-sm cursor-pointer hover:opacity-80 text-green-10 `}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowAdd(true);
+                }}
+                // disabled={disable_add}
+              >
+                Add
+              </div>
+            </div>
+            {haveShare && (
+              <div className="w-38">
+                <div
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (+userTotalShareToString == 0) return;
+                    setShowRemove(true);
+                  }}
+                  // disabled={Number(userTotalShareToString) == 0}
+                  className={`w-full ${
+                    Number(userTotalShareToString) == 0
+                      ? "text-dark-200 border-gray-190  cursor-not-allowed opacity-40"
+                      : "text-dark-200 cursor-pointer border-dark-190"
+                  }  h-8 frcc text-sm font-bold border  rounded hover:text-white`}
+                >
+                  Remove
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {updatedMapList[0]?.token_account_ids && poolDetail && (
         <>
@@ -1366,3 +1311,94 @@ function YourClassicLiquidityLinePage(props: any) {
 export const REF_FI_YOUR_LP_VALUE = "REF_FI_YOUR_LP_VALUE";
 
 export const REF_FI_YOUR_LP_VALUE_V1_COUNT = "REF_FI_YOUR_LP_VALUE_V1_COUNT";
+
+export const PoolFarmAmount = ({
+  pool,
+  farmVersion,
+  supportFarmV1,
+  endedFarmV1,
+  farmStakeV1,
+  lpDecimal,
+  supportFarmV2,
+  endedFarmV2,
+  farmStakeV2,
+}: {
+  pool: any;
+  farmVersion: string;
+  supportFarmV1: any;
+  endedFarmV1: any;
+  farmStakeV1: any;
+  lpDecimal: any;
+  supportFarmV2: any;
+  endedFarmV2: any;
+  farmStakeV2: any;
+}) => {
+  const router = useRouter();
+  const farmStakeAmount =
+    useFarmStakeAmount({
+      poolId: Number(pool.id),
+      farmVersion,
+    }) || 0;
+
+  return (
+    <div>
+      {farmVersion == "v1" &&
+        (supportFarmV1 > endedFarmV1 ||
+          (Number(farmStakeV1) > 0 && (
+            <div
+              onClick={(e) => {
+                e.stopPropagation();
+                router.push(`/farms`);
+              }}
+              className="text-gray-10 mb-1.5 flex"
+            >
+              <span>
+                {toPrecision(
+                  toReadableNumber(
+                    lpDecimal,
+                    scientificNotationToString(farmStakeAmount.toString())
+                  ),
+                  2
+                )}
+              </span>
+              <span className="mx-1">in</span>
+              <div className="text-gray-10 flex items-center hover:cursor-pointer flex-shrink-0">
+                <span className="underline mr-1">Legacy Farms</span>
+                <ArrowRightUpIcon></ArrowRightUpIcon>
+              </div>
+            </div>
+          )))}
+
+      {farmVersion == "v2" &&
+        (supportFarmV2 > endedFarmV2 || Number(farmStakeV2) > 0) && (
+          <div
+            onClick={(e) => {
+              e.stopPropagation();
+              router.push(
+                `/farms/${pool.id}-${endedFarmV2 === supportFarmV2 ? "e" : "r"}`
+              );
+            }}
+            className="text-gray-10 mb-1.5 flex"
+          >
+            <span>
+              {toPrecision(
+                toReadableNumber(
+                  lpDecimal,
+                  scientificNotationToString(farmStakeAmount.toString())
+                ),
+                2
+              )}
+            </span>
+            <span className="mx-1">in</span>
+            <div className="text-gray-10 flex items-center hover:cursor-pointer flex-shrink-0">
+              <span className="underline mr-1">Classic Farms</span>
+              <FiArrowUpRight className="hover:text-green-10" />
+              {/* <span className="ml-0.5">
+        <VEARROW />
+      </span> */}
+            </div>
+          </div>
+        )}
+    </div>
+  );
+};

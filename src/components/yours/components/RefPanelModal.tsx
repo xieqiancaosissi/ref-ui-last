@@ -153,7 +153,7 @@ export default function RefPanelModal() {
         <div className="h-46 w-full xsm:hidden"></div>
 
         <div
-          className="lg:pt-4 lg:h-162 flex justify-center xsm:w-full xsm:mb-10"
+          className="lg:pt-4 lg:min-h-162 flex justify-center xsm:w-full lg:mb-16 xsm:mb-10"
           style={{ overflow: "auto" }}
         >
           <div className="lg:w-276 xsm:w-full">

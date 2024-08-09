@@ -14,7 +14,11 @@ import { useYourliquidity } from "@/hooks/useStableShares";
 import { useWatchList } from "@/hooks/useWatchlist";
 import { StartWatchList } from "@/components/pools/icon";
 import { openUrl } from "@/services/commonV3";
-import { ShareInFarm, ShareInFarmV2 } from "../detail/stable/ShareInFarm";
+import {
+  ShareInFarm,
+  ShareInFarmV2,
+  ShareInBurrow,
+} from "../detail/stable/ShareInFarm";
 import { useCanFarmV1, useCanFarmV2 } from "@/hooks/useStableShares";
 
 export default function PoolRow(props: any) {
@@ -361,19 +365,22 @@ export default function PoolRow(props: any) {
               </div>
               {shadowBurrowShare?.stakeAmount && (
                 <div
-                  className={`cursor-pointer`}
+                  className={`cursor-pointer ${
+                    !(countV2 > endedFarmCountV2) ? "hidden" : ""
+                  }`}
                   onClick={(e) => {
                     e.stopPropagation();
                     e.preventDefault();
                     openUrl(`https://app.burrow.finance/`);
                   }}
                 >
-                  <ShareInFarm
+                  <ShareInBurrow
                     farmStake={shadowBurrowShare?.stakeAmount}
                     userTotalShare={userTotalShare}
-                    inStr={"In Burrow"}
+                    inStr={"in Burrow"}
                     forStable
                     from={"stable"}
+                    poolId={item.id}
                   />
                 </div>
               )}

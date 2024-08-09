@@ -390,6 +390,7 @@ export default function Farms() {
                 className={poolStyle.filterSearchInput}
                 placeholder={`Search pool by ${keyWordsType}`}
                 onChange={sendSearchValue}
+                onKeyDown={(e) => handleKeyDown(e)}
                 value={searchValue}
               />
               {/* <span className="hover:scale-110" onClick={() => BlinkById()}>

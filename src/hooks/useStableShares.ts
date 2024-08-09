@@ -15,6 +15,9 @@ import { StablePool } from "@/interfaces/swap";
 import { get_shadow_records } from "@/services/farm";
 import { percent } from "@/utils/numbers";
 import { getAccountId } from "@/utils/wallet";
+import getConfigV2 from "@/utils/configV2";
+import { list_farmer_seeds } from "@/services/farm";
+import { isStablePool } from "@/services/swap/swapUtils";
 
 const FEE_DIVISOR = 10000;
 export const useFarmStake = ({
@@ -119,6 +122,17 @@ export const useShadowRecord = (poolId: any) => {
   }, [getAccountId()]);
   return { shadowRecords, poolShadowRecord: shadowRecords[poolId] };
 };
+
+export const useListFarmerSeeds = () => {
+  const [farmerSeeds, setFarmerSeeds] = useState<any>({});
+  useEffect(() => {
+    list_farmer_seeds().then((res) => {
+      setFarmerSeeds(res);
+    });
+  }, [getAccountId()]);
+  return { farmerSeeds };
+};
+
 const processShare = (share: any, stakeAmount = "0", farmStakeTotal: any) => {
   const totalShare = share
     ? BigNumber.sum(share, farmStakeTotal)
@@ -431,4 +445,145 @@ export const calc_remove_liquidity_by_tokens = (
   const diff_shares = (pool_token_supply * (d_0 - d_1)) / d_0;
 
   return [burn_shares, burn_shares - diff_shares];
+};
+
+export const useFarmStakeAmount = ({
+  poolId,
+  farmVersion = "v2",
+}: {
+  poolId: any;
+  farmVersion?: any;
+}) => {
+  const { pool, shares, stakeList, v2StakeList, finalStakeList } =
+    usePool(poolId);
+
+  if (!v2StakeList) {
+    console.error(`${poolId} without v2StakeL`);
+    return null;
+  }
+
+  const isShadowPool = getConfigV2().SUPPORT_SHADOW_POOL_IDS.includes(
+    poolId?.toString()
+  );
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const farmStakeV1 = stakeList && useFarmStake({ poolId, stakeList });
+  const farmStakeV2 =
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    v2StakeList && useFarmStake({ poolId, stakeList: v2StakeList });
+
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const { shadowRecords } = useShadowRecord(poolId);
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const { farmerSeeds } = useListFarmerSeeds();
+  const poolSeed =
+    farmerSeeds[`v2.ref-finance.near@${poolId}`] || farmerSeeds[poolId];
+
+  const { shadow_in_farm } = shadowRecords?.[Number(poolId)] || {};
+
+  let farmStakeAmount: string | number = 0;
+  if (isShadowPool) {
+    farmStakeAmount = poolSeed
+      ? new BigNumber(poolSeed.free_amount)
+          .plus(poolSeed.shadow_amount)
+          .toFixed()
+      : shadow_in_farm || "0";
+  } else {
+    switch (farmVersion) {
+      case "v1":
+        farmStakeAmount = farmStakeV1;
+        break;
+      case "v2":
+        farmStakeAmount = farmStakeV2 || "0";
+        break;
+    }
+  }
+  return farmStakeAmount;
+};
+
+export const useNewPoolData = ({
+  pool,
+  shares,
+}: {
+  pool: any;
+  shares: any;
+}) => {
+  const { shadowRecords } = useShadowRecord(pool.id);
+  const { farmerSeeds } = useListFarmerSeeds();
+  const [newPool, setNewPool] = useState<any>();
+  const isShadowPool = getConfigV2().SUPPORT_SHADOW_POOL_IDS.includes(
+    pool.id?.toString()
+  );
+
+  useEffect(() => {
+    updatePool();
+  }, [pool, shadowRecords, farmerSeeds]);
+
+  // todo: pool mutated key and value update here
+  const updatePool = () => {
+    const pool2 = JSON.parse(JSON.stringify(pool));
+    const poolSeed = farmerSeeds?.[pool2.id];
+    pool2.raw = {
+      farmerSeeds: poolSeed,
+    };
+    pool2.farmShare = poolSeed
+      ? new BigNumber(poolSeed.free_amount)
+          .plus(poolSeed.shadow_amount)
+          .toFixed()
+      : shares;
+
+    const { availableShare, availableShareNonDivisible } =
+      getPoolAvailableShare({
+        pool: pool2,
+        shadowRecords,
+        shares,
+      });
+    pool2.availableShare = availableShare;
+    pool2.availableShareNonDivisible = availableShareNonDivisible;
+    setNewPool(pool2);
+  };
+
+  return { shadowRecords, farmerSeeds, newPool };
+};
+
+export const getPoolAvailableShare = ({
+  pool,
+  shadowRecords,
+  shares,
+}: {
+  pool: any;
+  shadowRecords: any;
+  shares: any;
+}) => {
+  const decimal = isStablePool(pool.id) ? getStablePoolDecimal(pool.id) : 24;
+  const sharesToken = toReadableNumber(
+    decimal,
+    scientificNotationToString(shares)
+  );
+  const isShadowPool = getConfigV2().SUPPORT_SHADOW_POOL_IDS.includes(
+    pool.id?.toString()
+  );
+  let availableShare = "";
+  let availableShareNonDivisible = "";
+
+  if (isShadowPool) {
+    const { shadow_in_farm, shadow_in_burrow } =
+      shadowRecords?.[Number(pool.id)] || {};
+    const highestUsed = BigNumber.maximum(
+      shadow_in_farm || 0,
+      shadow_in_burrow || 0
+    );
+
+    availableShareNonDivisible = new BigNumber(shares)
+      .minus(highestUsed)
+      .toFixed();
+    availableShare = toReadableNumber(
+      decimal,
+      scientificNotationToString(availableShareNonDivisible)
+    );
+  } else {
+    availableShare = sharesToken;
+    availableShareNonDivisible = shares;
+  }
+
+  return { availableShare, availableShareNonDivisible };
 };

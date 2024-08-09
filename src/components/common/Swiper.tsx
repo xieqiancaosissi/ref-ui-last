@@ -13,6 +13,7 @@ interface IAdItem {
   title: string;
   text: string;
   image_url: string;
+  image_mobile_url: string;
   type: string;
   jump_type: string;
   jump_url: string;
@@ -73,13 +74,13 @@ export default function AdSwiper() {
                     <SwiperCloseButton className="cursor-pointer"></SwiperCloseButton>
                   </div>
                   <div
-                    className="relative cursor-pointer lg:h-[80px]"
+                    className="relative cursor-pointer lg:h-[80px] xsm:h-[96px]"
                     onClick={() => {
                       window.open(ad.jump_url);
                     }}
                   >
                     {is_mobile ? (
-                      <img src={ad.image_url} />
+                      <img src={ad.image_mobile_url} />
                     ) : (
                       <img src={ad.image_url} />
                     )}

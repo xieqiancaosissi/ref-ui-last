@@ -14,10 +14,12 @@ export default function SelectTokenModal({
   isOpen,
   onRequestClose,
   onSelect,
+  filterToken,
 }: {
   isOpen: boolean;
   onRequestClose: () => void;
   onSelect: (token: ITokenMetadata) => void;
+  filterToken?: Array<string>;
 }) {
   const [searchText, setSearchText] = useState<string>("");
   const [addTokenError, setAddTokenError] = useState<boolean>(false);

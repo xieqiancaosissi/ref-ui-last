@@ -465,3 +465,19 @@ export const addUserWallet = async (params: any) => {
     console.log("add user wallet failed", res);
   });
 };
+export const getAd = async () => {
+  return await fetch("https://test.api.cclp.finance/v3/ad", {
+    method: "GET",
+    headers: {
+      "Content-type": "application/json; charset=UTF-8",
+      ...getAuthenticationHeaders("/add-user-wallet"),
+    },
+  })
+    .then((res) => res.json())
+    .then((res) => {
+      return res.data || [];
+    })
+    .catch(() => {
+      return [];
+    });
+};

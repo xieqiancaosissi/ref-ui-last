@@ -65,6 +65,26 @@ export function MediumIcon() {
     </svg>
   );
 }
+export function IconForum() {
+  return (
+    <svg
+      width="17"
+      height="14"
+      viewBox="0 0 17 15"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M0 2C0 0.89543 0.895431 0 2 0H12C13.1046 0 14 0.895431 14 2V8C14 9.10457 13.1046 10 12 10H6.5L3.25 12V10H2C0.895431 10 0 9.10457 0 8V2Z"
+        fill="currentColor"
+      />
+      <path
+        d="M17 4.5C17 3.67157 16.3284 3 15.5 3V3V9.5C15.5 10.6046 14.6046 11.5 13.5 11.5H7L4.5 13H10.5L13.75 15V13H15C16.1046 13 17 12.1046 17 11V4.5Z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
 
 export function RefAnalyticsIcon(props: any) {
   return (

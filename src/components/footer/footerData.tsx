@@ -4,6 +4,7 @@ import {
   DiscordIcon,
   MediumIcon,
   RefAnalyticsIcon,
+  IconForum,
 } from "./icons";
 
 export const communityLinks = [
@@ -27,11 +28,11 @@ export const communityLinks = [
     url: "https://ref-finance.medium.com/",
     icon: <MediumIcon />,
   },
-  // {
-  //   label: 'Forum',
-  //   url: 'https://gov.ref.finance',
-  //   icon: <IconForum />,
-  // },
+  {
+    label: "Forum",
+    url: "https://gov.ref.finance",
+    icon: <IconForum />,
+  },
 ];
 
 export const docLinks = [

@@ -115,7 +115,7 @@ export default function LimitOrderPage() {
         <MyOrders />
       </div>
       {/* create order container */}
-      <div className="rounded-lg lg:bg-dark-10 xsm:bg-limitOrderMobileBg p-3.5 mt-2 lg:w-[420px]">
+      <div className="rounded-lg lg:bg-dark-10 xsm:bg-limitOrderMobileBg p-3.5 mt-2 lg:w-[420px] w-full">
         <div className="flexBetween px-px">
           <span className="font-bold text-xl bg-textWhiteGradient bg-clip-text text-transparent">
             Limit Order

@@ -8,6 +8,7 @@ import { ftGetStorageBalance } from "@/services/ft-contract";
 import { nearDepositTransaction } from "@/services/wrap-near";
 import { getTokenUIId } from "@/services/swap/swapUtils";
 import { IServerPool } from "@/interfaces/swap";
+import { WRAP_NEAR_CONTRACT_ID } from "@/services/wrap-near";
 const { REF_FI_CONTRACT_ID } = getConfig();
 export const swap = async ({
   tokenIn,
@@ -80,6 +81,15 @@ export const swapFromServer = async ({
 
   if (getTokenUIId(tokenIn) == "near") {
     transactions.unshift(nearDepositTransaction(amountIn));
+  }
+  if (tokenIn.id === WRAP_NEAR_CONTRACT_ID) {
+    const registered = await ftGetStorageBalance(WRAP_NEAR_CONTRACT_ID);
+    if (registered === null) {
+      transactions.unshift({
+        receiverId: WRAP_NEAR_CONTRACT_ID,
+        functionCalls: [registerAccountOnToken()],
+      });
+    }
   }
   return executeMultipleTransactions(transactions);
 };
@@ -184,6 +194,15 @@ const nearInstantSwap = async ({
 
   if (getTokenUIId(tokenIn) == "near") {
     transactions.unshift(nearDepositTransaction(amountIn));
+  }
+  if (tokenIn.id === WRAP_NEAR_CONTRACT_ID) {
+    const registered = await ftGetStorageBalance(WRAP_NEAR_CONTRACT_ID);
+    if (registered === null) {
+      transactions.unshift({
+        receiverId: WRAP_NEAR_CONTRACT_ID,
+        functionCalls: [registerAccountOnToken()],
+      });
+    }
   }
   return executeMultipleTransactions(transactions);
 };

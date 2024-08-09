@@ -49,6 +49,9 @@ const InitData = dynamic(() => import("../components/swap/InitData"), {
 const SwapPopup = dynamic(() => import("@/components/common/SwapPopup"), {
   ssr: false,
 });
+const AdSwiper = dynamic(() => import("@/components/common/Swiper"), {
+  ssr: false,
+});
 
 export default function Swap() {
   const [isHighImpact, setIsHighImpact] = useState<boolean>(false);
@@ -289,6 +292,10 @@ export default function Swap() {
       </div>
       {/* detail */}
       {showSwapDetail ? <SwapDetail /> : null}
+      {/* Ad */}
+      <div className="lg:w-[420px] mt-5">
+        <AdSwiper />
+      </div>
       {/* skyward modal */}
       {showSkywardTip && (
         <SkyWardModal

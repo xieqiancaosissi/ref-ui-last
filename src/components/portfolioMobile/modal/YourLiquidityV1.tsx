@@ -45,7 +45,7 @@ import {
 import { openUrl } from "@/services/commonV3";
 import { LinkIcon } from "@/components/farm/icon";
 import { useHistory } from "react-router-dom";
-import { useFarmStake } from "@/hooks/useStableShares";
+import { useFarmStake, useYourliquidity } from "@/hooks/useStableShares";
 import { useLpLocker } from "@/services/lplock";
 import Link from "next/link";
 import {
@@ -53,6 +53,8 @@ import {
   PortfolioData,
 } from "../../../pages/portfolioMobile";
 import { OrdersArrow } from "@/components/portfolio/components/icon";
+import { getPoolDetails } from "@/services/pool_detail";
+import { getSharesInPool } from "@/services/pool";
 
 const { BLACK_TOKEN_LIST } = getConfig();
 export const StakeListContext = createContext<any>(null);
@@ -319,6 +321,10 @@ function YourClassicLiquidityLine(props: any) {
     batchTotalSharesSimplePools,
     batchShares,
     finalStakeList,
+    stakeList,
+    v2StakeList,
+    router,
+    pureIdList,
   } = useContext(StakeListContext)!;
   const { set_your_classic_lp_all_in_farms } = useContext(
     PortfolioData
@@ -327,7 +333,14 @@ function YourClassicLiquidityLine(props: any) {
   const { token_account_ids, id: poolId } = pool;
   const tokens = token_account_ids.map((id: number) => tokensMeta[id]) || [];
   const [switch_off, set_switch_off] = useState<boolean>(true);
-
+  const [poolNew, setPoolNew] = useState<any>();
+  const [sharesNew, setShares] = useState("");
+  useEffect(() => {
+    getPoolDetails(+poolId).then(setPoolNew);
+    getSharesInPool(+poolId)
+      .then(setShares)
+      .catch(() => setShares);
+  }, []);
   const decimals = isStablePool(poolId)
     ? getStablePoolDecimal(poolId)
     : LP_TOKEN_DECIMALS;
@@ -478,6 +491,8 @@ function YourClassicLiquidityLine(props: any) {
         lp_in_pool,
         lp_in_farm,
         seed_status,
+        stakeList,
+        sharesNew,
       }}
     >
       <YourClassicLiquidityLinePage></YourClassicLiquidityLinePage>
@@ -499,7 +514,27 @@ function YourClassicLiquidityLinePage() {
     lp_in_pool,
     lp_in_farm,
     seed_status,
+    sharesNew,
+    stakeList,
   } = useContext(LiquidityContextData)!;
+  const { shares, shadowBurrowShare } = useYourliquidity(pool.id);
+  const farmStakeTotal = useFarmStake({ poolId: Number(pool.id), stakeList });
+  const userTotalShare = BigNumber.sum(sharesNew, farmStakeTotal);
+  const farmShare = Number(shadowBurrowShare?.stakeAmount).toLocaleString(
+    "fullwide",
+    {
+      useGrouping: false,
+    }
+  );
+  const farmSharePercent = userTotalShare.isGreaterThan(0)
+    ? percent(
+        farmShare,
+        userTotalShare
+          .toNumber()
+          .toLocaleString("fullwide", { useGrouping: false })
+      ).toString()
+    : "0";
+  const link = `https://app.burrow.finance/tokenDetail/shadow_ref_v1-${pool.id}`;
   return (
     <div className="mb-4">
       <div
@@ -544,13 +579,11 @@ function YourClassicLiquidityLinePage() {
           </div>
           <div className="frcb">
             <p className="text-sm text-gray-60">Usage</p>
-            <p className="text-sm text-white frcc">
-              <div className="flex items-center text-sm text-white">
+            <p className="text-xs text-white">
+              <div className="flex text-xs text-white">
                 <div
-                  className={`flex items-center pl-3.5 ${
-                    +lp_in_vote > 0 || +lp_in_pool > 0
-                      ? "border-r border-gray-10 pr-3.5"
-                      : ""
+                  className={`flex items-center justify-end mr-2 ${
+                    +lp_in_vote > 0 || +lp_in_pool > 0 ? "" : ""
                   } ${+lp_in_farm > 0 ? "" : "hidden"}`}
                 >
                   {display_number_withCommas(lp_in_farm)} in{" "}
@@ -567,7 +600,31 @@ function YourClassicLiquidityLinePage() {
                   </span>
                 </div>
                 <div
-                  className={`flex items-center pl-3.5 ${
+                  className={`flex items-center justify-end mr-2 ${
+                    +lp_in_vote > 0 || +lp_in_pool > 0 ? "" : ""
+                  } ${+lp_in_farm > 0 ? "" : "hidden"}`}
+                >
+                  {`${
+                    Number(farmSharePercent) < 0.1 &&
+                    Number(farmSharePercent) > 0
+                      ? "< 0.1"
+                      : toPrecision(farmSharePercent, 2, false, false)
+                  }% `}
+                  in
+                  <span
+                    className="flex items-center"
+                    onClick={() => {
+                      openUrl(link);
+                    }}
+                  >
+                    <label className="underline cursor-pointer mx-1">
+                      Burrow
+                    </label>
+                    <OrdersArrow className="cursor-pointer text-primaryText hover:text-white"></OrdersArrow>
+                  </span>
+                </div>
+                <div
+                  className={`flex items-center justify-end mr-2 ${
                     +lp_in_pool > 0 ? "pr-3.5 border-r border-orderTypeBg" : ""
                   } ${+lp_in_vote > 0 ? "" : "hidden"}`}
                 >
@@ -585,7 +642,7 @@ function YourClassicLiquidityLinePage() {
                   </span>
                 </div>
                 <div
-                  className={`flex items-center pl-3.5 ${
+                  className={`flex items-center justify-end ${
                     +lp_in_pool > 0 ? "" : "hidden"
                   }`}
                 >
@@ -605,7 +662,7 @@ function YourClassicLiquidityLinePage() {
           ></UpDownButton> */}
         </div>
       </div>
-      <div className={`${switch_off ? "hidden" : ""}`}>
+      {/* <div className={`${switch_off ? "hidden" : ""}`}>
         <div className="bg-dark-210 rounded-xl px-3.5 py-5 bg-opacity-70 mt-2">
           <div className="frcb mb-4">
             <span className="text-xs text-gray-10">
@@ -671,7 +728,7 @@ function YourClassicLiquidityLinePage() {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }

@@ -245,8 +245,10 @@ export default function Farms() {
                 `}
                       onClick={() => {
                         setActive(item.key);
-                        setKeyWordsType("token");
-                        setSearchValue("");
+                        if (item.key == "dcl") {
+                          setKeyWordsType("token");
+                          setSearchValue("");
+                        }
                       }}
                     >
                       {item.key == "watchlist" && <Star />}
@@ -262,7 +264,9 @@ export default function Farms() {
                   <div
                     onClick={() => {
                       keyWordsType == "token"
-                        ? isActive != "dcl" && setKeyWordsType("id")
+                        ? isActive != "dcl"
+                          ? setKeyWordsType("id")
+                          : setKeyWordsType("token")
                         : setKeyWordsType("token");
                       setSearchValue("");
                     }}
@@ -337,8 +341,10 @@ export default function Farms() {
                 `}
                     onClick={() => {
                       setActive(item.key);
-                      setKeyWordsType("token");
-                      setSearchValue("");
+                      if (item.key == "dcl") {
+                        setKeyWordsType("token");
+                        setSearchValue("");
+                      }
                     }}
                   >
                     {item.key == "watchlist" && <Star />}
@@ -356,8 +362,6 @@ export default function Farms() {
             }`}
             onClick={() => {
               setActive("watchlist");
-              setKeyWordsType("token");
-              setSearchValue("");
             }}
           >
             <Star />
@@ -372,7 +376,6 @@ export default function Farms() {
                   keyWordsType == "token"
                     ? isActive != "dcl" && setKeyWordsType("id")
                     : setKeyWordsType("token");
-                  setSearchValue("");
                 }}
                 className={`${poolStyle.filterSearchInputBefore} ${
                   keyWordsType == "token"

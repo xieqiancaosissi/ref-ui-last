@@ -66,7 +66,7 @@ export default function PoolInput({
         isOpen={isOpen}
         onRequestClose={hideModal}
         onSelect={onSelect}
-        filterToken={["wNEAR"]}
+        excludedTokenIds={["wNEAR"]}
       />
     </>
   );

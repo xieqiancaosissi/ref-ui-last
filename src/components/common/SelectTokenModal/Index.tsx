@@ -10,6 +10,7 @@ import { SelectTokenContext } from "./Context";
 import { TokenMetadata } from "@/services/ft-contract";
 import { useSwapStore } from "@/stores/swap";
 import { formatTokenPrice } from "@/utils/uiNumber";
+import { purgeTokensByIds } from "./tokenUtils";
 export default function SelectTokenModal({
   isOpen,
   onRequestClose,
@@ -27,7 +28,10 @@ export default function SelectTokenModal({
     useState<TokenMetadata | null>();
   const tokenStore = useTokenStore() as ITokenStore;
   const swapStore = useSwapStore();
-  const common_tokens: ITokenMetadata[] = tokenStore.get_common_tokens();
+  const common_tokens: ITokenMetadata[] = purgeTokensByIds(
+    tokenStore.get_common_tokens(),
+    excludedTokenIds
+  );
   const allTokenPrices = swapStore.getAllTokenPrices();
   useEffect(() => {
     setAddTokenError(false);
@@ -165,7 +169,7 @@ export default function SelectTokenModal({
               })}
             </div>
             {/* assets table */}
-            <AssetTable />
+            <AssetTable excludedTokenIds={excludedTokenIds} />
           </div>
         </SelectTokenContext.Provider>
       </div>

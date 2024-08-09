@@ -4,6 +4,7 @@ import { ArrowDownIcon } from "@/components/swap/icons";
 import { ITokenMetadata } from "@/interfaces/tokens";
 import HoverTooltip from "@/components/common/HoverToolTip";
 import { MobileArrowUp } from "../../icon";
+import { WRAP_NEAR_CONTRACT_ID } from "@/services/wrap-near";
 export default function PoolInput({
   title,
   index,
@@ -66,7 +67,7 @@ export default function PoolInput({
         isOpen={isOpen}
         onRequestClose={hideModal}
         onSelect={onSelect}
-        excludedTokenIds={["wNEAR"]}
+        excludedTokenIds={[WRAP_NEAR_CONTRACT_ID]}
       />
     </>
   );

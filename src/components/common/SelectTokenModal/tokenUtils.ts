@@ -3,6 +3,7 @@ import { getTokenBalance, ftGetTokenMetadata } from "@/services/token";
 import { toReadableNumber } from "@/utils/numbers";
 import { getTokenUIId } from "@/services/swap/swapUtils";
 import { isRiskTokenBySuffix } from "@/utils/commonUtil";
+import { TokenMetadata } from "@/services/ft-contract";
 export function updateStoreBalance({
   token_in,
   token_out,
@@ -167,4 +168,14 @@ export async function setSwapTokenAndBalances({
   persistSwapStore.setTokenInId(getTokenUIId(TOKEN_IN));
   persistSwapStore.setTokenOutId(getTokenUIId(TOKEN_OUT));
   swapStore.setBalanceLoading(false);
+}
+export function purgeTokensByIds(
+  tokens: TokenMetadata[],
+  excludedIds?: string[]
+) {
+  if (tokens?.length && excludedIds?.length) {
+    return tokens.filter((token) => !excludedIds.includes(getTokenUIId(token)));
+  }
+
+  return tokens;
 }

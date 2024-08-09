@@ -7,8 +7,12 @@ import { TokenMetadata } from "@/services/ft-contract";
 import { useTokenStore, ITokenStore } from "@/stores/token";
 import CustomTooltip from "@/components/customTooltip/customTooltip";
 import { QuestionIcon } from "../Icons";
-import { is_specific_suffix } from "@/utils/commonUtil";
-export default function AssetTable() {
+import { purgeTokensByIds } from "./tokenUtils";
+export default function AssetTable({
+  excludedTokenIds,
+}: {
+  excludedTokenIds?: string[];
+}) {
   const [sort, setSort] = useState<"asc" | "desc">("desc");
   const [tab, setTab] = useState<"default" | "tkn" | "tknx" | "mc">("default");
   const tokenStore = useTokenStore() as ITokenStore;
@@ -23,11 +27,27 @@ export default function AssetTable() {
     tknxSearchResult,
     mcSearchResult,
   ] = useMemo(() => {
+    const defaultAccountTokensData = purgeTokensByIds(
+      defaultAccountTokens.data,
+      excludedTokenIds
+    );
+    const tknAccountTokenssData = purgeTokensByIds(
+      tknAccountTokens.data,
+      excludedTokenIds
+    );
+    const knxAccountTokensData = purgeTokensByIds(
+      tknxAccountTokens.data,
+      excludedTokenIds
+    );
+    const mcAccountTokensData = purgeTokensByIds(
+      mcAccountTokens.data,
+      excludedTokenIds
+    );
     if (searchText) {
-      const defaultSearchResult = defaultAccountTokens.data.filter(filterFun);
-      const tknSearchResult = tknAccountTokens.data.filter(filterFun);
-      const tknxSearchResult = tknxAccountTokens.data.filter(filterFun);
-      const mcSearchResult = mcAccountTokens.data.filter(filterFun);
+      const defaultSearchResult = defaultAccountTokensData.filter(filterFun);
+      const tknSearchResult = tknAccountTokenssData.filter(filterFun);
+      const tknxSearchResult = knxAccountTokensData.filter(filterFun);
+      const mcSearchResult = mcAccountTokensData.filter(filterFun);
       return [
         defaultSearchResult,
         tknSearchResult,
@@ -36,10 +56,10 @@ export default function AssetTable() {
       ];
     } else {
       return [
-        defaultAccountTokens.data,
-        tknAccountTokens.data,
-        tknxAccountTokens.data,
-        mcAccountTokens.data,
+        defaultAccountTokensData,
+        tknAccountTokenssData,
+        knxAccountTokensData,
+        mcAccountTokensData,
       ];
     }
   }, [

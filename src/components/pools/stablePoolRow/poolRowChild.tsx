@@ -14,13 +14,19 @@ import { useYourliquidity } from "@/hooks/useStableShares";
 import { useWatchList } from "@/hooks/useWatchlist";
 import { StartWatchList } from "@/components/pools/icon";
 import { openUrl } from "@/services/commonV3";
-import { ShareInFarm } from "../detail/stable/ShareInFarm";
+import { ShareInFarm, ShareInFarmV2 } from "../detail/stable/ShareInFarm";
+import { useCanFarmV1, useCanFarmV2 } from "@/hooks/useStableShares";
 
 export default function PoolRow(props: any) {
   const { item, index } = props;
   const router = useRouter();
-  const { shares, shadowBurrowShare, farmStakeV2, userTotalShare } =
-    useYourliquidity(item.id);
+  const {
+    farmStakeV1,
+    farmStakeV2,
+    userTotalShare,
+    shares,
+    shadowBurrowShare,
+  } = useYourliquidity(item.id);
   const formatePool = formatePoolData(item, userTotalShare);
   const toDetail = (item: any) => {
     if (item.degens) {
@@ -47,6 +53,16 @@ export default function PoolRow(props: any) {
       ind,
     });
   };
+
+  const { farmCount: countV1, endedFarmCount: endedFarmCountV1 } = useCanFarmV1(
+    item.id,
+    true
+  );
+
+  const { farmCount: countV2, endedFarmCount: endedFarmCountV2 } = useCanFarmV2(
+    item.id,
+    true
+  );
 
   return (
     <div>
@@ -324,6 +340,25 @@ export default function PoolRow(props: any) {
                   Remove
                 </div> */}
               </div>
+
+              <div className="lg:frcc lg:ml-10 xsm:flex xsm:mt-auto">
+                {countV1 > endedFarmCountV1 || Number(farmStakeV1) > 0 ? (
+                  <ShareInFarmV2
+                    farmStake={farmStakeV1}
+                    userTotalShare={userTotalShare}
+                    version={"Legacy"}
+                  />
+                ) : null}
+                {countV2 > endedFarmCountV2 || Number(farmStakeV2) > 0 ? (
+                  <ShareInFarmV2
+                    farmStake={farmStakeV2}
+                    userTotalShare={userTotalShare}
+                    version={"Classic"}
+                    poolId={item.id}
+                    onlyEndedFarm={countV2 === endedFarmCountV2}
+                  />
+                ) : null}
+              </div>
               {shadowBurrowShare?.stakeAmount && (
                 <div
                   className={`cursor-pointer`}
@@ -336,8 +371,9 @@ export default function PoolRow(props: any) {
                   <ShareInFarm
                     farmStake={shadowBurrowShare?.stakeAmount}
                     userTotalShare={userTotalShare}
-                    inStr={"in Burrow"}
+                    inStr={"In Burrow"}
                     forStable
+                    from={"stable"}
                   />
                 </div>
               )}

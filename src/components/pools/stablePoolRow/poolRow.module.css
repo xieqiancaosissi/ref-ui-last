@@ -105,7 +105,7 @@
 }
 
 .farmContainer > div:first-child {
-  @apply border border-gray-30 w-full h-13 rounded flex px-3 items-center justify-between;
+  @apply border border-gray-30 w-full h-13 rounded flex px-3 items-center;
 }
 
 .btnStyle {

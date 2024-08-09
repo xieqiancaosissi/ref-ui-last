@@ -168,7 +168,7 @@ export default function StablePoolRowCharts(props: any) {
         chartInstanceNew.dispose(); // 销毁ECharts实例
       }
     };
-  }, [poolDetail, isMobile]);
+  }, [poolDetail, isMobile, updatedMapList]);
 
   //
   let utilisationDisplay;

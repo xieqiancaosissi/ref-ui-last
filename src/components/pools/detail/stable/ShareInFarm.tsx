@@ -42,18 +42,14 @@ export const ShareInFarm = ({
 
   return (
     <div
-      className={`items-start inline-flex text-xs rounded-full py-0.5 cursor-pointer ${
-        from == "stable" ? "ml-1.5" : "mb-1.5"
+      className={`items-start inline-flex xsm:text-xs lg:text-sm rounded-full py-0.5 cursor-pointer ${
+        from == "stable" ? "xsm:ml-1.5 lg:ml-2" : "mb-1.5"
       }`}
       onMouseEnter={() => setHovet(true)}
       onMouseLeave={() => setHovet(false)}
     >
       {/* <FarmDot inFarm={Number(farmShare) > 0} className="mr-1 flex-shrink-0" /> */}
-      <div
-        className={`self-start whitespace-nowrap w-full flex items-center ${
-          forStable ? `${hover ? "text-white" : "text-gray-10"}` : ""
-        }`}
-      >
+      <div className={`self-start whitespace-nowrap w-full flex items-center`}>
         <span className={`text-left`}>
           {`${
             Number(farmSharePercent) < 0.1 && Number(farmSharePercent) > 0
@@ -62,14 +58,15 @@ export const ShareInFarm = ({
           }% `}{" "}
         </span>
         &nbsp;
-        <span className="underline mr-1">
+        <span className="underline mr-1 text-white hover:text-green-10 frcc">
           {inStr ? (
             inStr
           ) : (
             <FormattedMessage id="in_farm" defaultMessage="in Farm" />
           )}
+          <FiArrowUpRight className="hover:text-green-10" />
         </span>
-        <ArrowRightUpIcon></ArrowRightUpIcon>
+        {/* <ArrowRightUpIcon></ArrowRightUpIcon> */}
         {version && <span className={`ml-1 w-4`}>{version}</span>}
         {hover && forStable && (
           <span className="ml-0.5">{/* <HiOutlineExternalLink /> */}</span>
@@ -115,10 +112,10 @@ export const ShareInFarmV2 = ({
   };
 
   return (
-    <div className="frcc ml-10">
+    <div className="frcc mx-5">
       {/* <FarmDot inFarm={Number(farmShare) > 0} className="mr-1" /> */}
       <StableFarmIcon />
-      <div className="self-start whitespace-nowrap flex items-center">
+      <div className="self-start whitespace-nowrap flex items-center text-white hover:text-green-10">
         <span className="text-white ml-1 mr-2">
           {`${
             Number(farmSharePercent) < 0.1 && Number(farmSharePercent) > 0
@@ -126,16 +123,15 @@ export const ShareInFarmV2 = ({
               : toPrecision(farmSharePercent, 2, false, false)
           }% `}
         </span>
-        <span>In</span>
         <div
           onClick={() => toFarm()}
-          className="underline cursor-pointer ml-1 hover:text-white"
+          className="underline cursor-pointer ml-0.5 frcc"
         >
-          <span className="text-gradientFrom mr-1">
-            {version && <span className="mr-1">{version} Farms</span>}
+          <span className="text-gradientFrom">
+            {version && <span>In {version} Farms</span>}
           </span>
+          <FiArrowUpRight className="hover:text-green-10" />
         </div>
-        <FiArrowUpRight className="hover:text-green-10" />
       </div>
     </div>
   );

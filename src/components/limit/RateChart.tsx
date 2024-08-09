@@ -392,7 +392,7 @@ function RateChart() {
       {!loading && priceList && priceList.price_list.length > 0 && diff && (
         <div
           className="w-full "
-          style={{ height: "300px", width: "calc(100% + 35px)" }}
+          style={{ height: "350px", width: "calc(100% + 35px)" }}
         >
           <ResponsiveContainer width={"100%"} height={"100%"}>
             <ComposedChart

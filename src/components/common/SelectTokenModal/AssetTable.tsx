@@ -66,21 +66,21 @@ export default function AssetTable() {
   }
   function tknTip() {
     return `
-    <div class="text-gray-110 text-xs text-left break-all w-62">
+    <div class="text-gray-110 text-xs text-left  w-62">
     Created by any user on https://tkn.homes with the tkn.near suffix, poses high risks. Ref has not certified it. Exercise caution.
     </div>
     `;
   }
   function tknxTip() {
     return `
-    <div class="text-gray-110 text-xs text-left break-all w-62">
+    <div class="text-gray-110 text-xs text-left w-62">
         Created by any user on https://tkn.homes with the tknx.near suffix, poses high risks. Ref has not certified it. Exercise caution.
     </div>
     `;
   }
   function mcTip() {
     return `
-    <div class="text-gray-110 text-xs text-left break-all w-62">
+    <div class="text-gray-110 text-xs text-left w-62">
     Created by any user on https://meme.cooking/create with the meme-cooking.near suffix, poses high risks. Ref has not certified it. Exercise caution.
     </div>
     `;

@@ -4,7 +4,7 @@
 
 /* hide low tvl checkbox styles */
 .customCheckbox {
-  @apply flex items-center justify-end cursor-default;
+  @apply flex items-center justify-end cursor-pointer;
 }
 
 .customCheckbox input {

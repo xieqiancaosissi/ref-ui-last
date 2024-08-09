@@ -57,6 +57,7 @@ export const chartsOtherConfig = (chartsKind: string) => {
       backgroundColor: "#141C22",
       borderWidth: 1,
       borderColor: "#2D343D",
+      extraCssText: "z-index: 2;",
       position(pos: any, params: any, dom: any, rect: any, size: any) {
         const posObj = { top: "10%", left: 0 };
         posObj.left = pos[0] + [-200, 50][+(pos[0] < size.viewSize[0] / 2)];

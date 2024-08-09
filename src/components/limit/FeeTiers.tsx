@@ -47,7 +47,7 @@ export default function FeeTiers(props: any) {
   }
   function feeTip() {
     return `
-    <div class="text-gray-110 text-xs text-left break-all w-62">
+    <div class="text-gray-110 text-xs text-left  w-62">
       Please note: when the order is filled by instant swap, you will be a liquidity taker. Meanwhile, no fee will be charged when you are a liquidit maker.
     </div>
     `;

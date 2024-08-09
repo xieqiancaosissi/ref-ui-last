@@ -292,10 +292,12 @@ function AssetPage() {
   ]);
   return (
     <div
-      className="w-full lg:h-35 lg:fixed lg:frcc lg:bg-dark-45"
+      className="w-full lg:h-35 lg:fixed lg:frcc "
       style={{
-        top: "92px",
+        top: "46px",
         zIndex: "10",
+        background:
+          "linear-gradient(to bottom, rgba(3, 15, 22, 0.4), rgba(33, 43, 53, 0.4))",
       }}
     >
       <div className="lg:w-276 xsm:w-full flex xsm:flex-col items-center justify-between">

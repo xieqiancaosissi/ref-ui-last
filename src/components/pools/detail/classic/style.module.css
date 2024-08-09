@@ -20,7 +20,7 @@
 
 .chartsContent {
   width: 100%;
-  @apply flex items-start lg:h-140 xsm:h-90 overflow-hidden;
+  @apply flex items-start lg:h-140 xsm:h-90;
 }
 
 .triangleDown {

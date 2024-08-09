@@ -43,7 +43,7 @@ export default function Classic({
   const handleCheckboxChange = (event: any) => {
     setIsChecked(event.target.checked);
   };
-
+  const [toFirst, setToFirst] = useState(false);
   const handleSort = (key: string) => {
     if (key === sortMap.key) {
       setSortMap((prevSortMap) => ({
@@ -53,6 +53,7 @@ export default function Classic({
     } else {
       setSortMap({ key, sort: "desc" });
     }
+    setToFirst(true);
   };
 
   const { poolList, totalItems, isLoading } = usePoolSearch({
@@ -144,7 +145,7 @@ export default function Classic({
             })}
           </div>
 
-          <div className="text-white text-xs cursor-default">
+          <div className="text-white text-xs  cursor-pointer">
             <label className={styles.customCheckbox}>
               <input
                 type="checkbox"
@@ -184,7 +185,7 @@ export default function Classic({
               return (
                 <div
                   key={item.key + Math.random() + index}
-                  className="frcc select-none"
+                  className="frcc select-none cursor-pointer"
                   onClick={() => handleSort(item.key)}
                 >
                   <span>{item.value}</span>
@@ -223,6 +224,7 @@ export default function Classic({
             itemsPerPage={20}
             onChangePage={handlePageChange}
             onPageSizeChange={handleSizeChange}
+            toFirst={toFirst}
           />
         </div>
       </div>

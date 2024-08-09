@@ -7,11 +7,13 @@ const Pagination = ({
   itemsPerPage,
   onChangePage,
   onPageSizeChange,
+  toFirst,
 }: {
   totalItems: number;
   itemsPerPage: number;
   onChangePage: any;
   onPageSizeChange: any;
+  toFirst?: boolean;
 }) => {
   const pageCount = Math.ceil(totalItems / itemsPerPage);
 
@@ -54,6 +56,12 @@ const Pagination = ({
     onPageSizeChange(newPageSize);
     goToPage(1);
   };
+
+  useEffect(() => {
+    if (toFirst) {
+      goToPage(1);
+    }
+  }, [toFirst]);
 
   const goPreOrNext = (index: number) => {
     if (index + 1 > 5) {

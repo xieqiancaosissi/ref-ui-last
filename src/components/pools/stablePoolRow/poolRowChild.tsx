@@ -96,7 +96,7 @@ export default function PoolRow(props: any) {
               <div
                 className={`bg-primaryGreen text-black ${styles.tagPublicStyle}`}
               >
-                News
+                New
               </div>
             )}
           </div>
@@ -150,7 +150,7 @@ export default function PoolRow(props: any) {
                       styles.tagPublicStyle
                     }  ${item.is_farm ? "-ml-1.5" : ""}`}
                   >
-                    News
+                    New
                   </div>
                 )}
               </div>

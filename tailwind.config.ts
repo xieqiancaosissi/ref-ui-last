@@ -32,7 +32,7 @@ const config: Config = {
         modalGrayBg: "#1D2932",
         whiteOpacity: "rgba(255, 255, 255, 0.4)",
         v3feeTextColor: "#586F80",
-        refPublicBoxDarkBg: "rgba(33, 43, 53, 0.4)",
+        refPublicBoxDarkBg: "rgba(27, 36, 44, 0.4)",
         gray: {
           10: "#91A2AE",
           20: "#212B35",

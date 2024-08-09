@@ -11,6 +11,7 @@ import tokenIcons from "@/utils/tokenIconConfig";
 import { useRiskTokens } from "@/hooks/useRiskTokens";
 import { TokenIconComponent } from "@/components/pools/TokenIconWithTkn/index";
 import styles from "./style.module.css";
+import { ButtonTextWrapper } from "@/components/common/Button";
 
 function UnLockedModal(props: any) {
   const { pureIdList } = useRiskTokens();
@@ -113,8 +114,15 @@ function UnLockedModal(props: any) {
           className={`flex-shrink-0 mt-36 h-12 text-center text-sm text-white focus:outline-none font-semibold cursor-pointer`}
         >
           <div className="poolBtnStyle">
-            <UnlockWithoutCircleBlack />
-            <span className="ml-2">Unlock</span>
+            <ButtonTextWrapper
+              loading={unlock_loading}
+              Text={() => (
+                <span className="frcc">
+                  <UnlockWithoutCircleBlack className="mr-0.5" />
+                  Unlock
+                </span>
+              )}
+            />
           </div>
         </div>
       </div>

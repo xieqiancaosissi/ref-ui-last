@@ -24,7 +24,14 @@ export default function CreateOrderButton() {
   const poolFetchLoading = limitStore.getPoolFetchLoading();
   const buttonStatus = useMemo(() => {
     return getButtonStatus();
-  }, [walletLoading, accountId, tokenIn?.id, tokenOut?.id, rate, amountIn]);
+  }, [
+    walletLoading,
+    accountId,
+    JSON.stringify(tokenIn || {}),
+    tokenOut?.id,
+    rate,
+    amountIn,
+  ]);
   const loading = poolFetchLoading;
   function showModal() {
     setShowConfirmModal(true);

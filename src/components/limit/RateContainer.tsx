@@ -2,23 +2,28 @@ import { useMemo } from "react";
 import Big from "big.js";
 import CustomTooltip from "@/components/customTooltip/customTooltip";
 import { SubIcon, AddIcon, UnLockIcon, LockIcon } from "./icons";
+import { ToggleIcon } from "./icons2";
 import {
   useLimitStore,
   usePersistLimitStore,
   IPersistLimitStore,
+  ILimitStore,
 } from "@/stores/limitOrder";
 import { regularizedPrice } from "@/services/swapV3";
 import { toPrecision } from "@/utils/numbers";
+import { getReverseRate } from "@/services/limit/limitUtils";
 
 export default function RateContainer() {
-  const limitStore = useLimitStore();
+  const limitStore = useLimitStore() as ILimitStore;
   const persistLimitStore = usePersistLimitStore() as IPersistLimitStore;
   const rate = limitStore.getRate();
+  const reverseRate = limitStore.getReverseRate();
   const marketRate = limitStore.getMarketRate();
   const tokenIn = limitStore.getTokenIn();
   const tokenOut = limitStore.getTokenOut();
   const isLock = limitStore.getLock();
   const tokenInAmount = limitStore.getTokenInAmount();
+  const reverse = limitStore.getReverse();
   const dclPool = persistLimitStore.getDclPool();
   const symbolsArr = ["e", "E", "+", "-"];
   const rateDiffDom = useMemo(() => {
@@ -60,6 +65,7 @@ export default function RateContainer() {
     if (Big(rate || 0).eq(0)) {
       limitStore.setTokenOutAmount("0");
       limitStore.setRate("0");
+      limitStore.setReverseRate("0");
     } else {
       const regularizedRate = regularizedPrice(
         rate,
@@ -110,6 +116,7 @@ export default function RateContainer() {
   }
   function fetch_market_price() {
     limitStore.setRate(marketRate);
+    limitStore.setReverseRate(getReverseRate(marketRate));
     limitStore.onRateChangeTrigger({
       amount: marketRate,
       tokenInAmount,
@@ -129,11 +136,17 @@ export default function RateContainer() {
     </div>
     `;
   }
+  function toggle() {
+    limitStore.setReverse(!reverse);
+  }
   return (
     <div className="bg-dark-60 rounded border border-transparent hover:border-green-10 p-3.5 xsm:py-1.5 text-sm text-gray-50">
       <div className="flexBetween">
         <div className="flex items-center gap-0.5">
-          <span>Buy in rate</span>
+          <div className="flex items-center gap-2">
+            <ToggleIcon className="cursor-pointer" onClick={toggle} />
+            <span>Buy in rate</span>
+          </div>
           {rateDiffDom}
         </div>
         <span
@@ -145,12 +158,12 @@ export default function RateContainer() {
       </div>
       <div className="flexBetween mt-2.5 gap-2">
         <SubIcon
-          onClick={subOneSlot}
+          onClick={reverse ? addOneSlot : subOneSlot}
           className="cursor-pointer text-gray-60 hover:text-white"
         />
         <div className="flexBetween">
           <input
-            value={rate || "-"}
+            value={(reverse ? reverseRate : rate) || "-"}
             type="number"
             className="text-white text-base font-bold text-center"
             onChange={changeAmount}
@@ -158,7 +171,7 @@ export default function RateContainer() {
             onKeyDown={(e) => symbolsArr.includes(e.key) && e.preventDefault()}
             onBlur={onBlurEvent}
           />
-          <span>{tokenOut?.symbol}</span>
+          <span>{reverse ? tokenIn?.symbol : tokenOut?.symbol}</span>
         </div>
         <div className="flex items-center gap-1">
           <div
@@ -183,7 +196,7 @@ export default function RateContainer() {
           </div>
 
           <AddIcon
-            onClick={addOneSlot}
+            onClick={reverse ? subOneSlot : addOneSlot}
             className="cursor-pointer text-gray-60 hover:text-white"
           />
         </div>

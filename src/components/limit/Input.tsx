@@ -95,6 +95,7 @@ export default function Input(props: IInputProps) {
       if (Big(rate || 0).eq(0)) {
         limitStore.setTokenOutAmount("0");
         limitStore.setRate("0");
+        limitStore.setReverseRate("0");
       } else {
         const regularizedRate = regularizedPrice(
           rate,

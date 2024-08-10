@@ -6,7 +6,8 @@ import { createJSONStorage, persist } from "zustand/middleware";
 import { setAmountOut, formatAmount } from "@/services/limit/limitUtils";
 import { toPrecision } from "@/utils/numbers";
 import { get_pool } from "@/services/swapV3";
-import { fillDclPool } from "@/services/limit/limitUtils";
+import { fillDclPool, getReverseRate } from "@/services/limit/limitUtils";
+import { reverse } from "lodash";
 export interface ILimitStore {
   getTokenIn: () => ITokenMetadata;
   setTokenIn: (token: ITokenMetadata) => void;
@@ -18,6 +19,8 @@ export interface ILimitStore {
   setTokenOutAmount: (tokenOutAmount: string) => void;
   getRate: () => string;
   setRate: (rate: string) => void;
+  getReverseRate: () => string;
+  setReverseRate: (reverseRate: string) => void;
   getLock: () => boolean;
   setLock: (lock: boolean) => void;
   getMarketRate: () => string;
@@ -28,6 +31,8 @@ export interface ILimitStore {
   setRateDiff: (rateDiff: string) => void;
   getBalanceLoading: () => boolean;
   setBalanceLoading: (balanceLoading: boolean) => void;
+  getReverse: () => boolean;
+  setReverse: (reverse: boolean) => void;
   onAmountInChangeTrigger: ({
     amount,
     limitStore,
@@ -98,11 +103,13 @@ export const useLimitStore = create<ILimitStore>((set: any, get: any) => ({
   tokenInAmount: "1",
   tokenOutAmount: "",
   rate: "",
+  reverseRate: "",
   marketRate: "",
   lock: false,
   poolFetchLoading: false,
   rateDiff: "",
   balanceLoading: true,
+  reverse: false,
   getBalanceLoading: () => get().balanceLoading,
   setBalanceLoading: (balanceLoading: boolean) => set({ balanceLoading }),
   onAmountInChangeTrigger: ({
@@ -132,6 +139,7 @@ export const useLimitStore = create<ILimitStore>((set: any, get: any) => ({
   }) => {
     const precision = toPrecision(amount, 8, false, false);
     limitStore.setRate(precision);
+    limitStore.setReverseRate(getReverseRate(precision));
     if (Big(precision || 0).lte(0)) {
       limitStore.setTokenOutAmount("0");
     } else {
@@ -165,6 +173,7 @@ export const useLimitStore = create<ILimitStore>((set: any, get: any) => ({
           8
         );
         limitStore.setRate(newRate);
+        limitStore.setReverseRate(getReverseRate(newRate));
       }
     }
   },
@@ -204,6 +213,8 @@ export const useLimitStore = create<ILimitStore>((set: any, get: any) => ({
   setTokenOutAmount: (tokenOutAmount: string) => set({ tokenOutAmount }),
   getRate: () => get().rate,
   setRate: (rate: string) => set({ rate }),
+  getReverseRate: () => get().reverseRate,
+  setReverseRate: (reverseRate: string) => set({ reverseRate }),
   getLock: () => get().lock,
   setLock: (lock: boolean) => set({ lock }),
   getMarketRate: () => get().marketRate,
@@ -217,5 +228,10 @@ export const useLimitStore = create<ILimitStore>((set: any, get: any) => ({
   setRateDiff: (rateDiff: string) =>
     set({
       rateDiff,
+    }),
+  getReverse: () => get().reverse,
+  setReverse: (reverse: boolean) =>
+    set({
+      reverse,
     }),
 }));

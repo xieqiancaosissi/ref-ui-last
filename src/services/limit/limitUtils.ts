@@ -117,3 +117,10 @@ export const priceFormatter = (price: string | number) => {
       : new Big(scientificNotationToString(price.toString())).toFixed(4)
   );
 };
+export const getReverseRate = (rate: string) => {
+  if (Big(rate || 0).gt(0)) {
+    const rate_reverse = new Big(1).div(rate).toFixed();
+    return toPrecision(rate_reverse, 8);
+  }
+  return "0";
+};

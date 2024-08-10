@@ -5,6 +5,7 @@ import {
   feeToPointDelta,
 } from "@/services/swapV3";
 import { toPrecision } from "@/utils/numbers";
+import { getReverseRate } from "@/services/limit/limitUtils";
 import {
   useLimitStore,
   usePersistLimitStore,
@@ -34,6 +35,7 @@ export default function Init() {
       });
       const rate = toPrecision(price, 8);
       limitStore.setRate(rate);
+      limitStore.setReverseRate(getReverseRate(rate));
       limitStore.setMarketRate(rate);
       limitStore.setTokenInAmount("1");
       limitStore.setTokenOutAmount(rate);

@@ -11,6 +11,7 @@ import { RightArrowIcon } from "./icons";
 import { ButtonTextWrapper } from "@/components/common/Button";
 import { digitalProcess } from "@/utils/uiNumber";
 import createOrder from "@/services/limit/limit";
+import { sort_tokens_by_base } from "@/services/commonV3";
 
 function ConfirmOrderModal({
   isOpen,
@@ -28,6 +29,9 @@ function ConfirmOrderModal({
   const amountOut = limitStore.getTokenOutAmount();
   const rateDiff = limitStore.getRateDiff();
   const rate = limitStore.getRate();
+  const reverseRate = limitStore.getReverseRate();
+  const tokens = sort_tokens_by_base([tokenIn, tokenOut]);
+  const isReverse = tokens[0].symbol == tokenOut.symbol;
   const dclPool = persistLimitStor.getDclPool();
   function doCreateOrder() {
     setCreateOrderLoading(true);
@@ -82,10 +86,12 @@ function ConfirmOrderModal({
           <span className="text-sm text-gray-60">at Price</span>
           <div className="flex items-center gap-1.5">
             <span className="text-sm text-white font-bold">
-              {digitalProcess(rate, 8)}
+              {digitalProcess(isReverse ? reverseRate : rate, 8)}
             </span>
             <span className="flex items-center justify-center text-xs text-gray-10 rounded bg-gray-100 px-1 h-5">
-              {tokenOut.symbol}/{tokenIn.symbol}
+              {isReverse
+                ? `${tokenIn.symbol}/${tokenOut.symbol}`
+                : `${tokenOut.symbol}/${tokenIn.symbol}`}
             </span>
           </div>
         </div>

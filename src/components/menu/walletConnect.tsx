@@ -328,7 +328,7 @@ export default function WalletConnect() {
           ) : (
             <div
               onClick={showWalletSelector}
-              className="flex items-center justify-end h-9 rounded border border-primaryGreen px-4 font-semibold text-primaryGreen cursor-pointer"
+              className="flex items-center justify-end h-9 text-sm rounded border border-primaryGreen px-4 font-semibold text-primaryGreen cursor-pointer"
             >
               Connect Wallet
             </div>

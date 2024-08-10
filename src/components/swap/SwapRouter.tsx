@@ -56,8 +56,8 @@ export default function SwapRouter() {
         onClick={showDetailModal}
         className="flex items-center gap-1.5 border border-gray-90 rounded p-0.5 pr-1 text-xs text-gray-160 hover:text-white hover:bg-dark-10 cursor-pointer"
       >
-        <RefMarketIcon />
-        <span className="w-px h-2 bg-gray-160"></span>
+        {/* <RefMarketIcon />
+        <span className="w-px h-2 bg-gray-160"></span> */}
         {best == "v1" ? (
           <>
             {routeLength > 2 ? (

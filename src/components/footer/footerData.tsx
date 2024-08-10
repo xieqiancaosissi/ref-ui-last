@@ -58,9 +58,9 @@ export const docLinks = [
     url: "/risks",
     inLink: true,
   },
-  {
-    id: "bugbounty",
-    label: "BUG BOUNTY",
-    url: "https://immunefi.com/bug-bounty/reffinance/",
-  },
+  // {
+  //   id: "bugbounty",
+  //   label: "BUG BOUNTY",
+  //   url: "https://immunefi.com/bug-bounty/reffinance/",
+  // },
 ];

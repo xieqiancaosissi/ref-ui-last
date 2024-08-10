@@ -87,7 +87,9 @@ export default function Footer() {
                       jump(item);
                     }}
                     key={item.id}
-                    className={`flex items-end gap-1 text-xs font-bold text-gray-50 hover:text-primaryGreen cursor-pointer px-5 `}
+                    className={`flex items-end gap-1 text-xs font-bold text-gray-50 hover:text-primaryGreen cursor-pointer px-5 ${
+                      index == docLinks.length - 1 ? "pr-0" : ""
+                    }`}
                   >
                     {item.icon || ""}
                     {item.label}
@@ -97,7 +99,7 @@ export default function Footer() {
               );
             })}
 
-            <div
+            {/* <div
               className="flex items-center relative rounded-2xl bg-dark-20  dark:bg-opacity-20 bg-opacity-80 h-6 p-0.5 cursor-pointer mr-3"
               style={{ width: "46px" }}
               onClick={toggleTheme}
@@ -114,7 +116,7 @@ export default function Footer() {
 
             <div className="flex items-center justify-center w-6 h-6 rounded border border-white border-opacity-20 font-semibold text-xs text-gray-50 cursor-pointer">
               EN
-            </div>
+            </div> */}
           </div>
         </div>{" "}
       </div>

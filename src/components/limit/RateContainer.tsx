@@ -59,6 +59,7 @@ export default function RateContainer() {
       amount,
       tokenInAmount,
       limitStore,
+      isReverse: reverse,
     });
   }
   function onBlurEvent() {
@@ -115,8 +116,9 @@ export default function RateContainer() {
     });
   }
   function fetch_market_price() {
+    const reverseMarketRate = getReverseRate(marketRate);
     limitStore.setRate(marketRate);
-    limitStore.setReverseRate(getReverseRate(marketRate));
+    limitStore.setReverseRate(reverseMarketRate);
     limitStore.onRateChangeTrigger({
       amount: marketRate,
       tokenInAmount,

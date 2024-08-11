@@ -74,7 +74,7 @@ export default function AdSwiper() {
                     <SwiperCloseButton className="cursor-pointer"></SwiperCloseButton>
                   </div>
                   <div
-                    className="relative cursor-pointer lg:h-[80px] xsm:h-[96px]"
+                    className="relative cursor-pointer lg:h-[117px] xsm:h-[88px]"
                     onClick={() => {
                       window.open(ad.jump_url);
                     }}

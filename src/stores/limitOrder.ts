@@ -46,10 +46,12 @@ export interface ILimitStore {
     amount,
     tokenInAmount,
     limitStore,
+    isReverse,
   }: {
     amount: string;
     tokenInAmount: string;
     limitStore: ILimitStore;
+    isReverse?: boolean;
   }) => void;
   onAmountOutChangeTrigger: ({
     amount,
@@ -132,18 +134,30 @@ export const useLimitStore = create<ILimitStore>((set: any, get: any) => ({
     amount,
     tokenInAmount,
     limitStore,
+    isReverse,
   }: {
     amount: string;
     tokenInAmount: string;
     limitStore: ILimitStore;
+    isReverse?: boolean;
   }) => {
     const precision = toPrecision(amount, 8, false, false);
-    limitStore.setRate(precision);
-    limitStore.setReverseRate(getReverseRate(precision));
+    const reversePrecision = getReverseRate(precision);
+    if (isReverse) {
+      limitStore.setRate(reversePrecision);
+      limitStore.setReverseRate(precision);
+    } else {
+      limitStore.setRate(precision);
+      limitStore.setReverseRate(reversePrecision);
+    }
     if (Big(precision || 0).lte(0)) {
       limitStore.setTokenOutAmount("0");
     } else {
-      setAmountOut({ rate: precision, tokenInAmount, limitStore });
+      setAmountOut({
+        rate: isReverse ? reversePrecision : precision,
+        tokenInAmount,
+        limitStore,
+      });
     }
   },
   onAmountOutChangeTrigger: ({

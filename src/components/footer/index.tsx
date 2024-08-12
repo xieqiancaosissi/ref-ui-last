@@ -120,7 +120,7 @@ export default function Footer() {
           </div>
         </div>{" "}
       </div>
-      <div className="lg:hidden flex justify-center fixed w-full bottom-[62px] items-center gap-7">
+      <div className="lg:hidden flex justify-center w-full mb-[62px] items-center gap-7 pt-4">
         {communityLinks.map((item) => {
           return (
             <div

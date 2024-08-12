@@ -166,6 +166,8 @@ const config: Config = {
           "linear-gradient(180deg, #1B242C 0%, rgba(27, 36, 44, 0) 100%)",
         portfolioMobileBg:
           "linear-gradient(360deg, rgba(33, 43, 53, 0.5) 0%, rgba(61, 84, 108, 0.5) 100%)",
+        yoursFarmBg:
+          "radial-gradient(44.64% 80.05% at 30.82% 0%,rgba(250, 255, 0, 0.3) 0%,rgba(33, 43, 53, 0.09) 80.5%)",
       }),
     },
     screens: {

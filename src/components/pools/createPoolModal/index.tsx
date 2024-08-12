@@ -6,6 +6,7 @@ import TokenInput from "./createPoolInput/index";
 import { addSimpleLiquidityPool, findSamePools } from "@/services/pool";
 import InitData from "@/components/swap/InitData";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import { useRouter } from "next/router";
 
 export default function CreatePoolModal({
   isOpen,
@@ -14,11 +15,13 @@ export default function CreatePoolModal({
   isOpen: boolean;
   onRequestClose: () => void;
 }) {
+  const router = useRouter();
   const [createFee, setCreateFee] = useState(0);
   const [token, setToken] = useState(["", ""]);
   const [isDisabled, setDisabled] = useState(false);
   const [isSame, setSame] = useState(false);
   const [showSke, setShowSke] = useState(false);
+  const [sameId, setSameId] = useState("");
 
   const handleFee = (e: any) => {
     setCreateFee(e * 100);
@@ -44,6 +47,7 @@ export default function CreatePoolModal({
         if (res?.length > 0) {
           setDisabled(true);
           setSame(true);
+          setSameId(res[0].id);
         } else {
           setDisabled(false);
           setSame(false);
@@ -65,6 +69,10 @@ export default function CreatePoolModal({
       window.removeEventListener("resize", handleResize);
     };
   }, []);
+
+  const toThisPool = () => {
+    router.push(`/pool/classic/${sameId}`);
+  };
 
   return (
     <Modal
@@ -127,7 +135,10 @@ export default function CreatePoolModal({
               >
                 <span>
                   This Pool already exists, you can switch to other fees or{" "}
-                  <span className="underline cursor-pointer">
+                  <span
+                    className="underline cursor-pointer"
+                    onClick={() => toThisPool()}
+                  >
                     go to this pool
                   </span>
                 </span>

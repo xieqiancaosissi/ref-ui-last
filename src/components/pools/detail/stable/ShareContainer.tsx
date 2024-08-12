@@ -5,14 +5,15 @@ import {
   useCanFarmV2,
   useYourliquidity,
 } from "@/hooks/useStableShares";
-import { ShareInFarm, ShareInFarmV2 } from "./ShareInFarm";
+import { ShareInFarm, ShareInFarmV2, ShareInBurrow } from "./ShareInFarm";
 import ShareNumber from "./ShareNumber";
 import {
   AddLiquidityIconStable,
   RemoveLiquidityIconStable,
 } from "../liquidity/icon";
 import { useRouter } from "next/router";
-import { openUrl } from "@/services/commonV3";
+import { openUrlLocal } from "@/services/commonV3";
+import getConfigV2 from "@/utils/configV2";
 
 export default function ShareContainer(props: any) {
   const { poolDetail, setShowAdd, setShowRemove } = props;
@@ -84,26 +85,29 @@ export default function ShareContainer(props: any) {
               onlyEndedFarm={countV2 === endedFarmCountV2}
             />
           ) : null}
-          {shadowBurrowShare?.stakeAmount && (
-            <div
-              className={`cursor-pointer xsm:mt-auto ${
-                !(countV2 > endedFarmCountV2) ? "hidden" : ""
-              }`}
-              onClick={(e) => {
-                e.stopPropagation();
-                e.preventDefault();
-                openUrl(`https://app.burrow.finance/`);
-              }}
-            >
-              <ShareInFarm
-                farmStake={shadowBurrowShare?.stakeAmount}
-                userTotalShare={userTotalShare}
-                inStr={"in Burrow"}
-                forStable
-                from={"stable"}
-              />
-            </div>
-          )}
+          {shadowBurrowShare?.stakeAmount &&
+            getConfigV2().SUPPORT_SHADOW_POOL_IDS.includes(
+              poolDetail.id?.toString()
+            ) && (
+              <div
+                className={`cursor-pointer xsm:mt-auto ${
+                  !(countV2 > endedFarmCountV2) ? "hidden" : ""
+                }`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                  openUrlLocal(`https://app.burrow.finance/`);
+                }}
+              >
+                <ShareInBurrow
+                  farmStake={shadowBurrowShare?.stakeAmount}
+                  userTotalShare={userTotalShare}
+                  inStr={"in Burrow"}
+                  forStable
+                  from={"stable"}
+                />
+              </div>
+            )}
         </div>
       </div>
       {/* right liquidity button */}

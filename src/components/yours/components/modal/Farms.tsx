@@ -28,7 +28,7 @@ import {
   get_all_seeds,
   get_liquidity_value,
   get_pool_name,
-  openUrl,
+  openUrlLocal,
 } from "@/services/commonV3";
 import { getAccountId } from "@/utils/wallet";
 import { useAccountStore } from "@/stores/account";
@@ -591,11 +591,7 @@ function ClassicFarms() {
           <div
             key={seed.seed_id + index}
             className={
-              seed.hidden
-                ? "hidden"
-                : index < 2
-                ? "bg-farmItemBg rounded-lg"
-                : "bg-gray-20 bg-opacity-30 rounded-lg"
+              seed.hidden ? "hidden" : index < 2 ? "rounded-lg" : "rounded-lg"
             }
           >
             <FarmView

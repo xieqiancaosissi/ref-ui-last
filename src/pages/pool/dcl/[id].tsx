@@ -45,7 +45,8 @@ import { useAppStore } from "@/stores/app";
 import { showWalletSelectorModal } from "@/utils/wallet";
 import NoLiquidityMobile from "@/components/pools/detail/liquidity/NoLiquidityMobile";
 import YourLiqAndClaimMobile from "@/components/pools/detail/liquidity/dclYourLiquidity/YourLiqAndClaimMobile";
-
+import { openUrlLocal } from "@/services/commonV3";
+import { PoolRouterGuard } from "@/utils/poolTypeGuard";
 const YourLiquidityBox = dynamic(
   () =>
     import(
@@ -88,6 +89,8 @@ export default function DCLPoolDetail() {
   useEffect(() => {
     if (poolId) {
       getPoolsDetailById({ pool_id: poolId as any }).then((res) => {
+        PoolRouterGuard(res, "DCL") &&
+          openUrlLocal(`${PoolRouterGuard(res, "DCL")}/${poolId}`);
         setPoolDetail(res);
       });
 

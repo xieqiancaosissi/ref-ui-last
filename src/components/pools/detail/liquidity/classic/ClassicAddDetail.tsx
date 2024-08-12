@@ -3,7 +3,7 @@ import { TokenMetadata } from "@/services/ft-contract";
 import { toRealSymbol } from "@/services/farm";
 import { Pool } from "@/interfaces/swap";
 import { FiExternalLink } from "react-icons/fi";
-import { openUrl } from "@/services/commonV3";
+import { openUrlLocal } from "@/services/commonV3";
 import { FaAngleUp } from "@react-icons/all-files/fa/FaAngleUp";
 import { FaAngleDown } from "@react-icons/all-files/fa/FaAngleDown";
 import { ArrowUpWithYellow, ArrowTopRightIcon } from "../components/add/Icon";
@@ -51,14 +51,14 @@ function DetailSymbol({
 
       <span
         className="cursor-pointer pl-2 py-0.5 text-gradientFrom xsm:hidden"
-        onClick={() => openUrl(`/pool/classic/${id}`)}
+        onClick={() => openUrlLocal(`/pool/classic/${id}`)}
       >
         <FiExternalLink />
       </span>
 
       <span
         className="cursor-pointer pl-2 py-0.5 text-gradientFrom lg:hidden"
-        onClick={() => openUrl(`/pool/classic/${id}`)}
+        onClick={() => openUrlLocal(`/pool/classic/${id}`)}
       >
         <ArrowTopRightIcon />
       </span>
@@ -114,7 +114,7 @@ export function PoolDetailCard({
           <DetailSymbol tokens={tokens} id={pool.id} />
         </div>
         <div
-          className={`cursor-pointer text-gray-50 flex items-center text-sm xsm:border xsm:border-gray-240 xsm:rounded xsm:p-1 ${
+          className={`cursor-pointer xsm:text-white lg:text-gray-50 flex items-center text-sm xsm:border xsm:border-gray-240 xsm:rounded xsm:p-1 ${
             showDetail ? "xsm:border-green-10" : ""
           }`}
           onClick={() => setShowDetail(!showDetail)}

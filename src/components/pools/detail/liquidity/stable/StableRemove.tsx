@@ -336,7 +336,11 @@ export default function StableAdd(props: any) {
         },
       }}
     >
-      <div>
+      <div
+        style={{
+          width: isMobile && "100vw",
+        }}
+      >
         <div className="flex items-center justify-between mb-4 xsm:hidden">
           <RemoveLiqTitleIcon />
           <LpModalCloseIcon
@@ -558,11 +562,11 @@ export default function StableAdd(props: any) {
                         <>
                           <div
                             key={ite.tokenId}
-                            className="flex lg:h-13 xsm:h-12 mt-2 p-1 shrink-0 items-center rounded "
+                            className="flex lg:h-13 xsm:h-12 px-2 shrink-0 items-center rounded "
                           >
                             <Icon icon={ite.icon} className="h-6 w-6 mr-1" />
                             <div className="flex flex-col">
-                              <span className="text-gray-50 text-sm xsm:hidden">
+                              <span className="text-gray-50 text-xs xsm:hidden">
                                 {ite.symbol}
                               </span>
                               <span className="text-sm text-white xsm:hidden">
@@ -571,15 +575,15 @@ export default function StableAdd(props: any) {
                             </div>
 
                             <div className="lg:hidden flex flex-col justify-center">
+                              <span className="text-gray-50 text-xs">
+                                {ite.symbol}
+                              </span>
                               <span className="text-sm text-white">
                                 {calcTokenReceived(receiveAmounts[ind], ite)}
                               </span>
-                              <span className="text-gray-50 text-sm">
-                                {ite.symbol}
-                              </span>
                             </div>
                           </div>
-                          <span className="text-gray-50 text-lg">
+                          <span className="text-gray-50 text-sm">
                             {ind <
                             updatedMapList[0]?.token_account_ids.length - 1
                               ? "+"

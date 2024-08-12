@@ -46,7 +46,11 @@ import {
   usePool,
   useTokenMetadata,
 } from "@/hooks/usePools";
-import { getEffectiveFarmList, openUrl } from "@/services/commonV3";
+import {
+  getEffectiveFarmList,
+  openUrl,
+  openUrlLocal,
+} from "@/services/commonV3";
 import { FarmBoost } from "@/services/farm";
 import {
   Fire,
@@ -64,6 +68,7 @@ import { format_apy } from "@/utils/uiNumber";
 import { useAppStore } from "@/stores/app";
 import { showWalletSelectorModal } from "@/utils/wallet";
 import YourLiqMobile from "@/components/pools/detail/liquidity/classic/YourLiqMobile";
+import { PoolRouterGuard } from "@/utils/poolTypeGuard";
 
 export default function ClassicPoolDetail() {
   const router = useRouter();
@@ -86,6 +91,8 @@ export default function ClassicPoolDetail() {
   useEffect(() => {
     if (poolId) {
       getPoolsDetailById({ pool_id: poolId as any }).then((res) => {
+        PoolRouterGuard(res, "SIMPLE_POOL") &&
+          openUrlLocal(`${PoolRouterGuard(res, "SIMPLE_POOL")}/${poolId}`);
         setPoolDetail(res);
       });
 
@@ -474,7 +481,7 @@ export default function ClassicPoolDetail() {
                 background: "linear-gradient(to bottom, #9EFF01, #5F9901)",
               }}
               onClick={() => {
-                openUrl(`/farms/${poolId}-r`);
+                openUrlLocal(`/farms/${poolId}-r`);
               }}
             >
               Farm Now!
@@ -736,7 +743,7 @@ export default function ClassicPoolDetail() {
                     background: "linear-gradient(to bottom, #9EFF01, #5F9901)",
                   }}
                   onClick={() => {
-                    openUrl(`/farms/${poolId}-r`);
+                    openUrlLocal(`/farms/${poolId}-r`);
                   }}
                 >
                   Farm Now!

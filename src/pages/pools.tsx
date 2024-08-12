@@ -10,6 +10,7 @@ import {
   DownArrow,
   UpArrow,
 } from "@/components/pools/icon";
+import { ArrowDownIcon } from "@/components/swap/icons";
 import Charts from "@/components/pools/charts/charts";
 import Classic from "@/components/pools/classicPool/classic";
 import Stable from "@/components/pools/stablePool/stablePool";
@@ -438,7 +439,7 @@ export default function Farms() {
                     }}
                     className="frcc h-full"
                   >
-                    <MobileArrowUp></MobileArrowUp>
+                    <ArrowDownIcon></ArrowDownIcon>
                   </div>
                 </div>
                 {showClassHeader && (
@@ -509,7 +510,7 @@ export default function Farms() {
                     }}
                     className="frcc h-full"
                   >
-                    <MobileArrowUp></MobileArrowUp>
+                    <ArrowDownIcon></ArrowDownIcon>
                   </div>
                 </div>
                 {showClassHeader && (
@@ -580,7 +581,7 @@ export default function Farms() {
                     }}
                     className="frcc h-full"
                   >
-                    <MobileArrowUp></MobileArrowUp>
+                    <ArrowDownIcon></ArrowDownIcon>
                   </div>
                 </div>
                 {showClassHeader && (
@@ -651,7 +652,7 @@ export default function Farms() {
                     }}
                     className="frcc h-full"
                   >
-                    <MobileArrowUp></MobileArrowUp>
+                    <ArrowDownIcon></ArrowDownIcon>
                   </div>
                 </div>
                 {showClassHeader && (

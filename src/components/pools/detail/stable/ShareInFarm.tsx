@@ -3,7 +3,7 @@ import { percent, toPrecision } from "@/utils/numbers";
 import { FormattedMessage, useIntl } from "react-intl";
 import BigNumber from "bignumber.js";
 import { useRouter } from "next/router";
-import { StableFarmIcon } from "../../icon";
+import { StableFarmIcon, BurrowIcon } from "../../icon";
 import { FiArrowUpRight } from "react-icons/fi";
 import { ArrowRightUpIcon } from "@/components/yours/components/icon";
 import { toReadableNumber } from "@/utils/numbers";
@@ -58,8 +58,12 @@ export const ShareInBurrow = ({
       onMouseLeave={() => setHovet(false)}
     >
       {/* <FarmDot inFarm={Number(farmShare) > 0} className="mr-1 flex-shrink-0" /> */}
-      <div className={`self-start whitespace-nowrap w-full flex items-center`}>
-        <span className={`text-left`}>
+      <BurrowIcon />
+
+      <div
+        className={`self-start whitespace-nowrap w-full flex items-center ml-1.5`}
+      >
+        <span className={`text-left text-white mr-1.5`}>
           {onlyShowStake
             ? toPrecision(
                 toReadableNumber(
@@ -75,13 +79,15 @@ export const ShareInBurrow = ({
               }% `}
         </span>
         &nbsp;
-        <span className="underline mr-1 text-gray-10  frcc">
+        <span className="underline text-gray-10  frcc">
           {inStr ? (
             inStr
           ) : (
             <FormattedMessage id="in_farm" defaultMessage="in Farm" />
           )}
-          <FiArrowUpRight />
+          <span className="ml-1.5">
+            <FiArrowUpRight className="text-green-10" />
+          </span>
         </span>
         {/* <ArrowRightUpIcon></ArrowRightUpIcon> */}
         {version && <span className={`ml-1 w-4`}>{version}</span>}
@@ -158,7 +164,7 @@ export const ShareInFarm = ({
           ) : (
             <FormattedMessage id="in_farm" defaultMessage="in Farm" />
           )}
-          <FiArrowUpRight />
+          <FiArrowUpRight className="text-green-10" />
         </span>
         {/* <ArrowRightUpIcon></ArrowRightUpIcon> */}
         {version && <span className={`ml-1 w-4`}>{version}</span>}
@@ -224,7 +230,7 @@ export const ShareInFarmV2 = ({
           <span className="text-gradientFrom">
             {version && <span>In {version} Farms</span>}
           </span>
-          <FiArrowUpRight />
+          <FiArrowUpRight className="text-green-10" />
         </div>
       </div>
     </div>
@@ -234,7 +240,7 @@ export const ShareInFarmV2 = ({
 export const PoolAvailableAmount = ({
   pool,
   shares,
-  className = "",
+  className = "text-white",
 }: {
   pool: any;
   shares: any;

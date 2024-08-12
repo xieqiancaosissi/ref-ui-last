@@ -92,7 +92,7 @@ export default function App({ Component, pageProps }: AppProps) {
         <RpcList />
         <Footer />
         <ToastContainerEle />
-        <ModalGAPrivacy />
+        {/* <ModalGAPrivacy /> */}
         <RiskModal />
         <LedgerTransactionModal />
       </div>

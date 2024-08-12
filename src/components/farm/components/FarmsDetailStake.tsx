@@ -277,12 +277,9 @@ export default function FarmsDetailStake(props: {
         >
           Stake
         </button>
-        <div
-          className={`h-4 bg-gray-50 xsm:hidden ${
-            Number(freeAmount) > 0 ? "" : "hidden"
-          }`}
-          style={{ width: "2px" }}
-        />
+        {isEnded && Number(freeAmount) > 0 && (
+          <div className="h-4 bg-gray-50 xsm:hidden" style={{ width: "2px" }} />
+        )}
         <button
           className={`text-lg pl-5 xsm:flex-1 ${
             activeTab === "unstake" ? styles.gradient_text : "text-gray-500"
@@ -302,9 +299,7 @@ export default function FarmsDetailStake(props: {
             <div>
               <span
                 onClick={() => {
-                  changeAmount(
-                    stakeType == "freeToLock" ? freeAmount : lpBalance
-                  );
+                  lpBalance;
                 }}
                 className={`text-sm text-gray-50 underline cursor-pointer hover:text-primaryGreen `}
               >
@@ -472,7 +467,7 @@ export default function FarmsDetailStake(props: {
             <div className="flex items-center ml-2">
               <span
                 onClick={() => {
-                  changeAmount(lpBalance);
+                  changeAmount(freeAmount);
                 }}
                 className={`text-sm text-gray-50 underline cursor-pointer hover:text-primaryGreen`}
               >

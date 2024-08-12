@@ -15,13 +15,13 @@ export default function SelectBox(props: any) {
   const getClassName = (item: any) => {
     if (type === "filter") {
       return `rounded-2xl border border-dark-40 py-1 px-3.5 text-sm mr-1 mb-1 xs:text-xs xs:px-2 xsm:mb-2  ${
-        item.id === selectedId ? "bg-gray-100 text-white" : "text-gray-60"
+        item.id === selectedId ? "bg-gray-100 text-white" : "text-gray-10"
       } ${disabled ? "cursor-not-allowed" : "cursor-pointer"}`;
     } else if (type === "farm_type") {
       return `${
         item.id === selectedId
           ? "bg-poolsTypelinearGrayBg rounded"
-          : "text-gray-60"
+          : "text-gray-10"
       } ${
         disabled ? "cursor-not-allowed" : "cursor-pointer"
       } h-8 frcc text-sm w-25 xs:flex-1 `;
@@ -48,7 +48,7 @@ export default function SelectBox(props: any) {
             className={getClassName(item)}
           >
             <div className="flex items-center">
-              <span className="text-sm text-white">{name || label}</span>
+              <span className="text-sm">{name || label}</span>
             </div>
           </div>
         );

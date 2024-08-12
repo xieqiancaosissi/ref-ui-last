@@ -63,10 +63,7 @@ export default function Positions(props: any) {
     v1LiquidityLoadingDone && v2LiquidityLoadingDone && total_quantity > 0;
   return (
     <div className="text-white">
-      <p className="text-sm text-gray-50 mb-6">
-        Amount:
-        <span className="text-white ml-1">{total_liquidity_value}</span>
-      </p>
+      <p className="text-sm text-white mb-6">{total_liquidity_value}</p>
       {/* liquidities list */}
       <div className={`${activeTab == "2" ? "" : "hidden"}`}>
         <YourLiquidityV2

@@ -152,7 +152,7 @@ const config: Config = {
         greenGradientDark:
           "linear-gradient(90deg, #9DFD01 0%, #5F9900 110.34%)",
         farmItemBg:
-          "radial-gradient(59.55% 80.53% at 12.15% -10.79%, rgba(250, 255, 0, 0.3) 0%, rgba(33, 43, 53, 0.3) 100%) ",
+          "radial-gradient(41.38% 60.79% at 30.24% -10.79%, rgba(250, 255, 0, 0.18) 0%, rgba(16, 32, 44, 0.3) 100%)",
         createPoolLinear: "linear-gradient(90deg, #9EFF00 1.39%, #5F9900 100%)",
         AddLiquidityBg: "linear-gradient(90deg, #8BE100 0%, #0099A3 100%)",
         textWhiteGradient: "linear-gradient(90deg, #FFFFFF 0%, #91A2AE 100%)",

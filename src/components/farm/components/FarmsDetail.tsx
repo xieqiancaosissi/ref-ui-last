@@ -51,6 +51,7 @@ import StakeMobile from "./StakeMobile";
 import LPTip from "./LPTip";
 import getConfigV2 from "@/utils/configV2";
 import ShadowTip from "./ShadowTip";
+import { isStablePool } from "@/services/swap/swapUtils";
 
 const ONLY_ZEROS = /^0*\.?0*$/;
 const {
@@ -581,7 +582,10 @@ export default function FarmsDetail(props: {
   };
   function goPool() {
     const poolId = pool?.id;
-    if (poolId) {
+    const isStable = poolId !== undefined ? isStablePool(poolId) : false;
+    if (isStable) {
+      router.push(`/pool/stable/${poolId}`);
+    } else {
       router.push(`/pool/classic/${poolId}`);
     }
   }
@@ -752,6 +756,26 @@ export default function FarmsDetail(props: {
   const is_support_lp = configV2.SUPPORT_SHADOW_POOL_IDS.includes(
     (pool?.id || "").toString()
   );
+  function getAprTitleTip() {
+    const yourAprTip = "Your APR";
+    const rangeAprTip = "Range or reference APR";
+    let result: string = "";
+    if (yourApr) {
+      result = `<div class="flex items-center text-gray-110 text-xs  text-left">
+      <span class="text-white">${yourAprTip} / </span> &nbsp;${rangeAprTip} 
+    </div>`;
+    } else {
+      result = `<div class="flex items-center text-gray-110 text-xs  text-left">
+      ${rangeAprTip} 
+    </div>`;
+    }
+    return result;
+  }
+  function valueOfRewardsTip() {
+    const tip = "Indicative value based on prices and not actual execution";
+    const result: string = `<div class="text-gray-110 text-xs w-52 text-left">${tip}</div>`;
+    return result;
+  }
   return (
     <>
       {/* pc */}
@@ -800,7 +824,16 @@ export default function FarmsDetail(props: {
                 <div className="border-r border-gray-50 border-opacity-30 absolute right-0 top-1/4 h-1/2 w-0" />
                 <p className="text-gray-50 mb-1 flex items-center">
                   APR
-                  <QuestionMark className="ml-1.5"></QuestionMark>
+                  <div
+                    className="text-white text-right ml-1"
+                    data-class="reactTip"
+                    data-tooltip-id={"yourAprTipId_m"}
+                    data-place="top"
+                    data-tooltip-html={getAprTitleTip()}
+                  >
+                    <QuestionMark className="ml-1.5"></QuestionMark>
+                    <CustomTooltip id={"yourAprTipId_m"} />
+                  </div>
                 </p>
                 <p className="frcc">
                   <div
@@ -849,7 +882,15 @@ export default function FarmsDetail(props: {
               <div className="pr-6 text-sm relative w-max">
                 <p className="text-gray-50 mb-1 flex items-center">
                   Rewards per week{" "}
-                  <QuestionMark className="ml-1.5"></QuestionMark>
+                  <div
+                    data-class="reactTip"
+                    data-tooltip-id={"rewardPerWeekQId"}
+                    data-place="top"
+                    data-tooltip-html={valueOfRewardsTip()}
+                  >
+                    <QuestionMark className="ml-1.5"></QuestionMark>
+                    <CustomTooltip id={"rewardPerWeekQId"} />
+                  </div>
                 </p>
                 <p className="flex items-center"> {totalTvlPerWeekDisplay()}</p>
               </div>
@@ -980,7 +1021,17 @@ export default function FarmsDetail(props: {
           </div>
           <div className="frcb text-sm mb-4">
             <p className="text-gray-50 flex items-center">
-              <QuestionMark className="mr-0.5"></QuestionMark>APR
+              <div
+                className="text-white text-right ml-1"
+                data-class="reactTip"
+                data-tooltip-id={"yourAprTipId_m"}
+                data-place="top"
+                data-tooltip-html={getAprTitleTip()}
+              >
+                <QuestionMark className="mr-0.5"></QuestionMark>
+                <CustomTooltip id={"yourAprTipId_m"} />
+              </div>
+              APR
             </p>
             <div className="text-white flex">
               <div
@@ -1017,7 +1068,16 @@ export default function FarmsDetail(props: {
           </div>
           <div className="flex items-start justify-between text-sm mb-1">
             <p className="text-gray-50 flex items-center">
-              <QuestionMark className="mr-0.5"></QuestionMark>Rewards per week
+              <div
+                data-class="reactTip"
+                data-tooltip-id={"rewardPerWeekQId"}
+                data-place="top"
+                data-tooltip-html={valueOfRewardsTip()}
+              >
+                <QuestionMark className="mr-0.5"></QuestionMark>
+                <CustomTooltip id={"rewardPerWeekQId"} />
+              </div>
+              Rewards per week
             </p>
             <p className="text-white">{totalTvlPerWeekDisplay()}</p>
           </div>

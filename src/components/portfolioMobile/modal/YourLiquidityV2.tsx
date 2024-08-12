@@ -1299,7 +1299,7 @@ function UserLiquidityLineStyleGroupPage({
             </p>
           </div>
           <div className="frcb">
-            <div className="text-xs text-gray-1 frcc">
+            <div className="text-sm text-gray-60 frcc">
               Price Range
               <div
                 className={`ml-1 flex items-center justify-center bg-opacity-15 rounded-md h-5 px-1 mr-2 ${

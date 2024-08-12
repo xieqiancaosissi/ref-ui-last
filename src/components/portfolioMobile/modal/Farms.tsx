@@ -304,10 +304,7 @@ export default function Farms(props: any) {
           your_list_liquidities,
         }}
       >
-        <p className="text-sm text-gray-50 mb-6">
-          Amount:
-          <span className="text-white ml-1">{total_farms_value}</span>
-        </p>
+        <p className="text-sm text-white mb-6">{total_farms_value}</p>
         <div className={`${activeTab == "3" ? "" : "hidden"}`}>
           <ClassicFarms></ClassicFarms>
           <DclFarms></DclFarms>

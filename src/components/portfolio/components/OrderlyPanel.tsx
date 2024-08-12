@@ -1,13 +1,19 @@
-import { useContext } from "react";
+import Big from "big.js";
 import { PortfolioArrow, PortfolioOrderlyIcon } from "./icon";
-import { OverviewContextType, OverviewData } from "../index";
+import { useOrderbookDataStore } from "@/stores/orderbook/orderbookDataStore";
+import ConnectToOrderlyWidget from "@/components/orderbook/connectToOrderlyWidget";
+import useHoldings from "@/hooks/orderbook/useHoldings";
+import { toInternationalCurrencySystem_usd } from "@/utils/uiNumber";
+import { isMobile } from "@/utils/device";
 
 export default function OrderlyPanel() {
-  const { is_mobile } = useContext(OverviewData) as OverviewContextType;
+  const orderbookDataStore = useOrderbookDataStore();
+  const connectStatus = orderbookDataStore.getConnectStatus();
+  const totalAssetsUsd = useHoldings();
+  const is_mobile = isMobile();
   const handleOrderlyClick = () => {
     window.open("https://orderly.org/", "_blank");
   };
-
   return (
     <div
       className="bg-gray-20 bg-opacity-40 rounded-lg p-4 mb-4 hover:bg-gray-20 cursor-pointer text-white"
@@ -24,14 +30,20 @@ export default function OrderlyPanel() {
           </div>
           <p className="text-gray-10 text-sm">Orderly</p>
         </div>
-        <PortfolioArrow />
+        {/* <PortfolioArrow /> */}
       </div>
-      <div className="flex">
-        <div className="flex-1">
-          <p className="mb-1.5 text-base paceGrotesk-Bold">-</p>
-          <p className="text-xs text-gray-50">TotalAssets</p>
+      {/* <LoadingIcon /> */}
+      <ConnectToOrderlyWidget uiType="orderlyAssets" />
+      {connectStatus == "has_connected" ? (
+        <div className="flex">
+          <div className="flex-1">
+            <p className="mb-1.5 text-base paceGrotesk-Bold">
+              {toInternationalCurrencySystem_usd(totalAssetsUsd, 0)}
+            </p>
+            <p className="text-xs text-gray-50">TotalAssets</p>
+          </div>
         </div>
-      </div>
+      ) : null}
     </div>
   );
 }

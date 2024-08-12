@@ -19,6 +19,7 @@ import { formatWithCommas_usd } from "@/utils/uiNumber";
 import BurrowPanel from "./components/BurrowPanel";
 import { XrefMobileArrow } from "../xref/icon";
 import FlipNumbers from "react-flip-numbers";
+import useHoldings from "@/hooks/orderbook/useHoldings";
 
 export const OverviewData = createContext<OverviewContextType | null>(null);
 const is_mobile: boolean = !!isMobile();
@@ -57,7 +58,7 @@ export default function Overview() {
   const [isWalletPanelOpen, setIsWalletPanelOpen] = useState<boolean>(false);
   const [isPortfolioPanelOpen, setIsPortfolioPanelOpen] =
     useState<boolean>(false);
-
+  const orderly_value = useHoldings();
   const [netWorth, netWorthDone] = useMemo(() => {
     let netWorth = "0";
     let netWorthDone = false;
@@ -73,6 +74,7 @@ export default function Overview() {
         .plus(burrow_supplied_value)
         .plus(burrow_rewards_value)
         .plus(wallet_assets_value)
+        .plus(orderly_value)
         .minus(burrow_borrowied_value)
         .toFixed();
       netWorthDone = true;
@@ -87,6 +89,7 @@ export default function Overview() {
     burrow_supplied_value,
     burrow_borrowied_value,
     burrow_rewards_value,
+    orderly_value,
   ]);
 
   const [portfolioAssets, netPortfolioAssets] = useMemo(() => {

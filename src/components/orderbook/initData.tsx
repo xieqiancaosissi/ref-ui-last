@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from "react";
 import useOrderlyMarketData from "@/hooks/orderbook/ws/useOrderlyMarketData";
 import useOrderlyPrivateData from "@/hooks/orderbook/ws/useOrderlyPrivateData";
-import { useTokenInfo } from "@/services/orderbook/state";
+import { useAllTokensInfo } from "@/services/orderbook/state";
 import { useOrderbookPrivateWSDataStore } from "@/stores/orderbook/orderbookPrivateWSDataStore";
 import { useOrderbookDataStore } from "@/stores/orderbook/orderbookDataStore";
 import { TokenInfo } from "@/interfaces/orderbook";
@@ -21,21 +21,24 @@ export default function InitData(props: any) {
   const accountStore = useAccountStore();
   const userExist = useAccountExist();
   const accountId = accountStore.getAccountId();
-  const validAccountSig = orderbookDataStore.getValidAccountSig();
+  // const validAccountSig = orderbookDataStore.getValidAccountSig();
+  const connectStatus = orderbookDataStore.getConnectStatus();
+  const validAccountSig = connectStatus == "has_connected";
+  // TODO Temporary Hide
+  // get account websocket data
+  // useOrderlyPrivateData({
+  //   validAccountSig,
+  // });
+  // get all positions
+  // useAllPositions(validAccountSig);
   // get websocket data
   useOrderlyMarketData({
     symbol: "SPOT_NEAR_USDC.e", // TOOD Wait for processing
   });
-  // get account websocket data
-  useOrderlyPrivateData({
-    validAccountSig,
-  });
   // get account holdings
   useCurHoldings(validAccountSig, orderbookPrivateWSDataStore.getBalances());
   // get all tokens support
-  const tokensInfo = useTokenInfo();
-  // get all positions
-  useAllPositions(validAccountSig);
+  useAllTokensInfo();
   // get all SymbolInfo
   useAllSymbolInfo();
   // get connect status
@@ -63,26 +66,9 @@ export default function InitData(props: any) {
     }
   }, [accountId]);
   useEffect(() => {
-    if (tokensInfo.length > 0) {
-      storeTokensInfo(tokensInfo);
-    }
-  }, [tokensInfo.length]);
-  useEffect(() => {
     if (accountId) {
       orderbookDataStore.setUserExists(!!userExist);
     }
   }, [userExist, accountId]);
-  async function storeTokensInfo(tokensInfo: TokenInfo[]) {
-    const pending = tokensInfo.map((t) => getFTmetadata(t.token_account_id));
-    const metadatas = await Promise.all(pending);
-    const map = tokensInfo.reduce((acc, cur, index) => {
-      return {
-        ...acc,
-        [cur.token]: metadatas[index],
-      };
-    }, {});
-    orderbookDataStore.setTokensInfo(tokensInfo);
-    orderbookDataStore.setTokensMetaMap(map);
-  }
   return null;
 }

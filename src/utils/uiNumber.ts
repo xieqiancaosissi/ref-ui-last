@@ -42,7 +42,7 @@ export const toInternationalCurrencySystem_number = (v: any) => {
     return toInternationalCurrencySystem(decimal.toFixed());
   }
 };
-export const toInternationalCurrencySystem_usd = (v: any) => {
+export const toInternationalCurrencySystem_usd = (v: any, fixed?: any) => {
   if (isInvalid(v)) return "$-";
   const decimal = new Big(v);
   if (decimal.lte(0)) {
@@ -50,7 +50,11 @@ export const toInternationalCurrencySystem_usd = (v: any) => {
   } else if (decimal.lt(0.01)) {
     return "<$0.01";
   } else {
-    return `$${toInternationalCurrencySystem(decimal.toFixed())}`;
+    if (fixed == 0) {
+      return `$${toInternationalCurrencySystem(decimal.toFixed(2, fixed))}`;
+    } else {
+      return `$${toInternationalCurrencySystem(decimal.toFixed())}`;
+    }
   }
 };
 export const toInternationalCurrencySystemLongString_usd = (v: any) => {

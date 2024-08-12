@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useEffect } from "react";
+import { useOrderbookDataStore } from "@/stores/orderbook/orderbookDataStore";
 import Modal from "react-modal";
 import { isMobile } from "../../utils/device";
 import { toReadableNumber, toPrecision } from "../../utils/numbers";
@@ -18,15 +19,16 @@ import CustomTooltip from "../customTooltip/customTooltip";
 import { getAccount } from "@/utils/near";
 import { CheckedIcon, ConnnectIcon, OrderlyIcon } from "./icons";
 import { ButtonTextWrapper } from "../common/Button";
-import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import { LoadingIcon } from "@/components/common/Icons";
 import { useAppStore } from "@/stores/app";
 import { showWalletSelectorModal } from "@/utils/wallet";
+import ConnectToOrderlyWidget from "@/components/orderbook/connectToOrderlyWidget";
 const maxLength = 10;
 const maxOrderlyLength = 10;
 function AccessKeyModal(props: any) {
   const { isOpen, onRequestClose } = props;
   const cardWidth = isMobile() ? "100vw" : "550px";
-  const cardHeight = isMobile() ? "90vh" : "100vh";
+  const cardHeight = isMobile() ? "90vh" : "auto";
   const is_mobile = isMobile();
   const [currentUsedKeys, setCurrentUsedKeys] = useState<string[]>([]);
   const accountId = getAccountId();
@@ -384,9 +386,11 @@ function OrderlyKeys({
   const [selectedKeys, setSelectedKeys] = useState<Set<string>>(new Set([]));
   const [allOrderlyKeys, setAllOrderlyKeys] = useState<string[]>([]);
   const [orderlyKeyLoading, setOrderlyKeyLoading] = useState<boolean>(true);
+  const orderbookDataStore = useOrderbookDataStore();
+  const connectStatus = orderbookDataStore.getConnectStatus();
   const accountId = getAccountId();
   useEffect(() => {
-    if (accountId) {
+    if (accountId && connectStatus == "has_connected") {
       getAccountKeyInfo({ accountId }).then((keys: IOrderKeyInfo[]) => {
         const activeKeys = keys
           .filter((key: IOrderKeyInfo) => key.key_status === "ACTIVE")
@@ -398,7 +402,7 @@ function OrderlyKeys({
         setOrderlyKeyLoading(false);
       });
     }
-  }, [accountId]);
+  }, [accountId, connectStatus]);
   const displayAllOrderlyKeys = useMemo(() => {
     return allOrderlyKeys.filter((key) => !currentUsedKeys.includes(key));
   }, [allOrderlyKeys.length, currentUsedKeys.length]);
@@ -437,15 +441,8 @@ function OrderlyKeys({
   }
   const disabled = selectedKeys.size === 0;
   const isEmpty = allOrderlyKeys.length == 0;
-  const noConnected = allOrderlyKeys.length == 0;
   return (
     <div className={`py-4 ${hidden ? "hidden" : ""}`}>
-      {orderlyKeyLoading ? (
-        <div className="flex justify-center my-20">
-          {/* <ChartLoading /> */}
-        </div>
-      ) : null}
-
       <div className="flex items-center justify-between px-6 mb-3 xsm:px-3">
         <div className="flex items-center gap-1">
           <span className="text-sm text-white paceGrotesk-Bold">
@@ -465,6 +462,12 @@ function OrderlyKeys({
           </div>
         ) : null}
       </div>
+      <ConnectToOrderlyWidget uiType="orderlyKey" />
+      {orderlyKeyLoading && connectStatus == "has_connected" ? (
+        <div className="flex justify-center items-center my-20">
+          <LoadingIcon />
+        </div>
+      ) : null}
       <div
         className="overflow-auto hide-scrollbar px-6 border-b border-gray1 xsm:px-3"
         style={{ maxHeight: "290px" }}
@@ -508,18 +511,6 @@ function OrderlyKeys({
             </div>
           ) : null} */}
       </div>
-      {!orderlyKeyLoading && noConnected ? (
-        <div className="flex flex-col items-center my-20">
-          <ConnnectIcon />
-          <div className="text-sm text-gray-60 text-center mt-10">
-            Please{" "}
-            <a className="underline text-white" href="/orderbook/spot">
-              connect Orderly
-            </a>{" "}
-            first
-          </div>
-        </div>
-      ) : null}
       <div className="px-6 xsm:px-3">
         <div
           onClick={() => {

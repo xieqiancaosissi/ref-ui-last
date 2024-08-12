@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import _ from "lodash";
 import {
   SymbolInfo,
   Holding,
@@ -112,15 +113,16 @@ export function useCurHoldings(
   const accountId = accountStore.getAccountId();
   const orderbookDataStore = useOrderbookDataStore();
   useEffect(() => {
-    if (!accountId) return;
+    if (!accountId || !validAccountSig) return;
     getCurrentHolding({ accountId }).then((res) => {
-      setHoldings(res.data.holding);
-      orderbookDataStore.setHoldings(res.data.holding);
+      const list = res?.data?.holding || [];
+      setHoldings(list);
+      orderbookDataStore.setHoldings(list);
     });
   }, [accountId, validAccountSig]);
 
   useEffect(() => {
-    if (balances && holdings) {
+    if (!_.isEmpty(balances) && holdings) {
       const updatedHoldings = holdings.map((holding) => {
         const newBalance = balances[holding.token];
 

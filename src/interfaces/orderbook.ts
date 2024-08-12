@@ -459,3 +459,5 @@ export interface OrderAsset {
   available: string;
   tokenMeta: TokenMetadata;
 }
+
+export type IUiType = "orderlyKey" | "orderlyAssets";

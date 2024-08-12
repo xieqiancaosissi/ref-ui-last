@@ -33,6 +33,7 @@ import { useIntl } from "react-intl";
 import { constOrderlyPageSize } from "./utils";
 import { useOrderbookDataStore } from "@/stores/orderbook/orderbookDataStore";
 import { useOrderbookPrivateWSDataStore } from "@/stores/orderbook/orderbookPrivateWSDataStore";
+import { getFTmetadata } from "@/services/orderbook/near";
 
 export function useMarketTrades({
   symbol,
@@ -125,16 +126,25 @@ export function useAllOrders({
   return liveOrders?.filter((o) => o.symbol.indexOf(type || "SPOT") > -1);
 }
 
-export function useTokenInfo() {
-  const [tokenInfo, setTokenInfo] = useState<TokenInfo[]>([]);
-
+export function useAllTokensInfo() {
+  const orderbookDataStore = useOrderbookDataStore();
   useEffect(() => {
-    getOrderlyPublic("/v1/public/token").then((res) => {
-      setTokenInfo(res?.data?.rows);
-    });
+    getAllTokensInfo();
   }, []);
-
-  return tokenInfo;
+  async function getAllTokensInfo() {
+    const res = await getOrderlyPublic("/v1/public/token");
+    const tokensInfo: TokenInfo[] = res?.data?.rows || [];
+    const pending = tokensInfo.map((t) => getFTmetadata(t.token_account_id));
+    const metadatas = await Promise.all(pending);
+    const map = tokensInfo.reduce((acc, cur, index) => {
+      return {
+        ...acc,
+        [cur.token]: metadatas[index],
+      };
+    }, {});
+    orderbookDataStore.setTokensInfo(tokensInfo);
+    orderbookDataStore.setTokensMetaMap(map);
+  }
 }
 
 export function useStorageEnough() {

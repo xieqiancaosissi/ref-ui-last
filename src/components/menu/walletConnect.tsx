@@ -21,6 +21,7 @@ import AccessKeyModal from "./AccessKeyModal";
 import { useAppStore } from "@/stores/app";
 import { showWalletSelectorModal } from "@/utils/wallet";
 import { isMobile, useClientMobile } from "@/utils/device";
+import InitData from "@/components/orderbook/initData";
 import Guider from "./Guider";
 import { LinkLine } from "./icons2";
 const Overview = dynamic(() => import("../portfolio"), { ssr: false });
@@ -324,6 +325,7 @@ export default function WalletConnect() {
                   </div>
                 </div>
               ) : null}
+              <InitData />
             </div>
           ) : (
             <div

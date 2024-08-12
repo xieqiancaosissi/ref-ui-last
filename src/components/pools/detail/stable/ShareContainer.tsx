@@ -5,7 +5,7 @@ import {
   useCanFarmV2,
   useYourliquidity,
 } from "@/hooks/useStableShares";
-import { ShareInFarm, ShareInFarmV2 } from "./ShareInFarm";
+import { ShareInFarm, ShareInFarmV2, ShareInBurrow } from "./ShareInFarm";
 import ShareNumber from "./ShareNumber";
 import {
   AddLiquidityIconStable,
@@ -95,7 +95,7 @@ export default function ShareContainer(props: any) {
                 openUrl(`https://app.burrow.finance/`);
               }}
             >
-              <ShareInFarm
+              <ShareInBurrow
                 farmStake={shadowBurrowShare?.stakeAmount}
                 userTotalShare={userTotalShare}
                 inStr={"in Burrow"}

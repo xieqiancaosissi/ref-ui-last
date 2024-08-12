@@ -3,7 +3,7 @@ import { percent, toPrecision } from "@/utils/numbers";
 import { FormattedMessage, useIntl } from "react-intl";
 import BigNumber from "bignumber.js";
 import { useRouter } from "next/router";
-import { StableFarmIcon } from "../../icon";
+import { StableFarmIcon, BurrowIcon } from "../../icon";
 import { FiArrowUpRight } from "react-icons/fi";
 import { ArrowRightUpIcon } from "@/components/yours/components/icon";
 import { toReadableNumber } from "@/utils/numbers";
@@ -58,8 +58,12 @@ export const ShareInBurrow = ({
       onMouseLeave={() => setHovet(false)}
     >
       {/* <FarmDot inFarm={Number(farmShare) > 0} className="mr-1 flex-shrink-0" /> */}
-      <div className={`self-start whitespace-nowrap w-full flex items-center`}>
-        <span className={`text-left`}>
+      <BurrowIcon />
+
+      <div
+        className={`self-start whitespace-nowrap w-full flex items-center ml-1.5`}
+      >
+        <span className={`text-left text-white mr-1.5`}>
           {onlyShowStake
             ? toPrecision(
                 toReadableNumber(

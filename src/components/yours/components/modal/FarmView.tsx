@@ -521,6 +521,28 @@ export function FarmView(props: {
       return `$${toInternationalCurrencySystem(totalPrice.toString(), 2)}`;
     }
   }
+
+  function getTotalUnclaimedRewardsIcon() {
+    if (!unClaimedTokens) {
+      return null;
+    }
+
+    return (
+      <>
+        {unClaimedTokens.map((token, index) => (
+          <img
+            className={`w-4 h-4 rounded-full border border-green-10 ${
+              index > 0 && "-ml-1.5"
+            }`}
+            key={token.symbol}
+            src={token.icon}
+            alt={`Icon for ${token.symbol}`}
+          />
+        ))}
+      </>
+    );
+  }
+
   function isEnded() {
     const farms = seed.farmList;
     if (farms && farms.length > 0) {
@@ -761,7 +783,7 @@ export function FarmView(props: {
             ? styles.farmEnded
             : isPending()
             ? "bg-gray-20 bg-opacity-20"
-            : "bg-farmItemBg rounded-lg"
+            : "bg-yoursFarmBg rounded-lg"
         }
         `}
       >
@@ -968,12 +990,9 @@ export function FarmView(props: {
               </div>
             </div>
             <div className="frcb">
-              <p className="text-gray-60 text-sm">Your stake/Unclaimed</p>
+              <p className="text-gray-60 text-sm">Unclaimed</p>
               <p className="text-sm frcc">
-                {Number(yourTvl) == 0
-                  ? "0"
-                  : "$" + toInternationalCurrencySystem(yourTvl, 2)}
-                /
+                {getTotalUnclaimedRewardsIcon()}
                 <p
                   className={`${
                     getTotalUnclaimedRewards() === "0"
@@ -1016,12 +1035,9 @@ export function FarmView(props: {
               </div>
             </div>
             <div className="frcb">
-              <p className="text-gray-60 text-sm">Your stake/Unclaimed</p>
+              <p className="text-gray-60 text-sm">Unclaimed</p>
               <p className="text-sm frcc">
-                {Number(yourTvl) == 0
-                  ? "0"
-                  : "$" + toInternationalCurrencySystem(yourTvl, 2)}
-                /
+                {getTotalUnclaimedRewardsIcon()}
                 <p
                   className={`${
                     getTotalUnclaimedRewards() === "0"

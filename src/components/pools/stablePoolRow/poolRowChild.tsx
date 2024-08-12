@@ -14,6 +14,7 @@ import { useYourliquidity } from "@/hooks/useStableShares";
 import { useWatchList } from "@/hooks/useWatchlist";
 import { StartWatchList } from "@/components/pools/icon";
 import { openUrl } from "@/services/commonV3";
+import getConfigV2 from "@/utils/configV2";
 import {
   ShareInFarm,
   ShareInFarmV2,
@@ -385,27 +386,30 @@ export default function PoolRow(props: any) {
                   />
                 ) : null}
               </div>
-              {shadowBurrowShare?.stakeAmount && (
-                <div
-                  className={`cursor-pointer ${
-                    !(countV2 > endedFarmCountV2) ? "hidden" : ""
-                  }`}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    openUrl(`https://app.burrow.finance/`);
-                  }}
-                >
-                  <ShareInBurrow
-                    farmStake={shadowBurrowShare?.stakeAmount}
-                    userTotalShare={userTotalShare}
-                    inStr={"in Burrow"}
-                    forStable
-                    from={"stable"}
-                    poolId={item.id}
-                  />
-                </div>
-              )}
+              {shadowBurrowShare?.stakeAmount &&
+                getConfigV2().SUPPORT_SHADOW_POOL_IDS.includes(
+                  item.id?.toString()
+                ) && (
+                  <div
+                    className={`cursor-pointer ${
+                      !(countV2 > endedFarmCountV2) ? "hidden" : ""
+                    }`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      e.preventDefault();
+                      openUrl(`https://app.burrow.finance/`);
+                    }}
+                  >
+                    <ShareInBurrow
+                      farmStake={shadowBurrowShare?.stakeAmount}
+                      userTotalShare={userTotalShare}
+                      inStr={"in Burrow"}
+                      forStable
+                      from={"stable"}
+                      poolId={item.id}
+                    />
+                  </div>
+                )}
             </div>
           </div>
         </div>

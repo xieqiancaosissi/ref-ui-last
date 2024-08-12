@@ -13,6 +13,7 @@ import {
 } from "../liquidity/icon";
 import { useRouter } from "next/router";
 import { openUrl } from "@/services/commonV3";
+import getConfigV2 from "@/utils/configV2";
 
 export default function ShareContainer(props: any) {
   const { poolDetail, setShowAdd, setShowRemove } = props;
@@ -84,26 +85,29 @@ export default function ShareContainer(props: any) {
               onlyEndedFarm={countV2 === endedFarmCountV2}
             />
           ) : null}
-          {shadowBurrowShare?.stakeAmount && (
-            <div
-              className={`cursor-pointer xsm:mt-auto ${
-                !(countV2 > endedFarmCountV2) ? "hidden" : ""
-              }`}
-              onClick={(e) => {
-                e.stopPropagation();
-                e.preventDefault();
-                openUrl(`https://app.burrow.finance/`);
-              }}
-            >
-              <ShareInBurrow
-                farmStake={shadowBurrowShare?.stakeAmount}
-                userTotalShare={userTotalShare}
-                inStr={"in Burrow"}
-                forStable
-                from={"stable"}
-              />
-            </div>
-          )}
+          {shadowBurrowShare?.stakeAmount &&
+            getConfigV2().SUPPORT_SHADOW_POOL_IDS.includes(
+              poolDetail.id?.toString()
+            ) && (
+              <div
+                className={`cursor-pointer xsm:mt-auto ${
+                  !(countV2 > endedFarmCountV2) ? "hidden" : ""
+                }`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                  openUrl(`https://app.burrow.finance/`);
+                }}
+              >
+                <ShareInBurrow
+                  farmStake={shadowBurrowShare?.stakeAmount}
+                  userTotalShare={userTotalShare}
+                  inStr={"in Burrow"}
+                  forStable
+                  from={"stable"}
+                />
+              </div>
+            )}
         </div>
       </div>
       {/* right liquidity button */}

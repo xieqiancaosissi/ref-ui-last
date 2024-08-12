@@ -319,11 +319,11 @@ function LiquidityContainerStyle2() {
     },
     {
       name: "Token",
-      class: "col-span-2",
+      class: "col-span-3",
     },
     {
       name: "LP Tokens(Shares)",
-      class: "col-span-5",
+      class: "col-span-4",
     },
     {
       name: "USD Value",
@@ -878,9 +878,24 @@ function YourClassicLiquidityLinePage(props: any) {
   }, []);
   return (
     <div
-      className={`rounded-xl mt-3 bg-gray-20 lg:px-4 bg-opacity-30 ${
+      className={`rounded-xl mt-3 lg:px-4 bg-opacity-30 ${
         switch_off ? "" : "pb-4"
       }`}
+      style={{
+        background:
+          supportFarmV1 > endedFarmV1 ||
+          Number(farmStakeV1) > 0 ||
+          supportFarmV2 > endedFarmV2 ||
+          Number(farmStakeV2) > 0
+            ? isMobile
+              ? `radial-gradient(
+      60% 107.05% at 86.82% 0%,
+      rgba(250, 255, 0, 0.2) 0%,
+      rgba(18, 29, 38, 0.2) 80.5%
+    )`
+              : "radial-gradient(24.64% 177.05% at 11.82% 0%,rgba(250, 255, 0, 0.21) 0%,rgba(33, 43, 53, 0.09) 80.5%)"
+            : "rgba(33, 43, 53, 0.3)",
+      }}
     >
       {/* pc */}
       {!isMobile && (
@@ -901,9 +916,29 @@ function YourClassicLiquidityLinePage(props: any) {
             </span>
           </div>
           {/*  */}
-          <div className="flex flex-col items-start col-span-2">{Symbols}</div>
+          <div className="col-span-3 flex justify-start items-center">
+            <div className="flex flex-col items-start ">{Symbols}</div>
+
+            <div className="ml-2">
+              {(supportFarmV1 > endedFarmV1 ||
+                Number(farmStakeV1) > 0 ||
+                supportFarmV2 > endedFarmV2 ||
+                Number(farmStakeV2) > 0) && (
+                <div
+                  className={` bg-farmTagBg text-farmApyColor   border-farmApyColor w-11 h-5 rounded-2xl frcc italic font-normal`}
+                  style={{
+                    border: "0.5px solid ",
+                    fontSize: "10px",
+                  }}
+                >
+                  Farms
+                </div>
+              )}
+            </div>
+          </div>
+
           {/*  */}
-          <div className="flex  items-center text-xs text-white col-span-5">
+          <div className="flex  items-center text-xs text-white col-span-4">
             <div className="w-30">
               <span className="text-base font-medium">
                 {display_number_withCommas(lp_total)}
@@ -1018,7 +1053,7 @@ function YourClassicLiquidityLinePage(props: any) {
                   <PoolAvailableAmount
                     shares={sharesNew}
                     pool={pool}
-                    className={"text-gray-10"}
+                    className={"text-white"}
                   />
                   &nbsp;available
                 </div>
@@ -1089,21 +1124,41 @@ function YourClassicLiquidityLinePage(props: any) {
             }}
           >
             <div className="flex flex-col justify-center items-center">
-              <div className="flex">{ImagesMob}</div>
+              <div className="flex z-10">{ImagesMob}</div>
               {props?.type == "stable" && (
                 <div
-                  className={`-mt-0.5 border border-dark-40 frcc italic px-1 rounded-2xl z-0`}
+                  className={`-mt-1 border border-dark-40 frcc italic px-1 rounded-2xl z-0`}
                   style={{
                     background: "#25445A",
                     color: "#6F98B7",
                     fontSize: "10px",
+                    zIndex: 0,
                   }}
                 >
                   Stable Pool
                 </div>
               )}
             </div>
-            <div>{SymbolsMobWithoutNum}</div>
+            <div className="flex flex-col items-end">
+              {SymbolsMobWithoutNum}
+
+              <div className="ml-auto">
+                {(supportFarmV1 > endedFarmV1 ||
+                  Number(farmStakeV1) > 0 ||
+                  supportFarmV2 > endedFarmV2 ||
+                  Number(farmStakeV2) > 0) && (
+                  <div
+                    className={` bg-farmTagBg text-farmApyColor   border-farmApyColor w-11 h-5 rounded-2xl frcc italic font-normal`}
+                    style={{
+                      border: "0.5px solid ",
+                      fontSize: "10px",
+                    }}
+                  >
+                    Farms
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
           {/* Token */}
           <div className="flex justify-between mt-4 px-4">
@@ -1240,7 +1295,7 @@ function YourClassicLiquidityLinePage(props: any) {
                     <PoolAvailableAmount
                       shares={sharesNew}
                       pool={pool}
-                      className={"text-gray-10"}
+                      className={"text-white"}
                     />
                     &nbsp;available
                   </div>
@@ -1352,7 +1407,7 @@ export const PoolFarmAmount = ({
               }}
               className="text-gray-10 mb-1.5 flex"
             >
-              <span>
+              <span className="text-white">
                 {toPrecision(
                   toReadableNumber(
                     lpDecimal,
@@ -1364,7 +1419,7 @@ export const PoolFarmAmount = ({
               <span className="mx-1">in</span>
               <div className="text-gray-10 flex items-center hover:cursor-pointer flex-shrink-0">
                 <span className="underline mr-1">Legacy Farms</span>
-                <ArrowRightUpIcon></ArrowRightUpIcon>
+                <ArrowRightUpIcon className="text-green-10"></ArrowRightUpIcon>
               </div>
             </div>
           )))}
@@ -1380,7 +1435,7 @@ export const PoolFarmAmount = ({
             }}
             className="text-gray-10 mb-1.5 flex"
           >
-            <span>
+            <span className="text-white">
               {toPrecision(
                 toReadableNumber(
                   lpDecimal,
@@ -1392,7 +1447,7 @@ export const PoolFarmAmount = ({
             <span className="mx-1">in</span>
             <div className="text-gray-10 flex items-center hover:cursor-pointer flex-shrink-0">
               <span className="underline mr-1">Classic Farms</span>
-              <FiArrowUpRight className="hover:text-green-10" />
+              <FiArrowUpRight className="text-green-10" />
               {/* <span className="ml-0.5">
         <VEARROW />
       </span> */}

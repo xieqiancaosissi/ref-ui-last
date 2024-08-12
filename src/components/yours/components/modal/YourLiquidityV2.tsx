@@ -1305,21 +1305,21 @@ function UserLiquidityLineStyleGroupPage() {
                 ></img>
               </div>
               <div className="flex flex-col justify-start items-start">
-                <span className="text-white font-bold text-lg paceGrotesk-Bold">
+                <span className="text-white font-bold text-lg paceGrotesk-Bold flex">
                   {tokens[0]?.symbol}-{tokens[1]?.symbol}
+                  <span
+                    onClick={() => {
+                      goPoolDetailPage();
+                    }}
+                    className="frcc text-xs rounded-md px-1.5 cursor-pointer py-0.5  mr-1.5"
+                  >
+                    <DCLIconNew />
+                  </span>
                 </span>
                 <span className="frcc text-xs text-gray-10 mt-0.5">
                   Fee Tiers {+fee / 10000}%
                 </span>
               </div>
-              <span
-                onClick={() => {
-                  goPoolDetailPage();
-                }}
-                className="frcc text-xs rounded-md px-1.5 cursor-pointer py-0.5  mr-1.5"
-              >
-                <DCLIconNew />
-              </span>
             </div>
 
             {/* Price Range */}
@@ -1520,7 +1520,7 @@ function UserLiquidityLineStyleGroupPage() {
                       !canClaim
                         ? "text-dark-200 border-gray-190  cursor-not-allowed opacity-40"
                         : "text-green-10 border-green-10  cursor-pointer hover:opacity-90"
-                    } w-21 h-7 frcc text-sm font-bold border  rounded mr-1`}
+                    } w-1/3 h-7 frcc text-sm font-bold border  rounded`}
                     onClick={claimRewards}
                   >
                     <ButtonTextWrapper
@@ -1530,13 +1530,13 @@ function UserLiquidityLineStyleGroupPage() {
                   </div>
                   <div
                     onClick={() => toDclLiq(poolDetail.pool_id)}
-                    className="w-21 h-7 frcc text-sm font-bold text-green-10 border border-green-10 rounded mr-1 cursor-pointer hover:opacity-90"
+                    className="w-1/3 h-7 frcc text-sm font-bold text-green-10 border border-green-10 rounded mx-1 cursor-pointer hover:opacity-90"
                   >
                     Add
                   </div>
 
                   <div
-                    className={`relative flex items-center flex-grow ${
+                    className={`relative flex items-center flex-grow w-1/3 ${
                       joined_seeds_done ? "" : "hidden"
                     }`}
                     onMouseEnter={() => {
@@ -1560,7 +1560,7 @@ function UserLiquidityLineStyleGroupPage() {
                         !!joined_seeds
                           ? "text-dark-200 border-gray-190  cursor-not-allowed opacity-40"
                           : "text-dark-200 cursor-pointer border-dark-190"
-                      } w-21 h-7 frcc text-sm font-bold border  rounded hover:text-white`}
+                      } w-full h-7 frcc text-sm font-bold border  rounded hover:text-white`}
                     >
                       Remove
                     </div>
@@ -1850,7 +1850,7 @@ function UserLiquidityLineStyleGroupPage() {
                   !canClaim
                     ? "text-dark-200 border-gray-190  cursor-not-allowed opacity-40"
                     : "text-green-10 border-green-10  cursor-pointer hover:opacity-90"
-                } w-25 h-8 frcc text-sm font-bold border  rounded mr-1`}
+                } w-1/3 h-8 frcc text-sm font-bold border  rounded`}
                 onClick={claimRewards}
               >
                 <ButtonTextWrapper
@@ -1860,13 +1860,13 @@ function UserLiquidityLineStyleGroupPage() {
               </div>
               <div
                 onClick={() => toDclLiq(poolDetail.pool_id)}
-                className="w-25 h-8 frcc text-sm font-bold text-green-10 border border-green-10 rounded mr-1 cursor-pointer hover:opacity-90"
+                className="w-1/3 h-8 frcc text-sm font-bold text-green-10 border border-green-10 rounded mx-1 cursor-pointer hover:opacity-90"
               >
                 Add
               </div>
 
               <div
-                className={`relative flex items-center w-25 ${
+                className={`relative flex items-center w-1/3 ${
                   joined_seeds_done ? "" : "hidden"
                 }`}
                 onMouseEnter={() => {
@@ -1890,7 +1890,7 @@ function UserLiquidityLineStyleGroupPage() {
                     !!joined_seeds
                       ? "text-dark-200 border-gray-190  cursor-not-allowed opacity-40"
                       : "text-dark-200 cursor-pointer border-dark-190"
-                  } w-25 h-8 frcc text-sm font-bold border  rounded hover:text-white`}
+                  } w-full h-8 frcc text-sm font-bold border  rounded hover:text-white`}
                 >
                   Remove
                 </div>

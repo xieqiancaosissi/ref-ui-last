@@ -196,7 +196,7 @@ export default function Classic({
         )}
 
         {/* pagination */}
-        <div className="lg:w-276 xsm:w-full my-4">
+        <div className="lg:w-276 xsm:w-full mt-4 mb-12">
           <Pagination
             totalItems={totalItems}
             itemsPerPage={20}

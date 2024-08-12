@@ -436,6 +436,7 @@ export default function Farms() {
                     onClick={() => {
                       setShowClassHeader((prev) => !prev);
                     }}
+                    className="frcc h-full"
                   >
                     <MobileArrowUp></MobileArrowUp>
                   </div>
@@ -506,6 +507,7 @@ export default function Farms() {
                     onClick={() => {
                       setShowClassHeader((prev) => !prev);
                     }}
+                    className="frcc h-full"
                   >
                     <MobileArrowUp></MobileArrowUp>
                   </div>
@@ -576,6 +578,7 @@ export default function Farms() {
                     onClick={() => {
                       setShowClassHeader((prev) => !prev);
                     }}
+                    className="frcc h-full"
                   >
                     <MobileArrowUp></MobileArrowUp>
                   </div>
@@ -646,6 +649,7 @@ export default function Farms() {
                     onClick={() => {
                       setShowClassHeader((prev) => !prev);
                     }}
+                    className="frcc h-full"
                   >
                     <MobileArrowUp></MobileArrowUp>
                   </div>

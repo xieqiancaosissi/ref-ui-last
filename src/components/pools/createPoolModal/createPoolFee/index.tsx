@@ -23,7 +23,12 @@ export default function Fee({ getherFee }: { getherFee: (e: any) => void }) {
         {/*  */}
         <div className="lg:frcc text-gray-60 font-normal text-sm xsm:flex xsm:items-center xsm:mb-4">
           Total fee{" "}
-          <Tips msg={`LP Tokens: 80% | Share: 20%`} extraStyles={"w-44"} />
+          <Tips
+            msg1={`LP fee 80%`}
+            msg2={`Protocol fee and Refferral fee 20%`}
+            extraStyles={"w-54"}
+            origin="createPool"
+          />
         </div>
 
         {/*  */}

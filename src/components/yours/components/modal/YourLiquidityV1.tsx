@@ -1236,7 +1236,7 @@ function YourClassicLiquidityLinePage(props: any) {
 
                 {ONLY_ZEROS.test(sharesNew) ||
                 (supportFarmV1 === 0 && supportFarmV2 === 0) ? null : (
-                  <div className="flex items-center">
+                  <div className="flex items-center justify-end">
                     <PoolAvailableAmount
                       shares={sharesNew}
                       pool={pool}
@@ -1250,8 +1250,8 @@ function YourClassicLiquidityLinePage(props: any) {
           </div>
 
           {/* btn */}
-          <div className="flex items-center justify-between mt-4 px-4">
-            <div className={`${haveShare ? "w-38" : "w-full"} `}>
+          <div className="flex items-center justify-between mt-4 p-4">
+            <div className={`w-1/2 mx-1`}>
               <div
                 className={`border-green-10 border font-bold rounded frcc h-8 text-sm cursor-pointer hover:opacity-80 text-green-10 `}
                 onClick={(e) => {
@@ -1263,8 +1263,8 @@ function YourClassicLiquidityLinePage(props: any) {
                 Add
               </div>
             </div>
-            {haveShare && (
-              <div className="w-38">
+            {
+              <div className="w-1/2 mx-1">
                 <div
                   onClick={(e) => {
                     e.stopPropagation();
@@ -1273,7 +1273,7 @@ function YourClassicLiquidityLinePage(props: any) {
                   }}
                   // disabled={Number(userTotalShareToString) == 0}
                   className={`w-full ${
-                    Number(userTotalShareToString) == 0
+                    Number(userTotalShareToString) == 0 || !haveShare
                       ? "text-dark-200 border-gray-190  cursor-not-allowed opacity-40"
                       : "text-dark-200 cursor-pointer border-dark-190"
                   }  h-8 frcc text-sm font-bold border  rounded hover:text-white`}
@@ -1281,7 +1281,7 @@ function YourClassicLiquidityLinePage(props: any) {
                   Remove
                 </div>
               </div>
-            )}
+            }
           </div>
         </div>
       )}

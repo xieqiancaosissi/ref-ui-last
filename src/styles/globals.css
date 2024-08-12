@@ -159,7 +159,7 @@ input[type="range"].lock-bar::-webkit-slider-thumb {
 .multi-slider .track-0 {
   height: 8px;
   top: 6px;
-  background:  linear-gradient(to right, #9dfd01, #5f9900);
+  background: linear-gradient(to right, #9dfd01, #5f9900);
   border-radius: 2px;
   /* display: block;
   -webkit-appearance: none;

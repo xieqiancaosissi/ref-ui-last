@@ -32,9 +32,9 @@
   @apply lg:w-109 shrink-0 ml-5;
 }
 
-  .poolContainer:hover .farmContainer {
-    @apply lg:block xsm:hidden;
-  }
+.poolContainer:hover .farmContainer {
+  @apply lg:block xsm:hidden;
+}
 
 .poolContainer:hover {
   @apply pb-3;
@@ -117,7 +117,6 @@
 .darkBtn {
   @apply border border-gray-90 text-white;
 }
-
 
 .topStyle {
   @apply frcc text-xs italic w-9 h-5 rounded-xl font-bold;

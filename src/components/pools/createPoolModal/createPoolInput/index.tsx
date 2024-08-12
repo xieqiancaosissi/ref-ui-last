@@ -59,8 +59,7 @@ export default function PoolInput({
               )}
             </div>
           </div>
-          <ArrowDownIcon className={"text-gray-50 xsm:hidden"} />
-          <MobileArrowUp className={"lg:hidden"} />
+          <ArrowDownIcon className={"text-gray-50"} />
         </div>
       </div>
       <SelectTokenModal

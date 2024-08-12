@@ -560,7 +560,8 @@ export default function FarmsPage(props: any) {
       if (farmTab == "yours") {
         condition3 = true;
         condition4 = true;
-      } else if (farm_type_selectedId == "all") {
+      }
+      if (farm_type_selectedId == "all") {
         condition3 = true;
       } else if (farm_type_selectedId == "dcl") {
         if (is_dcl_farm) {
@@ -1087,7 +1088,7 @@ export default function FarmsPage(props: any) {
   function switchFarmTab(tab: string) {
     setFarmTab(tab);
     if (tab == "yours") {
-      set_farm_type_selectedId("all");
+      // set_farm_type_selectedId("all");
       set_filter_type_selectedId("all");
     }
   }
@@ -1108,7 +1109,6 @@ export default function FarmsPage(props: any) {
                 list={farmTypeList}
                 containerClass="lg:mr-2.5 xsm:mr-1"
                 type="farm_type"
-                disabled={farmTab == "yours"}
                 selectedId={farm_type_selectedId}
                 setSelectedId={set_farm_type_selectedId}
               ></SelectBox>
@@ -1376,7 +1376,6 @@ export default function FarmsPage(props: any) {
               list={farmTypeList}
               containerClass="lg:mr-2.5 xsm:mr-1"
               type="farm_type"
-              disabled={farmTab == "yours"}
               selectedId={farm_type_selectedId}
               setSelectedId={set_farm_type_selectedId}
             ></SelectBox>
@@ -1507,7 +1506,7 @@ export default function FarmsPage(props: any) {
             <NoContent />
           ) : (
             <>
-              <div className="grid grid-cols-1 gap-x-10 gap-y-6 m-auto ">
+              <div className="grid grid-cols-1 gap-x-10 gap-y-6 m-auto pb-6">
                 {farm_display_List.map((seed: Seed, index: number) => {
                   return (
                     <div

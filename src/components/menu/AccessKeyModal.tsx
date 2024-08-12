@@ -186,9 +186,15 @@ function AuthorizedApps({
 }) {
   const [clear_loading, set_clear_loading] = useState<boolean>(false);
   const [selectedKeys, setSelectedKeys] = useState<Set<string>>(new Set([]));
+  const [loading, setLoading] = useState<boolean>(true);
   const senderAccessKey = localStorage.getItem(REF_FI_SENDER_WALLET_ACCESS_KEY);
   const disbaledWallet = ["sender", "neth", "keypom", "okx-wallet"];
   const selectedWalletId = window.selector?.store?.getState()?.selectedWalletId;
+  useEffect(() => {
+    if (allKeys.length > 0) {
+      setLoading(false);
+    }
+  }, [allKeys]);
   const functionCallKeys = useMemo(() => {
     return allKeys.filter((key) => key.access_key.permission !== "FullAccess");
   }, [allKeys]);
@@ -264,59 +270,69 @@ function AuthorizedApps({
         className="overflow-auto hide-scrollbar px-6 border-b border-gray1s xsm:px-4"
         style={{ maxHeight: "290px" }}
       >
-        {functionCallKeys.map((item) => {
-          const isUsed = currentUsedKeys.includes(item.public_key);
-          return (
-            <div
-              key={item.public_key}
-              className="bg-gray-60 bg-opacity-10 rounded-xl p-4 mb-3"
-            >
-              <div className="flex items-center justify-between gap-4">
-                <div className="flex items-center gap-1">
-                  <p className="text-base paceGrotesk-Bold text-white break-all">
-                    {
-                      (item?.access_key?.permission as Ipermission)
-                        ?.FunctionCall?.receiver_id
-                    }
-                  </p>
-                  {isUsed ? (
-                    <span className="flex items-center justify-center bg-primaryGreen text-xs paceGrotesk-Bold italic whitespace-nowrap rounded w-12 text-black">
-                      In use
-                    </span>
-                  ) : null}
-                </div>
-                {!isUsed && (
-                  <Checkbox
-                    appearance="b"
-                    checked={selectedKeys.has(item.public_key)}
-                    hidden={!!isDisabledAction}
-                    onClick={() => {
-                      onCheck(item.public_key);
-                    }}
-                  />
-                )}
-              </div>
-              <div className="flex items-center  bg-dark-60 bg-opacity-70 rounded-md text-xs text-gray-60 p-2.5 my-3 break-all">
-                {/* TX  */}
-                <span className="ml-1">{item.public_key}</span>
-              </div>
-              <div className="flex items-center text-sm gap-1.5">
-                <span className="text-gray-60">Fee Allowance</span>
-                <span className="text-white">
-                  {getAllowance(
-                    (item?.access_key?.permission as Ipermission)?.FunctionCall
-                      ?.allowance
-                  )}{" "}
-                </span>
-              </div>
-            </div>
-          );
-        })}
-        {isEmpty ? (
+        {loading ? (
+          <SkeletonTheme
+            baseColor="rgba(33, 43, 53, 0.3)"
+            highlightColor="#2A3643"
+          >
+            <Skeleton width="100%" height={120} count={2} className="mt-4" />
+          </SkeletonTheme>
+        ) : isEmpty ? (
           <div className="flex justify-center my-20 text-xs text-gray-60">
             No Data
           </div>
-        ) : null}
+        ) : (
+          <>
+            {functionCallKeys.map((item) => {
+              const isUsed = currentUsedKeys.includes(item.public_key);
+              return (
+                <div
+                  key={item.public_key}
+                  className="bg-gray-60 bg-opacity-10 rounded-xl p-4 mb-3"
+                >
+                  <div className="flex items-center justify-between gap-4">
+                    <div className="flex items-center gap-1">
+                      <p className="text-base paceGrotesk-Bold text-white break-all">
+                        {
+                          (item?.access_key?.permission as Ipermission)
+                            ?.FunctionCall?.receiver_id
+                        }
+                      </p>
+                      {isUsed ? (
+                        <span className="flex items-center justify-center bg-primaryGreen text-xs paceGrotesk-Bold italic whitespace-nowrap rounded w-12 text-black">
+                          In use
+                        </span>
+                      ) : null}
+                    </div>
+                    {!isUsed && (
+                      <Checkbox
+                        appearance="b"
+                        checked={selectedKeys.has(item.public_key)}
+                        hidden={!!isDisabledAction}
+                        onClick={() => {
+                          onCheck(item.public_key);
+                        }}
+                      />
+                    )}
+                  </div>
+                  <div className="flex items-center  bg-dark-60 bg-opacity-70 rounded-md text-xs text-gray-60 p-2.5 my-3 break-all">
+                    {/* TX  */}
+                    <span className="ml-1">{item.public_key}</span>
+                  </div>
+                  <div className="flex items-center text-sm gap-1.5">
+                    <span className="text-gray-60">Fee Allowance</span>
+                    <span className="text-white">
+                      {getAllowance(
+                        (item?.access_key?.permission as Ipermission)
+                          ?.FunctionCall?.allowance
+                      )}{" "}
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
+          </>
+        )}
       </div>
       {isDisabledAction ? (
         <div className="border-opacity-30 px-4 py-2.5 text-yellow-10 text-sm bg-yellow-10 bg-opacity-10 mx-6 rounded my-4">

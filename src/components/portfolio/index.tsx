@@ -232,8 +232,8 @@ export default function Overview() {
           </div>
         </div>
       </div>
-      <div className="lg:hidden">
-        <div className="mt-6 bg-gray-20 rounded-[3rem] frcc py-3 mb-10">
+      <div className="lg:hidden pb-6">
+        <div className="mt-6 bg-gray-20 rounded-[3rem] frcc py-3 mb-8">
           <TotalAssetsIcon className="w-8 w-9 mr-3" />
           <div className="text-xl text-primaryGreen mb-0.5">
             <p className="paceGrotesk-Bold">
@@ -249,7 +249,7 @@ export default function Overview() {
             <p className="text-gray-60 text-sm">Total Assets</p>
           </div>
         </div>
-        <div className="px-3.5 frcb mb-9">
+        <div className="px-3.5 frcb mb-6">
           <div className="frcc text-base">
             <p className="text-gray-250 mr-4">Wallet assets</p>
             <p className="text-white">

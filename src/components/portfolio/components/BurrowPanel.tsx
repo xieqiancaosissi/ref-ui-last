@@ -235,7 +235,14 @@ export default function BurrowPanel() {
   const isLoading = !burrow_data_done;
   return (
     <>
-      <div className="bg-gray-20 bg-opacity-40 rounded-lg p-4 mb-4 hover:bg-gray-20 cursor-pointer text-white">
+      <div
+        className="bg-gray-20 bg-opacity-40 rounded-lg p-4 mb-4 hover:bg-gray-20 cursor-pointer text-white"
+        onClick={() => {
+          if (!is_mobile) {
+            handleBurrowClick();
+          }
+        }}
+      >
         <div className="frcb mb-6">
           <div className="flex items-center">
             <div className="bg-gray-220 bg-opacity-60 rounded-md w-6 h-6 mr-2 frcc">
@@ -243,14 +250,7 @@ export default function BurrowPanel() {
             </div>
             <p className="text-gray-10 text-sm">Burrow</p>
           </div>
-          <PortfolioArrow
-            className="cursor-pointer"
-            onClick={() => {
-              if (!is_mobile) {
-                handleBurrowClick();
-              }
-            }}
-          />
+          <PortfolioArrow className="cursor-pointer" />
         </div>
         <div className="flex">
           <div className="w-2/6">

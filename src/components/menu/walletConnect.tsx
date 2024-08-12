@@ -177,10 +177,10 @@ export default function WalletConnect() {
               <div
                 className={`fixed top-[46px] bottom-[35px] right-0 bg-dark-10 z-50 ${
                   isOpen ? "block" : "hidden"
-                } ${is_mobile ? "w-full h-[45vh]" : "w-[400px] h-auto"}`}
+                } ${is_mobile ? "w-full h-[300px]" : "w-[400px] h-auto"}`}
                 onClick={(e) => e.stopPropagation()} // Prevent click inside from closing
               >
-                <div className="bg-dark-140 border border-gray-200 p-3.5 w-full h-full xsm:bg-dark-10">
+                <div className="bg-dark-140 lg:border lg:border-gray-200 p-3.5 w-full h-full xsm:bg-dark-10">
                   <div className="frcb mb-3.5">
                     <div className="frcc">
                       {currentWallet?.metadata?.iconUrl ? (
@@ -247,7 +247,7 @@ export default function WalletConnect() {
               </div>
               {(isSignedIn && hover) || (showGuider && !isInMemePage) ? (
                 <div
-                  className={`absolute top-14 pt-2 right-0 w-64`}
+                  className={`absolute top-14 pt-2 right-0 w-64 xsm:hidden`}
                   style={{ zIndex: showGuider ? "1000" : "40" }}
                 >
                   <div
@@ -344,7 +344,7 @@ export default function WalletConnect() {
         <AccessKeyModal isOpen={keyModalShow} onRequestClose={closeKeyModal} />
       ) : null}
       {showGuider && !isMobile && !isInMemePage ? (
-        <div>
+        <div className="xsm:hidden">
           <Guider clearGuilder={clearGuilder} />
           <LinkLine
             className="absolute"

@@ -214,7 +214,7 @@ export default function CalcModelBooster(
       }}
     >
       <div
-        className="text-white bg-dark-10 rlg:rounded-lg xs:rounded-t-2xl xs:border xs:border-modalGrayBg p-5"
+        className="text-white bg-dark-10 rounded-lg xs:rounded-t-2xl xs:border xs:border-modalGrayBg p-5"
         style={{
           width: cardWidth,
           maxHeight: cardHeight,

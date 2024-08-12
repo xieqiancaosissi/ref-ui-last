@@ -277,9 +277,13 @@ export default function FarmsDetailStake(props: {
         >
           Stake
         </button>
-        {isEnded && Number(freeAmount) > 0 && (
-          <div className="h-4 bg-gray-50 xsm:hidden" style={{ width: "2px" }} />
-        )}
+        {isEnded ||
+          (Number(freeAmount) > 0 && (
+            <div
+              className="h-4 bg-gray-50 xsm:hidden"
+              style={{ width: "2px" }}
+            />
+          ))}
         <button
           className={`text-lg pl-5 xsm:flex-1 ${
             activeTab === "unstake" ? styles.gradient_text : "text-gray-500"
@@ -293,15 +297,26 @@ export default function FarmsDetailStake(props: {
         <div className="xsm:px-4">
           <div className="lg:hidden mb-2.5 frcb">
             <div>
-              {isSignedIn ? displayLpBalance() : "0"}
+              <span
+                className="underline cursor-pointer hover:text-primaryGreen"
+                onClick={() => {
+                  changeAmount(
+                    stakeType == "freeToLock" ? freeAmount : lpBalance
+                  );
+                }}
+              >
+                {isSignedIn ? displayLpBalance() : "0"}
+              </span>
               <span className="text-gray-10 ml-1">available to stake</span>
             </div>
             <div>
               <span
                 onClick={() => {
-                  lpBalance;
+                  changeAmount(
+                    stakeType == "freeToLock" ? freeAmount : lpBalance
+                  );
                 }}
-                className={`text-sm text-gray-50 underline cursor-pointer hover:text-primaryGreen `}
+                className={`text-sm text-gray-50 underline cursor-pointer hover:text-primaryGreen xsm:hidden `}
               >
                 Max
               </span>
@@ -330,7 +345,7 @@ export default function FarmsDetailStake(props: {
             </div>
           </div>
           {amountAvailableCheck ? null : (
-            <div className="flex justify-center mt-2.5">
+            <div className="flex justify-center mt-2.5 xsm:mb-2.5">
               <div className="w-full bg-yellow-10 bg-opacity-10 rounded py-2 px-2.5 text-yellow-10 text-sm flex items-center">
                 {isSignedIn ? toReadableNumber(DECIMALS, min_deposit) : "0"}
                 <p className="ml-1 mr-2">available to stake</p>
@@ -366,7 +381,7 @@ export default function FarmsDetailStake(props: {
               </div>
             </div>
             {showCalc ? (
-              <div className={"w-full"}>
+              <div className={"w-full"} onClick={(e) => e.stopPropagation()}>
                 <CalcEle
                   seed={detailData}
                   tokenPriceList={tokenPriceList}
@@ -455,7 +470,11 @@ export default function FarmsDetailStake(props: {
 
       {activeTab === "unstake" && (
         <div className="xsm:px-4">
-          <div className="flex justify-between items-center h-16 px-3 bg-dark-60 rounded-lg">
+          <div className="mt-2.5 text-sm mb-2.5 frcb lg:hidden">
+            <p className="text-gray-10 ml-1">Lp Tokens</p>
+            <p> {toPrecision(lpBalances, 6)}</p>
+          </div>
+          <div className="flex justify-between items-center h-16 px-3 bg-dark-60 rounded-lg xsm:mb-6">
             <input
               type="number"
               inputMode="decimal"
@@ -475,7 +494,7 @@ export default function FarmsDetailStake(props: {
               </span>
             </div>
           </div>
-          <div className="mt-2.5 text-sm mb-6 frcb">
+          <div className="mt-2.5 text-sm mb-6 frcb xsm:hidden">
             <p className="text-gray-10 ml-1">Lp Tokens</p>
             <p> {toPrecision(lpBalances, 6)}</p>
           </div>
@@ -496,8 +515,8 @@ export default function FarmsDetailStake(props: {
               Text={() => <>Unstake</>}
             />
           </div>
-          <div className="mt-5 flex items-center mb-2">
-            <FarmDetailsWarn />
+          <div className="mt-5 flex items-center mb-2 xsm:items-start">
+            <FarmDetailsWarn className="xsm:mt-0.5" />
             <p className="ml-1.5 text-gray-10 text-sm">
               Staking or unstaking will automatically claim your rewards.
             </p>

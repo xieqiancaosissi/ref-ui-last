@@ -216,7 +216,7 @@ export default function Withdraw({
               );
             })}
             {Object.values(rewardList).length === 0 ? (
-              <div className="h-64 flex items-center justify-center">
+              <div className="h-60 flex items-center justify-center">
                 <div className="flex flex-col items-center">
                   <WithdrawNodate />
                   <p className="text-base text-white text-opacity-60 mt-5">

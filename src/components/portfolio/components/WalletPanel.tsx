@@ -29,6 +29,8 @@ import {
   MyNearWalltIcon,
   WalletWithdraw,
 } from "./icon";
+import { CopyIcon } from "@/components/menu/icons";
+import CopyToClipboard from "react-copy-to-clipboard";
 
 export default function WalletPanel() {
   const {
@@ -133,13 +135,13 @@ export default function WalletPanel() {
       const tab_list = [{ name: "NEAR", tag: "near" }];
       if (tokens_ref?.length > 0) {
         tab_list.push({
-          name: "REF(classic)",
+          name: "REF",
           tag: "ref",
         });
       }
-      if (tokens_dcl?.length > 0) {
-        tab_list.push({ name: "DCL", tag: "dcl" });
-      }
+      // if (tokens_dcl?.length > 0) {
+      //   tab_list.push({ name: "DCL", tag: "dcl" });
+      // }
       setTabList(JSON.parse(JSON.stringify(tab_list)));
     }
   }, [tokenPriceList, userTokens, is_tokens_loading]);
@@ -185,7 +187,7 @@ export default function WalletPanel() {
     if (activeTab == "near") {
       target = near_total_value;
     } else if (activeTab == "ref") {
-      target = ref_total_value;
+      target = ref_total_value + dcl_total_value;
     } else if (activeTab == "dcl") {
       target = dcl_total_value;
     } else if (activeTab == "aurora") {
@@ -212,7 +214,7 @@ export default function WalletPanel() {
               }`}
             >
               {item.tag == "near" && <MyNearWalltIcon className="mr-1" />}
-              {item.tag == "ref" ? "REF(classic)" : item.name}
+              {item.tag == "ref" ? "REF(Inner)" : item.name}
             </span>
           );
         })}
@@ -234,7 +236,12 @@ export default function WalletPanel() {
           }`}
         >
           <p className="text-xs text-gray-60"> Mapping Account</p>
-          <p className="text-xs text-white">{displayAuroraAddress}</p>
+          <p className="text-xs text-white frcc">
+            {displayAuroraAddress}
+            <CopyToClipboard text={auroraAddress}>
+              <CopyIcon className="text-primaryText hover:text-white cursor-pointer ml-1.5"></CopyIcon>
+            </CopyToClipboard>
+          </p>
         </div>
       </div>
       <div
@@ -288,8 +295,6 @@ export default function WalletPanel() {
                     />
                   );
                 })}
-              </div>
-              <div className={`${activeTab == "dcl" ? "" : "hidden"}`}>
                 {dcl_tokens.map((token: TokenMetadata) => {
                   return (
                     <WalletTokenList
@@ -302,6 +307,19 @@ export default function WalletPanel() {
                   );
                 })}
               </div>
+              {/* <div className={`${activeTab == "dcl" ? "" : "hidden"}`}>
+                {dcl_tokens.map((token: TokenMetadata) => {
+                  return (
+                    <WalletTokenList
+                      key={token.id + "dcl"}
+                      token={token}
+                      tokenBalance={token?.dcl ?? 0}
+                      showTokenPrice={showTokenPrice}
+                      showWithdraw={true}
+                    />
+                  );
+                })}
+              </div> */}
               <div className={`${activeTab == "aurora" ? "" : "hidden"}`}>
                 {aurora_tokens.map((token: TokenMetadata) => {
                   return (

@@ -162,7 +162,10 @@ export default function PoolComposition(props: any) {
                   <h4 className="text-base text-white font-medium flex items-center justify-between">
                     {item.meta.symbol == "wNEAR" ? "NEAR" : item.meta.symbol}
                     {(TokenLinks as any)[item.meta.symbol] ? (
-                      <HoverTooltip tooltipText={"AwesomeNear Verified Token"}>
+                      <HoverTooltip
+                        tooltipText={"AwesomeNear Verified Token"}
+                        position={"right"}
+                      >
                         <a
                           className=""
                           onClick={(e) => {

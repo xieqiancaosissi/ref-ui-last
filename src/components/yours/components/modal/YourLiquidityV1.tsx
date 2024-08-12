@@ -1034,7 +1034,7 @@ function YourClassicLiquidityLinePage(props: any) {
 
           {/* btn */}
           <div className="col-span-2 frcc">
-            <div className={`pr-2 ${haveShare ? "w-1/2" : "w-full"} `}>
+            <div className={`pr-2 w-1/2 `}>
               <div
                 className={`border-green-10 border font-bold rounded frcc w-23 h-8  mr-2.5 text-sm cursor-pointer hover:opacity-80 text-green-10 `}
                 onClick={(e) => {
@@ -1046,7 +1046,7 @@ function YourClassicLiquidityLinePage(props: any) {
                 Add
               </div>
             </div>
-            {haveShare && (
+            {
               <div className="pl-2 w-1/2">
                 <div
                   onClick={(e) => {
@@ -1056,7 +1056,7 @@ function YourClassicLiquidityLinePage(props: any) {
                   }}
                   // disabled={Number(userTotalShareToString) == 0}
                   className={`w-full ${
-                    Number(userTotalShareToString) == 0
+                    Number(userTotalShareToString) == 0 || !haveShare
                       ? "text-dark-200 border-gray-190  cursor-not-allowed opacity-40"
                       : "text-dark-200 cursor-pointer border-dark-190"
                   } w-23 h-8 frcc text-sm font-bold border  rounded hover:text-white`}
@@ -1064,7 +1064,7 @@ function YourClassicLiquidityLinePage(props: any) {
                   Remove
                 </div>
               </div>
-            )}
+            }
           </div>
         </div>
       )}

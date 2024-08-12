@@ -84,7 +84,7 @@ export function UnclaimedFeesBox(props: any) {
       <div className="p-4 lg:ml-7 bg-refPublicBoxDarkBg lg:w-80 xsm:w-full rounded-xl mt-3.5 ">
         <div className="flex  font-bold text-white text-base items-start justify-between">
           <span className="xsm:hidden">Unclaimed Fees</span>
-          <span className="text-green-10 xsm:text-base">
+          <span className="text-green-10 xsm:text-xl">
             {getTotalLiquditiesFee()}
           </span>
         </div>

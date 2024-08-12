@@ -379,10 +379,11 @@ export default function StableAdd(props: any) {
               )
             ) : (
               <div
-                className="poolBtnStyleDefaultBase h-11 lg:mt-2 xsm:mt-7 cursor-pointer hover:opacity-90"
-                onClick={() =>
-                  showWalletSelectorModal(appStore.setShowRiskModal)
-                }
+                className="flex items-center justify-center bg-greenGradient rounded mt-4 text-black font-bold text-base cursor-pointer"
+                style={{ height: "42px" }}
+                onClick={() => {
+                  showWalletSelectorModal(appStore.setShowRiskModal);
+                }}
               >
                 Connect Wallet
               </div>

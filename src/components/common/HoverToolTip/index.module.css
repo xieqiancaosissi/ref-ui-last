@@ -16,6 +16,19 @@
   background-color: #101922;
 }
 
+.hoverTooltipRight {
+  position: absolute;
+  z-index: 1000;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-84%);
+  padding: 5px 10px;
+  white-space: nowrap;
+  @apply absolute border  px-1 py-1 rounded-lg text-xs  text-gray-10;
+  border-color: #2d343d;
+  background-color: #101922;
+}
+
 .hoverTooltipOverlocking {
   position: absolute;
   z-index: 1000;

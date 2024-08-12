@@ -119,6 +119,14 @@ export default function PoolRow(props: any) {
                 New
               </div>
             )}
+
+            {item.top && (
+              <div
+                className={`bg-topLinearGradient text-black ${styles.topStyle} mx-1`}
+              >
+                Top
+              </div>
+            )}
           </div>
 
           {/* pools---first child for mobile*/}
@@ -171,6 +179,16 @@ export default function PoolRow(props: any) {
                     }  ${item.is_farm ? "-ml-1.5" : ""}`}
                   >
                     New
+                  </div>
+                )}
+
+                {item.top && (
+                  <div
+                    className={`bg-topLinearGradient text-black ${
+                      styles.topStyle
+                    } ${item.is_new || item.is_farm ? "-ml-1.5" : ""}`}
+                  >
+                    Top
                   </div>
                 )}
               </div>

@@ -87,7 +87,7 @@ export default function ShareContainer(props: any) {
         </div>
         {shadowBurrowShare?.stakeAmount && (
           <div
-            className={`cursor-pointer ${
+            className={`cursor-pointer xsm:mt-auto ${
               !(countV2 > endedFarmCountV2) ? "hidden" : ""
             }`}
             onClick={(e) => {

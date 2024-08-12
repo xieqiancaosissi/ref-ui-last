@@ -6,6 +6,7 @@ import { getAccountId } from "@/utils/wallet";
 import { YourLiquidityV2 } from "./YourLiquidityV2";
 import { YourLiquidityV1 } from "./YourLiquidityV1";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import NoContent from "@/components/common/NoContent";
 
 export default function Positions(props: any) {
   const {
@@ -55,6 +56,9 @@ export default function Positions(props: any) {
     v1LiquidityLoadingDone && v2LiquidityLoadingDone && total_quantity > 0;
 
   const [poolType, setPoolType] = useState("dcl");
+
+  if (!accountId) return <NoContent />;
+
   return (
     <div className="text-white xsm:pb-10">
       <div className="flex mt-4 lg:mb-12 xsm:mb-8 cursor-pointer select-none">

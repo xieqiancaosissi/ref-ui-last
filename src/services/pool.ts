@@ -137,6 +137,7 @@ export const addSimpleLiquidityPool = async (
 
   return executeMultipleTransactions(
     transactions,
+    undefined,
     `${window.location.origin}/pools`
   );
 };

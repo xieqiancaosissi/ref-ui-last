@@ -41,7 +41,7 @@ import {
   get_token_amount_in_user_liquidities,
   get_total_value_by_liquidity_amount_dcl,
   get_valid_range,
-  openUrl,
+  openUrlLocal,
   sort_tokens_by_base,
   useRemoveLiquidityUrlHandle,
   whether_liquidity_can_farm_in_seed,
@@ -1433,7 +1433,7 @@ function UserLiquidityLineStyleGroupPage({
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     if (go_farm_url_link) {
-                                      openUrl(go_farm_url_link);
+                                      openUrlLocal(go_farm_url_link);
                                     }
                                   }}
                                 >
@@ -1453,7 +1453,7 @@ function UserLiquidityLineStyleGroupPage({
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     if (go_farm_url_link) {
-                                      openUrl(go_farm_url_link);
+                                      openUrlLocal(go_farm_url_link);
                                     }
                                   }}
                                 >
@@ -1478,7 +1478,7 @@ function UserLiquidityLineStyleGroupPage({
                       className="cursor-pointer underline"
                       onClick={(e) => {
                         e.stopPropagation();
-                        openUrl(tip_seed.go_farm_url_link);
+                        openUrlLocal(tip_seed.go_farm_url_link);
                       }}
                     >
                       farm

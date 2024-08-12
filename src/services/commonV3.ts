@@ -137,6 +137,10 @@ export function openUrl(url: string) {
   }
 }
 
+export function openUrlLocal(url: string) {
+  window.location.href = url;
+}
+
 export function getXAmount_per_point_by_Lx(L: string, point: number) {
   const xAmount = new BigNumber(L)
     .dividedBy(Math.pow(Math.sqrt(CONSTANT_D), point))

@@ -42,7 +42,7 @@ import {
   toReadableNumber,
   toRoundedReadableNumber,
 } from "@/utils/numbers";
-import { openUrl } from "@/services/commonV3";
+import { openUrlLocal } from "@/services/commonV3";
 import { LinkIcon } from "@/components/farm/icon";
 import { useHistory } from "react-router-dom";
 import { useFarmStake, useYourliquidity } from "@/hooks/useStableShares";
@@ -553,7 +553,7 @@ function YourClassicLiquidityLinePage() {
                   <span
                     className="ml-1.5"
                     onClick={() => {
-                      openUrl(`/pools/${pool.id}`);
+                      openUrlLocal(`/pools/${pool.id}`);
                     }}
                   >
                     <OrdersArrow></OrdersArrow>
@@ -590,7 +590,7 @@ function YourClassicLiquidityLinePage() {
                   <span
                     className="flex items-center"
                     onClick={() => {
-                      openUrl(`/farms/${pool.id}-${seed_status}`);
+                      openUrlLocal(`/farms/${pool.id}-${seed_status}`);
                     }}
                   >
                     <label className="underline cursor-pointer mx-1">
@@ -614,7 +614,7 @@ function YourClassicLiquidityLinePage() {
                   <span
                     className="flex items-center"
                     onClick={() => {
-                      openUrl(link);
+                      openUrlLocal(link);
                     }}
                   >
                     <label className="underline cursor-pointer mx-1">
@@ -632,7 +632,7 @@ function YourClassicLiquidityLinePage() {
                   <span
                     className="flex items-center"
                     onClick={() => {
-                      openUrl("/referendum");
+                      openUrlLocal("/referendum");
                     }}
                   >
                     <label className="underline cursor-pointer mx-1">
@@ -695,7 +695,7 @@ function YourClassicLiquidityLinePage() {
                 <span
                   className="flex items-center"
                   onClick={() => {
-                    openUrl(`/farms/${pool.id}-${seed_status}`);
+                    openUrlLocal(`/farms/${pool.id}-${seed_status}`);
                   }}
                 >
                   <label className="underline cursor-pointer mx-1">farm</label>{" "}
@@ -711,7 +711,7 @@ function YourClassicLiquidityLinePage() {
                 <span
                   className="flex items-center"
                   onClick={() => {
-                    openUrl("/referendum");
+                    openUrlLocal("/referendum");
                   }}
                 >
                   <label className="underline cursor-pointer mx-1">VOTE</label>{" "}

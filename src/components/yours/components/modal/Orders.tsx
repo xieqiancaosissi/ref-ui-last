@@ -30,7 +30,7 @@ import {
 import Big from "big.js";
 import { toRealSymbol } from "@/services/farm";
 import { MyOrderInstantSwapArrowRight } from "@/components/limit/icons2";
-import { TOKEN_LIST_FOR_RATE, openUrl } from "@/services/commonV3";
+import { TOKEN_LIST_FOR_RATE, openUrlLocal } from "@/services/commonV3";
 import { LinkIcon, QuestionMark } from "@/components/farm/icon";
 import CustomTooltip from "@/components/customTooltip/customTooltip";
 import moment from "moment";
@@ -548,7 +548,7 @@ function OrderCard({
         <OrdersArrow
           onClick={() => {
             const txHash = activeOrderTxMap[order.order_id];
-            openUrl(`${explorerUrl}/txns/${txHash}`);
+            openUrlLocal(`${explorerUrl}/txns/${txHash}`);
           }}
           className={`ml-1.5 text-gray-10 cursor-pointer hover:text-white ${
             tx_record ? "" : "hidden"
@@ -932,7 +932,7 @@ function OrderCard({
                 <span
                   onClick={() => {
                     localStorage.setItem(SWAP_MODE_KEY, SWAP_MODE.LIMIT);
-                    openUrl("/");
+                    openUrlLocal("/");
                   }}
                   className="flex items-center justify-center text-xs text-gray-10 border border-gray-90 rounded-md px-1.5 cursor-pointer hover:text-white py-0.5"
                 >

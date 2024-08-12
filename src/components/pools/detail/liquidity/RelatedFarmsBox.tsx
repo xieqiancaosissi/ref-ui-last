@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import {
   getEffectiveFarmList,
   get_pool_name,
-  openUrl,
+  openUrlLocal,
 } from "@/services/commonV3";
 import { FarmBoost, Seed } from "../../../../services/farm";
 import {
@@ -99,7 +99,7 @@ export function RelatedFarmsBox(props: any) {
     const link_params = `${get_pool_name(
       pool_id
     )}[${left_point}-${right_point}]`;
-    openUrl(`/farms/${link_params}-r`);
+    openUrlLocal(`/farms/${link_params}-r`);
   }
   if (farm_loading) return null;
   if (!related_seed) return null;

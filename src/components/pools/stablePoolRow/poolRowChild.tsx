@@ -13,7 +13,7 @@ import { formatePoolData } from "../detail/stable/FormatterPool";
 import { useYourliquidity } from "@/hooks/useStableShares";
 import { useWatchList } from "@/hooks/useWatchlist";
 import { StartWatchList } from "@/components/pools/icon";
-import { openUrl } from "@/services/commonV3";
+import { openUrlLocal } from "@/services/commonV3";
 import getConfigV2 from "@/utils/configV2";
 import {
   ShareInFarm,
@@ -397,7 +397,7 @@ export default function PoolRow(props: any) {
                     onClick={(e) => {
                       e.stopPropagation();
                       e.preventDefault();
-                      openUrl(`https://app.burrow.finance/`);
+                      openUrlLocal(`https://app.burrow.finance/`);
                     }}
                   >
                     <ShareInBurrow

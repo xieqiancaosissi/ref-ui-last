@@ -28,7 +28,7 @@ import {
   get_all_seeds,
   get_liquidity_value,
   get_pool_name,
-  openUrl,
+  openUrlLocal,
 } from "@/services/commonV3";
 import { getAccountId } from "@/utils/wallet";
 import { useAccountStore } from "@/stores/account";

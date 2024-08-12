@@ -3,7 +3,7 @@ import { TokenMetadata } from "@/services/ft-contract";
 import { toRealSymbol } from "@/services/farm";
 import { Pool } from "@/interfaces/swap";
 import { FiExternalLink } from "react-icons/fi";
-import { openUrl } from "@/services/commonV3";
+import { openUrlLocal } from "@/services/commonV3";
 import { FaAngleUp } from "@react-icons/all-files/fa/FaAngleUp";
 import { FaAngleDown } from "@react-icons/all-files/fa/FaAngleDown";
 import { ArrowUpWithYellow, ArrowTopRightIcon } from "../components/add/Icon";
@@ -51,14 +51,14 @@ function DetailSymbol({
 
       <span
         className="cursor-pointer pl-2 py-0.5 text-gradientFrom xsm:hidden"
-        onClick={() => openUrl(`/pool/classic/${id}`)}
+        onClick={() => openUrlLocal(`/pool/classic/${id}`)}
       >
         <FiExternalLink />
       </span>
 
       <span
         className="cursor-pointer pl-2 py-0.5 text-gradientFrom lg:hidden"
-        onClick={() => openUrl(`/pool/classic/${id}`)}
+        onClick={() => openUrlLocal(`/pool/classic/${id}`)}
       >
         <ArrowTopRightIcon />
       </span>

@@ -7,7 +7,7 @@ import { usePersistSwapStore } from "@/stores/swap";
 import { getTokenUIId } from "@/services/swap/swapUtils";
 import { TokenLinks } from "./tokenLinksConfig";
 import { FiArrowUpRight } from "react-icons/fi";
-import { openUrl } from "@/services/commonV3";
+import { openUrlLocal } from "@/services/commonV3";
 import HoverTooltip from "@/components/common/HoverToolTip";
 
 export default function PoolComposition(props: any) {
@@ -106,7 +106,7 @@ export default function PoolComposition(props: any) {
                           className=""
                           onClick={(e) => {
                             e.stopPropagation();
-                            openUrl((TokenLinks as any)[item.meta.symbol]);
+                            openUrlLocal((TokenLinks as any)[item.meta.symbol]);
                           }}
                         >
                           <FiArrowUpRight className="text-gray-10 hover:text-green-10 cursor-pointer" />
@@ -170,7 +170,7 @@ export default function PoolComposition(props: any) {
                           className=""
                           onClick={(e) => {
                             e.stopPropagation();
-                            openUrl((TokenLinks as any)[item.meta.symbol]);
+                            openUrlLocal((TokenLinks as any)[item.meta.symbol]);
                           }}
                         >
                           <FiArrowUpRight className="text-white" />

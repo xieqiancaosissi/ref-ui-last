@@ -46,7 +46,11 @@ import {
   usePool,
   useTokenMetadata,
 } from "@/hooks/usePools";
-import { getEffectiveFarmList, openUrl } from "@/services/commonV3";
+import {
+  getEffectiveFarmList,
+  openUrl,
+  openUrlLocal,
+} from "@/services/commonV3";
 import { FarmBoost } from "@/services/farm";
 import {
   Fire,
@@ -474,7 +478,7 @@ export default function ClassicPoolDetail() {
                 background: "linear-gradient(to bottom, #9EFF01, #5F9901)",
               }}
               onClick={() => {
-                openUrl(`/farms/${poolId}-r`);
+                openUrlLocal(`/farms/${poolId}-r`);
               }}
             >
               Farm Now!
@@ -736,7 +740,7 @@ export default function ClassicPoolDetail() {
                     background: "linear-gradient(to bottom, #9EFF01, #5F9901)",
                   }}
                   onClick={() => {
-                    openUrl(`/farms/${poolId}-r`);
+                    openUrlLocal(`/farms/${poolId}-r`);
                   }}
                 >
                   Farm Now!

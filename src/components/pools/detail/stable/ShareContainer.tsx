@@ -12,7 +12,7 @@ import {
   RemoveLiquidityIconStable,
 } from "../liquidity/icon";
 import { useRouter } from "next/router";
-import { openUrl } from "@/services/commonV3";
+import { openUrlLocal } from "@/services/commonV3";
 import getConfigV2 from "@/utils/configV2";
 
 export default function ShareContainer(props: any) {
@@ -96,7 +96,7 @@ export default function ShareContainer(props: any) {
                 onClick={(e) => {
                   e.stopPropagation();
                   e.preventDefault();
-                  openUrl(`https://app.burrow.finance/`);
+                  openUrlLocal(`https://app.burrow.finance/`);
                 }}
               >
                 <ShareInBurrow

@@ -43,7 +43,7 @@ import {
   toReadableNumber,
   toRoundedReadableNumber,
 } from "@/utils/numbers";
-import { openUrl } from "@/services/commonV3";
+import { openUrlLocal } from "@/services/commonV3";
 import { LinkIcon } from "@/components/farm/icon";
 import { useHistory } from "react-router-dom";
 import { useFarmStake } from "@/hooks/useStableShares";
@@ -902,7 +902,7 @@ function YourClassicLiquidityLinePage(props: any) {
         <div
           className="w-full min-h-17 grid grid-cols-12 py-4 xsm:hidden"
           onClick={() => {
-            openUrl(
+            openUrlLocal(
               props?.type == "stable"
                 ? `/pool/stable/${pool.id}`
                 : `/pool/classic/${pool.id}`
@@ -988,7 +988,7 @@ function YourClassicLiquidityLinePage(props: any) {
                     onClick={(e) => {
                       e.stopPropagation();
                       e.preventDefault();
-                      openUrl(`https://app.burrow.finance/`);
+                      openUrlLocal(`https://app.burrow.finance/`);
                     }}
                   >
                     <ShareInBurrow
@@ -1022,7 +1022,7 @@ function YourClassicLiquidityLinePage(props: any) {
                   onClick={(e) => {
                     e.stopPropagation();
                     e.preventDefault();
-                    openUrl("/referendum");
+                    openUrlLocal("/referendum");
                   }}
                   className="text-gray-10 mb-1.5 flex whitespace-nowrap items-center"
                 >
@@ -1109,7 +1109,7 @@ function YourClassicLiquidityLinePage(props: any) {
         <div
           className="w-full min-h-17 lg:hidden"
           onClick={() => {
-            openUrl(
+            openUrlLocal(
               props?.type == "stable"
                 ? `/pool/stable/${pool.id}`
                 : `/pool/classic/${pool.id}`
@@ -1228,7 +1228,7 @@ function YourClassicLiquidityLinePage(props: any) {
                       onClick={(e) => {
                         e.stopPropagation();
                         e.preventDefault();
-                        openUrl(`https://app.burrow.finance/`);
+                        openUrlLocal(`https://app.burrow.finance/`);
                       }}
                     >
                       <ShareInBurrow
@@ -1264,7 +1264,7 @@ function YourClassicLiquidityLinePage(props: any) {
                     onClick={(e) => {
                       e.stopPropagation();
                       e.preventDefault();
-                      openUrl("/referendum");
+                      openUrlLocal("/referendum");
                     }}
                     className="text-gray-10 mb-1.5 flex whitespace-nowrap items-center"
                   >

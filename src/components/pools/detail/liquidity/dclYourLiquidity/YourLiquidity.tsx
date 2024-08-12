@@ -21,7 +21,7 @@ import {
   TOKEN_LIST_FOR_RATE,
   displayNumberToAppropriateDecimals,
   get_pool_name,
-  openUrl,
+  openUrlLocal,
   get_account_24_apr,
   get_total_earned_fee,
   get_token_amount_in_user_liquidities,
@@ -613,7 +613,7 @@ export default function YourLiquidityBox(props: {
                 className="underline cursor-pointer"
                 onClick={() => {
                   localStorage.setItem("BOOST_FARM_TAB", "yours");
-                  openUrl("/farms");
+                  openUrlLocal("/farms");
                 }}
               >
                 Your Farm

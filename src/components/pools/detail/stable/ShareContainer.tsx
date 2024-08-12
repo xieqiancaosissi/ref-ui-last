@@ -41,7 +41,7 @@ export default function ShareContainer(props: any) {
   return (
     <div className="lg:my-5 xsm:mt-5 xsm:mb-2 lg:w-270 xsm:w-full flex justify-between items-center">
       {/* left */}
-      <div className="text-gray-60 text-sm font-normal flex">
+      <div className="text-gray-60 text-sm font-normal flex flex-wrap">
         {/* get share */}
         <div className="frcc xsm:hidden">
           <HoverTip
@@ -84,27 +84,27 @@ export default function ShareContainer(props: any) {
               onlyEndedFarm={countV2 === endedFarmCountV2}
             />
           ) : null}
+          {shadowBurrowShare?.stakeAmount && (
+            <div
+              className={`cursor-pointer xsm:mt-auto ${
+                !(countV2 > endedFarmCountV2) ? "hidden" : ""
+              }`}
+              onClick={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                openUrl(`https://app.burrow.finance/`);
+              }}
+            >
+              <ShareInFarm
+                farmStake={shadowBurrowShare?.stakeAmount}
+                userTotalShare={userTotalShare}
+                inStr={"in Burrow"}
+                forStable
+                from={"stable"}
+              />
+            </div>
+          )}
         </div>
-        {shadowBurrowShare?.stakeAmount && (
-          <div
-            className={`cursor-pointer xsm:mt-auto ${
-              !(countV2 > endedFarmCountV2) ? "hidden" : ""
-            }`}
-            onClick={(e) => {
-              e.stopPropagation();
-              e.preventDefault();
-              openUrl(`https://app.burrow.finance/`);
-            }}
-          >
-            <ShareInFarm
-              farmStake={shadowBurrowShare?.stakeAmount}
-              userTotalShare={userTotalShare}
-              inStr={"in Burrow"}
-              forStable
-              from={"stable"}
-            />
-          </div>
-        )}
       </div>
       {/* right liquidity button */}
       <div className="flex items-center justify-end xsm:hidden">

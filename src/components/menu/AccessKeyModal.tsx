@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { useOrderbookDataStore } from "@/stores/orderbook/orderbookDataStore";
 import Modal from "react-modal";
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import { isMobile } from "../../utils/device";
 import { toReadableNumber, toPrecision } from "../../utils/numbers";
 import {

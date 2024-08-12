@@ -1,4 +1,3 @@
-import Big from "big.js";
 import { PortfolioArrow, PortfolioOrderlyIcon } from "./icon";
 import { useOrderbookDataStore } from "@/stores/orderbook/orderbookDataStore";
 import ConnectToOrderlyWidget from "@/components/orderbook/connectToOrderlyWidget";
@@ -30,9 +29,8 @@ export default function OrderlyPanel() {
           </div>
           <p className="text-gray-10 text-sm">Orderly</p>
         </div>
-        {/* <PortfolioArrow /> */}
+        <PortfolioArrow />
       </div>
-      {/* <LoadingIcon /> */}
       <ConnectToOrderlyWidget uiType="orderlyAssets" />
       {connectStatus == "has_connected" ? (
         <div className="flex">

@@ -155,16 +155,16 @@ export default function PoolComposition(props: any) {
                       </p>
                     </div>
                   </div>
-                  <div className="mt-3 w-2/3 flex justify-between items-center">
+                  <div className="mt-3 w-full flex justify-between items-center">
                     {/* amounts */}
-                    <div className="flex items-center text-sm text-white font-normal">
+                    <div className="flex items-center text-sm text-white font-normal w-1/2">
                       <span className="text-gray-50 mr-1"> Amount:</span>
                       {+tokenAmount > 0 && +tokenAmount < 0.01
                         ? "< 0.01"
                         : toInternationalCurrencySystem(tokenAmount, 2)}
                     </div>
                     {/* price */}
-                    <div className="flex items-center text-sm text-white font-normal">
+                    <div className="flex items-center text-sm text-white font-normal w-1/2">
                       <span className="text-gray-50 mr-1"> Value:</span>
                       {!!price
                         ? `$${toInternationalCurrencySystem(

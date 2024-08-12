@@ -68,6 +68,7 @@ import { format_apy } from "@/utils/uiNumber";
 import { useAppStore } from "@/stores/app";
 import { showWalletSelectorModal } from "@/utils/wallet";
 import YourLiqMobile from "@/components/pools/detail/liquidity/classic/YourLiqMobile";
+import { PoolRouterGuard } from "@/utils/poolTypeGuard";
 
 export default function ClassicPoolDetail() {
   const router = useRouter();
@@ -90,6 +91,8 @@ export default function ClassicPoolDetail() {
   useEffect(() => {
     if (poolId) {
       getPoolsDetailById({ pool_id: poolId as any }).then((res) => {
+        PoolRouterGuard(res, "SIMPLE_POOL") &&
+          openUrlLocal(`${PoolRouterGuard(res, "SIMPLE_POOL")}/${poolId}`);
         setPoolDetail(res);
       });
 

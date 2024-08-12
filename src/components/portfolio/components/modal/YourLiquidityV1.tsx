@@ -549,7 +549,7 @@ function YourClassicLiquidityLinePage() {
           <span className="text-sm text-white paceGrotesk-Bold mx-2.5">
             {Symbols}
           </span>
-          <span className="frcc text-xs text-gray-10 px-1 rounded-md border border-gray-90 mr-1.5">
+          <span className="frcc text-xs text-gray-10 px-1 rounded-md border border-gray-90 mr-1.5 cursor-pointer">
             Classic
             <span
               className="ml-1.5"

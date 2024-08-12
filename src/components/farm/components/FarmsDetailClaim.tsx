@@ -262,12 +262,38 @@ export default function UserStakeBlock(props: {
         // setError(error);
       });
   }
+  function getPowerTip() {
+    if (REF_VE_CONTRACT_ID && !boostConfig) return "";
+    const { affected_seeds = {} } = boostConfig || {};
+    const { seed_id } = detailData;
+    const base = affected_seeds[seed_id];
+    const tip = base
+      ? "Your Power = Your staked LP Tokens * booster (by staking LOVE)"
+      : "Your Power = Your staked LP Tokens";
+    const result: string = `<div class="text-gray-110 text-xs w-52 text-left">${tip}</div>`;
+    return result;
+  }
+  function valueOfRewardsTip() {
+    const tip = "Indicative value based on prices and not actual execution";
+    const result: string = `<div class="text-gray-110 text-xs w-52 text-left">${tip}</div>`;
+    return result;
+  }
   return (
     <>
       <div className="bg-dark-10 rounded-md p-5 mb-2.5 xsm:bg-dark-210">
         <div className="mb-5">
           <p className="flex items-center text-gray-50 text-sm mb-1.5">
-            Your Power <QuestionMark className="ml-1.5"></QuestionMark>
+            Your Power{" "}
+            <div
+              className="text-white text-right ml-1"
+              data-class="reactTip"
+              data-tooltip-id="powerTipId"
+              data-place="top"
+              data-tooltip-html={getPowerTip()}
+            >
+              <QuestionMark className="ml-1.5"></QuestionMark>
+              <CustomTooltip id="powerTipId" />
+            </div>
           </p>
           <p className="text-2xl xsm:text-primaryGreen">{showLpPower()}</p>
         </div>
@@ -303,7 +329,17 @@ export default function UserStakeBlock(props: {
         style={{ height: "108px" }}
       >
         <p className="flex items-center text-gray-50 text-sm mb-1.5">
-          Unclaimed rewards <QuestionMark className="ml-1.5"></QuestionMark>
+          Unclaimed rewards{" "}
+          <div
+            className="text-white text-right ml-1"
+            data-class="reactTip"
+            data-tooltip-id={"unclaimedRewardQIdx"}
+            data-place="top"
+            data-tooltip-html={valueOfRewardsTip()}
+          >
+            <QuestionMark className="ml-1.5"></QuestionMark>
+            <CustomTooltip id={"unclaimedRewardQIdx"} />
+          </div>
         </p>
         {isSignedIn ? (
           <div className="frcb">

@@ -34,6 +34,7 @@ import { ModalClose, HandIcon, LinkIcon } from "../icon";
 import { useAccountStore } from "../../../stores/account";
 import { CalcEle } from "./CalcEle";
 import { useRouter } from "next/router";
+import { isStablePool } from "@/services/swap/swapUtils";
 
 const config = getConfig();
 const { STABLE_POOL_IDS, FARM_LOCK_SWITCH, REF_VE_CONTRACT_ID } = config;
@@ -183,7 +184,10 @@ export default function CalcModelBooster(
   }
   function goPool() {
     const poolId = seed?.pool?.id;
-    if (poolId) {
+    const isStable = poolId !== undefined ? isStablePool(poolId) : false;
+    if (isStable) {
+      router.push(`/pool/stable/${poolId}`);
+    } else {
       router.push(`/pool/classic/${poolId}`);
     }
   }

@@ -65,7 +65,7 @@ export default function LPTip({ seed_id }: { seed_id: string }) {
       }}
     >
       <span
-        className={`flex justify-center items-center rounded cursor-pointer w-4 h-4 relative z-50 ${
+        className={`flex justify-center items-center rounded cursor-pointer w-4 h-4 relative ${
           has_shadow_in_borrow ? "bg-yellow-30" : "bg-gray-40"
         }`}
         onClick={(e) => {

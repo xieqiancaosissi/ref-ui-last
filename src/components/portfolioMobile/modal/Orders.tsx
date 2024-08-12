@@ -844,12 +844,7 @@ function OrderCard({
               loading_status || noData_status ? "hidden" : ""
             }`}
           >
-            <p className="text-sm text-gray-50">
-              Amount:
-              <span className="text-white ml-1">
-                {total_active_orders_value}
-              </span>
-            </p>
+            <p className="text-sm text-white">{total_active_orders_value}</p>
             <span
               onClick={() => {
                 localStorage.setItem(SWAP_MODE_KEY, SWAP_MODE.LIMIT);

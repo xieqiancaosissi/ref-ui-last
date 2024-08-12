@@ -18,6 +18,7 @@
   cursor: pointer;
   @apply w-full h-4;
 }
-.iconContainer:hover + .tooltip,  .iconContainer:hover + .tooltipForCreatePool{
+.iconContainer:hover + .tooltip,
+.iconContainer:hover + .tooltipForCreatePool {
   @apply block;
 }

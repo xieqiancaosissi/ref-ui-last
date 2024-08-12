@@ -15,7 +15,7 @@ const BuyNearButton = () => {
         e.stopPropagation();
         openTransak(accountId);
       }}
-      className="relative z-50"
+      className="relative z-50 outline-none"
       onMouseEnter={() => {
         setHover(true);
       }}

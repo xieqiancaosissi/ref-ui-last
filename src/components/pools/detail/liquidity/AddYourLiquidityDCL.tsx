@@ -2027,7 +2027,7 @@ export default function AddYourLiquidityPageV3() {
                 </div>
               ) : null}
               {!mobileDevice ? <SelectFeeTiers /> : null}
-              <div className="text-sm mb-2.5 text-gray-60 xsm:text-base xsm:font-bold xsm:mt-6">
+              <div className="text-sm mb-2.5 lg:text-gray-60 xsm:text-white xsm:text-base xsm:font-bold xsm:mt-6">
                 Choose Liquidity Shape
               </div>
 
@@ -2082,7 +2082,7 @@ export default function AddYourLiquidityPageV3() {
               {/* user chart part */}
               <div className="lg:mt-4 xsm:mt-8">
                 <div className="flex items-center justify-between">
-                  <div className="text-sm text-gray-60 xsm:text-base xsm:font-bold">
+                  <div className="text-sm lg:text-gray-60 xsm:text-white xsm:text-base xsm:font-bold">
                     Simulate Liquidity Distribution
                   </div>
                   <div

@@ -155,7 +155,7 @@ export const executeFarmMultipleTransactions = async (
   transactions: Transaction[],
   callbackUrl?: string
 ) => {
-  return executeMultipleTransactions(transactions, callbackUrl);
+  return executeMultipleTransactions(transactions, undefined, callbackUrl);
 };
 
 export const registerAccountOnToken = () => {

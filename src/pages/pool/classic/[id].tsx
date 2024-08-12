@@ -343,7 +343,7 @@ export default function ClassicPoolDetail() {
 
       {/* title */}
       <div className="lg:w-270 xsm:w-full min-h-10 flex items-center xsm:hidden">
-        <div className="w-183 flex flex-wrap">
+        <div className="w-183 flex flex-wrap items-center">
           {poolDetail && updatedMapList?.length > 0 && (
             <>
               <TokenDetail {...poolDetail} updatedMapList={updatedMapList} />

@@ -1019,14 +1019,14 @@ export const RemovePoolV3 = (props: any) => {
             />
           </div>
         ) : (
-          <div className="poolBtnStyleDefaultBase mt-8 w-full h-11">
-            <span
-              onClick={() => {
-                showWalletSelectorModal(appStore.setShowRiskModal);
-              }}
-            >
-              Connect Wallet
-            </span>
+          <div
+            className="flex items-center justify-center bg-greenGradient rounded mt-4 text-black font-bold text-base cursor-pointer"
+            style={{ height: "42px" }}
+            onClick={() => {
+              showWalletSelectorModal(appStore.setShowRiskModal);
+            }}
+          >
+            Connect Wallet
           </div>
         )}
       </div>

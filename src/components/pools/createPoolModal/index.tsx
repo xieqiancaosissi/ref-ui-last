@@ -74,27 +74,20 @@ export default function CreatePoolModal({
         onRequestClose();
         setToken(["", ""]);
       }}
-      style={
-        isMobile
-          ? {
-              overlay: {
-                backdropFilter: "blur(10px)",
-                WebkitBackdropFilter: "blur(10px)",
-              },
-              content: {
-                transform: "translateX(-50%)",
-                top: "auto",
-                bottom: "32px",
-                width: "100vw",
-              },
-            }
-          : {
-              overlay: {
-                backdropFilter: "blur(10px)",
-                WebkitBackdropFilter: "blur(10px)",
-              },
-            }
-      }
+      style={{
+        overlay: {
+          backdropFilter: "blur(10px)",
+          WebkitBackdropFilter: "blur(10px)",
+        },
+        content: {
+          outline: "none",
+          top: isMobile ? "auto" : "50%",
+          left: isMobile ? "auto" : "50%",
+          transform: isMobile ? "none" : "translate(-50%, -50%)",
+          bottom: isMobile ? "32px" : "auto",
+          width: isMobile ? "100%" : "auto",
+        },
+      }}
     >
       <div className="lg:w-108 xsm:w-full">
         {/* for select token modal */}

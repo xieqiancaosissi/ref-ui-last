@@ -19,6 +19,7 @@ export const ONE_YOCTO_NEAR = "0.000000000000000000000001";
 export const LP_STORAGE_AMOUNT = "0.01";
 export const executeMultipleTransactions = async (
   transactions: Transaction[],
+  reloadAfterTransaction = true,
   callbackUrl?: string
 ) => {
   const wstransactions: WSTransaction[] = [];
@@ -49,6 +50,9 @@ export const executeMultipleTransactions = async (
     })
     .then((res) => {
       if (!res) return;
+      if (!reloadAfterTransaction) {
+        return res;
+      }
       if (!webWalletIds.includes(selectedWalletId)) {
         const transactionHashes = (Array.isArray(res) ? res : [res])?.map(
           (r) => r.transaction.hash
@@ -75,6 +79,7 @@ export const executeMultipleTransactions = async (
       ) {
         sessionStorage.setItem("WALLETS_TX_ERROR", e.message);
       }
+      if (!reloadAfterTransaction) return e;
       if (!webWalletIds.includes(selectedWalletId)) {
         window.location.reload();
       }

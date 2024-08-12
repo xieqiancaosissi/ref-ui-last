@@ -83,13 +83,7 @@ export default function PoolRow({
                 )}
 
                 {/* tag */}
-                {item.is_farm && (
-                  <div
-                    className={` bg-farmTagBg text-farmApyColor ${styles.tagPublicStyle}`}
-                  >
-                    Farms
-                  </div>
-                )}
+
                 {item.is_new && (
                   <div
                     className={`bg-primaryGreen text-black ${styles.tagPublicStyle}`}
@@ -103,6 +97,14 @@ export default function PoolRow({
                     className={`bg-topLinearGradient text-black ${styles.topStyle} mx-1`}
                   >
                     Top
+                  </div>
+                )}
+
+                {item.is_farm && (
+                  <div
+                    className={` bg-farmTagBg text-farmApyColor ${styles.tagPublicStyle}`}
+                  >
+                    Farms
                   </div>
                 )}
               </div>
@@ -157,18 +159,10 @@ export default function PoolRow({
                   {item.token_symbols.join("-")}
                   <div className="flex mt-1">
                     {/* tag */}
-                    {item.is_farm && (
-                      <div
-                        className={` bg-farmTagBg text-farmApyColor ${styles.tagPublicStyle}`}
-                      >
-                        Farms
-                      </div>
-                    )}
+
                     {item.is_new && (
                       <div
-                        className={`bg-primaryGreen ${
-                          item.is_farm ? "-ml-1.5" : ""
-                        } text-black ${styles.tagPublicStyle}`}
+                        className={`bg-primaryGreen  text-black ${styles.tagPublicStyle}`}
                       >
                         New
                       </div>
@@ -177,10 +171,22 @@ export default function PoolRow({
                     {item.top && (
                       <div
                         className={`bg-topLinearGradient  ${
-                          item.is_farm || item.is_new ? "-ml-1.5" : ""
+                          item.is_new ? "-ml-1.5" : ""
                         } text-black ${styles.topStyle} mx-1`}
                       >
                         Top
+                      </div>
+                    )}
+
+                    {item.is_farm && (
+                      <div
+                        className={`${
+                          item.is_new || item.top ? "-ml-1.5" : ""
+                        } bg-farmTagBg text-farmApyColor ${
+                          styles.tagPublicStyle
+                        }`}
+                      >
+                        Farms
                       </div>
                     )}
                   </div>

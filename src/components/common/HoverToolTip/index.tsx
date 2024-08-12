@@ -5,10 +5,12 @@ const HoverTooltip = ({
   children,
   tooltipText,
   isOverlocking,
+  position,
 }: {
   children: any;
   tooltipText: string;
   isOverlocking?: boolean;
+  position?: string;
 }) => {
   const [showTooltip, setShowTooltip] = useState(false);
 
@@ -19,7 +21,6 @@ const HoverTooltip = ({
   const handleMouseLeave = () => {
     setShowTooltip(false);
   };
-
   return (
     <div
       className={styles.hoverTooltipContainer}
@@ -28,7 +29,13 @@ const HoverTooltip = ({
     >
       {children}
       {showTooltip && !isOverlocking && (
-        <div className={styles.hoverTooltip}>{tooltipText}</div>
+        <div
+          className={`${
+            position != "right" ? styles.hoverTooltip : styles.hoverTooltipRight
+          }`}
+        >
+          {tooltipText}
+        </div>
       )}
 
       {showTooltip && isOverlocking && (

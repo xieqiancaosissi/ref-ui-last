@@ -445,7 +445,7 @@ export default function YourLiquidityBox(props: {
         <span className="text-white lg:font-bold lg:text-base xs:text-sm sm:text-sm xsm:hidden">
           Your Liquidity
         </span>
-        <span className="text-white font-bold text-base xsm:text-green-10 xsm:mt-6">
+        <span className="text-white font-bold lg:text-base xsm:text-xl xsm:text-green-10 xsm:mt-6">
           {getTotalLiquditiesTvl()}
         </span>
       </div>
@@ -594,10 +594,10 @@ export default function YourLiquidityBox(props: {
               removeLiquidity();
             }}
             // disabled={is_in_farming || !is_in_farming_done}
-            className={`poolBtnStyleDefaultBase lg:w-35 xsm:w-full h-10 text-sm cursor-pointer hover:opacity-90 ${
+            className={` lg:w-35 xsm:w-full h-10 text-sm cursor-pointer hover:opacity-90 ${
               is_in_farming || !is_in_farming_done
-                ? "opacity-30 pointer-events-none"
-                : ""
+                ? "opacity-30 pointer-events-none poolBtnStyleDefaultBase"
+                : "poolBtnStyleActiveEmpty"
             } }`}
           >
             Remove

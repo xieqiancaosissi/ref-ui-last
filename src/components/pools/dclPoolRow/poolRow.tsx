@@ -84,18 +84,18 @@ export default function PoolRow({
                 </span>
               )}
               {/* tag */}
-              {item.is_farm && (
-                <div
-                  className={` bg-farmTagBg text-farmApyColor ${styles.tagPublicStyle}`}
-                >
-                  Farms
-                </div>
-              )}
               {item.is_new && (
                 <div
                   className={`bg-primaryGreen text-black ${styles.tagPublicStyle}`}
                 >
                   New
+                </div>
+              )}
+              {item.is_farm && (
+                <div
+                  className={` bg-farmTagBg text-farmApyColor ${styles.tagPublicStyle}`}
+                >
+                  Farms
                 </div>
               )}
             </div>
@@ -169,20 +169,20 @@ export default function PoolRow({
                     <StartWatchList className="mr-2" />
                   )}
                   {/* tag */}
-                  {item.is_farm && (
-                    <div
-                      className={` bg-farmTagBg text-farmApyColor ${styles.tagPublicStyle}`}
-                    >
-                      Farms
-                    </div>
-                  )}
                   {item.is_new && (
                     <div
-                      className={`bg-primaryGreen text-black ${
-                        styles.tagPublicStyle
-                      }  ${item.is_farm ? "-ml-1.5" : ""}`}
+                      className={`bg-primaryGreen text-black ${styles.tagPublicStyle}  `}
                     >
                       New
+                    </div>
+                  )}
+                  {item.is_farm && (
+                    <div
+                      className={` bg-farmTagBg text-farmApyColor ${
+                        styles.tagPublicStyle
+                      } ${item.is_new ? "-ml-1.5" : ""}`}
+                    >
+                      Farms
                     </div>
                   )}
                 </div>

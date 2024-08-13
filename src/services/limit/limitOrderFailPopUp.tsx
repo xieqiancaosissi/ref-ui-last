@@ -43,10 +43,11 @@ const LimitOrderFailPopUp = (txHash: string) => {
       progressStyle: {
         background: "#FF4B76",
         borderRadius: "8px",
+        height: "2px",
       },
       style: {
-        background: "rgba(151, 151, 151, 0.2)",
-        boxShadow: "0px 0px 10px 10px rgba(0, 0, 0, 0.15)",
+        background: "#1B242C",
+        border: "1px solid rgba(151, 151, 151, 0.2)",
         borderRadius: "8px",
       },
     }

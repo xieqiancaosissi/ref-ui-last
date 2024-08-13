@@ -10,7 +10,7 @@ import {
 export const communityLinks = [
   {
     label: "Discord",
-    url: "https://discord.gg/reffinance",
+    url: "https://discord.gg/SJBGcfMxJz",
     icon: <DiscordIcon />,
   },
   {

@@ -56,6 +56,7 @@ import getConfig from "@/utils/config";
 import { ButtonTextWrapper } from "@/components/common/Button";
 import { LOVE_TOKEN_DECIMAL } from "@/services/referendum";
 import { isMobile } from "@/utils/device";
+import { isStablePool } from "@/services/swap/swapUtils";
 
 const { REF_VE_CONTRACT_ID, REF_UNI_V3_SWAP_CONTRACT_ID } = getConfig();
 
@@ -894,7 +895,10 @@ export default function FarmsDclDetail(props: {
   }
   function goPool() {
     const poolId = pool?.id;
-    if (poolId) {
+    const isStable = poolId !== undefined ? isStablePool(poolId) : false;
+    if (isStable) {
+      router.push(`/pool/stable/${poolId}`);
+    } else {
       router.push(`/pool/classic/${poolId}`);
     }
   }
@@ -1112,6 +1116,7 @@ export default function FarmsDclDetail(props: {
               listLiquidities_inFarimg.length == 0 &&
               listLiquidities_unFarimg.length == 0) ? (
               <AddLiquidityEntryBar
+                goPool={goPool}
                 detailData={detailData}
                 isEnded={isEnded}
                 loading={listLiquiditiesLoading}
@@ -1341,6 +1346,7 @@ export default function FarmsDclDetail(props: {
               inFarimg={listLiquidities_inFarimg}
               unFarimg={listLiquidities_unFarimg}
               unavailable={listLiquidities_unavailable}
+              goPool={goPool}
             ></AddLiquidityEntryMobileBar>
           ) : (
             <div className="bg-dark-230 rounded-t-2xl px-4 py-6 flex">
@@ -1490,10 +1496,18 @@ function AddLiquidityEntryBar(props: {
   unavailable: UserLiquidityInfo[];
   detailData: Seed;
   isEnded: boolean;
+  goPool: any;
 }) {
   let tip: any;
-  const { loading, inFarimg, unFarimg, unavailable, detailData, isEnded } =
-    props;
+  const {
+    loading,
+    inFarimg,
+    unFarimg,
+    unavailable,
+    detailData,
+    isEnded,
+    goPool,
+  } = props;
   if (!loading && inFarimg.length == 0 && unFarimg.length == 0) {
     // if (unavailable.length == 0) {
     //   tip = <FormattedMessage id="add_lp_tokens_tip" />;
@@ -1506,7 +1520,10 @@ function AddLiquidityEntryBar(props: {
   }
   if (loading || !tip || isEnded) return null;
   return (
-    <div className="absolute inset-0 bg-dark-45 bg-opacity-70 flex flex-col items-center justify-center z-50 border rounded-lg">
+    <div
+      className="absolute inset-0 bg-dark-45 bg-opacity-70 flex flex-col items-center justify-center z-50 border rounded-lg cursor-pointer"
+      onClick={goPool}
+    >
       <div className="relative w-full h-full flex items-center justify-center">
         <FarmDetailsBgIcon />
         <div className="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center px-12">
@@ -1530,10 +1547,18 @@ function AddLiquidityEntryMobileBar(props: {
   unavailable: UserLiquidityInfo[];
   detailData: Seed;
   isEnded: boolean;
+  goPool: any;
 }) {
   let tip: any;
-  const { loading, inFarimg, unFarimg, unavailable, detailData, isEnded } =
-    props;
+  const {
+    loading,
+    inFarimg,
+    unFarimg,
+    unavailable,
+    detailData,
+    isEnded,
+    goPool,
+  } = props;
   if (!loading && inFarimg.length == 0 && unFarimg.length == 0) {
     // if (unavailable.length == 0) {
     //   tip = <FormattedMessage id="add_lp_tokens_tip" />;
@@ -1546,7 +1571,10 @@ function AddLiquidityEntryMobileBar(props: {
   }
   if (loading || !tip || isEnded) return null;
   return (
-    <div className="bg-dark-230 px-8 py-6 rounded-t-2xl text-gray-10">
+    <div
+      className="bg-dark-230 px-8 py-6 rounded-t-2xl text-gray-10 cursor-pointer"
+      onClick={goPool}
+    >
       <p className="text-center mb-4">
         You need LP tokens to stake into the corresponding farm. First, add
         liquidity to the pool to get LP tokens.

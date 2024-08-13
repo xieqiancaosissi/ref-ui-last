@@ -867,13 +867,20 @@ export function FarmView(props: {
             <div className="frcb mb-3.5">
               <p className="text-gray-60 text-sm">APR</p>
               <p className="text-sm frcc">
+                <CalcIcon
+                  onClick={(e: any) => {
+                    e.stopPropagation();
+                    setCalcVisible(true);
+                  }}
+                  className="text-gray-10 mr-1.5 cursor-pointer hover:text-greenColor lg:hidden"
+                />
                 {getTotalApr()}
                 <CalcIcon
                   onClick={(e: any) => {
                     e.stopPropagation();
                     setDclCalcVisible(true);
                   }}
-                  className="text-gray-10 ml-1.5 cursor-pointer hover:text-greenColor"
+                  className="text-gray-10 ml-1.5 cursor-pointer hover:text-greenColor xsm:hidden"
                 />
               </p>
             </div>
@@ -915,6 +922,13 @@ export function FarmView(props: {
             <div className="frcb mb-3.5">
               <p className="text-gray-60 text-sm">APR</p>
               <p className="text-sm frcc">
+                <CalcIcon
+                  onClick={(e: any) => {
+                    e.stopPropagation();
+                    setCalcVisible(true);
+                  }}
+                  className="text-gray-10 mr-1.5 cursor-pointer hover:text-greenColor lg:hidden"
+                />
                 {getTotalApr()}
                 {is_support_lp ? <LPTip seed_id={seed.seed_id} /> : null}
                 <CalcIcon
@@ -922,7 +936,7 @@ export function FarmView(props: {
                     e.stopPropagation();
                     setCalcVisible(true);
                   }}
-                  className="text-gray-10 ml-1.5 cursor-pointer hover:text-greenColor"
+                  className="text-gray-10 ml-1.5 cursor-pointer hover:text-greenColor xsm:hidden"
                 />
               </p>
             </div>

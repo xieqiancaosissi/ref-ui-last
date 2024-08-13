@@ -44,7 +44,7 @@ const Staking = () => {
           Meme staking
         </div>
         <div className="xsm:bg-memeStakingBgColor xsm:border xsm:border-memeBorderColor xsm:rounded-2xl xsm:pt-12 xsm:pb-8 xsm:px-11">
-          <div className="mb-24 xsm:mb-9" style={{ height: "285px" }}>
+          <div className="mb-24 xsm:mb-12" style={{ height: "285px" }}>
             <StakingChart chartType="meme" />
           </div>
           <div className="lg:flex lg:justify-center xsm:-mx-5">
@@ -131,17 +131,17 @@ const Staking = () => {
         <div className="xsm:bg-memeStakingBgColor xsm:border xsm:border-memeBorderColor xsm:rounded-2xl xsm:pt-8 xsm:pb-8 xsm:px-11">
           <div className="lg:hidden mb-3 flex flex-col items-center">
             <div className="text-base text-gray-50">Current Round:</div>
-            <div className="text-lg mb-4">2024/07/06-2024/08/05</div>
+            <div className="text-lg mb-4">2024/08/06-2024/09/05</div>
             {/* <div className="text-base text-gray-50">Next Round:</div>
             <div className="text-lg mb-6">2024/07/06-2024/08/05</div> */}
           </div>
-          <div className="mb-6" style={{ height: "285px" }}>
+          <div className="mb-6 xsm:mb-12" style={{ height: "285px" }}>
             <StakingChart chartType="xref" />
           </div>
           <div className="flex justify-between mb-6 px-16 xsm:hidden">
             <div className="text-left ">
               <p className="text-sm text-gray-50 mb-2">Current Round:</p>
-              <div className="text-sm ">2024/07/06-2024/08/05</div>
+              <div className="text-sm ">2024/08/06-2024/09/05</div>
             </div>
             {/* <div className="text-left">
               <p className="text-sm text-gray-50 mb-2">Next Round:</p>

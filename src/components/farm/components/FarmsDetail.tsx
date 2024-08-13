@@ -955,6 +955,7 @@ export default function FarmsDetail(props: {
             <div className="relative flex-1 h-full">
               {showAddLiquidityEntry ? (
                 <AddLiquidityEntryBar
+                  goPool={goPool}
                   detailData={detailData}
                   showAddLiquidityEntry={showAddLiquidityEntry}
                 ></AddLiquidityEntryBar>
@@ -1178,6 +1179,7 @@ export default function FarmsDetail(props: {
             <AddLiquidityEntryMobileBar
               detailData={detailData}
               showAddLiquidityEntry={showAddLiquidityEntry}
+              goPool={goPool}
             ></AddLiquidityEntryMobileBar>
           ) : (
             <div
@@ -1238,8 +1240,9 @@ type Pool = {
 function AddLiquidityEntryBar(props: {
   detailData: Seed;
   showAddLiquidityEntry: any;
+  goPool: any;
 }) {
-  const { detailData, showAddLiquidityEntry } = props;
+  const { detailData, showAddLiquidityEntry, goPool } = props;
   const [addLiquidityModalVisible, setAddLiquidityModalVisible] =
     useState(false);
   const poolA = detailData.pool;
@@ -1269,7 +1272,10 @@ function AddLiquidityEntryBar(props: {
   if (!showAddLiquidityEntry || needForbidden) return null;
 
   return (
-    <div className="absolute inset-0 bg-dark-45 bg-opacity-70 flex flex-col items-center justify-center z-50 border rounded-lg">
+    <div
+      className="absolute inset-0 bg-dark-45 bg-opacity-70 flex flex-col items-center justify-center z-50 border rounded-lg cursor-pointer"
+      onClick={goPool}
+    >
       <div className="relative w-full h-full flex items-center justify-center">
         <FarmDetailsBgIcon />
         <div className="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center px-12">
@@ -1289,8 +1295,9 @@ function AddLiquidityEntryBar(props: {
 function AddLiquidityEntryMobileBar(props: {
   detailData: Seed;
   showAddLiquidityEntry: any;
+  goPool: any;
 }) {
-  const { detailData, showAddLiquidityEntry } = props;
+  const { detailData, showAddLiquidityEntry, goPool } = props;
   const [addLiquidityModalVisible, setAddLiquidityModalVisible] =
     useState(false);
   const poolA = detailData.pool;
@@ -1320,7 +1327,10 @@ function AddLiquidityEntryMobileBar(props: {
   if (!showAddLiquidityEntry || needForbidden) return null;
 
   return (
-    <div className="bg-dark-230 px-8 py-6 rounded-t-2xl text-gray-10">
+    <div
+      className="bg-dark-230 px-8 py-6 rounded-t-2xl text-gray-10 cursor-pointer"
+      onClick={goPool}
+    >
       <p className="text-center mb-4">
         You need LP tokens to stake into the corresponding farm. First, add
         liquidity to the pool to get LP tokens.

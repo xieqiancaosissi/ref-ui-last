@@ -194,11 +194,12 @@ const WithdrawList = () => {
                 onClick={() => {
                   seedWithdraw(id, type);
                 }}
-                className={`w-28 flex cursor-pointer items-center justify-center border border-primaryGreen rounded-lg h-8 text-primaryGreen text-sm focus:outline-none xsm:ml-2 ${
-                  withdrawButtonDisabled || actionSeedId == id
-                    ? "opacity-40"
-                    : ""
-                }`}
+                className={`w-28 flex cursor-pointer items-center justify-center border border-primaryGreen rounded-lg h-8 text-primaryGreen text-sm 
+                  focus:outline-none xsm:ml-2 min-w-28 ${
+                    withdrawButtonDisabled || actionSeedId == id
+                      ? "opacity-40"
+                      : ""
+                  }`}
               >
                 <ButtonTextWrapper
                   loading={actionSeedId == id}

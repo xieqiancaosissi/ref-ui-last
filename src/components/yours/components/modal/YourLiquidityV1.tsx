@@ -43,7 +43,7 @@ import {
   toReadableNumber,
   toRoundedReadableNumber,
 } from "@/utils/numbers";
-import { openUrlLocal } from "@/services/commonV3";
+import { openUrlLocal, openUrl } from "@/services/commonV3";
 import { LinkIcon } from "@/components/farm/icon";
 import { useHistory } from "react-router-dom";
 import { useFarmStake } from "@/hooks/useStableShares";
@@ -988,7 +988,7 @@ function YourClassicLiquidityLinePage(props: any) {
                     onClick={(e) => {
                       e.stopPropagation();
                       e.preventDefault();
-                      openUrlLocal(`https://app.burrow.finance/`);
+                      openUrl(`https://app.burrow.finance/`);
                     }}
                   >
                     <ShareInBurrow
@@ -1228,7 +1228,7 @@ function YourClassicLiquidityLinePage(props: any) {
                       onClick={(e) => {
                         e.stopPropagation();
                         e.preventDefault();
-                        openUrlLocal(`https://app.burrow.finance/`);
+                        openUrl(`https://app.burrow.finance/`);
                       }}
                     >
                       <ShareInBurrow

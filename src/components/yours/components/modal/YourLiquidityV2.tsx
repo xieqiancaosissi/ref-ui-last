@@ -1493,7 +1493,7 @@ function UserLiquidityLineStyleGroupPage() {
           >
             <div className="w-full bg-dark-210 rounded p-4 mt-2 border border-gray-30">
               <div className="flex items-center justify-between">
-                <div className="flex items-center">
+                <div className="flex items-center flex-1">
                   <span className="text-sm text-gray-10 mr-2.5">
                     Unclaimed Fees
                   </span>
@@ -1521,7 +1521,7 @@ function UserLiquidityLineStyleGroupPage() {
                       !canClaim
                         ? "text-dark-200 border-gray-190  cursor-not-allowed opacity-40"
                         : "text-green-10 border-green-10  cursor-pointer hover:opacity-90"
-                    } w-1/3 h-7 frcc text-sm font-bold border  rounded`}
+                    } w-21 h-7 frcc text-sm font-bold border  rounded`}
                     onClick={claimRewards}
                   >
                     <ButtonTextWrapper
@@ -1531,13 +1531,13 @@ function UserLiquidityLineStyleGroupPage() {
                   </div>
                   <div
                     onClick={() => toDclLiq(poolDetail.pool_id)}
-                    className="w-1/3 h-7 frcc text-sm font-bold text-green-10 border border-green-10 rounded mx-1 cursor-pointer hover:opacity-90"
+                    className="w-21 h-7 frcc text-sm font-bold text-green-10 border border-green-10 rounded mx-1 cursor-pointer hover:opacity-90"
                   >
                     Add
                   </div>
 
                   <div
-                    className={`relative flex items-center flex-grow w-1/3 ${
+                    className={`relative flex items-center flex-grow w-21 ${
                       joined_seeds_done ? "" : "hidden"
                     }`}
                     onMouseEnter={() => {

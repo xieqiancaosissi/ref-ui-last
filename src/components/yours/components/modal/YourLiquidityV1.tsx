@@ -63,6 +63,8 @@ import { ArrowRightUpIcon } from "../icon";
 import { useRouter } from "next/router";
 import ClassicAdd from "@/components/pools/detail/liquidity/classic/ClassicAdd";
 import ClassicRemove from "@/components/pools/detail/liquidity/classic/ClassicRemove";
+import StableAdd from "@/components/pools/detail/liquidity/stable/StableAdd";
+import StableRemove from "@/components/pools/detail/liquidity/stable/StableRemove";
 import { getPoolsDetailById } from "@/services/pool";
 import { useTokenMetadata } from "@/hooks/usePools";
 import { useRiskTokens } from "@/hooks/useRiskTokens";
@@ -863,6 +865,16 @@ function YourClassicLiquidityLinePage(props: any) {
     setShowRemove(false);
   };
 
+  const [showAddStable, setShowAddStable] = useState(false);
+  const hideAddStable = () => {
+    setShowAddStable(false);
+  };
+
+  const [showRemoveStable, setShowRemoveStable] = useState(false);
+  const hideRemoveStable = () => {
+    setShowRemoveStable(false);
+  };
+
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -1061,7 +1073,9 @@ function YourClassicLiquidityLinePage(props: any) {
                 className={`border-green-10 border font-bold rounded frcc w-21 h-8  mr-2.5 text-sm cursor-pointer hover:opacity-80 text-green-10 `}
                 onClick={(e) => {
                   e.stopPropagation();
-                  setShowAdd(true);
+                  props?.type == "stable"
+                    ? setShowAddStable(true)
+                    : setShowAdd(true);
                 }}
                 // disabled={disable_add}
               >
@@ -1074,7 +1088,9 @@ function YourClassicLiquidityLinePage(props: any) {
                   onClick={(e) => {
                     e.stopPropagation();
                     if (+userTotalShareToString == 0) return;
-                    setShowRemove(true);
+                    props?.type == "stable"
+                      ? setShowRemoveStable(true)
+                      : setShowRemove(true);
                   }}
                   // disabled={Number(userTotalShareToString) == 0}
                   className={`w-full ${
@@ -1299,7 +1315,9 @@ function YourClassicLiquidityLinePage(props: any) {
                 className={`border-green-10 border font-bold rounded frcc h-8 text-sm cursor-pointer hover:opacity-80 text-green-10 `}
                 onClick={(e) => {
                   e.stopPropagation();
-                  setShowAdd(true);
+                  props?.type == "stable"
+                    ? setShowAddStable(true)
+                    : setShowAdd(true);
                 }}
                 // disabled={disable_add}
               >
@@ -1312,7 +1330,9 @@ function YourClassicLiquidityLinePage(props: any) {
                   onClick={(e) => {
                     e.stopPropagation();
                     if (+userTotalShareToString == 0) return;
-                    setShowRemove(true);
+                    props?.type == "stable"
+                      ? setShowRemoveStable(true)
+                      : setShowRemove(true);
                   }}
                   // disabled={Number(userTotalShareToString) == 0}
                   className={`w-full ${
@@ -1346,6 +1366,26 @@ function YourClassicLiquidityLinePage(props: any) {
             pureIdList={pureIdList}
             updatedMapList={updatedMapList}
           />
+
+          <>
+            <StableAdd
+              isOpen={showAddStable}
+              onRequestClose={hideAddStable}
+              poolDetail={poolDetail}
+              pureIdList={pureIdList}
+              updatedMapList={updatedMapList}
+              isMobile={isMobile}
+            />
+
+            <StableRemove
+              isOpen={showRemoveStable}
+              onRequestClose={hideRemoveStable}
+              poolDetail={poolDetail}
+              pureIdList={pureIdList}
+              updatedMapList={updatedMapList}
+              isMobile={isMobile}
+            />
+          </>
         </>
       )}
     </div>

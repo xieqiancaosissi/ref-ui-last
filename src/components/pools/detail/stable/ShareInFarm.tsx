@@ -218,7 +218,7 @@ export const ShareInFarmV2 = ({
   };
 
   return (
-    <div className="frcc mx-5 text-xs">
+    <div className="lg:frcc xsm:fccc mx-5 text-xs">
       {/* <FarmDot inFarm={Number(farmShare) > 0} className="mr-1" /> */}
       {!hideIcon && <StableFarmIcon />}
       <div className="self-start whitespace-nowrap flex items-center text-gray-60 ">

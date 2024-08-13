@@ -78,7 +78,7 @@
 }
 
 .symbol {
-  @apply text-base text-white font-medium lg:pr-2 flex max-w-41;
+  @apply text-base text-white font-medium lg:pr-2 flex lg:max-w-41 xsm:justify-end;
 }
 
 .tagPublicStyle {

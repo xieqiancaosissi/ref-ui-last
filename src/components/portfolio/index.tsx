@@ -101,6 +101,7 @@ export default function Overview() {
         .plus(orderly_asset_value)
         .plus(burrow_supplied_value)
         .plus(burrow_rewards_value)
+        .plus(orderly_value)
         .minus(burrow_borrowied_value)
         .toFixed();
       netPortfolioAssets = true;
@@ -114,6 +115,7 @@ export default function Overview() {
     burrow_supplied_value,
     burrow_borrowied_value,
     burrow_rewards_value,
+    orderly_value,
   ]);
 
   const [claimable, claimableDone] = useMemo(() => {

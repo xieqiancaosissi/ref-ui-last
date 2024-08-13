@@ -17,6 +17,7 @@ import {
 import { IButtonStatus } from "@/interfaces/swap";
 import { useAppStore } from "@/stores/app";
 import { showWalletSelectorModal } from "@/utils/wallet";
+import failToast from "@/components/common/toast/failToast";
 
 export default function SwapButton({
   isHighImpact,
@@ -86,6 +87,12 @@ export default function SwapButton({
         tokenIn,
         tokenOut,
         amountIn,
+      }).then((res) => {
+        // if (!res) return;
+        // if (res.status == "success") {
+        // } else if (res.status == "error") {
+        //   failToast(res.errorResult.message);
+        // }
       });
     } else if (best == "v3") {
       const bestFee = Number(estimatesDcl?.tag?.split("|")?.[1] ?? 0);

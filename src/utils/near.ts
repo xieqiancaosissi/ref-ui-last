@@ -50,6 +50,7 @@ export const executeMultipleTransactions = async (
       callbackUrl,
     })
     .then((res) => {
+      if (webWalletIds.includes(selectedWalletId)) return;
       if (!res)
         return {
           status: "error",
@@ -82,6 +83,7 @@ export const executeMultipleTransactions = async (
       }
     })
     .catch((e: Error) => {
+      if (webWalletIds.includes(selectedWalletId)) return;
       // for local refresh
       if (!reloadAfterTransaction)
         return {

@@ -205,7 +205,7 @@ export function getMemeContractConfig(
           "intel.tkn.near": "memefarm-xref-intel.ref-labs.near",
           "dd.tg": "memefarm-xref-dd.ref-labs.near",
           "neiro.token0.near": "memefarm-xref-neiro.ref-labs.near",
-        },
+        } as { [key: string]: string },
       };
     case "pub-testnet":
       return {
@@ -227,7 +227,7 @@ export function getMemeContractConfig(
           "shitzu.fakes.testnet": "memefarm-xref-shzu.ref-dev.testnet",
           "uwon.fakes.testnet": "memefarm-xref-uwon.ref-dev.testnet",
           "sgpt.fakes.testnet": "memefarm-xref-sgpt.ref-dev.testnet",
-        },
+        } as { [key: string]: string },
       };
     case "testnet":
       return {
@@ -249,7 +249,7 @@ export function getMemeContractConfig(
           "shitzu.fakes.testnet": "memefarm-xref-shzu.ref-dev.testnet",
           "uwon.fakes.testnet": "memefarm-xref-uwon.ref-dev.testnet",
           "sgpt.fakes.testnet": "memefarm-xref-sgpt.ref-dev.testnet",
-        },
+        } as { [key: string]: string },
       };
     default:
       return {
@@ -295,7 +295,7 @@ export function getMemeContractConfig(
           "intel.tkn.near": "memefarm-xref-intel.ref-labs.near",
           "dd.tg": "memefarm-xref-dd.ref-labs.near",
           "neiro.token0.near": "memefarm-xref-neiro.ref-labs.near",
-        },
+        } as { [key: string]: string },
       };
   }
 }

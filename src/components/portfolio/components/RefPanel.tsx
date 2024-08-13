@@ -27,7 +27,7 @@ import {
 } from "@/services/aurora";
 import { getVEPoolId, useAccountInfo } from "@/services/referendum";
 import { OverviewContextType, OverviewData } from "../index";
-import { PortfolioRefIcon } from "./icon";
+import { PortfolioRefArrow, PortfolioRefIcon } from "./icon";
 import getConfig from "@/utils/config";
 import { BeatLoader } from "react-spinners";
 import RefPanelModal from "./RefPanelModal";
@@ -123,11 +123,17 @@ function RefPanel() {
           showRefModal();
         }}
       >
-        <div className="flex items-center mb-6">
-          <div className="bg-gray-220 bg-opacity-60 rounded-md frcc w-6 h-6 mr-2">
-            <PortfolioRefIcon />
+        <div className="frcb mb-6">
+          <div className="flex items-center">
+            <div className="bg-gray-220 bg-opacity-60 rounded-md frcc w-6 h-6 mr-2">
+              <PortfolioRefIcon />
+            </div>
+            <p className="text-gray-10 text-sm">Ref.finance</p>
           </div>
-          <p className="text-gray-10 text-sm">Ref.finance</p>
+          <PortfolioRefArrow
+            className="lg:hidden"
+            style={{ transform: "scale(0.9)" }}
+          />
         </div>
         <div className="flex">
           <div className="flex-1">

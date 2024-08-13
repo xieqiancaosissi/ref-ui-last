@@ -24,6 +24,7 @@ export default function Footer() {
     if (item.inLink) {
       router.push(item.url);
     } else {
+      console.log('999999999-item.url', item.url);
       window.open(item.url);
     }
   }

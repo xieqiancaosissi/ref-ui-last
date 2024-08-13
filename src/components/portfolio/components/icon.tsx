@@ -91,6 +91,32 @@ export function PortfolioArrow({ ...props }) {
   );
 }
 
+export function PortfolioRefArrow({ ...props }) {
+  return (
+    <svg
+      {...props}
+      width="17"
+      height="16"
+      viewBox="0 0 17 16"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M8.88477 1.81445L15.0719 8.00164L8.88477 14.1888"
+        stroke="white"
+        strokeWidth="1.5"
+        strokeLinecap="square"
+      />
+      <path
+        d="M14.1877 8.00022H0.929468"
+        stroke="white"
+        strokeWidth="1.5"
+        strokeLinecap="square"
+      />
+    </svg>
+  );
+}
+
 export const ArrowRightIcon = (props: any) => {
   return (
     <svg

@@ -604,10 +604,10 @@ export default function ClassicPoolDetail() {
 
         {/* right liquidity mobile hidden*/}
         <div className="lg:w-80 ml-auto xsm:hidden">
-          {(!haveShare || !poolId) && (
+          {(!haveShare || !poolId || !accountId) && (
             <NoLiquidity add={() => setShowAdd(true)} isLoading={false} />
           )}
-          {haveShare && pool?.id && updatedMapList?.length > 0 && (
+          {accountId && haveShare && pool?.id && updatedMapList?.length > 0 && (
             <div className="w-80 h-58 p-4 rounded bg-refPublicBoxDarkBg flex flex-col ">
               <div className="flex items-center justify-between text-white">
                 <span className="whitespace-nowrap">Your Liquidity</span>
@@ -754,51 +754,59 @@ export default function ClassicPoolDetail() {
         </div>
       </div>
 
-      {(!haveShare || !poolId) && isMobile && (
+      {(!haveShare || !poolId || !accountId) && isMobile && (
         <NoLiquidityMobile add={() => setShowAdd(true)} isLoading={false} />
       )}
 
-      {haveShare && pool?.id && updatedMapList?.length > 0 && isMobile && (
-        <div
-          className="h-24 frcc p-4 fixed bottom-8 z-50"
-          style={{
-            background: "#16232E",
-            width: "100vw",
-          }}
-        >
+      {accountId &&
+        haveShare &&
+        pool?.id &&
+        updatedMapList?.length > 0 &&
+        isMobile && (
           <div
-            className="w-full frcc h-12 text-black rounded text-base"
+            className="h-24 frcc p-4 fixed bottom-8 z-50"
             style={{
-              background: "linear-gradient(to right, #9EFF00, #5F9900)",
-            }}
-            onClick={() => {
-              setShowYourLiq(true);
+              background: "#16232E",
+              width: "100vw",
             }}
           >
-            Your Liquidity
+            <div
+              className="w-full frcc h-12 text-black rounded text-base"
+              style={{
+                background: "linear-gradient(to right, #9EFF00, #5F9900)",
+              }}
+              onClick={() => {
+                setShowYourLiq(true);
+              }}
+            >
+              Your Liquidity
+            </div>
           </div>
-        </div>
-      )}
-      {haveShare && pool?.id && updatedMapList?.length > 0 && isMobile && (
-        <YourLiqMobile
-          isOpen={showYourLiq}
-          onRequestClose={hideYourLiq}
-          shares={shares}
-          totalShares={pool.shareSupply}
-          poolId={pool.id}
-          pool={pool}
-          stakeList={stakeList}
-          lptAmount={lptAmount}
-          usdValue={usdValue}
-          haveShare={haveShare}
-          userTotalShareToString={userTotalShareToString}
-          tokenInfoPC={tokenInfoPC}
-          setShowRemove={setShowRemove}
-          setShowAdd={setShowAdd}
-          tokenAmountShareRaw={tokenAmountShareRaw}
-          updatedMapList={updatedMapList}
-        ></YourLiqMobile>
-      )}
+        )}
+      {accountId &&
+        haveShare &&
+        pool?.id &&
+        updatedMapList?.length > 0 &&
+        isMobile && (
+          <YourLiqMobile
+            isOpen={showYourLiq}
+            onRequestClose={hideYourLiq}
+            shares={shares}
+            totalShares={pool.shareSupply}
+            poolId={pool.id}
+            pool={pool}
+            stakeList={stakeList}
+            lptAmount={lptAmount}
+            usdValue={usdValue}
+            haveShare={haveShare}
+            userTotalShareToString={userTotalShareToString}
+            tokenInfoPC={tokenInfoPC}
+            setShowRemove={setShowRemove}
+            setShowAdd={setShowAdd}
+            tokenAmountShareRaw={tokenAmountShareRaw}
+            updatedMapList={updatedMapList}
+          ></YourLiqMobile>
+        )}
 
       {/* add */}
       {updatedMapList[0]?.token_account_ids && poolDetail && (

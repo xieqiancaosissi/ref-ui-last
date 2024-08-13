@@ -81,12 +81,28 @@ export default function Tab() {
   function switchTab(tag: string) {
     setActiveTab(tag);
   }
+
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 1024); // ipad pro
+    };
+
+    window.addEventListener("resize", handleResize);
+    handleResize(); //
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
   return (
     <div
-      className="frcc lg:fixed lg:bg-dark-45 w-full h-17 xsm:mt-12"
+      className="frcc lg:fixed w-full h-17 xsm:mt-12"
       style={{
         top: "184px",
         zIndex: "51",
+        background: !isMobile ? "#0C171F" : "",
       }}
     >
       <div className="flex items-center lg:w-276 xsm:w-full">

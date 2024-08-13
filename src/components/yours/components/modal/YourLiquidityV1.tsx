@@ -315,11 +315,11 @@ function LiquidityContainerStyle2() {
   const titleList = [
     {
       name: "Pair",
-      class: "col-span-1",
+      class: "col-span-2",
     },
     {
       name: "Token",
-      class: "col-span-3",
+      class: "col-span-2",
     },
     {
       name: "LP Tokens(Shares)",
@@ -878,24 +878,9 @@ function YourClassicLiquidityLinePage(props: any) {
   }, []);
   return (
     <div
-      className={`rounded-xl mt-3 lg:px-4 bg-opacity-30 ${
+      className={`rounded-xl mt-3 lg:px-4 bg-gray-20 bg-opacity-30 ${
         switch_off ? "" : "pb-4"
       }`}
-      style={{
-        background:
-          supportFarmV1 > endedFarmV1 ||
-          Number(farmStakeV1) > 0 ||
-          supportFarmV2 > endedFarmV2 ||
-          Number(farmStakeV2) > 0
-            ? isMobile
-              ? `radial-gradient(
-      60% 107.05% at 86.82% 0%,
-      rgba(250, 255, 0, 0.2) 0%,
-      rgba(18, 29, 38, 0.2) 80.5%
-    )`
-              : "radial-gradient(24.64% 177.05% at 11.82% 0%,rgba(250, 255, 0, 0.21) 0%,rgba(33, 43, 53, 0.09) 80.5%)"
-            : "rgba(33, 43, 53, 0.3)",
-      }}
     >
       {/* pc */}
       {!isMobile && (
@@ -909,16 +894,13 @@ function YourClassicLiquidityLinePage(props: any) {
             );
           }}
         >
-          <div className="flex flex-col justify-center col-span-1">
-            <div className="flex pl-2">{Images}</div>
-            <span className="text-xs text-gray-10 mt-1">
-              {props?.type == "stable" ? "Stable Pool" : ""}
-            </span>
-          </div>
-          {/*  */}
-          <div className="col-span-3 flex justify-start items-center">
-            <div className="flex flex-col items-start ">{Symbols}</div>
-
+          <div className="flex items-center  col-span-2">
+            <div className="flex flex-col justify-center">
+              <div className="flex pl-2">{Images}</div>
+              <span className="text-xs text-gray-10 mt-1">
+                {props?.type == "stable" ? "Stable Pool" : ""}
+              </span>
+            </div>
             <div className="ml-2">
               {(supportFarmV1 > endedFarmV1 ||
                 Number(farmStakeV1) > 0 ||
@@ -935,6 +917,10 @@ function YourClassicLiquidityLinePage(props: any) {
                 </div>
               )}
             </div>
+          </div>
+          {/*  */}
+          <div className="col-span-2 flex justify-start items-center">
+            <div className="flex flex-col items-start ">{Symbols}</div>
           </div>
 
           {/*  */}
@@ -998,12 +984,13 @@ function YourClassicLiquidityLinePage(props: any) {
                       forStable
                       onlyShowStake
                       poolId={pool.id}
+                      hideIcon
                     />
                   </div>
                 )}
               {Big(LpLocked).gt(0) ? (
-                <div className="text-gray-10">
-                  <span>
+                <div className="text-gray-10 mb-1">
+                  <span className="text-white">
                     {toPrecision(
                       toReadableNumber(
                         lpDecimal,
@@ -1026,7 +1013,7 @@ function YourClassicLiquidityLinePage(props: any) {
                   }}
                   className="text-gray-10 mb-1.5 flex whitespace-nowrap items-center"
                 >
-                  <span>
+                  <span className="text-white">
                     {toPrecision(
                       ONLY_ZEROS.test(
                         toNonDivisibleNumber(
@@ -1071,7 +1058,7 @@ function YourClassicLiquidityLinePage(props: any) {
           <div className="col-span-2 frcc">
             <div className={`pr-2 w-1/2 `}>
               <div
-                className={`border-green-10 border font-bold rounded frcc w-23 h-8  mr-2.5 text-sm cursor-pointer hover:opacity-80 text-green-10 `}
+                className={`border-green-10 border font-bold rounded frcc w-21 h-8  mr-2.5 text-sm cursor-pointer hover:opacity-80 text-green-10 `}
                 onClick={(e) => {
                   e.stopPropagation();
                   setShowAdd(true);
@@ -1094,7 +1081,7 @@ function YourClassicLiquidityLinePage(props: any) {
                     Number(userTotalShareToString) == 0 || !haveShare
                       ? "text-dark-200 border-gray-190  cursor-not-allowed opacity-40"
                       : "text-dark-200 cursor-pointer border-dark-190"
-                  } w-23 h-8 frcc text-sm font-bold border  rounded hover:text-white`}
+                  } w-21 h-8 frcc text-sm font-bold border  rounded hover:text-white`}
                 >
                   Remove
                 </div>
@@ -1238,13 +1225,14 @@ function YourClassicLiquidityLinePage(props: any) {
                         forStable
                         onlyShowStake
                         poolId={pool.id}
+                        hideIcon
                       />
                     </div>
                   )}
 
                 {Big(LpLocked).gt(0) ? (
-                  <div className="text-gray-10">
-                    <span>
+                  <div className="text-gray-10 mb-1">
+                    <span className="text-white">
                       {toPrecision(
                         toReadableNumber(
                           lpDecimal,
@@ -1268,7 +1256,7 @@ function YourClassicLiquidityLinePage(props: any) {
                     }}
                     className="text-gray-10 mb-1.5 flex whitespace-nowrap items-center"
                   >
-                    <span>
+                    <span className="text-white">
                       {toPrecision(
                         ONLY_ZEROS.test(
                           toNonDivisibleNumber(

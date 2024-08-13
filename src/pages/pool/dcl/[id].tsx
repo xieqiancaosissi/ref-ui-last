@@ -497,7 +497,7 @@ export default function DCLPoolDetail() {
 
         {/* right liquidity */}
         <div className="w-80 ml-auto pt-12 xsm:hidden">
-          {user_liquidities.length == 0 ? (
+          {user_liquidities.length == 0 || !accountId ? (
             <NoLiquidity add={() => addLiquidity()} isLoading={showSkection} />
           ) : (
             poolDetailV3?.token_x && (
@@ -526,11 +526,11 @@ export default function DCLPoolDetail() {
         </div>
       </div>
 
-      {(user_liquidities.length == 0 || !poolId) && isMobile && (
+      {(user_liquidities.length == 0 || !poolId || !accountId) && isMobile && (
         <NoLiquidityMobile add={() => setShowYourLiq(true)} isLoading={false} />
       )}
 
-      {user_liquidities.length >= 1 && poolId && isMobile && (
+      {user_liquidities.length >= 1 && accountId && poolId && isMobile && (
         <div
           className="h-24 frcc p-4 fixed bottom-8 z-50"
           style={{

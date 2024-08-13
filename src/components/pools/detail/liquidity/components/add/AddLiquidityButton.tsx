@@ -186,7 +186,7 @@ export function AddLiquidityButton() {
         </div>
       ) : (
         <div
-          className="flex items-center justify-center bg-greenGradient rounded mt-4 text-black font-bold text-base cursor-pointer"
+          className="flex items-center justify-center bg-greenGradient rounded w-full text-black font-bold text-base cursor-pointer"
           style={{ height: "42px" }}
           onClick={() => {
             showWalletSelectorModal(appStore.setShowRiskModal);

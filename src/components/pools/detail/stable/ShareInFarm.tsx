@@ -21,6 +21,7 @@ export const ShareInBurrow = ({
   from,
   onlyShowStake,
   poolId,
+  hideIcon,
 }: {
   farmStake: string | number;
   userTotalShare: BigNumber;
@@ -30,6 +31,7 @@ export const ShareInBurrow = ({
   from?: string;
   onlyShowStake?: boolean;
   poolId?: string | number;
+  hideIcon?: boolean;
 }) => {
   const farmShare = Number(farmStake).toLocaleString("fullwide", {
     useGrouping: false,
@@ -58,10 +60,12 @@ export const ShareInBurrow = ({
       onMouseLeave={() => setHovet(false)}
     >
       {/* <FarmDot inFarm={Number(farmShare) > 0} className="mr-1 flex-shrink-0" /> */}
-      <BurrowIcon />
+      {!hideIcon && <BurrowIcon />}
 
       <div
-        className={`self-start whitespace-nowrap w-full flex items-center ml-1.5`}
+        className={`self-start whitespace-nowrap w-full flex items-center ${
+          hideIcon ? "" : "ml-1.5"
+        }`}
       >
         <span className={`text-left text-white mr-1.5`}>
           {onlyShowStake

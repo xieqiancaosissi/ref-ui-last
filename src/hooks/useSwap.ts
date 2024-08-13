@@ -30,6 +30,8 @@ const useSwap = ({
     {}
   );
   const swapStore = useSwapStore();
+  const walletInteractionStatusUpdated =
+    swapStore.getWalletInteractionStatusUpdated();
   const persistSwapStore = usePersistSwapStore() as IPersistSwapStore;
   const smartRoute = persistSwapStore.getSmartRoute();
   const slippage = persistSwapStore.getSlippage();
@@ -46,6 +48,7 @@ const useSwap = ({
       tokenInAmount,
       smartRoute,
       JSON.stringify(deflation || {}),
+      walletInteractionStatusUpdated,
     ]
   );
   useEffect(() => {

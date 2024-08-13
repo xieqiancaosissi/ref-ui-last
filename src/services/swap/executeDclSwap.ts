@@ -193,6 +193,6 @@ const dclSwap = async ({
     }
   }
 
-  return executeMultipleTransactions(transactions);
+  return executeMultipleTransactions(transactions, false);
 };
 export default dclSwap;

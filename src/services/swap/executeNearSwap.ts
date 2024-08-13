@@ -1,9 +1,7 @@
 import { nearSwapOptions, Transaction } from "@/interfaces/swap";
 import { TokenMetadata } from "@/services/ft-contract";
 import { executeMultipleTransactions } from "@/utils/near";
-import { getAccountId } from "@/utils/wallet";
 import { ftGetStorageBalance } from "@/services/ft-contract";
-import { STORAGE_TO_REGISTER_WITH_MFT } from "@/utils/constant";
 import { getTokenUIId } from "@/services/swap/swapUtils";
 import { registerAccountOnToken } from "@/utils/contract";
 import {
@@ -13,7 +11,6 @@ import {
 
 const nearSwap = async ({ tokenIn, tokenOut, amountIn }: nearSwapOptions) => {
   const transactions: Transaction[] = [];
-  const accountId = getAccountId();
   const registerToken = async (token: TokenMetadata) => {
     if (getTokenUIId(tokenOut) == "near") return;
     const tokenRegistered = await ftGetStorageBalance(token.id).catch(() => {
@@ -34,6 +31,6 @@ const nearSwap = async ({ tokenIn, tokenOut, amountIn }: nearSwapOptions) => {
     transactions.push(nearWithdrawTransaction(amountIn));
   }
 
-  return executeMultipleTransactions(transactions);
+  return executeMultipleTransactions(transactions, false);
 };
 export default nearSwap;

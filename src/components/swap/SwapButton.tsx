@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import Big from "big.js";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import { useAccountStore } from "@/stores/account";
@@ -18,6 +18,10 @@ import { IButtonStatus } from "@/interfaces/swap";
 import { useAppStore } from "@/stores/app";
 import { showWalletSelectorModal } from "@/utils/wallet";
 import failToast from "@/components/common/toast/failToast";
+import { IExecutionResult } from "@/interfaces/wallet";
+import { setSwapTokenAndBalances } from "@/components/common/SelectTokenModal/tokenUtils";
+import { useTokenStore, ITokenStore } from "@/stores/token";
+import { checkSwapTx } from "@/services/swap/swapTx";
 
 export default function SwapButton({
   isHighImpact,
@@ -30,6 +34,7 @@ export default function SwapButton({
   const appStore = useAppStore();
   const accountStore = useAccountStore();
   const swapStore = useSwapStore();
+  const tokenStore = useTokenStore() as ITokenStore;
   const persistSwapStore = usePersistSwapStore();
   const accountId = accountStore.getAccountId();
   const walletLoading = accountStore.getWalletLoading();
@@ -43,7 +48,11 @@ export default function SwapButton({
   const best = swapStore.getBest();
   const estimates = swapStore.getEstimates();
   const estimatesServer = swapStore.getEstimatesServer();
+  const walletInteractionStatusUpdated =
+    swapStore.getWalletInteractionStatusUpdated();
   const slippageTolerance = persistSwapStore.getSlippage();
+  const global_whitelisted_tokens_ids =
+    tokenStore.get_global_whitelisted_tokens_ids();
   const isnearwnearSwap = is_near_wnear_swap(tokenIn, tokenOut);
   const decimals = isnearwnearSwap ? 24 : undefined;
   const buttonStatus = useMemo(() => {
@@ -71,6 +80,8 @@ export default function SwapButton({
         tokenIn,
         tokenOut,
         amountIn,
+      }).then((res) => {
+        handleDataAfterTranstion(res, false);
       });
     } else if (best == "v1" && estimates) {
       swap({
@@ -79,6 +90,8 @@ export default function SwapButton({
         swapsToDo: swapStore.getEstimates(),
         slippageTolerance,
         amountIn,
+      }).then((res) => {
+        handleDataAfterTranstion(res, true);
       });
     } else if (best == "v1" && estimatesServer) {
       const { estimatesFromServer } = estimatesServer;
@@ -88,11 +101,7 @@ export default function SwapButton({
         tokenOut,
         amountIn,
       }).then((res) => {
-        // if (!res) return;
-        // if (res.status == "success") {
-        // } else if (res.status == "error") {
-        //   failToast(res.errorResult.message);
-        // }
+        handleDataAfterTranstion(res, true);
       });
     } else if (best == "v3") {
       const bestFee = Number(estimatesDcl?.tag?.split("|")?.[1] ?? 0);
@@ -110,8 +119,38 @@ export default function SwapButton({
           amountA: amountIn,
           amountB: toReadableNumber(tokenOut.decimals, estimatesDcl?.amount),
         },
+      }).then((res) => {
+        handleDataAfterTranstion(res, true);
       });
     }
+  }
+  function handleDataAfterTranstion(
+    res: IExecutionResult | undefined,
+    showPopup: boolean
+  ) {
+    if (!res) return;
+    if (res.status == "success") {
+      if (showPopup) {
+        // tx popup
+        checkSwapTx(res.txHashes);
+      }
+      // update balances
+      setSwapTokenAndBalances({
+        tokenInId: getTokenUIId(tokenIn),
+        tokenOutId: getTokenUIId(tokenOut),
+        accountId,
+        swapStore,
+        persistSwapStore,
+        tokenStore,
+        global_whitelisted_tokens_ids,
+      });
+      swapStore.setWalletInteractionStatusUpdated(
+        !walletInteractionStatusUpdated
+      );
+    } else if (res.status == "error") {
+      failToast(res.errorResult?.message);
+    }
+    setSwapLoading(false);
   }
   function getButtonStatus(): IButtonStatus {
     let status: IButtonStatus = "walletLoading";

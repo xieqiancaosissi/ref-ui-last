@@ -4,7 +4,6 @@ import estimateDclSwap from "@/services/swap/estimateDclSwap";
 import { useSwapStore } from "@/stores/swap";
 import { IEstimateDclSwapView, IEstimateResult } from "@/interfaces/swapDcl";
 import { ITokenMetadata } from "@/interfaces/tokens";
-import { is_near_wnear_swap } from "@/services/swap/swapUtils";
 const useDclSwap = ({
   tokenIn,
   tokenOut,
@@ -24,12 +23,14 @@ const useDclSwap = ({
     useState<IEstimateResult>({});
   const swapStore = useSwapStore();
   const trigger = swapStore.getTrigger();
+  const walletInteractionStatusUpdated =
+    swapStore.getWalletInteractionStatusUpdated();
   useDebounce(
     () => {
       dclEstimateWrap();
     },
     firstInput ? 100 : 300,
-    [tokenIn?.id, tokenOut?.id, tokenInAmount]
+    [tokenIn?.id, tokenOut?.id, tokenInAmount, walletInteractionStatusUpdated]
   );
   useEffect(() => {
     if (trigger) {

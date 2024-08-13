@@ -55,6 +55,10 @@ interface ISwapStore {
   setDeflation: (deflation: IDeflation | undefined) => void;
   getBalanceLoading: () => boolean;
   setBalanceLoading: (balanceLoading: boolean) => void;
+  getWalletInteractionStatusUpdated: () => boolean;
+  setWalletInteractionStatusUpdated: (
+    walletInteractionStatusUpdated: boolean
+  ) => void;
 }
 export const usePersistSwapStore = create(
   persist(
@@ -101,6 +105,14 @@ export const useSwapStore = create<ISwapStore>((set: any, get: any) => ({
   trigger: false,
   deflation: {},
   balanceLoading: true,
+  walletInteractionStatusUpdated: false,
+  getWalletInteractionStatusUpdated: () => get().walletInteractionStatusUpdated,
+  setWalletInteractionStatusUpdated: (
+    walletInteractionStatusUpdated: boolean
+  ) =>
+    set({
+      walletInteractionStatusUpdated,
+    }),
   getBalanceLoading: () => get().balanceLoading,
   setBalanceLoading: (balanceLoading: boolean) => set({ balanceLoading }),
   getDeflation: () => get().deflation,

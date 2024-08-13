@@ -7,7 +7,9 @@ const failToast = (failText: string) => {
         <WalletPopupWarnIcon />
         <span className="text-white tetx-base font-bold">Error</span>
       </div>
-      <div className="text-gray-60 text-sm pl-6 mt-1">{failText}</div>
+      <div className="text-gray-60 text-sm pl-6 mt-1">
+        {failText || "Unknown error"}
+      </div>
     </div>,
     {
       autoClose: 8000,

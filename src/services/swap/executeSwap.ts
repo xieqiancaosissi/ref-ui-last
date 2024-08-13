@@ -91,7 +91,7 @@ export const swapFromServer = async ({
       });
     }
   }
-  return executeMultipleTransactions(transactions);
+  return executeMultipleTransactions(transactions, false);
 };
 
 const nearInstantSwap = async ({
@@ -204,5 +204,5 @@ const nearInstantSwap = async ({
       });
     }
   }
-  return executeMultipleTransactions(transactions);
+  return executeMultipleTransactions(transactions, false);
 };

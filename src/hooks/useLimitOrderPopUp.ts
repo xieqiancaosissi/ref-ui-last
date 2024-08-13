@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { getURLInfo } from "@/utils/transactionsPopup";
 import { useAccountStore } from "@/stores/account";
 import { checkTransaction } from "@/utils/contract";
-import limitOrderPopUp from "@/services/limit/limitOrderPopUp";
+import limitOrderPopUp from "@/components/limit/limitOrderPopUp";
 
 const useLimitOrderPopUp = () => {
   const { txHash, pathname } = getURLInfo();

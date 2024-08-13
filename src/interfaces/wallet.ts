@@ -9,3 +9,10 @@ export interface RefFiFunctionCallOptions {
   gas?: string;
   amount?: string;
 }
+
+export interface IExecutionResult {
+  status: "success" | "error";
+  txHashes: string;
+  successResult: any;
+  errorResult: Error;
+}

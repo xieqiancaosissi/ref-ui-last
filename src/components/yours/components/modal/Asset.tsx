@@ -295,9 +295,8 @@ function AssetPage() {
       className="w-full lg:h-35 lg:fixed lg:frcc "
       style={{
         top: "46px",
-        zIndex: "10",
-        background:
-          "linear-gradient(to bottom, rgba(3, 15, 22, 0.4), rgba(33, 43, 53, 0.4))",
+        zIndex: "51",
+        background: "linear-gradient(to bottom, #030F16, #0C171F)",
       }}
     >
       <div className="lg:w-276 xsm:w-full flex xsm:flex-col items-center justify-between">

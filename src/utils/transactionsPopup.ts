@@ -44,11 +44,14 @@ export const extraWalletsError = [
 export const walletsRejectError = [
   "User reject",
   "User rejected the signature request",
+  "User rejected transaction", // myNearWallet
   "Invalid message. Only transactions can be signed",
   "Ledger device: Condition of use not satisfied (denied by the user?) (0x6985)",
   "User cancelled the action",
+  "User closed the window", // meteor wallet
   "User closed the window before completing the action",
 ];
+
 export const getURLInfo = () => {
   const search = window.location.search;
 

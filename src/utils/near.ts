@@ -6,6 +6,7 @@ import { Transaction } from "../interfaces/wallet";
 import getConfig from "../utils/config";
 import { getSelectedWalletId } from "../utils/wallet";
 import { ledgerTipTrigger } from "@/components/common/ledger/ledger";
+import { IExecutionResult } from "@/interfaces/wallet";
 import {
   addQueryParams,
   TRANSACTION_WALLET_TYPE,
@@ -49,37 +50,45 @@ export const executeMultipleTransactions = async (
       callbackUrl,
     })
     .then((res) => {
-      if (!res) return;
+      if (!res)
+        return {
+          status: "error",
+          errorResult: new Error(
+            "The transaction succeeded but did not return the tx"
+          ),
+        } as IExecutionResult;
+      // get tx hashes
+      const transactionHashes = (Array.isArray(res) ? res : [res])?.map(
+        (r) => r.transaction.hash
+      );
+      const parsedTransactionHashes = transactionHashes?.join(",");
+      const newHref = addQueryParams(
+        window.location.origin + window.location.pathname,
+        {
+          [TRANSACTION_WALLET_TYPE.WalletSelector]: parsedTransactionHashes,
+        }
+      );
+      // for local refresh
       if (!reloadAfterTransaction) {
-        return res;
+        return {
+          status: "success",
+          txHashes: parsedTransactionHashes,
+          successResult: res,
+        } as IExecutionResult;
       }
+      // for global refresh
       if (!webWalletIds.includes(selectedWalletId)) {
-        const transactionHashes = (Array.isArray(res) ? res : [res])?.map(
-          (r) => r.transaction.hash
-        );
-        const parsedTransactionHashes = transactionHashes?.join(",");
-        const newHref = addQueryParams(
-          window.location.origin + window.location.pathname,
-          {
-            [TRANSACTION_WALLET_TYPE.WalletSelector]: parsedTransactionHashes,
-          }
-        );
-
         window.location.href = newHref;
       }
     })
     .catch((e: Error) => {
-      if (extraWalletsError.includes(e.message)) {
-        return;
-      }
-
-      if (
-        !walletsRejectError.includes(e.message) &&
-        !extraWalletsError.includes(e.message)
-      ) {
-        sessionStorage.setItem("WALLETS_TX_ERROR", e.message);
-      }
-      if (!reloadAfterTransaction) return e;
+      // for local refresh
+      if (!reloadAfterTransaction)
+        return {
+          status: "error",
+          errorResult: e,
+        } as IExecutionResult;
+      // for global reresh
       if (!webWalletIds.includes(selectedWalletId)) {
         window.location.reload();
       }

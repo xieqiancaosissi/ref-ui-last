@@ -34,8 +34,8 @@
 }
 
 .farmEnded {
-  background-color: #212b35;
-  opacity: 0.5;
+  /* background-color: #212b35; */
+  /* opacity: 0.6; */
 }
 .farmEnded .border-gradientFromHover {
   border-color: #73818b;

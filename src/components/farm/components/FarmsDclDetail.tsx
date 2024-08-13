@@ -1007,10 +1007,15 @@ export default function FarmsDclDetail(props: {
     return result;
   }
   const stakeDisabled = !canStake || nft_stake_loading;
+  const isEmpty = !canStake && !canUnStake;
   return (
     <>
       {/* pc */}
-      <main className="dark:text-white xsm:hidden">
+      <main
+        className={`dark:text-white xsm:hidden ${
+          isEnded ? styles.farmEnded : ""
+        }`}
+      >
         {/* title */}
         <div className="w-full bg-farmTitleBg pt-8 pb-5">
           <div className="m-auto 2xl:w-3/6 xl:w-4/6 lg:w-5/6">
@@ -1137,32 +1142,26 @@ export default function FarmsDclDetail(props: {
           ) : null}
         </div>
         {/* content */}
-        <div className="2xl:w-3/6 xl:w-4/6 lg:w-5/6 pt-16 m-auto pb-8">
-          <div className="relative ml-80 bg-dark-10 rounded-md p-5 mb-2.5 w-2/5">
-            {listLiquiditiesLoading ||
-            (!listLiquiditiesLoading &&
-              listLiquidities_inFarimg.length == 0 &&
-              listLiquidities_unFarimg.length == 0) ? (
-              <AddLiquidityEntryBar
-                goPool={goPool}
-                detailData={detailData}
-                isEnded={isEnded}
-                loading={listLiquiditiesLoading}
-                inFarimg={listLiquidities_inFarimg}
-                unFarimg={listLiquidities_unFarimg}
-                unavailable={listLiquidities_unavailable}
-              ></AddLiquidityEntryBar>
-            ) : null}
+        <div className={`2xl:w-3/6 xl:w-4/6 lg:w-5/6 pt-16 m-auto pb-8 `}>
+          <div className="relative ml-80 bg-dark-10 rounded-md mb-2.5 w-2/5 ">
+            <AddLiquidityEntryBar
+              goPool={goPool}
+              detailData={detailData}
+              isEnded={isEnded}
+              loading={listLiquiditiesLoading}
+              inFarimg={listLiquidities_inFarimg}
+              unFarimg={listLiquidities_unFarimg}
+              unavailable={listLiquidities_unavailable}
+            ></AddLiquidityEntryBar>
 
             <div
-              className={`h-full ${
-                !isSignedIn ||
+              className={`h-full p-5 ${
                 listLiquiditiesLoading ||
                 (!listLiquiditiesLoading &&
                   listLiquidities_inFarimg.length == 0 &&
                   listLiquidities_unFarimg.length == 0)
-                  ? "blur-2"
-                  : "blur-0"
+                  ? "hidden"
+                  : ""
               }`}
             >
               <div className="flex items-center mb-8">
@@ -1239,7 +1238,11 @@ export default function FarmsDclDetail(props: {
               )}
             </div>
           </div>
-          <div className="ml-80 bg-dark-10 rounded-md p-5  w-2/5">
+          <div
+            className={`ml-80 bg-dark-10 rounded-md p-5  w-2/5 ${
+              isEmpty && isEnded ? "hidden" : ""
+            }`}
+          >
             <p className="flex items-center text-gray-50 text-sm mb-1.5">
               Unclaimed rewards <QuestionMark className="ml-1.5"></QuestionMark>
             </p>
@@ -1267,7 +1270,7 @@ export default function FarmsDclDetail(props: {
         </div>
       </main>
       {/* mobile */}
-      <div className="lg:hidden px-4">
+      <div className={`lg:hidden px-4 ${isEnded ? styles.farmEnded : ""}`}>
         <div className="text-sm text-gray-60 pt-4 pb-6 flex items-center">
           <p onClick={goBacktoFarms}> {`Farms  >`}</p>
           <p className="text-white ml-1">Details</p>

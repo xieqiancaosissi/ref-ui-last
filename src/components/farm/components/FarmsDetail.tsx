@@ -52,6 +52,7 @@ import LPTip from "./LPTip";
 import getConfigV2 from "@/utils/configV2";
 import ShadowTip from "./ShadowTip";
 import { isStablePool } from "@/services/swap/swapUtils";
+import styles from "@/components/farm/farm.module.css";
 
 interface IShareInfo {
   sharesInfo: {
@@ -814,10 +815,16 @@ export default function FarmsDetail(props: {
     const result: string = `<div class="text-gray-110 text-xs w-52 text-left">${tip}</div>`;
     return result;
   }
+  const needForbidden =
+    (FARM_BLACK_LIST_V2 || []).indexOf((pool?.id || 0).toString()) > -1;
   return (
     <>
       {/* pc */}
-      <main className="dark:text-white xsm:hidden">
+      <main
+        className={`dark:text-white xsm:hidden ${
+          isEnded() || needForbidden ? styles.farmEnded : ""
+        }`}
+      >
         {/* title */}
         <div className="w-full bg-farmTitleBg pt-8 pb-5">
           <div className="m-auto 2xl:w-3/6 xl:w-4/6 lg:w-5/6">
@@ -1034,7 +1041,11 @@ export default function FarmsDetail(props: {
         ) : null}
       </main>
       {/* mobile */}
-      <div className="lg:hidden px-4">
+      <div
+        className={`lg:hidden px-4 ${
+          isEnded() || needForbidden ? styles.farmEnded : ""
+        }`}
+      >
         <div className="text-sm text-gray-60 pt-4 pb-6 flex items-center">
           <p onClick={goBacktoFarms}> {`Farms  >`}</p>
           <p className="text-white ml-1">Details</p>

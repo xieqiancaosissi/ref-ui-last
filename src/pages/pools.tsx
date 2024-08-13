@@ -30,6 +30,9 @@ import { getPoolsDetailById } from "@/services/pool";
 import { useRouter } from "next/router";
 import DocTips from "@/components/pools/poolDocTips";
 import { dclHeader } from "@/components/pools/dclPool/config";
+import { getAllPoolData } from "@/services/pool";
+import { addThousandSeparator } from "@/utils/uiNumber";
+import Big from "big.js";
 
 export default function Farms() {
   const router = useRouter();
@@ -195,6 +198,15 @@ export default function Farms() {
 
   // drop
   const modalRef = useRef<any>(null);
+  const [allTVL, setAllTVL] = useState("");
+  const [allVolume24h, setAllVolume24h] = useState("");
+  useEffect(() => {
+    getAllPoolData().then((res) => {
+      setAllTVL(res.tvl);
+      setAllVolume24h(res.volume_24h);
+    });
+  }, []);
+
   useEffect(() => {
     const handleClickOutside = (event: any) => {
       if (modalRef.current && !modalRef.current.contains(event.target)) {
@@ -214,6 +226,7 @@ export default function Farms() {
       BlinkById();
     }
   };
+
   return (
     <>
       {/* PC Start */}
@@ -323,6 +336,43 @@ export default function Farms() {
 
       {/* Mobile Start */}
       <div className="lg:hidden  my-4 px-4 box-border">
+        <div className="frcc w-full mb-5">
+          {/* <div className="text-gray-50 text-sm">{title}</div>
+          <div className="text-white text-xl">
+            $
+            {addThousandSeparator(
+              type == "tvl"
+                ? new Big(allTVL || "0").toFixed(2)
+                : new Big(allVolume24h || "0").toFixed(2)
+            )}
+          </div> */}
+          <div
+            className="w-1/2 mr-1 p-4 rounded-md"
+            style={{
+              background: "rgba(33, 43, 53, 0.6)",
+              color: "#7C8791",
+            }}
+          >
+            <p className="text-sm">TVL(Total)</p>
+            <p className="text-lg text-white mt-2">
+              ${addThousandSeparator(new Big(allTVL || "0").toFixed(2))}
+            </p>
+          </div>
+
+          <div
+            className="w-1/2 ml-1 p-4 rounded-md"
+            style={{
+              background: "rgba(33, 43, 53, 0.6)",
+              color: "#7C8791",
+            }}
+          >
+            <p className="text-sm">Volume(24h)</p>
+            <p className="text-lg text-white mt-2">
+              ${addThousandSeparator(new Big(allVolume24h || "0").toFixed(2))}
+            </p>
+          </div>
+        </div>
+
         <div className="w-full flex items-center">
           <div className={poolStyle.filterPoolType}>
             {poolTypeList.map((item, index) => {
@@ -703,14 +753,13 @@ export default function Farms() {
         {/* classic dcl stable components */}
         <>{componentElements}</>
 
-        <div className={`${poolStyle.chartsContainter} xsm:mt-10`}>
-          {/* charts */}
+        {/* <div className={`${poolStyle.chartsContainter} xsm:mt-10`}>
           <div className="w-full fccc">
             <Charts title="TVL(Total Value Locked)" type="tvl"></Charts>
             <div className="my-4"></div>
             <Charts title="Volume(24h)" type="24h"></Charts>
           </div>
-        </div>
+        </div> */}
 
         {/* watchlist */}
 

@@ -159,7 +159,7 @@ export function useCurHoldings(
       setHoldings(updatedHoldings);
       orderbookDataStore.setHoldings(updatedHoldings);
     }
-  }, [balances]);
+  }, [JSON.stringify(balances || {})]);
   useEffect(() => {
     const newUserTip = !!(
       validAccountSig &&

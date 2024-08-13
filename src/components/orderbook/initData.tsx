@@ -26,9 +26,9 @@ export default function InitData(props: any) {
   const validAccountSig = connectStatus == "has_connected";
   // TODO Temporary Hide
   // get account websocket data
-  // useOrderlyPrivateData({
-  //   validAccountSig,
-  // });
+  useOrderlyPrivateData({
+    validAccountSig,
+  });
   // get all positions
   // useAllPositions(validAccountSig);
   // get websocket data

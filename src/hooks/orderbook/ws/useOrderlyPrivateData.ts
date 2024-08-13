@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import usePrivateOrderlyWS from "./usePrivateOrderlyWS";
 import { useAccountStore } from "@/stores/account";
+import { useOrderbookPrivateWSDataStore } from "@/stores/orderbook/orderbookPrivateWSDataStore";
 import {
   generateRequestSignatureHeader,
   getPublicKey,
@@ -17,7 +18,7 @@ export const useOrderlyPrivateData = ({
 }) => {
   const { sendMessage, lastJsonMessage, connectionStatus, needRefresh } =
     usePrivateOrderlyWS();
-
+  const orderbookPrivateWSDataStore = useOrderbookPrivateWSDataStore();
   const [authPass, setAuthPass] = useState(false);
   const accountStore = useAccountStore();
   const accountId = accountStore.getAccountId();
@@ -101,6 +102,8 @@ export const useOrderlyPrivateData = ({
     if (lastJsonMessage?.topic === "balance") {
       setBalanceTimeStamp(lastJsonMessage?.ts);
       setBalances(lastJsonMessage?.data.balances);
+      orderbookPrivateWSDataStore.setBalances(lastJsonMessage?.data.balances);
+      orderbookPrivateWSDataStore.setBalanceTimeStamp(lastJsonMessage?.ts);
     }
 
     if (lastJsonMessage?.topic === "position") {

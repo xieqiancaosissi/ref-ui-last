@@ -15,7 +15,10 @@ import { feeList } from "./config";
 import HoverTip from "@/components/common/Tips";
 import BigNumber from "bignumber.js";
 import { percent, toPrecision } from "@/utils/numbers";
-import { RATED_POOL_LP_TOKEN_DECIMALS } from "@/utils/constant";
+import {
+  RATED_POOL_LP_TOKEN_DECIMALS,
+  STABLE_LP_TOKEN_DECIMALS,
+} from "@/utils/constant";
 import { percentLess } from "@/utils/numbers";
 import { usePredictShares } from "@/hooks/useStableLiquidity";
 import { ButtonTextWrapper } from "@/components/common/Button";
@@ -27,9 +30,11 @@ import { showWalletSelectorModal } from "@/utils/wallet";
 export function myShares({
   totalShares,
   userTotalShare,
+  poolDetail,
 }: {
   totalShares: string;
   userTotalShare: BigNumber;
+  poolDetail: any;
 }) {
   const sharePercent = percent(userTotalShare.valueOf(), totalShares);
 
@@ -43,7 +48,9 @@ export function myShares({
   } else displayPercent = toPrecision(String(sharePercent), 3);
 
   const nonPrecisionDisplayUserTotalShares = toReadableNumber(
-    RATED_POOL_LP_TOKEN_DECIMALS,
+    poolDetail.pool_kind == "STABLE_SWAP"
+      ? STABLE_LP_TOKEN_DECIMALS
+      : RATED_POOL_LP_TOKEN_DECIMALS,
     displayUserTotalShare
   );
 
@@ -460,6 +467,7 @@ export default function StableAdd(props: any) {
                 userTotalShare: new BigNumber(
                   toPrecision(percentLess(feeValue, predicedShares), 0)
                 ),
+                poolDetail,
               })}
             >
               {myShares({
@@ -472,6 +480,7 @@ export default function StableAdd(props: any) {
                 userTotalShare: new BigNumber(
                   toPrecision(percentLess(feeValue, predicedShares), 0)
                 ),
+                poolDetail,
               })}
             </div>
           </div>

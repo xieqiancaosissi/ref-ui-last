@@ -74,7 +74,7 @@ const Overview = () => {
   return (
     <>
       {is_mobile ? (
-        <div className="relative z-50 grid grid-cols-2 gap-2.5 mt-6 px-3">
+        <div className="relative grid grid-cols-2 gap-2.5 mt-6 px-3">
           <TemplateMobile title="Total Staked">
             <span className="text-xl paceGrotesk-Bold text-white">
               {totalStaked}

@@ -446,7 +446,7 @@ function OrderlyKeys({
     <div className={`py-4 ${hidden ? "hidden" : ""}`}>
       <div className="flex items-center justify-between px-6 mb-3 xsm:px-3">
         <div className="flex items-center gap-1">
-          <span className="text-sm text-white paceGrotesk-Bold">
+          <span className="text-sm text-white lg:paceGrotesk-Bold xsm:text-gray-50">
             Orderly Keys
           </span>
           <span className="flex items-center justify-center text-xs text-white px-1.5 py-1.5 rounded-md paceGrotesk-Bold bg-gray-60 bg-opacity-20">
@@ -465,35 +465,33 @@ function OrderlyKeys({
       </div>
       <ConnectToOrderlyWidget uiType="orderlyKey" />
       {orderlyKeyLoading && connectStatus == "has_connected" ? (
-        <div className="flex justify-center items-center my-20">
-          <LoadingIcon />
+        <div className="px-6">
+          <SkeletonTheme
+            baseColor="rgba(33, 43, 53, 0.3)"
+            highlightColor="#2A3643"
+          >
+            <Skeleton width="100%" height={120} count={2} className="mt-4" />
+          </SkeletonTheme>
         </div>
       ) : null}
       <div
-        className="overflow-auto hide-scrollbar px-6 border-b border-gray1 xsm:px-3"
+        className="overflow-auto hide-scrollbar px-6 border-b border-dark-160 xsm:px-3"
         style={{ maxHeight: "290px" }}
       >
         <div
-          className={`bg-gray-60 bg-opacity-20 rounded-xl p-4 ${
+          className={`bg-gray-60 bg-opacity-15 rounded-xl p-4 ${
             isEmpty ? "hidden" : ""
           }`}
         >
           {allOrderlyKeys.map((key) => {
             const isUsed = currentUsedKeys.includes(key);
             return (
-              <div
-                key={key}
-                className="flex items-center justify-between gap-6 mb-3"
-              >
-                <span className="flex  flex-col gap-2 flex-grow  bg-black bg-opacity-20 rounded-md text-xs text-greenColor p-2.5 break-all">
-                  {isUsed ? (
-                    <span className="flex items-center justify-center bg-portfolioQinColor text-xs paceGrotesk-Bold italic whitespace-nowrap rounded w-12 text-black">
-                      In use
-                    </span>
-                  ) : null}
-                  {key}
-                </span>
-                <div className={`${isUsed ? "invisible" : ""}`}>
+              <div key={key} className="gap-6 mb-11">
+                <div
+                  className={`flex justify-end items-center mb-4 ${
+                    isUsed ? "invisible" : ""
+                  }`}
+                >
                   <Checkbox
                     appearance="b"
                     checked={selectedKeys.has(key)}
@@ -501,6 +499,14 @@ function OrderlyKeys({
                       onCheck(key);
                     }}
                   />
+                </div>
+                <div className="flex  flex-col gap-2 flex-grow  bg-dark-60 rounded-md text-xs text-gray-60 p-2.5 break-all">
+                  {isUsed ? (
+                    <span className="flex items-center justify-center bg-portfolioQinColor text-xs paceGrotesk-Bold italic whitespace-nowrap rounded w-12 text-black">
+                      In use
+                    </span>
+                  ) : null}
+                  {key}
                 </div>
               </div>
             );

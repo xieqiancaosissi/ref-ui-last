@@ -33,6 +33,7 @@ import { currentStorageBalanceOfFarm_boost } from "@/stores/account";
 import { UserLiquidityInfo } from "./commonV3";
 import Big from "big.js";
 import { useEffect, useState } from "react";
+import { PoolInfo } from "./swapV3";
 
 const config = getConfig();
 const {
@@ -100,7 +101,7 @@ export interface Seed {
   total_seed_amount: string;
   total_seed_power: string;
   farmList?: FarmBoost[];
-  pool?: PoolRPCView & IPoolDcl;
+  pool?: PoolRPCView & PoolInfo;
   seedTvl?: string;
   hidden?: boolean;
   endedFarmsIsSplit?: boolean;

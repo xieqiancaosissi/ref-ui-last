@@ -91,6 +91,7 @@ export default function FarmsDetailStake(props: {
   const {
     free_amount = "0",
     locked_amount = "0",
+    shadow_amount = "0",
     x_locked_amount = "0",
     unlock_timestamp,
     duration_sec,
@@ -110,7 +111,10 @@ export default function FarmsDetailStake(props: {
   );
   const [activeTab, setActiveTab] = useState(activeMobileTab || "stake");
   const [amountAvailableCheck, setAmountAvailableCheck] = useState(true);
-  const lpBalances = toReadableNumber(DECIMALS, free_amount);
+  const lpBalances = toReadableNumber(
+    DECIMALS,
+    BigNumber(free_amount).plus(shadow_amount).toFixed()
+  );
   const [sharesInfo, setSharesInfo] = useState<{
     sharesInPool: string | number;
     amountByShadowInFarm: string | number;

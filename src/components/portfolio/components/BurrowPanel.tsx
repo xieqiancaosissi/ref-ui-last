@@ -238,9 +238,7 @@ export default function BurrowPanel() {
       <div
         className="bg-gray-20 bg-opacity-40 rounded-lg p-4 mb-4 hover:bg-gray-20 cursor-pointer text-white"
         onClick={() => {
-          if (!is_mobile) {
-            handleBurrowClick();
-          }
+          handleBurrowClick();
         }}
       >
         <div className="frcb mb-6">

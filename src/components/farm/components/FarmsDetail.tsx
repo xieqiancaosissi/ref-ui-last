@@ -1065,7 +1065,7 @@ export default function FarmsDetail(props: {
           <div className="frcb text-sm mb-4">
             <p className="text-gray-50 flex items-center">
               <div
-                className="text-white text-right ml-1"
+                className="text-white text-right"
                 data-class="reactTip"
                 data-tooltip-id={"yourAprTipId_m"}
                 data-place="top"

@@ -53,6 +53,7 @@ import { OrdersArrow } from "../icon";
 import { ShareInFarm } from "@/components/pools/detail/stable/ShareInFarm";
 import { getPoolDetails } from "@/services/pool_detail";
 import { getSharesInPool } from "@/services/pool";
+import { useRouter } from "next/router";
 
 const { BLACK_TOKEN_LIST } = getConfig();
 export const StakeListContext = createContext<any>(null);
@@ -519,6 +520,7 @@ function YourClassicLiquidityLinePage() {
     sharesNew,
     stakeList,
   } = useContext(LiquidityContextData)!;
+  const router = useRouter();
   const { shares, shadowBurrowShare } = useYourliquidity(pool.id);
   const farmStakeTotal = useFarmStake({ poolId: Number(pool.id), stakeList });
   const userTotalShare = BigNumber.sum(sharesNew, farmStakeTotal);
@@ -549,14 +551,14 @@ function YourClassicLiquidityLinePage() {
           <span className="text-sm text-white paceGrotesk-Bold mx-2.5">
             {Symbols}
           </span>
-          <span className="frcc text-xs text-gray-10 px-1 rounded-md border border-gray-90 mr-1.5 cursor-pointer">
+          <span
+            className="frcc text-xs text-gray-10 px-1 rounded-md border border-gray-90 mr-1.5 cursor-pointer"
+            onClick={() => {
+               router.push(`/pools/classic/${pool.id}`);
+            }}
+          >
             Classic
-            <span
-              className="ml-1.5"
-              onClick={() => {
-                openUrl(`/pools/${pool.id}`);
-              }}
-            >
+            <span className="ml-1.5">
               <OrdersArrow></OrdersArrow>
             </span>
           </span>

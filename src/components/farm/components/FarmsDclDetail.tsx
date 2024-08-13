@@ -996,6 +996,16 @@ export default function FarmsDclDetail(props: {
     setActiveTab(tab);
     setIsModalOpen(true);
   };
+  function rewardRangeTip() {
+    const tip = "Farm reward within this range";
+    const result: string = `<div class="text-gray-110 text-xs text-left">${tip}</div>`;
+    return result;
+  }
+  function valueOfRewardsTip() {
+    const tip = "Indicative value based on prices and not actual execution";
+    const result: string = `<div class="text-gray-110 text-xs w-52 text-left">${tip}</div>`;
+    return result;
+  }
   const stakeDisabled = !canStake || nft_stake_loading;
   return (
     <>
@@ -1062,7 +1072,16 @@ export default function FarmsDclDetail(props: {
                   <div className="border-r border-gray-50 border-opacity-30 absolute right-0 top-1/4 h-1/2 w-0" />
                   <p className="text-gray-50 mb-1 flex items-center">
                     Reward Range
-                    <QuestionMark className="ml-1.5"></QuestionMark>
+                    <div
+                      className="text-white text-right ml-1"
+                      data-class="reactTip"
+                      data-tooltip-id="rewardRangeTipId"
+                      data-place="top"
+                      data-tooltip-html={rewardRangeTip()}
+                    >
+                      <QuestionMark></QuestionMark>
+                      <CustomTooltip id="rewardRangeTipId" />
+                    </div>
                   </p>
                   <p className="frcc">
                     <RefreshIcon
@@ -1077,7 +1096,16 @@ export default function FarmsDclDetail(props: {
                 <div className="pr-6 text-sm relative w-max">
                   <p className="text-gray-50 mb-1 flex items-center">
                     Rewards per week{" "}
-                    <QuestionMark className="ml-1.5"></QuestionMark>
+                    <div
+                      className="text-white text-right ml-1"
+                      data-class="reactTip"
+                      data-tooltip-id={"rewardPerWeekQId"}
+                      data-place="top"
+                      data-tooltip-html={valueOfRewardsTip()}
+                    >
+                      <QuestionMark></QuestionMark>
+                      <CustomTooltip id={"rewardPerWeekQId"} />
+                    </div>
                   </p>
                   <p className="flex items-center">
                     {totalTvlPerWeekDisplay()}
@@ -1288,7 +1316,16 @@ export default function FarmsDclDetail(props: {
           </div>
           <div className="flex items-start justify-between text-sm mb-4">
             <p className="text-gray-50 frcc">
-              <QuestionMark className="mr-1.5"></QuestionMark>
+              <div
+                className="text-white text-right mr-1"
+                data-class="reactTip"
+                data-tooltip-id="rewardRangeTipId"
+                data-place="top"
+                data-tooltip-html={rewardRangeTip()}
+              >
+                <QuestionMark></QuestionMark>
+                <CustomTooltip id="rewardRangeTipId" />
+              </div>
               Reward Range
             </p>
             <p className="text-white">
@@ -1303,7 +1340,16 @@ export default function FarmsDclDetail(props: {
           </div>
           <div className="frcb text-sm mb-4">
             <p className="text-gray-50 frcc">
-              <QuestionMark className="mr-1.5"></QuestionMark>
+              <div
+                className="text-white text-right mr-1"
+                data-class="reactTip"
+                data-tooltip-id={"rewardPerWeekQId"}
+                data-place="top"
+                data-tooltip-html={valueOfRewardsTip()}
+              >
+                <QuestionMark></QuestionMark>
+                <CustomTooltip id={"rewardPerWeekQId"} />
+              </div>
               Rewards per week
             </p>
             <p className="text-white frcc">{totalTvlPerWeekDisplay()}</p>

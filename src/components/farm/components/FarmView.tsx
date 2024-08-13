@@ -137,10 +137,14 @@ export function FarmView(props: {
     }
   }, [boostConfig, user_seeds_map]);
   useEffect(() => {
-    const { free_amount, locked_amount } = user_seeds_map[seed_id] || {};
+    const { free_amount, shadow_amount, locked_amount } =
+      user_seeds_map[seed_id] || {};
     const yourLp = toReadableNumber(
       seed_decimal,
-      new BigNumber(free_amount || 0).plus(locked_amount || 0).toFixed()
+      new BigNumber(free_amount || 0)
+        .plus(locked_amount || 0)
+        .plus(shadow_amount || 0)
+        .toFixed()
     );
     if (pool) {
       const { tvl, id, shares_total_supply } = pool;
@@ -876,9 +880,11 @@ export function FarmView(props: {
             <div className="frcb">
               <p className="text-gray-60 text-sm">Your stake/Unclaimed</p>
               <p className="text-sm frcc">
-                {Number(yourTvl) == 0
-                  ? "0"
-                  : "$" + toInternationalCurrencySystem(yourTvl, 2)}
+                {Number(yourTvl) == 0 ? (
+                  <span className="opacity-50">$0</span>
+                ) : (
+                  "$" + toInternationalCurrencySystem(yourTvl, 2)
+                )}
                 /
                 <p
                   className={`${

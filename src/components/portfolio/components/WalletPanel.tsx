@@ -116,11 +116,14 @@ export default function WalletPanel() {
         token_data_process(dcl_tokens_temp, "dcl");
       const { tokens: tokens_aurora, total_value: total_value_aurora } =
         token_data_process(aurora_tokens_temp, "aurora");
+      const refValue = parseFloat(total_value_ref);
+      const dclValue = parseFloat(total_value_dcl);
+      const combinedValue = refValue + dclValue;
       set_ref_tokens(tokens_ref);
       set_near_tokens(tokens_near);
       set_dcl_tokens(tokens_dcl);
       set_aurora_tokens(tokens_aurora);
-      set_ref_total_value(total_value_ref);
+      set_ref_total_value(combinedValue.toString());
       set_near_total_value(total_value_near);
       set_dcl_total_value(total_value_dcl);
       set_aurora_total_value(total_value_aurora);
@@ -187,7 +190,7 @@ export default function WalletPanel() {
     if (activeTab == "near") {
       target = near_total_value;
     } else if (activeTab == "ref") {
-      target = ref_total_value + dcl_total_value;
+      target = ref_total_value;
     } else if (activeTab == "dcl") {
       target = dcl_total_value;
     } else if (activeTab == "aurora") {

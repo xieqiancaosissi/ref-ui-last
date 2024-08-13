@@ -63,6 +63,7 @@ export default function UserStakeBlock(props: {
     detailData;
   const {
     free_amount = "0",
+    shadow_amount = "0",
     locked_amount = "0",
     x_locked_amount = "0",
     unlock_timestamp,
@@ -76,27 +77,32 @@ export default function UserStakeBlock(props: {
       ? LP_STABLE_TOKEN_DECIMALS
       : LP_TOKEN_DECIMALS;
   useEffect(() => {
-    const { free_amount, locked_amount } = user_seeds_map[seed_id] || {};
+    const { free_amount, shadow_amount, locked_amount } =
+      user_seeds_map[seed_id] || {};
     const yourLp = toReadableNumber(
       seed_decimal,
-      new BigNumber(free_amount || 0).plus(locked_amount || 0).toFixed()
+      new BigNumber(free_amount || 0)
+        .plus(locked_amount || 0)
+        .plus(shadow_amount || 0)
+        .toFixed()
     );
-    if (!pool) {
-      return;
-    }
-    const { tvl, id, shares_total_supply } = pool;
-    const DECIMALS = new Set(STABLE_POOL_IDS || []).has(id?.toString())
-      ? LP_STABLE_TOKEN_DECIMALS
-      : LP_TOKEN_DECIMALS;
-    const poolShares = Number(toReadableNumber(DECIMALS, shares_total_supply));
-    const yourTvl =
-      poolShares == 0
-        ? 0
-        : Number(
-            toPrecision(((Number(yourLp) * tvl) / poolShares).toString(), 2)
-          );
-    if (yourTvl) {
-      setYourTvl(yourTvl.toString());
+    if (pool) {
+      const { tvl, id, shares_total_supply } = pool;
+      const DECIMALS = new Set(STABLE_POOL_IDS || []).has(id?.toString())
+        ? LP_STABLE_TOKEN_DECIMALS
+        : LP_TOKEN_DECIMALS;
+      const poolShares = Number(
+        toReadableNumber(DECIMALS, shares_total_supply)
+      );
+      const yourTvl =
+        poolShares == 0
+          ? 0
+          : Number(
+              toPrecision(((Number(yourLp) * tvl) / poolShares).toString(), 2)
+            );
+      if (yourTvl) {
+        setYourTvl(yourTvl.toString());
+      }
     }
   }, [Object.keys(user_seeds_map || {})]);
 
@@ -126,7 +132,7 @@ export default function UserStakeBlock(props: {
       }
     }
     const powerBig = new BigNumber(+(realRadio || 1))
-      .multipliedBy(free_amount)
+      .multipliedBy(BigNumber(free_amount).plus(shadow_amount))
       .plus(x_locked_amount);
     const power = toReadableNumber(DECIMALS, powerBig.toFixed(0).toString());
     return power;

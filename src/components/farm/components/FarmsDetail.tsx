@@ -25,7 +25,7 @@ import {
   toPrecision,
   toReadableNumber,
 } from "@/utils/numbers";
-import { useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import BigNumber from "bignumber.js";
 import { LOVE_TOKEN_DECIMAL } from "@/services/referendum";
 import getConfig from "@/utils/config";
@@ -53,6 +53,13 @@ import getConfigV2 from "@/utils/configV2";
 import ShadowTip from "./ShadowTip";
 import { isStablePool } from "@/services/swap/swapUtils";
 
+interface IShareInfo {
+  sharesInfo: {
+    sharesInPool: string | number;
+    amountByShadowInFarm: string | number;
+    amountByTransferInFarm: string | number;
+  };
+}
 const ONLY_ZEROS = /^0*\.?0*$/;
 const {
   STABLE_POOL_IDS,
@@ -60,6 +67,7 @@ const {
   REF_VE_CONTRACT_ID,
   FARM_BLACK_LIST_V2,
 } = getConfig();
+const FarmsDetailContext = createContext<IShareInfo | null>(null);
 export default function FarmsDetail(props: {
   detailData: Seed;
   emptyDetailData: Function;
@@ -109,6 +117,37 @@ export default function FarmsDetail(props: {
   const [showActivateBox, setShowActivateBox] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState("stake");
   const isSignedIn = accountStore.isSignedIn;
+  const [sharesInfo, setSharesInfo] = useState<{
+    sharesInPool: string | number;
+    amountByShadowInFarm: string | number;
+    amountByTransferInFarm: string | number;
+  }>({
+    sharesInPool: "0",
+    amountByShadowInFarm: "0",
+    amountByTransferInFarm: "0",
+  });
+  useEffect(() => {
+    if (!user_data_loading) {
+      getSharesInfo();
+    }
+  }, [Object.keys(user_seeds_map).length, user_data_loading]);
+  async function getSharesInfo() {
+    const { seed_id } = detailData;
+    const { free_amount, shadow_amount } = user_seeds_map[seed_id] || {};
+    if (pool) {
+      const poolId = pool.id;
+      const sharesInPool = await mftGetBalance(
+        getMftTokenId(poolId.toString())
+      );
+      const amountByShadowInFarm = shadow_amount;
+      const amountByTransferInFarm = free_amount;
+      setSharesInfo({
+        sharesInPool: sharesInPool || "0",
+        amountByShadowInFarm: amountByShadowInFarm || "0",
+        amountByTransferInFarm: amountByTransferInFarm || "0",
+      });
+    }
+  }
   function sortTokens(tokens: TokenMetadata[]) {
     tokens.sort((a: TokenMetadata, b: TokenMetadata) => {
       if (a.symbol === "NEAR") return 1;
@@ -134,6 +173,9 @@ export default function FarmsDetail(props: {
   useEffect(() => {
     get_server_time();
   }, []);
+  useEffect(() => {
+    getStakeBalance();
+  }, [Object.keys(user_seeds_map).length, user_data_loading, sharesInfo]);
   async function get_ve_seed_share() {
     const result = await getVeSeedShare();
     const maxShareObj = result?.accounts?.accounts[0] || {};
@@ -351,31 +393,27 @@ export default function FarmsDetail(props: {
     if (!isSignedIn) {
       setShowAddLiquidityEntry(false);
     } else {
-      const poolId = pool?.id;
-      if (!poolId) {
-        console.error("Pool ID is undefined");
-        return;
-      }
-
-      const b = await mftGetBalance(getMftTokenId(poolId.toString()));
-      if (new Set(STABLE_POOL_IDS || []).has(poolId.toString())) {
-        setLpBalance(toReadableNumber(LP_STABLE_TOKEN_DECIMALS, b));
-      } else {
-        setLpBalance(toReadableNumber(LP_TOKEN_DECIMALS, b));
-      }
-
-      const farmList = detailData?.farmList;
-      if (!farmList || farmList.length === 0) {
-        console.error("Farm list is undefined or empty");
-        return;
-      }
-
-      const isEnded = farmList[0].status === "Ended";
-      if (isEnded) {
-        setShowAddLiquidityEntry(false);
-      } else {
-        const userSeed = user_seeds_map[detailData.seed_id];
-        setShowAddLiquidityEntry(!Number(b) && !userSeed && !user_data_loading);
+      if (pool) {
+        const poolId = pool.id;
+        const b = new BigNumber(sharesInfo.sharesInPool)
+          .minus(sharesInfo.amountByShadowInFarm)
+          .toFixed();
+        if (new Set(STABLE_POOL_IDS || []).has(poolId?.toString())) {
+          setLpBalance(toReadableNumber(LP_STABLE_TOKEN_DECIMALS, b));
+        } else {
+          setLpBalance(toReadableNumber(LP_TOKEN_DECIMALS, b));
+        }
+        if (detailData.farmList) {
+          const isEnded = detailData.farmList[0].status == "Ended";
+          if (isEnded) {
+            setShowAddLiquidityEntry(false);
+          } else {
+            const userSeed = user_seeds_map[detailData.seed_id];
+            setShowAddLiquidityEntry(
+              !Number(b) && !userSeed && !user_data_loading
+            );
+          }
+        }
       }
     }
   };
@@ -898,34 +936,12 @@ export default function FarmsDetail(props: {
           </div>
         </div>
         {/* content */}
-        <div className="2xl:w-3/6 xl:w-4/6 lg:w-5/6 pt-16 m-auto pb-8 flex">
-          <div className="flex-1 mr-2.5 h-full">
-            <UserStakeBlock
-              detailData={detailData}
-              tokenPriceList={tokenPriceList}
-              lpBalance={lpBalance}
-              loveSeed={loveSeed}
-              boostConfig={boostConfig}
-              user_seeds_map={user_seeds_map}
-              user_unclaimed_map={user_unclaimed_map}
-              user_unclaimed_token_meta_map={user_unclaimed_token_meta_map}
-              user_data_loading={user_data_loading}
-              radio={radio}
-            ></UserStakeBlock>
-          </div>
-          <div className="relative flex-1 h-full">
-            {showAddLiquidityEntry ? (
-              <AddLiquidityEntryBar
-                detailData={detailData}
-                showAddLiquidityEntry={showAddLiquidityEntry}
-              ></AddLiquidityEntryBar>
-            ) : null}
-            <div className={`h-full ${showAddLiquidityEntry ? "blur-2" : ""}`}>
-              <FarmsDetailStake
+        <FarmsDetailContext.Provider value={{ sharesInfo }}>
+          <div className="2xl:w-3/6 xl:w-4/6 lg:w-5/6 pt-16 m-auto pb-8 flex">
+            <div className="flex-1 mr-2.5 h-full">
+              <UserStakeBlock
                 detailData={detailData}
                 tokenPriceList={tokenPriceList}
-                stakeType="free"
-                serverTime={serverTime ?? 0}
                 lpBalance={lpBalance}
                 loveSeed={loveSeed}
                 boostConfig={boostConfig}
@@ -934,10 +950,36 @@ export default function FarmsDetail(props: {
                 user_unclaimed_token_meta_map={user_unclaimed_token_meta_map}
                 user_data_loading={user_data_loading}
                 radio={radio}
-              ></FarmsDetailStake>
+              ></UserStakeBlock>
+            </div>
+            <div className="relative flex-1 h-full">
+              {showAddLiquidityEntry ? (
+                <AddLiquidityEntryBar
+                  detailData={detailData}
+                  showAddLiquidityEntry={showAddLiquidityEntry}
+                ></AddLiquidityEntryBar>
+              ) : null}
+              <div
+                className={`h-full ${showAddLiquidityEntry ? "blur-2" : ""}`}
+              >
+                <FarmsDetailStake
+                  detailData={detailData}
+                  tokenPriceList={tokenPriceList}
+                  stakeType="free"
+                  serverTime={serverTime ?? 0}
+                  lpBalance={lpBalance}
+                  loveSeed={loveSeed}
+                  boostConfig={boostConfig}
+                  user_seeds_map={user_seeds_map}
+                  user_unclaimed_map={user_unclaimed_map}
+                  user_unclaimed_token_meta_map={user_unclaimed_token_meta_map}
+                  user_data_loading={user_data_loading}
+                  radio={radio}
+                ></FarmsDetailStake>
+              </div>
             </div>
           </div>
-        </div>
+        </FarmsDetailContext.Provider>
         {+freeAmount > 0 && is_support_lp ? (
           <div className="2xl:w-3/6 xl:w-4/6 lg:w-5/6 m-auto text-sm -mt-5 text-gray-60">
             <span>How to get Ref’s farm APR + Burrow lending APR?</span>

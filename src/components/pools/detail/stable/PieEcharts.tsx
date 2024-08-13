@@ -130,7 +130,7 @@ export default function StablePoolRowCharts(props: any) {
         {
           type: "pie",
           radius: ["40%", "50%"],
-          avoidLabelOverlap: false,
+          avoidLabelOverlap: true,
           label: {
             show: true,
             position: "outside",

@@ -215,7 +215,7 @@ export default function StableAdd(props: any) {
     number: shares,
     precision: 12 || String(shares).length,
   });
-  const [shareVal, setShareVal] = useState("0");
+  const [shareVal, setShareVal] = useState("");
   const changeShareVal = (val: any) => {
     if (+val > +sharesDecimals || val <= 0) {
       setCanSubmit(false);
@@ -223,7 +223,7 @@ export default function StableAdd(props: any) {
       setCanSubmit(true);
     }
 
-    setShareVal(val ? val : "0");
+    setShareVal(val ? val : "");
   };
   const [receiveAmounts, setReceiveAmounts] = useState(new Array(4).fill(""));
   useEffect(() => {
@@ -235,10 +235,14 @@ export default function StableAdd(props: any) {
 
     const shareParam = toNonDivisibleNumber(
       RATED_POOL_LP_TOKEN_DECIMALS,
-      shareVal
+      shareVal || "0"
     );
 
-    if (Number(shareVal) === 0 || Number(shareVal) > Number(readableShares)) {
+    if (
+      shareVal == "" ||
+      Number(shareVal) === 0 ||
+      Number(shareVal) > Number(readableShares)
+    ) {
       // setCanSubmitByShare(false);
       setReceiveAmounts(["0", "0", "0", "0"]);
       return;
@@ -412,7 +416,7 @@ export default function StableAdd(props: any) {
                 </div>
               </div>
               <RangeSlider
-                sliderAmount={shareVal}
+                sliderAmount={shareVal || 0}
                 setSliderAmount={changeShareVal}
                 max={sharesDecimals}
                 // setAmount={changeVal}

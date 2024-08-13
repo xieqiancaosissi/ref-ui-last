@@ -878,7 +878,7 @@ function YourClassicLiquidityLinePage(props: any) {
   }, []);
   return (
     <div
-      className={`rounded-xl mt-3 lg:px-4 bg-gray-20 bg-opacity-30 ${
+      className={`rounded-xl mt-3 lg:px-4 bg-gray-20 bg-opacity-30 hover:cursor-pointer ${
         switch_off ? "" : "pb-4"
       }`}
     >
@@ -1029,7 +1029,7 @@ function YourClassicLiquidityLinePage(props: any) {
                   <span className="mx-1">locked</span>
                   <span className="mr-1">in</span>
                   <div className="text-gray-10 flex items-center hover:text-gradientFrom flex-shrink-0">
-                    <span className="underline">VOTE</span>
+                    <span>VOTE</span>
                   </div>
                 </div>
               ) : null}
@@ -1272,7 +1272,7 @@ function YourClassicLiquidityLinePage(props: any) {
                     <span className="mx-1">locked</span>
                     <span className="mr-1">in</span>
                     <div className="text-gray-10 flex items-center hover:text-gradientFrom flex-shrink-0">
-                      <span className="underline">VOTE</span>
+                      <span>VOTE</span>
                     </div>
                   </div>
                 ) : null}
@@ -1406,7 +1406,7 @@ export const PoolFarmAmount = ({
               </span>
               <span className="mx-1">in</span>
               <div className="text-gray-10 flex items-center hover:cursor-pointer flex-shrink-0">
-                <span className="underline mr-1">Legacy Farms</span>
+                <span className="mr-1">Legacy Farms</span>
                 <ArrowRightUpIcon className="text-green-10"></ArrowRightUpIcon>
               </div>
             </div>
@@ -1434,7 +1434,7 @@ export const PoolFarmAmount = ({
             </span>
             <span className="mx-1">in</span>
             <div className="text-gray-10 flex items-center hover:cursor-pointer flex-shrink-0">
-              <span className="underline mr-1">Classic Farms</span>
+              <span className="mr-1">Classic Farms</span>
               <FiArrowUpRight className="text-green-10" />
               {/* <span className="ml-0.5">
         <VEARROW />

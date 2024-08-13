@@ -82,6 +82,7 @@ export default function PoolRow(props: any) {
           <div className="flex items-center xsm:hidden">
             <div className={styles.tokenImgContainer}>
               {item?.token_account_ids?.map((ite: any, ind: number) => {
+                const len = item?.token_account_ids?.length;
                 // if tokenid in tokenIcons
                 return Reflect.has(tokenIcons, ite.tokenId) ? (
                   // if token is near use new icon
@@ -89,12 +90,23 @@ export default function PoolRow(props: any) {
                     <img
                       src={tokenIcons[ite.tokenId]}
                       key={ite.tokenId + ind}
+                      style={{
+                        transform:
+                          len == 3 && ind == 2 ? "translate(-4px, -8px)" : "",
+                      }}
                     />
                   ) : (
                     <NearIcon />
                   )
                 ) : (
-                  <img src={ite.icon} key={ite.tokenId + ind} />
+                  <img
+                    src={ite.icon}
+                    key={ite.tokenId + ind}
+                    style={{
+                      transform:
+                        len == 3 && ind == 2 ? "translate(-4px, -8px)" : "",
+                    }}
+                  />
                 );
               })}
             </div>

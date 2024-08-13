@@ -1280,7 +1280,7 @@ function UserLiquidityLineStyleGroupPage() {
     <>
       {/* PC */}
       <div
-        className={`rounded-xl mt-3 bg-gray-20 lg:px-4 bg-opacity-30 xsm:hidden ${
+        className={`rounded-xl mt-3 bg-gray-20 lg:px-4 bg-opacity-30 xsm:hidden hover:cursor-pointer ${
           switch_off ? "" : "pb-4"
         }`}
         onMouseEnter={() => set_switch_off(false)}

@@ -109,7 +109,9 @@ export default function FarmsDetailStake(props: {
   const [amount, setAmount] = useState(
     stakeType == "freeToLock" ? freeAmount : ""
   );
-  const [activeTab, setActiveTab] = useState(activeMobileTab || "stake");
+  const isEnded = detailData?.farmList?.[0]?.status == "Ended";
+  const defaultTab = isEnded ? "unstake" : "stake";
+  const [activeTab, setActiveTab] = useState(activeMobileTab || defaultTab);
   const [amountAvailableCheck, setAmountAvailableCheck] = useState(true);
   const lpBalances = toReadableNumber(
     DECIMALS,
@@ -269,9 +271,12 @@ export default function FarmsDetailStake(props: {
   function showWalletSelector() {
     showWalletSelectorModal(appStore.setShowRiskModal);
   }
-  const isEnded = detailData?.farmList?.[0]?.status == "Ended";
   return (
-    <div className="bg-dark-10 rounded-md p-5 xsm:p-0">
+    <div
+      className={`bg-dark-10 rounded-md p-5 xsm:p-0 ${
+        isEnded && Number(freeAmount) === 0 ? "hidden" : ""
+      }`}
+    >
       <div className="flex items-center mb-4 xsm:mb-7 xsm:border-b xsm:border-white xsm:border-opacity-10 xsm:px-4">
         <button
           className={`text-lg pr-5 xsm:flex-1 ${
@@ -298,7 +303,7 @@ export default function FarmsDetailStake(props: {
         </button>
       </div>
       {activeTab === "stake" && (
-        <div className="xsm:px-4">
+        <div className={`xsm:px-4 ${isEnded ? "hidden" : ""}`}>
           <div className="lg:hidden mb-2.5 frcb">
             <div>
               <span

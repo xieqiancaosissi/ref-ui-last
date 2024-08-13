@@ -1292,12 +1292,13 @@ export default function FarmsPage(props: any) {
                   </div>
                 </SkeletonTheme>
               </div>
-            ) : farm_display_List.filter((seed: any) => !seed.hidden).length ===
-              0 ? (
+            ) : farm_display_List.every((seed: any) => seed.hidden) &&
+              (!showEndedFarmList ||
+                farm_display_ended_List.every((seed: any) => seed.hidden)) ? (
               <NoContent />
             ) : (
               <>
-                <div className="grid sm:grid-cols-1 lg:grid-cols-2 md: xl:grid-cols-3 gap-x-10 gap-y-6 m-auto ">
+                <div className="grid sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-6 m-auto ">
                   {farm_display_List.map((seed: Seed, index: number) => {
                     return (
                       <div
@@ -1329,7 +1330,11 @@ export default function FarmsPage(props: any) {
                           return (
                             <div
                               key={seed.seed_id + index}
-                              className={seed.hidden ? "hidden" : ""}
+                              className={
+                                seed.hidden
+                                  ? "hidden"
+                                  : "bg-dark-290 rounded-2xl opacity-50"
+                              }
                             >
                               <FarmView
                                 seed={seed}

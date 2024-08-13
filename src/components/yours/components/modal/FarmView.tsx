@@ -783,7 +783,7 @@ export function FarmView(props: {
             ? styles.farmEnded
             : isPending()
             ? "bg-gray-20 bg-opacity-20"
-            : "bg-yoursFarmBg rounded-lg"
+            : "bg-gray-20 bg-opacity-20 rounded-lg"
         }
         `}
       >

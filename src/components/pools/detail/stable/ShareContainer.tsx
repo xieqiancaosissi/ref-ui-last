@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import HoverTip from "@/components/common/Tips";
 import {
   useCanFarmV1,
@@ -39,6 +39,21 @@ export default function ShareContainer(props: any) {
   const toSauce = (type: string) => {
     router.push(`/sauce/${type}/${router.query.id}`);
   };
+
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 1024); //
+    };
+
+    window.addEventListener("resize", handleResize);
+    handleResize(); //
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
   return (
     <div className="lg:my-5 xsm:mt-5 xsm:mb-2 lg:w-270 xsm:w-full flex justify-between items-center">
       {/* left */}
@@ -55,14 +70,12 @@ export default function ShareContainer(props: any) {
           </p>
         </div>
 
-        <div className="flex flex-col items-start lg:hidden">
-          <div className="frcc">
-            <HoverTip
-              msg={"Shares available / Total shares"}
-              extraStyles={"w-46"}
-            />
-            <span>Shares</span>
-          </div>
+        <div className="frcc lg:hidden">
+          <HoverTip
+            msg={"Shares available / Total shares"}
+            extraStyles={"w-46"}
+          />
+          <span>Shares</span>
           <p className="ml-2">
             <ShareNumber id={poolDetail.id} />
           </p>
@@ -74,6 +87,7 @@ export default function ShareContainer(props: any) {
               farmStake={farmStakeV1}
               userTotalShare={userTotalShare}
               version={"Legacy"}
+              hideIcon={isMobile}
             />
           ) : null}
           {countV2 > endedFarmCountV2 || Number(farmStakeV2) > 0 ? (
@@ -83,6 +97,7 @@ export default function ShareContainer(props: any) {
               version={"Classic"}
               poolId={poolDetail.id}
               onlyEndedFarm={countV2 === endedFarmCountV2}
+              hideIcon={isMobile}
             />
           ) : null}
           {shadowBurrowShare?.stakeAmount &&
@@ -105,6 +120,7 @@ export default function ShareContainer(props: any) {
                   inStr={"in Burrow"}
                   forStable
                   from={"stable"}
+                  hideIcon={isMobile}
                 />
               </div>
             )}

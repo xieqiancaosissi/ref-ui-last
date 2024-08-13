@@ -15,7 +15,10 @@ import { feeList } from "./config";
 import HoverTip from "@/components/common/Tips";
 import BigNumber from "bignumber.js";
 import { percent, toPrecision } from "@/utils/numbers";
-import { RATED_POOL_LP_TOKEN_DECIMALS } from "@/utils/constant";
+import {
+  RATED_POOL_LP_TOKEN_DECIMALS,
+  STABLE_LP_TOKEN_DECIMALS,
+} from "@/utils/constant";
 import { percentLess } from "@/utils/numbers";
 import { usePredictShares } from "@/hooks/useStableLiquidity";
 import { ButtonTextWrapper } from "@/components/common/Button";
@@ -147,7 +150,6 @@ export default function StableAdd(props: any) {
         k.push(balancesList[index]?.symbol);
       }
     });
-    console.log(inputValList, "inputValList");
     setCanSubmit(flag);
     setNotEnoughList(k);
   }, [inputValList]);
@@ -157,7 +159,9 @@ export default function StableAdd(props: any) {
   function submit() {
     if (removeTabActive == "share") {
       const removeShares = toNonDivisibleNumber(
-        RATED_POOL_LP_TOKEN_DECIMALS,
+        poolDetail.pool_kind == "STABLE_SWAP"
+          ? STABLE_LP_TOKEN_DECIMALS
+          : RATED_POOL_LP_TOKEN_DECIMALS,
         shareVal
       );
 
@@ -215,7 +219,7 @@ export default function StableAdd(props: any) {
     number: shares,
     precision: 12 || String(shares).length,
   });
-  const [shareVal, setShareVal] = useState("0");
+  const [shareVal, setShareVal] = useState("");
   const changeShareVal = (val: any) => {
     if (+val > +sharesDecimals || val <= 0) {
       setCanSubmit(false);
@@ -223,28 +227,33 @@ export default function StableAdd(props: any) {
       setCanSubmit(true);
     }
 
-    setShareVal(val ? val : "0");
+    setShareVal(val ? val : "");
   };
   const [receiveAmounts, setReceiveAmounts] = useState(new Array(4).fill(""));
   useEffect(() => {
     // setCanSubmitByShare(true);
     const readableShares = toReadableNumber(
-      RATED_POOL_LP_TOKEN_DECIMALS,
+      poolDetail.pool_kind == "STABLE_SWAP"
+        ? STABLE_LP_TOKEN_DECIMALS
+        : RATED_POOL_LP_TOKEN_DECIMALS,
       shares
     );
-
     const shareParam = toNonDivisibleNumber(
-      RATED_POOL_LP_TOKEN_DECIMALS,
-      shareVal
+      poolDetail.pool_kind == "STABLE_SWAP"
+        ? STABLE_LP_TOKEN_DECIMALS
+        : RATED_POOL_LP_TOKEN_DECIMALS,
+      shareVal || "0"
     );
-
-    if (Number(shareVal) === 0 || Number(shareVal) > Number(readableShares)) {
+    if (
+      shareVal == "" ||
+      Number(shareVal) === 0 ||
+      Number(shareVal) > Number(readableShares)
+    ) {
       // setCanSubmitByShare(false);
       setReceiveAmounts(["0", "0", "0", "0"]);
       return;
     }
     // setCanSubmitByShare(false);
-
     const receiveAmounts = getRemoveLiquidityByShare(
       shareParam,
       updatedMapList[0]
@@ -252,13 +261,15 @@ export default function StableAdd(props: any) {
     const parsedAmounts = receiveAmounts.map((amount: any, i: number) =>
       toRoundedReadableNumber({
         decimals:
-          LP_TOKEN_DECIMALS - updatedMapList[0].token_account_ids[i].decimals,
+          (poolDetail.pool_kind == "STABLE_SWAP"
+            ? STABLE_LP_TOKEN_DECIMALS
+            : RATED_POOL_LP_TOKEN_DECIMALS) -
+          updatedMapList[0].token_account_ids[i].decimals,
         number: amount,
         precision: 0,
         withCommas: false,
       })
     );
-
     setReceiveAmounts(parsedAmounts);
   }, [updatedMapList[0].token_account_ids, shareVal]);
 
@@ -285,11 +296,18 @@ export default function StableAdd(props: any) {
   const calcSharesRemoved = () => {
     const nonPrecisionValue = percentIncrese(
       feeValue,
-      toReadableNumber(RATED_POOL_LP_TOKEN_DECIMALS, predictedRemoveShares)
+      toReadableNumber(
+        poolDetail.pool_kind == "STABLE_SWAP"
+          ? STABLE_LP_TOKEN_DECIMALS
+          : RATED_POOL_LP_TOKEN_DECIMALS,
+        predictedRemoveShares
+      )
     );
 
     const myReadableShare = toReadableNumber(
-      RATED_POOL_LP_TOKEN_DECIMALS,
+      poolDetail.pool_kind == "STABLE_SWAP"
+        ? STABLE_LP_TOKEN_DECIMALS
+        : RATED_POOL_LP_TOKEN_DECIMALS,
       shares
     );
     if (error) return "0";
@@ -412,7 +430,7 @@ export default function StableAdd(props: any) {
                 </div>
               </div>
               <RangeSlider
-                sliderAmount={shareVal}
+                sliderAmount={shareVal || 0}
                 setSliderAmount={changeShareVal}
                 max={sharesDecimals}
                 // setAmount={changeVal}

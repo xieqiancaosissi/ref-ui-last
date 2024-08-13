@@ -15,7 +15,10 @@ import { feeList } from "./config";
 import HoverTip from "@/components/common/Tips";
 import BigNumber from "bignumber.js";
 import { percent, toPrecision } from "@/utils/numbers";
-import { RATED_POOL_LP_TOKEN_DECIMALS } from "@/utils/constant";
+import {
+  RATED_POOL_LP_TOKEN_DECIMALS,
+  STABLE_LP_TOKEN_DECIMALS,
+} from "@/utils/constant";
 import { percentLess } from "@/utils/numbers";
 import { usePredictShares } from "@/hooks/useStableLiquidity";
 import { ButtonTextWrapper } from "@/components/common/Button";
@@ -27,9 +30,11 @@ import { showWalletSelectorModal } from "@/utils/wallet";
 export function myShares({
   totalShares,
   userTotalShare,
+  poolDetail,
 }: {
   totalShares: string;
   userTotalShare: BigNumber;
+  poolDetail: any;
 }) {
   const sharePercent = percent(userTotalShare.valueOf(), totalShares);
 
@@ -43,7 +48,9 @@ export function myShares({
   } else displayPercent = toPrecision(String(sharePercent), 3);
 
   const nonPrecisionDisplayUserTotalShares = toReadableNumber(
-    RATED_POOL_LP_TOKEN_DECIMALS,
+    poolDetail.pool_kind == "STABLE_SWAP"
+      ? STABLE_LP_TOKEN_DECIMALS
+      : RATED_POOL_LP_TOKEN_DECIMALS,
     displayUserTotalShare
   );
 
@@ -258,13 +265,13 @@ export default function StableAdd(props: any) {
           <div className="lg:hidden text-white font-medium text-lg mb-6">
             Add Liquidity
           </div>
-          <div className="max-h-60 overflow-y-auto xsm:w-full">
+          <div className="overflow-y-auto xsm:w-full">
             {updatedMapList[0]?.token_account_ids?.map(
               (ite: any, ind: number) => {
                 return (
                   <div key={ite.tokenId} className="xsm:w-full">
                     <div className="mb-6 xsm:w-full">
-                      <div className="flex items-center justify-between text-gray-50 mb-2 text-sm xsm:w-full">
+                      <div className="flex items-end justify-end text-gray-50 mb-2 text-sm xsm:w-full">
                         <span>
                           Balance:{" "}
                           <span
@@ -291,22 +298,26 @@ export default function StableAdd(props: any) {
                           </span>
                         </span>
                       </div>
-                      <div
-                        className="flex h-16 w-full items-center border border-transparent hover:border-green-20 rounded"
-                        style={{ background: "rgba(0,0,0,.2)" }}
-                      >
-                        <input
-                          type="number"
-                          className="h-16 p-3 lg:w-74 text-white"
-                          style={{ fontSize: "26px" }}
-                          value={inputValList[ind]}
-                          onChange={(e) => changeVal(e, ind)}
-                          placeholder="0"
-                        />
-                        <Icon icon={ite.icon} className="h-7 w-7 mr-2" />
-                        <span className="text-white text-base">
-                          {ite.symbol}
-                        </span>
+                      <div className="flex">
+                        <div className="w-1/4 flex items-center">
+                          <Icon icon={ite.icon} className="h-7 w-7 mr-2" />
+                          <span className="text-white text-base">
+                            {ite.symbol}
+                          </span>
+                        </div>
+                        <div
+                          className="flex h-11 w-3/4 items-center border border-transparent hover:border-green-20 rounded"
+                          style={{ background: "rgba(0,0,0,.2)" }}
+                        >
+                          <input
+                            type="number"
+                            className="h-11 p-3 lg:w-74 text-white"
+                            style={{ fontSize: "20px" }}
+                            value={inputValList[ind]}
+                            onChange={(e) => changeVal(e, ind)}
+                            placeholder="0"
+                          />
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -460,6 +471,7 @@ export default function StableAdd(props: any) {
                 userTotalShare: new BigNumber(
                   toPrecision(percentLess(feeValue, predicedShares), 0)
                 ),
+                poolDetail,
               })}
             >
               {myShares({
@@ -472,6 +484,7 @@ export default function StableAdd(props: any) {
                 userTotalShare: new BigNumber(
                   toPrecision(percentLess(feeValue, predicedShares), 0)
                 ),
+                poolDetail,
               })}
             </div>
           </div>

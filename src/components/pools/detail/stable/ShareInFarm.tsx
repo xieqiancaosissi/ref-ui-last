@@ -83,13 +83,13 @@ export const ShareInBurrow = ({
               }% `}
         </span>
         &nbsp;
-        <span className="underline text-gray-10  frcc">
+        <span className="text-gray-10  frcc">
           {inStr ? (
             inStr
           ) : (
             <FormattedMessage id="in_farm" defaultMessage="in Farm" />
           )}
-          <span className="ml-1.5">
+          <span>
             <FiArrowUpRight className="text-green-10" />
           </span>
         </span>
@@ -162,7 +162,7 @@ export const ShareInFarm = ({
               }% `}
         </span>
         &nbsp;
-        <span className="underline mr-1 text-gray-10  frcc">
+        <span className="mr-1 text-gray-10  frcc">
           {inStr ? (
             inStr
           ) : (
@@ -187,6 +187,7 @@ export const ShareInFarmV2 = ({
   version,
   poolId,
   onlyEndedFarm,
+  hideIcon,
 }: {
   farmStake: string | number;
   userTotalShare: BigNumber;
@@ -194,6 +195,7 @@ export const ShareInFarmV2 = ({
   version?: string;
   poolId?: number;
   onlyEndedFarm?: boolean;
+  hideIcon?: boolean;
 }) => {
   const router = useRouter();
 
@@ -216,9 +218,9 @@ export const ShareInFarmV2 = ({
   };
 
   return (
-    <div className="frcc mx-5 text-xs">
+    <div className="lg:frcc xsm:fccc mx-5 text-xs">
       {/* <FarmDot inFarm={Number(farmShare) > 0} className="mr-1" /> */}
-      <StableFarmIcon />
+      {!hideIcon && <StableFarmIcon />}
       <div className="self-start whitespace-nowrap flex items-center text-gray-60 ">
         <span className="text-white ml-1 mr-2">
           {`${
@@ -227,12 +229,9 @@ export const ShareInFarmV2 = ({
               : toPrecision(farmSharePercent, 2, false, false)
           }% `}
         </span>
-        <div
-          onClick={() => toFarm()}
-          className="underline cursor-pointer ml-0.5 frcc"
-        >
+        <div onClick={() => toFarm()} className="cursor-pointer ml-0.5 frcc">
           <span className="text-gradientFrom">
-            {version && <span>In {version} Farms</span>}
+            {version && <span>in {version} Farms</span>}
           </span>
           <FiArrowUpRight className="text-green-10" />
         </div>

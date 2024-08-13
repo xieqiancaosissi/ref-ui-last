@@ -56,7 +56,7 @@
 }
 
 .tokenImgContainer {
-  @apply flex items-center;
+  @apply flex items-center max-w-13 flex-wrap justify-center;
 }
 
 .tokenImgContainer img {
@@ -70,15 +70,15 @@
 }
 
 .tokenImgContainer > :nth-child(3) {
-  transform: translateX(-12px);
+  transform: translateY(-8px);
 }
 
 .tokenImgContainer > :nth-child(4) {
-  transform: translateX(-16px);
+  transform: translate(-8px, -8px);
 }
 
 .symbol {
-  @apply text-base text-white font-medium lg:pr-2;
+  @apply text-base text-white font-medium lg:pr-2 flex lg:max-w-41 xsm:justify-end;
 }
 
 .tagPublicStyle {

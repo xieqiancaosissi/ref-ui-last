@@ -11,7 +11,7 @@ export default function OrderlyPanel() {
   const totalAssetsUsd = useHoldings();
   const is_mobile = isMobile();
   const handleOrderlyClick = () => {
-    window.open("https://orderly.org/", "_blank");
+    window.open("https://app.ref.finance/orderly", "_blank");
   };
   return (
     <div

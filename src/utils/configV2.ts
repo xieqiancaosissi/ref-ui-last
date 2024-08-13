@@ -8,7 +8,10 @@ export default function getConfigV2(
         NO_REQUIRED_REGISTRATION_TOKEN_IDS: [
           "17208628f84f5d6ad33f0da3bbbeb27ffcb398eac501a31bd6ad2011e36133a1",
         ],
-        HIDDEN_TOKEN_LIST: ["nearx.stader-labs.near"],
+        HIDDEN_TOKEN_LIST: [
+          "nearx.stader-labs.near",
+          "0316eb71485b0ab14103307bf65a021042c6d380.factory.bridge.near",
+        ],
         INIT_COMMON_TOKEN_IDS: [
           "near",
           "token.v2.ref-finance.near",
@@ -132,7 +135,10 @@ export default function getConfigV2(
         NO_REQUIRED_REGISTRATION_TOKEN_IDS: [
           "17208628f84f5d6ad33f0da3bbbeb27ffcb398eac501a31bd6ad2011e36133a1",
         ],
-        HIDDEN_TOKEN_LIST: ["nearx.stader-labs.near"],
+        HIDDEN_TOKEN_LIST: [
+          "nearx.stader-labs.near",
+          "0316eb71485b0ab14103307bf65a021042c6d380.factory.bridge.near",
+        ],
         INIT_COMMON_TOKEN_IDS: [
           "near",
           "token.v2.ref-finance.near",

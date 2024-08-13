@@ -63,8 +63,8 @@ const limitOrderSuccessPopUp = ({
       hideProgressBar: false,
       closeButton: (
         <CloseIcon
-          className="flex-shrink-0 text-dark-80 hover:text-white relative top-1 right-1"
           size="12"
+          className="relative top-2 right-1 text-dark-80 hover:text-white flex-shrink-0"
         />
       ),
       progressStyle: {

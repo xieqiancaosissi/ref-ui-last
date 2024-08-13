@@ -364,7 +364,7 @@ export default function ActiveLine({
             <div className="grid  grid-cols-3 pb-1.5">
               <span />
               {<Created order={order} />}
-              <div className="relative z-50 text-xs rounded justify-self-end">
+              <div className="relative z-10 text-xs rounded justify-self-end">
                 {!!orderTx && (
                   <a
                     className="flex items-center text-gray-10 cursor-pointer hover:text-white bg-black bg-opacity-20 py-0.5 px-1.5"

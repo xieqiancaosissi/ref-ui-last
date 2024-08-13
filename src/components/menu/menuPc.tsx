@@ -16,16 +16,15 @@ export default function MenuPc() {
   const [oneLevelMenuId, setOneLevelMenuId] = useState("trade");
   const [twoLevelMenuId, setTwoLevelMenuId] = useState("swap");
   const [twoLevelMenuShow, setTwoLevelMenuShow] = useState<boolean>(true);
-  const [oneLevelHoverId, setOneLevelHoverId] = useState<string>();
   const menuList = menuData();
   const router = useRouter();
   const oneLevelData = useMemo(() => {
     let oneLevel;
-    if (oneLevelHoverId) {
-      oneLevel = menuList.find((item) => item.id === oneLevelHoverId);
+    if (oneLevelMenuId) {
+      oneLevel = menuList.find((item) => item.id === oneLevelMenuId);
     }
     return oneLevel;
-  }, [oneLevelHoverId, menuList]);
+  }, [oneLevelMenuId, menuList]);
   useEffect(() => {
     chooseMenuByRoute(router.route);
   }, [router.route]);
@@ -71,48 +70,38 @@ export default function MenuPc() {
     }
   }
   // for stable detail css style
+  const [extraBack, setExtraBack] = useState("transparent");
   const [extraWidth, setExtraWidth] = useState("60%");
   useEffect(() => {
+    setExtraBack("transparent");
     setExtraWidth("60%");
     if (
       router.route.indexOf("pool/stable") != -1 ||
       router.route.indexOf("yours") != -1
     ) {
+      setExtraBack("rgba(33, 43, 53, 0.4)");
       setExtraWidth("100%");
     }
   }, [router.route]);
+
   return (
     <div className="fixed w-full" style={{ zIndex: "99" }}>
+      {/* one level menu */}
       <div
         className="grid grid-cols-3 items-center text-white px-5 border-b border-white border-opacity-10 bg-primaryDark"
         style={{ height: "46px" }}
       >
-        <Image
-          src="/images/logo.svg"
-          width={127}
-          height={17}
-          alt=""
-          className="cursor-pointer"
-          onClick={() => {
-            window.open("https://www.ref.finance/");
-          }}
-        />
-        {/* one level menu */}
+        <Image src="/images/logo.svg" width={127} height={17} alt="" />
         <div className="justify-self-center flex items-center gap-12">
           {menuList.map((menu) => {
             return (
               <div
                 key={menu.id}
-                className={`flex items-center gap-1.5 cursor-pointer font-bold text-base hover:text-green-10 ${
+                className={`flex items-center gap-1.5 cursor-pointer font-bold text-base ${
                   oneLevelMenuId === menu.id ? "text-green-10" : "text-gray-10"
                 }`}
                 onClick={() => {
-                  if (menu.path && !menu.children) {
-                    chooseOneLevelMenu(menu.id);
-                  }
-                }}
-                onMouseEnter={() => {
-                  setOneLevelHoverId(menu.id);
+                  chooseOneLevelMenu(menu.id);
                 }}
               >
                 {menu.icon}
@@ -135,11 +124,9 @@ export default function MenuPc() {
           }`}
           style={{
             height: "46px",
+            background: extraBack,
             width: extraWidth,
             margin: "0 auto",
-          }}
-          onMouseLeave={() => {
-            setOneLevelHoverId("");
           }}
         >
           {oneLevelData.children.map((item) => {
@@ -149,7 +136,7 @@ export default function MenuPc() {
                 onClick={() => {
                   chooseTwoLevelMenu(item);
                 }}
-                className={`flex items-center h-9 rounded cursor-pointer text-base gap-2 px-5 hover:text-white ${
+                className={`flex items-center h-9 rounded cursor-pointer text-base gap-2 px-5 ${
                   twoLevelMenuId === item.id ? "text-white" : "text-gray-10"
                 }`}
               >

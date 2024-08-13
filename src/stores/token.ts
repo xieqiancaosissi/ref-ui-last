@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { ITokenMetadata, IUITokens } from "@/interfaces/tokens";
+import getConfigV2 from "@/utils/configV2";
 export type ITokenStore = {
   get_global_whitelisted_tokens_ids: () => string[];
   set_global_whitelisted_tokens_ids: (whitelisted_tokens_ids: string[]) => void;
@@ -48,7 +49,14 @@ export const useTokenStore = create(
       get_auto_whitelisted_postfix: () => get().auto_whitelisted_postfix,
       set_auto_whitelisted_postfix: (auto_whitelisted_postfix: string[]) =>
         set({ auto_whitelisted_postfix }),
-      get_common_tokens: () => get().common_tokens,
+      get_common_tokens: () => {
+        const commonTokens = get().common_tokens;
+        const hidden_ids = getConfigV2().HIDDEN_TOKEN_LIST;
+        const filteredTokens = commonTokens?.filter(
+          (token: ITokenMetadata) => !hidden_ids.includes(token.id)
+        );
+        return filteredTokens;
+      },
       set_common_tokens: (common_tokens: ITokenMetadata[]) =>
         set({ common_tokens }),
       get_common_tokens_tag: () => get().common_tokens_tag,

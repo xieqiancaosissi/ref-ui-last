@@ -203,7 +203,7 @@ export default function Swap() {
   }
   // select-none
   return (
-    <main className="m-auto my-20 xsm:my-0 xsm:w-95vw lg:w-[420px]">
+    <main className="m-auto my-20 xsm:mt-4 xsm:w-95vw lg:w-[420px]">
       <InitData />
       <SwapPopup />
       <div className="rounded-lg bg-dark-10 p-4">

@@ -236,6 +236,34 @@ export const getPoolsDetailById = async ({ pool_id }: { pool_id: string }) => {
     });
 };
 
+export const getPoolsDetailByIds = async ({
+  pool_ids,
+}: {
+  pool_ids: string[];
+}): Promise<any[]> => {
+  const ids = pool_ids.join("|");
+  if (!ids) return [];
+
+  return Promise.all(
+    pool_ids.map((pool_id) => {
+      return fetch(getConfig().indexerUrl + "/pool/detail?pool_id=" + pool_id, {
+        method: "GET",
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+          ...getAuthenticationHeaders("/pool/detail"),
+        },
+      })
+        .then((res) => res.json())
+        .then((pools) => {
+          return pools.data;
+        })
+        .catch(() => {
+          return [];
+        });
+    })
+  );
+};
+
 export const getSharesInPool = (id: number): Promise<string> => {
   return refFiViewFunction({
     methodName: "get_pool_shares",

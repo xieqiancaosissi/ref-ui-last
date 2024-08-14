@@ -36,8 +36,9 @@ export default function PoolRow(props: any) {
   const toDetail = (item: any) => {
     if (item.degens) {
       router.push(`/pool/degen/${item.id}`);
+    } else {
+      router.push(`/pool/stable/${item.id}`);
     }
-    router.push(`/pool/stable/${item.id}`);
   };
   const { currentwatchListId } = useWatchList();
   const [renderStarList, setRenderStarList] = useState<any>([]);

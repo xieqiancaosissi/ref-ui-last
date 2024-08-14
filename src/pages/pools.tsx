@@ -16,6 +16,7 @@ import Classic from "@/components/pools/classicPool/classic";
 import Stable from "@/components/pools/stablePool/stablePool";
 import Dcl from "@/components/pools/dclPool/dcl";
 import Degen from "@/components/pools/degenPool/degenPool";
+import WatchList from "@/components/pools/watchList/watch";
 import CreatePool from "@/components/pools/createPoolModal/index";
 import _ from "lodash";
 import { useRiskTokens } from "@/hooks/useRiskTokens";
@@ -105,6 +106,10 @@ export default function Farms() {
       id: "dcl",
       Component: Dcl,
     },
+    {
+      id: "watchlist",
+      Component: WatchList,
+    },
   ];
 
   const { pureIdList } = useRiskTokens();
@@ -166,6 +171,16 @@ export default function Farms() {
     if (isActive == "dcl") {
       setMobilePros({
         which: "dclTabSortChange",
+        sortMap: {
+          key: item.key,
+          sort: sortMap.sort,
+        },
+      });
+    }
+
+    if (isActive == "watchlist") {
+      setMobilePros({
+        which: "watchListTabSortChange",
         sortMap: {
           key: item.key,
           sort: sortMap.sort,
@@ -337,15 +352,6 @@ export default function Farms() {
       {/* Mobile Start */}
       <div className="lg:hidden  my-4 px-4 box-border">
         <div className="frcc w-full mb-5">
-          {/* <div className="text-gray-50 text-sm">{title}</div>
-          <div className="text-white text-xl">
-            $
-            {addThousandSeparator(
-              type == "tvl"
-                ? new Big(allTVL || "0").toFixed(2)
-                : new Big(allVolume24h || "0").toFixed(2)
-            )}
-          </div> */}
           <div
             className="w-1/2 mr-1 p-4 rounded-md"
             style={{
@@ -354,7 +360,7 @@ export default function Farms() {
             }}
           >
             <p className="text-sm">TVL(Total)</p>
-            <p className="text-lg text-white mt-2">
+            <p className="text-lg text-white mt-2 overflow-hidden text-ellipsis whitespace-nowrap">
               ${addThousandSeparator(new Big(allTVL || "0").toFixed(2))}
             </p>
           </div>
@@ -713,6 +719,77 @@ export default function Farms() {
                     }}
                   >
                     {dclHeader.map((item, index) => {
+                      return (
+                        <div
+                          key={item.key + Math.random() + index}
+                          className={`frcc select-none h-7  ${
+                            sortMap.key == item.key
+                              ? "text-white bg-gray-100 rounded"
+                              : "text-gray-60"
+                          }`}
+                          onClick={() => handleSort(item)}
+                        >
+                          <span>{item.value}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </header>
+            )}
+
+            {/* watch sort */}
+            {isActive == "watchlist" && (
+              <header
+                className="relative  w-1/2 h-9 text-white border border-gray-40 rounded text-sm flex items-center mx-1"
+                style={{
+                  background: "rgba(126, 138, 147, 0.1)",
+                }}
+                ref={modalRef}
+              >
+                <div className="w-full h-full flex justify-between items-center pl-1 pr-2">
+                  <div className="frcc flex-1">
+                    <div
+                      className="bg-gray-20 frcc w-7 h-7 rounded mr-1"
+                      onClick={() => {
+                        setMobilePros({
+                          which: "watchListTabSortArrowChange",
+                          sort: sortMap.sort === "desc" ? "asc" : "desc",
+                        });
+                        setSortMap((prevSortMap) => ({
+                          key: prevSortMap.key,
+                          sort: prevSortMap.sort === "desc" ? "asc" : "desc",
+                        }));
+                      }}
+                    >
+                      {sortMap.sort === "desc" ? <DownArrow /> : <UpArrow />}
+                    </div>
+                    <div
+                      className="flex-1 h-full"
+                      onClick={() => {
+                        setShowClassHeader((prev) => !prev);
+                      }}
+                    >
+                      {classHeaderVal}
+                    </div>
+                  </div>
+                  <div
+                    onClick={() => {
+                      setShowClassHeader((prev) => !prev);
+                    }}
+                    className="frcc h-full"
+                  >
+                    <ArrowDownIcon></ArrowDownIcon>
+                  </div>
+                </div>
+                {showClassHeader && (
+                  <div
+                    className="absolute top-9 left-0 w-full bg-dark-70 rounded-b-md py-2 text-gray-50 text-sm"
+                    style={{
+                      zIndex: "99",
+                    }}
+                  >
+                    {classicHeader.map((item, index) => {
                       return (
                         <div
                           key={item.key + Math.random() + index}

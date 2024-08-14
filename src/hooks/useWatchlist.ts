@@ -7,7 +7,6 @@ export const useWatchList = () => {
   const [currentwatchListId, setCurrentwatchListId] = useState<any>([]);
   const accountStore = useAccountStore();
   const accountId = accountStore.getAccountId();
-
   async function getwatch() {
     return await db.queryWatchList();
   }

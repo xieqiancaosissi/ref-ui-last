@@ -93,8 +93,8 @@ export default function Classic({
     <>
       <div className="xsm:hidden">
         <PoolDocTips
-          tips="Stable pools, which can contain two or more tokens, use Curve's StableSwap algorithm."
-          src="https://guide.ref.finance/products/guides/liquidity-management/stable-and-rated-pools"
+          tips="Degen pools, which can contain two or more tokens, use Curve's StableSwap algorithm combined with Oracle for real-time price updates of trading pairs, allowing the creation of StablePools with any token."
+          src=""
         />
       </div>
       <div className="flex flex-col items-center  w-full lg:mt-8">

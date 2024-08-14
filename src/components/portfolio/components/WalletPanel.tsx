@@ -242,7 +242,7 @@ export default function WalletPanel() {
           <p className="text-xs text-white frcc">
             {displayAuroraAddress}
             <CopyToClipboard text={auroraAddress}>
-              <CopyIcon className="text-primaryText hover:text-white cursor-pointer ml-1.5"></CopyIcon>
+              <CopyIcon className="text-gray-60 hover:text-white cursor-pointer ml-1.5"></CopyIcon>
             </CopyToClipboard>
           </p>
         </div>
@@ -253,7 +253,12 @@ export default function WalletPanel() {
         }`}
       >
         <p className="text-xs text-gray-60 mr-1"> Mapping Account:</p>
-        <p className="text-xs text-white">{displayAuroraAddress}</p>
+        <p className="text-xs text-white flex">
+          {displayAuroraAddress}
+          <CopyToClipboard text={auroraAddress}>
+            <CopyIcon className="text-gray-60 hover:text-white cursor-pointer ml-1.5"></CopyIcon>
+          </CopyToClipboard>
+        </p>
       </div>
       <div className="bg-gray-20 bg-opacity-40 p-4 rounded">
         <div className="flex items-center text-gray-50 text-xs w-full mb-5">

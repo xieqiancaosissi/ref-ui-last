@@ -532,7 +532,7 @@ export default function DCLPoolDetail() {
 
       {user_liquidities.length >= 1 && accountId && poolId && isMobile && (
         <div
-          className="h-24 frcc p-4 fixed bottom-8 z-50"
+          className="h-24 frcc p-4 fixed bottom-8 z-10"
           style={{
             background: "#16232E",
             width: "100vw",

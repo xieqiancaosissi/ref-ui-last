@@ -764,7 +764,7 @@ export default function ClassicPoolDetail() {
         updatedMapList?.length > 0 &&
         isMobile && (
           <div
-            className="h-24 frcc p-4 fixed bottom-8 z-50"
+            className="h-24 frcc p-4 fixed bottom-8 z-10"
             style={{
               background: "#16232E",
               width: "100vw",

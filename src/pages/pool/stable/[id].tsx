@@ -241,7 +241,7 @@ export default function StablePoolDetail() {
         </div>
       </div>
       <div
-        className="h-24 frcc p-4 fixed bottom-8 z-50 lg:hidden"
+        className="h-24 frcc p-4 fixed bottom-8 z-10 lg:hidden"
         style={{
           background: "#16232E",
           width: "100vw",

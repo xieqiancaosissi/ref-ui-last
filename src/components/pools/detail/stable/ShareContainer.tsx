@@ -117,7 +117,7 @@ export default function ShareContainer(props: any) {
                 <ShareInBurrow
                   farmStake={shadowBurrowShare?.stakeAmount}
                   userTotalShare={userTotalShare}
-                  inStr={"in Burrow"}
+                  inStr={"Burrow"}
                   forStable
                   from={"stable"}
                   hideIcon={isMobile}

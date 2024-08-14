@@ -1,5 +1,10 @@
 import React from "react";
-import { NearIcon, DangerousIcon, TknIcon } from "@/components/pools/icon";
+import {
+  NearIcon,
+  DangerousIcon,
+  TknIcon,
+  TknxIcon,
+} from "@/components/pools/icon";
 import { getRiskTagByToken } from "@/utils/commonUtil";
 
 export const TokenIconComponent = ({
@@ -21,16 +26,26 @@ export const TokenIconComponent = ({
     return (
       <div className={`relative shrink-0`}>
         <img src={tokenIcons[ite.tokenId]} alt="" style={iconStyle} />
-        {pureIdList.includes(ite.tokenId) && (
-          <TknIcon
-            className="absolute z-10"
-            style={{
-              bottom: "0px",
-              left: "50%",
-              transform: "translateX(-50%)",
-            }}
-          />
-        )}
+        {pureIdList.includes(ite.tokenId) &&
+          (ite.tokenId.indexOf("tknx") != -1 ? (
+            <TknxIcon
+              className="absolute z-1"
+              style={{
+                bottom: "0px",
+                left: "50%",
+                transform: "translateX(-50%)",
+              }}
+            />
+          ) : (
+            <TknIcon
+              className="absolute z-1"
+              style={{
+                bottom: "0px",
+                left: "50%",
+                transform: "translateX(-50%)",
+              }}
+            />
+          ))}
       </div>
     );
   }
@@ -42,16 +57,26 @@ export const TokenIconComponent = ({
   return (
     <div className={`relative shrink-0 z-${ind + 2}`}>
       <img src={ite.icon} alt="" style={iconStyle} />
-      {pureIdList.includes(ite.tokenId) && (
-        <TknIcon
-          className="absolute"
-          style={{
-            bottom: "0px",
-            left: "50%",
-            transform: "translateX(-50%)",
-          }}
-        />
-      )}
+      {pureIdList.includes(ite.tokenId) &&
+        (ite.tokenId.indexOf("tknx") != -1 ? (
+          <TknxIcon
+            className="absolute z-1"
+            style={{
+              bottom: "0px",
+              left: "50%",
+              transform: "translateX(-50%)",
+            }}
+          />
+        ) : (
+          <TknIcon
+            className="absolute z-1"
+            style={{
+              bottom: "0px",
+              left: "50%",
+              transform: "translateX(-50%)",
+            }}
+          />
+        ))}
     </div>
   );
 };

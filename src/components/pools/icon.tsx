@@ -366,6 +366,83 @@ export function TknIcon(props: any) {
   );
 }
 
+export function TknxIcon(props: any) {
+  return (
+    <svg
+      width="26"
+      height="26"
+      viewBox="0 0 26 26"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <mask
+        id="mask0_7911_6459"
+        maskUnits="userSpaceOnUse"
+        x="0"
+        y="0"
+        width="26"
+        height="26"
+      >
+        <circle cx="13" cy="13" r="12.5" fill="white" stroke="black" />
+      </mask>
+      <g mask="url(#mask0_7911_6459)">
+        <g filter="url(#filter0_b_7911_6459)">
+          <rect
+            x="-1"
+            y="17"
+            width="28"
+            height="10"
+            fill="black"
+            fillOpacity="0.68"
+          />
+        </g>
+        <path
+          d="M16.4912 23.0008L18.5192 20.8228L17.6192 18.8008H18.6572L19.1852 20.1508L20.3612 18.8008H21.5432L19.5692 20.9248L20.4992 23.0008H19.4612L18.8972 21.5908L17.6732 23.0008H16.4912Z"
+          fill="white"
+        />
+        <path
+          d="M12.1523 23.0008L13.2803 18.8008H14.1323L15.3563 21.4708L16.0763 18.8008H16.9883L15.8603 23.0008H15.0743L13.8023 20.2468L13.0643 23.0008H12.1523Z"
+          fill="white"
+        />
+        <path
+          d="M7.79297 23.0008L8.92097 18.8008H9.84497L9.34697 20.6608L11.423 18.8008H12.671L10.625 20.5588L11.615 23.0008H10.601L9.89297 21.1108L9.02297 21.8548L8.71697 23.0008H7.79297Z"
+          fill="white"
+        />
+        <path
+          d="M4.95417 23.0008L5.85417 19.6528H4.57617L4.80417 18.8008H8.28417L8.05617 19.6528H6.77817L5.87817 23.0008H4.95417Z"
+          fill="white"
+        />
+      </g>
+      <defs>
+        <filter
+          id="filter0_b_7911_6459"
+          x="-2"
+          y="16"
+          width="30"
+          height="12"
+          filterUnits="userSpaceOnUse"
+          colorInterpolationFilters="sRGB"
+        >
+          <feFlood floodOpacity="0" result="BackgroundImageFix" />
+          <feGaussianBlur in="BackgroundImageFix" stdDeviation="0.5" />
+          <feComposite
+            in2="SourceAlpha"
+            operator="in"
+            result="effect1_backgroundBlur_7911_6459"
+          />
+          <feBlend
+            mode="normal"
+            in="SourceGraphic"
+            in2="effect1_backgroundBlur_7911_6459"
+            result="shape"
+          />
+        </filter>
+      </defs>
+    </svg>
+  );
+}
+
 export function NoContentIcon(props: any) {
   return (
     <svg

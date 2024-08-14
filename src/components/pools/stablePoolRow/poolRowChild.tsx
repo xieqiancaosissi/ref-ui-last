@@ -416,7 +416,7 @@ export default function PoolRow(props: any) {
                     <ShareInBurrow
                       farmStake={shadowBurrowShare?.stakeAmount}
                       userTotalShare={userTotalShare}
-                      inStr={"in Burrow"}
+                      inStr={"Burrow"}
                       forStable
                       from={"stable"}
                       poolId={item.id}

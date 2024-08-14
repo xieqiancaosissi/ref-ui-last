@@ -11,6 +11,7 @@ import { get_shadow_records } from "@/services/farm";
 import { useShadowRecord } from "@/hooks/useStableShares";
 import { scientificNotationToString } from "@/utils/numbers";
 import { useNewPoolData } from "@/hooks/useStableShares";
+import { Span } from "next/dist/trace";
 
 export const ShareInBurrow = ({
   farmStake,
@@ -67,7 +68,7 @@ export const ShareInBurrow = ({
           hideIcon ? "" : "ml-1.5"
         }`}
       >
-        <span className={`text-left text-white mr-1.5`}>
+        <span className={`text-left text-white mr-1`}>
           {onlyShowStake
             ? toPrecision(
                 toReadableNumber(
@@ -82,8 +83,8 @@ export const ShareInBurrow = ({
                   : toPrecision(farmSharePercent, 2, false, false)
               }% `}
         </span>
-        &nbsp;
-        <span className="text-gray-10  frcc">
+        {inStr == "Burrow" && <span className="text-gray-10 mr-1">in</span>}
+        <span className="text-gray-10  frcc underline">
           {inStr ? (
             inStr
           ) : (
@@ -222,7 +223,7 @@ export const ShareInFarmV2 = ({
       {/* <FarmDot inFarm={Number(farmShare) > 0} className="mr-1" /> */}
       {!hideIcon && <StableFarmIcon />}
       <div className="self-start whitespace-nowrap flex items-center text-gray-60 ">
-        <span className="text-white ml-1 mr-2">
+        <span className="text-white ml-1 mr-0.5">
           {`${
             Number(farmSharePercent) < 0.1 && Number(farmSharePercent) > 0
               ? "< 0.1"
@@ -231,7 +232,11 @@ export const ShareInFarmV2 = ({
         </span>
         <div onClick={() => toFarm()} className="cursor-pointer ml-0.5 frcc">
           <span className="text-gradientFrom">
-            {version && <span>in {version} Farms</span>}
+            {version && (
+              <span>
+                in <span className="underline">{version} Farms</span>
+              </span>
+            )}
           </span>
           <FiArrowUpRight className="text-green-10" />
         </div>

@@ -91,9 +91,9 @@ export default function StableAdd(props: any) {
   const [isLoading, setIsLoading] = useState(false);
 
   function submit() {
-    const amountBN = new BigNumber(shareVal?.toString());
+    const amountBN = new BigNumber((shareVal || "0")?.toString());
     const shareBN = new BigNumber(toReadableNumber(24, shares));
-    if (Number(shareVal) === 0) {
+    if (Number(shareVal || "0") === 0) {
       throw new Error(
         intl.formatMessage({ id: "must_input_a_value_greater_than_zero" })
       );
@@ -114,18 +114,18 @@ export default function StableAdd(props: any) {
   // by share
   const { shares } = usePool(poolDetail.id);
   const sharesDecimals = toReadableNumber(24, shares);
-  const [shareVal, setShareVal] = useState("0");
+  const [shareVal, setShareVal] = useState("");
   const changeShareVal = (val: any) => {
     setCanSubmit(true);
     if (+val > +sharesDecimals) {
       setCanSubmit(false);
     }
-    setShareVal(val ? val : "0");
+    setShareVal(val ? val : "");
   };
   const { minimumAmounts, removeLiquidity } = useRemoveLiquidity({
     pool: updatedMapList[0],
     slippageTolerance: feeValue,
-    shares: shareVal ? toNonDivisibleNumber(24, shareVal) : "0",
+    shares: shareVal ? toNonDivisibleNumber(24, shareVal || "0") : "0",
   });
 
   const closeInit = () => {
@@ -359,7 +359,7 @@ export default function StableAdd(props: any) {
 
             {/* submit */}
             {accountStore.isSignedIn ? (
-              canSubmit && +shareVal > 0 ? (
+              canSubmit && +(shareVal || "0") > 0 ? (
                 <div
                   className="poolBtnStyleActiveEmpty h-11 lg:mt-2 xsm:mt-7  cursor-pointer hover:opacity-90"
                   onClick={() => {

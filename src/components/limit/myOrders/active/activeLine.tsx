@@ -87,7 +87,6 @@ export default function ActiveLine({
       }));
     }
   }
-  console.log("8888888888-tokensMap, order", tokensMap, order);
   const buyToken = tokensMap[order.buy_token];
   const sellToken = tokensMap[order.sell_token];
   const calPoint =

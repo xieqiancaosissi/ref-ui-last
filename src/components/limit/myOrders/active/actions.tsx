@@ -11,6 +11,7 @@ import {
   IPersistLimitStore,
 } from "@/stores/limitOrder";
 import { updateTokensBalance } from "@/services/limit/limit";
+import checkTxBeforeShowToast from "@/components/common/toast/checkTxBeforeShowToast";
 
 export default function Actions({ order }: { order: UserOrderInfo }) {
   const [cancelLoading, setCancelLoading] = useState<boolean>(false);
@@ -29,7 +30,7 @@ export default function Actions({ order }: { order: UserOrderInfo }) {
     }).then((res: IExecutionResult | undefined) => {
       if (!res) return;
       if (res.status == "success") {
-        successToast();
+        checkTxBeforeShowToast({ txHash: res.txHash });
         updateTokensBalance([tokenIn, tokenOut], limitStore);
         limitStore.onFetchPool({
           limitStore,

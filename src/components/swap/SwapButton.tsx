@@ -22,6 +22,7 @@ import { IExecutionResult } from "@/interfaces/wallet";
 import { setSwapTokenAndBalances } from "@/components/common/SelectTokenModal/tokenUtils";
 import { useTokenStore, ITokenStore } from "@/stores/token";
 import { checkSwapTx } from "@/services/swap/swapTx";
+import checkTxBeforeShowToast from "@/components/common/toast/checkTxBeforeShowToast";
 
 export default function SwapButton({
   isHighImpact,
@@ -81,7 +82,7 @@ export default function SwapButton({
         tokenOut,
         amountIn,
       }).then((res) => {
-        handleDataAfterTranstion(res, false);
+        handleDataAfterTranstion(res, 1);
       });
     } else if (best == "v1" && estimates) {
       swap({
@@ -91,7 +92,7 @@ export default function SwapButton({
         slippageTolerance,
         amountIn,
       }).then((res) => {
-        handleDataAfterTranstion(res, true);
+        handleDataAfterTranstion(res, 2);
       });
     } else if (best == "v1" && estimatesServer) {
       const { estimatesFromServer } = estimatesServer;
@@ -101,7 +102,7 @@ export default function SwapButton({
         tokenOut,
         amountIn,
       }).then((res) => {
-        handleDataAfterTranstion(res, true);
+        handleDataAfterTranstion(res, 2);
       });
     } else if (best == "v3") {
       const bestFee = Number(estimatesDcl?.tag?.split("|")?.[1] ?? 0);
@@ -120,19 +121,23 @@ export default function SwapButton({
           amountB: toReadableNumber(tokenOut.decimals, estimatesDcl?.amount),
         },
       }).then((res) => {
-        handleDataAfterTranstion(res, true);
+        handleDataAfterTranstion(res, 2);
       });
     }
   }
   function handleDataAfterTranstion(
     res: IExecutionResult | undefined,
-    showPopup: boolean
+    popupType: number
   ) {
     if (!res) return;
     if (res.status == "success") {
-      if (showPopup) {
-        // tx popup
-        checkSwapTx(res.txHashes);
+      // tx popup
+      if (popupType == 2) {
+        checkSwapTx(res.txHash);
+      } else if (popupType == 1) {
+        checkTxBeforeShowToast({
+          txHash: res.txHash,
+        });
       }
       // update balances
       setSwapTokenAndBalances({

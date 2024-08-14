@@ -74,6 +74,7 @@ export const executeMultipleTransactions = async (
         return {
           status: "success",
           txHashes: parsedTransactionHashes,
+          txHash: transactionHashes[transactionHashes.length - 1],
           successResult: res,
         } as IExecutionResult;
       }

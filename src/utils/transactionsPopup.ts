@@ -106,7 +106,15 @@ export const parsedTransactionSuccessValue = (res: any) => {
     return parsedData;
   }
 };
-
+export const getTransactionStatus = (res: any): "failure" | "success" => {
+  if (res?.status?.Failure) return "failure";
+  if (res?.transaction_outcome?.outcome.status?.Failure) return "failure";
+  const isFailure = res.receipts_outcome.some((outcome: any) => {
+    return outcome?.outcome?.status?.Failure;
+  });
+  if (isFailure) return "failure";
+  return "success";
+};
 export const getErrorMessage = (res: any) => {
   const isSlippageError = res.receipts_outcome.some((outcome: any) => {
     return ERROR_PATTERN.slippageErrorPattern.test(

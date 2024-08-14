@@ -13,6 +13,7 @@ export interface RefFiFunctionCallOptions {
 export interface IExecutionResult {
   status: "success" | "error";
   txHashes: string;
+  txHash: string;
   successResult: any;
   errorResult: Error;
 }

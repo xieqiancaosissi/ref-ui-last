@@ -1,16 +1,32 @@
 import { toast } from "react-toastify";
+import getConfig from "@/utils/config";
 import { CloseIcon, PopSuccessfulIcon } from "@/components/common/Icons";
-const successToast = (successText?: string) => {
+const successToast = (params?: { successText?: string; txHash?: string }) => {
+  const { successText, txHash } = params || {};
   toast(
     <div>
       <div className="flex items-center gap-1.5">
         <PopSuccessfulIcon />
         <span className="text-white tetx-base font-bold">
-          Transaction Successful
+          Transaction successful
         </span>
       </div>
       {successText ? (
         <div className="text-gray-60 text-sm pl-6 mt-1">{successText}</div>
+      ) : null}
+      {txHash ? (
+        <span
+          className="inline-flex decoration-1 hover:text-white text-base text-gray-60  mt-1 cursor-pointer underline"
+          style={{
+            textDecorationThickness: "1px",
+            paddingLeft: "24px",
+          }}
+          onClick={() => {
+            window.open(`${getConfig().explorerUrl}/txns/${txHash}`);
+          }}
+        >
+          Click to view
+        </span>
       ) : null}
     </div>,
     {

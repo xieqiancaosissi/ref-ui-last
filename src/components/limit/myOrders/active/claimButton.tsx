@@ -5,7 +5,7 @@ import { FormattedMessage } from "react-intl";
 import { UserOrderInfo } from "@/services/swapV3";
 import { IExecutionResult } from "@/interfaces/wallet";
 import failToast from "@/components/common/toast/failToast";
-import successToast from "@/components/common/toast/successToast";
+import checkTxBeforeShowToast from "@/components/common/toast/checkTxBeforeShowToast";
 import {
   useLimitStore,
   usePersistLimitStore,
@@ -39,7 +39,7 @@ export default function ClaimButton({
     }).then((res: IExecutionResult | undefined) => {
       if (!res) return;
       if (res.status == "success") {
-        successToast();
+        checkTxBeforeShowToast({ txHash: res.txHash });
         updateTokensBalance([tokenIn, tokenOut], limitStore);
         limitStore.onFetchPool({
           limitStore,

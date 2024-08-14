@@ -51,7 +51,7 @@ function ConfirmOrderModal({
       if (!res) return;
       if (res.status == "success") {
         onRequestClose();
-        checkLimitTx(res.txHashes);
+        checkLimitTx(res.txHash);
         updateTokensBalance([tokenIn, tokenOut], limitStore);
         limitStore.onFetchPool({
           limitStore,

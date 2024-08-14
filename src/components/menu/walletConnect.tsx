@@ -5,6 +5,7 @@ import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import { Tooltip } from "react-tooltip";
 import "react-loading-skeleton/dist/skeleton.css";
 import { CopyToClipboard } from "react-copy-to-clipboard";
+import { twMerge } from "tailwind-merge";
 import {
   DownArrowIcon,
   CopyIcon,
@@ -42,6 +43,8 @@ export default function WalletConnect() {
   const [showGuider, setShowGuider] = useState<boolean>(
     !!(localStorage.getItem("ACCESS_MODAL_GUIDER") !== "1" && accountId)
   );
+  const isKeyPomWallet =
+    window.selector?.store?.getState()?.selectedWalletId == "keypom";
   useEffect(() => {
     init();
   }, []);
@@ -206,12 +209,28 @@ export default function WalletConnect() {
                         className={swapStyles.controlButton}
                       />
                       <ChangeIcon
-                        onClick={showWalletSelector}
-                        className={swapStyles.controlButton}
+                        onClick={() => {
+                          if (!isKeyPomWallet) {
+                            showWalletSelector();
+                          }
+                        }}
+                        className={` text-gray-10  ${
+                          isKeyPomWallet
+                            ? " cursor-not-allowed opacity-50"
+                            : "cursor-pointer hover:text-lightWhite-10"
+                        }`}
                       />
                       <DisconnectIcon
-                        onClick={signOut}
-                        className={swapStyles.controlButton}
+                        onClick={() => {
+                          if (!isKeyPomWallet) {
+                            signOut();
+                          }
+                        }}
+                        className={` text-gray-10  ${
+                          isKeyPomWallet
+                            ? " cursor-not-allowed opacity-50"
+                            : "cursor-pointer hover:text-lightWhite-10"
+                        }`}
                       />
                     </div>
                   </div>

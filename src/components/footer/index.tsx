@@ -13,6 +13,7 @@ export default function Footer() {
   const themeStore: any = useThemeStore();
   const currentTheme = themeStore.getTheme();
   const { refPrice, priceLoading } = useRefPrice();
+  const isRiskPage = router.pathname.includes("risks");
   useEffect(() => {
     if (currentTheme == "light") {
       document.documentElement.className = "light";
@@ -48,7 +49,7 @@ export default function Footer() {
             {communityLinks.map((item) => {
               return (
                 <div
-                  className="cursor-pointer text-gray-50 hover:text-primaryGreen"
+                  className={`cursor-pointer text-gray-50 hover:text-primaryGreen`}
                   key={item.label}
                   onClick={() => {
                     jump(item);
@@ -79,6 +80,7 @@ export default function Footer() {
             </div>
             <LineSplit />
             {docLinks.map((item, index) => {
+              const highLight = item.id == "risks" && isRiskPage;
               return (
                 <>
                   {" "}
@@ -88,8 +90,8 @@ export default function Footer() {
                     }}
                     key={item.id}
                     className={`flex items-end gap-1 text-xs font-bold text-gray-50 hover:text-primaryGreen cursor-pointer px-5 ${
-                      index == docLinks.length - 1 ? "pr-0" : ""
-                    }`}
+                      highLight ? "text-primaryGreen" : ""
+                    } ${index == docLinks.length - 1 ? "pr-0" : ""}`}
                   >
                     {item.icon || ""}
                     {item.label}

@@ -39,7 +39,8 @@ const estimateSwap = async ({
     if (
       !(
         resultFromServer?.result_code !== 0 ||
-        !resultFromServer?.result_data?.routes?.length
+        !resultFromServer?.result_data?.routes?.length ||
+        resultFromServer?.result_data?.amount_out == "0"
       )
     ) {
       const routes = resultFromServer.result_data?.routes;

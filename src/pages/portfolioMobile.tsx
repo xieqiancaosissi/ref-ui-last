@@ -126,10 +126,10 @@ export default function RefPanelMobille() {
   }, [activeDimension, isSignedIn]);
   return (
     <div className="text-white mx-4 pb-8">
-      <div className="text-gray-60 text-sm mb-6">
+      {/* <div className="text-gray-60 text-sm mb-6">
         {`Account > Portfolio > `}
         <span className="text-white">Ref.finance</span>
-      </div>
+      </div> */}
       <div className="flex items-center mb-4">
         <div className="bg-gray-220 bg-opacity-60 border border-dark-110 rounded-md frcc w-7 h-7 mr-2">
           <PortfolioRefIcon />

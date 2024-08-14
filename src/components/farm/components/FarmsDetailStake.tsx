@@ -213,9 +213,9 @@ export default function FarmsDetailStake(props: {
     !amount ||
     !amountAvailableCheck ||
     new BigNumber(amount).isLessThanOrEqualTo(0) ||
-    (stakeType !== "free" &&
-      min_locking_duration_sec > 0 &&
-      FARM_LOCK_SWITCH != 0);
+    (activeTab == "unStake" &&
+      new BigNumber(amount).isGreaterThan(lpBalance)) ||
+    (activeTab == "unstake" && new BigNumber(amount).isGreaterThan(freeAmount));
   function operationStake() {
     setStakeLoading(true);
     let msg = "";

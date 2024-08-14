@@ -57,6 +57,8 @@ import { ButtonTextWrapper } from "@/components/common/Button";
 import { LOVE_TOKEN_DECIMAL } from "@/services/referendum";
 import { isMobile } from "@/utils/device";
 import { isStablePool } from "@/services/swap/swapUtils";
+import { showWalletSelectorModal } from "@/utils/wallet";
+import { useAppStore } from "@/stores/app";
 
 const { REF_VE_CONTRACT_ID, REF_UNI_V3_SWAP_CONTRACT_ID } = getConfig();
 
@@ -84,6 +86,7 @@ export default function FarmsDclDetail(props: {
   const cardWidth = isMobile() ? "100vw" : "430px";
   const cardHeight = isMobile() ? "90vh" : "80vh";
   const is_mobile = isMobile();
+  const appStore = useAppStore();
   const { seed_id } = detailData;
   const pool = detailData.pool;
   const [listLiquiditiesLoading, setListLiquiditiesLoading] = useState(true);
@@ -1006,6 +1009,9 @@ export default function FarmsDclDetail(props: {
     const result: string = `<div class="text-gray-110 text-xs w-52 text-left">${tip}</div>`;
     return result;
   }
+  function showWalletSelector() {
+    showWalletSelectorModal(appStore.setShowRiskModal);
+  }
   const stakeDisabled = !canStake || nft_stake_loading;
   const isEmpty = !canStake && !canUnStake;
   return (
@@ -1156,12 +1162,14 @@ export default function FarmsDclDetail(props: {
 
             <div
               className={`h-full p-5 ${
-                listLiquiditiesLoading ||
-                (!listLiquiditiesLoading &&
-                  listLiquidities_inFarimg.length == 0 &&
-                  listLiquidities_unFarimg.length == 0)
-                  ? "hidden"
-                  : ""
+                !isSignedIn
+                  ? "blur-0"
+                  : listLiquiditiesLoading ||
+                    (!listLiquiditiesLoading &&
+                      listLiquidities_inFarimg.length === 0 &&
+                      listLiquidities_unFarimg.length === 0)
+                  ? "blur-2"
+                  : "blur-0"
               }`}
             >
               <div className="flex items-center mb-8">
@@ -1188,10 +1196,21 @@ export default function FarmsDclDetail(props: {
                 </button>
               </div>
               <p className="text-gray-50 text-sm mb-1.5">Available</p>
-              <p className="text-2xl mb-11">{yp_unFarm_value}</p>
+              {!isSignedIn ? (
+                <p className="text-2xl mb-11 text-gray-50">-</p>
+              ) : (
+                <p className="text-2xl mb-11">{yp_unFarm_value}</p>
+              )}
               {activeTab === "Stake" && (
                 <>
-                  {!isEnded ? (
+                  {!isSignedIn ? (
+                    <div
+                      className=" w-full h-11 frcc rounded text-base text-primaryGreen border border-primaryGreen cursor-pointer"
+                      onClick={showWalletSelector}
+                    >
+                      Connect Wallet
+                    </div>
+                  ) : !isEnded ? (
                     <div
                       onClick={() => {
                         if (!stakeDisabled) {
@@ -1215,7 +1234,14 @@ export default function FarmsDclDetail(props: {
 
               {activeTab === "Unstake" && (
                 <>
-                  {canUnStake ? (
+                  {!isSignedIn ? (
+                    <div
+                      className=" w-full h-11 frcc rounded text-base text-primaryGreen border border-primaryGreen cursor-pointer"
+                      onClick={showWalletSelector}
+                    >
+                      Connect Wallet
+                    </div>
+                  ) : canUnStake ? (
                     <div
                       onClick={() => {
                         if (!nft_unStake_loading) {
@@ -1384,10 +1410,19 @@ export default function FarmsDclDetail(props: {
           </div>
         </div>
         <div className="fixed bottom-8 left-0 w-full">
-          {listLiquiditiesLoading ||
-          (!listLiquiditiesLoading &&
-            listLiquidities_inFarimg.length == 0 &&
-            listLiquidities_unFarimg.length == 0) ? (
+          {!isSignedIn ? (
+            <div className="bg-dark-230 rounded-t-2xl px-4 py-6 flex">
+              <div
+                className=" w-full h-11 frcc rounded text-base text-primaryGreen border border-primaryGreen cursor-pointer "
+                onClick={showWalletSelector}
+              >
+                Connect Wallet
+              </div>
+            </div>
+          ) : listLiquiditiesLoading ||
+            (!listLiquiditiesLoading &&
+              listLiquidities_inFarimg.length == 0 &&
+              listLiquidities_unFarimg.length == 0) ? (
             <AddLiquidityEntryMobileBar
               detailData={detailData}
               isEnded={isEnded}

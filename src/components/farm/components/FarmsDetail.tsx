@@ -53,6 +53,8 @@ import getConfigV2 from "@/utils/configV2";
 import ShadowTip from "./ShadowTip";
 import { isStablePool } from "@/services/swap/swapUtils";
 import styles from "@/components/farm/farm.module.css";
+import { showWalletSelectorModal } from "@/utils/wallet";
+import { useAppStore } from "@/stores/app";
 
 interface IShareInfo {
   sharesInfo: {
@@ -118,6 +120,7 @@ export default function FarmsDetail(props: {
   const [showActivateBox, setShowActivateBox] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState("stake");
   const isSignedIn = accountStore.isSignedIn;
+  const appStore = useAppStore();
   const [sharesInfo, setSharesInfo] = useState<{
     sharesInPool: string | number;
     amountByShadowInFarm: string | number;
@@ -815,6 +818,9 @@ export default function FarmsDetail(props: {
     const result: string = `<div class="text-gray-110 text-xs w-52 text-left">${tip}</div>`;
     return result;
   }
+  function showWalletSelector() {
+    showWalletSelectorModal(appStore.setShowRiskModal);
+  }
   const needForbidden =
     (FARM_BLACK_LIST_V2 || []).indexOf((pool?.id || 0).toString()) > -1;
   return (
@@ -1186,7 +1192,16 @@ export default function FarmsDetail(props: {
           ) : null}
         </div>
         <div className="fixed bottom-8 left-0 w-full">
-          {showAddLiquidityEntry ? (
+          {!isSignedIn ? (
+            <div className="bg-dark-230 rounded-t-2xl px-4 py-6 flex">
+              <div
+                className=" w-full h-11 frcc rounded text-base text-primaryGreen border border-primaryGreen cursor-pointer "
+                onClick={showWalletSelector}
+              >
+                Connect Wallet
+              </div>
+            </div>
+          ) : showAddLiquidityEntry ? (
             <AddLiquidityEntryMobileBar
               detailData={detailData}
               showAddLiquidityEntry={showAddLiquidityEntry}

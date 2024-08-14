@@ -9,6 +9,7 @@ import { ButtonTextWrapper } from "../common/Button";
 import { RefSymbol, XrefSwitch, XrefSymbol } from "./icon";
 import { IExecutionResult } from "@/interfaces/wallet";
 import failToast from "../common/toast/failToast";
+import successToast from "../common/toast/successToast";
 
 export function InputView(props: any) {
   const [amount, setAmount] = useState("0");
@@ -40,6 +41,7 @@ export function InputView(props: any) {
   async function handleDataAfterTranstion(res: IExecutionResult | undefined) {
     if (!res) return;
     if (res.status == "success") {
+      successToast();
       await fetchData();
       setAmount("0");
     } else if (res.status == "error") {

@@ -289,51 +289,55 @@ export default function Farms() {
 
               {/* search & create pool */}
               <div className="frcc">
-                <div className={poolStyle.filterSeacrhInputContainer}>
-                  <div
-                    onClick={() => {
-                      keyWordsType == "token"
-                        ? isActive != "dcl"
-                          ? setKeyWordsType("id")
-                          : setKeyWordsType("token")
-                        : setKeyWordsType("token");
-                      setSearchValue("");
-                    }}
-                    className={`${poolStyle.filterSearchInputBefore} ${
-                      keyWordsType == "token"
-                        ? "bg-gray-20 text-gray-50"
-                        : "bg-green-10 text-white"
-                    }`}
-                  >
-                    #
+                {isActive != "watchlist" && (
+                  <div className={poolStyle.filterSeacrhInputContainer}>
+                    <div
+                      onClick={() => {
+                        keyWordsType == "token"
+                          ? isActive != "dcl"
+                            ? setKeyWordsType("id")
+                            : setKeyWordsType("token")
+                          : setKeyWordsType("token");
+                        setSearchValue("");
+                      }}
+                      className={`${poolStyle.filterSearchInputBefore} ${
+                        keyWordsType == "token"
+                          ? "bg-gray-20 text-gray-50"
+                          : "bg-green-10 text-white"
+                      }`}
+                    >
+                      #
+                    </div>
+                    <input
+                      type="text"
+                      className={poolStyle.filterSearchInput}
+                      placeholder={`Search pool by ${keyWordsType}`}
+                      onChange={sendSearchValue}
+                      onKeyDown={(e) => handleKeyDown(e)}
+                      value={searchValue}
+                    />
+                    <span
+                      className="hover:scale-110 cursor-pointer"
+                      onClick={() => BlinkById()}
+                    >
+                      <SearchIcon />
+                    </span>
                   </div>
-                  <input
-                    type="text"
-                    className={poolStyle.filterSearchInput}
-                    placeholder={`Search pool by ${keyWordsType}`}
-                    onChange={sendSearchValue}
-                    onKeyDown={(e) => handleKeyDown(e)}
-                    value={searchValue}
-                  />
-                  <span
-                    className="hover:scale-110 cursor-pointer"
-                    onClick={() => BlinkById()}
+                )}
+                {isActive != "watchlist" && (
+                  <div
+                    className={`${poolStyle.createPoolButton} ${
+                      accountId && isActive == "classic"
+                        ? "bg-createPoolLinear text-black cursor-pointer hover:opacity-85"
+                        : "text-gray-50 bg-gray-40 cursor-not-allowed"
+                    }`}
+                    onClick={() => {
+                      accountId && isActive == "classic" && showModal();
+                    }}
                   >
-                    <SearchIcon />
-                  </span>
-                </div>
-                <div
-                  className={`${poolStyle.createPoolButton} ${
-                    accountId && isActive == "classic"
-                      ? "bg-createPoolLinear text-black cursor-pointer hover:opacity-85"
-                      : "text-gray-50 bg-gray-40 cursor-not-allowed"
-                  }`}
-                  onClick={() => {
-                    accountId && isActive == "classic" && showModal();
-                  }}
-                >
-                  + Create Pool
-                </div>
+                    + Create Pool
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -427,33 +431,35 @@ export default function Farms() {
         {/* search & create pool */}
         <div className="flex items-center justify-between my-4">
           <div className="flex-1 flex items-center justify-between">
-            <div className={poolStyle.filterSeacrhInputContainerForMobile}>
-              <div
-                onClick={() => {
-                  keyWordsType == "token"
-                    ? isActive != "dcl" && setKeyWordsType("id")
-                    : setKeyWordsType("token");
-                }}
-                className={`${poolStyle.filterSearchInputBefore} ${
-                  keyWordsType == "token"
-                    ? "bg-gray-20 text-gray-50"
-                    : "bg-green-10 text-white"
-                }`}
-              >
-                #
-              </div>
-              <input
-                type="text"
-                className={poolStyle.filterSearchInput}
-                placeholder={`Search pool by ${keyWordsType}`}
-                onChange={sendSearchValue}
-                onKeyDown={(e) => handleKeyDown(e)}
-                value={searchValue}
-              />
-              {/* <span className="hover:scale-110" onClick={() => BlinkById()}>
+            {isActive != "watchlist" && (
+              <div className={poolStyle.filterSeacrhInputContainerForMobile}>
+                <div
+                  onClick={() => {
+                    keyWordsType == "token"
+                      ? isActive != "dcl" && setKeyWordsType("id")
+                      : setKeyWordsType("token");
+                  }}
+                  className={`${poolStyle.filterSearchInputBefore} ${
+                    keyWordsType == "token"
+                      ? "bg-gray-20 text-gray-50"
+                      : "bg-green-10 text-white"
+                  }`}
+                >
+                  #
+                </div>
+                <input
+                  type="text"
+                  className={poolStyle.filterSearchInput}
+                  placeholder={`Search pool by ${keyWordsType}`}
+                  onChange={sendSearchValue}
+                  onKeyDown={(e) => handleKeyDown(e)}
+                  value={searchValue}
+                />
+                {/* <span className="hover:scale-110" onClick={() => BlinkById()}>
                 <SearchIcon />
               </span> */}
-            </div>
+              </div>
+            )}
             {/* sort */}
             {isActive == "classic" && (
               <header
@@ -741,7 +747,7 @@ export default function Farms() {
             {/* watch sort */}
             {isActive == "watchlist" && (
               <header
-                className="relative  w-1/2 h-9 text-white border border-gray-40 rounded text-sm flex items-center mx-1"
+                className="relative  w-1/2 h-9 text-white border border-gray-40 rounded text-sm flex items-center "
                 style={{
                   background: "rgba(126, 138, 147, 0.1)",
                 }}
@@ -749,7 +755,7 @@ export default function Farms() {
               >
                 <div className="w-full h-full flex justify-between items-center pl-1 pr-2">
                   <div className="frcc flex-1">
-                    <div
+                    {/* <div
                       className="bg-gray-20 frcc w-7 h-7 rounded mr-1"
                       onClick={() => {
                         setMobilePros({
@@ -763,9 +769,9 @@ export default function Farms() {
                       }}
                     >
                       {sortMap.sort === "desc" ? <DownArrow /> : <UpArrow />}
-                    </div>
+                    </div> */}
                     <div
-                      className="flex-1 h-full"
+                      className="flex-1 h-full ml-2"
                       onClick={() => {
                         setShowClassHeader((prev) => !prev);
                       }}

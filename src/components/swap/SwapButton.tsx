@@ -48,7 +48,7 @@ export default function SwapButton({
   const best = swapStore.getBest();
   const estimates = swapStore.getEstimates();
   const estimatesServer = swapStore.getEstimatesServer();
-  const walletInteractionStatusUpdated =
+  const walletInteractionStatusUpdatedSwap =
     swapStore.getWalletInteractionStatusUpdated();
   const slippageTolerance = persistSwapStore.getSlippage();
   const global_whitelisted_tokens_ids =
@@ -145,7 +145,7 @@ export default function SwapButton({
         global_whitelisted_tokens_ids,
       });
       swapStore.setWalletInteractionStatusUpdated(
-        !walletInteractionStatusUpdated
+        !walletInteractionStatusUpdatedSwap
       );
     } else if (res.status == "error") {
       failToast(res.errorResult?.message);

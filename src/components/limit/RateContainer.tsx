@@ -126,7 +126,6 @@ export default function RateContainer() {
     });
     limitStore.onFetchPool({
       limitStore,
-      dclPool,
       persistLimitStore,
     });
   }

@@ -84,7 +84,6 @@ export default function LimitOrderPage() {
   async function fetchPool() {
     limitStore.onFetchPool({
       limitStore,
-      dclPool,
       persistLimitStore,
     });
   }

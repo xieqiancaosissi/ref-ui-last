@@ -10,8 +10,12 @@ import { get_user_storage_detail } from "@/services/swapV3";
 import { WRAP_NEAR_CONTRACT_ID } from "@/services/wrap-near";
 import { storageDepositAction } from "@/services/creator/storage";
 import { nearDepositTransaction } from "@/services/wrap-near";
+import { ITokenMetadata } from "@/interfaces/tokens";
+import { getTokenBalance } from "@/services/token";
+import { getTokenUIId } from "@/services/swap/swapUtils";
+import { toReadableNumber } from "@/utils/numbers";
 const { REF_UNI_V3_SWAP_CONTRACT_ID } = getConfig();
-const reateOrder = async ({
+const createOrder = async ({
   tokenA,
   tokenB,
   amountA,
@@ -91,6 +95,37 @@ const reateOrder = async ({
     transactions.unshift(nearDepositTransaction(amountA));
   }
 
-  return executeMultipleTransactions(transactions);
+  return executeMultipleTransactions(transactions, false);
 };
-export default reateOrder;
+export default createOrder;
+
+export async function updateTokensBalance(
+  tokens: TokenMetadata[],
+  limitStore: any
+) {
+  let TOKEN_IN: ITokenMetadata = tokens[0];
+  let TOKEN_OUT: ITokenMetadata = tokens[1];
+  const tokenInId = TOKEN_IN?.id;
+  const tokenOutId = TOKEN_OUT?.id;
+  limitStore.setBalanceLoading(true);
+  const in_pending = getTokenBalance(
+    getTokenUIId(TOKEN_IN) == "near" ? "NEAR" : tokenInId
+  );
+  const out_pending = getTokenBalance(
+    getTokenUIId(TOKEN_OUT) == "near" ? "NEAR" : tokenOutId
+  );
+  const balances = await Promise.all([in_pending, out_pending]);
+  TOKEN_IN = {
+    ...TOKEN_IN,
+    balanceDecimal: balances[0],
+    balance: toReadableNumber(TOKEN_IN.decimals, balances[0]),
+  };
+  TOKEN_OUT = {
+    ...TOKEN_OUT,
+    balanceDecimal: balances[1],
+    balance: toReadableNumber(TOKEN_OUT.decimals, balances[1]),
+  };
+  limitStore.setBalanceLoading(false);
+  limitStore.setTokenIn(TOKEN_IN);
+  limitStore.setTokenOut(TOKEN_OUT);
+}

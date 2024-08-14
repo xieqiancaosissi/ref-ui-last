@@ -6,7 +6,11 @@ import { get_pointorder_range, get_pool } from "@/services/swapV3";
 import { ftGetTokenMetadata } from "@/services/token";
 import { getPriceByPoint } from "../../services/commonV3";
 import { toReadableNumber } from "../../utils/numbers";
-import { usePersistLimitStore, IPersistLimitStore } from "@/stores/limitOrder";
+import {
+  usePersistLimitStore,
+  IPersistLimitStore,
+  useLimitStore,
+} from "@/stores/limitOrder";
 import { formatPriceWithCommas } from "@/components/pools/detail/dcl/d3Chart/utils";
 import { IOrderPoint, ISwitchToken, IOrderPointItem } from "@/interfaces/limit";
 import { RefreshIcon } from "./icons2";
@@ -39,6 +43,7 @@ export default function LimitOrderTable() {
   const [fetch_data_done, set_fetch_data_done] = useState(false);
   const [market_loading, set_market_loading] = useState<boolean>(false);
   const persistLimitStore: IPersistLimitStore = usePersistLimitStore();
+  const limitStore = useLimitStore();
   const cachedDclPool = persistLimitStore.getDclPool();
   const limitChartStore = useLimitOrderChartStore();
   const tokenIn = limitChartStore.getTokenIn();
@@ -47,6 +52,8 @@ export default function LimitOrderTable() {
   const sell_list = limitChartStore.get_sell_list();
   const pool = persistLimitStore.getDclPool();
   const pool_id = persistLimitStore.getDclPool()?.pool_id;
+  const walletInteractionStatusUpdatedLimit =
+    limitStore.getWalletInteractionStatusUpdatedLimit();
   const left_point = -800000;
   const right_point = 800000;
   const sellBoxRef: any = useRef(null);
@@ -67,14 +74,18 @@ export default function LimitOrderTable() {
       limitChartStore.set_zoom(GEARS[0]);
       fetch_points_data();
     }
-  }, [pool_id]);
+  }, [pool_id, walletInteractionStatusUpdatedLimit]);
   useEffect(() => {
     if (pool_id && ordersPending?.pool_id == pool_id) {
       setOrders(ordersPending.orders);
       set_fetch_data_done(true);
       setSwitchToken();
     }
-  }, [JSON.stringify(ordersPending || {}), pool_id]);
+  }, [
+    JSON.stringify(ordersPending || {}),
+    pool_id,
+    walletInteractionStatusUpdatedLimit,
+  ]);
   useEffect(() => {
     if (!(tokenIn && tokenOut && pool_id && fetch_data_done)) return;
     const { token_x, token_y } = pool;

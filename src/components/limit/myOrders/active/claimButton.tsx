@@ -1,8 +1,17 @@
-import React, { useState, useContext, useMemo, Fragment, useRef } from "react";
+import React, { useState } from "react";
 import { ONLY_ZEROS } from "@/utils/numbers";
 import { cancel_order } from "@/services/swapV3";
 import { FormattedMessage } from "react-intl";
 import { UserOrderInfo } from "@/services/swapV3";
+import { IExecutionResult } from "@/interfaces/wallet";
+import failToast from "@/components/common/toast/failToast";
+import successToast from "@/components/common/toast/successToast";
+import {
+  useLimitStore,
+  usePersistLimitStore,
+  IPersistLimitStore,
+} from "@/stores/limitOrder";
+import { updateTokensBalance } from "@/services/limit/limit";
 import { ButtonTextWrapper } from "@/components/common/Button";
 export default function ClaimButton({
   unClaimedAmount,
@@ -12,6 +21,39 @@ export default function ClaimButton({
   order: UserOrderInfo;
 }) {
   const [claimLoading, setClaimLoading] = useState<boolean>(false);
+  const limitStore = useLimitStore();
+  const persistLimitStore: IPersistLimitStore = usePersistLimitStore();
+  const walletInteractionStatusUpdatedLimit =
+    limitStore.getWalletInteractionStatusUpdatedLimit();
+  const tokenIn = limitStore.getTokenIn();
+  const tokenOut = limitStore.getTokenOut();
+  function cancelOrder(e: any) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    setClaimLoading(true);
+
+    cancel_order({
+      order_id: order.order_id,
+      undecimal_amount: "0",
+    }).then((res: IExecutionResult | undefined) => {
+      if (!res) return;
+      if (res.status == "success") {
+        successToast();
+        updateTokensBalance([tokenIn, tokenOut], limitStore);
+        limitStore.onFetchPool({
+          limitStore,
+          persistLimitStore,
+        });
+        limitStore.setWalletInteractionStatusUpdatedLimit(
+          !walletInteractionStatusUpdatedLimit
+        );
+      } else if (res.status == "error") {
+        failToast(res.errorResult?.message);
+      }
+      setClaimLoading(false);
+    });
+  }
   return (
     <button
       className={`rounded border xs:text-sm xs:w-full ml-1.5 lg:h-[32px] lg:text-[13px] lg:w-[90px] xsm:text-sm xsm:flex-grow xsm:h-[38px] ${
@@ -21,17 +63,7 @@ export default function ClaimButton({
       }`}
       type="button"
       disabled={ONLY_ZEROS.test(unClaimedAmount)}
-      onClick={(e) => {
-        e.preventDefault();
-        e.stopPropagation();
-
-        setClaimLoading(true);
-
-        cancel_order({
-          order_id: order.order_id,
-          undecimal_amount: "0",
-        });
-      }}
+      onClick={cancelOrder}
     >
       <ButtonTextWrapper
         Text={() => <FormattedMessage id="claim" defaultMessage={"Claim"} />}

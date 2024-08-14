@@ -6,12 +6,16 @@ import {
   usePersistLimitStore,
   IPersistLimitStore,
 } from "@/stores/limitOrder";
+import failToast from "@/components/common/toast/failToast";
 import { CloseIcon } from "../common/Icons";
 import { RightArrowIcon } from "./icons";
 import { ButtonTextWrapper } from "@/components/common/Button";
 import { digitalProcess } from "@/utils/uiNumber";
 import createOrder from "@/services/limit/limit";
 import { sort_tokens_by_base } from "@/services/commonV3";
+import { IExecutionResult } from "@/interfaces/wallet";
+import { checkLimitTx } from "@/services/limit/limitTx";
+import { updateTokensBalance } from "@/services/limit/limit";
 
 function ConfirmOrderModal({
   isOpen,
@@ -22,7 +26,7 @@ function ConfirmOrderModal({
 }) {
   const [createOrderLoading, setCreateOrderLoading] = useState<boolean>(false);
   const limitStore = useLimitStore();
-  const persistLimitStor: IPersistLimitStore = usePersistLimitStore();
+  const persistLimitStore: IPersistLimitStore = usePersistLimitStore();
   const tokenIn = limitStore.getTokenIn();
   const tokenOut = limitStore.getTokenOut();
   const amountIn = limitStore.getTokenInAmount();
@@ -32,7 +36,9 @@ function ConfirmOrderModal({
   const reverseRate = limitStore.getReverseRate();
   const tokens = sort_tokens_by_base([tokenIn, tokenOut]);
   const isReverse = tokens[0].symbol == tokenOut.symbol;
-  const dclPool = persistLimitStor.getDclPool();
+  const dclPool = persistLimitStore.getDclPool();
+  const walletInteractionStatusUpdatedLimit =
+    limitStore.getWalletInteractionStatusUpdatedLimit();
   function doCreateOrder() {
     setCreateOrderLoading(true);
     createOrder({
@@ -41,6 +47,23 @@ function ConfirmOrderModal({
       amountA: amountIn,
       amountB: amountOut,
       pool_id: dclPool.pool_id,
+    }).then((res: IExecutionResult | undefined) => {
+      if (!res) return;
+      if (res.status == "success") {
+        onRequestClose();
+        checkLimitTx(res.txHashes);
+        updateTokensBalance([tokenIn, tokenOut], limitStore);
+        limitStore.onFetchPool({
+          limitStore,
+          persistLimitStore,
+        });
+        limitStore.setWalletInteractionStatusUpdatedLimit(
+          !walletInteractionStatusUpdatedLimit
+        );
+      } else if (res.status == "error") {
+        failToast(res.errorResult?.message);
+      }
+      setCreateOrderLoading(false);
     });
   }
   return (

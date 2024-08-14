@@ -33,6 +33,10 @@ export interface ILimitStore {
   setBalanceLoading: (balanceLoading: boolean) => void;
   getReverse: () => boolean;
   setReverse: (reverse: boolean) => void;
+  getWalletInteractionStatusUpdatedLimit: () => boolean;
+  setWalletInteractionStatusUpdatedLimit: (
+    walletInteractionStatusUpdatedLimit: boolean
+  ) => void;
   onAmountInChangeTrigger: ({
     amount,
     limitStore,
@@ -68,11 +72,9 @@ export interface ILimitStore {
   }) => void;
   onFetchPool: ({
     limitStore,
-    dclPool,
     persistLimitStore,
   }: {
     limitStore: ILimitStore;
-    dclPool: IPoolDcl;
     persistLimitStore: IPersistLimitStore;
   }) => void;
 }
@@ -112,6 +114,15 @@ export const useLimitStore = create<ILimitStore>((set: any, get: any) => ({
   rateDiff: "",
   balanceLoading: true,
   reverse: false,
+  walletInteractionStatusUpdatedLimit: false,
+  getWalletInteractionStatusUpdatedLimit: () =>
+    get().walletInteractionStatusUpdatedLimit,
+  setWalletInteractionStatusUpdatedLimit: (
+    walletInteractionStatusUpdatedLimit: boolean
+  ) =>
+    set({
+      walletInteractionStatusUpdatedLimit,
+    }),
   getBalanceLoading: () => get().balanceLoading,
   setBalanceLoading: (balanceLoading: boolean) => set({ balanceLoading }),
   onAmountInChangeTrigger: ({
@@ -193,13 +204,12 @@ export const useLimitStore = create<ILimitStore>((set: any, get: any) => ({
   },
   onFetchPool: async ({
     limitStore,
-    dclPool,
     persistLimitStore,
   }: {
     limitStore: ILimitStore;
-    dclPool: IPoolDcl;
     persistLimitStore: IPersistLimitStore;
   }) => {
+    const dclPool = persistLimitStore.getDclPool();
     limitStore.setPoolFetchLoading(true);
     const latest_pool = await get_pool(dclPool.pool_id)
       .catch()

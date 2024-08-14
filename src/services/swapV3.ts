@@ -515,7 +515,7 @@ export const cancel_order = ({
     },
   ];
 
-  return executeMultipleTransactions(transactions);
+  return executeMultipleTransactions(transactions, false);
 };
 
 export const cancel_order_old = ({ order_id }: { order_id: string }) => {

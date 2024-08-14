@@ -23,14 +23,19 @@ const useDclSwap = ({
     useState<IEstimateResult>({});
   const swapStore = useSwapStore();
   const trigger = swapStore.getTrigger();
-  const walletInteractionStatusUpdated =
+  const walletInteractionStatusUpdatedSwap =
     swapStore.getWalletInteractionStatusUpdated();
   useDebounce(
     () => {
       dclEstimateWrap();
     },
     firstInput ? 100 : 300,
-    [tokenIn?.id, tokenOut?.id, tokenInAmount, walletInteractionStatusUpdated]
+    [
+      tokenIn?.id,
+      tokenOut?.id,
+      tokenInAmount,
+      walletInteractionStatusUpdatedSwap,
+    ]
   );
   useEffect(() => {
     if (trigger) {

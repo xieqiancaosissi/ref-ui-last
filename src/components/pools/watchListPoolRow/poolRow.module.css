@@ -47,7 +47,6 @@
   transform: translate(-8px, -8px);
 }
 
-
 .symbol {
   @apply text-base text-white font-medium px-2;
 }

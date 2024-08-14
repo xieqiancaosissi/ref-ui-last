@@ -20,6 +20,8 @@ import { useRiskTokens } from "@/hooks/useRiskTokens";
 import { useAppStore } from "@/stores/app";
 import { showWalletSelectorModal } from "@/utils/wallet";
 import RecentTransactionMobile from "@/components/pools/detail/stable/RecentTransactionMobile";
+import { PoolRouterGuard } from "@/utils/poolTypeGuard";
+import { openUrlLocal } from "@/services/commonV3";
 
 export default function StablePoolDetail() {
   const appStore = useAppStore();
@@ -41,6 +43,8 @@ export default function StablePoolDetail() {
   useEffect(() => {
     if (poolId) {
       getPoolsDetailById({ pool_id: poolId as any }).then((res) => {
+        PoolRouterGuard(res, "DEGEN_SWAP") &&
+          openUrlLocal(`${PoolRouterGuard(res, " DEGEN_SWAP")}/${poolId}`);
         setPoolDetail(res);
       });
 
@@ -53,6 +57,7 @@ export default function StablePoolDetail() {
   useEffect(() => {
     getAllTokenPrices().then((res) => {
       setTokenPriceList(res);
+      //
     });
     poolStore.setPoolActiveTab("degen");
   }, []);

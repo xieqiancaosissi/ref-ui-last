@@ -1,5 +1,6 @@
 import React from "react";
 import { NearIcon, DangerousIcon, TknIcon } from "@/components/pools/icon";
+import { getRiskTagByToken } from "@/utils/commonUtil";
 
 export const TokenIconComponent = ({
   ite,

@@ -9,10 +9,12 @@ export const PoolRouterGuard = (
   targetKind: PoolKind,
   fromStable?: boolean
 ): string => {
-  if (targetKind && res.pool_kind === targetKind) {
+  if (targetKind != "" && res.pool_kind === targetKind) {
     return "";
   }
   switch (res.pool_kind) {
+    case "DEGEN_SWAP":
+      return "/pool/degen";
     case "SIMPLE_POOL":
       return "/pool/classic";
     case "DCL":
@@ -22,5 +24,19 @@ export const PoolRouterGuard = (
       return fromStable ? "" : "/pool/stable";
     default:
       return "/pool/unknown"; //
+  }
+};
+
+export const PoolTypeGuard = (res: PoolResponse) => {
+  switch (res.pool_kind) {
+    case "DEGEN_SWAP":
+      return "degen";
+    case "SIMPLE_POOL":
+      return "classic";
+    case "DCL":
+      return "dcl";
+    case "RATED_SWAP":
+    case "STABLE_SWAP":
+      return "stable";
   }
 };

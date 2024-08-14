@@ -8,14 +8,16 @@ export default function DocTips({ tips, src }: { tips: string; src: string }) {
         <ExclamationIcon className="flex-shrink-0 xsm:relative xsm:-top-2.5" />
         <span className="mx-1">
           {tips} &nbsp;
-          <span
-            className={styles.learnMore}
-            onClick={() => {
-              window.open(src, "_blank");
-            }}
-          >
-            Learn more
-          </span>
+          {src && (
+            <span
+              className={styles.learnMore}
+              onClick={() => {
+                window.open(src, "_blank");
+              }}
+            >
+              Learn more
+            </span>
+          )}
         </span>
       </div>
     </div>

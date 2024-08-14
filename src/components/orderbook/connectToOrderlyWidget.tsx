@@ -57,7 +57,9 @@ export default function ConnectToOrderlyWidget({
   function closeConfirmModal() {
     setIsOpen(false);
   }
-  function showConfirmModal() {
+  function showConfirmModal(e: any) {
+    e.preventDefault();
+    e.stopPropagation();
     setIsOpen(true);
   }
   function onConfirm() {

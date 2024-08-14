@@ -229,7 +229,7 @@ export default function StablePoolRowCharts(props: any) {
                   key={tokenId + ind}
                 >
                   {/* token */}
-                  <h4 className="text-gray-60 text-left w-13">{symbol}</h4>
+                  <h4 className="text-gray-60 text-left min-w-13">{symbol}</h4>
                   {/* amounts */}
                   {sumToken ? (
                     <div className="text-white lg:ml-6">
@@ -306,7 +306,7 @@ export default function StablePoolRowCharts(props: any) {
                   key={tokenId + ind}
                 >
                   {/* token */}
-                  <h4 className="text-gray-60 text-left w-13">{symbol}</h4>
+                  <h4 className="text-gray-60 text-left min-w-13">{symbol}</h4>
                   {/* amounts */}
                   {sumToken ? (
                     <div className="text-white lg:ml-6">

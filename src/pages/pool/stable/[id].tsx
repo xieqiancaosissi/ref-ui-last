@@ -96,9 +96,9 @@ export default function StablePoolDetail() {
     };
   }, []);
   return (
-    <div className="w-full fccc h-full px-3">
+    <div className="w-full fccc h-full ">
       <div
-        className="w-full fccc "
+        className="w-full fccc  lg:mt-3"
         style={{
           background: isMobile ? "transparent" : "rgba(33, 43, 53, 0.4)",
         }}
@@ -159,7 +159,7 @@ export default function StablePoolDetail() {
         )}
       </div>
       {/* main */}
-      <div className="fccc lg:w-270 xsm:w-full mt-2">
+      <div className="fccc lg:w-270 xsm:w-full mt-2 px-3">
         {poolDetail && updatedMapList?.length > 0 ? (
           <PieEcharts
             poolDetail={poolDetail}

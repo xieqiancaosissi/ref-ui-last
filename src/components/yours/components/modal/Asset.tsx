@@ -294,7 +294,7 @@ function AssetPage() {
     <div
       className="w-full lg:h-35 lg:fixed lg:frcc "
       style={{
-        top: "46px",
+        top: "92px",
         zIndex: "51",
         background: "linear-gradient(to bottom, #030F16, #0C171F)",
       }}

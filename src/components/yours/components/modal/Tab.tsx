@@ -100,7 +100,7 @@ export default function Tab() {
     <div
       className="frcc lg:fixed w-full h-17 xsm:mt-12"
       style={{
-        top: "184px",
+        top: "230px",
         zIndex: "51",
         background: !isMobile ? "#0C171F" : "",
       }}

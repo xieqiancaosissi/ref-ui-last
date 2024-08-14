@@ -39,7 +39,7 @@ export default function CreatePoolModal({
   };
 
   useEffect(() => {
-    if (!token[0] || !token[1] || createFee < 0) {
+    if (!token[0] || !token[1] || createFee < 0 || !createFee) {
       setDisabled(true);
       setSame(false);
     } else {

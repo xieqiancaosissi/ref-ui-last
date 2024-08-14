@@ -49,13 +49,17 @@ export default function PoolInput({
             ) : (
               <div className="lg:w-6 lg:h-6 xsm:w-9 xsm:h-9 rounded-full bg-dark-40 shrink-0"></div>
             )}
-            <div className="text-base font-medium text-white ml-2 w-full">
+            <div
+              className={`text-base font-medium ${
+                selectToken?.symbol ? "text-white" : "text-gray-50"
+              } ml-2 w-full`}
+            >
               {selectToken && selectToken?.symbol?.length > 11 ? (
                 <HoverTooltip tooltipText={selectToken?.symbol}>
                   {selectToken?.symbol.substring(0, 10) + "..."}
                 </HoverTooltip>
               ) : (
-                selectToken?.symbol
+                selectToken?.symbol || "Select"
               )}
             </div>
           </div>

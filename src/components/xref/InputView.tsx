@@ -7,27 +7,46 @@ import { FaExchangeAlt } from "../reactIcons";
 import InputAmount from "./InputAmount";
 import { ButtonTextWrapper } from "../common/Button";
 import { RefSymbol, XrefSwitch, XrefSymbol } from "./icon";
+import { IExecutionResult } from "@/interfaces/wallet";
+import failToast from "../common/toast/failToast";
 
 export function InputView(props: any) {
   const [amount, setAmount] = useState("0");
   const [loading, setLoading] = useState(false);
-  const { tab, max, hidden, isM, rate } = props;
+  const { tab, max, hidden, isM, rate, fetchData } = props;
   const [forward, setForward] = useState(true);
   useEffect(() => {
     setForward(true);
   }, [tab]);
   const { getIsSignedIn } = useAccountStore();
   const isSignedIn = getIsSignedIn();
-  const onSubmit = () => {
+  const onSubmit = async () => {
     setLoading(true);
-    if (tab == 0) {
-      // stake
-      stake({ amount });
-    } else if (tab == 1) {
-      // unstake
-      unstake({ amount });
+    try {
+      let res;
+      if (tab === 0) {
+        // stake
+        res = await stake({ amount }).then((response) => response);
+      } else if (tab === 1) {
+        // unstake
+        res = await unstake({ amount }).then((response) => response);
+      }
+      await handleDataAfterTranstion(res);
+    } catch (error) {
+      console.error("Transaction failed:", error);
+      setLoading(false);
     }
   };
+  async function handleDataAfterTranstion(res: IExecutionResult | undefined) {
+    if (!res) return;
+    if (res.status == "success") {
+      await fetchData();
+      setAmount("0");
+    } else if (res.status == "error") {
+      failToast(res.errorResult?.message);
+    }
+    setLoading(false);
+  }
   const buttonStatus =
     !amount ||
     new BigNumber(amount).isEqualTo(0) ||

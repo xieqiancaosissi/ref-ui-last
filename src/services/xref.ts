@@ -104,7 +104,7 @@ export const stake = async ({ amount, msg = "" }: StakeOptions) => {
     });
   }
 
-  return executeMultipleTransactions(transactions);
+  return executeMultipleTransactions(transactions, false);
 };
 
 interface UnstakeOptions {
@@ -154,5 +154,5 @@ export const unstake = async ({ amount, msg = "" }: UnstakeOptions) => {
     });
   }
 
-  return executeMultipleTransactions(transactions);
+  return executeMultipleTransactions(transactions, false);
 };

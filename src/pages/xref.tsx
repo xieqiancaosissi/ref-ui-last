@@ -61,76 +61,75 @@ export default function XrefPage(props: any) {
       return toPrecision(max, 3, true);
     }
   };
+  const fetchData = async () => {
+    const data = await ftGetBalance(XREF_TOKEN_ID);
+    const token = await ftGetTokenMetadata(XREF_TOKEN_ID);
+    const { decimals } = token;
+    const balance = toReadableNumber(decimals, data);
+    setXrefBalance(balance);
+
+    const metaData = await metadata();
+    const {
+      locked_token_amount,
+      reward_per_sec,
+      cur_locked_token_amount,
+      supply,
+      account_number,
+    } = metaData;
+    setXrefMetaData(metaData);
+
+    if (new BigNumber(locked_token_amount).isGreaterThan("0")) {
+      const apr =
+        (1 / locked_token_amount) *
+        (Number(reward_per_sec) * 365 * 24 * 60 * 60 * 100);
+      setApr(apr.toString());
+    }
+    const refBalanceData = await ftGetBalance(REF_TOKEN_ID);
+    const refToken = await ftGetTokenMetadata(REF_TOKEN_ID);
+    setRefToken(refToken);
+    const refBalance = toReadableNumber(refToken.decimals, refBalanceData);
+    setRefBalance(refBalance);
+
+    const joinAmount = toPrecision((account_number || "0").toString(), 0, true);
+    const totalFee = `${toPrecision(
+      TOTAL_PLATFORM_FEE_REVENUE.toString(),
+      2,
+      true
+    )}`;
+    const refAmount = toPrecision(
+      toReadableNumber(XREF_TOKEN_DECIMALS, cur_locked_token_amount || "0"),
+      2,
+      true
+    );
+    const xrefAmount = toPrecision(
+      toReadableNumber(XREF_TOKEN_DECIMALS, supply || "0"),
+      2,
+      true
+    );
+    const totalBuyBack = `${toPrecision(
+      CUMULATIVE_REF_BUYBACK.toString(),
+      2,
+      true
+    )}`;
+    const revenueBooster = "x1";
+    setTotalDataArray([
+      joinAmount,
+      totalFee,
+      refAmount,
+      xrefAmount,
+      totalBuyBack,
+      revenueBooster,
+    ]);
+
+    const rateData = await getPrice();
+    const rate = toReadableNumber(DECIMALS_XREF_REF_TRANSTER, rateData);
+    setRate(rate);
+  };
 
   useEffect(() => {
-    ftGetBalance(XREF_TOKEN_ID).then(async (data: any) => {
-      const token = await ftGetTokenMetadata(XREF_TOKEN_ID);
-      const { decimals } = token;
-      const balance = toReadableNumber(decimals, data);
-      setXrefBalance(balance);
-    });
-    metadata().then((data) => {
-      const {
-        locked_token_amount,
-        reward_per_sec,
-        cur_locked_token_amount,
-        supply,
-        account_number,
-      } = data;
-      setXrefMetaData(data);
-      if (new BigNumber(locked_token_amount).isGreaterThan("0")) {
-        const apr =
-          (1 / locked_token_amount) *
-          (Number(reward_per_sec) * 365 * 24 * 60 * 60 * 100);
-        setApr(apr.toString());
-      }
-      ftGetBalance(REF_TOKEN_ID).then(async (data: any) => {
-        const token = await ftGetTokenMetadata(REF_TOKEN_ID);
-        setRefToken(token);
-        const { decimals } = token;
-        const balance = toReadableNumber(decimals, data);
-        setRefBalance(balance);
-      });
-      const joinAmount = toPrecision(
-        (account_number || "0").toString(),
-        0,
-        true
-      );
-      const totalFee = `${toPrecision(
-        TOTAL_PLATFORM_FEE_REVENUE.toString(),
-        2,
-        true
-      )}`;
-      const refAmount = toPrecision(
-        toReadableNumber(XREF_TOKEN_DECIMALS, cur_locked_token_amount || "0"),
-        2,
-        true
-      );
-      const xrefAmount = toPrecision(
-        toReadableNumber(XREF_TOKEN_DECIMALS, supply || "0"),
-        2,
-        true
-      );
-      const totalBuyBack = `${toPrecision(
-        CUMULATIVE_REF_BUYBACK.toString(),
-        2,
-        true
-      )}`;
-      const revenueBooster = "x1";
-      setTotalDataArray([
-        joinAmount,
-        totalFee,
-        refAmount,
-        xrefAmount,
-        totalBuyBack,
-        revenueBooster,
-      ]);
-    });
-    getPrice().then((data) => {
-      const rate = toReadableNumber(DECIMALS_XREF_REF_TRANSTER, data);
-      setRate(rate);
-    });
+    fetchData();
   }, [isSignedIn]);
+
   function getXrefAprTip() {
     if (refToken && xrefMetaData) {
       const reward_per_sec = xrefMetaData.reward_per_sec;
@@ -257,7 +256,7 @@ export default function XrefPage(props: any) {
   return (
     <div
       style={pageStyle}
-      className="text-white pt-20 pb-6  xsm:-mt-8 xsm:pt-10 xsm:pb-7"
+      className="text-white pt-20 pb-6 -mt-9  xsm:-mt-8 xsm:pt-10 xsm:pb-7"
     >
       <div className="xl:w-4/12 md:w-9/12 xsm:w-full xsm:px-3.5 w-6/12 m-auto flex flex-col items-center">
         <XrefLogo className="mb-4 xsm:hidden" />
@@ -352,6 +351,7 @@ export default function XrefPage(props: any) {
             tab={tab}
             max={refBalance}
             rate={rate}
+            fetchData={fetchData}
             hidden={tab != 0 ? "hidden" : ""}
           ></InputView>
           {/* xref unstake */}
@@ -359,6 +359,7 @@ export default function XrefPage(props: any) {
             tab={tab}
             max={xrefBalance}
             rate={rate}
+            fetchData={fetchData}
             hidden={tab != 1 ? "hidden" : ""}
           ></InputView>
           <div className="mt-6 frcb text-sm text-gray-10 xsm:hidden">

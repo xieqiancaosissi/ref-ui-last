@@ -72,6 +72,7 @@ export default function StableAdd(props: any) {
     pureIdList,
     updatedMapList,
     isMobile,
+    tokenPriceList,
   } = props;
   const [balancesList, setBalances] = useState<any>([]);
   const [inputValList, setInputValList] = useState<any>([]);
@@ -85,6 +86,36 @@ export default function StableAdd(props: any) {
       console.error("error getting balance:", error);
     }
   };
+  const [radioActive, setRadioActive] = useState("");
+
+  const [sumToken, setSumToken] = useState(0);
+  const [everyTokenPercent, setEveryTokenPercent] = useState<any>({});
+  useEffect(() => {
+    if (updatedMapList?.length > 0) {
+      let sumT = 0;
+      const everyT: any = everyTokenPercent;
+      updatedMapList.map((item: any, index: number) => {
+        // 提取tokenIds和对应的symbols，以及计算tokenAmounts
+        const tokenIdsAndSymbols = item.token_account_ids?.map(
+          (ite: any, ind: number) => {
+            const tokenAmount = toReadableNumber(
+              ite.decimals,
+              item.supplies[ite.tokenId]
+            );
+            sumT += +tokenAmount;
+            everyT[ite.tokenId] = tokenAmount;
+            return {
+              tokenId: ite.tokenId,
+              symbol: item.token_symbols[ind],
+              tokenAmount,
+            };
+          }
+        );
+      });
+      setEveryTokenPercent(everyT);
+      setSumToken(sumT);
+    }
+  }, [updatedMapList]);
 
   useEffect(() => {
     const array = new Array(
@@ -105,14 +136,25 @@ export default function StableAdd(props: any) {
     fetchBalances();
   }, [updatedMapList[0]?.token_account_ids]);
 
-  const changeVal = useCallback((e: any, ind: number) => {
-    setInputValList((prev: string[]) => {
-      const newValues = [...prev];
-      newValues[ind] = e.target.value;
-      return newValues;
-    });
+  const changeVal = (e: any, ind: number, ite: any, radioActivestr: string) => {
+    if (radioActivestr == "init") {
+      const shortTo =
+        e.target.value / (everyTokenPercent[ite.tokenId] / sumToken);
+      const k: any = [];
+      updatedMapList[0]?.token_account_ids.map((it: any, index: number) => {
+        k[index] = (everyTokenPercent[it.tokenId] / sumToken) * shortTo;
+      });
+      console.log(k);
+      setInputValList(k);
+    } else {
+      setInputValList((prev: string[]) => {
+        const newValues = [...prev];
+        newValues[ind] = e.target.value;
+        return newValues;
+      });
+    }
     debouncedSendSearchValue(e);
-  }, []);
+  };
 
   const originalSendSearchValue = (e: any) => {
     // setSearchValue(e.target.value);
@@ -122,7 +164,6 @@ export default function StableAdd(props: any) {
 
   //
 
-  const [radioActive, setRadioActive] = useState("");
   const setRadio = (type: string) => {
     // interface
     if (radioActive == type) {
@@ -135,7 +176,7 @@ export default function StableAdd(props: any) {
     if (type == "init") {
       let k = [...inputValList];
       k = k.map((item: any) => {
-        return "0.0";
+        return "";
       });
 
       setInputValList(k);
@@ -174,6 +215,8 @@ export default function StableAdd(props: any) {
     let flag: boolean = true;
     let emptyFlag: boolean = false;
     const k: any = [];
+    const isAllMaxArray: any = [];
+    let initBalance = 0;
     inputValList.map((item: any, index: number) => {
       if (+item > balancesList[index]?.balance) {
         flag = false;
@@ -182,7 +225,27 @@ export default function StableAdd(props: any) {
       if (item > 0) {
         emptyFlag = true;
       }
+
+      initBalance += +balancesList[index]?.balance || 0;
+      if (
+        (+item == balancesList[index]?.balance &&
+          balancesList[index]?.balance > 0 &&
+          +item > 0) ||
+        (balancesList[index]?.balance == 0 &&
+          balancesList[index]?.balance == +item)
+      ) {
+        isAllMaxArray.push(true);
+      } else {
+        isAllMaxArray.push(false);
+      }
     });
+    if (!isAllMaxArray.includes(false) && initBalance > 0) {
+      setRadioActive("max");
+    } else {
+      if (radioActive == "max") {
+        setRadioActive("");
+      }
+    }
     setInputAmountIsEmpty(emptyFlag);
     setCanSubmit(flag);
     setNotEnoughList(k);
@@ -225,6 +288,7 @@ export default function StableAdd(props: any) {
     ).fill("");
     setInputValList(array);
     setFeeValue(0.1);
+    setRadioActive("");
   };
 
   return (
@@ -287,7 +351,9 @@ export default function StableAdd(props: any) {
                                     value: balancesList[ind]?.balance,
                                   },
                                 },
-                                ind
+                                ind,
+                                ite,
+                                radioActive
                               );
                             }}
                           >
@@ -314,7 +380,9 @@ export default function StableAdd(props: any) {
                             className="h-11 p-3 lg:w-74 text-white"
                             style={{ fontSize: "20px" }}
                             value={inputValList[ind]}
-                            onChange={(e) => changeVal(e, ind)}
+                            onChange={(e) =>
+                              changeVal(e, ind, ite, radioActive)
+                            }
                             placeholder="0"
                           />
                         </div>
@@ -330,7 +398,11 @@ export default function StableAdd(props: any) {
             {/* init */}
             <div
               className="flex items-center text-sm text-gray-50"
-              onClick={() => setRadio("init")}
+              onClick={() => {
+                setRadioActive("init");
+
+                setRadio("init");
+              }}
             >
               <div
                 className={`w-3 h-3 p-0.5 border ${
@@ -348,7 +420,9 @@ export default function StableAdd(props: any) {
             {/* max */}
             <div
               className="flex items-center text-sm text-gray-50"
-              onClick={() => setRadio("max")}
+              onClick={() =>
+                radioActive == "max" ? setRadioActive("") : setRadio("max")
+              }
             >
               <div
                 className={`w-3 h-3 p-0.5 border ${

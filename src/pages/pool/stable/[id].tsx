@@ -279,6 +279,7 @@ export default function StablePoolDetail() {
             pureIdList={pureIdList}
             updatedMapList={updatedMapList}
             isMobile={isMobile}
+            tokenPriceList={tokenPriceList}
           />
 
           <StableRemove

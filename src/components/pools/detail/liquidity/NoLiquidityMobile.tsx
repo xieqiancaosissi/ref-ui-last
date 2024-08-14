@@ -14,7 +14,7 @@ export default function NoLiquidityMobile({
       className="h-24 bg-modalGrayBg p-4 flex items-center sticky bottom-8"
       style={{
         width: "100vw",
-        zIndex: "100",
+        zIndex: "12",
       }}
     >
       <LiquidityEmptyIcon />

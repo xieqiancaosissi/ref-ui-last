@@ -10,11 +10,17 @@ import useHistoryOrderSwapInfo from "@/hooks/useHistoryOrderSwapInfo";
 import OrderCard from "./order/orderCard";
 
 export default function MyOrder() {
-  const { activeOrder, historyOrder } = useMyOrders();
   const [oldOrders, setOldOrders] = useState<UserOrderInfo[]>();
   const accountStore = useAccountStore();
   const accountId = accountStore.getAccountId();
-
+  const { activeOrder, historyOrder, activeOrderDone, historyOrderDone } =
+    useMyOrders();
+  const { historySwapInfo, historySwapInfoDone } = useHistoryOrderSwapInfo({
+    start_at: Number(
+      _.minBy(historyOrder, (o) => o.created_at)?.created_at || 0
+    ),
+    end_at: Date.now() * 1000000,
+  });
   useEffect(() => {
     if (accountId) {
       refSwapV3OldVersionViewFunction({
@@ -27,15 +33,6 @@ export default function MyOrder() {
       });
     }
   }, [accountId]);
-
-  const minOrderTime =
-    _.minBy(historyOrder, (o) => o.created_at)?.created_at || 0;
-
-  const historySwapInfo = useHistoryOrderSwapInfo({
-    start_at: Number(minOrderTime),
-    end_at: Date.now() * 1000000,
-  });
-
   const ActiveTokenIds = activeOrder
     ?.map((order) => [order.sell_token, order.buy_token])
     .flat();
@@ -89,6 +86,9 @@ export default function MyOrder() {
         activeOrder={activeOrder}
         historyOrder={historyOrder}
         historySwapInfo={historySwapInfo}
+        activeOrderDone={activeOrderDone}
+        historyOrderDone={historyOrderDone}
+        historySwapInfoDone={historySwapInfoDone}
       />
     </div>
   );

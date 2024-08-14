@@ -21,60 +21,34 @@ import OrderTab from "./orderTab";
 const REF_FI_MY_ORDER_SHOW_HISTORY_SWAP_INFO =
   "REF_FI_MY_ORDER_SHOW_HISTORY_SWAP_INFO";
 const ORDER_TYPE_KEY = "REF_FI_ORDER_TYPE_VALUE";
-
 export default function OrderCard({
   activeOrder,
   historyOrder,
   tokensMap,
   historySwapInfo,
+  activeOrderDone,
+  historyOrderDone,
+  historySwapInfoDone,
 }: {
   activeOrder: UserOrderInfo[];
   historyOrder: UserOrderInfo[];
   tokensMap: { [key: string]: TokenMetadata };
   historySwapInfo: HistoryOrderSwapInfo[];
+  activeOrderDone: boolean;
+  historyOrderDone: boolean;
+  historySwapInfoDone: boolean;
 }) {
-  const intl = useIntl();
-  const persistLimitStore: IPersistLimitStore = usePersistLimitStore();
-  const dclPool = persistLimitStore.getDclPool();
-  const [showHistoryInfo, setShowHistoryInfo] = useState<boolean>(
-    !!sessionStorage.getItem(REF_FI_MY_ORDER_SHOW_HISTORY_SWAP_INFO) || false
-  );
-
-  const handleShowHistoryInfo = () => {
-    setShowHistoryInfo(!showHistoryInfo);
-    if (!showHistoryInfo) {
-      sessionStorage.setItem(REF_FI_MY_ORDER_SHOW_HISTORY_SWAP_INFO, "true");
-    } else {
-      sessionStorage.removeItem(REF_FI_MY_ORDER_SHOW_HISTORY_SWAP_INFO);
-    }
-  };
-  const pool_id_by_url = dclPool?.pool_id;
-  const [orderType, setOrderType] = useState<"active" | "history">(
-    sessionStorage.getItem(ORDER_TYPE_KEY) ||
-      activeOrder?.length > 0 ||
-      !historyOrder ||
-      historyOrder.length === 0
-      ? "active"
-      : "history"
-  );
-
-  const orderTxs = useHistoryOrderTx();
-
   const [activeSortBy, setActiveSortBy] = useState<"unclaim" | "created">(
     "created"
   );
-
   const [activeOrderHoverOn, setActiveOrderHoverOn] = useState<number>(-1);
   const [historyOrderHoverOn, setHistoryOrderHoverOn] = useState<number>(-1);
   const [historyInfoOrderHoverOn, setHistoryInfoOrderHoverOn] =
     useState<number>(-1);
-
   const [sortOrderActive, setSorOrderActive] = useState<"asc" | "desc">("desc");
-
   const [sortOrderHistory, setSorOrderHistory] = useState<"asc" | "desc">(
     "desc"
   );
-
   const [historySortBy, setHistorySortBy] = useState<"claimed" | "created">(
     "created"
   );
@@ -83,15 +57,29 @@ export default function OrderCard({
   const [historyOrderList, setHistoryOrderList] = useState<UserOrderInfo[]>();
   const [historySwapInfoList, setHistorySwapInfoList] =
     useState<HistoryOrderSwapInfo[]>();
-
+  const [orderType, setOrderType] = useState<"active" | "history">(
+    sessionStorage.getItem(ORDER_TYPE_KEY) ||
+      activeOrder?.length > 0 ||
+      !historyOrder ||
+      historyOrder.length === 0
+      ? "active"
+      : "history"
+  );
+  const [showHistoryInfo, setShowHistoryInfo] = useState<boolean>(
+    !!sessionStorage.getItem(REF_FI_MY_ORDER_SHOW_HISTORY_SWAP_INFO) || false
+  );
+  const intl = useIntl();
+  const persistLimitStore: IPersistLimitStore = usePersistLimitStore();
+  const orderTxs = useHistoryOrderTx();
+  const dclPool = persistLimitStore.getDclPool();
+  const pool_id_in_cache = dclPool?.pool_id;
   const tokenIds = useMemo(() => {
-    if (pool_id_by_url) {
-      const [token_x, token_y, fee] = pool_id_by_url.split("|");
+    if (pool_id_in_cache) {
+      const [token_x, token_y, fee] = pool_id_in_cache.split("|");
       return [token_x, token_y];
     }
     return [];
-  }, [pool_id_by_url]);
-
+  }, [pool_id_in_cache]);
   const tokens = useTokens(tokenIds) || [];
   const current_pair_tokens_map = tokens.reduce((acc, cur) => {
     return {
@@ -99,44 +87,62 @@ export default function OrderCard({
       [cur.id]: cur,
     };
   }, {}) as any;
-
   useEffect(() => {
-    if (activeOrder.length) {
-      if (select_type == "all") {
-        setActiveOrderList(activeOrder);
+    if (activeOrderDone) {
+      if (activeOrder.length) {
+        if (select_type == "all") {
+          setActiveOrderList(activeOrder);
+        } else {
+          setActiveOrderList(getCurrentPairOrders(activeOrder));
+        }
       } else {
-        setActiveOrderList(getCurrentPairOrders(activeOrder));
+        setActiveOrderList([]);
       }
     }
-  }, [activeOrder, select_type, pool_id_by_url]);
+  }, [activeOrder, select_type, pool_id_in_cache, activeOrderDone]);
 
   useEffect(() => {
-    if (historyOrder.length) {
-      if (select_type == "all") {
-        setHistoryOrderList(historyOrder);
+    if (historyOrderDone) {
+      if (historyOrder.length) {
+        if (select_type == "all") {
+          setHistoryOrderList(historyOrder);
+        } else {
+          setHistoryOrderList(getCurrentPairOrders(historyOrder));
+        }
       } else {
-        setHistoryOrderList(getCurrentPairOrders(historyOrder));
+        setHistoryOrderList([]);
       }
     }
-  }, [historyOrder, select_type, pool_id_by_url]);
+  }, [historyOrder, select_type, pool_id_in_cache, historyOrderDone]);
   useEffect(() => {
-    if (historySwapInfo.length) {
-      if (select_type == "all") {
-        setHistorySwapInfoList(historySwapInfo);
+    if (historySwapInfoDone) {
+      if (historySwapInfo.length) {
+        if (select_type == "all") {
+          setHistorySwapInfoList(historySwapInfo);
+        } else {
+          setHistorySwapInfoList(getCurrentPairSwapOrders(historySwapInfo));
+        }
       } else {
-        setHistorySwapInfoList(getCurrentPairSwapOrders(historySwapInfo));
+        setHistorySwapInfoList([]);
       }
     }
-  }, [historySwapInfo, select_type, pool_id_by_url]);
-
+  }, [historySwapInfo, select_type, pool_id_in_cache, historySwapInfoDone]);
+  const handleShowHistoryInfo = () => {
+    setShowHistoryInfo(!showHistoryInfo);
+    if (!showHistoryInfo) {
+      sessionStorage.setItem(REF_FI_MY_ORDER_SHOW_HISTORY_SWAP_INFO, "true");
+    } else {
+      sessionStorage.removeItem(REF_FI_MY_ORDER_SHOW_HISTORY_SWAP_INFO);
+    }
+  };
   function getCurrentPairOrders(orders: UserOrderInfo[]) {
     return orders.filter((order: UserOrderInfo) => {
-      return order.pool_id == pool_id_by_url;
+      return order.pool_id == pool_id_in_cache;
     });
   }
   function getCurrentPairSwapOrders(orders: HistoryOrderSwapInfo[]) {
     return orders.filter((order: HistoryOrderSwapInfo) => {
-      return order.pool_id == pool_id_by_url;
+      return order.pool_id == pool_id_in_cache;
     });
   }
   const sellAmountToBuyAmount = (
@@ -212,8 +218,8 @@ export default function OrderCard({
     </div>`;
   }
   function get_current_pairs() {
-    if (pool_id_by_url && current_pair_tokens_map) {
-      const [token_x, token_y, fee] = pool_id_by_url.split("|");
+    if (pool_id_in_cache && current_pair_tokens_map) {
+      const [token_x, token_y, fee] = pool_id_in_cache.split("|");
       const token_x_meta = current_pair_tokens_map[token_x];
       const token_y_meta = current_pair_tokens_map[token_y];
       if (token_x_meta?.symbol && token_y_meta?.symbol) {

@@ -12,7 +12,7 @@ const failToast = (failText: string) => {
       </div>
     </div>,
     {
-      autoClose: 8000,
+      autoClose: 5000,
       closeOnClick: true,
       hideProgressBar: false,
       closeButton: (

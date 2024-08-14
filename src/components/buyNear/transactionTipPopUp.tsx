@@ -49,7 +49,7 @@ export const normalSuccessToast = (text: string) => {
       {text}
     </div>,
     {
-      autoClose: 8000,
+      autoClose: 5000,
       closeOnClick: true,
       hideProgressBar: false,
       closeButton: <CloseIcon />,

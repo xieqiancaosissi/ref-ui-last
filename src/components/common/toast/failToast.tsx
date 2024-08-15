@@ -8,7 +8,7 @@ const failToast = (failText: string) => {
         <span className="text-white tetx-base font-bold">Error</span>
       </div>
       <div className="text-gray-60 text-sm pl-6 mt-1">
-        {failText || "Unknown error"}
+        {failText || "An error occurred, please verify your wallet data."}
       </div>
     </div>,
     {

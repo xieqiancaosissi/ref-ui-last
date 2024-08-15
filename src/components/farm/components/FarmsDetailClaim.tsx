@@ -27,6 +27,9 @@ import { LightningIcon } from "../icon/FarmBoost";
 import { useAccountStore } from "@/stores/account";
 import getConfig from "@/utils/config";
 import { ButtonTextWrapper } from "@/components/common/Button";
+import { IExecutionResult } from "@/interfaces/wallet";
+import failToast from "@/components/common/toast/failToast";
+import successToast from "@/components/common/toast/successToast";
 
 const {
   STABLE_POOL_IDS,
@@ -45,6 +48,7 @@ export default function UserStakeBlock(props: {
   user_unclaimed_map: Record<string, any>;
   user_data_loading: Boolean;
   radio: string | number;
+  onTriggerFarmsPageUpdate: () => void;
 }) {
   const {
     detailData,
@@ -57,6 +61,7 @@ export default function UserStakeBlock(props: {
     user_unclaimed_map,
     user_data_loading,
     radio,
+    onTriggerFarmsPageUpdate,
   } = props;
   const [yourTvl, setYourTvl] = useState("");
   const { pool, min_locking_duration_sec, slash_rate, seed_id, seed_decimal } =
@@ -256,17 +261,23 @@ export default function UserStakeBlock(props: {
   const unclaimedRewardsData = useMemo(() => {
     return getTotalUnclaimedRewards();
   }, [user_unclaimed_map[seed_id]]);
-  function claimReward() {
+  async function claimReward() {
     if (claimLoading) return;
     setClaimLoading(true);
-    claimRewardBySeed_boost(detailData.seed_id)
-      // .then(() => {
-      //   window.location.reload();
-      // })
-      .catch((error) => {
-        setClaimLoading(false);
-        // setError(error);
-      });
+    claimRewardBySeed_boost(detailData.seed_id).then((res) => {
+      handleDataAfterTranstion(res);
+    });
+  }
+  function handleDataAfterTranstion(res: IExecutionResult | undefined) {
+    if (!res) return;
+    if (res.status == "success") {
+      successToast();
+      getTotalUnclaimedRewards();
+      onTriggerFarmsPageUpdate();
+    } else if (res.status == "error") {
+      failToast(res.errorResult?.message);
+    }
+    setClaimLoading(false);
   }
   function getPowerTip() {
     if (REF_VE_CONTRACT_ID && !boostConfig) return "";

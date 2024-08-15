@@ -15,15 +15,20 @@ import {
 import { toRealSymbol, withdrawAllReward_boost } from "../../../services/farm";
 import { ButtonTextWrapper } from "@/components/common/Button";
 import { isMobile } from "@/utils/device";
+import { IExecutionResult } from "@/interfaces/wallet";
+import successToast from "@/components/common/toast/successToast";
+import failToast from "@/components/common/toast/failToast";
 
 export default function Withdraw({
   isOpen,
   onRequestClose,
   rewardList,
+  get_user_unWithDraw_rewards,
 }: {
   isOpen: boolean;
   onRequestClose: () => void;
   rewardList: any;
+  get_user_unWithDraw_rewards: any;
 }) {
   const cardWidth = isMobile() ? "100vw" : "430px";
   const cardHeight = isMobile() ? "90vh" : "80vh";
@@ -126,7 +131,20 @@ export default function Withdraw({
   }
   async function doWithDraw() {
     setWithdrawLoading(true);
-    withdrawAllReward_boost(checkedList);
+    withdrawAllReward_boost(checkedList).then((res) => {
+      handleDataAfterTranstion(res);
+    });
+  }
+  function handleDataAfterTranstion(res: IExecutionResult | undefined) {
+    if (!res) return;
+    if (res.status == "success") {
+      successToast();
+      onRequestClose();
+      get_user_unWithDraw_rewards();
+    } else if (res.status == "error") {
+      failToast(res.errorResult?.message);
+    }
+    setWithdrawLoading(false);
   }
   return (
     <Modal

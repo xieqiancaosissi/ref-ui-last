@@ -98,7 +98,7 @@ export const routeMapIds = {
     "/pool/dcl/[id]",
     "/liquidity/[id]",
   ],
-  "earn-farms": ["/farms"],
+  "earn-farms": ["/farms", "/farms/[id]"],
   "earn-stake": ["/xref"],
   "earn-yours": ["/yours"],
   meme: ["/meme"],

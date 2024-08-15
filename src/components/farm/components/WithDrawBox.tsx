@@ -21,41 +21,61 @@ export default function WithDrawBox(props: {
   userRewardList: any;
   tokenPriceList: any;
   farmDisplayList: Seed[];
+  get_user_unWithDraw_rewards: any;
 }) {
   const appStore = useAppStore();
-  const { userRewardList, tokenPriceList, farmDisplayList } = props;
+  const {
+    userRewardList,
+    tokenPriceList,
+    farmDisplayList,
+    get_user_unWithDraw_rewards,
+  } = props;
   const { getIsSignedIn } = useAccountStore();
   const isSignedIn = getIsSignedIn();
-  const actualRewardList: { [key: string]: any } = {};
+  const [actualRewardList, setActualRewardList] = useState<{
+    [key: string]: any;
+  }>({});
   const maxLength = 10;
-  Object.entries(userRewardList).forEach(([key, value]) => {
-    if (Number(value) > 0) {
-      actualRewardList[key] = value;
-    }
-  });
   const [rewardList, setRewardList] = useState<any>({});
   const [yourReward, setYourReward] = useState("-");
   const [isWithdrawOpen, setIsWithdrawOpen] = useState<boolean>(false);
   useEffect(() => {
-    const tempList = Object.keys(actualRewardList).map(async (key: string) => {
-      let rewardToken = await ftGetTokenMetadata(key);
-      const price = tokenPriceList[key]?.price;
-      if (rewardToken.id === WRAP_NEAR_CONTRACT_ID) {
-        rewardToken = { ...rewardToken, ...NEAR_META_DATA };
+    const updatedRewardList: { [key: string]: any } = {};
+    Object.entries(userRewardList).forEach(([key, value]) => {
+      if (Number(value) > 0) {
+        updatedRewardList[key] = value;
       }
-      return {
-        tokenId: key,
-        rewardToken,
-        price,
-        number: actualRewardList[key],
-      };
     });
-    Promise.all(tempList).then((list) => {
-      list.forEach((item: any) => {
-        rewardList[item.tokenId] = item;
+    setActualRewardList(updatedRewardList);
+  }, [userRewardList]);
+  useEffect(() => {
+    if (Object.keys(userRewardList).length === 0) {
+      setRewardList({});
+      setYourReward("$0.00");
+    } else {
+      const tempList = Object.keys(actualRewardList).map(
+        async (key: string) => {
+          let rewardToken = await ftGetTokenMetadata(key);
+          const price = tokenPriceList[key]?.price;
+          if (rewardToken.id === WRAP_NEAR_CONTRACT_ID) {
+            rewardToken = { ...rewardToken, ...NEAR_META_DATA };
+          }
+          return {
+            tokenId: key,
+            rewardToken,
+            price,
+            number: actualRewardList[key],
+          };
+        }
+      );
+      Promise.all(tempList).then((list) => {
+        const newRewardList: { [key: string]: any } = {};
+        list.forEach((item: any) => {
+          newRewardList[item.tokenId] = item;
+        });
+        setRewardList(newRewardList);
       });
-      setRewardList(rewardList);
-    });
+    }
     if (
       actualRewardList &&
       tokenPriceList &&
@@ -65,7 +85,7 @@ export default function WithDrawBox(props: {
     ) {
       getTotalUnWithdrawRewardsPrice();
     }
-  }, [actualRewardList, tokenPriceList, farmDisplayList]);
+  }, [actualRewardList, tokenPriceList, farmDisplayList, userRewardList]);
 
   function getTotalUnWithdrawRewardsPrice() {
     const rewardTokenList: { [key: string]: any } = {};
@@ -169,6 +189,7 @@ export default function WithDrawBox(props: {
           isOpen={isWithdrawOpen}
           onRequestClose={hideWithdrawModal}
           rewardList={rewardList}
+          get_user_unWithDraw_rewards={get_user_unWithDraw_rewards}
         />
       </div>
       <div className="lg:hidden">

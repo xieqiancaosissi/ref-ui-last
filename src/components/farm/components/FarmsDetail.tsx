@@ -80,6 +80,7 @@ export default function FarmsDetail(props: {
   user_data: Record<string, any>;
   user_data_loading: Boolean;
   dayVolumeMap: Record<string, string>;
+  onTriggerFarmsPageUpdate: () => void;
 }) {
   const {
     detailData,
@@ -90,6 +91,7 @@ export default function FarmsDetail(props: {
     user_data,
     user_data_loading,
     dayVolumeMap,
+    onTriggerFarmsPageUpdate,
   } = props;
   const {
     user_seeds_map = {},
@@ -888,7 +890,7 @@ export default function FarmsDetail(props: {
                 </p>
                 <p className="frcc">
                   <div
-                    className={`text-xl text-white`}
+                    className={`text-white flex`}
                     data-type="info"
                     data-place="top"
                     data-multiline={true}
@@ -899,7 +901,7 @@ export default function FarmsDetail(props: {
                     data-class="reactTip"
                   >
                     {yourApr ? (
-                      <div className="flex flex-col cursor-pointer justify-center">
+                      <div className="flex cursor-pointer justify-center">
                         <label className="text-white">{yourApr}</label>
                         <span className="text-sm text-gray-10">
                           ({getTotalApr()}
@@ -963,6 +965,7 @@ export default function FarmsDetail(props: {
                 user_unclaimed_token_meta_map={user_unclaimed_token_meta_map}
                 user_data_loading={user_data_loading}
                 radio={radio}
+                onTriggerFarmsPageUpdate={onTriggerFarmsPageUpdate}
               ></UserStakeBlock>
             </div>
             <div className="relative flex-1 h-full">
@@ -1095,7 +1098,7 @@ export default function FarmsDetail(props: {
             </p>
             <div className="text-white flex">
               <div
-                className={`text-xl text-white`}
+                className={`text-white flex`}
                 data-type="info"
                 data-place="top"
                 data-multiline={true}
@@ -1104,7 +1107,7 @@ export default function FarmsDetail(props: {
                 data-class="reactTip"
               >
                 {yourApr ? (
-                  <div className="flex flex-col cursor-pointer justify-center">
+                  <div className="flex cursor-pointer justify-center">
                     <label className="text-white">{yourApr}</label>
                     <span className="text-sm text-gray-10">
                       ({getTotalApr()}
@@ -1154,6 +1157,7 @@ export default function FarmsDetail(props: {
             user_unclaimed_token_meta_map={user_unclaimed_token_meta_map}
             user_data_loading={user_data_loading}
             radio={radio}
+            onTriggerFarmsPageUpdate={onTriggerFarmsPageUpdate}
           ></UserStakeBlock>
           {+freeAmount > 0 && is_support_lp ? (
             <div className="text-xs mt-2 text-gray-60">

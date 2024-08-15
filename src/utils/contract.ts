@@ -111,7 +111,7 @@ export const refFarmBoostFunctionCall = async ({
     ],
   };
 
-  return await executeMultipleTransactions([transaction]);
+  return await executeMultipleTransactions([transaction], false);
 };
 
 export async function refFiViewFunction({
@@ -155,7 +155,7 @@ export const executeFarmMultipleTransactions = async (
   transactions: Transaction[],
   callbackUrl?: string
 ) => {
-  return executeMultipleTransactions(transactions, undefined, callbackUrl);
+  return executeMultipleTransactions(transactions, false, callbackUrl);
 };
 
 export const registerAccountOnToken = () => {

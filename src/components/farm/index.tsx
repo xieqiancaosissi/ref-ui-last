@@ -1,5 +1,13 @@
 /* eslint-disable prefer-const */
-import { SetStateAction, useEffect, useMemo, useRef, useState } from "react";
+import {
+  SetStateAction,
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useAccountStore } from "../../stores/account";
 import {
   Checkbox,
@@ -60,7 +68,7 @@ const {
   REF_UNI_V3_SWAP_CONTRACT_ID,
 } = getConfig();
 
-export default function FarmsPage(props: any) {
+const FarmsPage = (props: any, ref: any) => {
   const {
     getDetailData,
     getDetailData_user_data,
@@ -162,6 +170,14 @@ export default function FarmsPage(props: any) {
       getYourFarmsQuantity();
     }
   }, [farm_display_List]);
+  useImperativeHandle(ref, () => ({
+    init,
+    getConfig,
+    get_user_unWithDraw_rewards,
+    get_user_seeds_and_unClaimedRewards,
+    getLoveTokenBalance,
+    get_ve_seed_share,
+  }));
   const handleCheckbox = (value: SetStateAction<string>) => {
     setSelected(value);
   };
@@ -252,6 +268,7 @@ export default function FarmsPage(props: any) {
   // get user unWithDraw rewards data
   async function get_user_unWithDraw_rewards() {
     if (accountId) {
+      // console.log("get_user_unWithDraw_rewards is called");
       const userRewardList = await get_unWithDraw_rewards();
       set_user_unWithdraw_rewards(userRewardList);
     }
@@ -1102,6 +1119,7 @@ export default function FarmsPage(props: any) {
             userRewardList={user_unWithdraw_rewards}
             tokenPriceList={tokenPriceList}
             farmDisplayList={farm_display_List}
+            get_user_unWithDraw_rewards={get_user_unWithDraw_rewards}
           ></WithDrawBox>
           <div className="frcb 2xl:w-3/5 xl:w-9/12 lg:w-4/5">
             <div className="frcc border border-dark-40 rounded-md p-0.5">
@@ -1374,6 +1392,7 @@ export default function FarmsPage(props: any) {
               userRewardList={user_unWithdraw_rewards}
               tokenPriceList={tokenPriceList}
               farmDisplayList={farm_display_List}
+              get_user_unWithDraw_rewards={get_user_unWithDraw_rewards}
             ></WithDrawBox>
           </div>
           <div className="mb-5 flex border border-dark-40 rounded-md">
@@ -1583,4 +1602,6 @@ export default function FarmsPage(props: any) {
       </div>
     </main>
   );
-}
+};
+
+export default forwardRef(FarmsPage);

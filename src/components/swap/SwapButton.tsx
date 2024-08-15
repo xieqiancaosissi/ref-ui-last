@@ -59,8 +59,8 @@ export default function SwapButton({
   const buttonStatus = useMemo(() => {
     return getButtonStatus();
   }, [
-    getTokenUIId(tokenIn),
-    getTokenUIId(tokenOut),
+    JSON.stringify(tokenIn),
+    JSON.stringify(tokenOut),
     amountIn,
     amountOut,
     slippageTolerance,

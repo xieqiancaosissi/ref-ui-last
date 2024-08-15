@@ -24,15 +24,17 @@ export function InputView(props: any) {
   const onSubmit = async () => {
     setLoading(true);
     try {
-      let res;
       if (tab === 0) {
         // stake
-        res = await stake({ amount }).then((response) => response);
+        await stake({ amount }).then((res) => {
+          handleDataAfterTranstion(res);
+        });
       } else if (tab === 1) {
         // unstake
-        res = await unstake({ amount }).then((response) => response);
+        await unstake({ amount }).then((res) => {
+          handleDataAfterTranstion(res);
+        });
       }
-      await handleDataAfterTranstion(res);
     } catch (error) {
       console.error("Transaction failed:", error);
       setLoading(false);

@@ -215,7 +215,7 @@ export default function FarmsDetailStake(props: {
     new BigNumber(amount).isLessThanOrEqualTo(0) ||
     (activeTab == "unStake" &&
       new BigNumber(amount).isGreaterThan(lpBalance)) ||
-    (activeTab == "unstake" && new BigNumber(amount).isGreaterThan(freeAmount));
+    (activeTab == "stake" && new BigNumber(amount).isGreaterThan(freeAmount));
   function operationStake() {
     setStakeLoading(true);
     let msg = "";
@@ -495,7 +495,7 @@ export default function FarmsDetailStake(props: {
             <div className="flex items-center ml-2">
               <span
                 onClick={() => {
-                  changeAmount(freeAmount);
+                  changeAmount(lpBalances);
                 }}
                 className={`text-sm text-gray-50 underline cursor-pointer hover:text-primaryGreen`}
               >

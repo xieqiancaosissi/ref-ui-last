@@ -312,7 +312,9 @@ export default function UserStakeBlock(props: {
               <CustomTooltip id="powerTipId" />
             </div>
           </p>
-          <p className="text-2xl xsm:text-primaryGreen">{showLpPower()}</p>
+          <p className="text-2xl xsm:text-primaryGreen">
+            {isSignedIn ? showLpPower() : <span className="opacity-50">-</span>}
+          </p>
         </div>
         <div className="flex">
           <div className="flex-1">
@@ -320,10 +322,14 @@ export default function UserStakeBlock(props: {
               Value
             </p>
             <p className="text-2xl xsm:text-white">
-              {Number(yourTvl) == 0 ? (
-                <span className="opacity-50">$0</span>
+              {isSignedIn ? (
+                Number(yourTvl) == 0 ? (
+                  <span className="opacity-50">$0</span>
+                ) : (
+                  "$" + toInternationalCurrencySystem(yourTvl, 2)
+                )
               ) : (
-                "$" + toInternationalCurrencySystem(yourTvl, 2)
+                <span className="opacity-50">-</span>
               )}
             </p>
           </div>
@@ -336,7 +342,11 @@ export default function UserStakeBlock(props: {
                 getUserLpPercent() === "0%" ? "opacity-50" : ""
               }`}
             >
-              {getUserLpPercent()}
+              {isSignedIn ? (
+                getUserLpPercent()
+              ) : (
+                <span className="opacity-50">-</span>
+              )}
             </p>
           </div>
         </div>

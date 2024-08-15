@@ -113,7 +113,7 @@ export default function FarmsDetailStake(props: {
   const defaultTab = isEnded ? "unstake" : "stake";
   const [activeTab, setActiveTab] = useState(activeMobileTab || defaultTab);
   const [amountAvailableCheck, setAmountAvailableCheck] = useState(true);
-  const lpBalances = toReadableNumber(
+  const unlpBalances = toReadableNumber(
     DECIMALS,
     BigNumber(free_amount).plus(shadow_amount).toFixed()
   );
@@ -209,13 +209,16 @@ export default function FarmsDetailStake(props: {
       return toPrecision(lpBalance || "0", 3);
     }
   }
-  const isDisabled =
+  const isDisabledUnstake =
     !amount ||
-    !amountAvailableCheck ||
     new BigNumber(amount).isLessThanOrEqualTo(0) ||
-    (activeTab == "unStake" &&
-      new BigNumber(amount).isGreaterThan(lpBalance)) ||
-    (activeTab == "stake" && new BigNumber(amount).isGreaterThan(freeAmount));
+    new BigNumber(amount).isGreaterThan(new BigNumber(unlpBalances));
+
+  const isDisabledStake =
+    !amount ||
+    new BigNumber(amount).isLessThanOrEqualTo(0) ||
+    new BigNumber(amount).isGreaterThan(new BigNumber(lpBalance));
+
   function operationStake() {
     setStakeLoading(true);
     let msg = "";
@@ -279,28 +282,37 @@ export default function FarmsDetailStake(props: {
     >
       <div className="flex items-center mb-4 xsm:mb-7 xsm:border-b xsm:border-white xsm:border-opacity-10 xsm:px-4">
         <button
-          className={`text-lg pr-5 xsm:flex-1 ${
+          className={`text-lg xsm:flex-1 ${
             activeTab === "stake" ? styles.gradient_text : "text-gray-500"
           } ${isEnded ? "hidden" : ""}`}
-          onClick={() => setActiveTab("stake")}
+          onClick={() => {
+            setActiveTab("stake");
+            setAmount("");
+          }}
         >
           Stake
         </button>
         {isEnded ||
+          !isSignedIn ||
           (Number(freeAmount) > 0 && (
             <div
-              className="h-4 bg-gray-50 xsm:hidden"
+              className="h-4 bg-gray-50 xsm:hidden mx-5"
               style={{ width: "2px" }}
             />
           ))}
-        <button
-          className={`text-lg pl-5 xsm:flex-1 ${
-            activeTab === "unstake" ? styles.gradient_text : "text-gray-500"
-          }  ${Number(freeAmount) > 0 ? "" : "hidden"}`}
-          onClick={() => setActiveTab("unstake")}
-        >
-          Unstake
-        </button>
+        {isSignedIn ? (
+          <button
+            className={`text-lg xsm:flex-1 ${
+              activeTab === "unstake" ? styles.gradient_text : "text-gray-500"
+            }  ${Number(freeAmount) > 0 ? "" : "hidden"}`}
+            onClick={() => {
+              setActiveTab("unstake");
+              setAmount("");
+            }}
+          >
+            Unstake
+          </button>
+        ) : null}
       </div>
       {activeTab === "stake" && (
         <div className={`xsm:px-4 ${isEnded ? "hidden" : ""}`}>
@@ -309,21 +321,21 @@ export default function FarmsDetailStake(props: {
               <span
                 className="underline cursor-pointer hover:text-primaryGreen"
                 onClick={() => {
-                  changeAmount(
-                    stakeType == "freeToLock" ? freeAmount : lpBalance
-                  );
+                  changeAmount(lpBalance);
                 }}
               >
-                {isSignedIn ? displayLpBalance() : "0"}
+                {isSignedIn ? (
+                  displayLpBalance()
+                ) : (
+                  <span className="opacity-50">-</span>
+                )}
               </span>
               <span className="text-gray-10 ml-1">available to stake</span>
             </div>
             <div>
               <span
                 onClick={() => {
-                  changeAmount(
-                    stakeType == "freeToLock" ? freeAmount : lpBalance
-                  );
+                  changeAmount(lpBalance);
                 }}
                 className={`text-sm text-gray-50 underline cursor-pointer hover:text-primaryGreen xsm:hidden `}
               >
@@ -343,9 +355,7 @@ export default function FarmsDetailStake(props: {
             <div className="flex items-center ml-2">
               <span
                 onClick={() => {
-                  changeAmount(
-                    stakeType == "freeToLock" ? freeAmount : lpBalance
-                  );
+                  changeAmount(lpBalance);
                 }}
                 className={`text-sm text-gray-50 underline cursor-pointer hover:text-primaryGreen xsm:hidden`}
               >
@@ -353,10 +363,14 @@ export default function FarmsDetailStake(props: {
               </span>
             </div>
           </div>
-          {amountAvailableCheck ? null : (
+          {amountAvailableCheck || displayLpBalance() == "0" ? null : (
             <div className="flex justify-center mt-2.5 xsm:mb-2.5">
               <div className="w-full bg-yellow-10 bg-opacity-10 rounded py-2 px-2.5 text-yellow-10 text-sm flex items-center">
-                {isSignedIn ? toReadableNumber(DECIMALS, min_deposit) : "0"}
+                {isSignedIn ? (
+                  displayLpBalance()
+                ) : (
+                  <span className="opacity-50">-</span>
+                )}
                 <p className="ml-1 mr-2">available to stake</p>
                 {/* <p className="underline frcc">
                   Add liquidity <VEARROW className="ml-1.5"></VEARROW>
@@ -405,18 +419,22 @@ export default function FarmsDetailStake(props: {
             ) : null}
           </div>
           <div className="mt-2.5 text-sm mb-6 xsm:hidden">
-            {isSignedIn ? displayLpBalance() : "0"}
+            {isSignedIn ? (
+              displayLpBalance()
+            ) : (
+              <span className="opacity-50">-</span>
+            )}
             <span className="text-gray-10 ml-1">available to stake</span>
           </div>
           {isSignedIn ? (
             <div
               onClick={() => {
-                if (!isDisabled) {
+                if (!isDisabledStake) {
                   operationStake();
                 }
               }}
               className={`w-full h-11 frcc rounded paceGrotesk-Bold text-base ${
-                isDisabled
+                isDisabledStake
                   ? "cursor-not-allowed bg-gray-40 text-gray-50"
                   : "bg-greenGradient text-black cursor-pointer"
               }`}
@@ -481,7 +499,14 @@ export default function FarmsDetailStake(props: {
         <div className="xsm:px-4">
           <div className="mt-2.5 text-sm mb-2.5 frcb lg:hidden">
             <p className="text-gray-10 ml-1">Lp Tokens</p>
-            <p> {toPrecision(lpBalances, 6)}</p>
+            <p
+              className="underline cursor-pointer hover:text-primaryGreen"
+              onClick={() => {
+                changeAmount(unlpBalances);
+              }}
+            >
+              {toPrecision(unlpBalances, 6)}
+            </p>
           </div>
           <div className="flex justify-between items-center h-16 px-3 bg-dark-60 rounded-lg xsm:mb-6">
             <input
@@ -492,10 +517,10 @@ export default function FarmsDetailStake(props: {
               onChange={({ target }) => changeAmount(target.value)}
               className="text-white text-lg focus:outline-non appearance-none leading-tight"
             ></input>
-            <div className="flex items-center ml-2">
+            <div className="flex items-center ml-2 xsm:hidden">
               <span
                 onClick={() => {
-                  changeAmount(lpBalances);
+                  changeAmount(unlpBalances);
                 }}
                 className={`text-sm text-gray-50 underline cursor-pointer hover:text-primaryGreen`}
               >
@@ -505,16 +530,16 @@ export default function FarmsDetailStake(props: {
           </div>
           <div className="mt-2.5 text-sm mb-6 frcb xsm:hidden">
             <p className="text-gray-10 ml-1">Lp Tokens</p>
-            <p> {toPrecision(lpBalances, 6)}</p>
+            <p> {toPrecision(unlpBalances, 6)}</p>
           </div>
           <div
             onClick={() => {
-              if (!isDisabled) {
+              if (!isDisabledUnstake) {
                 operationUnStake();
               }
             }}
             className={`w-full h-11 frcc rounded paceGrotesk-Bold text-base ${
-              isDisabled
+              isDisabledUnstake
                 ? "cursor-not-allowed bg-gray-40 text-gray-50"
                 : "text-green-10 border border-green-10 cursor-pointer"
             }`}

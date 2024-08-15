@@ -1160,109 +1160,111 @@ export default function FarmsDclDetail(props: {
               unavailable={listLiquidities_unavailable}
             ></AddLiquidityEntryBar>
 
-            <div
-              className={`h-full p-5 ${
-                !isSignedIn
-                  ? "blur-0"
-                  : listLiquiditiesLoading ||
-                    (!listLiquiditiesLoading &&
-                      listLiquidities_inFarimg.length === 0 &&
-                      listLiquidities_unFarimg.length === 0)
-                  ? "blur-2"
-                  : "blur-0"
-              }`}
-            >
-              <div className="flex items-center mb-8">
-                <button
-                  className={`text-lg pr-5 ${
-                    activeTab === "Stake"
-                      ? styles.gradient_text
-                      : "text-gray-500"
-                  }`}
-                  onClick={() => setActiveTab("Stake")}
-                >
-                  Stake
-                </button>
-                <div className="h-4 bg-gray-50" style={{ width: "2px" }} />
-                <button
-                  className={`text-lg pl-5 ${
-                    activeTab === "Unstake"
-                      ? styles.gradient_text
-                      : "text-gray-500"
-                  }`}
-                  onClick={() => setActiveTab("Unstake")}
-                >
-                  Unstake
-                </button>
-              </div>
-              <p className="text-gray-50 text-sm mb-1.5">Available</p>
-              {!isSignedIn ? (
-                <p className="text-2xl mb-11 text-gray-50">-</p>
-              ) : (
-                <p className="text-2xl mb-11">{yp_unFarm_value}</p>
-              )}
-              {activeTab === "Stake" && (
-                <>
-                  {!isSignedIn ? (
-                    <div
-                      className=" w-full h-11 frcc rounded text-base text-primaryGreen border border-primaryGreen cursor-pointer"
-                      onClick={showWalletSelector}
-                    >
-                      Connect Wallet
-                    </div>
-                  ) : !isEnded ? (
-                    <div
-                      onClick={() => {
-                        if (!stakeDisabled) {
-                          batchStakeNFT();
-                        }
-                      }}
-                      className={` w-full h-11 frcc rounded paceGrotesk-Bold text-base  ${
-                        stakeDisabled
-                          ? "cursor-not-allowed bg-gray-40 text-gray-50"
-                          : "bg-greenGradient text-black cursor-pointer"
-                      }`}
-                    >
-                      <ButtonTextWrapper
-                        loading={nft_stake_loading}
-                        Text={() => <>Stake</>}
-                      />
-                    </div>
-                  ) : null}
-                </>
-              )}
+            {!isEnded ? (
+              <div
+                className={`h-full p-5 ${
+                  !isSignedIn
+                    ? "blur-0"
+                    : listLiquiditiesLoading ||
+                      (!listLiquiditiesLoading &&
+                        listLiquidities_inFarimg.length === 0 &&
+                        listLiquidities_unFarimg.length === 0)
+                    ? "blur-2"
+                    : "blur-0"
+                }`}
+              >
+                <div className="flex items-center mb-8">
+                  <button
+                    className={`text-lg pr-5 ${
+                      activeTab === "Stake"
+                        ? styles.gradient_text
+                        : "text-gray-500"
+                    }`}
+                    onClick={() => setActiveTab("Stake")}
+                  >
+                    Stake
+                  </button>
+                  <div className="h-4 bg-gray-50" style={{ width: "2px" }} />
+                  <button
+                    className={`text-lg pl-5 ${
+                      activeTab === "Unstake"
+                        ? styles.gradient_text
+                        : "text-gray-500"
+                    }`}
+                    onClick={() => setActiveTab("Unstake")}
+                  >
+                    Unstake
+                  </button>
+                </div>
+                <p className="text-gray-50 text-sm mb-1.5">Available</p>
+                {!isSignedIn ? (
+                  <p className="text-2xl mb-11 text-gray-50">-</p>
+                ) : (
+                  <p className="text-2xl mb-11">{yp_unFarm_value}</p>
+                )}
+                {activeTab === "Stake" && (
+                  <>
+                    {!isSignedIn ? (
+                      <div
+                        className=" w-full h-11 frcc rounded text-base text-primaryGreen border border-primaryGreen cursor-pointer"
+                        onClick={showWalletSelector}
+                      >
+                        Connect Wallet
+                      </div>
+                    ) : !isEnded ? (
+                      <div
+                        onClick={() => {
+                          if (!stakeDisabled) {
+                            batchStakeNFT();
+                          }
+                        }}
+                        className={` w-full h-11 frcc rounded paceGrotesk-Bold text-base  ${
+                          stakeDisabled
+                            ? "cursor-not-allowed bg-gray-40 text-gray-50"
+                            : "bg-greenGradient text-black cursor-pointer"
+                        }`}
+                      >
+                        <ButtonTextWrapper
+                          loading={nft_stake_loading}
+                          Text={() => <>Stake</>}
+                        />
+                      </div>
+                    ) : null}
+                  </>
+                )}
 
-              {activeTab === "Unstake" && (
-                <>
-                  {!isSignedIn ? (
-                    <div
-                      className=" w-full h-11 frcc rounded text-base text-primaryGreen border border-primaryGreen cursor-pointer"
-                      onClick={showWalletSelector}
-                    >
-                      Connect Wallet
-                    </div>
-                  ) : canUnStake ? (
-                    <div
-                      onClick={() => {
-                        if (!nft_unStake_loading) {
-                          batchUnStakeNFT();
-                        }
-                      }}
-                      className={` w-full h-11 frcc rounded paceGrotesk-Bold text-base  ${
-                        nft_unStake_loading
-                          ? "cursor-not-allowed bg-gray-40 text-gray-50"
-                          : "text-green-10 border border-green-10 cursor-pointer"
-                      }`}
-                    >
-                      <ButtonTextWrapper
-                        loading={nft_unStake_loading}
-                        Text={() => <>Unstake</>}
-                      />
-                    </div>
-                  ) : null}
-                </>
-              )}
-            </div>
+                {activeTab === "Unstake" && (
+                  <>
+                    {!isSignedIn ? (
+                      <div
+                        className=" w-full h-11 frcc rounded text-base text-primaryGreen border border-primaryGreen cursor-pointer"
+                        onClick={showWalletSelector}
+                      >
+                        Connect Wallet
+                      </div>
+                    ) : canUnStake ? (
+                      <div
+                        onClick={() => {
+                          if (!nft_unStake_loading) {
+                            batchUnStakeNFT();
+                          }
+                        }}
+                        className={` w-full h-11 frcc rounded paceGrotesk-Bold text-base  ${
+                          nft_unStake_loading
+                            ? "cursor-not-allowed bg-gray-40 text-gray-50"
+                            : "text-green-10 border border-green-10 cursor-pointer"
+                        }`}
+                      >
+                        <ButtonTextWrapper
+                          loading={nft_unStake_loading}
+                          Text={() => <>Unstake</>}
+                        />
+                      </div>
+                    ) : null}
+                  </>
+                )}
+              </div>
+            ) : null}
           </div>
           <div
             className={`ml-80 bg-dark-10 rounded-md p-5  w-2/5 ${

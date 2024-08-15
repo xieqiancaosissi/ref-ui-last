@@ -169,9 +169,9 @@ export function Checkbox({ ...props }) {
   return (
     <svg
       {...props}
-      width="16"
+      width="14"
       height="16"
-      viewBox="0 0 16 16"
+      viewBox="0 0 14 16"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
@@ -179,7 +179,7 @@ export function Checkbox({ ...props }) {
         width="14"
         height="14"
         rx="2"
-        transform="matrix(-1 0 0 1 15 1)"
+        transform="matrix(-1 0 0 1 14 1)"
         stroke="#91A2AE"
       />
     </svg>

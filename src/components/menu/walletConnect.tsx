@@ -43,8 +43,8 @@ export default function WalletConnect() {
   const [showGuider, setShowGuider] = useState<boolean>(
     !!(localStorage.getItem("ACCESS_MODAL_GUIDER") !== "1" && accountId)
   );
-  const isKeyPomWallet =
-    window.selector?.store?.getState()?.selectedWalletId == "keypom";
+  const selectedWalletId = window.selector?.store?.getState()?.selectedWalletId;
+  const isKeyPomWallet = selectedWalletId == "keypom";
   useEffect(() => {
     init();
   }, []);
@@ -59,7 +59,7 @@ export default function WalletConnect() {
 
   useEffect(() => {
     get_current_wallet();
-  }, [accountId]);
+  }, [selectedWalletId]);
 
   useEffect(() => {
     if (

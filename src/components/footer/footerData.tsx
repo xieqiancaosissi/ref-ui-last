@@ -5,6 +5,7 @@ import {
   MediumIcon,
   RefAnalyticsIcon,
   IconForum,
+  IConWiki,
 } from "./icons";
 
 export const communityLinks = [
@@ -32,6 +33,11 @@ export const communityLinks = [
     label: "Forum",
     url: "https://gov.ref.finance",
     icon: <IconForum />,
+  },
+  {
+    label: "Wiki",
+    url: "https://iq.wiki/wiki/ref-finance",
+    icon: <IConWiki />,
   },
 ];
 

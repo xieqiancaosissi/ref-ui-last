@@ -52,7 +52,12 @@ export default function ConnectToOrderlyWidget({
           });
         })
         .catch((e) => {
-          console.log("orderly key set error", e);
+          if (needAuthorization) {
+            failToast(e.message);
+            setAuthorization(false);
+          } else {
+            console.log(e?.message);
+          }
         });
     }
   }, [connectStatus, needAuthorization, authorization]);

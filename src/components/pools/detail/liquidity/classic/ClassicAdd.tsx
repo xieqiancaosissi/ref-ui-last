@@ -145,17 +145,26 @@ export default function StableAdd(props: any) {
   };
 
   const changeVal = useCallback((e: any, ind: number) => {
-    setInputValList((prev: string[]) => {
-      const newValues = [...prev];
-      newValues[ind] = e.target.value;
-      const { dealVal, fairShares }: any = dealTokenAmounts(
-        ind,
-        ind === 0 ? 1 : 0,
-        newValues
-      ); // use update newValues
-      setPreShare(toReadableNumber(24, fairShares));
-      return dealVal;
-    });
+    if (updatedMapList[0]?.amounts.every((amount: any) => amount == "0")) {
+      setInputValList((prev: string[]) => {
+        const newValues = [...prev];
+        newValues[ind] = e.target.value;
+
+        return newValues;
+      });
+    } else {
+      setInputValList((prev: string[]) => {
+        const newValues = [...prev];
+        newValues[ind] = e.target.value;
+        const { dealVal, fairShares }: any = dealTokenAmounts(
+          ind,
+          ind === 0 ? 1 : 0,
+          newValues
+        ); // use update newValues
+        setPreShare(toReadableNumber(24, fairShares));
+        return dealVal;
+      });
+    }
   }, []);
 
   //

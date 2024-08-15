@@ -7,6 +7,14 @@ import { addSimpleLiquidityPool, findSamePools } from "@/services/pool";
 import InitData from "@/components/swap/InitData";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import { useRouter } from "next/router";
+import { error } from "console";
+import failToast from "@/components/common/toast/failToast";
+import successToast from "@/components/common/toast/successToast";
+import { checkTransactionStatus } from "@/utils/contract";
+import { getURLInfo } from "@/utils/transactionsPopup";
+import { getAccountId } from "@/utils/wallet";
+import { useAccountStore } from "@/stores/account";
+import { REF_FI_CONTRACT_ID } from "@/utils/contract";
 
 export default function CreatePoolModal({
   isOpen,
@@ -22,9 +30,33 @@ export default function CreatePoolModal({
   const [isSame, setSame] = useState(false);
   const [showSke, setShowSke] = useState(false);
   const [sameId, setSameId] = useState("");
+  const accountStore = useAccountStore();
+
+  const [validTips, setValidTips] = useState({
+    active: false,
+    tip: "",
+  });
 
   const handleFee = (e: any) => {
     setCreateFee(e * 100);
+    if (!e) {
+      setValidTips({
+        active: true,
+        tip: "Please input valid number",
+      });
+    } else {
+      if (e * 100 < 1) {
+        setValidTips({
+          active: true,
+          tip: "Please input number that more than or equal to 0.01",
+        });
+      } else {
+        setValidTips({
+          active: false,
+          tip: "",
+        });
+      }
+    }
   };
 
   const handleToken = (e: { index: number; value: string }) => {
@@ -33,18 +65,95 @@ export default function CreatePoolModal({
     setToken(newToken);
   };
 
+  // const { txHash } = getURLInfo();
+  // useEffect(() => {
+  //   if (txHash && accountStore.isSignedIn) {
+  //     checkTransactionStatus(txHash).then((res) => {
+  //       let status: any = res.status;
+
+  //       if (
+  //         res.transaction?.actions?.[0]?.FunctionCall?.method_name === "execute"
+  //       ) {
+  //         const receipt = res?.receipts_outcome?.find(
+  //           (o: any) => o?.outcome?.executor_id === REF_FI_CONTRACT_ID
+  //         );
+
+  //         if (receipt) {
+  //           status = receipt?.outcome?.status;
+  //         }
+  //       }
+
+  //       const data: string | undefined = status.SuccessValue;
+
+  //       if (data) {
+  //         const buff = Buffer.from(data, "base64");
+  //         const pool_id = buff.toString("ascii");
+
+  //         router.push(`/pool/classic/${pool_id}`);
+  //       } else {
+  //         router.replace(`/pools`);
+  //       }
+  //     });
+  //   }
+  // }, [txHash]);
+
   const createPool = () => {
     setShowSke(true);
-    addSimpleLiquidityPool(token, createFee);
+    addSimpleLiquidityPool(token, Math.floor(createFee))
+      .then((res: any) => {
+        let status;
+        if (res.status == "success") {
+          successToast();
+
+          if (
+            res.successResult[0].transaction?.actions[0]?.FunctionCall
+              ?.method_name === "execute"
+          ) {
+            const receipt = res.successResult[0]?.receipts_outcome?.find(
+              (o: any) => o?.outcome?.executor_id === REF_FI_CONTRACT_ID
+            );
+
+            if (receipt) {
+              status = receipt?.outcome?.status;
+            }
+          }
+
+          const data: string | undefined =
+            res.successResult[0].status.SuccessValue || status.SuccessValue;
+
+          if (data) {
+            const buff = Buffer.from(data, "base64");
+            const pool_id = buff.toString("ascii");
+
+            router.push(`/pool/classic/${pool_id}`);
+          } else {
+            router.replace(`/pools`);
+          }
+        } else if (res.status == "error") {
+          failToast(res.errorResult?.message);
+        }
+      })
+      .catch((error: any) => {
+        console.log(error, "addSimpleLiquidityPool error");
+      })
+      .finally(() => {
+        setShowSke(false);
+      });
   };
 
   useEffect(() => {
-    if (!token[0] || !token[1] || createFee < 0 || !createFee) {
+    if (
+      !token[0] ||
+      !token[1] ||
+      createFee < 0 ||
+      !createFee ||
+      validTips.active
+    ) {
       setDisabled(true);
       setSame(false);
     } else {
-      findSamePools(token, createFee / 10000).then((res) => {
-        if (res?.length > 0) {
+      findSamePools(token, Math.floor(createFee) / 10000).then((res) => {
+        if (res?.length > 0 || validTips.active) {
           setDisabled(true);
           setSame(true);
           setSameId(res[0].id);
@@ -54,7 +163,7 @@ export default function CreatePoolModal({
         }
       });
     }
-  }, [token[0], token[1], createFee]);
+  }, [token[0], token[1], createFee, validTips]);
 
   const [isMobile, setIsMobile] = useState(false);
 
@@ -81,6 +190,7 @@ export default function CreatePoolModal({
         e.stopPropagation();
         onRequestClose();
         setToken(["", ""]);
+        setShowSke(false);
       }}
       style={{
         overlay: {
@@ -107,6 +217,7 @@ export default function CreatePoolModal({
             className="hover:scale-110 hover:cursor-pointer"
             onClick={() => {
               onRequestClose();
+              setShowSke(false);
               setToken(["", ""]);
             }}
           />
@@ -121,9 +232,20 @@ export default function CreatePoolModal({
               <TokenInput title="Token" index={0} handleToken={handleToken} />
               <TokenInput title="Pair" index={1} handleToken={handleToken} />
             </div>
+
             {/* fee */}
             <Fee getherFee={handleFee} />
-
+            {validTips.active && (
+              <div
+                className="text-yellow-10 text-xs border h-11 lg:w-100 xsm:w-full rounded flex px-1 py-1 items-center lg:mt-10 xsm:mt-4"
+                style={{
+                  borderColor: "rgba(230, 180, 1, 0.3)",
+                  backgroundColor: "rgba(230, 180, 1, 0.14)",
+                }}
+              >
+                <span>{validTips.tip}</span>
+              </div>
+            )}
             {/* for tips */}
             {isSame && (
               <div

@@ -135,11 +135,7 @@ export const addSimpleLiquidityPool = async (
     ],
   });
 
-  return executeMultipleTransactions(
-    transactions,
-    undefined,
-    `${window.location.origin}/pools`
-  );
+  return executeMultipleTransactions(transactions, false);
 };
 
 export const getPoolIndexTvlOR24H = async (type: string, day: any) => {

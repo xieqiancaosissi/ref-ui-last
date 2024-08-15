@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/router";
-import styles from "./style.module.css";
 import TokenDetail from "@/components/pools/detail/classic/tokenDetail";
 import { CollectStar } from "@/components/pools/icon";
 import TokenFeeAndCureentPrice from "@/components/pools/detail/classic/tokenFeeAndCureentPrice";
@@ -15,6 +14,7 @@ import {
   removePoolFromWatchList,
   getPoolsDetailById,
 } from "@/services/pool";
+import { getPoolDetails } from "@/services/pool_detail";
 import NoLiquidity from "@/components/pools/detail/liquidity/NoLiquidity";
 import NoLiquidityMobile from "@/components/pools/detail/liquidity/NoLiquidityMobile";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
@@ -52,23 +52,18 @@ import {
   openUrlLocal,
 } from "@/services/commonV3";
 import { FarmBoost } from "@/services/farm";
-import {
-  Fire,
-  FarmBoardInDetailPool,
-} from "@/components/pools/detail/liquidity/icon";
+import { Fire } from "@/components/pools/detail/liquidity/icon";
 import { Images } from "@/components/pools/detail/liquidity/components/liquidityComComp";
 import ClassicAdd from "@/components/pools/detail/liquidity/classic/ClassicAdd";
 import ClassicRemove from "@/components/pools/detail/liquidity/classic/ClassicRemove";
 import { useRiskTokens } from "@/hooks/useRiskTokens";
-import {
-  GradientFarmBorder,
-  GradientFarmBorderMobile,
-} from "@/components/pools/icon";
+import { GradientFarmBorder } from "@/components/pools/icon";
 import { format_apy } from "@/utils/uiNumber";
 import { useAppStore } from "@/stores/app";
 import { showWalletSelectorModal } from "@/utils/wallet";
 import YourLiqMobile from "@/components/pools/detail/liquidity/classic/YourLiqMobile";
 import { PoolRouterGuard } from "@/utils/poolTypeGuard";
+import { ftGetTokenMetadata } from "@/services/token";
 
 export default function ClassicPoolDetail() {
   const router = useRouter();
@@ -88,12 +83,18 @@ export default function ClassicPoolDetail() {
   ];
   const [transactionActive, setTransactionActive] = useState("swap");
   //
+  const [otherTokens, setOtherTokens] = useState<any>([]);
   useEffect(() => {
     if (poolId) {
       getPoolsDetailById({ pool_id: poolId as any }).then((res) => {
-        PoolRouterGuard(res, "SIMPLE_POOL") &&
-          openUrlLocal(`${PoolRouterGuard(res, "SIMPLE_POOL")}/${poolId}`);
-        setPoolDetail(res);
+        if (!res) {
+          fetchPoolDetails(+poolId);
+        } else {
+          res &&
+            PoolRouterGuard(res, "SIMPLE_POOL") &&
+            openUrlLocal(`${PoolRouterGuard(res, "SIMPLE_POOL")}/${poolId}`);
+          setPoolDetail(res);
+        }
       });
 
       if (currentwatchListId.length > 0) {
@@ -119,15 +120,54 @@ export default function ClassicPoolDetail() {
     setIsCollect((previos) => !previos);
   };
 
-  // liquidity
+  async function fetchPoolDetails(poolId: number) {
+    const k: any = {
+      amounts: ["0", "0"],
+      amp: 0,
+      apy: "0",
+      c_amounts: null,
+      degens: null,
+      farm_apy: "0",
+      farm_is_multi_currency: false,
+      fee_volume_24h: "0",
+      id: poolId,
+      is_farm: false,
+      is_meme: false,
+      is_new: true,
+      pool_kind: "",
+      rates: null,
+      shares_total_supply: "0",
+      token_account_ids: [],
+      token_symbols: [],
+      top: false,
+      total_fee: "0.0036",
+      tvl: "0",
+      volume_24h: "0",
+    };
 
-  const addLiquidity = () => {
-    // const pool_name = get_pool_name(poolDetail.id);
-    // router.push(`/liquidity/${pool_name}`);
-  };
+    try {
+      const poolDetails: any = await getPoolDetails(poolId);
 
-  const [showFunding, setShowFunding] = useState(false);
-  const [showWithdraw, setShowWithdraw] = useState(false);
+      k.token_account_ids = [...poolDetails.tokenIds];
+      k.pool_kind = poolDetails.pool_kind;
+      k.total_fee = poolDetails.fee / 10000; // 假设保留四位小数
+
+      const tokenMetadataPromises = poolDetails.tokenIds.map((id: any) =>
+        ftGetTokenMetadata(id)
+      );
+      const tokenMetadatas = await Promise.all(tokenMetadataPromises);
+
+      k.token_symbols = tokenMetadatas.map((meta) => meta.symbol);
+      k.amounts = tokenMetadatas.map(
+        (meta, index) => poolDetails.supplies[meta.id]
+      );
+
+      setPoolDetail(k);
+    } catch (error) {
+      console.error("Error fetching pool details:", error);
+    }
+  }
+
   const {
     pool,
     shares,

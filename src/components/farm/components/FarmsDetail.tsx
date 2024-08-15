@@ -838,7 +838,6 @@ export default function FarmsDetail(props: {
           <div className="m-auto 2xl:w-3/6 xl:w-4/6 lg:w-5/6">
             <p
               className="text-gray-60 text-sm mb-3 cursor-pointer 2xl:-ml-32 z-50 w-fit"
-              style={{ position: "relative", zIndex: "99" }}
               onClick={goBacktoFarms}
             >{`<  Farms`}</p>
             <div className="frcb mb-5">

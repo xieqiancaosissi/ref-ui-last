@@ -220,6 +220,12 @@ export const checkTransaction = async (txHash: string) => {
     [txHash, getAccountId()]
   );
 };
+
+export const checkTransactionStatus = async (txHash: string) => {
+  const near = await getNear();
+  return near.connection.provider.txStatus(txHash, getAccountId());
+};
+
 const REF_FARM_CONTRACT_ID = getConfig().REF_FARM_CONTRACT_ID;
 export async function refFarmViewFunction({
   methodName,

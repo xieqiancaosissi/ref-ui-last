@@ -22,6 +22,7 @@ export default function TokenFeeAndCureentPrice({
     setCurrenSort([b, a]);
   };
   //
+
   const first_token_num = toReadableNumber(
     updatedMapList[0].token_account_ids[currentSort[0]].decimals ?? 24,
     updatedMapList[0].supplies[
@@ -34,7 +35,11 @@ export default function TokenFeeAndCureentPrice({
       updatedMapList[0].token_account_ids[currentSort[1]].id
     ]
   );
-  const rate = Number(second_token_num) / Number(first_token_num);
+
+  const rate =
+    // tokenPriceList[poolDetail.token_account_ids[currentSort[1]]]?.price /
+    //   tokenPriceList[poolDetail.token_account_ids[currentSort[0]]]?.price ||
+    Number(second_token_num) / Number(first_token_num);
 
   const showRate = rate < 0.001 ? "< 0.001" : numberWithCommas(rate.toFixed(3));
   return (

@@ -13,6 +13,7 @@ import {
 } from "@/stores/limitOrder";
 import { updateTokensBalance } from "@/services/limit/limit";
 import { ButtonTextWrapper } from "@/components/common/Button";
+import { useAppStore } from "@/stores/app";
 export default function ClaimButton({
   unClaimedAmount,
   order,
@@ -22,11 +23,14 @@ export default function ClaimButton({
 }) {
   const [claimLoading, setClaimLoading] = useState<boolean>(false);
   const limitStore = useLimitStore();
+  const appStore = useAppStore();
   const persistLimitStore: IPersistLimitStore = usePersistLimitStore();
   const walletInteractionStatusUpdatedLimit =
     limitStore.getWalletInteractionStatusUpdatedLimit();
   const tokenIn = limitStore.getTokenIn();
   const tokenOut = limitStore.getTokenOut();
+  const personalDataUpdatedSerialNumber =
+    appStore.getPersonalDataUpdatedSerialNumber();
   function cancelOrder(e: any) {
     e.preventDefault();
     e.stopPropagation();
@@ -47,6 +51,9 @@ export default function ClaimButton({
         });
         limitStore.setWalletInteractionStatusUpdatedLimit(
           !walletInteractionStatusUpdatedLimit
+        );
+        appStore.setPersonalDataUpdatedSerialNumber(
+          personalDataUpdatedSerialNumber + 1
         );
       } else if (res.status == "error") {
         failToast(res.errorResult?.message);

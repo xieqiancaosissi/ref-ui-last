@@ -46,7 +46,6 @@ export default function MyOrder() {
 
   const HistorySwapInfoTokenIds =
     historySwapInfo?.map((hs) => [hs.token_in, hs.token_out]).flat() || [];
-
   const tokenIds =
     !activeOrder || !historyOrder
       ? null
@@ -67,7 +66,11 @@ export default function MyOrder() {
     !tokenIds ||
     !activeOrder ||
     !historyOrder ||
-    (tokenIds?.length > 0 && tokens?.length === 0)
+    (tokenIds?.length > 0 && tokens?.length === 0) ||
+    !activeOrderDone ||
+    !historyOrderDone ||
+    !historySwapInfoDone ||
+    (tokenIds?.length > 0 && tokenIds.length !== tokens?.length)
   ) {
     return <Loading />;
   }

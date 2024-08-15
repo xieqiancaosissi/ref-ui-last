@@ -54,6 +54,8 @@ export default function SwapButton({
   const slippageTolerance = persistSwapStore.getSlippage();
   const global_whitelisted_tokens_ids =
     tokenStore.get_global_whitelisted_tokens_ids();
+  const personalDataUpdatedSerialNumber =
+    appStore.getPersonalDataUpdatedSerialNumber();
   const isnearwnearSwap = is_near_wnear_swap(tokenIn, tokenOut);
   const decimals = isnearwnearSwap ? 24 : undefined;
   const buttonStatus = useMemo(() => {
@@ -151,6 +153,9 @@ export default function SwapButton({
       });
       swapStore.setWalletInteractionStatusUpdated(
         !walletInteractionStatusUpdatedSwap
+      );
+      appStore.setPersonalDataUpdatedSerialNumber(
+        personalDataUpdatedSerialNumber + 1
       );
     } else if (res.status == "error") {
       failToast(res.errorResult?.message);

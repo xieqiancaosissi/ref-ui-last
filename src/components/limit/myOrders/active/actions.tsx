@@ -4,7 +4,7 @@ import { cancel_order, UserOrderInfo } from "@/services/swapV3";
 import { ButtonTextWrapper } from "@/components/common/Button";
 import { IExecutionResult } from "@/interfaces/wallet";
 import failToast from "@/components/common/toast/failToast";
-import successToast from "@/components/common/toast/successToast";
+import { useAppStore } from "@/stores/app";
 import {
   useLimitStore,
   usePersistLimitStore,
@@ -16,11 +16,14 @@ import checkTxBeforeShowToast from "@/components/common/toast/checkTxBeforeShowT
 export default function Actions({ order }: { order: UserOrderInfo }) {
   const [cancelLoading, setCancelLoading] = useState<boolean>(false);
   const limitStore = useLimitStore();
+  const appStore = useAppStore();
   const persistLimitStore: IPersistLimitStore = usePersistLimitStore();
   const walletInteractionStatusUpdatedLimit =
     limitStore.getWalletInteractionStatusUpdatedLimit();
   const tokenIn = limitStore.getTokenIn();
   const tokenOut = limitStore.getTokenOut();
+  const personalDataUpdatedSerialNumber =
+    appStore.getPersonalDataUpdatedSerialNumber();
   function cancelOrder(e: any) {
     e.preventDefault();
     e.stopPropagation();
@@ -38,6 +41,9 @@ export default function Actions({ order }: { order: UserOrderInfo }) {
         });
         limitStore.setWalletInteractionStatusUpdatedLimit(
           !walletInteractionStatusUpdatedLimit
+        );
+        appStore.setPersonalDataUpdatedSerialNumber(
+          personalDataUpdatedSerialNumber + 1
         );
       } else if (res.status == "error") {
         failToast(res.errorResult?.message);

@@ -16,6 +16,7 @@ import { sort_tokens_by_base } from "@/services/commonV3";
 import { IExecutionResult } from "@/interfaces/wallet";
 import { checkLimitTx } from "@/services/limit/limitTx";
 import { updateTokensBalance } from "@/services/limit/limit";
+import { useAppStore } from "@/stores/app";
 
 function ConfirmOrderModal({
   isOpen,
@@ -26,6 +27,7 @@ function ConfirmOrderModal({
 }) {
   const [createOrderLoading, setCreateOrderLoading] = useState<boolean>(false);
   const limitStore = useLimitStore();
+  const appStore = useAppStore();
   const persistLimitStore: IPersistLimitStore = usePersistLimitStore();
   const tokenIn = limitStore.getTokenIn();
   const tokenOut = limitStore.getTokenOut();
@@ -34,6 +36,8 @@ function ConfirmOrderModal({
   const rateDiff = limitStore.getRateDiff();
   const rate = limitStore.getRate();
   const reverseRate = limitStore.getReverseRate();
+  const personalDataUpdatedSerialNumber =
+    appStore.getPersonalDataUpdatedSerialNumber();
   const tokens = sort_tokens_by_base([tokenIn, tokenOut]);
   const isReverse = tokens[0].symbol == tokenOut.symbol;
   const dclPool = persistLimitStore.getDclPool();
@@ -59,6 +63,9 @@ function ConfirmOrderModal({
         });
         limitStore.setWalletInteractionStatusUpdatedLimit(
           !walletInteractionStatusUpdatedLimit
+        );
+        appStore.setPersonalDataUpdatedSerialNumber(
+          personalDataUpdatedSerialNumber + 1
         );
       } else if (res.status == "error") {
         failToast(res.errorResult?.message);

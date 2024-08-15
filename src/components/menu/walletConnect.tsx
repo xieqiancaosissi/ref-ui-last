@@ -90,10 +90,10 @@ export default function WalletConnect() {
   }, [tipVisible]);
 
   useEffect(() => {
-    if (isOpen) {
+    if (isOpen || showGuider) {
       setPersonalVisited(true);
     }
-  }, [isOpen]);
+  }, [isOpen, showGuider]);
   useEffect(() => {
     if (personalDataUpdatedSerialNumber > 1) {
       setPersonalVisited(false);
@@ -196,12 +196,13 @@ export default function WalletConnect() {
                 }}
                 onClick={handleBackdropClick}
               ></div>
-              {personalVisited ? (
+              {personalVisited || (showGuider && !isInMemePage) ? (
                 <div
                   className={`fixed top-[46px] bottom-[35px] right-0 bg-dark-10 z-50 ${
-                    isOpen ? "block" : "hidden"
+                    isOpen || showGuider ? "block" : "hidden"
                   } ${is_mobile ? "w-full h-[300px]" : "w-[400px] h-auto"}`}
                   onClick={(e) => e.stopPropagation()} // Prevent click inside from closing
+                  style={{ zIndex: showGuider ? "1000" : "40" }}
                 >
                   <div className="bg-dark-140 lg:border lg:border-gray-200 p-3.5 w-full h-full xsm:bg-dark-10">
                     <div className="frcb mb-3.5">
@@ -253,84 +254,8 @@ export default function WalletConnect() {
                         />
                       </div>
                     </div>
-                    <div className="frcc">
-                      <span className="text-xl text-lightWhite-10 font-bold whitespace-nowrap mr-3">
-                        {getAccountName(accountId)}
-                      </span>
-                      <div
-                        data-tooltip-id="copy-tooltip"
-                        data-tooltip-content={`${tipVisible ? "Copied" : ""}`}
-                      >
-                        <CopyToClipboard text={accountId}>
-                          <CopyIcon
-                            className={swapStyles.controlButton}
-                            onClick={() => {
-                              setTipVisible(true);
-                            }}
-                          />
-                        </CopyToClipboard>
-                        <Tooltip
-                          id="copy-tooltip"
-                          style={{
-                            color: "#fff",
-                            padding: "4px",
-                            fontSize: "12px",
-                            background: "#7E8A93",
-                          }}
-                          openOnClick
-                        />
-                      </div>
-                    </div>
-                    <Overview />
-                  </div>
-                </div>
-              ) : null}
-
-              {showGuider && !isInMemePage ? (
-                <div
-                  className={`absolute top-14 pt-2 right-0 w-64 xsm:hidden`}
-                  style={{ zIndex: showGuider ? "1000" : "40" }}
-                >
-                  <div
-                    className={`fixed top-[46px] bottom-[35px] right-0 bg-dark-10 z-40`}
-                    style={{ width: "400px" }}
-                    onClick={(e) => e.stopPropagation()} // Prevent click inside from closing
-                  >
-                    <div className="bg-dark-140 border border-gray-200 p-3.5 w-full h-full">
-                      <div className="frcb mb-3.5">
-                        <div className="frcc">
-                          {currentWallet?.metadata?.iconUrl ? (
-                            <Image
-                              src={currentWallet.metadata.iconUrl || ""}
-                              width={14}
-                              height={14}
-                              style={{
-                                width: "14px",
-                                height: "14px",
-                              }}
-                              alt=""
-                            />
-                          ) : null}
-                          <p className="ml-0.5 text-base text-gray-80">
-                            {currentWallet?.metadata?.name}
-                          </p>
-                        </div>
-                        <div className="flex gap-4">
-                          <KeyIcon
-                            onClick={showkeyModal}
-                            className={swapStyles.controlButton}
-                          />
-                          <ChangeIcon
-                            onClick={showWalletSelector}
-                            className={swapStyles.controlButton}
-                          />
-                          <DisconnectIcon
-                            onClick={signOut}
-                            className={swapStyles.controlButton}
-                          />
-                        </div>
-                      </div>
-                      <div className="frcc blur">
+                    <div className={showGuider ? "blur" : ""}>
+                      <div className="frcc">
                         <span className="text-xl text-lightWhite-10 font-bold whitespace-nowrap mr-3">
                           {getAccountName(accountId)}
                         </span>
@@ -358,9 +283,7 @@ export default function WalletConnect() {
                           />
                         </div>
                       </div>
-                      <div className="blur">
-                        <Overview />
-                      </div>
+                      <Overview />
                     </div>
                   </div>
                 </div>

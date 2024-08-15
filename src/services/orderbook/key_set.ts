@@ -1,4 +1,4 @@
-import { KeyPair, utils } from "near-api-js";
+import { KeyPair, utils, Contract } from "near-api-js";
 import BN from "bn.js";
 import {
   getNormalizeTradingKey,
@@ -13,6 +13,7 @@ import {
 } from "./near";
 import getConfig from "@/utils/config";
 import { getAccountId } from "@/utils/wallet";
+import { getKeypomAccount, getAccount } from "@/utils/near";
 import { ledgerTipTrigger } from "@/components/common/ledger/ledger";
 export const REF_ORDERLY_NEW_USER_TIP = "REF_ORDERLY_NEW_USER_TIP_KEY";
 /**
@@ -35,7 +36,7 @@ export const announceKey = async () => {
     } else {
       await addAccessKey();
     }
-    const contract = await getContract();
+    const contract: any = await getContract();
     return await contract.user_announce_key();
   }
 
@@ -70,7 +71,7 @@ export const setTradingKey = async () => {
     wallet.id === "keypom" ||
     wallet.id === "near-mobile-wallet"
   ) {
-    const contract = await getContract();
+    const contract: any = await getContract();
     return await contract.user_request_set_trading_key({
       key: getNormalizeTradingKey(),
     });
@@ -161,14 +162,6 @@ const addAccessKey = async () => {
       ],
     });
   }
-  const handlePopTrigger = () => {
-    const el = document.getElementsByClassName(
-      "ledger-transaction-pop-up"
-    )?.[0];
-    if (el) {
-      el.setAttribute("style", "display:none");
-    }
-  };
   handlePopTrigger();
   await new Promise((resolve, reject) => {
     setTimeout(() => {
@@ -176,7 +169,7 @@ const addAccessKey = async () => {
     }, 2000);
   });
 };
-async function getContract() {
+async function getContract2() {
   const walletId = window.selector.store.getState().selectedWalletId;
   const targetNear: any = walletId === "keypom" ? nearKeypom : near;
   const contract = await targetNear.loadContract(ORDERLY_ASSET_MANAGER, {
@@ -196,6 +189,40 @@ async function getContract() {
       "user_request_set_trading_key",
       "create_user_account",
     ],
+  });
+  return contract;
+}
+function handlePopTrigger() {
+  const el = document.getElementsByClassName("ledger-transaction-pop-up")?.[0];
+  if (el) {
+    el.setAttribute("style", "display:none");
+  }
+}
+async function getContract() {
+  let account: any;
+  const walletId = window.selector.store.getState().selectedWalletId;
+  if (walletId === "keypom") {
+    account = await getKeypomAccount();
+  } else {
+    account = await getAccount();
+  }
+  const contract = new Contract(account, ORDERLY_ASSET_MANAGER, {
+    viewMethods: [
+      "user_token_balance",
+      "user_trading_key",
+      "is_orderly_key_announced",
+      "is_trading_key_set",
+      "user_account_exists",
+    ],
+    changeMethods: [
+      "addMessage",
+      "user_deposit_native_token",
+      "user_request_withdraw",
+      "user_announce_key",
+      "user_request_set_trading_key",
+      "create_user_account",
+    ],
+    useLocalViewExecution: true,
   });
   return contract;
 }

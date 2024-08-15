@@ -10,8 +10,6 @@ import { IExecutionResult } from "@/interfaces/wallet";
 import {
   addQueryParams,
   TRANSACTION_WALLET_TYPE,
-  extraWalletsError,
-  walletsRejectError,
 } from "../utils/transactionsPopup";
 const config = getConfig();
 const webWalletIds = ["my-near-wallet", "mintbase-wallet"];
@@ -106,9 +104,21 @@ export async function getNear() {
   const nearConnection = await connect({ keyStore, ...config });
   return nearConnection;
 }
-
+export async function getKeypomNear() {
+  const keyStore = new keyStores.BrowserLocalStorageKeyStore(
+    undefined,
+    "keypom:"
+  );
+  const nearConnection = await connect({ keyStore, ...config });
+  return nearConnection;
+}
 export async function getAccount() {
   const nearConnection = await getNear();
+  const account = await nearConnection.account(window.accountId || "");
+  return account;
+}
+export async function getKeypomAccount() {
+  const nearConnection = await getKeypomNear();
   const account = await nearConnection.account(window.accountId || "");
   return account;
 }

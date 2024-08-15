@@ -16,11 +16,10 @@ export default function ConnectConfirmModal(
   const { onRequestClose, onConfirm } = props;
   const intl = useIntl();
   const isMobile = useClientMobile();
-
   return (
     <Modal {...props}>
       <div
-        className={`rounded-2xl bg-dark-10 text-sm text-white  `}
+        className={`rounded-2xl bg-dark-10 text-sm text-white`}
         style={{
           width: isMobile ? "100vw" : "460px",
         }}
@@ -36,6 +35,8 @@ export default function ConnectConfirmModal(
               <span
                 className={"cursor-pointer text-gary-60"}
                 onClick={(e: any) => {
+                  e.preventDefault();
+                  e.stopPropagation();
                   onRequestClose && onRequestClose(e);
                 }}
               >

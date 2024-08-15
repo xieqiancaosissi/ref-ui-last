@@ -90,7 +90,7 @@ export const storageDeposit = async () => {
   }
 
   if (transactions.length === 0) return;
-  return executeMultipleTransactions(transactions);
+  return executeMultipleTransactions(transactions, false);
 };
 
 export const checkConnectStatus = async () => {

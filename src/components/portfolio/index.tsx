@@ -183,65 +183,15 @@ export default function Overview() {
         burrow_done,
       }}
     >
-      <div className="xsm:hidden">
-        <div className="mt-4 bg-gray-20 py-2.5 pl-2 pr-4 rounded-3xl h-11 flex items-end justify-between mb-8 text-white">
-          <div className="frcc">
-            <TotalAssetsIcon className="w-9 w-11" />
-            <p className="text-sm	ml-2 text-gray-50 mt-4">Total Assets</p>
-          </div>
-          <div className="text-primaryGreen text-base paceGrotesk-Bold">
-            <FlipNumbers
-              height={20}
-              width={12}
-              color="#9EFF00"
-              play
-              perspective={1000}
-              numbers={formatWithCommas_usd(netWorth)}
-            />
-          </div>
-        </div>
-        <div className="border-b border-gray-70 -mx-3.5 px-7 flex items-center text-gray-50 text-sm paceGrotesk-Bold">
-          <div
-            className={`mr-10 pb-1.5 cursor-pointer  ${
-              activeTab === "Wallet" ? "text-white border-white border-b-2" : ""
-            }`}
-            onClick={() => setActiveTab("Wallet")}
-          >
-            Wallet
-          </div>
-          <div
-            className={`pb-1.5 cursor-pointer ${
-              activeTab === "Portfolio"
-                ? "text-white border-b-2 border-white"
-                : ""
-            }`}
-            onClick={() => setActiveTab("Portfolio")}
-          >
-            Portfolio
-          </div>
-        </div>
-        <div className="py-4">
-          <div className={activeTab === "Wallet" ? "" : "hidden"}>
-            <WalletPanel />
-          </div>
-          <div className={activeTab === "Portfolio" ? "" : "hidden"}>
-            <RefPanel></RefPanel>
-            <OrderlyPanel></OrderlyPanel>
-            <BurrowPanel></BurrowPanel>
-            <div className="frcb mt-6 px-4">
-              <p className="text-gray-50 text-sm">Total</p>
-              <p className="text-base xsm:text-primaryGreen">
-                {formatWithCommas_usd(portfolioAssets)}
-              </p>
+      {/* pc */}
+      {!is_mobile ? (
+        <div>
+          <div className="mt-4 bg-gray-20 py-2.5 pl-2 pr-4 rounded-3xl h-11 flex items-end justify-between mb-8 text-white">
+            <div className="frcc">
+              <TotalAssetsIcon className="w-9" />
+              <p className="text-sm	ml-2 text-gray-50 mt-4">Total Assets</p>
             </div>
-          </div>
-        </div>
-      </div>
-      <div className="lg:hidden pb-6">
-        <div className="mt-6 bg-gray-20 rounded-[3rem] frcc py-3 mb-8">
-          <TotalAssetsIcon className="w-8 w-9 mr-3" />
-          <div className="text-xl text-primaryGreen mb-0.5">
-            <p className="paceGrotesk-Bold">
+            <div className="text-primaryGreen text-base paceGrotesk-Bold">
               <FlipNumbers
                 height={20}
                 width={12}
@@ -250,83 +200,141 @@ export default function Overview() {
                 perspective={1000}
                 numbers={formatWithCommas_usd(netWorth)}
               />
-            </p>
-            <p className="text-gray-60 text-sm">Total Assets</p>
+            </div>
           </div>
-        </div>
-        <div className="px-3.5 frcb mb-6">
-          <div className="frcc text-base">
-            <p className="text-gray-250 mr-4">Wallet assets</p>
-            <p className="text-white">
-              {formatWithCommas_usd(wallet_assets_value)}
-            </p>
+          <div className="border-b border-gray-70 -mx-3.5 px-7 flex items-center text-gray-50 text-sm paceGrotesk-Bold">
+            <div
+              className={`mr-10 pb-1.5 cursor-pointer  ${
+                activeTab === "Wallet"
+                  ? "text-white border-white border-b-2"
+                  : ""
+              }`}
+              onClick={() => setActiveTab("Wallet")}
+            >
+              Wallet
+            </div>
+            <div
+              className={`pb-1.5 cursor-pointer ${
+                activeTab === "Portfolio"
+                  ? "text-white border-b-2 border-white"
+                  : ""
+              }`}
+              onClick={() => setActiveTab("Portfolio")}
+            >
+              Portfolio
+            </div>
           </div>
-          <div
-            onClick={() => {
-              showWalletPanelModal();
-            }}
-          >
-            <XrefMobileArrow />
-          </div>
-        </div>
-        <div className="px-3.5 frcb">
-          <div className="frcc text-base">
-            <p className="text-gray-250 mr-4">Portfolio assets</p>
-            <p className="text-white">
-              {formatWithCommas_usd(portfolioAssets)}
-            </p>
-          </div>
-          <div
-            onClick={() => {
-              showPortfolioPanelModal();
-            }}
-          >
-            <XrefMobileArrow />
-          </div>
-        </div>
-        {/* WalletPanelOpen */}
-        <div className={`${isWalletPanelOpen ? "block" : "hidden"}`}>
-          <div
-            className={`fixed top-0 left-0 w-full h-full bg-black bg-opacity-50  ${
-              isWalletPanelOpen ? "block" : "hidden"
-            }`}
-            style={{
-              backdropFilter: "blur(12px)",
-              WebkitBackdropFilter: "blur(12px)",
-            }}
-            onClick={hideWalletPanelModal}
-          ></div>
-          <div className="fixed bottom-8 left-0 w-full bg-dark-10 py-6 px-4 z-50 rounded-t-2xl border border-modalGrayBg">
-            <div className="mb-6 text-lg text-white">Wallet Assets</div>
-            <WalletPanel />
-          </div>
-        </div>
-        {/* PortfolioPanel */}
-        <div className={`${isPortfolioPanelOpen ? "block" : "hidden"}`}>
-          <div
-            className={`fixed top-0 left-0 w-full h-full bg-black bg-opacity-50  ${
-              isPortfolioPanelOpen ? "block" : "hidden"
-            }`}
-            style={{
-              backdropFilter: "blur(12px)",
-              WebkitBackdropFilter: "blur(12px)",
-            }}
-            onClick={hidePortfolioPanelModal}
-          ></div>
-          <div className="fixed bottom-8 left-0 w-full bg-dark-10 py-6 px-4 z-50 rounded-t-2xl border border-modalGrayBg">
-            <div className="mb-6 text-lg text-white">Portfolio Assets</div>
-            <RefPanel></RefPanel>
-            <OrderlyPanel></OrderlyPanel>
-            <BurrowPanel></BurrowPanel>
-            <div className="frcb mt-6 px-4">
-              <p className="text-gray-50 text-sm">Total</p>
-              <p className="text-base xsm:text-primaryGreen">
-                {formatWithCommas_usd(portfolioAssets)}
-              </p>
+          <div className="py-4">
+            <div className={activeTab === "Wallet" ? "" : "hidden"}>
+              <WalletPanel />
+            </div>
+            <div className={activeTab === "Portfolio" ? "" : "hidden"}>
+              <RefPanel></RefPanel>
+              <OrderlyPanel></OrderlyPanel>
+              <BurrowPanel></BurrowPanel>
+              <div className="frcb mt-6 px-4">
+                <p className="text-gray-50 text-sm">Total</p>
+                <p className="text-base xsm:text-primaryGreen">
+                  {formatWithCommas_usd(portfolioAssets)}
+                </p>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      ) : null}
+      {/* mobile */}
+      {is_mobile ? (
+        <div className="pb-6">
+          <div className="mt-6 bg-gray-20 rounded-[3rem] frcc py-3 mb-8">
+            <TotalAssetsIcon className="w-8 mr-3" />
+            <div className="text-xl text-primaryGreen mb-0.5">
+              <p className="paceGrotesk-Bold">
+                <FlipNumbers
+                  height={20}
+                  width={12}
+                  color="#9EFF00"
+                  play
+                  perspective={1000}
+                  numbers={formatWithCommas_usd(netWorth)}
+                />
+              </p>
+              <p className="text-gray-60 text-sm">Total Assets</p>
+            </div>
+          </div>
+          <div className="px-3.5 frcb mb-6">
+            <div className="frcc text-base">
+              <p className="text-gray-250 mr-4">Wallet assets</p>
+              <p className="text-white">
+                {formatWithCommas_usd(wallet_assets_value)}
+              </p>
+            </div>
+            <div
+              onClick={() => {
+                showWalletPanelModal();
+              }}
+            >
+              <XrefMobileArrow />
+            </div>
+          </div>
+          <div className="px-3.5 frcb">
+            <div className="frcc text-base">
+              <p className="text-gray-250 mr-4">Portfolio assets</p>
+              <p className="text-white">
+                {formatWithCommas_usd(portfolioAssets)}
+              </p>
+            </div>
+            <div
+              onClick={() => {
+                showPortfolioPanelModal();
+              }}
+            >
+              <XrefMobileArrow />
+            </div>
+          </div>
+          {/* WalletPanelOpen */}
+          <div className={`${isWalletPanelOpen ? "block" : "hidden"}`}>
+            <div
+              className={`fixed top-0 left-0 w-full h-full bg-black bg-opacity-50  ${
+                isWalletPanelOpen ? "block" : "hidden"
+              }`}
+              style={{
+                backdropFilter: "blur(12px)",
+                WebkitBackdropFilter: "blur(12px)",
+              }}
+              onClick={hideWalletPanelModal}
+            ></div>
+            <div className="fixed bottom-8 left-0 w-full bg-dark-10 py-6 px-4 z-50 rounded-t-2xl border border-modalGrayBg">
+              <div className="mb-6 text-lg text-white">Wallet Assets</div>
+              <WalletPanel />
+            </div>
+          </div>
+          {/* PortfolioPanel */}
+          <div className={`${isPortfolioPanelOpen ? "block" : "hidden"}`}>
+            <div
+              className={`fixed top-0 left-0 w-full h-full bg-black bg-opacity-50  ${
+                isPortfolioPanelOpen ? "block" : "hidden"
+              }`}
+              style={{
+                backdropFilter: "blur(12px)",
+                WebkitBackdropFilter: "blur(12px)",
+              }}
+              onClick={hidePortfolioPanelModal}
+            ></div>
+            <div className="fixed bottom-8 left-0 w-full bg-dark-10 py-6 px-4 z-50 rounded-t-2xl border border-modalGrayBg">
+              <div className="mb-6 text-lg text-white">Portfolio Assets</div>
+              <RefPanel></RefPanel>
+              <OrderlyPanel></OrderlyPanel>
+              <BurrowPanel></BurrowPanel>
+              <div className="frcb mt-6 px-4">
+                <p className="text-gray-50 text-sm">Total</p>
+                <p className="text-base xsm:text-primaryGreen">
+                  {formatWithCommas_usd(portfolioAssets)}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </OverviewData.Provider>
   );
 }

@@ -14,7 +14,10 @@ import {
 import getConfig from "@/utils/config";
 import { getAccountId } from "@/utils/wallet";
 import { getKeypomAccount, getAccount } from "@/utils/near";
-import { ledgerTipTrigger } from "@/components/common/ledger/ledger";
+import {
+  ledgerTipClose,
+  ledgerTipTrigger,
+} from "@/components/common/ledger/ledger";
 export const REF_ORDERLY_NEW_USER_TIP = "REF_ORDERLY_NEW_USER_TIP_KEY";
 /**
  * No matter which wallet you are using, you need to get the private key of the current wallet after logging in.
@@ -162,42 +165,13 @@ const addAccessKey = async () => {
       ],
     });
   }
-  handlePopTrigger();
+  ledgerTipClose();
   await new Promise((resolve, reject) => {
     setTimeout(() => {
       resolve(1);
     }, 2000);
   });
 };
-async function getContract2() {
-  const walletId = window.selector.store.getState().selectedWalletId;
-  const targetNear: any = walletId === "keypom" ? nearKeypom : near;
-  const contract = await targetNear.loadContract(ORDERLY_ASSET_MANAGER, {
-    sender: getAccountId(),
-    viewMethods: [
-      "user_token_balance",
-      "user_trading_key",
-      "is_orderly_key_announced",
-      "is_trading_key_set",
-      "user_account_exists",
-    ],
-    changeMethods: [
-      "addMessage",
-      "user_deposit_native_token",
-      "user_request_withdraw",
-      "user_announce_key",
-      "user_request_set_trading_key",
-      "create_user_account",
-    ],
-  });
-  return contract;
-}
-function handlePopTrigger() {
-  const el = document.getElementsByClassName("ledger-transaction-pop-up")?.[0];
-  if (el) {
-    el.setAttribute("style", "display:none");
-  }
-}
 async function getContract() {
   let account: any;
   const walletId = window.selector.store.getState().selectedWalletId;

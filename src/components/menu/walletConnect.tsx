@@ -19,11 +19,13 @@ import type { Wallet } from "@near-wallet-selector/core";
 import swapStyles from "../swap/swap.module.css";
 import AccessKeyModal from "./AccessKeyModal";
 import { showWalletSelectorModal } from "@/utils/wallet";
-import { isMobile, useClientMobile } from "@/utils/device";
+import { isMobile } from "@/utils/device";
 import InitData from "@/components/orderbook/initData";
 import Guider from "./Guider";
 import { LinkLine } from "./icons2";
 import { useAppStore } from "@/stores/app";
+import { walletIconConfig } from "./walletConfig";
+import { getSelectedWalletId } from "@/utils/wallet";
 const Overview = dynamic(() => import("../portfolio"), { ssr: false });
 const is_mobile = isMobile();
 export default function WalletConnect() {
@@ -36,15 +38,19 @@ export default function WalletConnect() {
   const [keyModalShow, setKeyModalShow] = useState<boolean>(false);
   const appStore = useAppStore();
   const accountStore = useAccountStore();
-  const isMobile = useClientMobile();
   const personalDataUpdatedSerialNumber =
     appStore.getPersonalDataUpdatedSerialNumber();
   const [showGuider, setShowGuider] = useState<boolean>(
-    !!(localStorage.getItem("ACCESS_MODAL_GUIDER") !== "1" && accountId)
+    !!(
+      localStorage.getItem("ACCESS_MODAL_GUIDER") !== "1" &&
+      accountId &&
+      !is_mobile
+    )
   );
   const selectedWalletId = window.selector?.store?.getState()?.selectedWalletId;
   const isKeyPomWallet = selectedWalletId == "keypom";
   const isInMemePage = window.location.pathname.includes("meme");
+  const walletId = getSelectedWalletId();
   useEffect(() => {
     init();
   }, []);
@@ -52,7 +58,7 @@ export default function WalletConnect() {
   useEffect(() => {
     if (accountId) {
       const guiderCondition =
-        localStorage.getItem("ACCESS_MODAL_GUIDER") !== "1";
+        localStorage.getItem("ACCESS_MODAL_GUIDER") !== "1" && !is_mobile;
       setShowGuider(guiderCondition);
     }
   }, [accountId]);
@@ -160,6 +166,27 @@ export default function WalletConnect() {
     setShowGuider(false);
     localStorage.setItem("ACCESS_MODAL_GUIDER", "1");
   }
+  function getWalletLogo() {
+    const iconUrl = currentWallet?.metadata?.iconUrl;
+    const wallet_id = currentWallet?.id;
+    if (wallet_id && walletIconConfig[wallet_id]) {
+      return walletIconConfig[wallet_id];
+    } else if (iconUrl) {
+      return (
+        <Image
+          src={iconUrl || ""}
+          width={14}
+          height={14}
+          style={{
+            width: "14px",
+            height: "14px",
+          }}
+          alt=""
+        />
+      );
+    }
+    return null;
+  }
   return (
     <div className="relative z-50">
       {!loading ? (
@@ -167,18 +194,13 @@ export default function WalletConnect() {
           {accountId ? (
             <div onClick={() => setIsOpen(!isOpen)}>
               <div className="flex items-center justify-center rounded border border-gray-70 px-2.5 cursor-pointer gap-2 h-9 xsm:h-8">
-                {currentWallet?.metadata?.iconUrl ? (
-                  <Image
-                    src={currentWallet?.metadata?.iconUrl || ""}
-                    width={14}
-                    height={14}
-                    style={{
-                      width: "14px",
-                      height: "14px",
-                    }}
-                    alt=""
-                  />
-                ) : null}
+                <div
+                  className={`relative ${
+                    walletId == "ledger" ? "top-0.5" : ""
+                  }`}
+                >
+                  {getWalletLogo()}
+                </div>
 
                 <span className="text-sm text-lightWhite-10 font-semibold">
                   {getAccountName(accountId)}
@@ -206,19 +228,8 @@ export default function WalletConnect() {
                 >
                   <div className="bg-dark-140 lg:border lg:border-gray-200 p-3.5 w-full h-full xsm:bg-dark-10">
                     <div className="frcb mb-3.5">
-                      <div className="frcc">
-                        {currentWallet?.metadata?.iconUrl ? (
-                          <Image
-                            src={currentWallet.metadata.iconUrl || ""}
-                            width={14}
-                            height={14}
-                            style={{
-                              width: "14px",
-                              height: "14px",
-                            }}
-                            alt=""
-                          />
-                        ) : null}
+                      <div className="frcc gap-1">
+                        {getWalletLogo()}
                         <p className="ml-0.5 text-base text-gray-80">
                           {currentWallet?.metadata?.name}
                         </p>
@@ -308,7 +319,8 @@ export default function WalletConnect() {
       {accountId && keyModalShow ? (
         <AccessKeyModal isOpen={keyModalShow} onRequestClose={closeKeyModal} />
       ) : null}
-      {showGuider && !isMobile && !isInMemePage ? (
+      {/* Guider content */}
+      {showGuider && !is_mobile && !isInMemePage ? (
         <div className="xsm:hidden">
           <Guider clearGuilder={clearGuilder} />
           <LinkLine

@@ -294,7 +294,7 @@ export default function FarmsDetailStake(props: {
         </button>
         {isEnded ||
           !isSignedIn ||
-          (Number(freeAmount) > 0 && (
+          (Number(unlpBalances) > 0 && (
             <div
               className="h-4 bg-gray-50 xsm:hidden mx-5"
               style={{ width: "2px" }}
@@ -304,7 +304,7 @@ export default function FarmsDetailStake(props: {
           <button
             className={`text-lg xsm:flex-1 ${
               activeTab === "unstake" ? styles.gradient_text : "text-gray-500"
-            }  ${Number(freeAmount) > 0 ? "" : "hidden"}`}
+            }  ${Number(unlpBalances) > 0 ? "" : "hidden"}`}
             onClick={() => {
               setActiveTab("unstake");
               setAmount("");
@@ -352,7 +352,7 @@ export default function FarmsDetailStake(props: {
               onChange={({ target }) => changeAmount(target.value)}
               className="text-white text-lg focus:outline-non appearance-none leading-tight"
             ></input>
-            <div className="flex items-center ml-2">
+            {/* <div className="flex items-center ml-2">
               <span
                 onClick={() => {
                   changeAmount(lpBalance);
@@ -361,7 +361,7 @@ export default function FarmsDetailStake(props: {
               >
                 Max
               </span>
-            </div>
+            </div> */}
           </div>
           {amountAvailableCheck || displayLpBalance() == "0" ? null : (
             <div className="flex justify-center mt-2.5 xsm:mb-2.5">
@@ -420,7 +420,14 @@ export default function FarmsDetailStake(props: {
           </div>
           <div className="mt-2.5 text-sm mb-6 xsm:hidden">
             {isSignedIn ? (
-              displayLpBalance()
+              <span
+                className="underline cursor-pointer hover:text-primaryGreen"
+                onClick={() => {
+                  changeAmount(lpBalance);
+                }}
+              >
+                {displayLpBalance()}
+              </span>
             ) : (
               <span className="opacity-50">-</span>
             )}
@@ -517,7 +524,7 @@ export default function FarmsDetailStake(props: {
               onChange={({ target }) => changeAmount(target.value)}
               className="text-white text-lg focus:outline-non appearance-none leading-tight"
             ></input>
-            <div className="flex items-center ml-2 xsm:hidden">
+            {/* <div className="flex items-center ml-2 xsm:hidden">
               <span
                 onClick={() => {
                   changeAmount(unlpBalances);
@@ -526,11 +533,18 @@ export default function FarmsDetailStake(props: {
               >
                 Max
               </span>
-            </div>
+            </div> */}
           </div>
           <div className="mt-2.5 text-sm mb-6 frcb xsm:hidden">
             <p className="text-gray-10 ml-1">Lp Tokens</p>
-            <p> {toPrecision(unlpBalances, 6)}</p>
+            <p
+              className="underline cursor-pointer hover:text-primaryGreen"
+              onClick={() => {
+                changeAmount(unlpBalances);
+              }}
+            >
+              {toPrecision(unlpBalances, 6)}
+            </p>
           </div>
           <div
             onClick={() => {

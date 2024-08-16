@@ -5,7 +5,10 @@ import { getCurrentWallet } from "../utils/wallet";
 import { Transaction } from "../interfaces/wallet";
 import getConfig from "../utils/config";
 import { getSelectedWalletId } from "../utils/wallet";
-import { ledgerTipTrigger } from "@/components/common/ledger/ledger";
+import {
+  ledgerTipTrigger,
+  ledgerTipClose,
+} from "@/components/common/ledger/ledger";
 import { IExecutionResult } from "@/interfaces/wallet";
 import {
   addQueryParams,
@@ -93,6 +96,9 @@ export const executeMultipleTransactions = async (
       if (!webWalletIds.includes(selectedWalletId)) {
         window.location.reload();
       }
+    })
+    .finally(() => {
+      ledgerTipClose();
     });
 };
 

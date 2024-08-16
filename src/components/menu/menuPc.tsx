@@ -152,7 +152,7 @@ export default function MenuPc() {
             className={`absolute transform ${
               oneLevelData.children.length > 3 ? "scale-x-100" : "scale-x-75"
             }`}
-            style={{ zIndex: "-1", backdropFilter: "blur(6px)" }}
+            style={{ zIndex: "-1" }}
           />
         </div>
       ) : null}

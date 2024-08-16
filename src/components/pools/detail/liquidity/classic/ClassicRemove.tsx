@@ -169,7 +169,6 @@ export default function StableAdd(props: any) {
               transform: "translateX(-50%)",
               top: "auto",
               bottom: "32px",
-              width: "100vw",
             }
           : {
               outline: "none",
@@ -177,7 +176,11 @@ export default function StableAdd(props: any) {
             },
       }}
     >
-      <div>
+      <div
+        style={{
+          width: isMobile ? "100vw" : "auto",
+        }}
+      >
         <div className="flex items-center justify-between mb-4 xsm:hidden">
           <RemoveLiqTitleIcon />
           <LpModalCloseIcon

@@ -22,6 +22,7 @@ import { showWalletSelectorModal } from "@/utils/wallet";
 import RecentTransactionMobile from "@/components/pools/detail/stable/RecentTransactionMobile";
 import { PoolRouterGuard } from "@/utils/poolTypeGuard";
 import { openUrlLocal } from "@/services/commonV3";
+import { usePool } from "@/hooks/usePools";
 
 export default function StablePoolDetail() {
   const appStore = useAppStore();
@@ -40,6 +41,8 @@ export default function StablePoolDetail() {
   ];
   const [transactionActive, setTransactionActive] = useState("swap");
   const [addSuccess, setAddSuccess] = useState(0);
+  const { shares, pool } = usePool(poolDetail?.id);
+
   //
   useEffect(() => {
     if (poolId) {
@@ -272,7 +275,7 @@ export default function StablePoolDetail() {
       </div>
 
       {/* add */}
-      {updatedMapList && poolDetail && (
+      {updatedMapList && poolDetail && pool && (
         <>
           <StableAdd
             isOpen={showAdd}
@@ -293,6 +296,8 @@ export default function StablePoolDetail() {
             updatedMapList={updatedMapList}
             isMobile={isMobile}
             setAddSuccess={setAddSuccess}
+            shares={shares}
+            pool={pool}
           />
         </>
       )}

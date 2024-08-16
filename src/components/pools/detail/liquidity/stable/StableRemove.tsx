@@ -41,6 +41,7 @@ import { useAppStore } from "@/stores/app";
 import { showWalletSelectorModal } from "@/utils/wallet";
 import successToast from "@/components/common/toast/successToast";
 import failToast from "@/components/common/toast/failToast";
+import { useNewPoolData } from "@/hooks/useStableShares";
 export function myShares({
   totalShares,
   userTotalShare,
@@ -84,6 +85,8 @@ export default function StableAdd(props: any) {
     updatedMapList,
     isMobile,
     setAddSuccess,
+    pool,
+    shares,
   } = props;
   const [balancesList, setBalances] = useState<any>([]);
   const [inputValList, setInputValList] = useState<any>([]);
@@ -242,10 +245,10 @@ export default function StableAdd(props: any) {
   const [removeTabActive, setRemoveTabActive] = useState("share");
 
   // by share
-  const { shares } = usePool(poolDetail.id);
+  const { newPool } = useNewPoolData({ pool, shares });
   const sharesDecimals = toRoundedReadableNumber({
     decimals: getStablePoolDecimal(poolDetail.id),
-    number: shares,
+    number: newPool?.availableShareNonDivisible,
     precision: 12 || String(shares).length,
   });
   const [shareVal, setShareVal] = useState("");

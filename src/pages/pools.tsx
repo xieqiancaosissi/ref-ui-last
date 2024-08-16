@@ -363,7 +363,7 @@ export default function Farms() {
               color: "#7C8791",
             }}
           >
-            <p className="text-sm">TVL(Total Value Locked)</p>
+            <p className="text-sm">TVL</p>
             <p className="text-lg text-white mt-2 overflow-hidden text-ellipsis whitespace-nowrap">
               ${addThousandSeparator(new Big(allTVL || "0").toFixed(2))}
             </p>

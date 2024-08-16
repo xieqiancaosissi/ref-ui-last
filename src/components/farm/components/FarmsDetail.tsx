@@ -81,6 +81,7 @@ export default function FarmsDetail(props: {
   user_data_loading: Boolean;
   dayVolumeMap: Record<string, string>;
   onTriggerFarmsPageUpdate: () => void;
+  ontriggerFarmsStakeUpdate: () => void;
 }) {
   const {
     detailData,
@@ -92,6 +93,7 @@ export default function FarmsDetail(props: {
     user_data_loading,
     dayVolumeMap,
     onTriggerFarmsPageUpdate,
+    ontriggerFarmsStakeUpdate,
   } = props;
   const {
     user_seeds_map = {},
@@ -162,15 +164,9 @@ export default function FarmsDetail(props: {
     });
     return tokens;
   }
-  useEffect(() => {
-    getStakeBalance();
-  }, [Object.keys(user_seeds_map).length, user_data_loading]);
 
   useEffect(() => {
-    const yourApr = getYourApr();
-    if (yourApr) {
-      setYourApr(yourApr);
-    }
+    getYourAprs();
   }, [boostConfig, user_seeds_map]);
   useEffect(() => {
     getPoolFee();
@@ -182,6 +178,12 @@ export default function FarmsDetail(props: {
   useEffect(() => {
     getStakeBalance();
   }, [Object.keys(user_seeds_map).length, user_data_loading, sharesInfo]);
+  function getYourAprs() {
+    const yourApr = getYourApr();
+    if (yourApr) {
+      setYourApr(yourApr);
+    }
+  }
   async function get_ve_seed_share() {
     const result = await getVeSeedShare();
     const maxShareObj = result?.accounts?.accounts[0] || {};
@@ -992,6 +994,9 @@ export default function FarmsDetail(props: {
                   user_unclaimed_token_meta_map={user_unclaimed_token_meta_map}
                   user_data_loading={user_data_loading}
                   radio={radio}
+                  getStakeBalance={getStakeBalance}
+                  ontriggerFarmsStakeUpdate={ontriggerFarmsStakeUpdate}
+                  getSharesInfoes={getSharesInfo}
                 ></FarmsDetailStake>
               </div>
             </div>
@@ -1258,6 +1263,9 @@ export default function FarmsDetail(props: {
           user_data_loading={user_data_loading}
           radio={radio}
           activeTab={activeTab}
+          getStakeBalance={getStakeBalance}
+          ontriggerFarmsStakeUpdate={ontriggerFarmsStakeUpdate}
+          getSharesInfoes={getSharesInfo}
         />
       </div>
     </>

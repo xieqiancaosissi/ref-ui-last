@@ -14,7 +14,10 @@ import {
 import getConfig from "@/utils/config";
 import { getAccountId } from "@/utils/wallet";
 import { getKeypomAccount, getAccount } from "@/utils/near";
-import { ledgerTipTrigger } from "@/components/common/ledger/ledger";
+import {
+  ledgerTipClose,
+  ledgerTipTrigger,
+} from "@/components/common/ledger/ledger";
 export const REF_ORDERLY_NEW_USER_TIP = "REF_ORDERLY_NEW_USER_TIP_KEY";
 /**
  * No matter which wallet you are using, you need to get the private key of the current wallet after logging in.
@@ -162,19 +165,13 @@ const addAccessKey = async () => {
       ],
     });
   }
-  handlePopTrigger();
+  ledgerTipClose();
   await new Promise((resolve, reject) => {
     setTimeout(() => {
       resolve(1);
     }, 2000);
   });
 };
-function handlePopTrigger() {
-  const el = document.getElementsByClassName("ledger-transaction-pop-up")?.[0];
-  if (el) {
-    el.setAttribute("style", "display:none");
-  }
-}
 async function getContract() {
   let account: any;
   const walletId = window.selector.store.getState().selectedWalletId;

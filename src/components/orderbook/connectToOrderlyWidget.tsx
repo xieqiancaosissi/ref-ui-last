@@ -29,7 +29,7 @@ export default function ConnectToOrderlyWidget({
   const accountStore = useAccountStore();
   const walletLoading = accountStore.getWalletLoading();
   const accountId = accountStore.getAccountId();
-  const authorizationRequiredWalletIds = ["here-wallet"];
+  const authorizationRequiredWalletIds = ["here-wallet", "ledger", "nightly"];
   const walletId = getSelectedWalletId();
   const needAuthorization = authorizationRequiredWalletIds.includes(walletId);
   useEffect(() => {

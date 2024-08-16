@@ -1,13 +1,7 @@
 import React from "react";
 import { CloseIcon, LedgerIcon } from "../Icons";
+import { ledgerTipClose } from "@/components/common/ledger/ledger";
 const LedgerTransactionModal = () => {
-  const handleClose = () => {
-    const el = document.getElementsByClassName(
-      "ledger-transaction-pop-up"
-    )?.[0];
-    el.setAttribute("style", "display:none");
-  };
-
   return (
     <div
       className="ledger-transaction-pop-up"
@@ -17,7 +11,7 @@ const LedgerTransactionModal = () => {
       }}
     >
       <div className="nws-modal-wrapper open">
-        <div className="modal-overlay" onClick={handleClose} />
+        <div className="modal-overlay" onClick={ledgerTipClose} />
         <div
           className="modal"
           style={{
@@ -34,7 +28,7 @@ const LedgerTransactionModal = () => {
               padding: "0px",
             }}
           >
-            <CloseIcon onClick={handleClose} className="cursor-pointer" />
+            <CloseIcon onClick={ledgerTipClose} className="cursor-pointer" />
           </div>
           <div className="modal-body">
             <div className="flex items-center justify-center my-7 mx-auto w-12">

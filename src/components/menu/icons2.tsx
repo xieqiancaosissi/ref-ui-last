@@ -194,3 +194,22 @@ export function LogoSmallMobileIcon(props: any) {
     </svg>
   );
 }
+
+export function LedgerIcon(props: any) {
+  return (
+    <svg
+      width="14"
+      height="13"
+      viewBox="0 0 14 13"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M1.07692 0H0V1.07692V3.76923H1.07692V1.07692L5.38462 1.07692V0H1.07692ZM5.20513 7.53831V8.61523H5.20518V8.61539H6.2821V8.61523H8.97436V7.53831H6.2821V3.23077H5.20518L5.20518 7.53831H5.20513ZM14 0H12.9231H8.61539V1.07692L12.9231 1.07692V3.76923H14V1.07692V0ZM0 12.2051V12.2051V11.1282V8.43585H1.07692V11.1282L5.38462 11.1282V12.2051H0ZM14 12.2051V12.2051H8.61539V11.1282L12.9231 11.1282V8.43585H14V11.1282V12.2051Z"
+        fill="white"
+      />
+    </svg>
+  );
+}

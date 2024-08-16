@@ -657,7 +657,7 @@ export default function StableAdd(props: any) {
                     <div key={ite.tokenId}>
                       <div className="mb-6">
                         <div
-                          className="flex h-16 w-full items-center border border-transparent hover:border-green-20 rounded"
+                          className="flex h-16 w-full items-center border border-transparent hover:border-green-20 rounded pr-3"
                           style={{ background: "rgba(0,0,0,.2)" }}
                         >
                           <input

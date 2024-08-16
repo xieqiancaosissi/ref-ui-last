@@ -114,6 +114,7 @@ export default function YourLiqAndClaimMobile(props: any) {
             ) : (
               <div className="w-30 bg-transparent h-0.5 mt-4"></div>
             )} */}
+            <div className="w-30 bg-transparent h-0.5 mt-4"></div>
           </div>
           <div className="w-1/2 fccc">
             <span
@@ -131,6 +132,7 @@ export default function YourLiqAndClaimMobile(props: any) {
             ) : (
               <div className="w-30 bg-transparent h-0.5 mt-4"></div>
             )} */}
+            <div className="w-30 bg-transparent h-0.5 mt-4"></div>
           </div>
         </div>
         {poolDetailV3?.token_x && (

@@ -342,140 +342,141 @@ export default function StableAdd(props: any) {
             }}
           />
         </div>
-        <div className="lg:w-108 xsm:w-full min-h-123 rounded-lg bg-dark-10 px-4 py-5">
+        <div className="lg:w-108 xsm:w-full lg:min-h-123  rounded-lg bg-dark-10 px-4 py-5">
           <div className="lg:hidden text-white font-medium text-lg mb-6">
             Add Liquidity
           </div>
-          <div className="overflow-y-auto xsm:w-full">
-            {updatedMapList[0]?.token_account_ids?.map(
-              (ite: any, ind: number) => {
-                return (
-                  <div key={ite.tokenId} className="xsm:w-full">
-                    <div className="mb-6 xsm:w-full">
-                      <div className="flex items-end justify-end text-gray-50 mb-2 text-sm xsm:w-full">
-                        <span>
-                          Balance:{" "}
-                          <span
-                            className={`underline hover:cursor-pointer hover:text-white  ${
-                              inputValList[ind] == balancesList[ind]?.balance
-                                ? ""
-                                : "text-gray-50"
-                            }`}
-                            onClick={() => {
-                              changeVal(
-                                {
-                                  target: {
-                                    value: balancesList[ind]?.balance,
+          <div className="xsm:max-h-123  xsm:overflow-auto">
+            <div className="overflow-y-auto xsm:w-full">
+              {updatedMapList[0]?.token_account_ids?.map(
+                (ite: any, ind: number) => {
+                  return (
+                    <div key={ite.tokenId} className="xsm:w-full">
+                      <div className="mb-6 xsm:w-full">
+                        <div className="flex items-end justify-end text-gray-50 mb-2 text-sm xsm:w-full">
+                          <span>
+                            Balance:{" "}
+                            <span
+                              className={`underline hover:cursor-pointer hover:text-white  ${
+                                inputValList[ind] == balancesList[ind]?.balance
+                                  ? ""
+                                  : "text-gray-50"
+                              }`}
+                              onClick={() => {
+                                changeVal(
+                                  {
+                                    target: {
+                                      value: balancesList[ind]?.balance,
+                                    },
                                   },
-                                },
-                                ind,
-                                ite,
-                                radioActive
-                              );
-                            }}
-                          >
-                            {disPlayBalance(
-                              accountStore.isSignedIn,
-                              balancesList[ind]?.balance
-                            )}
-                          </span>
-                        </span>
-                      </div>
-                      <div className="flex">
-                        <div className="w-1/4 flex items-center">
-                          <Icon icon={ite.icon} className="h-7 w-7 mr-2" />
-                          <span className="text-white text-base">
-                            {ite.symbol}
+                                  ind,
+                                  ite,
+                                  radioActive
+                                );
+                              }}
+                            >
+                              {disPlayBalance(
+                                accountStore.isSignedIn,
+                                balancesList[ind]?.balance
+                              )}
+                            </span>
                           </span>
                         </div>
-                        <div
-                          className="flex h-11 w-3/4 items-center border border-transparent hover:border-green-20 rounded"
-                          style={{ background: "rgba(0,0,0,.2)" }}
-                        >
-                          <input
-                            type="number"
-                            className="h-11 p-3 lg:w-74 text-white"
-                            style={{ fontSize: "20px" }}
-                            value={inputValList[ind]}
-                            onChange={(e) =>
-                              changeVal(e, ind, ite, radioActive)
-                            }
-                            placeholder="0"
-                          />
+                        <div className="flex">
+                          <div className="w-1/4 flex items-center">
+                            <Icon icon={ite.icon} className="h-7 w-7 mr-2" />
+                            <span className="text-white text-base">
+                              {ite.symbol}
+                            </span>
+                          </div>
+                          <div
+                            className="flex h-11 w-3/4 items-center border border-transparent hover:border-green-20 rounded"
+                            style={{ background: "rgba(0,0,0,.2)" }}
+                          >
+                            <input
+                              type="number"
+                              className="h-11 p-3 lg:w-74 text-white"
+                              style={{ fontSize: "20px" }}
+                              value={inputValList[ind]}
+                              onChange={(e) =>
+                                changeVal(e, ind, ite, radioActive)
+                              }
+                              placeholder="0"
+                            />
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                );
-              }
-            )}
-          </div>
-          {/* radio */}
-          <div className="w-full h-19 border border-gray-90 rounded flex px-4  py-3 justify-between flex-col cursor-pointer">
-            {/* init */}
-            <div
-              className="flex items-center text-sm text-gray-50"
-              onClick={() => {
-                setRadioActive("init");
-
-                setRadio("init");
-              }}
-            >
-              <div
-                className={`w-3 h-3 p-0.5 border ${
-                  radioActive == "init" ? "border-green-10" : "border-gray-60"
-                } rounded-full`}
-              >
-                {radioActive == "init" && (
-                  <div className="bg-green-10 rounded-full w-full h-full"></div>
-                )}
-              </div>
-              <span className="ml-1">
-                Add all tokens in a balanced proportion
-              </span>
-            </div>
-            {/* max */}
-            <div
-              className="flex items-center text-sm text-gray-50"
-              onClick={() =>
-                radioActive == "max" ? setRadioActive("") : setRadio("max")
-              }
-            >
-              <div
-                className={`w-3 h-3 p-0.5 border ${
-                  radioActive == "max" ? "border-green-10" : "border-gray-60"
-                } rounded-full`}
-              >
-                {radioActive == "max" && (
-                  <div className="bg-green-10 rounded-full w-full h-full"></div>
-                )}
-              </div>
-              <span className="ml-1">
-                Use maximum amount of tokens available
-              </span>
-            </div>
-          </div>
-
-          {/* slippage */}
-          <div className="flex items-center justify-between mt-7">
-            <div className="text-sm text-gray-50 frcc">
-              Slippage tolerance{" "}
-              <HoverTip
-                msg={
-                  "Slippage means the difference between what you expect to get and what you actually get due to other executing first"
+                  );
                 }
-                extraStyles={"w-50"}
-              />
+              )}
             </div>
-            <div className="frcc xsm:hidden">
+            {/* radio */}
+            <div className="w-full h-19 border border-gray-90 rounded flex px-4  py-3 justify-between flex-col cursor-pointer">
+              {/* init */}
               <div
-                className={`frcc w-38 text-sm py-1  ${poolStyle.commonStyle}`}
+                className="flex items-center text-sm text-gray-50"
+                onClick={() => {
+                  setRadioActive("init");
+
+                  setRadio("init");
+                }}
               >
-                {feeList.map((item, index) => {
-                  return (
-                    <div
-                      key={item.key + index}
-                      className={`
+                <div
+                  className={`w-3 h-3 p-0.5 border ${
+                    radioActive == "init" ? "border-green-10" : "border-gray-60"
+                  } rounded-full`}
+                >
+                  {radioActive == "init" && (
+                    <div className="bg-green-10 rounded-full w-full h-full"></div>
+                  )}
+                </div>
+                <span className="ml-1">
+                  Add all tokens in a balanced proportion
+                </span>
+              </div>
+              {/* max */}
+              <div
+                className="flex items-center text-sm text-gray-50"
+                onClick={() =>
+                  radioActive == "max" ? setRadioActive("") : setRadio("max")
+                }
+              >
+                <div
+                  className={`w-3 h-3 p-0.5 border ${
+                    radioActive == "max" ? "border-green-10" : "border-gray-60"
+                  } rounded-full`}
+                >
+                  {radioActive == "max" && (
+                    <div className="bg-green-10 rounded-full w-full h-full"></div>
+                  )}
+                </div>
+                <span className="ml-1">
+                  Use maximum amount of tokens available
+                </span>
+              </div>
+            </div>
+
+            {/* slippage */}
+            <div className="flex items-center justify-between mt-7">
+              <div className="text-sm text-gray-50 frcc">
+                Slippage tolerance{" "}
+                <HoverTip
+                  msg={
+                    "Slippage means the difference between what you expect to get and what you actually get due to other executing first"
+                  }
+                  extraStyles={"w-50"}
+                />
+              </div>
+              <div className="frcc xsm:hidden">
+                <div
+                  className={`frcc w-38 text-sm py-1  ${poolStyle.commonStyle}`}
+                >
+                  {feeList.map((item, index) => {
+                    return (
+                      <div
+                        key={item.key + index}
+                        className={`
                   ${
                     isActive == item.key
                       ? "text-white bg-gray-120 rounded"
@@ -483,16 +484,59 @@ export default function StableAdd(props: any) {
                   }
                   w-12 h-5 frcc cursor-pointer
                 `}
-                      onClick={() => {
-                        setActive(item.key);
-                        setFeeValue(item.key);
-                      }}
-                    >
-                      {item.value}%
-                    </div>
-                  );
-                })}
+                        onClick={() => {
+                          setActive(item.key);
+                          setFeeValue(item.key);
+                        }}
+                      >
+                        {item.value}%
+                      </div>
+                    );
+                  })}
+                </div>
+                <div className={poolStyle.filterSeacrhInputContainer}>
+                  <input
+                    type="number"
+                    className={poolStyle.filterSearchInput}
+                    value={feeValue}
+                    onChange={inputChange}
+                  />
+                  <span className="text-gray-50 text-sm">%</span>
+                </div>
               </div>
+            </div>
+
+            <div
+              className={`flex items-center justify-between flex-1 text-sm py-1 mt-2 lg:hidden`}
+            >
+              {feeList.map((item, index) => {
+                return (
+                  <div
+                    key={item.key + index}
+                    className={`
+                  ${isActive == item.key ? "text-white " : "text-gray-60"}
+                   h-5 frcc cursor-pointer
+                `}
+                    onClick={() => {
+                      setActive(item.key);
+                      setFeeValue(item.key);
+                    }}
+                  >
+                    <div
+                      className={`w-4 h-4 rounded-full border  frcc mr-1 ${
+                        isActive == item.key
+                          ? "border-green-10"
+                          : "border-gray-60"
+                      }`}
+                    >
+                      {isActive == item.key && (
+                        <div className="w-3 h-3 rounded-full bg-green-10"></div>
+                      )}
+                    </div>
+                    {item.value}%
+                  </div>
+                );
+              })}
               <div className={poolStyle.filterSeacrhInputContainer}>
                 <input
                   type="number"
@@ -503,80 +547,38 @@ export default function StableAdd(props: any) {
                 <span className="text-gray-50 text-sm">%</span>
               </div>
             </div>
-          </div>
 
-          <div
-            className={`flex items-center justify-between flex-1 text-sm py-1 mt-2 lg:hidden`}
-          >
-            {feeList.map((item, index) => {
-              return (
-                <div
-                  key={item.key + index}
-                  className={`
-                  ${isActive == item.key ? "text-white " : "text-gray-60"}
-                   h-5 frcc cursor-pointer
-                `}
-                  onClick={() => {
-                    setActive(item.key);
-                    setFeeValue(item.key);
-                  }}
-                >
-                  <div
-                    className={`w-4 h-4 rounded-full border  frcc mr-1 ${
-                      isActive == item.key
-                        ? "border-green-10"
-                        : "border-gray-60"
-                    }`}
-                  >
-                    {isActive == item.key && (
-                      <div className="w-3 h-3 rounded-full bg-green-10"></div>
-                    )}
-                  </div>
-                  {item.value}%
-                </div>
-              );
-            })}
-            <div className={poolStyle.filterSeacrhInputContainer}>
-              <input
-                type="number"
-                className={poolStyle.filterSearchInput}
-                value={feeValue}
-                onChange={inputChange}
-              />
-              <span className="text-gray-50 text-sm">%</span>
-            </div>
-          </div>
-
-          {/* Minimum shares */}
-          <div className="flex items-center justify-between mt-5">
-            <div className="text-sm text-gray-50 frcc">Minimum shares</div>
-            <div
-              className="text-white text-sm overflow-hidden text-ellipsis whitespace-nowrap"
-              title={myShares({
-                totalShares: BigNumber.sum(
-                  poolDetail.shares_total_supply,
-                  percentLess(feeValue, predicedShares)
-                )
-                  .toNumber()
-                  .toLocaleString("fullwide", { useGrouping: false }),
-                userTotalShare: new BigNumber(
-                  toPrecision(percentLess(feeValue, predicedShares), 0)
-                ),
-                poolDetail,
-              })}
-            >
-              {myShares({
-                totalShares: BigNumber.sum(
-                  poolDetail.shares_total_supply,
-                  percentLess(feeValue, predicedShares)
-                )
-                  .toNumber()
-                  .toLocaleString("fullwide", { useGrouping: false }),
-                userTotalShare: new BigNumber(
-                  toPrecision(percentLess(feeValue, predicedShares), 0)
-                ),
-                poolDetail,
-              })}
+            {/* Minimum shares */}
+            <div className="flex items-center justify-between mt-5">
+              <div className="text-sm text-gray-50 frcc">Minimum shares</div>
+              <div
+                className="text-white text-sm overflow-hidden text-ellipsis whitespace-nowrap"
+                title={myShares({
+                  totalShares: BigNumber.sum(
+                    poolDetail.shares_total_supply,
+                    percentLess(feeValue, predicedShares)
+                  )
+                    .toNumber()
+                    .toLocaleString("fullwide", { useGrouping: false }),
+                  userTotalShare: new BigNumber(
+                    toPrecision(percentLess(feeValue, predicedShares), 0)
+                  ),
+                  poolDetail,
+                })}
+              >
+                {myShares({
+                  totalShares: BigNumber.sum(
+                    poolDetail.shares_total_supply,
+                    percentLess(feeValue, predicedShares)
+                  )
+                    .toNumber()
+                    .toLocaleString("fullwide", { useGrouping: false }),
+                  userTotalShare: new BigNumber(
+                    toPrecision(percentLess(feeValue, predicedShares), 0)
+                  ),
+                  poolDetail,
+                })}
+              </div>
             </div>
           </div>
           {/* tips  */}

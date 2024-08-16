@@ -209,7 +209,7 @@ export default function WalletConnect() {
               </div>
               {/* Click menu */}
               <div
-                className={`fixed top-[45px] left-0 w-full h-[calc(100%-78px)] bg-black bg-opacity-50  ${
+                className={`fixed top-[45px] left-0 w-full h-[calc(100%-70px)] bg-black bg-opacity-50  ${
                   isOpen ? "block" : "hidden"
                 }`}
                 style={{

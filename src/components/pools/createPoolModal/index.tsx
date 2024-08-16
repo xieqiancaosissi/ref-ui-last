@@ -101,6 +101,7 @@ export default function CreatePoolModal({
     setShowSke(true);
     addSimpleLiquidityPool(token, Math.floor(createFee))
       .then((res: any) => {
+        if (!res) return;
         let status;
         if (res.status == "success") {
           successToast();

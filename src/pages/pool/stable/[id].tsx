@@ -39,6 +39,7 @@ export default function StablePoolDetail() {
     { key: "liquidity", value: "Liquidity" },
   ];
   const [transactionActive, setTransactionActive] = useState("swap");
+  const [addSuccess, setAddSuccess] = useState(0);
   //
   useEffect(() => {
     if (poolId) {
@@ -152,6 +153,7 @@ export default function StablePoolDetail() {
         {/* share and liquidity action */}
         {poolDetail && (
           <ShareContainer
+            key={addSuccess}
             poolDetail={poolDetail}
             setShowAdd={setShowAdd}
             setShowRemove={setShowRemove}
@@ -280,6 +282,7 @@ export default function StablePoolDetail() {
             updatedMapList={updatedMapList}
             isMobile={isMobile}
             tokenPriceList={tokenPriceList}
+            setAddSuccess={setAddSuccess}
           />
 
           <StableRemove
@@ -289,6 +292,7 @@ export default function StablePoolDetail() {
             pureIdList={pureIdList}
             updatedMapList={updatedMapList}
             isMobile={isMobile}
+            setAddSuccess={setAddSuccess}
           />
         </>
       )}

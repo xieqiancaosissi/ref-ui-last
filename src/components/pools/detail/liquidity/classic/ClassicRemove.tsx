@@ -21,6 +21,8 @@ import { useRemoveLiquidity } from "@/hooks/usePools";
 import { useIntl } from "react-intl";
 import { useAppStore } from "@/stores/app";
 import { showWalletSelectorModal } from "@/utils/wallet";
+import successToast from "@/components/common/toast/successToast";
+import failToast from "@/components/common/toast/failToast";
 
 export const REF_FI_PRE_LIQUIDITY_ID_KEY = "REF_FI_PRE_LIQUIDITY_ID_VALUE";
 
@@ -67,6 +69,7 @@ export default function StableAdd(props: any) {
     pureIdList,
     updatedMapList,
     isMobile,
+    setAddSuccess,
   } = props;
 
   useEffect(() => {
@@ -106,7 +109,22 @@ export default function StableAdd(props: any) {
       );
     }
     localStorage.setItem(REF_FI_PRE_LIQUIDITY_ID_KEY, poolDetail.id.toString());
-    return removeLiquidity();
+    return removeLiquidity()
+      .then((res: any) => {
+        if (!res) return;
+        let status;
+        if (res.status == "success") {
+          successToast();
+          setAddSuccess((pre: number) => pre + 1);
+        } else if (res.status == "error") {
+          failToast(res.errorResult?.message);
+        }
+      })
+      .finally(() => {
+        setIsLoading(false);
+        onRequestClose();
+        closeInit();
+      });
   }
   // tab change
   const [removeTabActive, setRemoveTabActive] = useState("share");

@@ -65,6 +65,13 @@ import YourLiqMobile from "@/components/pools/detail/liquidity/classic/YourLiqMo
 import { PoolRouterGuard } from "@/utils/poolTypeGuard";
 import { ftGetTokenMetadata } from "@/services/token";
 
+import { getSharesInPool } from "@/services/pool";
+import { getStakedListByAccountId } from "@/services/farm";
+import { getURLInfo } from "@/utils/transactionsPopup";
+import { checkTransactionStatus } from "@/utils/contract";
+import { REF_FI_CONTRACT_ID } from "@/utils/contract";
+import { checkTransaction } from "@/utils/contract";
+
 export default function ClassicPoolDetail() {
   const router = useRouter();
   const { pureIdList } = useRiskTokens();
@@ -76,12 +83,24 @@ export default function ClassicPoolDetail() {
   const [poolDetail, setPoolDetail] = useState<any>(null);
   const [isCollect, setIsCollect] = useState(false);
   const [tokenPriceList, setTokenPriceList] = useState<any>(null);
+  const [addSuccess, setAddSuccess] = useState(0);
   const { updatedMapList } = useTokenMetadata([poolDetail]);
   const TransactionTabList = [
     { key: "swap", value: "Swap" },
     { key: "liquidity", value: "Liquidity" },
   ];
   const [transactionActive, setTransactionActive] = useState("swap");
+
+  // part refresh
+  const [newPool, setNewPool] = useState<any>();
+  const [newShares, setNewShares] = useState<string>("0");
+  const [newFinalStakeList, setNewFinalStakeList] = useState<
+    Record<string, string>
+  >({});
+  const [newhaveShare, setnewhaveShare] = useState(false);
+  const [newTotalFarmStake, setNewTotalFarmStake] = useState("0");
+  const [newUserTotalShareToString, setNewUserTotalShareToString] =
+    useState("0");
   //
   const [otherTokens, setOtherTokens] = useState<any>([]);
   useEffect(() => {
@@ -228,7 +247,9 @@ export default function ClassicPoolDetail() {
     return tokenAmountShare(
       pool,
       token,
-      new BigNumber(userTotalShareToString)
+      new BigNumber(
+        addSuccess > 0 ? newUserTotalShareToString : userTotalShareToString
+      )
         .plus(Number(getVEPoolId()) === Number(pool.id) ? lptAmount : "0")
         .toNumber()
         .toFixed()
@@ -243,25 +264,39 @@ export default function ClassicPoolDetail() {
 
   const usdValue = useMemo(() => {
     try {
-      if (!userTotalShareToString || !pool) return "-";
-
+      if (
+        (addSuccess > 0
+          ? !newUserTotalShareToString
+          : !userTotalShareToString) ||
+        !pool
+      )
+        return "-";
       const rawRes = multiply(
-        new BigNumber(userTotalShareToString)
+        new BigNumber(
+          addSuccess > 0 ? newUserTotalShareToString : userTotalShareToString
+        )
           .plus(
             Number(getVEPoolId()) === Number(pool.id) ? lptAmount || "0" : "0"
           )
           .toNumber()
           .toFixed(),
-        divide(poolDetail?.tvl?.toString(), pool?.shareSupply)
+        divide(
+          poolDetail?.tvl?.toString(),
+          addSuccess > 0 ? newPool?.shareSupply : pool?.shareSupply
+        )
       );
-
       return `$${
         Number(rawRes) == 0 ? "0" : toInternationalCurrencySystem(rawRes, 2)
       }`;
     } catch (error) {
       return "-";
     }
-  }, [poolDetail?.tvl, userTotalShareToString, pool]);
+  }, [
+    poolDetail?.tvl,
+    userTotalShareToString,
+    newUserTotalShareToString,
+    pool,
+  ]);
 
   // farm
   const [seedId, setSeedId] = useState("");
@@ -374,6 +409,62 @@ export default function ClassicPoolDetail() {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
+
+  // const { txHash } = getURLInfo();
+
+  // addsuccess  for part generate
+
+  useEffect(() => {
+    if (addSuccess > 0) {
+      const PoolFn = (id: number | string) => {
+        getPoolDetails(Number(id)).then((res) => {
+          console.log(res);
+          setNewPool(res);
+        });
+        getSharesInPool(Number(id))
+          .then((res) => {
+            setNewShares(res);
+          })
+          .catch(() => setNewShares);
+
+        getStakedListByAccountId({})
+          .then(({ stakedList, finalStakeList, v2StakedList }) => {
+            setNewFinalStakeList(finalStakeList);
+          })
+          .catch((err: any) => {
+            console.log(err);
+          });
+      };
+      PoolFn(poolId.toString());
+    }
+  }, [addSuccess]);
+
+  useEffect(() => {
+    if (newPool?.id && newShares) {
+      let totalFarmStake = new BigNumber("0"); //
+      Object.keys(stakeList).forEach((seed) => {
+        const id = Number(seed.split("@")[1]);
+        if (id == Number(poolId)) {
+          totalFarmStake = totalFarmStake.plus(new BigNumber(stakeList[seed])); //
+        }
+      });
+      setNewTotalFarmStake(totalFarmStake.toString());
+
+      setNewUserTotalShareToString(
+        BigNumber.sum(newShares, totalFarmStake.toString())
+          .toNumber()
+          .toLocaleString("fullwide", { useGrouping: false })
+      );
+      console.log(newPool, pool, "xxx");
+      const newhaveShare =
+        Number(
+          BigNumber.sum(newShares, totalFarmStake.toString())
+            .toNumber()
+            .toLocaleString("fullwide", { useGrouping: false })
+        ) > 0;
+      setnewhaveShare(newhaveShare);
+    }
+  }, [newPool, newShares]);
 
   return (
     <div className="w-full fccc h-full px-3">
@@ -644,107 +735,135 @@ export default function ClassicPoolDetail() {
 
         {/* right liquidity mobile hidden*/}
         <div className="lg:w-80 ml-auto xsm:hidden">
-          {(!haveShare || !poolId || !accountId) && (
+          {((addSuccess > 0 ? !newhaveShare : !haveShare) ||
+            !poolId ||
+            !accountId) && (
             <NoLiquidity add={() => setShowAdd(true)} isLoading={false} />
           )}
-          {accountId && haveShare && pool?.id && updatedMapList?.length > 0 && (
-            <div className="w-80 h-58 p-4 rounded bg-refPublicBoxDarkBg flex flex-col ">
-              <div className="flex items-center justify-between text-white">
-                <span className="whitespace-nowrap">Your Liquidity</span>
+          {accountId &&
+            (addSuccess > 0 ? newhaveShare : haveShare) &&
+            pool?.id &&
+            updatedMapList?.length > 0 && (
+              <div className="w-80 h-58 p-4 rounded bg-refPublicBoxDarkBg flex flex-col ">
+                <div className="flex items-center justify-between text-white">
+                  <span className="whitespace-nowrap">Your Liquidity</span>
 
-                <MyShares
-                  shares={shares}
-                  totalShares={pool.shareSupply}
-                  poolId={pool.id}
-                  stakeList={stakeList}
-                  lptAmount={lptAmount}
-                />
-              </div>
+                  <MyShares
+                    shares={addSuccess > 0 ? newShares : shares}
+                    totalShares={
+                      addSuccess > 0 ? newPool?.shareSupply : pool.shareSupply
+                    }
+                    poolId={pool.id}
+                    stakeList={addSuccess > 0 ? newFinalStakeList : stakeList}
+                    lptAmount={lptAmount}
+                  />
+                </div>
 
-              <div className="w-full text-right text-sm mb-7 ">
-                {!accountStore.isSignedIn ? (
-                  "-"
-                ) : usdValue === "-" ? (
-                  "-"
-                ) : (
-                  <div className="flex items-center relative top-1.5 justify-between">
-                    <span className="whitespace-nowrap text-gray-50">
-                      Estimate Value
-                    </span>
+                <div className="w-full text-right text-sm mb-7 ">
+                  {!accountStore.isSignedIn ? (
+                    "-"
+                  ) : usdValue === "-" ? (
+                    "-"
+                  ) : (
+                    <div className="flex items-center relative top-1.5 justify-between">
+                      <span className="whitespace-nowrap text-gray-50">
+                        Estimate Value
+                      </span>
 
-                    <span className="text-gray-50 font-normal">{usdValue}</span>
-                  </div>
-                )}
-              </div>
+                      <span className="text-gray-50 font-normal">
+                        {usdValue}
+                      </span>
+                    </div>
+                  )}
+                </div>
 
-              <div className="flex flex-col text-center text-base">
-                {updatedMapList[0]?.token_account_ids?.map(
-                  (token: any, index: number) => (
-                    <div
-                      key={index + "classic" + token.symbol}
-                      className="flex items-center justify-between mb-3"
-                    >
-                      <div className="flex items-center">
-                        <Icon icon={token.icon} className="h-7 w-7 mr-2" />
-                        <div className="flex items-start flex-col">
-                          <div className="flex items-center text-gray-10 text-sm">
-                            {toRealSymbol(token.symbol)}
+                <div className="flex flex-col text-center text-base">
+                  {updatedMapList[0]?.token_account_ids?.map(
+                    (token: any, index: number) => (
+                      <div
+                        key={index + "classic" + token.symbol}
+                        className="flex items-center justify-between mb-3"
+                      >
+                        <div className="flex items-center">
+                          <Icon icon={token.icon} className="h-7 w-7 mr-2" />
+                          <div className="flex items-start flex-col">
+                            <div className="flex items-center text-gray-10 text-sm">
+                              {toRealSymbol(token.symbol)}
+                            </div>
                           </div>
                         </div>
-                      </div>
-                      <div
-                        className="flex items-center text-gray-10 text-sm"
-                        title={tokenAmountShareRaw(
-                          pool,
-                          token,
-                          new BigNumber(userTotalShareToString)
-                            .plus(
-                              Number(getVEPoolId()) === Number(poolId)
-                                ? lptAmount
-                                : "0"
+                        <div
+                          className="flex items-center text-gray-10 text-sm"
+                          title={tokenAmountShareRaw(
+                            addSuccess > 0 ? newPool : pool,
+                            token,
+                            new BigNumber(
+                              addSuccess > 0
+                                ? newUserTotalShareToString
+                                : userTotalShareToString
                             )
-                            .toNumber()
-                            .toFixed()
-                        )}
+                              .plus(
+                                Number(getVEPoolId()) === Number(poolId)
+                                  ? lptAmount
+                                  : "0"
+                              )
+                              .toNumber()
+                              .toFixed()
+                          )}
+                        >
+                          {tokenInfoPC({ token })}
+                        </div>
+                      </div>
+                    )
+                  )}
+                </div>
+
+                <div className="flex items-center w-full mt-2">
+                  <div
+                    className={`pr-2 ${
+                      (addSuccess > 0 ? newhaveShare : haveShare)
+                        ? "w-1/2"
+                        : "w-full"
+                    } `}
+                  >
+                    <div
+                      className={`poolBtnStyleBase w-35 h-10  mr-2.5 text-sm cursor-pointer hover:opacity-90 `}
+                      onClick={() => setShowAdd(true)}
+                      // disabled={disable_add}
+                    >
+                      Add
+                    </div>
+                  </div>
+                  {(addSuccess > 0 ? newhaveShare : haveShare) && (
+                    <div className="pl-2 w-1/2">
+                      <div
+                        onClick={() => {
+                          if (
+                            addSuccess > 0
+                              ? +newUserTotalShareToString == 0
+                              : +userTotalShareToString == 0
+                          )
+                            return;
+                          setShowRemove(true);
+                        }}
+                        // disabled={Number(userTotalShareToString) == 0}
+                        className={`w-full ${
+                          Number(
+                            addSuccess > 0
+                              ? newUserTotalShareToString
+                              : userTotalShareToString
+                          ) == 0
+                            ? "border-gray-90 text-gray-60 cursor-not-allowed"
+                            : "border-green-10 text-green-10 cursor-pointer "
+                        }  border rounded-md frcc w-35 h-10 text-sm hover:opacity-80 `}
                       >
-                        {tokenInfoPC({ token })}
+                        Remove
                       </div>
                     </div>
-                  )
-                )}
-              </div>
-
-              <div className="flex items-center w-full mt-2">
-                <div className={`pr-2 ${haveShare ? "w-1/2" : "w-full"} `}>
-                  <div
-                    className={`poolBtnStyleBase w-35 h-10  mr-2.5 text-sm cursor-pointer hover:opacity-90 `}
-                    onClick={() => setShowAdd(true)}
-                    // disabled={disable_add}
-                  >
-                    Add
-                  </div>
+                  )}
                 </div>
-                {haveShare && (
-                  <div className="pl-2 w-1/2">
-                    <div
-                      onClick={() => {
-                        if (+userTotalShareToString == 0) return;
-                        setShowRemove(true);
-                      }}
-                      // disabled={Number(userTotalShareToString) == 0}
-                      className={`w-full ${
-                        Number(userTotalShareToString) == 0
-                          ? "border-gray-90 text-gray-60 cursor-not-allowed"
-                          : "border-green-10 text-green-10 cursor-pointer "
-                      }  border rounded-md frcc w-35 h-10 text-sm hover:opacity-80 `}
-                    >
-                      Remove
-                    </div>
-                  </div>
-                )}
               </div>
-            </div>
-          )}
+            )}
 
           {/* farm */}
           {seedFarms && (
@@ -794,12 +913,15 @@ export default function ClassicPoolDetail() {
         </div>
       </div>
 
-      {(!haveShare || !poolId || !accountId) && isMobile && (
-        <NoLiquidityMobile add={() => setShowAdd(true)} isLoading={false} />
-      )}
+      {((addSuccess > 0 ? !newhaveShare : !haveShare) ||
+        !poolId ||
+        !accountId) &&
+        isMobile && (
+          <NoLiquidityMobile add={() => setShowAdd(true)} isLoading={false} />
+        )}
 
       {accountId &&
-        haveShare &&
+        (addSuccess > 0 ? newhaveShare : haveShare) &&
         pool?.id &&
         updatedMapList?.length > 0 &&
         isMobile && (
@@ -824,7 +946,7 @@ export default function ClassicPoolDetail() {
           </div>
         )}
       {accountId &&
-        haveShare &&
+        (addSuccess > 0 ? newhaveShare : haveShare) &&
         pool?.id &&
         updatedMapList?.length > 0 &&
         isMobile && (
@@ -838,8 +960,12 @@ export default function ClassicPoolDetail() {
             stakeList={stakeList}
             lptAmount={lptAmount}
             usdValue={usdValue}
-            haveShare={haveShare}
-            userTotalShareToString={userTotalShareToString}
+            haveShare={addSuccess > 0 ? newhaveShare : haveShare}
+            userTotalShareToString={
+              addSuccess > 0
+                ? newUserTotalShareToString
+                : userTotalShareToString
+            }
             tokenInfoPC={tokenInfoPC}
             setShowRemove={setShowRemove}
             setShowAdd={setShowAdd}
@@ -858,6 +984,7 @@ export default function ClassicPoolDetail() {
             pureIdList={pureIdList}
             updatedMapList={updatedMapList}
             isMobile={isMobile}
+            setAddSuccess={setAddSuccess}
           />
 
           <ClassicRemove
@@ -867,6 +994,7 @@ export default function ClassicPoolDetail() {
             pureIdList={pureIdList}
             updatedMapList={updatedMapList}
             isMobile={isMobile}
+            setAddSuccess={setAddSuccess}
           />
         </>
       )}

@@ -23,7 +23,6 @@ import { percentLess } from "@/utils/numbers";
 import { usePredictShares } from "@/hooks/useStableLiquidity";
 import { ButtonTextWrapper } from "@/components/common/Button";
 import { toNonDivisibleNumber } from "@/utils/numbers";
-import { addLiquidityToStablePool } from "@/services/pool";
 import { removeTab } from "./config";
 import { usePool } from "@/hooks/usePools";
 import { toRoundedReadableNumber } from "@/utils/numbers";
@@ -40,7 +39,8 @@ import {
 } from "@/services/pool";
 import { useAppStore } from "@/stores/app";
 import { showWalletSelectorModal } from "@/utils/wallet";
-
+import successToast from "@/components/common/toast/successToast";
+import failToast from "@/components/common/toast/failToast";
 export function myShares({
   totalShares,
   userTotalShare,
@@ -83,6 +83,7 @@ export default function StableAdd(props: any) {
     pureIdList,
     updatedMapList,
     isMobile,
+    setAddSuccess,
   } = props;
   const [balancesList, setBalances] = useState<any>([]);
   const [inputValList, setInputValList] = useState<any>([]);
@@ -184,7 +185,21 @@ export default function StableAdd(props: any) {
         id: +poolDetail.id,
         min_amounts: min_amounts as [string, string, string],
         shares: removeShares,
-      });
+      })
+        .then((res: any) => {
+          if (!res) return;
+          if (res.status == "success") {
+            successToast();
+            setAddSuccess((pre: number) => pre + 1);
+          } else if (res.status == "error") {
+            failToast(res.errorResult?.message);
+          }
+        })
+        .finally(() => {
+          setIsLoading(false);
+          onRequestClose();
+          closeInit();
+        });
     } else {
       const amounts = [...inputValList].map((amount, i) => {
         return toNonDivisibleNumber(
@@ -206,7 +221,21 @@ export default function StableAdd(props: any) {
         id: +poolDetail.id,
         amounts,
         max_burn_shares,
-      });
+      })
+        .then((res: any) => {
+          if (!res) return;
+          if (res.status == "success") {
+            successToast();
+            setAddSuccess((pre: number) => pre + 1);
+          } else if (res.status == "error") {
+            failToast(res.errorResult?.message);
+          }
+        })
+        .finally(() => {
+          setIsLoading(false);
+          onRequestClose();
+          closeInit();
+        });
     }
   }
   // tab change

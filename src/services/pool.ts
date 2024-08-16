@@ -457,7 +457,7 @@ export const addLiquidityToStablePool = async ({
     }
   }
 
-  return executeMultipleTransactions(transactions);
+  return executeMultipleTransactions(transactions, false);
 };
 
 interface RemoveLiquidityFromStablePoolOptions {
@@ -599,7 +599,7 @@ export const removeLiquidityFromStablePool = async ({
   //   );
   // }
 
-  return executeMultipleTransactions(transactions);
+  return executeMultipleTransactions(transactions, false);
 };
 
 export const predictRemoveLiquidityByTokens = async (
@@ -752,7 +752,7 @@ export const removeLiquidityByTokensFromStablePool = async ({
   //   );
   // }
 
-  return executeMultipleTransactions(transactions);
+  return executeMultipleTransactions(transactions, false);
 };
 
 interface AddLiquidityToPoolOptions {
@@ -829,7 +829,7 @@ export const addLiquidityToPool = async ({
     }
   }
 
-  return executeMultipleTransactions(transactions);
+  return executeMultipleTransactions(transactions, false);
 };
 
 interface RemoveLiquidityOptions {
@@ -961,7 +961,7 @@ export const removeLiquidityFromPool = async ({
   //   );
   // }
 
-  return executeMultipleTransactions(transactions);
+  return executeMultipleTransactions(transactions, false);
 };
 
 export const predictRemoveLiquidity = async (

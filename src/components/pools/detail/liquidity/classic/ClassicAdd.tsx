@@ -24,6 +24,8 @@ import AddLiqTip from "../../addLiqTip";
 import { PoolDetailCard } from "./ClassicAddDetail";
 import { useAppStore } from "@/stores/app";
 import { showWalletSelectorModal } from "@/utils/wallet";
+import successToast from "@/components/common/toast/successToast";
+import failToast from "@/components/common/toast/failToast";
 
 export function myShares({
   totalShares,
@@ -66,6 +68,7 @@ export default function StableAdd(props: any) {
     pureIdList,
     updatedMapList,
     isMobile,
+    setAddSuccess,
   } = props;
   const [balancesList, setBalances] = useState<any>([]);
   const [inputValList, setInputValList] = useState<any>([]);
@@ -255,7 +258,22 @@ export default function StableAdd(props: any) {
           amount: inputValList[1],
         },
       ],
-    });
+    })
+      .then((res: any) => {
+        if (!res) return;
+        let status;
+        if (res.status == "success") {
+          successToast();
+          setAddSuccess((pre: number) => pre + 1);
+        } else if (res.status == "error") {
+          failToast(res.errorResult?.message);
+        }
+      })
+      .finally(() => {
+        setIsLoading(false);
+        onRequestClose();
+        closeInit();
+      });
   }
 
   return (

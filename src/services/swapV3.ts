@@ -896,7 +896,7 @@ export const add_liquidity = async ({
       ],
     });
   }
-  return executeMultipleTransactions(transactions);
+  return executeMultipleTransactions(transactions, false);
 };
 
 export const batch_add_liquidity = async ({
@@ -1038,7 +1038,7 @@ export const batch_add_liquidity = async ({
       ],
     });
   }
-  return executeMultipleTransactions(transactions);
+  return executeMultipleTransactions(transactions, false);
 };
 
 export const append_liquidity = async ({
@@ -1442,7 +1442,7 @@ export const batch_remove_liquidity_contract = async ({
       ],
     });
   }
-  return executeMultipleTransactions(transactions);
+  return executeMultipleTransactions(transactions, false);
 };
 
 export const claim_all_liquidity_fee = async ({
@@ -1510,7 +1510,7 @@ export const claim_all_liquidity_fee = async ({
       ],
     });
   }
-  return executeMultipleTransactions(transactions);
+  return executeMultipleTransactions(transactions, false);
 };
 
 export const checkTokenNeedsStorageDeposit_v3 = async () => {

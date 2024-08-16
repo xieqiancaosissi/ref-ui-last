@@ -12,6 +12,8 @@ import tokenIcons from "@/utils/tokenIconConfig";
 import { useRiskTokens } from "@/hooks/useRiskTokens";
 import { TokenIconComponent } from "@/components/pools/TokenIconWithTkn/index";
 import styles from "./style.module.css";
+import successToast from "@/components/common/toast/successToast";
+import failToast from "@/components/common/toast/failToast";
 
 function LockedModal(props: any) {
   const {
@@ -22,6 +24,7 @@ function LockedModal(props: any) {
     lockedData,
     pool,
     tokens,
+    setAddSuccess,
   } = props;
   const { pureIdList } = useRiskTokens();
   const [sliderAmount, setSliderAmount] = useState<string>("0");
@@ -47,7 +50,20 @@ function LockedModal(props: any) {
       unlock_time_sec: +new_unlock_time_sec.toFixed(0),
       is_mft_registered,
       // unlock_time_sec: 1715094000,
-    });
+    })
+      .then((res: any) => {
+        if (!res) return;
+        if (res.status == "success") {
+          successToast();
+          setAddSuccess((pre: number) => pre + 1);
+        } else if (res.status == "error") {
+          failToast(res.errorResult?.message);
+        }
+      })
+      .finally(() => {
+        onRequestClose();
+        closeConfirmModal();
+      });
   }
   function changeMonths(v: any) {
     if (v.indexOf(".") > -1) {

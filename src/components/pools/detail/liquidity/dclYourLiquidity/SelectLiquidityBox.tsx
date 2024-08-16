@@ -11,6 +11,7 @@ export function SelectLiquidityBox(props: any) {
     operation,
     tokenPriceList,
     user_liquidities,
+    setAddSuccess,
   } = props;
 
   const [hoverHashId, setHoverHashId] = useState("");
@@ -30,6 +31,7 @@ export function SelectLiquidityBox(props: any) {
       poolDetail={poolDetail}
       tokenPriceList={tokenPriceList}
       userLiquidity={getCurrentLiqudity(hoverHashId)}
+      setAddSuccess={setAddSuccess}
       style={{
         overlay: {
           backdropFilter: "blur(15px)",

@@ -12,10 +12,12 @@ import { useRiskTokens } from "@/hooks/useRiskTokens";
 import { TokenIconComponent } from "@/components/pools/TokenIconWithTkn/index";
 import styles from "./style.module.css";
 import { ButtonTextWrapper } from "@/components/common/Button";
+import successToast from "@/components/common/toast/successToast";
+import failToast from "@/components/common/toast/failToast";
 
 function UnLockedModal(props: any) {
   const { pureIdList } = useRiskTokens();
-  const { isOpen, onRequestClose, tokens, lockedData } = props;
+  const { isOpen, onRequestClose, tokens, lockedData, setAddSuccess } = props;
   const [unlock_loading, set_unlock_loading] = useState<boolean>(false);
 
   const balance = toPrecision(
@@ -27,7 +29,20 @@ function UnLockedModal(props: any) {
     unlock_lp({
       token_id: lockedData.token_id,
       amount: lockedData.locked_balance,
-    });
+    })
+      .then((res: any) => {
+        if (!res) return;
+        if (res.status == "success") {
+          successToast();
+          setAddSuccess((pre: number) => pre + 1);
+        } else if (res.status == "error") {
+          failToast(res.errorResult?.message);
+        }
+      })
+      .finally(() => {
+        onRequestClose();
+        set_unlock_loading(false);
+      });
   }
 
   const [isMobile, setIsMobile] = useState(false);

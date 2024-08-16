@@ -640,6 +640,7 @@ export default function ClassicPoolDetail() {
               <OverallLocking
                 poolDetail={poolDetail}
                 updatedMapList={updatedMapList}
+                setAddSuccess={setAddSuccess}
               />
             )}
           </div>

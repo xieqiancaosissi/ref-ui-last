@@ -48,9 +48,16 @@ export default function YourLiquidityBox(props: {
   liquidities: UserLiquidityInfo[];
   tokenPriceList: any;
   matched_seeds: Seed[];
+  setAddSuccess?: any;
 }) {
   const router = useRouter();
-  const { poolDetail, liquidities, tokenPriceList, matched_seeds } = props;
+  const {
+    poolDetail,
+    liquidities,
+    tokenPriceList,
+    matched_seeds,
+    setAddSuccess,
+  } = props;
   const [user_liquidities_detail, set_user_liquidities_detail] = useState<
     UserLiquidityDetail[]
   >([]);
@@ -66,6 +73,7 @@ export default function YourLiquidityBox(props: {
   const [is_in_farming, set_is_in_farming] = useState<boolean>(false);
   const [is_in_farming_done, set_is_in_farming_done] = useState<boolean>(false);
   const { token_x_metadata, token_y_metadata, pool_id } = poolDetail;
+
   const accountId = getAccountId();
   let pair_is_reverse = false;
   if (TOKEN_LIST_FOR_RATE.indexOf(token_x_metadata?.symbol) > -1) {
@@ -594,7 +602,7 @@ export default function YourLiquidityBox(props: {
               removeLiquidity();
             }}
             // disabled={is_in_farming || !is_in_farming_done}
-            className={` lg:w-35 xsm:w-full h-10 text-sm cursor-pointer hover:opacity-90 ${
+            className={`lg:w-35 xsm:w-full h-10 text-sm cursor-pointer hover:opacity-90 ${
               is_in_farming || !is_in_farming_done
                 ? "opacity-30 pointer-events-none poolBtnStyleDefaultBase"
                 : "poolBtnStyleActiveEmpty"
@@ -634,6 +642,7 @@ export default function YourLiquidityBox(props: {
         operation={operationType}
         tokenPriceList={tokenPriceList}
         matched_seeds={matched_seeds}
+        setAddSuccess={setAddSuccess}
         style={{
           overlay: {
             backdropFilter: "blur(15px)",

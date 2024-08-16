@@ -6,8 +6,10 @@ import { ButtonTextWrapper } from "@/components/common/Button";
 import _ from "lodash";
 import { Icon } from "./IconCom";
 import { get_unClaimed_fee_data } from "../dcl/d3Chart/DetailFun";
+import successToast from "@/components/common/toast/successToast";
+import failToast from "@/components/common/toast/failToast";
 export function UnclaimedFeesBox(props: any) {
-  const { poolDetail, liquidities, tokenPriceList } = props;
+  const { poolDetail, liquidities, tokenPriceList, setAddSuccess } = props;
   const { token_x_metadata, token_y_metadata } = poolDetail;
   const [user_liquidities_total, set_user_liquidities_total] =
     useState<Record<string, any>>();
@@ -74,7 +76,20 @@ export function UnclaimedFeesBox(props: any) {
       token_x: token_x_metadata,
       token_y: token_y_metadata,
       lpt_ids,
-    });
+    })
+      .then((res: any) => {
+        if (!res) return;
+        let status;
+        if (res.status == "success") {
+          successToast();
+          setAddSuccess((pre: number) => pre + 1);
+        } else if (res.status == "error") {
+          failToast(res.errorResult?.message);
+        }
+      })
+      .finally(() => {
+        set_cliam_loading(false);
+      });
   }
   const { display_amount_x, display_amount_y, total_amount_x_y } =
     getTotalFeeAmount();

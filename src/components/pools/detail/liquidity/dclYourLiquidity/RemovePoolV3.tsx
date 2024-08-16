@@ -47,6 +47,8 @@ import { ButtonTextWrapper } from "@/components/common/Button";
 import CustomTooltip from "@/components/customTooltip/customTooltip";
 import { useAppStore } from "@/stores/app";
 import { showWalletSelectorModal } from "@/utils/wallet";
+import successToast from "@/components/common/toast/successToast";
+import failToast from "@/components/common/toast/failToast";
 
 export const REF_POOL_NAV_TAB_KEY = "REF_POOL_NAV_TAB_VALUE";
 
@@ -54,6 +56,7 @@ export type RemoveType = "left" | "right" | "all";
 
 export const RemovePoolV3 = (props: any) => {
   const {
+    setAddSuccess,
     tokenMetadata_x_y,
     poolDetail,
     tokenPriceList,
@@ -67,6 +70,7 @@ export const RemovePoolV3 = (props: any) => {
     isLegacy?: boolean;
     restProps: any;
     listLiquidities: UserLiquidityInfo[];
+    setAddSuccess?: () => void;
   } = props;
   const appStore = useAppStore();
   const SLOT_NUMBER = get_slot_number_in_a_bin();
@@ -548,9 +552,21 @@ export const RemovePoolV3 = (props: any) => {
       mint_liquidities,
       selectedWalletId:
         getSelector()?.store?.getState()?.selectedWalletId || "",
-    }).then(() => {
-      sessionStorage.setItem("REMOVE_POOL_ID", pool_id);
-    });
+    })
+      .then((res: any) => {
+        sessionStorage.setItem("REMOVE_POOL_ID", pool_id);
+        if (!res) return;
+        if (res.status == "success") {
+          successToast();
+          setAddSuccess((pre: any) => pre + 1);
+        } else if (res.status == "error") {
+          failToast(res.errorResult?.message);
+        }
+      })
+      .finally(() => {
+        props.onRequestClose();
+        setRemoveLoading(false);
+      });
   }
   function get_minimum_received_data() {
     /**

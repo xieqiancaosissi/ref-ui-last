@@ -31,7 +31,10 @@ function LockedConfirmModal(props: any) {
   return (
     <Modal
       isOpen={isOpen}
-      onRequestClose={onRequestClose}
+      onRequestClose={() => {
+        onRequestClose();
+        setLockLoading(false);
+      }}
       style={{
         overlay: {
           overflow: "auto",

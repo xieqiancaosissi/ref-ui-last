@@ -26,6 +26,7 @@ import { ArrowDown, ArrowUpWithYellow } from "../liquidity/components/add/Icon";
 
 export default function OverallLocking(props: any) {
   const { poolDetail, updatedMapList } = props;
+  const [addSuccess, setAddSuccess] = useState(0);
   const detailItem = [
     {
       title: "TVL",
@@ -63,7 +64,7 @@ export default function OverallLocking(props: any) {
   //
   const [your_locked_percent, your_unLocked_time, your_locked_balance] =
     useMemo(() => {
-      if (lp_locked_list[accountId]) {
+      if (lp_locked_list[accountId] || addSuccess > 0) {
         const { locked_balance, unlock_time_sec } = lp_locked_list[accountId];
         return [
           getSharesPercent(locked_balance),
@@ -72,7 +73,7 @@ export default function OverallLocking(props: any) {
         ];
       }
       return [{ percent: "", displayPercent: "" }, "", "0"];
-    }, [accountId, lp_locked_list]);
+    }, [accountId, lp_locked_list, addSuccess]);
 
   //
   const total_locked_percent = useMemo(() => {
@@ -80,7 +81,7 @@ export default function OverallLocking(props: any) {
       return sum.plus(cur.locked_balance);
     }, Big(0));
     return getSharesPercent(totalLocked.toFixed());
-  }, [lp_locked_list]);
+  }, [lp_locked_list, addSuccess]);
 
   //
   async function init() {
@@ -122,7 +123,7 @@ export default function OverallLocking(props: any) {
   //
   useEffect(() => {
     init();
-  }, [poolDetail]);
+  }, [poolDetail, addSuccess]);
 
   useEffect(() => {
     if (shares) setLockButtonDisabled(Big(shares || 0).lte(0));
@@ -139,7 +140,7 @@ export default function OverallLocking(props: any) {
         new Date().getTime() / 1000
       ) || !your_unLocked_time
     );
-  }, [lp_locked_list, your_unLocked_time, accountId]);
+  }, [lp_locked_list, your_unLocked_time, accountId, addSuccess]);
 
   function closeLockedModal() {
     setIsLockedOpen(false);
@@ -473,6 +474,7 @@ export default function OverallLocking(props: any) {
           lockedData={lp_locked_list[accountId]}
           pool={poolDetail}
           tokens={updatedMapList[0].token_account_ids}
+          setAddSuccess={setAddSuccess}
         />
       )}
       {isUnLockedOpen && (
@@ -484,6 +486,7 @@ export default function OverallLocking(props: any) {
           lockedData={lp_locked_list[accountId]}
           pool={poolDetail}
           tokens={updatedMapList[0].token_account_ids}
+          setAddSuccess={setAddSuccess}
         />
       )}
     </div>

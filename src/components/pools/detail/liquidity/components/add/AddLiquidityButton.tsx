@@ -13,6 +13,8 @@ import getConfigV2 from "@/utils/configV2";
 import { ButtonTextWrapper } from "@/components/common/Button";
 import { useAppStore } from "@/stores/app";
 import { showWalletSelectorModal } from "@/utils/wallet";
+import successToast from "@/components/common/toast/successToast";
+import failToast from "@/components/common/toast/failToast";
 const configV2 = getConfigV2();
 
 /**
@@ -20,7 +22,8 @@ const configV2 = getConfigV2();
  * 双边 一侧token 数量太多 传递的时候只传实际使用值
  * @returns
  */
-export function AddLiquidityButton() {
+export function AddLiquidityButton(props: any) {
+  const { setAddSuccess } = props;
   const {
     currentSelectedPool,
     tokenX,
@@ -46,7 +49,15 @@ export function AddLiquidityButton() {
   function addLiquiditySpot() {
     setAddLiquidityButtonLoading(true);
     const new_liquidity = getLiquiditySpot();
-    add_liquidity(new_liquidity);
+    add_liquidity(new_liquidity).then((res: any) => {
+      if (!res) return;
+      if (res.status == "success") {
+        successToast();
+        setAddSuccess((pre: any) => pre + 1);
+      } else if (res.status == "error") {
+        failToast(res.errorResult?.message);
+      }
+    });
   }
   function addLiquidityForCurveAndBidAskMode() {
     /**
@@ -87,6 +98,14 @@ export function AddLiquidityButton() {
       amount_y: last_total_needed_token_y_amount.toFixed(),
       selectedWalletId:
         getSelector()?.store?.getState()?.selectedWalletId || "",
+    }).then((res: any) => {
+      if (!res) return;
+      if (res.status == "success") {
+        successToast();
+        setAddSuccess((pre: any) => pre + 1);
+      } else if (res.status == "error") {
+        failToast(res.errorResult?.message);
+      }
     });
   }
   function getMax(token: TokenMetadata, balance: string) {

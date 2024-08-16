@@ -54,6 +54,7 @@ export default function YourLiqAndClaimMobile(props: any) {
     user_liquidities,
     matched_seeds,
     sole_seed,
+    setAddSuccess,
   } = props;
 
   const [isMobile, setIsMobile] = useState(false);
@@ -136,6 +137,7 @@ export default function YourLiqAndClaimMobile(props: any) {
                 tokenPriceList={tokenPriceList}
                 liquidities={user_liquidities}
                 matched_seeds={matched_seeds}
+                setAddSuccess={setAddSuccess}
               />
             )}
             {showYourLiqType == "claim" && (
@@ -143,6 +145,7 @@ export default function YourLiqAndClaimMobile(props: any) {
                 poolDetail={poolDetailV3}
                 tokenPriceList={tokenPriceList}
                 liquidities={user_liquidities}
+                setAddSuccess={setAddSuccess}
               />
             )}
             {!isMobile ? (

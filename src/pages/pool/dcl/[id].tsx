@@ -72,7 +72,7 @@ export default function DCLPoolDetail() {
   const [user_liquidities, set_user_liquidities] = useState<
     UserLiquidityInfo[]
   >([]);
-
+  const [addSuccess, setAddSuccess] = useState(0);
   const [matched_seeds, set_matched_seeds] = useState<Seed[]>([]);
 
   const [sole_seed, set_sole_seed] = useState<Seed>();
@@ -87,7 +87,10 @@ export default function DCLPoolDetail() {
   const [transactionActive, setTransactionActive] = useState("swap");
   const appStore = useAppStore();
   useEffect(() => {
-    if (poolId) {
+    console.log(addSuccess, "addSuccess");
+  }, [addSuccess]);
+  useEffect(() => {
+    if (poolId || addSuccess > 0) {
       getPoolsDetailById({ pool_id: poolId as any }).then((res) => {
         PoolRouterGuard(res, "DCL") &&
           openUrlLocal(`${PoolRouterGuard(res, "DCL")}/${poolId}`);
@@ -98,7 +101,7 @@ export default function DCLPoolDetail() {
         setIsCollect(currentwatchListId.includes(poolId));
       }
     }
-  }, [poolId, currentwatchListId]);
+  }, [poolId, currentwatchListId, addSuccess]);
 
   useEffect(() => {
     getAllTokenPrices().then((res) => {
@@ -108,10 +111,10 @@ export default function DCLPoolDetail() {
   }, []);
 
   useEffect(() => {
-    if (poolDetail) {
+    if (poolDetail || addSuccess > 0) {
       get_pool_detail();
     }
-  }, [poolDetail]);
+  }, [poolDetail, addSuccess]);
 
   const collectPool = () => {
     if (!accountId) showWalletSelectorModal(appStore.setShowRiskModal);
@@ -138,7 +141,10 @@ export default function DCLPoolDetail() {
   }
 
   useEffect(() => {
-    if (poolDetailV3?.token_x && Object.keys(tokenPriceList || {}).length > 0) {
+    if (
+      addSuccess > 0 ||
+      (poolDetailV3?.token_x && Object.keys(tokenPriceList || {}).length > 0)
+    ) {
       const {
         token_x,
         token_y,
@@ -176,7 +182,7 @@ export default function DCLPoolDetail() {
       setTokens(temp_list);
       console.log(temp_list, "temp");
     }
-  }, [poolDetailV3]);
+  }, [poolDetailV3, addSuccess]);
 
   // add liquidity
 
@@ -254,13 +260,13 @@ export default function DCLPoolDetail() {
 
   useEffect(() => {
     get_matched_seeds();
-  }, []);
+  }, [addSuccess]);
 
   //
   useEffect(() => {
     if (!isSignedIn) return;
     get_user_list_liquidities();
-  }, [isSignedIn]);
+  }, [isSignedIn, addSuccess]);
 
   const [isMobile, setIsMobile] = useState(false);
 
@@ -507,11 +513,13 @@ export default function DCLPoolDetail() {
                   tokenPriceList={tokenPriceList}
                   liquidities={user_liquidities}
                   matched_seeds={matched_seeds}
+                  setAddSuccess={setAddSuccess}
                 />
                 <UnclaimedFeesBox
                   poolDetail={poolDetailV3}
                   tokenPriceList={tokenPriceList}
                   liquidities={user_liquidities}
+                  setAddSuccess={setAddSuccess}
                 />
                 {!isMobile ? (
                   <RelatedFarmsBox
@@ -574,6 +582,7 @@ export default function DCLPoolDetail() {
           user_liquidities={user_liquidities}
           matched_seeds={matched_seeds}
           sole_seed={sole_seed}
+          setAddSuccess={setAddSuccess}
         />
       )}
     </div>

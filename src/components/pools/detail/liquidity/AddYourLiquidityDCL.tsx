@@ -65,6 +65,7 @@ import { FeeTipDcl } from "./components/add/FeeTip";
 export const LiquidityProviderData = createContext(null);
 export default function AddYourLiquidityPageV3() {
   const router = useRouter();
+  const [addSuccess, setAddSuccess] = useState(0);
   const [tokenX, setTokenX] = useState<TokenMetadata | any>(null);
   const [tokenY, setTokenY] = useState<TokenMetadata | any>(null);
   const [tokenXAmount, setTokenXAmount] = useState("");
@@ -113,6 +114,12 @@ export default function AddYourLiquidityPageV3() {
   const { totalList: refTokens } = useAllWhiteTokens();
   const OPEN_CREATE_POOL_ENTRY = false;
   const mobileDevice = isMobile();
+
+  useEffect(() => {
+    if (addSuccess > 0) {
+      toDetail();
+    }
+  }, [addSuccess]);
 
   // init
   useEffect(() => {
@@ -2120,7 +2127,9 @@ export default function AddYourLiquidityPageV3() {
                 )}
               </div>
               <FeeTipDcl />
-              <AddLiquidityButton></AddLiquidityButton>
+              <AddLiquidityButton
+                setAddSuccess={setAddSuccess}
+              ></AddLiquidityButton>
             </div>
           </div>
         </div>

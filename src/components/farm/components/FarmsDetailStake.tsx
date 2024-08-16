@@ -64,9 +64,8 @@ export default function FarmsDetailStake(props: {
   user_data_loading: Boolean;
   radio: string | number;
   activeMobileTab?: string;
-  getStakeBalance: any;
+  updateSharesAndBalance: any;
   ontriggerFarmsStakeUpdate: any;
-  getSharesInfoes: any;
 }) {
   const {
     detailData,
@@ -81,9 +80,8 @@ export default function FarmsDetailStake(props: {
     user_unclaimed_map,
     activeMobileTab,
     user_data_loading,
-    getStakeBalance,
+    updateSharesAndBalance,
     ontriggerFarmsStakeUpdate,
-    getSharesInfoes,
   } = props;
   const {
     pool,
@@ -297,8 +295,7 @@ export default function FarmsDetailStake(props: {
       successToast();
       setAmount("0");
       ontriggerFarmsStakeUpdate();
-      getSharesInfoes();
-      getStakeBalance();
+      updateSharesAndBalance();
     } else if (res.status == "error") {
       failToast(res.errorResult?.message);
     }

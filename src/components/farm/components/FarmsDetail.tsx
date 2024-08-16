@@ -176,8 +176,12 @@ export default function FarmsDetail(props: {
     get_server_time();
   }, []);
   useEffect(() => {
-    getStakeBalance();
+    updateSharesAndBalance();
   }, [Object.keys(user_seeds_map).length, user_data_loading, sharesInfo]);
+  async function updateSharesAndBalance() {
+    await getSharesInfo();
+    await getStakeBalance();
+  }
   function getYourAprs() {
     const yourApr = getYourApr();
     if (yourApr) {
@@ -994,9 +998,8 @@ export default function FarmsDetail(props: {
                   user_unclaimed_token_meta_map={user_unclaimed_token_meta_map}
                   user_data_loading={user_data_loading}
                   radio={radio}
-                  getStakeBalance={getStakeBalance}
+                  updateSharesAndBalance={updateSharesAndBalance}
                   ontriggerFarmsStakeUpdate={ontriggerFarmsStakeUpdate}
-                  getSharesInfoes={getSharesInfo}
                 ></FarmsDetailStake>
               </div>
             </div>
@@ -1263,9 +1266,8 @@ export default function FarmsDetail(props: {
           user_data_loading={user_data_loading}
           radio={radio}
           activeTab={activeTab}
-          getStakeBalance={getStakeBalance}
+          updateSharesAndBalance={updateSharesAndBalance}
           ontriggerFarmsStakeUpdate={ontriggerFarmsStakeUpdate}
-          getSharesInfoes={getSharesInfo}
         />
       </div>
     </>

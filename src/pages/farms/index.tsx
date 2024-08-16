@@ -29,9 +29,16 @@ export default function FarmsBoosterPage(props: any) {
       farmsPageRef.current.init();
       farmsPageRef.current.getConfig();
       farmsPageRef.current.get_user_unWithDraw_rewards();
-      // farmsPageRef.current.get_user_seeds_and_unClaimedRewards();
-      // farmsPageRef.current.getLoveTokenBalance();
-      // farmsPageRef.current.get_ve_seed_share();
+    }
+  };
+  const ontriggerFarmsStakeUpdate = () => {
+    if (farmsPageRef.current) {
+      farmsPageRef.current.init();
+      farmsPageRef.current.getConfig();
+      farmsPageRef.current.get_user_unWithDraw_rewards();
+      farmsPageRef.current.get_user_seeds_and_unClaimedRewards();
+      farmsPageRef.current.getLoveTokenBalance();
+      farmsPageRef.current.get_ve_seed_share();
     }
   };
   const getDetailData_user_data = (data: {
@@ -106,6 +113,7 @@ export default function FarmsBoosterPage(props: any) {
             user_data_loading={user_data_loading}
             dayVolumeMap={dayVolumeMap}
             onTriggerFarmsPageUpdate={triggerFarmsPageUpdate}
+            ontriggerFarmsStakeUpdate={ontriggerFarmsStakeUpdate}
           ></FarmsDetail>
         ) : null}
         {showDclDetailPage ? (

@@ -20,6 +20,9 @@ export default function StakeMobile(props: {
   user_data_loading: Boolean;
   radio: string | number;
   activeTab: string;
+  getStakeBalance: any;
+  ontriggerFarmsStakeUpdate: any;
+  getSharesInfoes: any;
 }) {
   const {
     isOpen,
@@ -37,6 +40,9 @@ export default function StakeMobile(props: {
     user_data_loading,
     radio,
     activeTab,
+    getStakeBalance,
+    ontriggerFarmsStakeUpdate,
+    getSharesInfoes,
   } = props;
   const cardWidth = isMobile() ? "100vw" : "430px";
   const cardHeight = isMobile() ? "90vh" : "80vh";
@@ -89,6 +95,9 @@ export default function StakeMobile(props: {
             user_data_loading={user_data_loading}
             radio={radio}
             activeMobileTab={activeTab}
+            getStakeBalance={getStakeBalance}
+            ontriggerFarmsStakeUpdate={ontriggerFarmsStakeUpdate}
+            getSharesInfoes={getSharesInfoes}
           ></FarmsDetailStake>
         </div>
       </div>

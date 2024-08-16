@@ -129,7 +129,7 @@ export default function SwapBanner({
                 />
               </span>
 
-              <span className="frcb min-w-p300">
+              <span className="frcb">
                 <div className="frcs text-sm w pr-2 text-gray-10">
                   <BsCheckCircle
                     className="mr-1.5"
@@ -177,7 +177,7 @@ export default function SwapBanner({
               <FormattedMessage id="executed" defaultMessage={"Executed"} />
             </span>
 
-            <span className="frcb min-w-p300">
+            <span className="frcb">
               <div className="frcs text-sm pr-2 text-gray-10">
                 <BsCheckCircle
                   className="mr-1.5"

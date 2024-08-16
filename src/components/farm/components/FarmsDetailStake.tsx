@@ -39,6 +39,9 @@ import { useAccountStore } from "@/stores/account";
 import { showWalletSelectorModal } from "@/utils/wallet";
 import { useAppStore } from "@/stores/app";
 import getConfigV2 from "@/utils/configV2";
+import { IExecutionResult } from "@/interfaces/wallet";
+import successToast from "@/components/common/toast/successToast";
+import failToast from "@/components/common/toast/failToast";
 
 const {
   STABLE_POOL_IDS,
@@ -61,6 +64,9 @@ export default function FarmsDetailStake(props: {
   user_data_loading: Boolean;
   radio: string | number;
   activeMobileTab?: string;
+  getStakeBalance: any;
+  ontriggerFarmsStakeUpdate: any;
+  getSharesInfoes: any;
 }) {
   const {
     detailData,
@@ -75,6 +81,9 @@ export default function FarmsDetailStake(props: {
     user_unclaimed_map,
     activeMobileTab,
     user_data_loading,
+    getStakeBalance,
+    ontriggerFarmsStakeUpdate,
+    getSharesInfoes,
   } = props;
   const {
     pool,
@@ -126,24 +135,24 @@ export default function FarmsDetailStake(props: {
     amountByShadowInFarm: "0",
     amountByTransferInFarm: "0",
   });
-  useEffect(() => {
-    if (!user_data_loading) {
-      getSharesInfo();
-    }
-  }, [Object.keys(user_seeds_map).length, user_data_loading]);
-  async function getSharesInfo() {
-    const { seed_id } = detailData;
-    const { free_amount, shadow_amount } = user_seeds_map[seed_id] || {};
-    const poolId = pool?.id || "";
-    const sharesInPool = await mftGetBalance(getMftTokenId(poolId.toString()));
-    const amountByShadowInFarm = shadow_amount;
-    const amountByTransferInFarm = free_amount;
-    setSharesInfo({
-      sharesInPool: sharesInPool || "0",
-      amountByShadowInFarm: amountByShadowInFarm || "0",
-      amountByTransferInFarm: amountByTransferInFarm || "0",
-    });
-  }
+  // useEffect(() => {
+  //   if (!user_data_loading) {
+  //     getSharesInfo();
+  //   }
+  // }, [Object.keys(user_seeds_map).length, user_data_loading]);
+  // async function getSharesInfo() {
+  //   const { seed_id } = detailData;
+  //   const { free_amount, shadow_amount } = user_seeds_map[seed_id] || {};
+  //   const poolId = pool?.id || "";
+  //   const sharesInPool = await mftGetBalance(getMftTokenId(poolId.toString()));
+  //   const amountByShadowInFarm = shadow_amount;
+  //   const amountByTransferInFarm = free_amount;
+  //   setSharesInfo({
+  //     sharesInPool: sharesInPool || "0",
+  //     amountByShadowInFarm: amountByShadowInFarm || "0",
+  //     amountByTransferInFarm: amountByTransferInFarm || "0",
+  //   });
+  // }
   useEffect(() => {
     if (stakeType !== "free") {
       const goldList = [
@@ -206,7 +215,7 @@ export default function FarmsDetailStake(props: {
   }
   function displayLpBalance() {
     if (lpBalance) {
-      return toPrecision(lpBalance || "0", 3);
+      return toPrecision(lpBalance || "0", 8);
     }
   }
   const isDisabledUnstake =
@@ -243,12 +252,16 @@ export default function FarmsDetailStake(props: {
         amount: toNonDivisibleNumber(DECIMALS, amount),
         amountByTransferInFarm: sharesInfo.amountByTransferInFarm,
         seed_id,
+      }).then((res) => {
+        handleDataAfterTranstion(res, "stake");
       });
     } else {
       stake_boost({
         token_id: getMftTokenId((pool?.id || "").toString()),
         amount: toNonDivisibleNumber(DECIMALS, amount),
         msg,
+      }).then((res) => {
+        handleDataAfterTranstion(res, "stake");
       });
     }
   }
@@ -262,13 +275,37 @@ export default function FarmsDetailStake(props: {
         unlock_amount: "0",
         withdraw_amount: toNonDivisibleNumber(DECIMALS, amount),
         amountByTransferInFarm: sharesInfo.amountByTransferInFarm,
+      }).then((res) => {
+        handleDataAfterTranstion(res, "unstake");
       });
     } else {
       unStake_boost({
         seed_id,
         unlock_amount: "0",
         withdraw_amount: toNonDivisibleNumber(DECIMALS, amount),
+      }).then((res) => {
+        handleDataAfterTranstion(res, "unstake");
       });
+    }
+  }
+  async function handleDataAfterTranstion(
+    res: IExecutionResult | undefined,
+    type: string
+  ) {
+    if (!res) return;
+    if (res.status == "success") {
+      successToast();
+      setAmount("0");
+      ontriggerFarmsStakeUpdate();
+      getSharesInfoes();
+      getStakeBalance();
+    } else if (res.status == "error") {
+      failToast(res.errorResult?.message);
+    }
+    if (type == "stake") {
+      setStakeLoading(false);
+    } else if (type == "unstake") {
+      setUnStakeLoading(false);
     }
   }
   function showWalletSelector() {
@@ -363,15 +400,17 @@ export default function FarmsDetailStake(props: {
               </span>
             </div> */}
           </div>
-          {amountAvailableCheck || displayLpBalance() == "0" ? null : (
+          {amountAvailableCheck ? null : (
             <div className="flex justify-center mt-2.5 xsm:mb-2.5">
               <div className="w-full bg-yellow-10 bg-opacity-10 rounded py-2 px-2.5 text-yellow-10 text-sm flex items-center">
+                <p className="ml-1 mr-2">
+                  Input must be greater than or equal to
+                </p>
                 {isSignedIn ? (
-                  displayLpBalance()
+                  toReadableNumber(DECIMALS, min_deposit)
                 ) : (
                   <span className="opacity-50">-</span>
                 )}
-                <p className="ml-1 mr-2">available to stake</p>
                 {/* <p className="underline frcc">
                   Add liquidity <VEARROW className="ml-1.5"></VEARROW>
                 </p> */}

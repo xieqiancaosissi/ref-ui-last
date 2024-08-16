@@ -99,7 +99,7 @@ export default function StablePoolDetail() {
   return (
     <div className="w-full fccc h-full">
       <div
-        className="w-full fccc lg:mt-3"
+        className="w-full fccc lg:mt-3 xsm:px-3"
         style={{
           background: isMobile ? "transparent" : "rgba(33, 43, 53, 0.4)",
         }}
@@ -175,9 +175,9 @@ export default function StablePoolDetail() {
         {/* Recent Transaction */}
         <div className="mb-10 xsm:mb-40 xsm:w-full">
           <div className="mb-4 flex justify-between lg:w-215 xsm:w-full">
-            <span className="text-lg lg:text-gray-50 xsm:text-white font-bold">
+            <span className="text-lg lg:text-gray-50 xsm:text-white font-bold text-with-custom-underline">
               Recent Transaction
-              <div className="h-0.5 w-42 bg-white mt-1 lg:hidden"></div>
+              {/* <div className="h-0.5 w-42 bg-white mt-1 lg:hidden"></div> */}
             </span>
             <div className="flex items-center mr-0.5 xsm:hidden">
               {TransactionTabList.map((item, index) => {

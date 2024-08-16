@@ -458,3 +458,19 @@ options-list::-webkit-scrollbar {
   background: transparent !important;
 }
 /* wallet select modal ui end */
+
+.text-with-custom-underline {
+  position: relative;  
+  display: inline;
+}
+@media (min-width: 300px) and (max-width: 1024px) {
+  .text-with-custom-underline::after {  
+    content: "";  
+    position: absolute;  
+    left: 0;  
+    bottom: -8px;  
+    height: 2px; /* 下划线的粗细 */  
+    background-color: white; /* 下划线的颜色 */  
+    width: 100%; /* 下划线的宽度 */  
+  }
+}

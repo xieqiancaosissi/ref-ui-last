@@ -407,8 +407,10 @@ export default function DCLPoolDetail() {
           {/* Pool composition */}
           <div>
             <h3 className="mt-12 mb-4 text-lg lg:text-gray-50 xsm:text-white font-bold">
-              Pool Composition
-              <div className="h-0.5 w-38 bg-white mt-1 lg:hidden"></div>
+              <span className="text-with-custom-underline">
+                Pool Composition
+              </span>
+              {/* <div className="h-0.5 w-38 bg-white mt-1 lg:hidden"></div> */}
             </h3>
             {poolDetail && tokens.length > 0 && updatedMapList?.length > 0 ? (
               <PoolComposition
@@ -435,8 +437,10 @@ export default function DCLPoolDetail() {
           <div className="mb-8 xsm:mb-40">
             <div className="mt-12 mb-4 flex justify-between">
               <span className="text-lg lg:text-gray-50 xsm:text-white font-bold">
-                Recent Transaction
-                <div className="h-0.5 w-42 bg-white mt-1 lg:hidden"></div>
+                <span className="text-with-custom-underline">
+                  Recent Transaction
+                </span>
+                {/* <div className="h-0.5 w-42 bg-white mt-1 lg:hidden"></div> */}
               </span>
               <div className="flex items-center mr-0.5 xsm:hidden">
                 {TransactionTabList.map((item, index) => {

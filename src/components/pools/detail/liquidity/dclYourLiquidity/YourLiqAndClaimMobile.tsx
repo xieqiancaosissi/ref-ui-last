@@ -100,33 +100,37 @@ export default function YourLiqAndClaimMobile(props: any) {
         <div className="flex items-center justify-center text-white text-lg border border-b-gray-60">
           <div className="w-1/2 fccc">
             <span
-              className={`whitespace-nowrap ${
-                showYourLiqType == "liq" ? "text-white" : "text-gray-60"
+              className={`whitespace-nowrap  ${
+                showYourLiqType == "liq"
+                  ? "text-white text-with-custom-underline"
+                  : "text-gray-60"
               }`}
               onClick={() => setShowYourLiqType("liq")}
             >
               Your Liquidity
             </span>
-            {showYourLiqType == "liq" ? (
+            {/* {showYourLiqType == "liq" ? (
               <div className="w-35 bg-white h-0.5 mt-4"></div>
             ) : (
               <div className="w-30 bg-transparent h-0.5 mt-4"></div>
-            )}
+            )} */}
           </div>
           <div className="w-1/2 fccc">
             <span
               className={`whitespace-nowrap ${
-                showYourLiqType == "claim" ? "text-white" : "text-gray-60"
+                showYourLiqType == "claim"
+                  ? "text-white text-with-custom-underline"
+                  : "text-gray-60"
               }`}
               onClick={() => setShowYourLiqType("claim")}
             >
               Unclaimed Fees
             </span>
-            {showYourLiqType == "claim" ? (
+            {/* {showYourLiqType == "claim" ? (
               <div className="w-35 bg-white h-0.5 mt-4"></div>
             ) : (
               <div className="w-30 bg-transparent h-0.5 mt-4"></div>
-            )}
+            )} */}
           </div>
         </div>
         {poolDetailV3?.token_x && (

@@ -73,13 +73,17 @@ export default function Positions(props: any) {
           }}
         >
           <span className="xsm:hidden">{`DCL (${v2LiquidityQuantity})`}</span>
-          <span className="lg:hidden">
+          <span
+            className={`lg:hidden ${
+              poolType == "dcl" ? "text-with-custom-underline" : ""
+            } `}
+          >
             {`DCL Pools (${v2LiquidityQuantity})`}
-            <div
+            {/* <div
               className={`h-0.5 w-28 ${
                 poolType == "dcl" ? "bg-white" : "bg-transparent"
               } mt-1 lg:hidden`}
-            ></div>
+            ></div> */}
           </span>
         </div>
         <div
@@ -93,13 +97,17 @@ export default function Positions(props: any) {
           }}
         >
           <span className="xsm:hidden">{`Classic (${v1LiquidityQuantity})`}</span>
-          <span className="lg:hidden">
+          <span
+            className={`lg:hidden ${
+              poolType == "classic" ? "text-with-custom-underline" : ""
+            } `}
+          >
             {`Classic Pools (${v1LiquidityQuantity})`}
-            <div
+            {/* <div
               className={`h-0.5 w-38 ${
                 poolType == "classic" ? "bg-white" : "bg-transparent"
               } mt-1 lg:hidden`}
-            ></div>
+            ></div> */}
           </span>
         </div>
       </div>

@@ -104,7 +104,7 @@ function RefPanel() {
   }, [invest_value_done, total_profit_done]);
   function showRefModal() {
     if (is_mobile) {
-      router.push("./portfolioMobile").then(() => {
+      router.push("/portfolioMobile").then(() => {
         window.location.reload();
       });
     } else {

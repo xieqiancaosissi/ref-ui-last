@@ -40,7 +40,11 @@ export default function WalletConnect() {
   const personalDataUpdatedSerialNumber =
     appStore.getPersonalDataUpdatedSerialNumber();
   const [showGuider, setShowGuider] = useState<boolean>(
-    !!(localStorage.getItem("ACCESS_MODAL_GUIDER") !== "1" && accountId)
+    !!(
+      localStorage.getItem("ACCESS_MODAL_GUIDER") !== "1" &&
+      accountId &&
+      !is_mobile
+    )
   );
   const selectedWalletId = window.selector?.store?.getState()?.selectedWalletId;
   const isKeyPomWallet = selectedWalletId == "keypom";
@@ -52,7 +56,7 @@ export default function WalletConnect() {
   useEffect(() => {
     if (accountId) {
       const guiderCondition =
-        localStorage.getItem("ACCESS_MODAL_GUIDER") !== "1";
+        localStorage.getItem("ACCESS_MODAL_GUIDER") !== "1" && !is_mobile;
       setShowGuider(guiderCondition);
     }
   }, [accountId]);

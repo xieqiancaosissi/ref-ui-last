@@ -169,29 +169,6 @@ const addAccessKey = async () => {
     }, 2000);
   });
 };
-async function getContract2() {
-  const walletId = window.selector.store.getState().selectedWalletId;
-  const targetNear: any = walletId === "keypom" ? nearKeypom : near;
-  const contract = await targetNear.loadContract(ORDERLY_ASSET_MANAGER, {
-    sender: getAccountId(),
-    viewMethods: [
-      "user_token_balance",
-      "user_trading_key",
-      "is_orderly_key_announced",
-      "is_trading_key_set",
-      "user_account_exists",
-    ],
-    changeMethods: [
-      "addMessage",
-      "user_deposit_native_token",
-      "user_request_withdraw",
-      "user_announce_key",
-      "user_request_set_trading_key",
-      "create_user_account",
-    ],
-  });
-  return contract;
-}
 function handlePopTrigger() {
   const el = document.getElementsByClassName("ledger-transaction-pop-up")?.[0];
   if (el) {

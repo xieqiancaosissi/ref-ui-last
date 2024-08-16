@@ -5,6 +5,7 @@ import { useTokenStore, ITokenStore } from "@/stores/token";
 import { useAccountStore } from "@/stores/account";
 import useAllWhiteTokensWithBalances from "@/hooks/useAllWhiteTokensWithBalances";
 import { setSwapTokenAndBalances } from "@/components/common/SelectTokenModal/tokenUtils";
+import { getTokenUIId } from "@/services/swap/swapUtils";
 const configV2 = getConfigV2();
 const { INIT_SWAP_PAIRS } = configV2;
 export default function InitData() {
@@ -22,6 +23,8 @@ export default function InitData() {
   const walletLoading = accountStore.getWalletLoading();
   const global_whitelisted_tokens_ids =
     tokenStore.get_global_whitelisted_tokens_ids();
+  const tokenInId = persistSwapStore.getTokenInId();
+  const tokenOutId = persistSwapStore.getTokenOutId();
   useEffect(() => {
     if (!walletLoading && global_whitelisted_tokens_ids?.length > 0) {
       const tokenInIdStore = persistSwapStore.getTokenInId();
@@ -45,6 +48,23 @@ export default function InitData() {
       });
     }
   }, [walletLoading, accountId, global_whitelisted_tokens_ids?.length]);
+  useEffect(() => {
+    if (tokenInId && tokenOutId && accountId) {
+      const timerId = setInterval(() => {
+        setSwapTokenAndBalances({
+          tokenInId,
+          tokenOutId,
+          accountId,
+          swapStore,
+          persistSwapStore,
+          tokenStore,
+          global_whitelisted_tokens_ids,
+          doNotshowLoading: true,
+        });
+      }, 8000);
+      return () => clearInterval(timerId);
+    }
+  }, [tokenInId, tokenOutId, accountId]);
   useEffect(() => {
     tokenStore.setDefaultAccountTokens(defaultAccountTokensHook || {});
   }, [JSON.stringify(defaultAccountTokensHook || {})]);

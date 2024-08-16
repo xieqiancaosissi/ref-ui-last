@@ -110,6 +110,7 @@ export async function setSwapTokenAndBalances({
   persistSwapStore,
   tokenStore,
   global_whitelisted_tokens_ids,
+  doNotshowLoading,
 }: {
   tokenInId: string;
   tokenOutId: string;
@@ -118,13 +119,16 @@ export async function setSwapTokenAndBalances({
   persistSwapStore: any;
   tokenStore: any;
   global_whitelisted_tokens_ids: string[];
+  doNotshowLoading?: boolean;
 }) {
   let TOKEN_IN, TOKEN_OUT;
   const in_meta_pending = ftGetTokenMetadata(tokenInId, true);
   const out_meta_pending = ftGetTokenMetadata(tokenOutId, true);
   const metas = await Promise.all([in_meta_pending, out_meta_pending]);
   if (accountId) {
-    swapStore.setBalanceLoading(true);
+    if (!doNotshowLoading) {
+      swapStore.setBalanceLoading(true);
+    }
     const in_pending = getTokenBalance(
       tokenInId == "near" ? "NEAR" : tokenInId
     );

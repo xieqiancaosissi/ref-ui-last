@@ -134,11 +134,6 @@ export default function FarmsDetail(props: {
     amountByShadowInFarm: "0",
     amountByTransferInFarm: "0",
   });
-  useEffect(() => {
-    if (!user_data_loading) {
-      getSharesInfo();
-    }
-  }, [Object.keys(user_seeds_map).length, user_data_loading]);
   async function getSharesInfo() {
     const { seed_id } = detailData;
     const { free_amount, shadow_amount } = user_seeds_map[seed_id] || {};

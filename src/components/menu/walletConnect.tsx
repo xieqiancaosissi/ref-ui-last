@@ -209,7 +209,7 @@ export default function WalletConnect() {
               </div>
               {/* Click menu */}
               <div
-                className={`fixed top-[46px] left-0 w-full h-[calc(100%-78px)] bg-black bg-opacity-50  ${
+                className={`fixed top-[45px] left-0 w-full h-[calc(100%-70px)] bg-black bg-opacity-50  ${
                   isOpen ? "block" : "hidden"
                 }`}
                 style={{
@@ -220,7 +220,7 @@ export default function WalletConnect() {
               ></div>
               {personalVisited || (showGuider && !isInMemePage) ? (
                 <div
-                  className={`fixed top-[46px] bottom-[35px] right-0 bg-dark-10 z-50 ${
+                  className={`fixed top-[45px] bottom-[35px] right-0 bg-dark-10 z-50 ${
                     isOpen || showGuider ? "block" : "hidden"
                   } ${is_mobile ? "w-full h-[300px]" : "w-[400px] h-auto"}`}
                   onClick={(e) => e.stopPropagation()} // Prevent click inside from closing

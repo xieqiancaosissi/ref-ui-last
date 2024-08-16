@@ -18,7 +18,6 @@ import {
 import { BsCheckCircle } from "@/components/reactIcons";
 import { useSwapStore } from "@/stores/swap";
 import { isMobile } from "@/utils/device";
-import { HiOutlineExternalLink } from "@/components/reactIcons";
 import getConfig from "@/utils/config";
 import { getTxId } from "@/services/indexer";
 import {
@@ -64,6 +63,7 @@ export default function SwapBanner({
   const allTokenPrices = swapStore.getAllTokenPrices();
   const sellTokenPrice = allTokenPrices?.[sellToken.id]?.price || null;
   const buyTokenPrice = allTokenPrices?.[buyToken.id]?.price || null;
+  const is_mobile = isMobile();
   const handleMouseEnter = (receipt_id: string) => {
     if (closeTimeoutRef.current) {
       clearTimeout(closeTimeoutRef.current);
@@ -140,7 +140,7 @@ export default function SwapBanner({
                     id="initial_order"
                     defaultMessage={"Initial Order"}
                   />
-                  {!isMobile() && (
+                  {!is_mobile && (
                     <ExclamationTip
                       id="this_order_has_been_partially_filled"
                       defaultMessage="This order has been partially filled "
@@ -184,12 +184,12 @@ export default function SwapBanner({
               <div className="flex items-center gap-2 text-sm xsm:text-[13px] xsm:justify-between">
                 <span className="flex items-center lg:w-35">
                   <FormattedMessage
-                    id={isMobile() ? "filled_via_swap" : "instants_swap"}
+                    id={is_mobile ? "filled_via_swap" : "instants_swap"}
                     defaultMessage={
-                      isMobile() ? "Filled via swap" : "Instant Swap"
+                      is_mobile ? "Filled via swap" : "Instant Swap"
                     }
                   />
-                  {!isMobile() && (
+                  {!is_mobile && (
                     <ExclamationTip
                       colorhex="#7E8A93"
                       id={instant_swap_tip()}
@@ -200,7 +200,7 @@ export default function SwapBanner({
                   )}
                 </span>
 
-                <span className="frcb xsm:justify-start lg:min-w-p300">
+                <span className="frcb xsm:justify-start lg:">
                   <div className="frcs text-sm  pr-2 xsm:pr-1.5 text-gray-10 xsm:text-[13px]">
                     <BsCheckCircle
                       className="mr-1.5 xsm:mr-0"
@@ -242,8 +242,46 @@ export default function SwapBanner({
               </div>
             </>
           )}
+          {/* for mobile */}
+          <div className="lg:hidden flex items-center justify-end text-xs -mt-3">
+            <div className="flex  max-w-max text-dark-260 bg-dark-220 rounded px-2 py-1 items-center justify-end lg:hidden">
+              <span className="">1</span>
+
+              <span className="ml-1.5">
+                {sort ? buyToken.symbol : sellToken.symbol}
+              </span>
+
+              {allTokenPrices?.[sort ? buyToken?.id : sellToken?.id]?.price && (
+                <span className="ml-1">{`($${
+                  allTokenPrices?.[sort ? buyToken?.id : sellToken?.id].price
+                })`}</span>
+              )}
+
+              <span className="mx-6 xs:mx-2 ">=</span>
+              <span className="">
+                {toPrecision(
+                  scientificNotationToString(
+                    new Big(sort ? swapIn || 0 : swapOut || 0)
+                      .div(
+                        Number(sort ? swapOut : swapIn) === 0
+                          ? 1
+                          : sort
+                          ? swapOut
+                          : swapIn
+                      )
+                      .toString()
+                  ),
+                  3
+                )}
+              </span>
+
+              <span className="ml-1.5">
+                {sort ? sellToken.symbol : buyToken.symbol}
+              </span>
+            </div>
+          </div>
           {/* Executing */}
-          <div className="flex items-start gap-2 xsm:hidden">
+          <div className="flex items-start gap-2 xsm:text-[13px] xsm:justify-between">
             <span className="xsm:text-gray-10 lg:w-35">
               <FormattedMessage
                 id="executing_capital"
@@ -251,19 +289,20 @@ export default function SwapBanner({
               />
             </span>
 
-            <div className="flex flex-col">
-              <span className="frcb min-w-p300">
-                <div className="frcs text-sm pr-2 text-gray-10 xsm:text-[13px]">
+            <div className="flex flex-col xsm:items-end">
+              <span className="lg:frcb xsm:frcs">
+                <div className="frcs text-sm pr-2 xsm:pr-0 text-gray-10 xsm:text-[13px]">
                   <BsCheckCircle
                     className="mr-1.5"
                     fill="#9EFE01"
                     stroke="#9EFE01"
                   />
-
-                  <FormattedMessage
-                    id="claimed"
-                    defaultMessage={"Claimed"}
-                  ></FormattedMessage>
+                  {is_mobile ? null : (
+                    <FormattedMessage
+                      id="claimed"
+                      defaultMessage={"Claimed"}
+                    ></FormattedMessage>
+                  )}
                 </div>
 
                 <div className="flex items-center justify-end">
@@ -299,16 +338,17 @@ export default function SwapBanner({
                 </div>
               </span>
 
-              <span className="pt-4  frcb min-w-p300">
-                <div className="frcs text-sm pr-2 text-gray-10 xsm:text-[13px]">
+              <span className="pt-4 lg:frcb xsm:frcs">
+                <div className="frcs text-sm pr-2 xsm:pr-0 text-gray-10 xsm:text-[13px]">
                   <span className="mr-1.5">
                     <FilledEllipse></FilledEllipse>
                   </span>
-
-                  <FormattedMessage
-                    id="filled"
-                    defaultMessage={"Filled"}
-                  ></FormattedMessage>
+                  {is_mobile ? null : (
+                    <FormattedMessage
+                      id="filled"
+                      defaultMessage={"Filled"}
+                    ></FormattedMessage>
+                  )}
                 </div>
 
                 <div className="flex items-center justify-end">
@@ -346,44 +386,6 @@ export default function SwapBanner({
                     {buyToken.symbol}
                   </span>
                 </div>
-              </span>
-            </div>
-          </div>
-          {/* for mobile */}
-          <div className="lg:hidden flex items-center justify-end text-xs -mt-3">
-            <div className="flex  max-w-max text-dark-260 bg-dark-220 rounded px-2 py-1 items-center justify-end lg:hidden">
-              <span className="">1</span>
-
-              <span className="ml-1.5">
-                {sort ? buyToken.symbol : sellToken.symbol}
-              </span>
-
-              {allTokenPrices?.[sort ? buyToken?.id : sellToken?.id]?.price && (
-                <span className="ml-1">{`($${
-                  allTokenPrices?.[sort ? buyToken?.id : sellToken?.id].price
-                })`}</span>
-              )}
-
-              <span className="mx-6 xs:mx-2 ">=</span>
-              <span className="">
-                {toPrecision(
-                  scientificNotationToString(
-                    new Big(sort ? swapIn || 0 : swapOut || 0)
-                      .div(
-                        Number(sort ? swapOut : swapIn) === 0
-                          ? 1
-                          : sort
-                          ? swapOut
-                          : swapIn
-                      )
-                      .toString()
-                  ),
-                  3
-                )}
-              </span>
-
-              <span className="ml-1.5">
-                {sort ? sellToken.symbol : buyToken.symbol}
               </span>
             </div>
           </div>

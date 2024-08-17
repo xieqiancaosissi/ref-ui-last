@@ -1328,15 +1328,15 @@ export function get_o_l_amount_by_condition({
   //  in range
   if (current_point >= left_point && right_point > current_point) {
     // 算出这个bin里每一个order的高度，直接加权求平均
-    const L_O_temp = Big(0);
+    let L_O_temp = Big(0);
     orders?.forEach((order: IOrderInfoPool) => {
       const { amount_x, amount_y, point } = order;
       if (amount_x) {
         const lx = get_Lx_per_point_by_XAmount(amount_x, point);
-        L_O_temp.plus(lx || 0);
+        L_O_temp = L_O_temp.plus(lx || 0);
       } else if (amount_y) {
         const ly = get_Ly_per_point_by_YAmount(amount_y, point);
-        L_O_temp.plus(ly || 0);
+        L_O_temp = L_O_temp.plus(ly || 0);
       }
     });
     L = L_O_temp.div(binWidth || 1).toFixed();

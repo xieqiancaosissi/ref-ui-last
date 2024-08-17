@@ -485,8 +485,8 @@ export default function DclChart({
     const point_l = get_point_by_price(price_l);
     const point_r = get_point_by_price(price_r);
     getDclPoolPoints(pool_id, bin_final, point_l, point_r).then(
-      (pointsData_apr) => {
-        setDclPoolPoints(pointsData_apr?.point_data);
+      (pointsData) => {
+        setDclPoolPoints(pointsData?.point_data);
         setDclPoolPointsDone(true);
       }
     );
@@ -517,7 +517,6 @@ export default function DclChart({
       }
     } else {
       const marketdepthData = await get_pool_marketdepth(pool_id);
-      // console.log(marketdepthData, "market");
       const { liquidities, orders } = marketdepthData;
       let liquidities_array: ILiquidityInfoPool[] = Object.values(liquidities);
       // to find the bin which left_point is current_point and right_point is current_point, if the bin number is two,then need to merge.
@@ -566,11 +565,11 @@ export default function DclChart({
     return list;
   }
   function combine_data(
-    pointsData_apr: IChartData[],
+    dclPoolPoints: IChartData[],
     pointsData_l: IChartData[]
   ) {
     const pointsData: IChartData[] = [];
-    const pointsData_apr_map = pointsData_apr?.reduce((acc, cur) => {
+    const pointsData_map = dclPoolPoints?.reduce((acc, cur) => {
       return {
         ...acc,
         [cur.point]: cur,
@@ -595,7 +594,7 @@ export default function DclChart({
           pool_id,
         } = pointsData_l_map[point_l];
 
-        const { fee, total_liquidity } = pointsData_apr_map?.[point_l] || {};
+        const { fee, total_liquidity } = pointsData_map?.[point_l] || {};
 
         pointsData.push({
           fee: fee || "0",

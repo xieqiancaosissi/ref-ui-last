@@ -28,13 +28,16 @@ export default function SelectDclTokenBox({
   }
   const filteredList = useMemo(() => {
     if (searchText) {
+      const searchTextToLocaleLowerCase = searchText.toLocaleLowerCase();
       const searchResult = bestTvlPoolList.filter((p: IPoolDcl) => {
         const { token_x_metadata, token_y_metadata, pool_id } = p;
         return (
           token_x_metadata?.symbol
             ?.toLocaleLowerCase()
-            .includes(searchText.toLocaleLowerCase()) ||
-          token_y_metadata?.symbol?.toLocaleLowerCase()?.includes(searchText) ||
+            .includes(searchTextToLocaleLowerCase) ||
+          token_y_metadata?.symbol
+            ?.toLocaleLowerCase()
+            ?.includes(searchTextToLocaleLowerCase) ||
           token_x_metadata?.id == searchText ||
           token_y_metadata?.id == searchText
         );

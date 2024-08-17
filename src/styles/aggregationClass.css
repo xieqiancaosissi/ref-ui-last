@@ -44,3 +44,6 @@
 .transak_modal .transak_modal-content .transak_close:hover {
   color: #6a7279;
 }
+.recharts-wrapper svg {
+  overflow: inherit !important;
+}

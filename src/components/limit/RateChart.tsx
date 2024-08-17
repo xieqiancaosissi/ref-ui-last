@@ -105,7 +105,6 @@ function RateChart() {
 
     y = y + 4;
     const date = moment(value);
-
     if (displayDimension === "24H") {
       return (
         <text
@@ -127,7 +126,7 @@ function RateChart() {
           y={y - 1}
           textAnchor="middle"
         >
-          {isMobile ? date.format("MMM DD") : date.format("MMMM DD")}
+          {date.format("MMM DD")}
         </text>
       );
     }
@@ -216,7 +215,7 @@ function RateChart() {
 
     const price = payload.price;
 
-    if (props.index === priceList?.price_list?.length ?? 0 - 1) {
+    if (props.index === (priceList?.price_list?.length ?? 0) - 1) {
       let decimals = 0;
 
       const max =
@@ -260,15 +259,13 @@ function RateChart() {
             overflow={"visible"}
             height={16}
             width={200}
-            x={displayY.length * 5 - priceFormatter(price).length * 5}
+            x={displayY.length * 5 - priceFormatter(price).length * 6}
             y={2}
           >
             <div className="frcs relative ">
               <div
                 className={`rounded  ${
-                  diff!.direction === "down"
-                    ? "bg-sellColorNew"
-                    : "bg-gradientFromHover"
+                  diff!.direction === "down" ? "bg-red-20" : "bg-yellow-20"
                 } frcs px-1 h-4 relative right-1.5`}
                 style={{
                   fontSize: "10px",
@@ -288,7 +285,7 @@ function RateChart() {
   };
   return (
     <div className="w-full xsm:mt-5 text-white">
-      {/* chart base data start */}
+      {/* base data start */}
       <div className="flex xsm:flex-col-reverse items-center justify-between pl-4 pr-3 mt-3 xsm:pl-0 xsm:pr-0 xsm:-mt-2">
         <div className="frcs xsm:justify-start xsm:w-full xsm:mt-4 xs:flex xs:items-center xs:mb-2 xs:justify-between xs:flex-wrap">
           {diff && (
@@ -358,7 +355,7 @@ function RateChart() {
           </div>
         </div>
       )}
-      {/* chart base data end */}
+      {/* base data end */}
 
       {/* loading */}
       {loading && (
@@ -391,7 +388,7 @@ function RateChart() {
       {/* chart data */}
       {!loading && priceList && priceList.price_list.length > 0 && diff && (
         <div
-          className="w-full "
+          className="w-full pl-1 pr-3"
           style={{ height: "350px", width: "calc(100% + 35px)" }}
         >
           <ResponsiveContainer width={"100%"} height={"100%"}>

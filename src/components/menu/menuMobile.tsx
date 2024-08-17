@@ -4,7 +4,7 @@ import Big from "big.js";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import { useRouter } from "next/router";
 import { LogoMobileIcon, MoreMobileIcon, LogoSmallMobileIcon } from "./icons2";
-import Bridge from "./bridge";
+import BridgeConfirmModal from "./bridgeConfirmModal";
 import { useRefPrice } from "../../hooks/useRefPrice";
 import { menuData, IMenuChild, routeMapIds } from "./menuData";
 import { RefAnalyticsIcon } from "@/components/footer/icons";
@@ -21,6 +21,8 @@ export default function MenuMobile() {
   const [oneLevelMenuId, setOneLevelMenuId] = useState("trade");
   const [twoLevelMenuId, setTwoLevelMenuId] = useState("swap");
   const [oneLevelHoverId, setOneLevelHoverId] = useState<string>();
+  const [isBridgeOpen, setIsBridgeOpen] = useState<boolean>(false);
+  const [bridgeData, setBridgeData] = useState<any>({});
   const menuList = menuData();
   const router = useRouter();
   const { refPrice, priceLoading } = useRefPrice();
@@ -70,9 +72,17 @@ export default function MenuMobile() {
       hideMoreEvent();
       router.push(menu.path!);
     } else if (menu.externalLink) {
-      hideMoreEvent();
-      window.open(menu.externalLink);
+      if (menu.bridgeConfirm) {
+        setBridgeData(menu);
+        setIsBridgeOpen(true);
+      } else {
+        hideMoreEvent();
+        window.open(menu.externalLink);
+      }
     }
+  }
+  function closeBridgeConfirmModal() {
+    setIsBridgeOpen(false);
   }
   return (
     <div className="h-[45px]">
@@ -130,7 +140,7 @@ export default function MenuMobile() {
               </div>
               <div className="flex items-center gap-2">
                 <BuyNearButton />
-                <Bridge />
+                {/* <Bridge /> */}
               </div>
             </div>
             {/* menu list */}
@@ -227,6 +237,11 @@ export default function MenuMobile() {
           </div>
         </div>
       </div>
+      <BridgeConfirmModal
+        isOpen={isBridgeOpen}
+        onRequestClose={closeBridgeConfirmModal}
+        bridgeData={bridgeData}
+      />
     </div>
   );
 }

@@ -8,6 +8,7 @@ import {
   YoursIcon,
   StakeIcon,
 } from "./icons";
+import { Rainbow, WalletCedeBridge, AggregateBridge } from "./icons2";
 
 export interface IMenu {
   id: string;
@@ -22,6 +23,7 @@ export interface IMenuChild {
   icon: React.ReactElement;
   path?: string;
   externalLink?: string;
+  bridgeConfirm?: boolean;
 }
 export function menuData(): IMenu[] {
   return [
@@ -76,6 +78,33 @@ export function menuData(): IMenu[] {
           label: "Stake",
           icon: <StakeIcon />,
           path: "/xref",
+        },
+      ],
+    },
+    {
+      id: "bridge",
+      label: "Bridge",
+      children: [
+        {
+          id: "aggregate",
+          label: "Aggregate",
+          icon: <AggregateBridge />,
+          externalLink: "https://app.ref.finance/orderbook/spot",
+        },
+        {
+          id: "rainbow",
+          label: "Rainbow",
+          icon: <Rainbow className="transform scale-75" />,
+          externalLink: "https://rainbowbridge.app/transfer",
+          bridgeConfirm: true,
+        },
+        {
+          id: "cex",
+          label: "CEX",
+          icon: <WalletCedeBridge className="transform scale-75" />,
+          externalLink:
+            "https://send.cede.store/?tokenSymbol=NEAR&network=near&source=ref_finance",
+          bridgeConfirm: true,
         },
       ],
     },

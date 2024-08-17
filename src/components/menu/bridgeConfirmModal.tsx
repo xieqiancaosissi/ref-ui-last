@@ -5,8 +5,8 @@ import { CloseIcon } from "@/components/common/Icons";
 export default function BridgeConfirmModal(props: any) {
   const { isOpen, onRequestClose, bridgeData } = props;
   function jump() {
-    if (bridgeData.link) {
-      window.open(bridgeData.link);
+    if (bridgeData.externalLink) {
+      window.open(bridgeData.externalLink);
       onRequestClose();
     }
   }
@@ -17,8 +17,15 @@ export default function BridgeConfirmModal(props: any) {
         e.stopPropagation();
         onRequestClose();
       }}
+      style={{
+        content: {
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -55%)",
+        },
+      }}
     >
-      <div className="rounded-lg border border-green-10 px-7 pt-5 pb-7 bg-dark-10 text-gray-60">
+      <div className="rounded-lg border border-green-10 px-7 pt-5 pb-7 bg-dark-10 text-gray-60 xsm:w-[90vw]">
         {/* close button */}
         <div className="flex items-center justify-end">
           <CloseIcon
@@ -29,7 +36,7 @@ export default function BridgeConfirmModal(props: any) {
         {/* Logo */}
         <div
           className="flex items-center justify-center mt-6"
-          style={{ transform: "scale(200%)" }}
+          style={{ transform: "scale(250%)" }}
         >
           {bridgeData?.icon}
         </div>
@@ -37,7 +44,7 @@ export default function BridgeConfirmModal(props: any) {
         <div className="text-gray-60 text-sm my-9">
           Redirecting to{" "}
           <span className="underline text-white cursor-pointer" onClick={jump}>
-            {bridgeData.name}
+            {bridgeData.label}
           </span>
           , not affiliated with Ref.
         </div>

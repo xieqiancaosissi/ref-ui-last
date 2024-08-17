@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import { MenuContainer } from "./icons";
 import Bridge from "./bridge";
+import BridgeConfirmModal from "./bridgeConfirmModal";
 import { menuData, IMenuChild, routeMapIds } from "./menuData";
 // CSR,
 const WalletConnect = dynamic(() => import("./walletConnect"), {
@@ -16,6 +17,8 @@ export default function MenuPc() {
   const [oneLevelMenuId, setOneLevelMenuId] = useState("trade");
   const [twoLevelMenuId, setTwoLevelMenuId] = useState("swap");
   const [twoLevelMenuShow, setTwoLevelMenuShow] = useState<boolean>(true);
+  const [isBridgeOpen, setIsBridgeOpen] = useState<boolean>(false);
+  const [bridgeData, setBridgeData] = useState<any>({});
   const menuList = menuData();
   const router = useRouter();
   const oneLevelData = useMemo(() => {
@@ -52,7 +55,12 @@ export default function MenuPc() {
     if (item.path) {
       router.push(item.path);
     } else if (item.externalLink) {
-      window.open(item.externalLink);
+      if (item.bridgeConfirm) {
+        setBridgeData(item);
+        setIsBridgeOpen(true);
+      } else {
+        window.open(item.externalLink);
+      }
     }
   }
   function chooseMenuByRoute(route: string) {
@@ -68,6 +76,9 @@ export default function MenuPc() {
         setTwoLevelMenuId("");
       }
     }
+  }
+  function closeBridgeConfirmModal() {
+    setIsBridgeOpen(false);
   }
   // for stable detail css style
   const [extraBack, setExtraBack] = useState("transparent");
@@ -89,7 +100,7 @@ export default function MenuPc() {
         style={{ height: "46px" }}
       >
         <Image src="/images/logo.svg" width={127} height={17} alt="" />
-        <div className="justify-self-center flex items-center gap-12">
+        <div className="justify-self-center flex items-center gap-14">
           {menuList.map((menu) => {
             return (
               <div
@@ -109,7 +120,7 @@ export default function MenuPc() {
         </div>
         <div className="flex items-center gap-2.5 justify-self-end">
           <BuyNearButton />
-          <Bridge />
+          {/* <Bridge /> */}
           <WalletConnect />
         </div>
       </div>
@@ -156,6 +167,11 @@ export default function MenuPc() {
           />
         </div>
       ) : null}
+      <BridgeConfirmModal
+        isOpen={isBridgeOpen}
+        onRequestClose={closeBridgeConfirmModal}
+        bridgeData={bridgeData}
+      />
     </div>
   );
 }

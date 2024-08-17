@@ -14,6 +14,7 @@ import { TokenMetadata } from "@/services/ft-contract";
 import registerTokenAndExchange from "@/services/swap/registerToken";
 import { WalletBagIcon } from "./Icons";
 import Loading from "@/components/limit/myOrders/loading";
+import { beautifyNumber } from "@/components/common/beautifyNumber";
 import {
   TokenImgWithRiskTag,
   RiskTipIcon,
@@ -52,19 +53,23 @@ export default function Table({
     return false;
   }, [displayTokens?.length, loading]);
   function displayBalance(balance: string) {
-    const result = isSignedIn
-      ? 0 < Number(balance) && Number(balance) < 0.001
-        ? "< 0.001"
-        : toPrecision(String(balance), 3)
-      : "-";
+    const result = isSignedIn ? beautifyNumber({ num: balance }) : "-";
     return result;
   }
   function displayUSD(token: ITokenMetadata) {
     if (!accountId) return "";
-    const p = Big(allTokenPrices?.[token.id]?.price || "0")
-      .mul(token.balance || 0)
-      .toFixed();
-    return toInternationalCurrencySystem_usd(p);
+    const p = Big(allTokenPrices?.[token.id]?.price || "0").mul(
+      token.balance || 0
+    );
+    // if (p.lt(1)) {
+    //   return beautifyNumber({
+    //     num: p.toFixed(),
+    //     className: "text-xs text-primaryGreen",
+    //     subClassName: "text-[8px]",
+    //     isUsd: true,
+    //   });
+    // }
+    return toInternationalCurrencySystem_usd(p.toFixed());
   }
   function sortBy(tokenB: ITokenMetadata, tokenA: ITokenMetadata) {
     const tokenA_usd = Big(allTokenPrices?.[tokenA.id]?.price || 0).mul(
@@ -141,13 +146,12 @@ export default function Table({
                       {token.isRisk ? <RiskTipIcon /> : null}
                     </div>
                     <span className="text-xs text-gray-60">
-                      $
-                      {toPrecision(
-                        allTokenPrices[token.id]?.price || "0",
-                        2,
-                        false,
-                        false
-                      )}
+                      {beautifyNumber({
+                        num: allTokenPrices[token.id]?.price || "0",
+                        isUsd: true,
+                        className: "text-xs text-gray-60",
+                        subClassName: "text-[8px]",
+                      })}
                     </span>
                   </div>
                 </div>

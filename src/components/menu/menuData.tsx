@@ -89,7 +89,7 @@ export function menuData(): IMenu[] {
           id: "aggregate",
           label: "Aggregate",
           icon: <AggregateBridge />,
-          externalLink: "https://app.ref.finance/orderbook/spot",
+          externalLink: "https://app.ref.finance/bridge",
         },
         {
           id: "rainbow",

@@ -4,6 +4,7 @@ import { toPrecision } from "@/utils/numbers";
 import { useAccountStore } from "@/stores/account";
 import { ITokenMetadata } from "@/interfaces/tokens";
 import { useLimitStore } from "@/stores/limitOrder";
+import { beautifyNumber } from "@/components/common/beautifyNumber";
 
 interface ISelectTokenBalanceProps {
   token: ITokenMetadata;
@@ -36,7 +37,13 @@ export default function SelectTokenBalance(props: ISelectTokenBalanceProps) {
           }}
           className={`${isIn ? "underline cursor-pointer" : ""}`}
         >
-          {toPrecision(token?.balance || (accountId ? "0" : "-"), 3)}
+          {/* {toPrecision(token?.balance || (accountId ? "0" : "-"), 3)} */}
+          {accountId
+            ? beautifyNumber({
+                num: token?.balance || "0",
+                className: "text-gray-50",
+              })
+            : "-"}
         </span>
       )}
     </>

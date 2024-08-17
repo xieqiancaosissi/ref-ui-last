@@ -11,6 +11,7 @@ import { TokenMetadata } from "@/services/ft-contract";
 import { useSwapStore } from "@/stores/swap";
 import { formatTokenPrice } from "@/utils/uiNumber";
 import { purgeTokensByIds } from "./tokenUtils";
+import { beautifyNumber } from "@/components/common/beautifyNumber";
 export default function SelectTokenModal({
   isOpen,
   onRequestClose,
@@ -51,7 +52,12 @@ export default function SelectTokenModal({
   }
   function getTokenUIPrice(tokenId: string) {
     const price = allTokenPrices[tokenId]?.price || "";
-    return formatTokenPrice(price);
+    return beautifyNumber({
+      num: price,
+      isUsd: true,
+      className: "text-xs text-gray-50",
+      subClassName: "text-[8px]",
+    });
   }
   const cardWidth = isMobile() ? "100vw" : "430px";
   return (

@@ -14,6 +14,7 @@ import { getTokenUIId } from "@/services/swap/swapUtils";
 import { toInternationalCurrencySystemLongString_usd } from "@/utils/uiNumber";
 import { getMax } from "@/services/swap/swapUtils";
 import { regularizedPrice } from "@/services/swapV3";
+import { beautifyNumber } from "@/components/common/beautifyNumber";
 
 const SelectDclPoolButton = dynamic(() => import("./SelectDclPoolButton"), {
   ssr: false,
@@ -84,11 +85,17 @@ export default function Input(props: IInputProps) {
     }
   }
   function getTokenValue() {
-    return toInternationalCurrencySystemLongString_usd(
-      new Big(tokenInAmount || 0)
-        .mul(allTokenPrices[token?.id]?.price || 0)
-        .toFixed()
+    const price = new Big(tokenInAmount || 0).mul(
+      allTokenPrices[token?.id]?.price || 0
     );
+    if (price.lt(1)) {
+      return beautifyNumber({
+        num: price.toFixed(),
+        className: "text-gray-50",
+        isUsd: true,
+      });
+    }
+    return toInternationalCurrencySystemLongString_usd(price.toFixed());
   }
   function onBlurEvent() {
     if (isOut) {

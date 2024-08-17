@@ -18,6 +18,7 @@ import { WarnIcon, ArrowDownIcon } from "./icons";
 import { useSwapStore, usePersistSwapStore } from "@/stores/swap";
 import GetPriceImpact from "./GetPriceImpact";
 import SwapRouter from "./SwapRouter";
+import { beautifyNumber } from "@/components/common/beautifyNumber";
 
 export default function SwapDetail() {
   const [show, setShow] = useState<boolean>(false);
@@ -117,7 +118,10 @@ export default function SwapDetail() {
   function getRate(fromAmount: string, toAmount: string) {
     const result = math.evaluate(`${fromAmount} / ${toAmount}`);
     if (new BigNumber(result).isLessThan("0.0001")) {
-      return "<0.0001";
+      return beautifyNumber({
+        num: Big(result).toFixed(),
+        className: "text-gray-50",
+      });
     } else if (new BigNumber(result).gt(1000000000)) {
       return toInternationalCurrencySystemLongString(result, 4);
     } else {
@@ -139,10 +143,7 @@ export default function SwapDetail() {
     <div className="mt-3 text-sm text-gray-50">
       {/* title */}
       <div className="flexBetween px-4">
-        <span
-          className="cursor-pointer hover:text-white"
-          onClick={switchSwapRate}
-        >
+        <span className="cursor-pointer select-none" onClick={switchSwapRate}>
           1 {fromSymbol}(${fromPrice})≈{rate} {toSymbol}
         </span>
         <div

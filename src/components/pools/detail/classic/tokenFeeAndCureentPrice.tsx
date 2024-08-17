@@ -5,6 +5,7 @@ import {
   toInternationalCurrencySystem_usd,
 } from "@/utils/uiNumber";
 import { toReadableNumber, numberWithCommas } from "@/utils/numbers";
+import { beautifyNumber } from "@/components/common/beautifyNumber";
 
 export default function TokenFeeAndCureentPrice({
   poolDetail,
@@ -40,8 +41,8 @@ export default function TokenFeeAndCureentPrice({
     // tokenPriceList[poolDetail.token_account_ids[currentSort[1]]]?.price /
     //   tokenPriceList[poolDetail.token_account_ids[currentSort[0]]]?.price ||
     Number(second_token_num) / Number(first_token_num);
-
-  const showRate = rate < 0.001 ? "< 0.001" : numberWithCommas(rate.toFixed(3));
+  // rate < 0.001 ? "< 0.001" : numberWithCommas(rate.toFixed(3));
+  const showRate = beautifyNumber({ num: rate });
   return (
     <div className="flex items-center text-white h-10 lg:justify-around  xsm:w-full xsm:justify-start">
       <div className="text-sm">
@@ -51,7 +52,7 @@ export default function TokenFeeAndCureentPrice({
       <SplitRectangleIcon className="mx-7" />
       <div className="text-sm lg:min-w-45">
         <h3 className="text-gray-50 font-normal">Current Price</h3>
-        <p>
+        <div className="flex items-center h-[20px]">
           {/* dom render in html formatter above: 1 Near($5.2) = 7Ref */}
           <span className="mr-1">1</span>
           {/* token left name */}
@@ -72,15 +73,13 @@ export default function TokenFeeAndCureentPrice({
           <span className="mx-1">=</span>
           {/* token right amount */}
           {tokenPriceList && poolDetail && (
-            <span className="mr-1">
-              {rate < 0.01 ? "" : ""} {showRate}
-            </span>
+            <span className="mr-1">{showRate}</span>
           )}
           {/* token right name */}
           {poolDetail?.token_symbols[currentSort[1]] == "wNEAR"
             ? "NEAR"
             : poolDetail?.token_symbols[currentSort[1]]}
-        </p>
+        </div>
       </div>
       <ExchangeIcon
         className="mt-auto lg:ml-1 xsm:ml-2 mb-1 cursor-pointer lg:opacity-40 lg:hover:opacity-100"

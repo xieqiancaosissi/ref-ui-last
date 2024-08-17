@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import { toPrecision } from "@/utils/numbers";
+import { beautifyNumber } from "@/components/common/beautifyNumber";
 import { useSwapStore } from "@/stores/swap";
 import { useAccountStore } from "@/stores/account";
 import { ITokenMetadata } from "@/interfaces/tokens";
@@ -37,7 +38,13 @@ export default function SelectTokenBalance(props: ISelectTokenBalanceProps) {
           className={`${isIn ? "underline cursor-pointer" : ""}`}
           title={token?.balance || "0"}
         >
-          {toPrecision(token?.balance || (accountId ? "0" : "-"), 3)}
+          {/* {toPrecision(token?.balance || (accountId ? "0" : "-"), 3)} */}
+          {accountId
+            ? beautifyNumber({
+                num: token?.balance || "0",
+                className: "text-gray-50",
+              })
+            : "-"}
         </span>
       )}
     </>

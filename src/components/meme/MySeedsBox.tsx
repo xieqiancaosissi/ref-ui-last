@@ -92,9 +92,9 @@ const MySeedsBox = ({
     xrefContractId,
   }: {
     claim_id: string;
-    seed: Seed;
-    xrefSeed: Seed;
-    xrefContractId: string;
+    seed?: Seed;
+    xrefSeed?: Seed;
+    xrefContractId?: string;
   }) {
     set_claim_id(claim_id);
     claim_all({
@@ -332,10 +332,12 @@ const MySeedsBox = ({
                         if (!claimButtonDisabled) {
                           seedClaimAll({
                             claim_id: seed.seed_id,
-                            seed: memeClaimButtonDisabled ? ({} as Seed) : seed,
-                            xrefSeed: xrefSeeds[MEME_TOKEN_XREF_MAP[seed_id]],
+                            seed: memeClaimButtonDisabled ? undefined : seed,
+                            xrefSeed: xrefClaimButtonDisabled
+                              ? undefined
+                              : xrefSeeds[MEME_TOKEN_XREF_MAP[seed_id]],
                             xrefContractId: xrefClaimButtonDisabled
-                              ? ""
+                              ? undefined
                               : MEME_TOKEN_XREF_MAP[seed_id],
                           });
                         }

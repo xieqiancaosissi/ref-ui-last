@@ -17,7 +17,7 @@ export default function MemePage() {
   };
   return (
     <MemeContextProvider>
-      <div className="-mt-14 mb-8 xsm:mt-0">
+      <div className="-mt-8 mb-8 xsm:-mt-4">
         {is_mobile ? <MobileBanner /> : <Banner />}
         <div className="m-auto lg:w-5/6" style={{ maxWidth: "1100px" }}>
           <Overview />

@@ -1,3 +1,5 @@
+import BigNumber from "bignumber.js";
+import Big from "big.js";
 import { TokenMetadata } from "@/services/ft-contract";
 import { useTokenBalances } from "@/services/token";
 import { getAccountId } from "@/utils/wallet";
@@ -5,15 +7,12 @@ import { useContext, useEffect, useState } from "react";
 import { OverviewContextType, OverviewData } from "../index";
 import { NEARXIDS } from "@/services/swap/swapConfig";
 import { WRAP_NEAR_CONTRACT_ID } from "@/services/wrap-near";
-import BigNumber from "bignumber.js";
-import Big from "big.js";
-import {
-  toInternationalCurrencySystem,
-  toReadableNumber,
-} from "@/utils/numbers";
+import { BeatLoader } from "react-spinners";
+import { toReadableNumber } from "@/utils/numbers";
 import {
   auroraAddr,
-  display_number_internationalCurrencySystemLongString,
+  batchWithdrawInner,
+  batchWithdrawAurora,
   display_value,
   display_value_withCommas,
   useAuroraBalancesNearMapping,
@@ -21,23 +20,21 @@ import {
   useUserRegisteredTokensAllAndNearBalance,
 } from "@/services/aurora";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
-import { divide } from "mathjs";
 import { WalletTokenList } from "./WalletTokenList";
-import {
-  AuroraIcon,
-  AuroraIconActive,
-  MyNearWalltIcon,
-  WalletWithdraw,
-} from "./icon";
+import { AuroraIcon, AuroraIconActive, MyNearWalltIcon } from "./icon";
 import { CopyIcon } from "@/components/menu/icons";
 import CopyToClipboard from "react-copy-to-clipboard";
+import { IExecutionResult } from "@/interfaces/wallet";
+import checkTxBeforeShowToast from "@/components/common/toast/checkTxBeforeShowToast";
+import failToast from "@/components/common/toast/failToast";
+import { useAppStore } from "@/stores/app";
+import { useSwapStore } from "@/stores/swap";
 
 export default function WalletPanel() {
   const {
     tokenPriceList,
     isSignedIn,
     accountId,
-    is_mobile,
     set_wallet_assets_value_done,
     set_wallet_assets_value,
     setUserTokens,
@@ -45,17 +42,21 @@ export default function WalletPanel() {
   const [tabList, setTabList] = useState([{ name: "NEAR", tag: "near" }]);
   const [activeTab, setActiveTab] = useState("near");
   const [near_tokens, set_near_tokens] = useState<TokenMetadata[]>([]);
-  const [ref_tokens, set_ref_tokens] = useState<TokenMetadata[]>([]);
-  const [dcl_tokens, set_dcl_tokens] = useState<TokenMetadata[]>([]);
+  const [inter_tokens, set_inter_tokens] = useState<TokenMetadata[]>([]);
   const [aurora_tokens, set_aurora_tokens] = useState<TokenMetadata[]>([]);
-  const [ref_total_value, set_ref_total_value] = useState<string>("0");
   const [near_total_value, set_near_total_value] = useState<string>("0");
-  const [dcl_total_value, set_dcl_total_value] = useState<string>("0");
   const [aurora_total_value, set_aurora_total_value] = useState<string>("0");
+  const [inner_total_value, set_inner_total_value] = useState<string>("0");
+  const [batch_withdraw_loading, set_batch_withdraw_loading] =
+    useState<boolean>(false);
   const auroraAddress = auroraAddr(getAccountId() || "");
-  const userTokens = useUserRegisteredTokensAllAndNearBalance();
-  const balances = useTokenBalances(); // inner account balance
-  const auroaBalances = useAuroraBalancesNearMapping(auroraAddress);
+  const userTokens = useUserRegisteredTokensAllAndNearBalance(); // balances in near wallet
+  const auroaBalances = useAuroraBalancesNearMapping(auroraAddress); // balances in aurora;
+  const v1balances = useTokenBalances(); // balances in ref v1
+  const DCLAccountBalance = useDCLAccountBalance(!!accountId); // balances in ref v3
+  const swapStore = useSwapStore();
+  const tokenIn = swapStore.getTokenIn();
+  const tokenOut = swapStore.getTokenOut();
   const displayAuroraAddress = `${auroraAddress?.substring(
     0,
     6
@@ -63,96 +64,121 @@ export default function WalletPanel() {
     auroraAddress.length - 6,
     auroraAddress.length
   )}`;
-  const DCLAccountBalance = useDCLAccountBalance(!!accountId);
   const is_tokens_loading =
-    !userTokens || !balances || !auroaBalances || !DCLAccountBalance;
+    !userTokens || !v1balances || !auroaBalances || !DCLAccountBalance;
+  const appStore = useAppStore();
+  const personalDataUpdatedSerialNumber =
+    appStore.getPersonalDataUpdatedSerialNumber();
   useEffect(() => {
     if (!is_tokens_loading) {
       userTokens.forEach((token: TokenMetadata) => {
         const { decimals, id, nearNonVisible } = token;
-        token.ref =
+        let updatedNearNonVisible = nearNonVisible;
+        if (id == tokenIn.id) updatedNearNonVisible = tokenIn.balanceDecimal;
+        if (id == tokenOut.id) updatedNearNonVisible = tokenOut.balanceDecimal;
+        const b_onRef =
           id === NEARXIDS[0]
             ? "0"
-            : toReadableNumber(decimals, balances[id] || "0");
+            : toReadableNumber(decimals, v1balances[id] || "0");
+        const b_onDcl = toReadableNumber(
+          decimals,
+          DCLAccountBalance[id] || "0"
+        );
+        const b_inner = Big(b_onRef).plus(b_onDcl).toFixed();
+        token.ref = b_onRef;
+        token.dcl = b_onDcl;
+        token.inner = b_inner;
         token.near = toReadableNumber(
           decimals,
-          (nearNonVisible || "0").toString()
+          (updatedNearNonVisible || "0").toString()
         );
-        token.dcl = toReadableNumber(decimals, DCLAccountBalance[id] || "0");
         token.aurora = toReadableNumber(
           decimals,
           auroaBalances[id] || "0"
         ).toString();
       });
     }
-  }, [tokenPriceList, userTokens, is_tokens_loading]);
+  }, [
+    JSON.stringify(tokenPriceList || {}),
+    JSON.stringify(userTokens || []),
+    JSON.stringify(auroaBalances || {}),
+    JSON.stringify(v1balances || {}),
+    JSON.stringify(DCLAccountBalance || {}),
+    is_tokens_loading,
+    tokenIn?.balance,
+    tokenOut?.balance,
+  ]);
   useEffect(() => {
     if (!is_tokens_loading) {
-      const ref_tokens_temp: TokenMetadata[] = [];
       const near_tokens_temp: TokenMetadata[] = [];
-      const dcl_tokens_temp: TokenMetadata[] = [];
       const aurora_tokens_temp: TokenMetadata[] = [];
+      const inter_tokens_temp: TokenMetadata[] = [];
       userTokens.forEach((token: TokenMetadata) => {
-        const { ref, near, aurora, dcl, id } = token;
+        const { near, aurora, id, inner } = token;
         if (id === NEARXIDS[0]) return;
-        if (ref && +ref > 0) {
-          ref_tokens_temp.push(token);
-        }
         if (near && +near > 0) {
           near_tokens_temp.push(token);
-        }
-        if (dcl && +dcl > 0) {
-          dcl_tokens_temp.push(token);
         }
         if (aurora && +aurora > 0) {
           aurora_tokens_temp.push(token);
         }
+        if (inner && +inner > 0) {
+          inter_tokens_temp.push(token);
+        }
       });
       const { tokens: tokens_near, total_value: total_value_near } =
         token_data_process(near_tokens_temp, "near");
-      const { tokens: tokens_ref, total_value: total_value_ref } =
-        token_data_process(ref_tokens_temp, "ref");
-      const { tokens: tokens_dcl, total_value: total_value_dcl } =
-        token_data_process(dcl_tokens_temp, "dcl");
       const { tokens: tokens_aurora, total_value: total_value_aurora } =
         token_data_process(aurora_tokens_temp, "aurora");
-      const refValue = parseFloat(total_value_ref);
-      const dclValue = parseFloat(total_value_dcl);
-      const combinedValue = refValue + dclValue;
-      set_ref_tokens(tokens_ref);
+      const { tokens: tokens_inner, total_value: total_value_inner } =
+        token_data_process(inter_tokens_temp, "inner");
       set_near_tokens(tokens_near);
-      set_dcl_tokens(tokens_dcl);
       set_aurora_tokens(tokens_aurora);
-      set_ref_total_value(combinedValue.toString());
+      set_inter_tokens(tokens_inner);
+
       set_near_total_value(total_value_near);
-      set_dcl_total_value(total_value_dcl);
       set_aurora_total_value(total_value_aurora);
+      set_inner_total_value(total_value_inner);
       set_wallet_assets_value(
-        Big(total_value_ref || 0)
+        Big(total_value_inner || 0)
           .plus(total_value_near || 0)
-          .plus(total_value_dcl || 0)
           .plus(total_value_aurora || 0)
           .toFixed()
       );
       set_wallet_assets_value_done(true);
       const tab_list = [{ name: "NEAR", tag: "near" }];
-      if (tokens_ref?.length > 0) {
+      if (tokens_inner?.length > 0) {
         tab_list.push({
           name: "REF",
           tag: "ref",
         });
       }
-      // if (tokens_dcl?.length > 0) {
-      //   tab_list.push({ name: "DCL", tag: "dcl" });
-      // }
       setTabList(JSON.parse(JSON.stringify(tab_list)));
     }
-  }, [tokenPriceList, userTokens, is_tokens_loading]);
+  }, [
+    JSON.stringify(tokenPriceList || {}),
+    JSON.stringify(userTokens || []),
+    is_tokens_loading,
+  ]);
   useEffect(() => {
     if (userTokens) {
       setUserTokens(userTokens);
     }
-  }, [userTokens]);
+  }, [JSON.stringify(userTokens || [])]);
+  useEffect(() => {
+    if (is_tokens_loading) return;
+    if (
+      (!aurora_tokens?.length && activeTab == "aurora") ||
+      (!inter_tokens?.length && activeTab == "ref")
+    ) {
+      setActiveTab("near");
+    }
+  }, [
+    activeTab,
+    aurora_tokens?.length,
+    inter_tokens?.length,
+    is_tokens_loading,
+  ]);
   function token_data_process(
     target_tokens: TokenMetadata[],
     accountType: keyof TokenMetadata
@@ -179,28 +205,60 @@ export default function WalletPanel() {
 
     return { tokens, total_value };
   }
-  function showTokenPrice(token: TokenMetadata) {
+  function getTokenPrice(token: TokenMetadata) {
     const token_price =
       tokenPriceList[token.id == "NEAR" ? WRAP_NEAR_CONTRACT_ID : token.id]
         ?.price || "0";
-    return display_value(token_price);
+    return token_price;
   }
   function showTotalValue() {
     let target = "0";
     if (activeTab == "near") {
       target = near_total_value;
     } else if (activeTab == "ref") {
-      target = ref_total_value;
-    } else if (activeTab == "dcl") {
-      target = dcl_total_value;
+      target = inner_total_value;
     } else if (activeTab == "aurora") {
       target = aurora_total_value;
     }
     return display_value_withCommas(target);
   }
+  function doWithdrawAll() {
+    set_batch_withdraw_loading(true);
+    if (activeTab == "ref") {
+      batchWithdrawInner(inter_tokens).then(
+        (res: IExecutionResult | undefined) => {
+          if (!res) return;
+          if (res.status == "success") {
+            checkTxBeforeShowToast({ txHash: res.txHash });
+            appStore.setPersonalDataUpdatedSerialNumber(
+              personalDataUpdatedSerialNumber + 1
+            );
+          } else if (res.status == "error") {
+            failToast(res.errorResult?.message);
+          }
+          set_batch_withdraw_loading(false);
+        }
+      );
+    } else if (activeTab == "aurora") {
+      batchWithdrawAurora(aurora_tokens).then(
+        (res: IExecutionResult | undefined) => {
+          if (!res) return;
+          if (res.status == "success") {
+            checkTxBeforeShowToast({ txHash: res.txHash });
+            appStore.setPersonalDataUpdatedSerialNumber(
+              personalDataUpdatedSerialNumber + 1
+            );
+          } else if (res.status == "error") {
+            failToast(res.errorResult?.message);
+          }
+          set_batch_withdraw_loading(false);
+        }
+      );
+    }
+  }
   return (
     <>
-      <div className="mb-2.5 flex items-center">
+      <div className="mb-2.5 flex items-center h-8">
         {tabList.map((item: any, index: number) => {
           return (
             <span
@@ -235,7 +293,7 @@ export default function WalletPanel() {
         ) : null}
         <div
           className={`flex flex-col ml-2.5 xsm:hidden ${
-            activeTab == "aurora" ? "" : "hidden"
+            activeTab == "aurora" && aurora_tokens?.length > 0 ? "" : "hidden"
           }`}
         >
           <p className="text-xs text-gray-60"> Mapping Account</p>
@@ -249,7 +307,7 @@ export default function WalletPanel() {
       </div>
       <div
         className={`flex mb-4 lg:hidden ${
-          activeTab == "aurora" ? "" : "hidden"
+          activeTab == "aurora" && aurora_tokens?.length > 0 ? "" : "hidden"
         }`}
       >
         <p className="text-xs text-gray-60 mr-1"> Mapping Account:</p>
@@ -260,21 +318,46 @@ export default function WalletPanel() {
           </CopyToClipboard>
         </p>
       </div>
-      <div className="bg-gray-20 bg-opacity-40 p-4 rounded">
-        <div className="flex items-center text-gray-50 text-xs w-full mb-5">
-          <div className="w-3/6">Token</div>
-          <div className="w-2/6">Balance</div>
-          <div className="w-1/5 flex items-center justify-end">Value</div>
+      <div className="bg-gray-20 bg-opacity-40 py-4 rounded">
+        <div className="flex items-center text-gray-50 text-xs w-full mb-5 pl-4 pr-5">
+          <div style={{ width: "50%" }}>Token</div>
+          <div style={{ width: "25%" }}>Balance</div>
+          {activeTab == "near" ? (
+            <div
+              className={`flex items-center justify-end `}
+              style={{ width: "25%" }}
+            >
+              Value
+            </div>
+          ) : (
+            <div
+              className={`flex items-center justify-end`}
+              style={{ width: "25%" }}
+            >
+              {batch_withdraw_loading ? (
+                <div className="flex items-center justify-center w-full h-6">
+                  <BeatLoader size={4} color={"#9EFF00"} />
+                </div>
+              ) : (
+                <div
+                  className="flex items-center justify-center text-sm text-primaryGreen underline cursor-pointer whitespace-nowrap h-6"
+                  onClick={doWithdrawAll}
+                >
+                  Withdraw all
+                </div>
+              )}
+            </div>
+          )}
         </div>
-        <div style={{ height: "34vh", overflow: "auto" }} className="pr-2.5">
-          {(!userTokens || !balances || !auroaBalances || !DCLAccountBalance) &&
-          isSignedIn ? (
-            <div className="flex justify-between">
+        <div style={{ height: "34vh", overflow: "auto" }}>
+          {is_tokens_loading && isSignedIn ? (
+            <div className="flex justify-center">
               <SkeletonTheme
                 baseColor="rgba(33, 43, 53, 0.3)"
                 highlightColor="#2A3643"
+                duration={3}
               >
-                <Skeleton width={320} height={52} count={4} className="mt-4" />
+                <Skeleton width={330} height={52} count={4} className="mt-4" />
               </SkeletonTheme>
             </div>
           ) : (
@@ -286,48 +369,24 @@ export default function WalletPanel() {
                       key={token.id + "near"}
                       token={token}
                       tokenBalance={token?.near ?? 0}
-                      showTokenPrice={showTokenPrice}
+                      getTokenPrice={getTokenPrice}
                     />
                   );
                 })}
               </div>
               <div className={`${activeTab == "ref" ? "" : "hidden"}`}>
-                {ref_tokens.map((token: TokenMetadata) => {
+                {inter_tokens.map((token: TokenMetadata) => {
                   return (
                     <WalletTokenList
                       key={token.id + "ref"}
                       token={token}
-                      tokenBalance={token?.ref ?? 0}
-                      showTokenPrice={showTokenPrice}
-                      showWithdraw={true}
-                    />
-                  );
-                })}
-                {dcl_tokens.map((token: TokenMetadata) => {
-                  return (
-                    <WalletTokenList
-                      key={token.id + "dcl"}
-                      token={token}
-                      tokenBalance={token?.dcl ?? 0}
-                      showTokenPrice={showTokenPrice}
+                      tokenBalance={token?.inner ?? 0}
+                      getTokenPrice={getTokenPrice}
                       showWithdraw={true}
                     />
                   );
                 })}
               </div>
-              {/* <div className={`${activeTab == "dcl" ? "" : "hidden"}`}>
-                {dcl_tokens.map((token: TokenMetadata) => {
-                  return (
-                    <WalletTokenList
-                      key={token.id + "dcl"}
-                      token={token}
-                      tokenBalance={token?.dcl ?? 0}
-                      showTokenPrice={showTokenPrice}
-                      showWithdraw={true}
-                    />
-                  );
-                })}
-              </div> */}
               <div className={`${activeTab == "aurora" ? "" : "hidden"}`}>
                 {aurora_tokens.map((token: TokenMetadata) => {
                   return (
@@ -335,7 +394,7 @@ export default function WalletPanel() {
                       key={token.id + "aurora"}
                       token={token}
                       tokenBalance={token?.aurora ?? 0}
-                      showTokenPrice={showTokenPrice}
+                      getTokenPrice={getTokenPrice}
                       showWithdraw={true}
                       isAurora={true}
                     />

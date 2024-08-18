@@ -1,6 +1,5 @@
 import {
-  batchWithdraw,
-  batchWithdrawDCL,
+  batchWithdrawInner,
   batchWithdrawFromAurora,
   display_number_internationalCurrencySystemLongString,
   display_value,
@@ -8,14 +7,17 @@ import {
 import { TokenMetadata } from "@/services/ft-contract";
 import Big from "big.js";
 import React, { useState } from "react";
-import { WalletWithdraw } from "./icon";
-import CustomTooltip from "@/components/customTooltip/customTooltip";
-import { BeatLoader } from "react-spinners";
+import { ButtonTextWrapper } from "@/components/common/Button";
+import { useAppStore } from "@/stores/app";
+import { IExecutionResult } from "@/interfaces/wallet";
+import checkTxBeforeShowToast from "@/components/common/toast/checkTxBeforeShowToast";
+import failToast from "@/components/common/toast/failToast";
+import { beautifyNumber } from "@/components/common/beautifyNumber";
 
 type Props = {
   token: TokenMetadata;
   tokenBalance: number | string;
-  showTokenPrice: any;
+  getTokenPrice: any;
   showWithdraw?: boolean;
   isAurora?: boolean;
 };
@@ -23,91 +25,108 @@ type Props = {
 export const WalletTokenList = ({
   token,
   tokenBalance,
-  showTokenPrice,
+  getTokenPrice,
   showWithdraw,
   isAurora,
 }: Props) => {
   const [withdrawLoading, setWithdrawLoading] = useState<boolean>(false);
-  const { ref, dcl, aurora, id, decimals } = token || {};
-  const isRefClassic = Number(ref) > 0;
-  const isDCL = Number(dcl) > 0;
-  function getTip() {
-    const result: string = `Withdraw`;
-    return result;
-  }
+  const { aurora, id, decimals } = token || {};
+  const appStore = useAppStore();
+  const personalDataUpdatedSerialNumber =
+    appStore.getPersonalDataUpdatedSerialNumber();
   const doWithDraw = async () => {
     if (!withdrawLoading) {
       try {
         setWithdrawLoading(true);
         if (isAurora) {
-          await batchWithdrawFromAurora({
+          batchWithdrawFromAurora({
             [id]: {
               amount: aurora,
               decimals,
               id,
             },
+          }).then((res: IExecutionResult | undefined) => {
+            if (!res) return;
+            if (res.status == "success") {
+              checkTxBeforeShowToast({ txHash: res.txHash });
+              appStore.setPersonalDataUpdatedSerialNumber(
+                personalDataUpdatedSerialNumber + 1
+              );
+            } else if (res.status == "error") {
+              failToast(res.errorResult?.message);
+            }
+            setWithdrawLoading(false);
           });
-        } else if (isRefClassic) {
-          await batchWithdraw({
-            [id]: {
-              amount: ref,
-              decimals,
-              id,
-            },
-          });
-        } else if (isDCL) {
-          await batchWithdrawDCL({
-            [id]: {
-              amount: dcl,
-              decimals,
-              id,
-            },
-          });
+        } else {
+          batchWithdrawInner([token]).then(
+            (res: IExecutionResult | undefined) => {
+              if (!res) return;
+              if (res.status == "success") {
+                checkTxBeforeShowToast({ txHash: res.txHash });
+                appStore.setPersonalDataUpdatedSerialNumber(
+                  personalDataUpdatedSerialNumber + 1
+                );
+              } else if (res.status == "error") {
+                failToast(res.errorResult?.message);
+              }
+              setWithdrawLoading(false);
+            }
+          );
         }
       } catch (e) {
-      } finally {
         setWithdrawLoading(false);
       }
     }
   };
   return (
-    <div className="flex items-center w-full mb-6 text-white">
-      <div className="w-3/6 flex items-center">
+    <div className="flex items-center w-full mb-6 text-white px-4">
+      <div className="flex items-center" style={{ width: "50%" }}>
         <img className="w-6 h-6 rounded-3xl mr-2.5" src={token.icon} alt={""} />
         <div className="text-sm">
           <p className="w-24 overflow-hidden whitespace-nowrap overflow-ellipsis">
             {token.symbol}
           </p>
-          <p className="text-gray-50 text-xs">{showTokenPrice(token)}</p>
+          <p className="text-gray-50 text-xs">
+            {beautifyNumber({
+              num: getTokenPrice(token),
+              className: "text-gray-50 text-xs",
+              subClassName: "text-[8px]",
+              isUsd: true,
+            })}
+          </p>
         </div>
       </div>
-      <div className="w-2/6 text-sm flex items-center ">
-        <span className={`${showWithdraw ? "text-primaryGreen" : ""}`}>
+      <div className="flex flex-col text-sm" style={{ width: "25%" }}>
+        <span>
           {display_number_internationalCurrencySystemLongString(
             Big(tokenBalance || 0).toFixed()
           )}
         </span>
-        <div className="ml-1.5">
-          {showWithdraw &&
-            (withdrawLoading ? (
-              <BeatLoader size={4} color={"#ffffff"} />
-            ) : (
-              <div
-                onClick={doWithDraw}
-                data-class="reactTip"
-                data-tooltip-id="showWithdrawId"
-                data-place="top"
-                data-tooltip-html={getTip()}
-              >
-                <WalletWithdraw className="text-gray-10 hover:text-white cursor-pointer" />
-                <CustomTooltip id="showWithdrawId" className="text-gray-10" />
-              </div>
-            ))}
+        <span
+          className={`text-xs text-gray-50 ${showWithdraw ? "" : "hidden"}`}
+        >
+          {display_value(String(token?.t_value))}
+        </span>
+      </div>
+      {showWithdraw ? (
+        <div
+          className="flex items-center justify-center rounded border border-gray-300 text-xs text-gray-10 hover:text-white h-6 px-1 cursor-pointer"
+          onClick={doWithDraw}
+          style={{ width: "25%" }}
+        >
+          <ButtonTextWrapper
+            loading={withdrawLoading}
+            Text={() => <>Withdraw</>}
+          />
         </div>
-      </div>
-      <div className="w-1/5 flex items-center justify-end text-sm">
-        {display_value(String(token?.t_value))}
-      </div>
+      ) : (
+        <div
+          className="flex items-center justify-end text-sm"
+          style={{ width: "25%" }}
+        >
+          {display_value(String(token?.t_value))}
+        </div>
+      )}
     </div>
   );
 };

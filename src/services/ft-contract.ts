@@ -20,6 +20,7 @@ export interface TokenMetadata {
   amountLabel?: string;
   amount?: number;
   dcl?: number | string;
+  inner?: number | string;
   nearNonVisible?: number | string;
   t_value?: string;
   isRisk?: boolean;

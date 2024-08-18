@@ -40,6 +40,8 @@ export default function WalletConnect() {
   const accountStore = useAccountStore();
   const personalDataUpdatedSerialNumber =
     appStore.getPersonalDataUpdatedSerialNumber();
+  const personalDataReloadSerialNumber =
+    appStore.getPersonalDataReloadSerialNumber();
   const [showGuider, setShowGuider] = useState<boolean>(
     !!(
       localStorage.getItem("ACCESS_MODAL_GUIDER") !== "1" &&
@@ -101,14 +103,14 @@ export default function WalletConnect() {
     }
   }, [isOpen, showGuider]);
   useEffect(() => {
-    if (personalDataUpdatedSerialNumber > 1) {
+    if (personalDataReloadSerialNumber > 1) {
       setPersonalVisited(false);
     }
-  }, [personalDataUpdatedSerialNumber]);
+  }, [personalDataReloadSerialNumber]);
   useEffect(() => {
     if (accountId) {
-      appStore.setPersonalDataUpdatedSerialNumber(
-        personalDataUpdatedSerialNumber + 1
+      appStore.setPersonalDataReloadSerialNumber(
+        personalDataReloadSerialNumber + 1
       );
     }
   }, [accountId]);

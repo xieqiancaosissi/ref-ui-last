@@ -22,6 +22,7 @@ import { refFiViewFunction } from "@/utils/contract";
 import { extraStableTokenIds } from "./swap/swapConfig";
 import { useEffect, useState } from "react";
 import { NEAR_META_TX_DATA } from "@/utils/nearMetaData";
+import { useAppStore } from "@/stores/app";
 
 const specialToken = "pixeltoken.near";
 const { WRAP_NEAR_CONTRACT_ID } = getConfig();
@@ -309,6 +310,9 @@ export const getTokenBalances = (): Promise<{
 };
 
 export const useTokenBalances = () => {
+  const appStore = useAppStore();
+  const personalDataUpdatedSerialNumber =
+    appStore.getPersonalDataUpdatedSerialNumber();
   const [balances, setBalances] = useState<{
     [tokenId: string]: string;
   }>();
@@ -321,7 +325,7 @@ export const useTokenBalances = () => {
     getTokenBalances()
       .then(setBalances)
       .catch(() => setBalances({}));
-  }, [isSignedIn, accountId]);
+  }, [isSignedIn, accountId, personalDataUpdatedSerialNumber]);
 
   return balances;
 };

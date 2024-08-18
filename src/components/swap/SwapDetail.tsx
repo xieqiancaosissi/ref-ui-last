@@ -187,7 +187,7 @@ export default function SwapDetail() {
         </div>
         <div className="flexBetween">
           <span>Minimum received</span>
-          <span>{minAmountOutDisplay}</span>
+          <span className="text-right">{minAmountOutDisplay}</span>
         </div>
         <SwapRouter />
       </div>

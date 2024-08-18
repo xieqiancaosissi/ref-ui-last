@@ -220,7 +220,7 @@ export default function WalletConnect() {
                 }}
                 onClick={handleBackdropClick}
               ></div>
-              {(personalVisited || showGuider) && !isInMemePage ? (
+              {personalVisited || (showGuider && !isInMemePage) ? (
                 <div
                   className={`fixed top-[45px] bottom-[35px] right-0 bg-dark-10 z-50 ${
                     isOpen || showGuider ? "block" : "hidden"

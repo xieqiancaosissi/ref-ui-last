@@ -74,8 +74,9 @@ export default function WalletPanel() {
       userTokens.forEach((token: TokenMetadata) => {
         const { decimals, id, nearNonVisible } = token;
         let updatedNearNonVisible = nearNonVisible;
-        if (id == tokenIn.id) updatedNearNonVisible = tokenIn.balanceDecimal;
-        if (id == tokenOut.id) updatedNearNonVisible = tokenOut.balanceDecimal;
+        if (id == tokenIn?.id) updatedNearNonVisible = tokenIn?.balanceDecimal;
+        if (id == tokenOut?.id)
+          updatedNearNonVisible = tokenOut?.balanceDecimal;
         const b_onRef =
           id === NEARXIDS[0]
             ? "0"

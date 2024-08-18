@@ -142,7 +142,7 @@ export default function SwapDetail() {
   return (
     <div className="mt-3 text-sm text-gray-50">
       {/* title */}
-      <div className="flexBetween px-4">
+      <div className="flexBetween px-4 gap-1.5">
         <span className="cursor-pointer select-none" onClick={switchSwapRate}>
           1 {fromSymbol}(${fromPrice})≈{rate} {toSymbol}
         </span>

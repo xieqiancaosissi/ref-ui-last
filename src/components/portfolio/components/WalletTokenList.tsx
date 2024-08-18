@@ -82,7 +82,11 @@ export const WalletTokenList = ({
     <div className="w-full mb-3 px-2">
       <div className="flex items-center  rounded-md hover:bg-gray-100 h-[46px] flex-grow px-2 text-white">
         <div className="flex items-center" style={{ width: "50%" }}>
-          <img className="w-6 h-6 rounded-3xl mr-2.5" src={token.icon} alt={""} />
+          <img
+            className="w-6 h-6 rounded-3xl mr-2.5"
+            src={token.icon}
+            alt={""}
+          />
           <div className="text-sm">
             <p className="w-24 overflow-hidden whitespace-nowrap overflow-ellipsis">
               {token.symbol}

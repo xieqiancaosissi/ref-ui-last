@@ -269,7 +269,7 @@ function AssetPage() {
               className="text-sm text-gray-10 ml-1 underline cursor-pointer"
               onClick={() => {
                 localStorage.setItem("BOOST_FARM_TAB", "yours");
-                openUrl("/farms");
+                router.push("/farms").then(() => window.location.reload());
               }}
             >
               in farm

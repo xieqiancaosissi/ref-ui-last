@@ -93,7 +93,7 @@ const Staking = () => {
             <div
               className="lg:hidden border border-gray-100 bg-dark-10 rounded-lg h-12 flex cursor-pointer 
               items-center justify-center text-white text-base paceGrotesk-Bold xsm:border-none xsm:bg-transparent xsm:h-auto"
-              onClick={() => history.push("/airdop")}
+              onClick={() => router.push("/memeAirdop")}
             >
               <CoinPc />
               <p className="ml-2">Airdrop</p>

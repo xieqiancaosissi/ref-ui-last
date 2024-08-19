@@ -96,7 +96,7 @@ function VoteDetailsModal(props: any) {
         },
         content: {
           outline: "none",
-          transform: "translate(-50%, -50%)",
+          transform: "translate(-50%, -10%)",
         },
       }}
     >
@@ -270,7 +270,7 @@ function DonateListMobile({ donateList }: { donateList: IDonate[] }) {
                   </span>
                   {donateData.win ? (
                     <div
-                      className="text-black text-xs paceGrotesk-Bold rounded py-0.5 px-1 bg-senderHot transform"
+                      className="text-black text-xs paceGrotesk-Bold rounded py-0.5 px-1 bg-primaryGreen transform"
                       style={{ transform: "skewX(-20deg)" }}
                     >
                       Listed

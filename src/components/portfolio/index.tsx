@@ -224,7 +224,7 @@ export default function Overview() {
               Portfolio
             </div>
           </div>
-          <div className="py-4">
+          <div className="py-4 pr-1 overflow-auto h-[60vh]">
             <div className={activeTab === "Wallet" ? "" : "hidden"}>
               <WalletPanel />
             </div>

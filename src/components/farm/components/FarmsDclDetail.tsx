@@ -897,12 +897,9 @@ export default function FarmsDclDetail(props: {
     });
   }
   function goPool() {
-    const poolId = pool?.id;
-    const isStable = poolId !== undefined ? isStablePool(poolId) : false;
-    if (isStable) {
-      router.push(`/pool/stable/${poolId}`);
-    } else {
-      router.push(`/pool/classic/${poolId}`);
+    const poolId = pool?.pool_id;
+    if (poolId) {
+      router.push(`/pool/dcl/${poolId}`);
     }
   }
   function getAprTip() {

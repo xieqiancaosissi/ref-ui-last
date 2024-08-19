@@ -486,10 +486,15 @@ function OrderlyKeys({
           {allOrderlyKeys.map((key) => {
             const isUsed = currentUsedKeys.includes(key);
             return (
-              <div key={key} className="gap-6 mb-11">
+              <div key={key} className="gap-2 mb-4">
+                {isUsed ? (
+                  <span className="flex items-center justify-center bg-primaryGreen text-xs paceGrotesk-Bold italic whitespace-nowrap rounded w-12 text-black">
+                    In use
+                  </span>
+                ) : null}
                 <div
-                  className={`flex justify-end items-center mb-4 ${
-                    isUsed ? "invisible" : ""
+                  className={`flex justify-end items-center ${
+                    isUsed ? "invisible" : "mb-4"
                   }`}
                 >
                   <Checkbox
@@ -501,11 +506,6 @@ function OrderlyKeys({
                   />
                 </div>
                 <div className="flex  flex-col gap-2 flex-grow  bg-dark-60 rounded-md text-xs text-gray-60 p-2.5 break-all">
-                  {isUsed ? (
-                    <span className="flex items-center justify-center bg-portfolioQinColor text-xs paceGrotesk-Bold italic whitespace-nowrap rounded w-12 text-black">
-                      In use
-                    </span>
-                  ) : null}
                   {key}
                 </div>
               </div>

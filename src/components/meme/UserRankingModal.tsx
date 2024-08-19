@@ -245,7 +245,7 @@ function UserRankingModal(props: any) {
         },
         content: {
           outline: "none",
-          transform: "translate(-50%, -50%)",
+          transform: "translate(-50%, -10%)",
         },
       }}
     >
@@ -677,7 +677,7 @@ function UserRankingModal(props: any) {
                     className={`w-7 rounded-lg h-7 flex items-center justify-center ${
                       currentPage === 1
                         ? "border-memeUserStackeMobileBgColor"
-                        : "border-senderHot"
+                        : "border-primaryGreen"
                     } ${is_mobile ? "border" : ""}`}
                   >
                     <UserStakeRankingFirst
@@ -710,7 +710,7 @@ function UserRankingModal(props: any) {
                   <div
                     className={`w-7 rounded-lg h-7 flex items-center justify-center ${
                       currentPage > 1
-                        ? "border-senderHot"
+                        ? "border-primaryGreen"
                         : "border-memeUserStackeMobileBgColor"
                     } ${is_mobile ? "border" : ""}`}
                   >
@@ -772,7 +772,7 @@ function UserRankingModal(props: any) {
                   <div
                     className={`w-7 rounded-lg h-7 flex items-center justify-center ${
                       currentPage < totalPages
-                        ? "border-senderHot"
+                        ? "border-primaryGreen"
                         : "border-memeUserStackeMobileBgColor"
                     } ${is_mobile ? "border" : ""}`}
                   >
@@ -804,7 +804,7 @@ function UserRankingModal(props: any) {
                     className={`w-7 rounded-lg h-7 flex items-center justify-center ${
                       currentPage === totalPages
                         ? "border-memeUserStackeMobileBgColor"
-                        : "border-senderHot"
+                        : "border-primaryGreen"
                     } ${is_mobile ? "border" : ""}`}
                   >
                     <UserStakeRankingLast

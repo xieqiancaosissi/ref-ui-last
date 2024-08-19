@@ -309,7 +309,7 @@ function VoteModel(props: any) {
               <div className="text-gray-60">Meme</div>
               <div className="text-white relative" ref={dropdownRef}>
                 <button
-                  className="rounded-3xl border border-memeBorderColor pt-2 pl-2 pr-3 pb-2 flex items-center justify-between cursor-pointer outline-none bg-memeModelgreyColor text-white"
+                  className="rounded-3xl border border-memeBorderColor pt-2 pl-2 pr-3 pb-2 flex items-center justify-between cursor-pointer outline-none bg-dark-70 text-white"
                   onClick={() => setDropdownVisible(!dropdownVisible)}
                 >
                   <img
@@ -324,7 +324,7 @@ function VoteModel(props: any) {
                 {dropdownVisible && (
                   <div
                     className="absolute h-80 overflow-auto z-50 top-12 right-0 rounded-lg border border-memeModelgreyColor pt-4 pl-3.5 pr-9 
-                   cursor-pointer outline-none bg-memeModelgreyColor text-white w-max"
+                   cursor-pointer outline-none bg-dark-70 text-white w-max"
                   >
                     {Object.keys(MEME_TOKEN_XREF_MAP)
                       .sort(sortByXrefStaked(xrefSeeds))

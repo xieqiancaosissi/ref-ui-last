@@ -29,6 +29,7 @@ import checkTxBeforeShowToast from "@/components/common/toast/checkTxBeforeShowT
 import failToast from "@/components/common/toast/failToast";
 import { useAppStore } from "@/stores/app";
 import { useSwapStore } from "@/stores/swap";
+import { Tooltip } from "react-tooltip";
 
 export default function WalletPanel() {
   const {
@@ -39,6 +40,7 @@ export default function WalletPanel() {
     set_wallet_assets_value,
     setUserTokens,
   } = useContext(OverviewData) as OverviewContextType;
+  const [tipVisible, setTipVisible] = useState<boolean>(false);
   const [tabList, setTabList] = useState([{ name: "NEAR", tag: "near" }]);
   const [activeTab, setActiveTab] = useState("near");
   const [near_tokens, set_near_tokens] = useState<TokenMetadata[]>([]);
@@ -180,6 +182,17 @@ export default function WalletPanel() {
     inter_tokens?.length,
     is_tokens_loading,
   ]);
+  useEffect(() => {
+    let timer: any;
+    if (tipVisible) {
+      timer = setTimeout(() => {
+        setTipVisible(false);
+      }, 1000);
+    }
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [tipVisible]);
   function token_data_process(
     target_tokens: TokenMetadata[],
     accountType: keyof TokenMetadata
@@ -300,9 +313,30 @@ export default function WalletPanel() {
           <p className="text-xs text-gray-60"> Mapping Account</p>
           <p className="text-xs text-white frcc">
             {displayAuroraAddress}
-            <CopyToClipboard text={auroraAddress}>
-              <CopyIcon className="text-gray-60 hover:text-white cursor-pointer ml-1.5"></CopyIcon>
-            </CopyToClipboard>
+
+            <div
+              data-tooltip-id="copy-tooltip"
+              data-tooltip-content={`${tipVisible ? "Copied" : ""}`}
+            >
+              <CopyToClipboard text={auroraAddress}>
+                <CopyIcon
+                  className="text-gray-60 hover:text-white cursor-pointer ml-1.5"
+                  onClick={() => {
+                    setTipVisible(true);
+                  }}
+                ></CopyIcon>
+              </CopyToClipboard>
+              <Tooltip
+                id="copy-tooltip"
+                style={{
+                  color: "#fff",
+                  padding: "4px",
+                  fontSize: "12px",
+                  background: "#7E8A93",
+                }}
+                openOnClick
+              />
+            </div>
           </p>
         </div>
       </div>

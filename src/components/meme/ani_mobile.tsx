@@ -1778,7 +1778,7 @@ export function MobileBannerCoreBtnIconBg(props: any) {
           y2="28"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stopColor="#00FFD1" />
+          <stop stopColor="#9EFF00" />
           <stop offset="1" stopColor="#00997D" />
         </linearGradient>
       </defs>

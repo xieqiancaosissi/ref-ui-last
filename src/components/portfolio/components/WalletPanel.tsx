@@ -13,7 +13,6 @@ import {
   auroraAddr,
   batchWithdrawInner,
   batchWithdrawAurora,
-  display_value,
   display_value_withCommas,
   useAuroraBalancesNearMapping,
   useDCLAccountBalance,

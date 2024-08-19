@@ -397,16 +397,15 @@ export function getRouteAllocationPercents(routes: IServerRoute[]) {
     return [];
   }
 }
-export function getMax(token: ITokenMetadata, precision?: number): string {
+export function getMax(token: ITokenMetadata): string {
   const isNEAR = getTokenUIId(token) == "near";
   const { balance } = token || {};
   let max = balance || "0";
   if (isNEAR) {
     const minusDiff = Big(balance || 0).minus(MIN_RETAINED_NEAR_AMOUNT);
-    max = minusDiff.gt(0) ? minusDiff.toFixed() : "0";
+    max = minusDiff.gt(0) ? toPrecision(minusDiff.toFixed(), 12) : "0";
   }
-  const result = toPrecision(max, precision ?? 12);
-  return result;
+  return max;
 }
 export function getTokenUIId(token?: ITokenMetadata) {
   if (token?.id == WRAP_NEAR_CONTRACT_ID && token?.symbol == "NEAR") {

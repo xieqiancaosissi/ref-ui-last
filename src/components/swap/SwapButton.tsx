@@ -164,7 +164,7 @@ export default function SwapButton({
   }
   function getButtonStatus(): IButtonStatus {
     let status: IButtonStatus = "walletLoading";
-    const availableAmountIn = Big(amountIn || 0).lte(getMax(tokenIn, decimals));
+    const availableAmountIn = Big(amountIn || 0).lte(getMax(tokenIn));
     if (walletLoading) {
       status = "walletLoading";
     } else if (!walletLoading && !accountId) {
@@ -179,7 +179,8 @@ export default function SwapButton({
       accountId &&
       tokenIn?.id &&
       tokenOut?.id &&
-      Number(amountIn || 0) > 0
+      Number(amountIn || 0) > 0 &&
+      Number(amountOut || 0) > 0
     ) {
       status = "available";
     } else {

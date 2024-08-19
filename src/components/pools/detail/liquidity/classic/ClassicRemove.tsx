@@ -70,6 +70,8 @@ export default function StableAdd(props: any) {
     updatedMapList,
     isMobile,
     setAddSuccess,
+    addSuccess,
+    shares,
   } = props;
 
   useEffect(() => {
@@ -130,7 +132,7 @@ export default function StableAdd(props: any) {
   const [removeTabActive, setRemoveTabActive] = useState("share");
 
   // by share
-  const { shares } = usePool(poolDetail.id);
+  // const { shares } = usePool(poolDetail.id);
   const sharesDecimals = toReadableNumber(24, shares);
   const [shareVal, setShareVal] = useState("");
   const changeShareVal = (val: any) => {

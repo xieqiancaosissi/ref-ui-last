@@ -960,7 +960,7 @@ export default function ClassicPoolDetail() {
           <YourLiqMobile
             isOpen={showYourLiq}
             onRequestClose={hideYourLiq}
-            shares={shares}
+            shares={addSuccess > 0 ? newShares : shares}
             totalShares={pool.shareSupply}
             poolId={pool.id}
             pool={pool}
@@ -992,6 +992,8 @@ export default function ClassicPoolDetail() {
             updatedMapList={updatedMapList}
             isMobile={isMobile}
             setAddSuccess={setAddSuccess}
+            addSuccess={addSuccess}
+            shares={addSuccess > 0 ? newShares : shares}
           />
 
           <ClassicRemove
@@ -1002,6 +1004,8 @@ export default function ClassicPoolDetail() {
             updatedMapList={updatedMapList}
             isMobile={isMobile}
             setAddSuccess={setAddSuccess}
+            addSuccess={addSuccess}
+            shares={addSuccess > 0 ? newShares : shares}
           />
         </>
       )}

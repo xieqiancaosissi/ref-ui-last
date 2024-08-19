@@ -69,6 +69,7 @@ export default function StableAdd(props: any) {
     updatedMapList,
     isMobile,
     setAddSuccess,
+    addSuccess,
   } = props;
   const [balancesList, setBalances] = useState<any>([]);
   const [inputValList, setInputValList] = useState<any>([]);
@@ -103,7 +104,7 @@ export default function StableAdd(props: any) {
       }
     };
     fetchBalances();
-  }, [updatedMapList[0]?.token_account_ids]);
+  }, [updatedMapList[0]?.token_account_ids, addSuccess]);
   const [preShare, setPreShare] = useState("0");
   const dealTokenAmounts = (
     ind: number,

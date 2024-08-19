@@ -26,6 +26,7 @@ import { useAppStore } from "@/stores/app";
 import { showWalletSelectorModal } from "@/utils/wallet";
 import successToast from "@/components/common/toast/successToast";
 import failToast from "@/components/common/toast/failToast";
+import { openUrlLocal } from "@/services/commonV3";
 
 export function myShares({
   totalShares,
@@ -70,6 +71,7 @@ export default function ClassicAdd(props: any) {
     isMobile,
     setAddSuccess,
     addSuccess,
+    fromYours,
   } = props;
   const [balancesList, setBalances] = useState<any>([]);
   const [inputValList, setInputValList] = useState<any>([]);
@@ -273,8 +275,12 @@ export default function ClassicAdd(props: any) {
         if (!res) return;
         let status;
         if (res.status == "success") {
-          successToast();
-          setAddSuccess((pre: number) => pre + 1);
+          if (fromYours) {
+            openUrlLocal(`/pool/classic/${poolDetail.id}`);
+          } else {
+            successToast();
+            setAddSuccess((pre: number) => pre + 1);
+          }
         } else if (res.status == "error") {
           failToast(res.errorResult?.message);
         }

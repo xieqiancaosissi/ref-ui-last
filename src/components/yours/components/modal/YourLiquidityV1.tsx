@@ -1383,6 +1383,7 @@ function YourClassicLiquidityLinePage(props: any) {
             updatedMapList={updatedMapList}
             addSuccess={addSuccess}
             setAddSuccess={setAddSuccess}
+            fromYours
           />
 
           <ClassicRemove
@@ -1393,6 +1394,7 @@ function YourClassicLiquidityLinePage(props: any) {
             updatedMapList={updatedMapList}
             addSuccess={addSuccess}
             setAddSuccess={setAddSuccess}
+            fromYours
           />
 
           <>
@@ -1405,6 +1407,7 @@ function YourClassicLiquidityLinePage(props: any) {
               isMobile={isMobile}
               addSuccess={addSuccess}
               setAddSuccess={setAddSuccess}
+              fromYours
             />
 
             <StableRemove
@@ -1418,6 +1421,7 @@ function YourClassicLiquidityLinePage(props: any) {
               addSuccess={addSuccess}
               shares={shares}
               setAddSuccess={setAddSuccess}
+              fromYours
             />
           </>
         </>

@@ -1137,8 +1137,9 @@ function UserLiquidityLineStyleGroup({
         if (!res) return;
         let status;
         if (res.status == "success") {
-          successToast();
-          setAddSuccess((pre: number) => pre + 1);
+          // successToast();
+          // setAddSuccess((pre: number) => pre + 1);
+          openUrlLocal(`/pool/dcl/${poolDetail.pool_id}`);
         } else if (res.status == "error") {
           failToast(res.errorResult?.message);
         }
@@ -1304,8 +1305,9 @@ function UserLiquidityLineStyleGroupPage() {
         if (!res) return;
         let status;
         if (res.status == "success") {
-          successToast();
-          setAddSuccess((pre: number) => pre + 1);
+          // successToast();
+          // setAddSuccess((pre: number) => pre + 1);
+          openUrlLocal(`/pool/dcl/${poolDetail.pool_id}`);
         } else if (res.status == "error") {
           failToast(res.errorResult?.message);
         }
@@ -1984,6 +1986,7 @@ function UserLiquidityLineStyleGroupPage() {
           }}
           setAddSuccess={setAddSuccess}
           addSuccess={addSuccess}
+          fromYours
         ></RemovePoolV3>
       ) : null}
     </>

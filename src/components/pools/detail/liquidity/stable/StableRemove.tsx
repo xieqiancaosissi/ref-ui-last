@@ -45,6 +45,7 @@ import { useNewPoolData } from "@/hooks/useStableShares";
 import { get_shadow_records } from "@/services/farm";
 import { list_farmer_seeds } from "@/services/farm";
 import { getPoolAvailableShare } from "@/hooks/useStableShares";
+import { openUrlLocal } from "@/services/commonV3";
 
 export function myShares({
   totalShares,
@@ -92,6 +93,7 @@ export default function StableRemove(props: any) {
     pool,
     shares,
     addSuccess,
+    fromYours,
   } = props;
   const [balancesList, setBalances] = useState<any>([]);
   const [inputValList, setInputValList] = useState<any>([]);
@@ -197,8 +199,12 @@ export default function StableRemove(props: any) {
         .then((res: any) => {
           if (!res) return;
           if (res.status == "success") {
-            successToast();
-            setAddSuccess((pre: number) => pre + 1);
+            if (fromYours) {
+              openUrlLocal(`/pool/stable/${poolDetail.id}`);
+            } else {
+              successToast();
+              setAddSuccess((pre: number) => pre + 1);
+            }
           } else if (res.status == "error") {
             failToast(res.errorResult?.message);
           }
@@ -233,8 +239,12 @@ export default function StableRemove(props: any) {
         .then((res: any) => {
           if (!res) return;
           if (res.status == "success") {
-            successToast();
-            setAddSuccess((pre: number) => pre + 1);
+            if (fromYours) {
+              openUrlLocal(`/pool/stable/${poolDetail.id}`);
+            } else {
+              successToast();
+              setAddSuccess((pre: number) => pre + 1);
+            }
           } else if (res.status == "error") {
             failToast(res.errorResult?.message);
           }

@@ -469,12 +469,15 @@ export default function ClassicPoolDetail() {
   return (
     <div className="w-full fccc h-full px-3">
       {/* return */}
-      <div className="lg:w-270 xsm:w-full cursor-pointer text-base text-gray-60 mb-3 lg:mt-8 hover:text-white">
+      <div className="lg:w-270 xsm:w-full cursor-pointer text-base text-gray-60 mb-3 lg:mt-8 ">
         <span
-          className="xsm:hidden"
+          className="xsm:hidden hover:text-white"
           onClick={() => router.push("/pools")}
         >{`<  Pools`}</span>
-        <span className="lg:hidden" onClick={() => router.push("/pools")}>
+        <span
+          className="lg:hidden hover:text-white"
+          onClick={() => router.push("/pools")}
+        >
           {`Pools >`} <span className="text-white">Details</span>
         </span>
       </div>

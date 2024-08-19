@@ -42,7 +42,7 @@ export default function TokenFeeAndCureentPrice({
     //   tokenPriceList[poolDetail.token_account_ids[currentSort[0]]]?.price ||
     Number(second_token_num) / Number(first_token_num);
   // rate < 0.001 ? "< 0.001" : numberWithCommas(rate.toFixed(3));
-  const showRate = beautifyNumber({ num: rate });
+  const showRate = rate && beautifyNumber({ num: rate });
   return (
     <div className="flex items-center text-white h-10 lg:justify-around  xsm:w-full xsm:justify-start">
       <div className="text-sm">

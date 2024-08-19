@@ -69,6 +69,7 @@ export default function StableAdd(props: any) {
     updatedMapList,
     isMobile,
     setAddSuccess,
+    addSuccess,
   } = props;
   const [balancesList, setBalances] = useState<any>([]);
   const [inputValList, setInputValList] = useState<any>([]);
@@ -103,7 +104,8 @@ export default function StableAdd(props: any) {
       }
     };
     fetchBalances();
-  }, [updatedMapList[0]?.token_account_ids]);
+  }, [updatedMapList[0], addSuccess]);
+
   const [preShare, setPreShare] = useState("0");
   const dealTokenAmounts = (
     ind: number,
@@ -112,7 +114,9 @@ export default function StableAdd(props: any) {
   ) => {
     if (!updatedMapList[0].token_account_ids) return;
     const fairShares = calculateFairShare({
-      shareOf: updatedMapList[0]?.shares_total_supply,
+      shareOf: Reflect.has(updatedMapList[0], "shareSupply")
+        ? updatedMapList[0]?.shareSupply
+        : updatedMapList[0]?.shares_total_supply,
       contribution: toNonDivisibleNumber(
         updatedMapList[0]?.token_account_ids[ind]?.decimals,
         currentList[ind]
@@ -130,7 +134,9 @@ export default function StableAdd(props: any) {
               updatedMapList[0]?.token_account_ids[anotherInd].id
             ],
           contribution: fairShares,
-          totalContribution: updatedMapList[0]?.shares_total_supply,
+          totalContribution: Reflect.has(updatedMapList[0], "shareSupply")
+            ? updatedMapList[0]?.shareSupply
+            : updatedMapList[0]?.shares_total_supply,
         })
       );
     }
@@ -147,7 +153,7 @@ export default function StableAdd(props: any) {
     };
   };
 
-  const changeVal = useCallback((e: any, ind: number) => {
+  const changeVal = (e: any, ind: number) => {
     if (updatedMapList[0]?.amounts.every((amount: any) => amount == "0")) {
       setInputValList((prev: string[]) => {
         const newValues = [...prev];
@@ -157,7 +163,14 @@ export default function StableAdd(props: any) {
       });
     } else {
       setInputValList((prev: string[]) => {
-        const newValues = [...prev];
+        const newValues =
+          prev.length < 1
+            ? [
+                ...new Array(
+                  updatedMapList[0]?.token_account_ids?.length || 2
+                ).fill(""),
+              ]
+            : [...prev];
         newValues[ind] = e.target.value;
         const { dealVal, fairShares }: any = dealTokenAmounts(
           ind,
@@ -168,7 +181,7 @@ export default function StableAdd(props: any) {
         return dealVal;
       });
     }
-  }, []);
+  };
 
   //
 

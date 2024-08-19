@@ -106,7 +106,7 @@ export default function ClassicPoolDetail() {
   useEffect(() => {
     if (poolId) {
       getPoolsDetailById({ pool_id: poolId as any }).then((res) => {
-        if (!res) {
+        if (!res || addSuccess > 0) {
           fetchPoolDetails(+poolId);
         } else {
           res &&
@@ -120,14 +120,14 @@ export default function ClassicPoolDetail() {
         setIsCollect(currentwatchListId.includes(poolId));
       }
     }
-  }, [poolId, currentwatchListId]);
+  }, [poolId, currentwatchListId, addSuccess]);
 
   useEffect(() => {
     getAllTokenPrices().then((res) => {
       setTokenPriceList(res);
     });
     poolStore.setPoolActiveTab("classic");
-  }, []);
+  }, [addSuccess]);
 
   const collectPool = () => {
     if (!accountId) showWalletSelectorModal(appStore.setShowRiskModal);
@@ -140,37 +140,42 @@ export default function ClassicPoolDetail() {
   };
 
   async function fetchPoolDetails(poolId: number) {
-    const k: any = {
-      amounts: ["0", "0"],
-      amp: 0,
-      apy: "0",
-      c_amounts: null,
-      degens: null,
-      farm_apy: "0",
-      farm_is_multi_currency: false,
-      fee_volume_24h: "0",
-      id: poolId,
-      is_farm: false,
-      is_meme: false,
-      is_new: true,
-      pool_kind: "",
-      rates: null,
-      shares_total_supply: "0",
-      token_account_ids: [],
-      token_symbols: [],
-      top: false,
-      total_fee: "0.0036",
-      tvl: "0",
-      volume_24h: "0",
-    };
-
     try {
       const poolDetails: any = await getPoolDetails(poolId);
+      const backEndPoolDetails = await getPoolsDetailById({
+        pool_id: poolId as any,
+      });
+      const k: any = backEndPoolDetails
+        ? {}
+        : {
+            amounts: ["0", "0"],
+            amp: 0,
+            apy: "0",
+            c_amounts: null,
+            degens: null,
+            farm_apy: "0",
+            farm_is_multi_currency: false,
+            fee_volume_24h: "0",
+            id: poolId,
+            is_farm: false,
+            is_meme: false,
+            is_new: true,
+            pool_kind: "",
+            rates: null,
+            shares_total_supply: "0",
+            token_account_ids: [],
+            token_symbols: [],
+            top: false,
+            total_fee: "0",
+            tvl: "0",
+            volume_24h: "0",
+          };
 
+      Object.assign(k, poolDetails);
+      backEndPoolDetails && Object.assign(k, backEndPoolDetails);
       k.token_account_ids = [...poolDetails.tokenIds];
       k.pool_kind = poolDetails.pool_kind;
       k.total_fee = poolDetails.fee / 10000; // 假设保留四位小数
-
       const tokenMetadataPromises = poolDetails.tokenIds.map((id: any) =>
         ftGetTokenMetadata(id)
       );
@@ -469,12 +474,15 @@ export default function ClassicPoolDetail() {
   return (
     <div className="w-full fccc h-full px-3">
       {/* return */}
-      <div className="lg:w-270 xsm:w-full cursor-pointer text-base text-gray-60 mb-3 lg:mt-8 hover:text-white">
+      <div className="lg:w-270 xsm:w-full cursor-pointer text-base text-gray-60 mb-3 lg:mt-8 ">
         <span
-          className="xsm:hidden"
+          className="xsm:hidden hover:text-white"
           onClick={() => router.push("/pools")}
         >{`<  Pools`}</span>
-        <span className="lg:hidden" onClick={() => router.push("/pools")}>
+        <span
+          className="lg:hidden hover:text-white"
+          onClick={() => router.push("/pools")}
+        >
           {`Pools >`} <span className="text-white">Details</span>
         </span>
       </div>
@@ -641,6 +649,7 @@ export default function ClassicPoolDetail() {
                 poolDetail={poolDetail}
                 updatedMapList={updatedMapList}
                 setAddSuccess={setAddSuccess}
+                shares={addSuccess > 0 ? newShares : shares}
               />
             )}
           </div>
@@ -957,7 +966,7 @@ export default function ClassicPoolDetail() {
           <YourLiqMobile
             isOpen={showYourLiq}
             onRequestClose={hideYourLiq}
-            shares={shares}
+            shares={addSuccess > 0 ? newShares : shares}
             totalShares={pool.shareSupply}
             poolId={pool.id}
             pool={pool}
@@ -989,6 +998,8 @@ export default function ClassicPoolDetail() {
             updatedMapList={updatedMapList}
             isMobile={isMobile}
             setAddSuccess={setAddSuccess}
+            addSuccess={addSuccess}
+            shares={addSuccess > 0 ? newShares : shares}
           />
 
           <ClassicRemove
@@ -999,6 +1010,8 @@ export default function ClassicPoolDetail() {
             updatedMapList={updatedMapList}
             isMobile={isMobile}
             setAddSuccess={setAddSuccess}
+            addSuccess={addSuccess}
+            shares={addSuccess > 0 ? newShares : shares}
           />
         </>
       )}

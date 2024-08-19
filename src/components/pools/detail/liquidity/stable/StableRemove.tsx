@@ -42,6 +42,10 @@ import { showWalletSelectorModal } from "@/utils/wallet";
 import successToast from "@/components/common/toast/successToast";
 import failToast from "@/components/common/toast/failToast";
 import { useNewPoolData } from "@/hooks/useStableShares";
+import { get_shadow_records } from "@/services/farm";
+import { list_farmer_seeds } from "@/services/farm";
+import { getPoolAvailableShare } from "@/hooks/useStableShares";
+
 export function myShares({
   totalShares,
   userTotalShare,
@@ -87,6 +91,7 @@ export default function StableAdd(props: any) {
     setAddSuccess,
     pool,
     shares,
+    addSuccess,
   } = props;
   const [balancesList, setBalances] = useState<any>([]);
   const [inputValList, setInputValList] = useState<any>([]);
@@ -253,7 +258,10 @@ export default function StableAdd(props: any) {
   });
   const [shareVal, setShareVal] = useState("");
   const changeShareVal = (val: any) => {
-    if (+val > +sharesDecimals || val <= 0) {
+    if (
+      +val > +(addSuccess > 0 ? newsharesDecimals : sharesDecimals) ||
+      val <= 0
+    ) {
       setCanSubmit(false);
     } else {
       setCanSubmit(true);
@@ -316,12 +324,74 @@ export default function StableAdd(props: any) {
       : toPrecision(nonPrecisionAmount, 3);
   };
 
+  const [newShadowRecords, setnewShadowRecords] = useState<any>({});
+  const [newFarmerSeeds, setnewFarmerSeeds] = useState<any>({});
+  const [newnewPool, setnewNewPool] = useState<any>();
+  const [newsharesDecimals, setnewsharesDecimals] = useState<any>("");
+
+  useEffect(() => {
+    if (addSuccess > 0) {
+      // const { shadowRecords } = useShadowRecord(pool?.id);
+      get_shadow_records().then((res) => {
+        setnewShadowRecords(res);
+      });
+
+      // const { farmerSeeds } = useListFarmerSeeds();
+
+      list_farmer_seeds().then((res) => {
+        setnewFarmerSeeds(res);
+      });
+    }
+  }, [addSuccess]);
+
+  useEffect(() => {
+    // todo: pool mutated key and value update here
+    if (addSuccess == 0 || !newFarmerSeeds || !newShadowRecords) return;
+    const updatePool = () => {
+      const pool2 = JSON.parse(JSON.stringify(pool));
+      const poolSeed = newFarmerSeeds?.[pool2.id];
+      pool2.raw = {
+        farmerSeeds: poolSeed,
+      };
+      pool2.farmShare = poolSeed
+        ? new BigNumber(poolSeed.free_amount)
+            .plus(poolSeed.shadow_amount)
+            .toFixed()
+        : shares;
+
+      const { availableShare, availableShareNonDivisible } =
+        getPoolAvailableShare({
+          pool: pool2,
+          shadowRecords: newShadowRecords,
+          shares,
+        });
+      pool2.availableShare = availableShare;
+      pool2.availableShareNonDivisible = availableShareNonDivisible;
+      setnewNewPool(pool2);
+    };
+    updatePool();
+  }, [addSuccess, newShadowRecords, newFarmerSeeds]);
+
+  useEffect(() => {
+    if (addSuccess > 0 && newnewPool?.availableShareNonDivisible) {
+      const sharesDecimals = toRoundedReadableNumber({
+        decimals: getStablePoolDecimal(poolDetail.id),
+        number: newnewPool?.availableShareNonDivisible,
+        precision: 12 || String(shares).length,
+      });
+      setnewsharesDecimals(sharesDecimals);
+    }
+  }, [newnewPool, addSuccess]);
+
   // by tokens
   const [error, setError]: any = useState(null);
   const { predictedRemoveShares, canSubmitByToken } = usePredictRemoveShares({
     amounts: [...inputValList],
     setError,
-    shares,
+    shares:
+      addSuccess > 0
+        ? newnewPool?.availableShareNonDivisible
+        : newPool?.availableShareNonDivisible,
     stablePool: updatedMapList[0],
   });
 
@@ -433,11 +503,16 @@ export default function StableAdd(props: any) {
                   <span>Shares</span>
                   <span
                     className={`underline hover:cursor-pointer  ${
-                      shareVal >= sharesDecimals
+                      shareVal >=
+                      (addSuccess > 0 ? newsharesDecimals : sharesDecimals)
                         ? "text-green-10 "
                         : "text-gray-50"
                     }`}
-                    onClick={() => changeShareVal(sharesDecimals)}
+                    onClick={() =>
+                      changeShareVal(
+                        addSuccess > 0 ? newsharesDecimals : sharesDecimals
+                      )
+                    }
                   >
                     Max
                   </span>
@@ -449,11 +524,16 @@ export default function StableAdd(props: any) {
                   <input
                     type="number"
                     className={`h-16 p-3 w-full ${
-                      +sharesDecimals > 0 ? "text-white" : "text-gray-50"
+                      +(addSuccess > 0 ? newsharesDecimals : sharesDecimals) > 0
+                        ? "text-white"
+                        : "text-gray-50"
                     }`}
                     style={{ fontSize: "26px" }}
                     placeholder="0"
-                    disabled={+sharesDecimals <= 0}
+                    disabled={
+                      +(addSuccess > 0 ? newsharesDecimals : sharesDecimals) <=
+                      0
+                    }
                     value={shareVal}
                     onChange={(e) => {
                       changeShareVal(e.target.value);
@@ -464,7 +544,7 @@ export default function StableAdd(props: any) {
               <RangeSlider
                 sliderAmount={shareVal || 0}
                 setSliderAmount={changeShareVal}
-                max={sharesDecimals}
+                max={addSuccess > 0 ? newsharesDecimals : sharesDecimals}
                 // setAmount={changeVal}
               ></RangeSlider>
 

@@ -483,6 +483,8 @@ export const usePredictRemoveShares = ({
   shares: string;
   stablePool: StablePool;
 }) => {
+  console.log(amounts, shares, stablePool, "stablePoolstablePool");
+
   const [canSubmitByToken, setCanSubmitByToken] = useState<boolean>(false);
 
   const [predictedRemoveShares, setPredictedRemoveShares] =
@@ -513,7 +515,7 @@ export const usePredictRemoveShares = ({
         amounts.map((amount) => amount || "0"),
         stablePool
       );
-
+      console.log(burn_shares, "burn_shares");
       validate(burn_shares);
       setPredictedRemoveShares(burn_shares);
     } catch (error) {

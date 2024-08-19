@@ -123,23 +123,23 @@ const config: Config = {
         },
       },
       width: {
-        ...getStyleMapping(1800, 0),
+        ...getStyleMapping(300, 0),
         "95vw": "95vw",
       },
       minWidth: {
-        ...getStyleMapping(1800, 0),
+        ...getStyleMapping(100, 0),
       },
       maxWidth: {
-        ...getStyleMapping(1800, 0),
+        ...getStyleMapping(80, 0),
       },
       height: {
-        ...getStyleMapping(1800, 0),
+        ...getStyleMapping(300, 0),
       },
       minHeight: {
-        ...getStyleMapping(1800, 0),
+        ...getStyleMapping(150, 0),
       },
       maxHeight: {
-        ...getStyleMapping(1800, 0),
+        ...getStyleMapping(120, 0),
       },
       backgroundImage: (theme) => ({
         topLinearGradient: "linear-gradient( #FFDA19, #FF833E)",

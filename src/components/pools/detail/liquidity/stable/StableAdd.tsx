@@ -347,7 +347,7 @@ export default function StableAdd(props: any) {
           <div className="lg:hidden text-white font-medium text-lg mb-6">
             Add Liquidity
           </div>
-          <div className="xsm:max-h-123  xsm:overflow-auto">
+          <div className="max-h-[492px]  overflow-auto">
             <div className="overflow-y-auto xsm:w-full">
               {updatedMapList[0]?.token_account_ids?.map(
                 (ite: any, ind: number) => {

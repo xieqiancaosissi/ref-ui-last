@@ -59,7 +59,7 @@ export function myShares({
   return inPrecisionDisplayUserTotalShares + " " + `(${displayPercent}%)`;
 }
 
-export default function StableAdd(props: any) {
+export default function ClassicAdd(props: any) {
   const accountStore = useAccountStore();
   const {
     isOpen,

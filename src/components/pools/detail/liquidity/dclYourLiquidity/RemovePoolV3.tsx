@@ -57,6 +57,7 @@ export type RemoveType = "left" | "right" | "all";
 export const RemovePoolV3 = (props: any) => {
   const {
     setAddSuccess,
+    addSuccess,
     tokenMetadata_x_y,
     poolDetail,
     tokenPriceList,

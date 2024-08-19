@@ -22,6 +22,9 @@ import { showWalletSelectorModal } from "@/utils/wallet";
 import RecentTransactionMobile from "@/components/pools/detail/stable/RecentTransactionMobile";
 import { PoolRouterGuard } from "@/utils/poolTypeGuard";
 import { openUrlLocal } from "@/services/commonV3";
+import { usePool } from "@/hooks/usePools";
+import { getPoolDetails } from "@/services/pool_detail";
+import { getSharesInPool } from "@/services/pool";
 
 export default function StablePoolDetail() {
   const appStore = useAppStore();
@@ -39,7 +42,20 @@ export default function StablePoolDetail() {
     { key: "liquidity", value: "Liquidity" },
   ];
   const [transactionActive, setTransactionActive] = useState("swap");
-  //
+  const [addSuccess, setAddSuccess] = useState(0);
+
+  // part
+  const [newPool, setNewPool] = useState<any>();
+  const [newShares, setNewShares] = useState<string>("0");
+  const [newFinalStakeList, setNewFinalStakeList] = useState<
+    Record<string, string>
+  >({});
+  const [newhaveShare, setnewhaveShare] = useState(false);
+  const [newTotalFarmStake, setNewTotalFarmStake] = useState("0");
+  const [newUserTotalShareToString, setNewUserTotalShareToString] =
+    useState("0");
+  const { shares, pool } = usePool(poolDetail?.id);
+
   useEffect(() => {
     if (poolId) {
       getPoolsDetailById({ pool_id: poolId as any }).then((res) => {
@@ -53,13 +69,26 @@ export default function StablePoolDetail() {
       }
     }
   }, [poolId, currentwatchListId]);
+  //
+  // useEffect(() => {
+  //   if (poolId) {
+  //     getPoolsDetailById({ pool_id: poolId as any }).then((res) => {
+  //       PoolRouterGuard(res, "", true) &&
+  //         openUrlLocal(`${PoolRouterGuard(res, "", true)}/${poolId}`);
+  //       setPoolDetail(res);
+  //     });
+
+  //     if (currentwatchListId.length > 0) {
+  //       setIsCollect(currentwatchListId.includes(poolId));
+  //     }
+  //   }
+  // }, [poolId, currentwatchListId]);
 
   useEffect(() => {
     getAllTokenPrices().then((res) => {
       setTokenPriceList(res);
-      //
     });
-    poolStore.setPoolActiveTab("degen");
+    poolStore.setPoolActiveTab("stable");
   }, []);
 
   const collectPool = () => {
@@ -96,10 +125,28 @@ export default function StablePoolDetail() {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
+
+  useEffect(() => {
+    if (addSuccess > 0) {
+      const PoolFn = (id: number | string) => {
+        getPoolDetails(Number(id)).then((res) => {
+          console.log(res);
+          setNewPool(res);
+        });
+        getSharesInPool(Number(id))
+          .then((res) => {
+            console.log(res, "newSharesnewShares");
+            setNewShares(res);
+          })
+          .catch(() => setNewShares);
+      };
+      PoolFn(poolId.toString());
+    }
+  }, [addSuccess]);
   return (
-    <div className="w-full fccc h-full">
+    <div className="w-full fccc h-full ">
       <div
-        className="w-full fccc lg:mt-3 xsm:px-3"
+        className="w-full fccc  lg:mt-3 xsm:px-3"
         style={{
           background: isMobile ? "transparent" : "rgba(33, 43, 53, 0.4)",
         }}
@@ -156,6 +203,7 @@ export default function StablePoolDetail() {
         {/* share and liquidity action */}
         {poolDetail && (
           <ShareContainer
+            key={addSuccess}
             poolDetail={poolDetail}
             setShowAdd={setShowAdd}
             setShowRemove={setShowRemove}
@@ -274,7 +322,7 @@ export default function StablePoolDetail() {
       </div>
 
       {/* add */}
-      {updatedMapList && poolDetail && (
+      {updatedMapList && poolDetail && (addSuccess > 0 ? newPool : pool) && (
         <>
           <StableAdd
             isOpen={showAdd}
@@ -283,6 +331,9 @@ export default function StablePoolDetail() {
             pureIdList={pureIdList}
             updatedMapList={updatedMapList}
             isMobile={isMobile}
+            tokenPriceList={tokenPriceList}
+            setAddSuccess={setAddSuccess}
+            addSuccess={addSuccess}
           />
 
           <StableRemove
@@ -292,6 +343,10 @@ export default function StablePoolDetail() {
             pureIdList={pureIdList}
             updatedMapList={updatedMapList}
             isMobile={isMobile}
+            setAddSuccess={setAddSuccess}
+            shares={addSuccess > 0 ? newShares : shares}
+            pool={addSuccess > 0 ? newPool : pool}
+            addSuccess={addSuccess}
           />
         </>
       )}

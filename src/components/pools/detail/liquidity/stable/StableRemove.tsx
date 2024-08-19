@@ -78,7 +78,7 @@ export function myShares({
   return inPrecisionDisplayUserTotalShares + " " + `(${displayPercent}%)`;
 }
 
-export default function StableAdd(props: any) {
+export default function StableRemove(props: any) {
   const accountStore = useAccountStore();
   const appStore = useAppStore();
   const {

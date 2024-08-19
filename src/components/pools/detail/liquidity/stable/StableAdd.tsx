@@ -76,6 +76,7 @@ export default function StableAdd(props: any) {
     isMobile,
     tokenPriceList,
     setAddSuccess,
+    addSuccess,
   } = props;
   const [balancesList, setBalances] = useState<any>([]);
   const [inputValList, setInputValList] = useState<any>([]);
@@ -94,7 +95,7 @@ export default function StableAdd(props: any) {
   const [sumToken, setSumToken] = useState(0);
   const [everyTokenPercent, setEveryTokenPercent] = useState<any>({});
   useEffect(() => {
-    if (updatedMapList?.length > 0) {
+    if (updatedMapList?.length > 0 || addSuccess > 0) {
       let sumT = 0;
       const everyT: any = everyTokenPercent;
       updatedMapList.map((item: any, index: number) => {
@@ -118,7 +119,7 @@ export default function StableAdd(props: any) {
       setEveryTokenPercent(everyT);
       setSumToken(sumT);
     }
-  }, [updatedMapList]);
+  }, [updatedMapList, addSuccess]);
 
   useEffect(() => {
     const array = new Array(
@@ -137,7 +138,7 @@ export default function StableAdd(props: any) {
       }
     };
     fetchBalances();
-  }, [updatedMapList[0]?.token_account_ids]);
+  }, [updatedMapList[0]?.token_account_ids, addSuccess]);
 
   const changeVal = (e: any, ind: number, ite: any, radioActivestr: string) => {
     if (radioActivestr == "init") {

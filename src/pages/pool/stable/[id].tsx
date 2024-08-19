@@ -320,6 +320,7 @@ export default function StablePoolDetail() {
             isMobile={isMobile}
             tokenPriceList={tokenPriceList}
             setAddSuccess={setAddSuccess}
+            addSuccess={addSuccess}
           />
 
           <StableRemove

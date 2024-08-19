@@ -507,15 +507,17 @@ export const useNewPoolData = ({
   pool: any;
   shares: any;
 }) => {
-  const { shadowRecords } = useShadowRecord(pool.id);
+  const { shadowRecords } = useShadowRecord(pool?.id);
   const { farmerSeeds } = useListFarmerSeeds();
   const [newPool, setNewPool] = useState<any>();
   const isShadowPool = getConfigV2().SUPPORT_SHADOW_POOL_IDS.includes(
-    pool.id?.toString()
+    pool?.id?.toString()
   );
 
   useEffect(() => {
-    updatePool();
+    if (pool) {
+      updatePool();
+    }
   }, [pool, shadowRecords, farmerSeeds]);
 
   // todo: pool mutated key and value update here
@@ -560,7 +562,7 @@ export const getPoolAvailableShare = ({
     scientificNotationToString(shares)
   );
   const isShadowPool = getConfigV2().SUPPORT_SHADOW_POOL_IDS.includes(
-    pool.id?.toString()
+    pool?.id?.toString()
   );
   let availableShare = "";
   let availableShareNonDivisible = "";

@@ -976,8 +976,9 @@ function YourClassicLiquidityLinePage(props: any) {
                 />
               )}
               {shadowBurrowShare?.stakeAmount &&
+                pool &&
                 getConfigV2().SUPPORT_SHADOW_POOL_IDS.includes(
-                  pool.id?.toString()
+                  pool?.id?.toString()
                 ) && (
                   <div
                     className={`cursor-pointer ${
@@ -1047,7 +1048,7 @@ function YourClassicLiquidityLinePage(props: any) {
               ) : null}
 
               {ONLY_ZEROS.test(sharesNew) ||
-              (supportFarmV1 === 0 && supportFarmV2 === 0) ? null : (
+              (supportFarmV1 === 0 && supportFarmV2 === 0 && pool) ? null : (
                 <div className="flex items-center">
                   <PoolAvailableAmount
                     shares={sharesNew}
@@ -1221,8 +1222,9 @@ function YourClassicLiquidityLinePage(props: any) {
                 )}
 
                 {shadowBurrowShare?.stakeAmount &&
+                  pool &&
                   getConfigV2().SUPPORT_SHADOW_POOL_IDS.includes(
-                    pool.id?.toString()
+                    pool?.id?.toString()
                   ) && (
                     <div
                       className={`cursor-pointer flex items-end justify-end ${
@@ -1294,7 +1296,7 @@ function YourClassicLiquidityLinePage(props: any) {
                 ) : null}
 
                 {ONLY_ZEROS.test(sharesNew) ||
-                (supportFarmV1 === 0 && supportFarmV2 === 0) ? null : (
+                (supportFarmV1 === 0 && supportFarmV2 === 0 && pool) ? null : (
                   <div className="flex items-center justify-end">
                     <PoolAvailableAmount
                       shares={sharesNew}

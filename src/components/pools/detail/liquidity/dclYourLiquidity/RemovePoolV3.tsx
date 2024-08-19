@@ -829,7 +829,7 @@ export const RemovePoolV3 = (props: any) => {
           <div className="text-gray-60 text-base">Remove</div>
           <div className="frcs gap-2 text-xs text-gray-60">
             <div
-              className={`p-2 border  cursor-pointer rounded-md ${
+              className={`p-2 border border-gray-100  cursor-pointer rounded-md ${
                 removeType === "left" ? "bg-gray-100 text-white" : ""
               }`}
               onClick={(e) => {
@@ -848,7 +848,7 @@ export const RemovePoolV3 = (props: any) => {
             </div>
 
             <div
-              className={`p-2 border  cursor-pointer rounded-md ${
+              className={`p-2 border border-gray-100  cursor-pointer rounded-md ${
                 removeType === "right" ? "bg-gray-100 text-white" : ""
               }`}
               onClick={(e) => {
@@ -867,7 +867,7 @@ export const RemovePoolV3 = (props: any) => {
             </div>
 
             <div
-              className={`p-2 border  cursor-pointer rounded-md ${
+              className={`p-2 border border-gray-100  cursor-pointer rounded-md ${
                 removeType === "all" ? "bg-gray-100 text-white" : ""
               }`}
               onClick={(e) => {
@@ -906,7 +906,7 @@ export const RemovePoolV3 = (props: any) => {
         {/* Set points */}
         <div className="mb-3 text-base grid xs:grid-rows-3 lg:grid-cols-3 gap-2 w-full mt-6">
           {/* min price  */}
-          <div className="frcs w-full border py-2 px-3 rounded-xl col-span-1">
+          <div className="frcs w-full border py-2 px-3 rounded-xl col-span-1 border-gray-100">
             <span className="text-xs min-w-max text-gray-60">Min Price</span>
 
             <input
@@ -926,7 +926,7 @@ export const RemovePoolV3 = (props: any) => {
             ></input>
           </div>
           {/* max price */}
-          <div className="frcs w-full border  py-2 px-3 rounded-xl col-span-1">
+          <div className="frcs w-full border  py-2 px-3 rounded-xl col-span-1 border-gray-100">
             <span className="text-xs min-w-max text-gray-60">Max Price</span>
             <input
               className={`ml-2 font-bold xs:text-right ${
@@ -945,7 +945,7 @@ export const RemovePoolV3 = (props: any) => {
             ></input>
           </div>
           {/* bin amount */}
-          <div className="frcs w-full border  py-2 px-3 rounded-xl col-span-1">
+          <div className="frcs w-full border  py-2 px-3 rounded-xl col-span-1 border-gray-100">
             <span className="text-xs  min-w-max text-gray-60">Bin Amount</span>
 
             <IntegerInputComponent

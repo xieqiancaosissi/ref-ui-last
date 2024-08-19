@@ -652,7 +652,7 @@ export default function StableAdd(props: any) {
                         <>
                           <div
                             key={ite.tokenId}
-                            className="flex lg:h-13 xsm:h-12 mt-2 p-2 lg:w-45 xsm:w-5/12 shrink-0 items-center rounded bg-gray-230"
+                            className="flex lg:h-13 xsm:h-12 mt-2 p-2 lg:w-45 xsm:w-5/12 shrink-0 items-center rounded bg-gray-310"
                           >
                             <Icon icon={ite.icon} className="h-7 w-7 mr-2" />
                             <span className="text-gray-50 text-base xsm:hidden">

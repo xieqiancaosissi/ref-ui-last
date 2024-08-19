@@ -10,6 +10,7 @@ import { SplitRectangleIcon, ExchangeIcon } from "@/components/pools/icon";
 import moment from "moment";
 import DclChart from "./d3Chart/DclChart";
 import { TOKEN_LIST_FOR_RATE } from "@/services/commonV3";
+import { beautifyNumber } from "@/components/common/beautifyNumber";
 
 export default function TvlAndVolumeCharts(props: any) {
   const [rateDirection, setRateDirection] = useState(true);
@@ -154,14 +155,17 @@ export default function TvlAndVolumeCharts(props: any) {
               {/* token right amount */}
               {tokenPriceList && poolDetail && (
                 <span className="mr-1">
-                  {((tokenPriceList[
-                    poolDetail?.token_account_ids[currentSort[0]]
-                  ].price /
-                    tokenPriceList[
-                      poolDetail?.token_account_ids[currentSort[1]]
-                    ].price) *
-                    100) /
-                    100}
+                  {beautifyNumber({
+                    num:
+                      ((tokenPriceList[
+                        poolDetail?.token_account_ids[currentSort[0]]
+                      ].price /
+                        tokenPriceList[
+                          poolDetail?.token_account_ids[currentSort[1]]
+                        ].price) *
+                        100) /
+                      100,
+                  })}
                 </span>
               )}
               {/* token right name */}
@@ -198,12 +202,17 @@ export default function TvlAndVolumeCharts(props: any) {
             {/* token right amount */}
             {tokenPriceList && poolDetail && (
               <span className="mr-1">
-                {((tokenPriceList[poolDetail?.token_account_ids[currentSort[0]]]
-                  .price /
-                  tokenPriceList[poolDetail?.token_account_ids[currentSort[1]]]
-                    .price) *
-                  100) /
-                  100}
+                {beautifyNumber({
+                  num:
+                    ((tokenPriceList[
+                      poolDetail?.token_account_ids[currentSort[0]]
+                    ].price /
+                      tokenPriceList[
+                        poolDetail?.token_account_ids[currentSort[1]]
+                      ].price) *
+                      100) /
+                    100,
+                })}
               </span>
             )}
             {/* token right name */}

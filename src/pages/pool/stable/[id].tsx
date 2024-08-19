@@ -23,6 +23,8 @@ import RecentTransactionMobile from "@/components/pools/detail/stable/RecentTran
 import { PoolRouterGuard } from "@/utils/poolTypeGuard";
 import { openUrlLocal } from "@/services/commonV3";
 import { usePool } from "@/hooks/usePools";
+import { getPoolDetails } from "@/services/pool_detail";
+import { getSharesInPool } from "@/services/pool";
 
 export default function StablePoolDetail() {
   const appStore = useAppStore();
@@ -41,6 +43,17 @@ export default function StablePoolDetail() {
   ];
   const [transactionActive, setTransactionActive] = useState("swap");
   const [addSuccess, setAddSuccess] = useState(0);
+
+  // part
+  const [newPool, setNewPool] = useState<any>();
+  const [newShares, setNewShares] = useState<string>("0");
+  const [newFinalStakeList, setNewFinalStakeList] = useState<
+    Record<string, string>
+  >({});
+  const [newhaveShare, setnewhaveShare] = useState(false);
+  const [newTotalFarmStake, setNewTotalFarmStake] = useState("0");
+  const [newUserTotalShareToString, setNewUserTotalShareToString] =
+    useState("0");
   const { shares, pool } = usePool(poolDetail?.id);
 
   //
@@ -99,6 +112,24 @@ export default function StablePoolDetail() {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
+
+  useEffect(() => {
+    if (addSuccess > 0) {
+      const PoolFn = (id: number | string) => {
+        getPoolDetails(Number(id)).then((res) => {
+          console.log(res);
+          setNewPool(res);
+        });
+        getSharesInPool(Number(id))
+          .then((res) => {
+            console.log(res, "newSharesnewShares");
+            setNewShares(res);
+          })
+          .catch(() => setNewShares);
+      };
+      PoolFn(poolId.toString());
+    }
+  }, [addSuccess]);
   return (
     <div className="w-full fccc h-full ">
       <div
@@ -275,7 +306,7 @@ export default function StablePoolDetail() {
       </div>
 
       {/* add */}
-      {updatedMapList && poolDetail && pool && (
+      {updatedMapList && poolDetail && (addSuccess > 0 ? newPool : pool) && (
         <>
           <StableAdd
             isOpen={showAdd}
@@ -296,8 +327,9 @@ export default function StablePoolDetail() {
             updatedMapList={updatedMapList}
             isMobile={isMobile}
             setAddSuccess={setAddSuccess}
-            shares={shares}
-            pool={pool}
+            shares={addSuccess > 0 ? newShares : shares}
+            pool={addSuccess > 0 ? newPool : pool}
+            addSuccess={addSuccess}
           />
         </>
       )}

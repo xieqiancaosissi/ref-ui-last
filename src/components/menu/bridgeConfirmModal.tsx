@@ -35,7 +35,7 @@ export default function BridgeConfirmModal(props: any) {
         </div>
         {/* Logo */}
         <div
-          className="flex items-center justify-center mt-6"
+          className="flex items-center justify-center mt-6 text-white"
           style={{ transform: "scale(250%)" }}
         >
           {bridgeData?.icon}

@@ -5,7 +5,6 @@ import React, {
   useContext,
   useMemo,
 } from "react";
-import Modal from "react-modal";
 import Big from "big.js";
 import { useAccountStore } from "@/stores/account";
 import { isMobile } from "@/utils/device";
@@ -24,7 +23,7 @@ import useHoldings from "@/hooks/orderbook/useHoldings";
 export const OverviewData = createContext<OverviewContextType | null>(null);
 const is_mobile: boolean = !!isMobile();
 
-export default function Overview() {
+export default function Overview({ isOpen }: { isOpen: boolean }) {
   const accountStore = useAccountStore();
   const accountId = getAccountId();
   const isSignedIn = accountStore.isSignedIn;
@@ -132,6 +131,11 @@ export default function Overview() {
     // get all token prices
     getTokenPriceList();
   }, []);
+  useEffect(() => {
+    if (!isOpen) {
+      setActiveTab("Wallet");
+    }
+  }, [isOpen]);
 
   async function getTokenPriceList() {
     const tokenPriceList = await getBoostTokenPrices();
@@ -149,9 +153,6 @@ export default function Overview() {
   function hidePortfolioPanelModal() {
     setIsPortfolioPanelOpen(false);
   }
-  // console.log(wallet_assets_value,'wallet_assets_value')
-  // console.log(ref_invest_value,'ref_invest_value')
-  // console.log(ref_profit_value,'ref_profit_value')
   return (
     <OverviewData.Provider
       value={{
@@ -181,6 +182,7 @@ export default function Overview() {
         wallet_assets_value_done,
         burrow_borrowied_value,
         burrow_done,
+        isOpen,
       }}
     >
       {/* pc */}
@@ -228,17 +230,19 @@ export default function Overview() {
             <div className={activeTab === "Wallet" ? "" : "hidden"}>
               <WalletPanel />
             </div>
-            <div className={activeTab === "Portfolio" ? "" : "hidden"}>
-              <RefPanel></RefPanel>
-              <OrderlyPanel></OrderlyPanel>
-              <BurrowPanel></BurrowPanel>
-              <div className="frcb mt-6 px-4">
-                <p className="text-gray-50 text-sm">Total</p>
-                <p className="text-base xsm:text-primaryGreen">
-                  {formatWithCommas_usd(portfolioAssets)}
-                </p>
+            {isOpen ? (
+              <div className={activeTab === "Portfolio" ? "" : "hidden"}>
+                <RefPanel></RefPanel>
+                <OrderlyPanel></OrderlyPanel>
+                <BurrowPanel></BurrowPanel>
+                <div className="frcb mt-6 px-4">
+                  <p className="text-gray-50 text-sm">Total</p>
+                  <p className="text-base xsm:text-primaryGreen">
+                    {formatWithCommas_usd(portfolioAssets)}
+                  </p>
+                </div>
               </div>
-            </div>
+            ) : null}
           </div>
         </div>
       ) : null}
@@ -366,4 +370,5 @@ export interface OverviewContextType {
   wallet_assets_value_done: boolean;
   burrow_borrowied_value: string;
   burrow_done: boolean;
+  isOpen: boolean;
 }

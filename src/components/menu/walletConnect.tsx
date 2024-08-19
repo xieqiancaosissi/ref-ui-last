@@ -304,7 +304,7 @@ export default function WalletConnect() {
                           />
                         </div>
                       </div>
-                      <Overview />
+                      <Overview isOpen={isOpen} />
                     </div>
                   </div>
                 </div>

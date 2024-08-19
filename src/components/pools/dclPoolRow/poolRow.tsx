@@ -115,7 +115,7 @@ export default function PoolRow({
               {/* 24h */}
               <div>{toInternationalCurrencySystem_usd(item.volume_24h)}</div>
               {/* tvl */}
-              <div>{toInternationalCurrencySystem_number(item.tvl)}</div>
+              <div>${toInternationalCurrencySystem_number(item.tvl)}</div>
             </div>
             {/* PC END */}
 
@@ -223,7 +223,7 @@ export default function PoolRow({
                 <span className="text-gray-60 text-sm font-normal lg:hidden">
                   TVL:
                 </span>
-                {toInternationalCurrencySystem_number(item.tvl)}
+                ${toInternationalCurrencySystem_number(item.tvl)}
               </div>
             </div>
           </div>

@@ -230,7 +230,7 @@ export default function PoolRow(props: any) {
 
             {/* tvl */}
             <div>
-              <div>{toInternationalCurrencySystem_number(item.tvl)}</div>
+              <div>${toInternationalCurrencySystem_number(item.tvl)}</div>
 
               {/* tvl token amounts */}
               <div className={styles.tokenCharts}>
@@ -310,7 +310,7 @@ export default function PoolRow(props: any) {
             {/* tvl */}
             <div>
               <div className="text-sm text-gray-60 font-normal">TVL:</div>
-              <div>{toInternationalCurrencySystem_number(item.tvl)}</div>
+              <div>${toInternationalCurrencySystem_number(item.tvl)}</div>
             </div>
 
             <div>

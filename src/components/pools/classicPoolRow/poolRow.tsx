@@ -123,7 +123,7 @@ export default function PoolRow({
                 {/* 24h */}
                 <div>{toInternationalCurrencySystem_usd(item.volume_24h)}</div>
                 {/* tvl */}
-                <div>{toInternationalCurrencySystem_number(item.tvl)}</div>
+                <div>${toInternationalCurrencySystem_number(item.tvl)}</div>
               </div>
             </div>
           );
@@ -226,7 +226,7 @@ export default function PoolRow({
                 </div>
                 {/* tvl */}
                 <div className={`${activeTab.key != "tvl" && "xsm:hidden"}`}>
-                  {toInternationalCurrencySystem_number(item.tvl)}
+                  ${toInternationalCurrencySystem_number(item.tvl)}
                 </div>
               </div>
             </div>

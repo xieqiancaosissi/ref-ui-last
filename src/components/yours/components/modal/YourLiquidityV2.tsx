@@ -77,6 +77,8 @@ import { ButtonTextWrapper } from "@/components/common/Button";
 import { RemovePoolV3 } from "@/components/pools/detail/liquidity/dclYourLiquidity/RemovePoolV3";
 import { OrdersArrow, WaterDropIcon } from "../icon";
 import { DCLIconNew } from "../icon";
+import successToast from "@/components/common/toast/successToast";
+import failToast from "@/components/common/toast/failToast";
 
 const { REF_UNI_V3_SWAP_CONTRACT_ID } = getConfig();
 export function YourLiquidityV2(props: any) {
@@ -99,8 +101,8 @@ export function YourLiquidityV2(props: any) {
   const [liquidities_list, set_liquidities_list] = useState<
     UserLiquidityInfo[]
   >([]);
-
   const [groupYourLiquidity, setGroupYourLiquidity] = useState<any>();
+  const [addSuccess, setAddSuccess] = useState(0);
 
   const [liquidities_details_list, set_iquidities_details_list] = useState<
     UserLiquidityInfo[]
@@ -116,22 +118,22 @@ export function YourLiquidityV2(props: any) {
     get_all_seeds().then((seeds: Seed[]) => {
       set_all_seeds(seeds);
     });
-  }, []);
+  }, [addSuccess]);
   useEffect(() => {
     if (isSignedIn) {
       get_list_liquidities();
     }
-  }, [isSignedIn]);
+  }, [isSignedIn, addSuccess]);
   useEffect(() => {
     if (liquidities_list.length > 0) {
       get_all_pools_detail();
       get_all_tokens_metas();
       get_all_liquidities_details();
     }
-  }, [liquidities_list]);
+  }, [liquidities_list, addSuccess]);
   useEffect(() => {
     get_all_liquidity_value();
-  }, [all_pools_map, liquidities_tokens_metas, tokenPriceList]);
+  }, [all_pools_map, liquidities_tokens_metas, tokenPriceList, addSuccess]);
   const dcl_liquidities_details_map = useMemo(() => {
     let temp_map: Record<string, UserLiquidityInfo> = {};
     if (liquidities_details_list.length > 0) {
@@ -210,6 +212,7 @@ export function YourLiquidityV2(props: any) {
     tokenPriceList,
     dcl_liquidities_details_map,
     Object.keys(dcl_liquidities_details_map).length === 0,
+    addSuccess,
   ]);
   async function get_list_liquidities() {
     const list: UserLiquidityInfo[] = await list_liquidities();
@@ -401,6 +404,8 @@ export function YourLiquidityV2(props: any) {
                 liquidities_list={liquidity.map((l: any) => l.liquidityDetail)}
                 tokenPriceList={tokenPriceList}
                 all_seeds={all_seeds}
+                setAddSuccess={setAddSuccess}
+                addSuccess={addSuccess}
               />
             );
           }
@@ -717,11 +722,15 @@ function UserLiquidityLineStyleGroup({
   liquidities_list,
   tokenPriceList,
   all_seeds,
+  setAddSuccess,
+  addSuccess,
 }: {
   groupYourLiquidityList: any[];
   liquidities_list: UserLiquidityInfo[];
   tokenPriceList: any;
   all_seeds: Seed[];
+  setAddSuccess?: any;
+  addSuccess?: any;
 }) {
   const publicData = groupYourLiquidityList[0];
   const {
@@ -759,7 +768,13 @@ function UserLiquidityLineStyleGroup({
     ) {
       get_24_apr();
     }
-  }, [poolDetail, tokenPriceList, tokenMetadata_x_y, liquidities_list]);
+  }, [
+    poolDetail,
+    tokenPriceList,
+    tokenMetadata_x_y,
+    liquidities_list,
+    addSuccess,
+  ]);
   useEffect(() => {
     if (
       all_seeds.length &&
@@ -877,7 +892,13 @@ function UserLiquidityLineStyleGroup({
       set_joined_seeds(joined_seeds);
       set_joined_seeds_done(true);
     }
-  }, [groupYourLiquidityList, liquidities_list, tokenPriceList, all_seeds]);
+  }, [
+    groupYourLiquidityList,
+    liquidities_list,
+    tokenPriceList,
+    all_seeds,
+    addSuccess,
+  ]);
 
   function get_go_seed_link_url(seed: Seed) {
     const [fixRange, dcl_pool_id, left_point_seed, right_point_seed] =
@@ -1119,7 +1140,20 @@ function UserLiquidityLineStyleGroup({
       token_x: tokenMetadata_x_y[0],
       token_y: tokenMetadata_x_y[1],
       lpt_ids,
-    });
+    })
+      .then((res: any) => {
+        if (!res) return;
+        let status;
+        if (res.status == "success") {
+          successToast();
+          setAddSuccess((pre: number) => pre + 1);
+        } else if (res.status == "error") {
+          failToast(res.errorResult?.message);
+        }
+      })
+      .finally(() => {
+        set_claim_loading(false);
+      });
   }
   function isPending(seed: Seed) {
     let pending: boolean = true;
@@ -1213,6 +1247,7 @@ function UserLiquidityLineStyleGroup({
         poolDetail,
         tokenPriceList,
         tokenFeeValue,
+        setAddSuccess,
       }}
     >
       <UserLiquidityLineStyleGroupPage></UserLiquidityLineStyleGroupPage>
@@ -1245,6 +1280,7 @@ function UserLiquidityLineStyleGroupPage() {
     setRemoveButtonTip,
     setShowRemoveBox,
     showRemoveBox,
+    setAddSuccess,
   } = useContext(GroupData)!;
   const [switch_off, set_switch_off] = useState<boolean>(true);
   function goPoolDetailPage() {
@@ -1269,7 +1305,20 @@ function UserLiquidityLineStyleGroupPage() {
       token_x: tokenMetadata_x_y[0],
       token_y: tokenMetadata_x_y[1],
       lpt_ids,
-    });
+    })
+      .then((res: any) => {
+        if (!res) return;
+        let status;
+        if (res.status == "success") {
+          successToast();
+          setAddSuccess((pre: number) => pre + 1);
+        } else if (res.status == "error") {
+          failToast(res.errorResult?.message);
+        }
+      })
+      .finally(() => {
+        set_claim_loading(false);
+      });
   }
 
   const toDclLiq = (id: string) => {
@@ -1939,6 +1988,7 @@ function UserLiquidityLineStyleGroupPage() {
               transform: "translate(-50%, -50%)",
             },
           }}
+          setAddSuccess={setAddSuccess}
         ></RemovePoolV3>
       ) : null}
     </>

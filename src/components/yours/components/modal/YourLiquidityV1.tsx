@@ -104,7 +104,7 @@ export function YourLiquidityV1(props: any) {
   const [count, setCount] = useState(0);
   const isSignedIn = accountStore.isSignedIn;
   const { pureIdList } = useRiskTokens();
-
+  const [addSuccess, setAddSuccess] = useState(0);
   useEffect(() => {
     // get all stable pools;
     const ids = ALL_STABLE_POOL_IDS;
@@ -112,14 +112,14 @@ export function YourLiquidityV1(props: any) {
       console.log(res, "getPoolsByIds82");
       setStablePools(res.filter((p) => p.id.toString() !== NEARX_POOL_ID));
     });
-  }, []);
+  }, [addSuccess]);
   useEffect(() => {
     if (!isSignedIn) return;
     // get all simple pools;
     getYourPools().then((res) => {
       setPools(res.filter((p) => !isStablePool(p.id.toString())));
     });
-  }, [isSignedIn]);
+  }, [isSignedIn, addSuccess]);
   useEffect(() => {
     if (!pools) return;
     // get all tokens meta data both from simple pools and stable pools
@@ -143,7 +143,7 @@ export function YourLiquidityV1(props: any) {
         );
       }
     );
-  }, [pools]);
+  }, [pools, addSuccess]);
   // get ve pool
   const vePool = pools?.find((p) => Number(p.id) === Number(getVEPoolId()));
   // get stake list in v1 farm and v2 farm
@@ -246,7 +246,7 @@ export function YourLiquidityV1(props: any) {
         setYourLpValueV1("0");
       }
     }
-  }, [data_fetch_status, tvls]);
+  }, [data_fetch_status, tvls, addSuccess]);
   if (data_fetch_status) return null;
   return (
     <>
@@ -274,6 +274,8 @@ export function YourLiquidityV1(props: any) {
           showV1EmptyBar,
           router,
           pureIdList,
+          setAddSuccess,
+          addSuccess,
         }}
       >
         <LiquidityContainerStyle2></LiquidityContainerStyle2>
@@ -293,6 +295,8 @@ function LiquidityContainerStyle2() {
     v2StakeList,
     router,
     pureIdList,
+    setAddSuccess,
+    addSuccess,
   } = useContext(StakeListContext)!;
   const simplePoolsFinal = useMemo(() => {
     const activeSimplePools: PoolRPCView[] = pools.filter(
@@ -352,7 +356,11 @@ function LiquidityContainerStyle2() {
         })}
       </div>
       {!vePool || !getConfig().REF_VE_CONTRACT_ID ? null : (
-        <YourClassicLiquidityLine pool={vePool}></YourClassicLiquidityLine>
+        <YourClassicLiquidityLine
+          pool={vePool}
+          addSuccess={addSuccess}
+          setAddSuccess={setAddSuccess}
+        ></YourClassicLiquidityLine>
       )}
       {stablePoolsFinal.map((pool: PoolRPCView) => {
         return (
@@ -360,6 +368,8 @@ function LiquidityContainerStyle2() {
             pool={pool}
             key={pool.id}
             type="stable"
+            addSuccess={addSuccess}
+            setAddSuccess={setAddSuccess}
           ></YourClassicLiquidityLine>
         );
       })}
@@ -368,6 +378,8 @@ function LiquidityContainerStyle2() {
           <YourClassicLiquidityLine
             pool={pool}
             key={pool.id}
+            addSuccess={addSuccess}
+            setAddSuccess={setAddSuccess}
           ></YourClassicLiquidityLine>
         );
       })}
@@ -395,6 +407,8 @@ function YourClassicLiquidityLine(props: any) {
     v2StakeList,
     router,
     pureIdList,
+    addSuccess,
+    setAddSuccess,
   } = useContext(StakeListContext)!;
 
   const { set_your_classic_lp_all_in_farms } = useContext(
@@ -526,7 +540,7 @@ function YourClassicLiquidityLine(props: any) {
     getSharesInPool(+poolId)
       .then(setShares)
       .catch(() => setShares);
-  }, []);
+  }, [addSuccess]);
 
   const farmStakeTotal = useFarmStake({ poolId, stakeList: finalStakeList });
   const LpLocked = useLpLocker(`:${poolId}`);
@@ -756,7 +770,7 @@ function YourClassicLiquidityLine(props: any) {
     ) {
       set_your_classic_lp_all_in_farms(false);
     }
-  }, [lp_in_pool, lp_in_vote]);
+  }, [lp_in_pool, lp_in_vote, addSuccess]);
   return (
     <LiquidityContextData.Provider
       value={{
@@ -787,6 +801,8 @@ function YourClassicLiquidityLine(props: any) {
         v2StakeList,
         router,
         pureIdList,
+        addSuccess,
+        setAddSuccess,
       }}
     >
       <YourClassicLiquidityLinePage
@@ -823,6 +839,8 @@ function YourClassicLiquidityLinePage(props: any) {
     v2StakeList,
     router,
     pureIdList,
+    addSuccess,
+    setAddSuccess,
   } = useContext(LiquidityContextData)!;
   const lpDecimal = isStablePool(pool.id) ? getStablePoolDecimal(pool.id) : 24;
   const supportFarmV1 = getFarmsCount(pool.id.toString(), v1Farm);
@@ -853,7 +871,7 @@ function YourClassicLiquidityLinePage(props: any) {
         setPoolDetail(res);
       });
     }
-  }, [pool]);
+  }, [pool, addSuccess]);
 
   const [showAdd, setShowAdd] = useState(false);
   const hideAdd = () => {
@@ -1359,6 +1377,8 @@ function YourClassicLiquidityLinePage(props: any) {
             poolDetail={poolDetail}
             pureIdList={pureIdList}
             updatedMapList={updatedMapList}
+            addSuccess={addSuccess}
+            setAddSuccess={setAddSuccess}
           />
 
           <ClassicRemove
@@ -1367,6 +1387,8 @@ function YourClassicLiquidityLinePage(props: any) {
             poolDetail={poolDetail}
             pureIdList={pureIdList}
             updatedMapList={updatedMapList}
+            addSuccess={addSuccess}
+            setAddSuccess={setAddSuccess}
           />
 
           <>
@@ -1377,6 +1399,8 @@ function YourClassicLiquidityLinePage(props: any) {
               pureIdList={pureIdList}
               updatedMapList={updatedMapList}
               isMobile={isMobile}
+              addSuccess={addSuccess}
+              setAddSuccess={setAddSuccess}
             />
 
             <StableRemove
@@ -1386,6 +1410,8 @@ function YourClassicLiquidityLinePage(props: any) {
               pureIdList={pureIdList}
               updatedMapList={updatedMapList}
               isMobile={isMobile}
+              addSuccess={addSuccess}
+              setAddSuccess={setAddSuccess}
             />
           </>
         </>

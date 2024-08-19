@@ -137,7 +137,15 @@ export default function SwapDetail() {
     e.preventDefault();
     setIsRevert(!isRevert);
   }
-  if (!(tokenIn?.id && tokenOut?.id && tokenInAmount && tokenOutAmount))
+  if (
+    !(
+      tokenIn?.id &&
+      tokenOut?.id &&
+      tokenInAmount &&
+      tokenOutAmount &&
+      +tokenOutAmount > 0
+    )
+  )
     return null;
   return (
     <div className="mt-3 text-sm text-gray-50">

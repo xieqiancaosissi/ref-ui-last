@@ -554,7 +554,9 @@ function YourClassicLiquidityLinePage() {
           <span
             className="frcc text-xs text-gray-10 px-1 rounded-md border border-gray-90 mr-1.5 cursor-pointer"
             onClick={() => {
-              router.push(`/pools/classic/${pool.id}`);
+              router
+                .push(`/pool/classic/${pool.id}`)
+                .then(() => window.location.reload());
             }}
           >
             Classic

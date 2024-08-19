@@ -158,7 +158,7 @@ export default function Tab() {
                 </span>
               </div>
               {/* <div
-                className={`rounded-2xl bg-senderHot mt-2.5 ${
+                className={`rounded-2xl bg-primaryGreen mt-2.5 ${
                   tab.tag == activeTab ? "visible" : "invisible"
                 }`}
                 style={{ width: "90px", height: "3px" }}

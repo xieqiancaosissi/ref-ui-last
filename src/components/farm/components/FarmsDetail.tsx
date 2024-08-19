@@ -735,7 +735,7 @@ export default function FarmsDetail(props: {
       );
       result += `<div class="flex items-center justify-end text-xs text-gray-60">
       (${baseApr}<span class="flex items-center ${
-        +displayYourActualAprRate == 1 ? "text-gray-60" : "text-senderHot"
+        +displayYourActualAprRate == 1 ? "text-gray-60" : "text-primaryGreen"
       } text-xs ml-0.5">x${displayYourActualAprRate}<img src="${
         +displayYourActualAprRate == 1
           ? LightningBase64Grey()

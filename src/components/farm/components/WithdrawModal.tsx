@@ -141,6 +141,7 @@ export default function Withdraw({
       successToast();
       onRequestClose();
       get_user_unWithDraw_rewards();
+      setCheckedList({});
     } else if (res.status == "error") {
       failToast(res.errorResult?.message);
     }
@@ -293,12 +294,12 @@ export default function Withdraw({
           </div>
           <div
             onClick={() => {
-              if (Object.keys(checkedList).length > 0) {
+              if (Object.keys(checkedList).length !== 0) {
                 doWithDraw();
               }
             }}
             className={`w-full rounded-lg h-10 frcc ${
-              Object.keys(checkedList).length == 0
+              Object.keys(checkedList).length === 0
                 ? "bg-gray-40 text-gray-50 cursor-not-allowed"
                 : "bg-greenGradientDark text-black cursor-pointer"
             }`}

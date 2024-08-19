@@ -50,7 +50,7 @@ function MemeVoteConfirmModal(props: any) {
         <div className="flex justify-center">
           <div
             onClick={doVote}
-            className={`bg-greenGradient px-3 py-1 paceGrotesk-Bold cursor-pointer rounded-md mt-2 w-20 outline-none ${
+            className={`bg-greenGradient px-3 py-1 paceGrotesk-Bold cursor-pointer rounded-md mt-2 w-fit outline-none ${
               memeVoteLoading ? "opacity-40" : ""
             }`}
           >

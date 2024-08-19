@@ -1525,8 +1525,9 @@ const FarmsPage = (props: any, ref: any) => {
                 />
               </SkeletonTheme>
             </div>
-          ) : farm_display_List.filter((seed: any) => !seed.hidden).length ===
-            0 ? (
+          ) : farm_display_List.every((seed: any) => seed.hidden) &&
+            (!showEndedFarmList ||
+              farm_display_ended_List.every((seed: any) => seed.hidden)) ? (
             <NoContent />
           ) : (
             <>

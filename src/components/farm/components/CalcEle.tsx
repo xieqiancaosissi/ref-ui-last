@@ -387,7 +387,7 @@ export function CalcEle(props: {
               <p className={`flex justify-between mb-4`}>
                 <label className="text-sm text-gray-50 mr-2">booster</label>
                 <span
-                  className={`flex items-center text-sm text-right break-all text-senderHot`}
+                  className={`flex items-center text-sm text-right break-all text-primaryGreen`}
                 >
                   {getRate()}
                   <LightningIcon></LightningIcon>

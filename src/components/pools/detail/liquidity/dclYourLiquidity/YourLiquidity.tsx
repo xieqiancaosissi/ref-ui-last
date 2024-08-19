@@ -49,6 +49,7 @@ export default function YourLiquidityBox(props: {
   tokenPriceList: any;
   matched_seeds: Seed[];
   setAddSuccess?: any;
+  addSuccess?: any;
 }) {
   const router = useRouter();
   const {
@@ -57,6 +58,7 @@ export default function YourLiquidityBox(props: {
     tokenPriceList,
     matched_seeds,
     setAddSuccess,
+    addSuccess,
   } = props;
   const [user_liquidities_detail, set_user_liquidities_detail] = useState<
     UserLiquidityDetail[]
@@ -130,7 +132,7 @@ export default function YourLiquidityBox(props: {
       });
       set_user_liquidities_detail(temp_list);
     }
-  }, [liquidities, Object.keys(tokenPriceList).length]);
+  }, [liquidities, Object.keys(tokenPriceList).length, addSuccess]);
 
   useEffect(() => {
     if (
@@ -142,7 +144,7 @@ export default function YourLiquidityBox(props: {
       get_24_apr_and_fee();
       get_tokens_amount_liquidities();
     }
-  }, [poolDetail, tokenPriceList.length, liquidities.length]);
+  }, [poolDetail, tokenPriceList.length, liquidities.length, addSuccess]);
 
   useEffect(() => {
     if (liquidities) {
@@ -156,7 +158,7 @@ export default function YourLiquidityBox(props: {
       }
       set_is_in_farming_done(true);
     }
-  }, [liquidities]);
+  }, [liquidities, addSuccess]);
 
   async function get_24_apr_and_fee() {
     let apr_24 = "0";
@@ -460,6 +462,7 @@ export default function YourLiquidityBox(props: {
       {/* chart area */}
       <div className="flex items-center justify-center border border-gray-90 rounded p-3 pt-1 mt-6">
         <DclChart
+          key={addSuccess}
           pool_id={poolDetail?.pool_id}
           config={{
             controlHidden: true,

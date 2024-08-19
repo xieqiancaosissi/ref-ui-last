@@ -518,6 +518,7 @@ export default function DCLPoolDetail() {
                   liquidities={user_liquidities}
                   matched_seeds={matched_seeds}
                   setAddSuccess={setAddSuccess}
+                  addSuccess={addSuccess}
                 />
                 <UnclaimedFeesBox
                   poolDetail={poolDetailV3}

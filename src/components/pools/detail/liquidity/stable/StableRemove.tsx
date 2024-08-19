@@ -388,7 +388,10 @@ export default function StableAdd(props: any) {
   const { predictedRemoveShares, canSubmitByToken } = usePredictRemoveShares({
     amounts: [...inputValList],
     setError,
-    shares,
+    shares:
+      addSuccess > 0
+        ? newnewPool?.availableShareNonDivisible
+        : newPool?.availableShareNonDivisible,
     stablePool: updatedMapList[0],
   });
 

@@ -122,7 +122,9 @@ export default function OverallLocking(props: any) {
   }
   //
   useEffect(() => {
-    init();
+    if (addSuccess > 0 || poolDetail) {
+      init();
+    }
   }, [poolDetail, addSuccess]);
 
   useEffect(() => {

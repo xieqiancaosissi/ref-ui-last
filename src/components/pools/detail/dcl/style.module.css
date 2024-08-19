@@ -18,7 +18,7 @@
 }
 
 .chartsContent {
-  @apply flex items-start lg:h-140 lg:min-h-80 lg:min-w-183 xsm:w-full xsm:mt-24 xsm:mb-4;
+  @apply flex items-start lg:h-140 lg:min-h-80 lg:min-w-[732px] xsm:w-full xsm:mt-24 xsm:mb-4;
 }
 
 .triangleDown {

@@ -25,7 +25,7 @@ import UnLockedModal from "./UnLockedModal";
 import { ArrowDown, ArrowUpWithYellow } from "../liquidity/components/add/Icon";
 
 export default function OverallLocking(props: any) {
-  const { poolDetail, updatedMapList } = props;
+  const { poolDetail, updatedMapList, shares } = props;
   const [addSuccess, setAddSuccess] = useState(0);
   const detailItem = [
     {
@@ -57,7 +57,6 @@ export default function OverallLocking(props: any) {
   const [isLockedOpen, setIsLockedOpen] = useState<boolean>(false);
   const [isUnLockedOpen, setIsUnLockedOpen] = useState<boolean>(false);
   const [fold, setFold] = useState<boolean>(true);
-  const [shares, setShares] = useState("");
 
   const [lockButtonDisabled, setLockButtonDisabled] = useState(true);
   const [unLockButtonDisabled, setUnLockButtonDisabled] = useState(true);
@@ -132,10 +131,10 @@ export default function OverallLocking(props: any) {
   }, [shares]);
 
   useEffect(() => {
-    //
-    getSharesInPool(+poolDetail?.id)
-      .then(setShares)
-      .catch(() => setShares);
+    // //
+    // getSharesInPool(+poolDetail?.id)
+    //   .then(setShares)
+    //   .catch(() => setShares);
 
     setUnLockButtonDisabled(
       Big(lp_locked_list?.[accountId]?.unlock_time_sec || 0).gte(

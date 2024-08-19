@@ -8,10 +8,10 @@ import { getAccountId } from "@/utils/wallet";
 import {
   ONE_YOCTO_NEAR,
   REF_FARM_BOOST_CONTRACT_ID,
-  executeFarmMultipleTransactions,
   refMeMeFarmViewFunction,
   xrefMeMeFarmViewFunction,
 } from "@/utils/contract";
+import { executeMultipleTransactions } from "@/utils/near";
 import getConfig from "@/utils/config";
 import {
   STORAGE_TO_REGISTER_WITH_MFT,
@@ -157,7 +157,7 @@ export const stake = async ({ seed, amount = "" }: StakeOptions) => {
     });
   }
   transactions = await withdrawRewards(seed, transactions);
-  return executeFarmMultipleTransactions(transactions);
+  return executeMultipleTransactions(transactions);
 };
 export const unStake = async ({
   seed,
@@ -205,7 +205,7 @@ export const unStake = async ({
   }
   transactions = await withdrawRewards(seed, transactions);
 
-  return executeFarmMultipleTransactions(transactions);
+  return executeMultipleTransactions(transactions);
 };
 export const withdraw = async ({
   seed_id,
@@ -237,7 +237,7 @@ export const withdraw = async ({
       functionCalls: [storageDepositAction({ amount: neededStorage_boost })],
     });
   }
-  return executeFarmMultipleTransactions(transactions);
+  return executeMultipleTransactions(transactions);
 };
 export const claim_all = async ({
   seed,
@@ -281,7 +281,7 @@ export const claim_all = async ({
       xrefContractId
     );
   }
-  return executeFarmMultipleTransactions(transactions);
+  return executeMultipleTransactions(transactions);
 };
 export const claim = async (seed: Seed): Promise<any> => {
   const { seed_id } = seed;
@@ -297,7 +297,7 @@ export const claim = async (seed: Seed): Promise<any> => {
     ],
   });
   transactions = await withdrawRewards(seed, transactions);
-  return executeFarmMultipleTransactions(transactions);
+  return executeMultipleTransactions(transactions);
 };
 export const xrefClaim = async (
   contractId: string,
@@ -316,7 +316,7 @@ export const xrefClaim = async (
     ],
   });
   transactions = await withdrawRewardsXref(seed, transactions, contractId);
-  return executeFarmMultipleTransactions(transactions);
+  return executeMultipleTransactions(transactions);
 };
 
 export const xref_list_seeds_info = async (contractId: any) => {
@@ -418,7 +418,7 @@ export const xrefStake = async ({
     });
   }
   transactions = await withdrawRewardsXref(seed, transactions, contractId);
-  return executeFarmMultipleTransactions(transactions);
+  return executeMultipleTransactions(transactions);
 };
 export const xrefUnStake = async ({
   seed,
@@ -466,7 +466,7 @@ export const xrefUnStake = async ({
     });
   }
   transactions = await withdrawRewardsXref(seed, transactions, contractId);
-  return executeFarmMultipleTransactions(transactions);
+  return executeMultipleTransactions(transactions);
 };
 export const xrefWithdraw = async ({
   contractId,
@@ -502,7 +502,7 @@ export const xrefWithdraw = async ({
       functionCalls: [storageDepositAction({ amount: neededStorage_boost })],
     });
   }
-  return executeFarmMultipleTransactions(transactions);
+  return executeMultipleTransactions(transactions);
 };
 
 export const ftGetStorageBalance = async (
@@ -571,7 +571,7 @@ export const donate = async ({
       },
     ],
   });
-  return executeFarmMultipleTransactions(transactions);
+  return executeMultipleTransactions(transactions);
 };
 async function withdrawRewards(seed: Seed, transactions: Transaction[]) {
   const { farmList, seed_id } = seed;

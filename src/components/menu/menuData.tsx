@@ -94,14 +94,14 @@ export function menuData(): IMenu[] {
         {
           id: "rainbow",
           label: "Rainbow",
-          icon: <Rainbow className="transform scale-75" />,
+          icon: <Rainbow />,
           externalLink: "https://rainbowbridge.app/transfer",
           bridgeConfirm: true,
         },
         {
           id: "cex",
           label: "CEX",
-          icon: <WalletCedeBridge className="transform scale-75" />,
+          icon: <WalletCedeBridge />,
           externalLink:
             "https://send.cede.store/?tokenSymbol=NEAR&network=near&source=ref_finance",
           bridgeConfirm: true,

@@ -38,8 +38,6 @@ export default function WalletConnect() {
   const [keyModalShow, setKeyModalShow] = useState<boolean>(false);
   const appStore = useAppStore();
   const accountStore = useAccountStore();
-  const personalDataUpdatedSerialNumber =
-    appStore.getPersonalDataUpdatedSerialNumber();
   const personalDataReloadSerialNumber =
     appStore.getPersonalDataReloadSerialNumber();
   const [showGuider, setShowGuider] = useState<boolean>(

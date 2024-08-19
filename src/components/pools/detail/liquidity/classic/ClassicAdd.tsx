@@ -230,15 +230,12 @@ export default function StableAdd(props: any) {
   const [notEnoughList, setNotEnoughList] = useState([]);
   useEffect(() => {
     let flag: boolean = true;
-    let emptyFlag: boolean = false;
+    const emptyFlag = inputValList.every((amount: any) => Number(amount) > 0);
     const k: any = [];
     inputValList.map((item: any, index: number) => {
       if (+item > balancesList[index]?.balance) {
         flag = false;
         k.push(balancesList[index]?.symbol);
-      }
-      if (item > 0) {
-        emptyFlag = true;
       }
     });
     setInputAmountIsEmpty(emptyFlag);

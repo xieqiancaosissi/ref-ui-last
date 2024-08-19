@@ -349,7 +349,11 @@ export default function Farms() {
         {/* watchlist */}
 
         {/* create pool */}
-        <CreatePool isOpen={isOpen} onRequestClose={hideModal} />
+        <CreatePool
+          isOpen={isOpen}
+          onRequestClose={hideModal}
+          pureIdList={pureIdList}
+        />
       </div>
       {/* PC End */}
 
@@ -847,7 +851,11 @@ export default function Farms() {
         {/* watchlist */}
 
         {/* create pool */}
-        <CreatePool isOpen={isOpen} onRequestClose={hideModal} />
+        <CreatePool
+          isOpen={isOpen}
+          onRequestClose={hideModal}
+          pureIdList={pureIdList}
+        />
       </div>
 
       {/* Mobile End */}

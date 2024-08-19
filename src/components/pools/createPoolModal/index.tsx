@@ -19,9 +19,11 @@ import { REF_FI_CONTRACT_ID } from "@/utils/contract";
 export default function CreatePoolModal({
   isOpen,
   onRequestClose,
+  pureIdList,
 }: {
   isOpen: boolean;
   onRequestClose: () => void;
+  pureIdList?: any;
 }) {
   const router = useRouter();
   const [createFee, setCreateFee] = useState(0);
@@ -230,8 +232,18 @@ export default function CreatePoolModal({
           <div>
             {/* select token */}
             <div className="flex lg:justify-between xsm:flex-col">
-              <TokenInput title="Token" index={0} handleToken={handleToken} />
-              <TokenInput title="Pair" index={1} handleToken={handleToken} />
+              <TokenInput
+                title="Token"
+                index={0}
+                handleToken={handleToken}
+                pureIdList={pureIdList}
+              />
+              <TokenInput
+                title="Pair"
+                index={1}
+                handleToken={handleToken}
+                pureIdList={pureIdList}
+              />
             </div>
 
             {/* fee */}

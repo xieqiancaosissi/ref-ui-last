@@ -784,7 +784,6 @@ export const batchWithdrawInner = async (tokens: TokenMetadata[]) => {
 
   const widthdrawActionsV1: any[] = [];
   const widthdrawActionsV3: any[] = [];
-  let wNEARAction;
   tokens.forEach((token: TokenMetadata) => {
     const { decimals, ref, dcl, id } = token;
     if (Big(ref || 0).gt(0)) {
@@ -814,20 +813,6 @@ export const batchWithdrawInner = async (tokens: TokenMetadata[]) => {
         args: { token_id: id, amount: parsedAmount },
         gas: "55000000000000",
       });
-      if (id === WRAP_NEAR_CONTRACT_ID) {
-        wNEARAction = {
-          receiverId: WRAP_NEAR_CONTRACT_ID,
-          functionCalls: [
-            {
-              methodName: "near_withdraw",
-              args: {
-                amount: parsedAmount,
-              },
-              amount: ONE_YOCTO_NEAR,
-            },
-          ],
-        };
-      }
     }
   });
   if (widthdrawActionsV1.length > 0) {
@@ -847,9 +832,6 @@ export const batchWithdrawInner = async (tokens: TokenMetadata[]) => {
         functionCalls: actions,
       });
     });
-  }
-  if (wNEARAction) {
-    transactions.push(wNEARAction);
   }
   return executeMultipleTransactions(transactions, false);
 };

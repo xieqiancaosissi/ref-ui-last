@@ -11,7 +11,6 @@ import {
   DisconnectIcon,
   ChangeIcon,
   KeyIcon,
-  TotalAssetsIcon,
 } from "./icons";
 import { useAccountStore } from "../../stores/account";
 import { getCurrentWallet, getSelector } from "../../utils/wallet";
@@ -20,12 +19,12 @@ import swapStyles from "../swap/swap.module.css";
 import AccessKeyModal from "./AccessKeyModal";
 import { showWalletSelectorModal } from "@/utils/wallet";
 import { isMobile } from "@/utils/device";
-import InitData from "@/components/orderbook/initData";
 import Guider from "./Guider";
 import { LinkLine } from "./icons2";
 import { useAppStore } from "@/stores/app";
 import { walletIconConfig } from "./walletConfig";
 import { getSelectedWalletId } from "@/utils/wallet";
+import OrderlyKeyInit from "@/components/orderbook/OrderlyKeyInit";
 const Overview = dynamic(() => import("../portfolio"), { ssr: false });
 const is_mobile = isMobile();
 export default function WalletConnect() {
@@ -309,7 +308,7 @@ export default function WalletConnect() {
                   </div>
                 </div>
               ) : null}
-              <InitData />
+              <OrderlyKeyInit />
             </div>
           ) : (
             <div

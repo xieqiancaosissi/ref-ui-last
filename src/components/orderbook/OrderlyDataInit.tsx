@@ -8,14 +8,11 @@ import { TokenInfo } from "@/interfaces/orderbook";
 import { getFTmetadata } from "@/services/orderbook/near";
 import { useAccountExist } from "@/services/orderbook/state";
 import { useAccountStore } from "@/stores/account";
-import { checkConnectStatus } from "@/services/orderbook/contract";
-import { get_orderly_public_key_path } from "@/utils/orderlyUtils";
-import { generateTradingKeyPair } from "@/services/orderbook/utils";
 import { useCurHoldings } from "@/services/orderbook/unknow/state";
 import { getAccountInformation } from "@/services/orderbook/off-chain-api";
 import { useAllPositions } from "@/services/orderbook/state";
 import { useAllSymbolInfo } from "@/services/orderbook/unknow/state";
-export default function InitData(props: any) {
+export default function OrderlyDataInit(props: any) {
   const orderbookPrivateWSDataStore = useOrderbookPrivateWSDataStore();
   const orderbookDataStore = useOrderbookDataStore();
   const accountStore = useAccountStore();
@@ -41,14 +38,6 @@ export default function InitData(props: any) {
   useAllTokensInfo();
   // get all SymbolInfo
   useAllSymbolInfo();
-  // get connect status
-  useEffect(() => {
-    if (accountId) {
-      checkConnectStatus().then((res) => {
-        orderbookDataStore.setConnectStatus(res);
-      });
-    }
-  }, [accountId]);
   // get userInfo
   useEffect(() => {
     if (!validAccountSig || !accountId) return;
@@ -58,13 +47,6 @@ export default function InitData(props: any) {
       }
     });
   }, [validAccountSig, accountId]);
-  // generate trading key
-  useEffect(() => {
-    const pubkey = localStorage.getItem(get_orderly_public_key_path());
-    if (!pubkey && accountId) {
-      generateTradingKeyPair();
-    }
-  }, [accountId]);
   useEffect(() => {
     if (accountId) {
       orderbookDataStore.setUserExists(!!userExist);

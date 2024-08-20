@@ -3,6 +3,7 @@ import { useOrderbookDataStore } from "@/stores/orderbook/orderbookDataStore";
 import ConnectToOrderlyWidget from "@/components/orderbook/connectToOrderlyWidget";
 import useHoldings from "@/hooks/orderbook/useHoldings";
 import { toInternationalCurrencySystem_usd } from "@/utils/uiNumber";
+import OrderlyDataInit from "@/components/orderbook/OrderlyDataInit";
 
 export default function OrderlyPanel() {
   const orderbookDataStore = useOrderbookDataStore();
@@ -42,6 +43,7 @@ export default function OrderlyPanel() {
       <div className="absolute left-1/2 transform -translate-x-1/2 bottom-10">
         <ConnectToOrderlyWidget uiType="orderlyAssets" />
       </div>
+      <OrderlyDataInit />
     </div>
   );
 }

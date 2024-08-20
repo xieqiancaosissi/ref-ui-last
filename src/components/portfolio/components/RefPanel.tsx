@@ -1,5 +1,4 @@
-import { useContext, useEffect, useMemo, useState } from "react";
-import { useHistory } from "react-router-dom";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import BigNumber from "bignumber.js";
 import { formatWithCommas_usd } from "@/utils/uiNumber";
 import { ftGetBalance, ftGetTokenMetadata } from "@/services/token";
@@ -103,9 +102,7 @@ function RefPanel() {
   }, [invest_value_done, total_profit_done]);
   function showRefModal() {
     if (is_mobile) {
-      router.push("/portfolioMobile").then(() => {
-        window.location.reload();
-      });
+      router.push("/portfolioMobile");
     } else {
       setIsRefModalOpen(true);
     }
@@ -156,12 +153,15 @@ function RefPanel() {
           </div>
         </div>
       </div>
-      <RefPanelModal isOpen={isRefModalOpen} onRequestClose={hideRefModal} />
+      {isRefModalOpen ? (
+        <RefPanelModal isOpen={isRefModalOpen} onRequestClose={hideRefModal} />
+      ) : null}
     </>
   );
 }
-export default RefPanel;
-
+export default React.memo(function RefPanelMemo() {
+  return <RefPanel />;
+});
 function useXref() {
   const { tokenPriceList, isSignedIn, accountId } = useContext(
     OverviewData

@@ -24,7 +24,13 @@ import { useAppStore } from "@/stores/app";
 export const OverviewData = createContext<OverviewContextType | null>(null);
 const is_mobile: boolean = !!isMobile();
 
-export default function Overview({ isOpen }: { isOpen: boolean }) {
+function Overview({
+  isOpen,
+  orderly_value,
+}: {
+  isOpen: boolean;
+  orderly_value: string;
+}) {
   const accountStore = useAccountStore();
   const accountId = getAccountId();
   const isSignedIn = accountStore.isSignedIn;
@@ -58,7 +64,6 @@ export default function Overview({ isOpen }: { isOpen: boolean }) {
   const [isWalletPanelOpen, setIsWalletPanelOpen] = useState<boolean>(false);
   const [isPortfolioPanelOpen, setIsPortfolioPanelOpen] =
     useState<boolean>(false);
-  const orderly_value = useHoldings();
   const appStore = useAppStore();
   const personalDataUpdatedSerialNumber =
     appStore.getPersonalDataUpdatedSerialNumber();
@@ -345,6 +350,11 @@ export default function Overview({ isOpen }: { isOpen: boolean }) {
       ) : null}
     </OverviewData.Provider>
   );
+}
+const OverviewMemo = React.memo(Overview);
+export default function AccountOverview({ isOpen }: { isOpen: boolean }) {
+  const orderly_value = useHoldings();
+  return <OverviewMemo isOpen={isOpen} orderly_value={orderly_value} />;
 }
 
 export interface OverviewContextType {

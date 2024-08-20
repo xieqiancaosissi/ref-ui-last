@@ -82,18 +82,21 @@ export default function MenuPc() {
   }
   // for stable detail css style
   const [extraBack, setExtraBack] = useState("transparent");
-  const [extraWidth, setExtraWidth] = useState("60%");
+  const [extraWidth, setExtraWidth] = useState("");
   useEffect(() => {
     setExtraBack("transparent");
-    setExtraWidth("60%");
     if (router.route.indexOf("pool/stable") != -1) {
       setExtraBack("rgba(33, 43, 53, 0.4)");
       setExtraWidth("100%");
+    } else if (oneLevelData?.children && oneLevelData.children.length > 3) {
+      setExtraWidth("680px");
+    } else {
+      setExtraWidth("510px");
     }
-  }, [router.route]);
+  }, [router.route, oneLevelData?.children?.length]);
 
   return (
-    <div className="fixed w-full" style={{ zIndex: "99" }}>
+    <div className="fixed w-full h-[46px]" style={{ zIndex: "99" }}>
       {/* one level menu */}
       <div
         className="grid grid-cols-3 items-center text-white px-5 border-b border-white border-opacity-10 bg-primaryDark"

@@ -8,7 +8,12 @@ import {
   getMftTokenId,
   getServerTime,
 } from "@/services/farm";
-import { FarmDetailsBgIcon, FarmDetailsPoolIcon, QuestionMark } from "../icon";
+import {
+  FarmDetailsBgIcon,
+  FarmDetailsPoolIcon,
+  FarmLpIcon,
+  QuestionMark,
+} from "../icon";
 import { TokenMetadata } from "@/services/ft-contract";
 import {
   getEffectiveFarmList,
@@ -1001,38 +1006,46 @@ export default function FarmsDetail(props: {
           </div>
         </FarmsDetailContext.Provider>
         {+freeAmount > 0 && is_support_lp ? (
-          <div className="2xl:w-3/6 xl:w-4/6 lg:w-5/6 m-auto text-sm -mt-5 text-gray-60">
-            <span>How to get Ref’s farm APR + Burrow lending APR?</span>
-            <span>
-              Step 1.{" "}
-              <a
-                className="text-yellow-30 underline cursor-pointer relative"
-                tabIndex={99}
-                onBlur={() => {
-                  setShowActivateBox(false);
-                }}
-                onClick={() => {
-                  setShowActivateBox(!showActivateBox);
-                }}
-              >
-                Activate
-                <ShadowTip show={showActivateBox} seed_id={seed_id} />
-              </a>{" "}
-              the {`Burrow's`} extra rewards
-            </span>
-            <span>
-              Step 2. Go to supply LP on{" "}
-              <a
-                className="text-yellow-30 text-sm underline cursor-pointer"
-                onClick={() => {
-                  const shadow_id = `shadow_ref_v1-${pool?.id}`;
-                  const url = `https://app.burrow.finance/tokenDetail/${shadow_id}`;
-                  window.open(url);
-                }}
-              >
-                Burrow
-              </a>
-            </span>
+          <div
+            className="2xl:w-3/6 xl:w-4/6 lg:w-5/6 m-auto text-sm -mt-5 bg-white bg-opacity-5 p-4 rounded"
+            style={{ color: "rgba(255, 255, 255, 0.6)" }}
+          >
+            <p className="flex mr-1.5">
+              <FarmLpIcon className="mr-2" />
+              How to get Ref’s farm APR + Burrow Lending APR?
+            </p>
+            <div className="flex">
+              <p>
+                Step 1.{" "}
+                <a
+                  className="text-white underline cursor-pointer relative"
+                  tabIndex={99}
+                  onBlur={() => {
+                    setShowActivateBox(false);
+                  }}
+                  onClick={() => {
+                    setShowActivateBox(!showActivateBox);
+                  }}
+                >
+                  Activate
+                  <ShadowTip show={showActivateBox} seed_id={seed_id} />
+                </a>{" "}
+                the {`Burrow's`} extra rewards
+              </p>
+              <p>
+                Step 2. Go to supply LP on{" "}
+                <a
+                  className="text-white text-sm underline cursor-pointer"
+                  onClick={() => {
+                    const shadow_id = `shadow_ref_v1-${pool?.id}`;
+                    const url = `https://app.burrow.finance/tokenDetail/${shadow_id}`;
+                    window.open(url);
+                  }}
+                >
+                  Burrow
+                </a>
+              </p>
+            </div>
           </div>
         ) : null}
         {calcVisible ? (

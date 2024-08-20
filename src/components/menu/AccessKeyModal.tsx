@@ -210,6 +210,13 @@ function AuthorizedApps({
     }
     return 0;
   }, [functionCallKeys, currentUsedKeys.length]);
+  const sortedFunctionCallKeys = useMemo(() => {
+    return functionCallKeys.sort((a, b) => {
+      const aIsUsed = currentUsedKeys.includes(a.public_key);
+      const bIsUsed = currentUsedKeys.includes(b.public_key);
+      return Number(bIsUsed) - Number(aIsUsed);
+    });
+  }, [functionCallKeys, currentUsedKeys]);
   function getAllowance(b: string) {
     if (b) {
       return toPrecision(toReadableNumber(24, b), maxLength) + " NEAR";
@@ -286,7 +293,7 @@ function AuthorizedApps({
           </div>
         ) : (
           <>
-            {functionCallKeys.map((item) => {
+            {sortedFunctionCallKeys.map((item) => {
               const isUsed = currentUsedKeys.includes(item.public_key);
               return (
                 <div
@@ -302,7 +309,7 @@ function AuthorizedApps({
                         }
                       </p>
                       {isUsed ? (
-                        <span className="flex items-center justify-center bg-primaryGreen text-xs paceGrotesk-Bold italic whitespace-nowrap rounded w-12 text-black">
+                        <span className="ml-0.5 flex items-center justify-center bg-primaryGreen text-xs paceGrotesk-Bold italic whitespace-nowrap rounded w-12 text-black">
                           In use
                         </span>
                       ) : null}
@@ -483,34 +490,40 @@ function OrderlyKeys({
             isEmpty ? "hidden" : ""
           }`}
         >
-          {allOrderlyKeys.map((key) => {
-            const isUsed = currentUsedKeys.includes(key);
-            return (
-              <div key={key} className="gap-2 mb-4">
-                {isUsed ? (
-                  <span className="flex items-center justify-center bg-primaryGreen text-xs paceGrotesk-Bold italic whitespace-nowrap rounded w-12 text-black">
-                    In use
-                  </span>
-                ) : null}
-                <div
-                  className={`flex justify-end items-center ${
-                    isUsed ? "invisible" : "mb-4"
-                  }`}
-                >
-                  <Checkbox
-                    appearance="b"
-                    checked={selectedKeys.has(key)}
-                    onClick={() => {
-                      onCheck(key);
-                    }}
-                  />
+          {allOrderlyKeys
+            .sort((a, b) => {
+              const aIsUsed = currentUsedKeys.includes(a);
+              const bIsUsed = currentUsedKeys.includes(b);
+              return Number(bIsUsed) - Number(aIsUsed);
+            })
+            .map((key) => {
+              const isUsed = currentUsedKeys.includes(key);
+              return (
+                <div key={key} className="gap-2 mb-4">
+                  {isUsed ? (
+                    <span className="flex items-center justify-center bg-primaryGreen text-xs paceGrotesk-Bold italic whitespace-nowrap rounded w-12 text-black">
+                      In use
+                    </span>
+                  ) : null}
+                  <div
+                    className={`flex justify-end items-center ${
+                      isUsed ? "invisible" : "mb-4"
+                    }`}
+                  >
+                    <Checkbox
+                      appearance="b"
+                      checked={selectedKeys.has(key)}
+                      onClick={() => {
+                        onCheck(key);
+                      }}
+                    />
+                  </div>
+                  <div className="flex  flex-col gap-2 flex-grow  bg-dark-60 rounded-md text-xs text-gray-60 p-2.5 break-all">
+                    {key}
+                  </div>
                 </div>
-                <div className="flex  flex-col gap-2 flex-grow  bg-dark-60 rounded-md text-xs text-gray-60 p-2.5 break-all">
-                  {key}
-                </div>
-              </div>
-            );
-          })}
+              );
+            })}
         </div>
         {/* {isEmpty ? (
             <div className="flex justify-center my-20 text-xs text-gray-60">

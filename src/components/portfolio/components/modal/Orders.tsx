@@ -918,7 +918,12 @@ function OrderCard({
       ) : noData_status ? (
         <div className="w-full h-32 frcc bg-gray-20 bg-opacity-50 rounded-lg text-sm text-gray-60">
           Your
-          <span className="text-white mx-1 underline cursor-pointer">
+          <span
+            className="text-white mx-1 underline cursor-pointer"
+            onClick={() => {
+              router.push("/limit").then(() => window.location.reload());
+            }}
+          >
             Limit Orders
           </span>
           will appear here

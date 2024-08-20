@@ -26,7 +26,7 @@
 }
 
 .tokenImgContainer {
-  @apply flex items-center;
+  @apply flex items-center mr-1 shrink-0;
 }
 
 .tokenImgContainer img {
@@ -40,7 +40,7 @@
 }
 
 .symbol {
-  @apply text-base text-white font-medium px-2;
+  @apply text-base text-white font-medium px-2 overflow-hidden text-ellipsis whitespace-nowrap;
 }
 
 .tagPublicStyle {

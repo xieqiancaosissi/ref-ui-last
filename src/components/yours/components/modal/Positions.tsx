@@ -72,7 +72,7 @@ export default function Positions(props: any) {
   const data_status =
     v1LiquidityLoadingDone && v2LiquidityLoadingDone && total_quantity > 0;
 
-  const [poolType, setPoolType] = useState("classic");
+  const [poolType, setPoolType] = useState("dcl");
 
   if (!accountId) return <NoContent />;
 

@@ -262,11 +262,11 @@ export default function StableRemove(props: any) {
 
   // by share
   const { newPool } = useNewPoolData({ pool, shares });
-  const sharesDecimals = toRoundedReadableNumber({
-    decimals: getStablePoolDecimal(poolDetail.id, poolDetail),
-    number: newPool?.availableShareNonDivisible,
-    precision: 12 || String(shares).length,
-  });
+  const sharesDecimals = toReadableNumber(
+    getStablePoolDecimal(poolDetail.id, poolDetail),
+    newPool?.availableShareNonDivisible
+  );
+
   const [shareVal, setShareVal] = useState("");
   const changeShareVal = (val: any) => {
     if (
@@ -388,11 +388,11 @@ export default function StableRemove(props: any) {
 
   useEffect(() => {
     if (addSuccess > 0 && newnewPool?.availableShareNonDivisible) {
-      const sharesDecimals = toRoundedReadableNumber({
-        decimals: getStablePoolDecimal(poolDetail.id, poolDetail),
-        number: newnewPool?.availableShareNonDivisible,
-        precision: 12 || String(shares).length,
-      });
+      const sharesDecimals = toReadableNumber(
+        getStablePoolDecimal(poolDetail.id, poolDetail),
+        newnewPool?.availableShareNonDivisible
+      );
+
       setnewsharesDecimals(sharesDecimals);
     }
   }, [newnewPool, addSuccess]);

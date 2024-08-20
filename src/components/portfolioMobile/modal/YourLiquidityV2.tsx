@@ -1241,8 +1241,10 @@ function UserLiquidityLineStyleGroupPage({
   const router = useRouter();
   const [switch_off, set_switch_off] = useState<boolean>(true);
   function goPoolDetailPage() {
-    const params_str = get_pool_name(poolDetail.pool_id);
-    router.push(`/pool/dcl/${params_str}`).then(() => window.location.reload());
+    // const params_str = get_pool_name(poolDetail.pool_id);
+    router
+      .push(`/pool/dcl/${poolDetail.pool_id}`)
+      .then(() => window.location.reload());
   }
   return (
     <div className="mb-4">

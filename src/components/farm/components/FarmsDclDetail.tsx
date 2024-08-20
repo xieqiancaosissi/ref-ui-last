@@ -114,10 +114,17 @@ export default function FarmsDclDetail(props: {
   } = user_data;
   const tokens = sortTokens(detailData?.pool?.tokens_meta_data || []);
   const [seedDclCalcVisible, setSeedDclCalcVisible] = useState(false);
-  const [activeTab, setActiveTab] = useState("Stake");
   const [rangeSort, setRangeSort] = useState(true);
   const [claimLoading, setClaimLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const isEnded = useMemo(() => {
+    if (detailData?.farmList) {
+      const farms = detailData.farmList;
+      return farms[0].status == "Ended";
+    }
+    return false;
+  }, [detailData]);
+  const [activeTab, setActiveTab] = useState(isEnded ? "Unstake" : "Stake");
   const router = useRouter();
   const radio = getBoostMutil();
   useEffect(() => {
@@ -126,13 +133,6 @@ export default function FarmsDclDetail(props: {
       get_mft_balance_of();
     }
   }, [isSignedIn, user_data_loading, all_seeds]);
-  const isEnded = useMemo(() => {
-    if (detailData?.farmList) {
-      const farms = detailData.farmList;
-      return farms[0].status == "Ended";
-    }
-    return false;
-  }, [detailData]);
   function sortTokens(tokens: TokenMetadata[]) {
     tokens.sort((a: TokenMetadata, b: TokenMetadata) => {
       if (a.symbol === "NEAR") return 1;
@@ -1157,7 +1157,7 @@ export default function FarmsDclDetail(props: {
               unavailable={listLiquidities_unavailable}
             ></AddLiquidityEntryBar>
 
-            {!isEnded ? (
+            {!isEnded || canUnStake ? (
               <div
                 className={`h-full p-5 ${
                   !isSignedIn
@@ -1171,98 +1171,120 @@ export default function FarmsDclDetail(props: {
                 }`}
               >
                 <div className="flex items-center mb-8">
-                  <button
-                    className={`text-lg pr-5 ${
-                      activeTab === "Stake"
-                        ? styles.gradient_text
-                        : "text-gray-500"
-                    }`}
-                    onClick={() => setActiveTab("Stake")}
-                  >
-                    Stake
-                  </button>
-                  <div className="h-4 bg-gray-50" style={{ width: "2px" }} />
-                  <button
-                    className={`text-lg pl-5 ${
-                      activeTab === "Unstake"
-                        ? styles.gradient_text
-                        : "text-gray-500"
-                    }`}
-                    onClick={() => setActiveTab("Unstake")}
-                  >
-                    Unstake
-                  </button>
+                  {!isEnded ? (
+                    <button
+                      className={`text-lg ${
+                        activeTab === "Stake"
+                          ? styles.gradient_text
+                          : "text-gray-500"
+                      }`}
+                      onClick={() => setActiveTab("Stake")}
+                    >
+                      Stake
+                    </button>
+                  ) : null}
+                  {!isEnded && canUnStake ? (
+                    <div
+                      className="h-4 bg-gray-50 mx-5"
+                      style={{ width: "2px" }}
+                    />
+                  ) : null}
+                  {canUnStake ? (
+                    <button
+                      className={`text-lg ${
+                        activeTab === "Unstake"
+                          ? styles.gradient_text
+                          : "text-gray-500"
+                      }`}
+                      onClick={() => setActiveTab("Unstake")}
+                    >
+                      Unstake
+                    </button>
+                  ) : null}
                 </div>
-                <p className="text-gray-50 text-sm mb-1.5">Available</p>
-                {!isSignedIn ? (
-                  <p className="text-2xl mb-11 text-gray-50">-</p>
-                ) : (
-                  <p className="text-2xl mb-11">{yp_unFarm_value}</p>
-                )}
-                {activeTab === "Stake" && (
+                {!isEnded || canUnStake ? (
                   <>
+                    <p className="text-gray-50 text-sm mb-1.5">Available</p>
                     {!isSignedIn ? (
-                      <div
-                        className=" w-full h-11 frcc rounded text-base text-primaryGreen border border-primaryGreen cursor-pointer"
-                        onClick={showWalletSelector}
-                      >
-                        Connect Wallet
-                      </div>
-                    ) : !isEnded ? (
-                      <div
-                        onClick={() => {
-                          if (!stakeDisabled) {
-                            batchStakeNFT();
-                          }
-                        }}
-                        className={` w-full h-11 frcc rounded paceGrotesk-Bold text-base  ${
-                          stakeDisabled
-                            ? "cursor-not-allowed bg-gray-40 text-gray-50"
-                            : "bg-greenGradient text-black cursor-pointer"
-                        }`}
-                      >
-                        <ButtonTextWrapper
-                          loading={nft_stake_loading}
-                          Text={() => <>Stake</>}
-                        />
-                      </div>
-                    ) : null}
+                      <p className="text-2xl mb-11 text-gray-50">-</p>
+                    ) : (
+                      <p className="text-2xl mb-11">{yp_unFarm_value}</p>
+                    )}{" "}
                   </>
-                )}
+                ) : null}
 
-                {activeTab === "Unstake" && (
+                {!isEnded ? (
                   <>
-                    {!isSignedIn ? (
-                      <div
-                        className=" w-full h-11 frcc rounded text-base text-primaryGreen border border-primaryGreen cursor-pointer"
-                        onClick={showWalletSelector}
-                      >
-                        Connect Wallet
-                      </div>
-                    ) : canUnStake ? (
-                      <div
-                        onClick={() => {
-                          if (!nft_unStake_loading) {
-                            batchUnStakeNFT();
-                          }
-                        }}
-                        className={` w-full h-11 frcc rounded paceGrotesk-Bold text-base  ${
-                          nft_unStake_loading
-                            ? "cursor-not-allowed bg-gray-40 text-gray-50"
-                            : "text-green-10 border border-green-10 cursor-pointer"
-                        }`}
-                      >
-                        <ButtonTextWrapper
-                          loading={nft_unStake_loading}
-                          Text={() => <>Unstake</>}
-                        />
-                      </div>
-                    ) : null}
+                    {activeTab === "Stake" && (
+                      <>
+                        {!isSignedIn ? (
+                          <div
+                            className=" w-full h-11 frcc rounded text-base text-primaryGreen border border-primaryGreen cursor-pointer"
+                            onClick={showWalletSelector}
+                          >
+                            Connect Wallet
+                          </div>
+                        ) : !isEnded ? (
+                          <div
+                            onClick={() => {
+                              if (!stakeDisabled) {
+                                batchStakeNFT();
+                              }
+                            }}
+                            className={` w-full h-11 frcc rounded paceGrotesk-Bold text-base  ${
+                              stakeDisabled
+                                ? "cursor-not-allowed bg-gray-40 text-gray-50"
+                                : "bg-greenGradient text-black cursor-pointer"
+                            }`}
+                          >
+                            <ButtonTextWrapper
+                              loading={nft_stake_loading}
+                              Text={() => <>Stake</>}
+                            />
+                          </div>
+                        ) : null}
+                      </>
+                    )}
                   </>
-                )}
+                ) : null}
+                {canUnStake ? (
+                  <>
+                    {activeTab === "Unstake" && (
+                      <>
+                        {!isSignedIn ? (
+                          <div
+                            className=" w-full h-11 frcc rounded text-base text-primaryGreen border border-primaryGreen cursor-pointer"
+                            onClick={showWalletSelector}
+                          >
+                            Connect Wallet
+                          </div>
+                        ) : canUnStake ? (
+                          <div
+                            onClick={() => {
+                              if (!nft_unStake_loading) {
+                                batchUnStakeNFT();
+                              }
+                            }}
+                            className={` w-full h-11 frcc rounded paceGrotesk-Bold text-base  ${
+                              nft_unStake_loading
+                                ? "cursor-not-allowed bg-gray-40 text-gray-50"
+                                : "text-green-10 border border-green-10 cursor-pointer"
+                            }`}
+                          >
+                            <ButtonTextWrapper
+                              loading={nft_unStake_loading}
+                              Text={() => <>Unstake</>}
+                            />
+                          </div>
+                        ) : null}
+                      </>
+                    )}
+                  </>
+                ) : null}
               </div>
             ) : null}
           </div>
+
           <div
             className={`ml-80 bg-dark-10 rounded-md p-5  w-2/5 ${
               isEmpty && isEnded ? "hidden" : ""

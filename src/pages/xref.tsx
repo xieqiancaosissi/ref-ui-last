@@ -442,7 +442,7 @@ const pageStyle = {
   backgroundImage: `url('https://img.ref.finance/images/XrefBg.png')`,
   backgroundSize: "cover",
   backgroundPosition: "center",
-  height: "100%",
+  height: "100vh",
   minHeight: "100%",
   backgroundColor: "#000a0a",
 };

@@ -6,6 +6,7 @@ import {
   UserSeedInfo,
   FarmBoost,
   claimRewardBySeed_boost,
+  toRealSymbol,
 } from "@/services/farm";
 import { TokenMetadata } from "@/services/ft-contract";
 import {
@@ -22,7 +23,12 @@ import {
 import BigNumber from "bignumber.js";
 import { useState, useContext, useEffect, useMemo } from "react";
 import { useIntl, FormattedMessage } from "react-intl";
-import { FarmDetailsUnion, QuestionMark } from "../icon";
+import {
+  FaAngleDown,
+  FaAngleUp,
+  FarmDetailsUnion,
+  QuestionMark,
+} from "../icon";
 import { LightningIcon } from "../icon/FarmBoost";
 import { useAccountStore } from "@/stores/account";
 import getConfig from "@/utils/config";
@@ -63,7 +69,7 @@ export default function UserStakeBlock(props: {
     radio,
     onTriggerFarmsPageUpdate,
   } = props;
-  const [yourTvl, setYourTvl] = useState("");
+  // const [yourTvl, setYourTvl] = useState("");
   const { pool, min_locking_duration_sec, slash_rate, seed_id, seed_decimal } =
     detailData;
   const {
@@ -77,11 +83,41 @@ export default function UserStakeBlock(props: {
   const accountStore = useAccountStore();
   const isSignedIn = accountStore.isSignedIn;
   const [claimLoading, setClaimLoading] = useState(false);
+  const [showDetail, setShowDetail] = useState(false);
   const DECIMALS =
     pool && new Set(STABLE_POOL_IDS || []).has(pool.id?.toString())
       ? LP_STABLE_TOKEN_DECIMALS
       : LP_TOKEN_DECIMALS;
-  useEffect(() => {
+  // useEffect(() => {
+  //   const { free_amount, shadow_amount, locked_amount } =
+  //     user_seeds_map[seed_id] || {};
+  //   const yourLp = toReadableNumber(
+  //     seed_decimal,
+  //     new BigNumber(free_amount || 0)
+  //       .plus(locked_amount || 0)
+  //       .plus(shadow_amount || 0)
+  //       .toFixed()
+  //   );
+  //   if (pool) {
+  //     const { tvl, id, shares_total_supply } = pool;
+  //     const DECIMALS = new Set(STABLE_POOL_IDS || []).has(id?.toString())
+  //       ? LP_STABLE_TOKEN_DECIMALS
+  //       : LP_TOKEN_DECIMALS;
+  //     const poolShares = Number(
+  //       toReadableNumber(DECIMALS, shares_total_supply)
+  //     );
+  //     const yourTvl =
+  //       poolShares == 0
+  //         ? 0
+  //         : Number(
+  //             toPrecision(((Number(yourLp) * tvl) / poolShares).toString(), 2)
+  //           );
+  //     if (yourTvl) {
+  //       setYourTvl(yourTvl.toString());
+  //     }
+  //   }
+  // }, [Object.keys(user_seeds_map || {})]);
+  function getYourTvl() {
     const { free_amount, shadow_amount, locked_amount } =
       user_seeds_map[seed_id] || {};
     const yourLp = toReadableNumber(
@@ -106,10 +142,10 @@ export default function UserStakeBlock(props: {
               toPrecision(((Number(yourLp) * tvl) / poolShares).toString(), 2)
             );
       if (yourTvl) {
-        setYourTvl(yourTvl.toString());
+        return toInternationalCurrencySystem(yourTvl.toString(), 2);
       }
     }
-  }, [Object.keys(user_seeds_map || {})]);
+  }
 
   function getUserPower() {
     if (REF_VE_CONTRACT_ID && !boostConfig) return "";
@@ -323,10 +359,10 @@ export default function UserStakeBlock(props: {
             </p>
             <p className="text-2xl xsm:text-white">
               {isSignedIn ? (
-                Number(yourTvl) == 0 ? (
-                  <span className="opacity-50">$0</span>
+                getYourTvl() ? (
+                  "$" + getYourTvl()
                 ) : (
-                  "$" + toInternationalCurrencySystem(yourTvl, 2)
+                  <span className="opacity-50">$0</span>
                 )
               ) : (
                 <span className="opacity-50">-</span>
@@ -353,7 +389,7 @@ export default function UserStakeBlock(props: {
       </div>
       <div
         className="bg-dark-10 rounded-md p-5 xsm:bg-dark-210 xsm:text-white"
-        style={{ height: "108px" }}
+        style={{ minHeight: "108px" }}
       >
         <p className="flex items-center text-gray-50 text-sm mb-1.5">
           Unclaimed rewards{" "}
@@ -370,9 +406,21 @@ export default function UserStakeBlock(props: {
         </p>
         {isSignedIn ? (
           <div className="frcb">
-            <p className="text-2xl flex">
+            <p className="text-2xl flex items-center">
               <FarmDetailsUnion className="mr-4" />
               {unclaimedRewardsData.worth}
+              {unclaimedRewardsData.showClaimButton ? (
+                <p
+                  className="w-6 h-4 ml-1.5 bg-gray-100 frcc rounded-3xl text-gray-50 hover:text-white"
+                  onClick={() => setShowDetail(!showDetail)}
+                >
+                  {!showDetail ? (
+                    <FaAngleUp className="cursor-pointer" />
+                  ) : (
+                    <FaAngleDown className="cursor-pointer" />
+                  )}
+                </p>
+              ) : null}
             </p>
             {unclaimedRewardsData.showClaimButton ? (
               <div
@@ -392,6 +440,57 @@ export default function UserStakeBlock(props: {
         ) : (
           <div className="opacity-50 mt-4">-</div>
         )}
+        {unclaimedRewardsData.showClaimButton ? (
+          !showDetail ? null : (
+            <div className="mt-2.5 border border-gray-90 p-4 rounded">
+              <div className="grid grid-cols-2 gap-4">
+                {unclaimedRewardsData.list.map(
+                  (
+                    {
+                      token,
+                      amount,
+                      preAmount,
+                    }: {
+                      token: TokenMetadata;
+                      amount: string;
+                      preAmount: string;
+                    },
+                    index: number
+                  ) => (
+                    <div className="flex items-center" key={index}>
+                      <div className="flex items-center">
+                        <img
+                          className="w-5 h-5 rounded-full border border-primaryGreen"
+                          src={token.icon}
+                        ></img>
+                        <span className="text-gray-10 text-sm ml-1.5">
+                          {toRealSymbol(token.symbol)}
+                        </span>
+                      </div>
+                      <div className="flex items-center ml-2">
+                        {preAmount ? (
+                          <>
+                            <span className="text-sm text-primaryText">
+                              {preAmount}
+                            </span>
+                            <span className="mx-3.5">1</span>
+                            <span className={`text-sm text-white`}>
+                              {amount}
+                            </span>
+                          </>
+                        ) : (
+                          <span className={`text-sm text-primaryText`}>
+                            {amount}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  )
+                )}
+              </div>
+            </div>
+          )
+        ) : null}
       </div>
     </>
   );

@@ -133,24 +133,29 @@ export default function FarmsDetailStake(props: {
     amountByShadowInFarm: "0",
     amountByTransferInFarm: "0",
   });
-  // useEffect(() => {
-  //   if (!user_data_loading) {
-  //     getSharesInfo();
-  //   }
-  // }, [Object.keys(user_seeds_map).length, user_data_loading]);
-  // async function getSharesInfo() {
-  //   const { seed_id } = detailData;
-  //   const { free_amount, shadow_amount } = user_seeds_map[seed_id] || {};
-  //   const poolId = pool?.id || "";
-  //   const sharesInPool = await mftGetBalance(getMftTokenId(poolId.toString()));
-  //   const amountByShadowInFarm = shadow_amount;
-  //   const amountByTransferInFarm = free_amount;
-  //   setSharesInfo({
-  //     sharesInPool: sharesInPool || "0",
-  //     amountByShadowInFarm: amountByShadowInFarm || "0",
-  //     amountByTransferInFarm: amountByTransferInFarm || "0",
-  //   });
-  // }
+  useEffect(() => {
+    if (Number(unlpBalances) === 0) {
+      setActiveTab("stake");
+    }
+  }, [unlpBalances]);
+  useEffect(() => {
+    if (!user_data_loading) {
+      getSharesInfo();
+    }
+  }, [Object.keys(user_seeds_map).length, user_data_loading]);
+  async function getSharesInfo() {
+    const { seed_id } = detailData;
+    const { free_amount, shadow_amount } = user_seeds_map[seed_id] || {};
+    const poolId = pool?.id || "";
+    const sharesInPool = await mftGetBalance(getMftTokenId(poolId.toString()));
+    const amountByShadowInFarm = shadow_amount;
+    const amountByTransferInFarm = free_amount;
+    setSharesInfo({
+      sharesInPool: sharesInPool || "0",
+      amountByShadowInFarm: amountByShadowInFarm || "0",
+      amountByTransferInFarm: amountByTransferInFarm || "0",
+    });
+  }
   useEffect(() => {
     if (stakeType !== "free") {
       const goldList = [

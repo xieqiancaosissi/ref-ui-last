@@ -30,7 +30,7 @@ import {
   toPrecision,
   toReadableNumber,
 } from "@/utils/numbers";
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import BigNumber from "bignumber.js";
 import { LOVE_TOKEN_DECIMAL } from "@/services/referendum";
 import getConfig from "@/utils/config";
@@ -165,6 +165,11 @@ export default function FarmsDetail(props: {
     return tokens;
   }
 
+  useEffect(() => {
+    if (!isSignedIn) {
+      setActiveTab("unstake");
+    }
+  }, [isSignedIn]);
   useEffect(() => {
     getYourAprs();
   }, [boostConfig, user_seeds_map]);
@@ -926,8 +931,10 @@ export default function FarmsDetail(props: {
                       id={"aprId" + detailData?.farmList?.[0].farm_id}
                     />
                   </div>
-                  {is_support_lp ? (
-                    <LPTip seed_id={detailData.seed_id} />
+                  {isSignedIn ? (
+                    is_support_lp ? (
+                      <LPTip seed_id={detailData.seed_id} />
+                    ) : null
                   ) : null}
                   <CalcIcon
                     onClick={(e: any) => {
@@ -1005,48 +1012,50 @@ export default function FarmsDetail(props: {
             </div>
           </div>
         </FarmsDetailContext.Provider>
-        {+freeAmount > 0 && is_support_lp ? (
-          <div
-            className="2xl:w-3/6 xl:w-4/6 lg:w-5/6 m-auto text-sm -mt-5 bg-white bg-opacity-5 p-4 rounded"
-            style={{ color: "rgba(255, 255, 255, 0.6)" }}
-          >
-            <p className="flex mr-1.5">
-              <FarmLpIcon className="mr-2" />
-              How to get Ref’s farm APR + Burrow Lending APR?
-            </p>
-            <div className="flex">
-              <p>
-                Step 1.{" "}
-                <a
-                  className="text-white underline cursor-pointer relative"
-                  tabIndex={99}
-                  onBlur={() => {
-                    setShowActivateBox(false);
-                  }}
-                  onClick={() => {
-                    setShowActivateBox(!showActivateBox);
-                  }}
-                >
-                  Activate
-                  <ShadowTip show={showActivateBox} seed_id={seed_id} />
-                </a>{" "}
-                the {`Burrow's`} extra rewards
+        {isSignedIn ? (
+          +freeAmount > 0 && is_support_lp ? (
+            <div
+              className="2xl:w-3/6 xl:w-4/6 lg:w-5/6 m-auto text-sm -mt-5 bg-white bg-opacity-5 p-4 rounded"
+              style={{ color: "rgba(255, 255, 255, 0.6)" }}
+            >
+              <p className="flex mr-1.5">
+                <FarmLpIcon className="mr-2" />
+                How to get Ref’s farm APR + Burrow Lending APR?
               </p>
-              <p>
-                Step 2. Go to supply LP on{" "}
-                <a
-                  className="text-white text-sm underline cursor-pointer"
-                  onClick={() => {
-                    const shadow_id = `shadow_ref_v1-${pool?.id}`;
-                    const url = `https://app.burrow.finance/tokenDetail/${shadow_id}`;
-                    window.open(url);
-                  }}
-                >
-                  Burrow
-                </a>
-              </p>
+              <div className="flex">
+                <p>
+                  Step 1.{" "}
+                  <a
+                    className="text-white underline cursor-pointer relative"
+                    tabIndex={99}
+                    onBlur={() => {
+                      setShowActivateBox(false);
+                    }}
+                    onClick={() => {
+                      setShowActivateBox(!showActivateBox);
+                    }}
+                  >
+                    Activate
+                    <ShadowTip show={showActivateBox} seed_id={seed_id} />
+                  </a>{" "}
+                  the {`Burrow's`} extra rewards
+                </p>
+                <p>
+                  Step 2. Go to supply LP on{" "}
+                  <a
+                    className="text-white text-sm underline cursor-pointer"
+                    onClick={() => {
+                      const shadow_id = `shadow_ref_v1-${pool?.id}`;
+                      const url = `https://app.burrow.finance/tokenDetail/${shadow_id}`;
+                      window.open(url);
+                    }}
+                  >
+                    Burrow
+                  </a>
+                </p>
+              </div>
             </div>
-          </div>
+          ) : null
         ) : null}
         {calcVisible ? (
           <CalcModelBooster
@@ -1142,7 +1151,11 @@ export default function FarmsDetail(props: {
                   id={"aprId" + detailData?.farmList?.[0].farm_id}
                 />
               </div>
-              {is_support_lp ? <LPTip seed_id={detailData.seed_id} /> : null}
+              {isSignedIn ? (
+                is_support_lp ? (
+                  <LPTip seed_id={detailData.seed_id} />
+                ) : null
+              ) : null}
             </div>
           </div>
           <div className="flex items-start justify-between text-sm mb-1">
@@ -1175,40 +1188,42 @@ export default function FarmsDetail(props: {
             radio={radio}
             onTriggerFarmsPageUpdate={onTriggerFarmsPageUpdate}
           ></UserStakeBlock>
-          {+freeAmount > 0 && is_support_lp ? (
-            <div className="text-xs mt-2 text-gray-60">
-              <span>How to get Ref’s farm APR + Burrow lending APR?</span>
-              <span>
-                Step 1.{" "}
-                <a
-                  className="text-yellow-30 underline cursor-pointer relative"
-                  tabIndex={99}
-                  onBlur={() => {
-                    setShowActivateBox(false);
-                  }}
-                  onClick={() => {
-                    setShowActivateBox(!showActivateBox);
-                  }}
-                >
-                  Activate
-                  <ShadowTip show={showActivateBox} seed_id={seed_id} />
-                </a>{" "}
-                the {`Burrow's`} extra rewards
-              </span>
-              <span>
-                Step 2. Go to supply LP on{" "}
-                <a
-                  className="text-yellow-30 text-xs underline cursor-pointer"
-                  onClick={() => {
-                    const shadow_id = `shadow_ref_v1-${pool?.id}`;
-                    const url = `https://app.burrow.finance/tokenDetail/${shadow_id}`;
-                    window.open(url);
-                  }}
-                >
-                  Burrow
-                </a>
-              </span>
-            </div>
+          {isSignedIn ? (
+            +freeAmount > 0 && is_support_lp ? (
+              <div className="text-xs mt-2 text-gray-60">
+                <span>How to get Ref’s farm APR + Burrow lending APR?</span>
+                <span>
+                  Step 1.{" "}
+                  <a
+                    className="text-yellow-30 underline cursor-pointer relative"
+                    tabIndex={99}
+                    onBlur={() => {
+                      setShowActivateBox(false);
+                    }}
+                    onClick={() => {
+                      setShowActivateBox(!showActivateBox);
+                    }}
+                  >
+                    Activate
+                    <ShadowTip show={showActivateBox} seed_id={seed_id} />
+                  </a>{" "}
+                  the {`Burrow's`} extra rewards
+                </span>
+                <span>
+                  Step 2. Go to supply LP on{" "}
+                  <a
+                    className="text-yellow-30 text-xs underline cursor-pointer"
+                    onClick={() => {
+                      const shadow_id = `shadow_ref_v1-${pool?.id}`;
+                      const url = `https://app.burrow.finance/tokenDetail/${shadow_id}`;
+                      window.open(url);
+                    }}
+                  >
+                    Burrow
+                  </a>
+                </span>
+              </div>
+            ) : null
           ) : null}
         </div>
         <div className="fixed bottom-8 left-0 w-full">

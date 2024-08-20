@@ -64,7 +64,10 @@ export default function PoolRow({
                   ))}
                 </div>
                 {/*  */}
-                <span className={styles.symbol}>
+                <span
+                  className={styles.symbol}
+                  title={item.token_symbols.join("-")}
+                >
                   {item.token_symbols.join("-")}
                 </span>
                 {/* is collect */}

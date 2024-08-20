@@ -6,9 +6,14 @@ import Asset from "./modal/Asset";
 import Tab from "./modal/Tab";
 import Positions from "./modal/Positions";
 import Farms from "./modal/Farms";
+import { useAccountStore } from "@/stores/account";
+import { getAccountId } from "@/utils/wallet";
 
 export const PortfolioData = createContext<PortfolioContextType | null>(null);
 export default function RefPanelModal() {
+  const accountStore = useAccountStore();
+  const accountId = getAccountId();
+  const isSignedIn = !!accountId || accountStore.isSignedIn;
   // variables only used in mobile site start
   const [main_active_tab, set_main_active_tab] = useState("Summary"); // Summary,positions
   // variables only used in mobile site end
@@ -68,8 +73,10 @@ export default function RefPanelModal() {
     useState<boolean>(false);
 
   useEffect(() => {
-    getTokenPriceList();
-  }, []);
+    if (isSignedIn) {
+      getTokenPriceList();
+    }
+  }, [isSignedIn]);
   async function getTokenPriceList() {
     // get all token prices
     const tokenPriceList = await getBoostTokenPrices();

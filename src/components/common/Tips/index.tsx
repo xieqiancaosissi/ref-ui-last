@@ -9,6 +9,7 @@ export default function HoverTip({
   origin,
   msg1,
   msg2,
+  mobileRight,
 }: {
   msg?: string;
   extraStyles?: string;
@@ -16,6 +17,7 @@ export default function HoverTip({
   origin?: string;
   msg1?: string;
   msg2?: string;
+  mobileRight?: boolean;
 }) {
   return (
     <div className="w-4 h-4 relative mx-1">
@@ -30,7 +32,13 @@ export default function HoverTip({
           <div>{msg2}</div>
         </div>
       ) : (
-        <div className={`${styles.tooltip}  ${extraStyles}`}>{msg}</div>
+        <div
+          className={`${
+            mobileRight ? styles.tooltipMobileRight : styles.tooltip
+          }  ${extraStyles}`}
+        >
+          {msg}
+        </div>
       )}
     </div>
   );

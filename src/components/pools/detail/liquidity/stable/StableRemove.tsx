@@ -516,7 +516,11 @@ export default function StableRemove(props: any) {
                   }`}
                 >
                   {item.value}
-                  <HoverTip msg={item.tips} extraStyles={"w-45"} />
+                  <HoverTip
+                    msg={item.tips}
+                    extraStyles={`w-45`}
+                    mobileRight={isMobile && index == 1 ? true : false}
+                  />
                 </div>
               );
             })}

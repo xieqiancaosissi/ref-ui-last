@@ -200,7 +200,11 @@ export default function Farms() {
           router.push(`/pool/dcl/${k.id}`);
         }
 
-        if (k.pool_kind == "RATED_SWAP" || k.pool_kind == "STABLE_SWAP") {
+        if (
+          k.pool_kind == "RATED_SWAP" ||
+          k.pool_kind == "STABLE_SWAP" ||
+          k.pool_kind == "DEGEN_SWAP"
+        ) {
           if (k.degens) {
             router.push(`/pool/degen/${k.id}`);
           } else {

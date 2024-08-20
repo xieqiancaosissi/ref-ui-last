@@ -36,7 +36,7 @@ export default function PoolRow({
     }
   }, [currentwatchListId]);
   return (
-    <div className="mb-2 min-h-90 overflow-auto hover:cursor-pointer xsm:w-full lg:w-276">
+    <div className="mb-2 min-h-90 overflow-auto hover:cursor-pointer xsm:w-full lg:w-[1104px]">
       {updatedMapList.map((item, index) => {
         return (
           <div

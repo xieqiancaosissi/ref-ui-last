@@ -24,8 +24,9 @@ import { ITokenMetadata } from "@/interfaces/tokens";
 import { MIN_RETAINED_NEAR_AMOUNT } from "@/utils/constant";
 import { NEAR_META_DATA, WNEAR_META_DATA } from "@/utils/nearMetaData";
 import getConfig from "@/utils/config";
+
 const { WRAP_NEAR_CONTRACT_ID } = getConfig();
-const { RATED_POOLS_IDS } = getStablePoolConfig();
+const { RATED_POOLS_IDS, DEGEN_POOLS_IDS } = getStablePoolConfig();
 export const parsePool = (pool: PoolRPCView, id: number): Pool => ({
   id: Number(id >= 0 ? id : pool.id),
   tokenIds: pool.token_account_ids,
@@ -123,11 +124,16 @@ export const isStablePool = (id: string | number) => {
 export const isRatedPool = (id: string | number) => {
   return RATED_POOLS_IDS.includes(id.toString());
 };
+export const isDegenPool = (id: string | number) => {
+  return DEGEN_POOLS_IDS.includes(id.toString());
+};
+
 export const isStableToken = (id: string) => {
   return AllStableTokenIds.includes(id);
 };
-export const getStablePoolDecimal = (id: string | number) => {
-  if (isRatedPool(id)) return RATED_POOL_LP_TOKEN_DECIMALS;
+export const getStablePoolDecimal = (id: string | number, pool?: any) => {
+  if (isRatedPool(id) || isDegenPool(id) || pool?.pool_kind == "DEGEN_SWAP")
+    return RATED_POOL_LP_TOKEN_DECIMALS;
   // else if (isStablePool(id)) return STABLE_LP_TOKEN_DECIMALS;
   else return STABLE_LP_TOKEN_DECIMALS;
 };

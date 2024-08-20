@@ -54,6 +54,7 @@ export interface StablePool {
   amp: number;
   rates: string[];
   update_time?: number;
+  degens: string[];
 }
 export interface ReservesMap {
   [index: string]: string;

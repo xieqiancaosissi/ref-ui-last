@@ -1,5 +1,5 @@
 .poolContainer {
-  @apply flex items-center lg:w-276 xsm:w-full min-h-18 mt-3 rounded-lg text-white text-sm font-medium  justify-between flex-wrap;
+  @apply flex items-center lg:w-[1104px] xsm:w-full min-h-18 mt-3 rounded-lg text-white text-sm font-medium  justify-between flex-wrap;
 }
 .notfarm {
   background: rgba(33, 43, 53, 0.3);
@@ -101,7 +101,7 @@
 
 /* farm style */
 .farmContainer {
-  @apply h-16 lg:w-276 xsm:w-full frcc p-3 bg-transparent lg:hidden xsm:hidden;
+  @apply h-16 lg:w-[1104px] xsm:w-full frcc p-3 bg-transparent lg:hidden xsm:hidden;
 }
 
 .farmContainer > div:first-child {

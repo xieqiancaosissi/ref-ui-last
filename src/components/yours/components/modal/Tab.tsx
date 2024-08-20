@@ -105,7 +105,7 @@ export default function Tab() {
         background: !isMobile ? "#0C171F" : "",
       }}
     >
-      <div className="flex items-center lg:w-276 xsm:w-full">
+      <div className="flex items-center lg:w-[1104px] xsm:w-full">
         <div className={styles.filterPoolType}>
           {tabList.map(
             (

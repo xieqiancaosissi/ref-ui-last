@@ -51,7 +51,8 @@ export function myShares({
   } else displayPercent = toPrecision(String(sharePercent), 3);
 
   const nonPrecisionDisplayUserTotalShares = toReadableNumber(
-    poolDetail.pool_kind == "STABLE_SWAP"
+    poolDetail.pool_kind == "STABLE_SWAP" &&
+      poolDetail.pool_kind != "DEGEN_SWAP"
       ? STABLE_LP_TOKEN_DECIMALS
       : RATED_POOL_LP_TOKEN_DECIMALS,
     displayUserTotalShare

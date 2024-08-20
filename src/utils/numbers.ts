@@ -32,7 +32,6 @@ export const toReadableNumber = (
     .substring(number.length - decimals)
     .padStart(decimals, "0")
     .substring(0, decimals);
-
   return `${wholeStr}.${fractionStr}`.replace(/\.?0+$/, "");
 };
 

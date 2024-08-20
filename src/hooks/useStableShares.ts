@@ -367,9 +367,14 @@ export const getRemoveLiquidityByTokens = (
   const base_old_c_amounts = stablePool.c_amounts.map((amount) =>
     toReadableNumber(STABLE_LP_TOKEN_DECIMALS, amount)
   );
-  const rates = stablePool.rates.map((r) =>
-    toReadableNumber(STABLE_LP_TOKEN_DECIMALS, r)
-  );
+  const rates = stablePool?.degens
+    ? stablePool.degens.map((r: any) =>
+        toReadableNumber(STABLE_LP_TOKEN_DECIMALS, r)
+      )
+    : stablePool.rates.map((r: any) =>
+        toReadableNumber(STABLE_LP_TOKEN_DECIMALS, r)
+      );
+
   const old_c_amounts = base_old_c_amounts
     .map((amount, i) =>
       toNonDivisibleNumber(

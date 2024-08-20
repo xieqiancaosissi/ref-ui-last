@@ -1,5 +1,5 @@
 .poolContainer {
-  @apply lg:frcc xsm:flex xsm:items-center xsm:justify-between xsm:py-4 lg:w-276 xsm:w-full lg:h-15 xsm:min-h-15 mt-3 rounded-lg px-3 text-white text-sm font-medium;
+  @apply lg:frcc xsm:flex xsm:items-center xsm:justify-between xsm:py-4 lg:w-[1104px] xsm:w-full lg:h-15 xsm:min-h-15 mt-3 rounded-lg px-3 text-white text-sm font-medium;
 }
 
 .notfarm {

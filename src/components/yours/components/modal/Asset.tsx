@@ -299,7 +299,7 @@ function AssetPage() {
         background: "linear-gradient(to bottom, #030F16, #0C171F)",
       }}
     >
-      <div className="lg:w-276 xsm:w-full flex xsm:flex-col items-center justify-between">
+      <div className="lg:w-[1104px] xsm:w-full flex xsm:flex-col items-center justify-between">
         {/* pools value */}
         <div className="lg:frcc xsm:hidden xsm:h-19">
           <PoolTotalValIcon />

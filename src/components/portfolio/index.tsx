@@ -19,6 +19,7 @@ import BurrowPanel from "./components/BurrowPanel";
 import { XrefMobileArrow } from "../xref/icon";
 import FlipNumbers from "react-flip-numbers";
 import useHoldings from "@/hooks/orderbook/useHoldings";
+import { useAppStore } from "@/stores/app";
 
 export const OverviewData = createContext<OverviewContextType | null>(null);
 const is_mobile: boolean = !!isMobile();
@@ -58,6 +59,9 @@ export default function Overview({ isOpen }: { isOpen: boolean }) {
   const [isPortfolioPanelOpen, setIsPortfolioPanelOpen] =
     useState<boolean>(false);
   const orderly_value = useHoldings();
+  const appStore = useAppStore();
+  const personalDataUpdatedSerialNumber =
+    appStore.getPersonalDataUpdatedSerialNumber();
   const [netWorth, netWorthDone] = useMemo(() => {
     let netWorth = "0";
     let netWorthDone = false;
@@ -130,7 +134,7 @@ export default function Overview({ isOpen }: { isOpen: boolean }) {
   useEffect(() => {
     // get all token prices
     getTokenPriceList();
-  }, []);
+  }, [personalDataUpdatedSerialNumber]);
   useEffect(() => {
     if (!isOpen) {
       setActiveTab("Wallet");

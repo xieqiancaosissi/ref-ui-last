@@ -13,6 +13,8 @@ import {
 import { useRouter } from "next/router";
 import Modal from "react-modal";
 import {
+  FaAngleDown,
+  FaAngleUp,
   FarmDetailsBgIcon,
   FarmDetailsPoolIcon,
   FarmDetailsUnion,
@@ -117,6 +119,7 @@ export default function FarmsDclDetail(props: {
   const [rangeSort, setRangeSort] = useState(true);
   const [claimLoading, setClaimLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showDetail, setShowDetail] = useState(false);
   const isEnded = useMemo(() => {
     if (detailData?.farmList) {
       const farms = detailData.farmList;
@@ -1297,6 +1300,18 @@ export default function FarmsDclDetail(props: {
               <p className="text-2xl frcc">
                 <FarmDetailsUnion className="mr-4" />
                 {unclaimedRewardsData.worth}
+                {unclaimedRewardsData.showClaimButton ? (
+                  <p
+                    className="w-6 h-4 ml-1.5 bg-gray-100 frcc rounded-3xl text-gray-50 hover:text-white"
+                    onClick={() => setShowDetail(!showDetail)}
+                  >
+                    {!showDetail ? (
+                      <FaAngleUp className="cursor-pointer" />
+                    ) : (
+                      <FaAngleDown className="cursor-pointer" />
+                    )}
+                  </p>
+                ) : null}
               </p>
               {unclaimedRewardsData.showClaimButton ? (
                 <div
@@ -1313,6 +1328,57 @@ export default function FarmsDclDetail(props: {
                 </div>
               ) : null}
             </div>
+            {unclaimedRewardsData.showClaimButton ? (
+              !showDetail ? null : (
+                <div className="mt-2.5 border border-gray-90 p-4 rounded">
+                  <div className="grid grid-cols-2 gap-4">
+                    {unclaimedRewardsData.list.map(
+                      (
+                        {
+                          token,
+                          amount,
+                          preAmount,
+                        }: {
+                          token: TokenMetadata;
+                          amount: string;
+                          preAmount: string;
+                        },
+                        index: number
+                      ) => (
+                        <div className="flex items-center" key={index}>
+                          <div className="flex items-center">
+                            <img
+                              className="w-5 h-5 rounded-full border border-primaryGreen"
+                              src={token.icon}
+                            ></img>
+                            <span className="text-gray-10 text-sm ml-1.5">
+                              {toRealSymbol(token.symbol)}
+                            </span>
+                          </div>
+                          <div className="flex items-center ml-2">
+                            {preAmount ? (
+                              <>
+                                <span className="text-sm text-primaryText">
+                                  {preAmount}
+                                </span>
+                                <span className="mx-3.5">1</span>
+                                <span className={`text-sm text-white`}>
+                                  {amount}
+                                </span>
+                              </>
+                            ) : (
+                              <span className={`text-sm text-primaryText`}>
+                                {amount}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      )
+                    )}
+                  </div>
+                </div>
+              )
+            ) : null}
           </div>
         </div>
       </main>

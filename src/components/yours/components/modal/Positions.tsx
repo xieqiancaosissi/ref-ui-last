@@ -154,9 +154,7 @@ export default function Positions(props: any) {
         </div>
       </div>
       {/* pc loading */}
-      {(loading_status_v2 || noData_status2) &&
-      activeTab == "1" &&
-      poolType == "dcl" ? (
+      {loading_status_v2 && activeTab == "1" && poolType == "dcl" ? (
         <SkeletonTheme
           baseColor="rgba(33, 43, 53, 0.3)"
           highlightColor="#2A3643"
@@ -170,9 +168,7 @@ export default function Positions(props: any) {
         </SkeletonTheme>
       ) : null}
 
-      {(loading_status_v1 || noData_status1) &&
-      activeTab == "1" &&
-      poolType == "classic" ? (
+      {loading_status_v1 && activeTab == "1" && poolType == "classic" ? (
         <SkeletonTheme
           baseColor="rgba(33, 43, 53, 0.3)"
           highlightColor="#2A3643"
@@ -185,6 +181,14 @@ export default function Positions(props: any) {
           />
         </SkeletonTheme>
       ) : null}
+
+      {noData_status1 && activeTab == "1" && poolType == "classic" && (
+        <NoContent></NoContent>
+      )}
+
+      {noData_status2 && activeTab == "1" && poolType == "dcl" && (
+        <NoContent></NoContent>
+      )}
     </div>
   );
 }

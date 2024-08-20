@@ -309,7 +309,7 @@ export default function Farms(props: any) {
           <DclFarms></DclFarms>
         </div>
         {/* pc loading */}
-        {loading_status || noData_status ? (
+        {loading_status ? (
           <SkeletonTheme
             baseColor="rgba(33, 43, 53, 0.3)"
             highlightColor="#2A3643"
@@ -322,6 +322,8 @@ export default function Farms(props: any) {
             />
           </SkeletonTheme>
         ) : null}
+
+        {!loading_status && noData_status && isSignedIn && <NoContent />}
       </FarmCommonDatas.Provider>
     </>
   );

@@ -46,16 +46,33 @@ export default function Positions(props: any) {
   const total_quantity = +v1LiquidityQuantity + +v2LiquidityQuantity;
   const loading_status =
     !(v1LiquidityLoadingDone && v2LiquidityLoadingDone) && isSignedIn;
+
+  const loading_status_v1 = !v1LiquidityLoadingDone && isSignedIn;
+  const loading_status_v2 = !v2LiquidityLoadingDone && isSignedIn;
+
   const noData_status =
     !loading_status &&
     ((v1LiquidityLoadingDone &&
       v2LiquidityLoadingDone &&
       total_quantity == 0) ||
       !isSignedIn);
+
+  const noData_status1 =
+    (!loading_status_v1 &&
+      v1LiquidityLoadingDone &&
+      +v1LiquidityQuantity == 0) ||
+    !isSignedIn;
+
+  const noData_status2 =
+    (!loading_status_v2 &&
+      v2LiquidityLoadingDone &&
+      +v2LiquidityQuantity == 0) ||
+    !isSignedIn;
+
   const data_status =
     v1LiquidityLoadingDone && v2LiquidityLoadingDone && total_quantity > 0;
 
-  const [poolType, setPoolType] = useState("dcl");
+  const [poolType, setPoolType] = useState("classic");
 
   if (!accountId) return <NoContent />;
 
@@ -137,14 +154,32 @@ export default function Positions(props: any) {
         </div>
       </div>
       {/* pc loading */}
-      {loading_status || noData_status ? (
+      {(loading_status_v2 || noData_status2) &&
+      activeTab == "1" &&
+      poolType == "dcl" ? (
         <SkeletonTheme
           baseColor="rgba(33, 43, 53, 0.3)"
           highlightColor="#2A3643"
         >
           <Skeleton
             style={{ width: "100%" }}
-            height={40}
+            height={60}
+            count={4}
+            className="mt-4"
+          />
+        </SkeletonTheme>
+      ) : null}
+
+      {(loading_status_v1 || noData_status1) &&
+      activeTab == "1" &&
+      poolType == "classic" ? (
+        <SkeletonTheme
+          baseColor="rgba(33, 43, 53, 0.3)"
+          highlightColor="#2A3643"
+        >
+          <Skeleton
+            style={{ width: "100%" }}
+            height={60}
             count={4}
             className="mt-4"
           />

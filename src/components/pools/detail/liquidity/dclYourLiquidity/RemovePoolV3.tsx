@@ -22,6 +22,7 @@ import {
   sort_tokens_by_base,
   getBinPointByPrice,
   getBinPointByPoint,
+  openUrlLocal,
 } from "@/services/commonV3";
 import { PoolInfo, batch_remove_liquidity_contract } from "@/services/swapV3";
 import Big from "big.js";
@@ -57,6 +58,8 @@ export type RemoveType = "left" | "right" | "all";
 export const RemovePoolV3 = (props: any) => {
   const {
     setAddSuccess,
+    fromYours,
+    addSuccess,
     tokenMetadata_x_y,
     poolDetail,
     tokenPriceList,
@@ -71,6 +74,7 @@ export const RemovePoolV3 = (props: any) => {
     restProps: any;
     listLiquidities: UserLiquidityInfo[];
     setAddSuccess?: () => void;
+    fromYours?: boolean;
   } = props;
   const appStore = useAppStore();
   const SLOT_NUMBER = get_slot_number_in_a_bin();
@@ -557,8 +561,12 @@ export const RemovePoolV3 = (props: any) => {
         sessionStorage.setItem("REMOVE_POOL_ID", pool_id);
         if (!res) return;
         if (res.status == "success") {
-          successToast();
-          setAddSuccess((pre: any) => pre + 1);
+          if (fromYours) {
+            openUrlLocal(`/pool/dcl/${pool_id}`);
+          } else {
+            successToast();
+            setAddSuccess((pre: any) => pre + 1);
+          }
         } else if (res.status == "error") {
           failToast(res.errorResult?.message);
         }

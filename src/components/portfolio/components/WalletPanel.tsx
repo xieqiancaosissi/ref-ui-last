@@ -13,7 +13,6 @@ import {
   auroraAddr,
   batchWithdrawInner,
   batchWithdrawAurora,
-  display_value,
   display_value_withCommas,
   useAuroraBalancesNearMapping,
   useDCLAccountBalance,
@@ -39,6 +38,7 @@ export default function WalletPanel() {
     set_wallet_assets_value_done,
     set_wallet_assets_value,
     setUserTokens,
+    isOpen,
   } = useContext(OverviewData) as OverviewContextType;
   const [tipVisible, setTipVisible] = useState<boolean>(false);
   const [tabList, setTabList] = useState([{ name: "NEAR", tag: "near" }]);
@@ -56,9 +56,6 @@ export default function WalletPanel() {
   const auroaBalances = useAuroraBalancesNearMapping(auroraAddress); // balances in aurora;
   const v1balances = useTokenBalances(); // balances in ref v1
   const DCLAccountBalance = useDCLAccountBalance(!!accountId); // balances in ref v3
-  const swapStore = useSwapStore();
-  const tokenIn = swapStore.getTokenIn();
-  const tokenOut = swapStore.getTokenOut();
   const displayAuroraAddress = `${auroraAddress?.substring(
     0,
     6
@@ -72,13 +69,16 @@ export default function WalletPanel() {
   const personalDataUpdatedSerialNumber =
     appStore.getPersonalDataUpdatedSerialNumber();
   useEffect(() => {
+    if (isOpen) {
+      appStore.setPersonalDataUpdatedSerialNumber(
+        personalDataUpdatedSerialNumber + 1
+      );
+    }
+  }, [isOpen]);
+  useEffect(() => {
     if (!is_tokens_loading) {
       userTokens.forEach((token: TokenMetadata) => {
         const { decimals, id, nearNonVisible } = token;
-        let updatedNearNonVisible = nearNonVisible;
-        if (id == tokenIn?.id) updatedNearNonVisible = tokenIn?.balanceDecimal;
-        if (id == tokenOut?.id)
-          updatedNearNonVisible = tokenOut?.balanceDecimal;
         const b_onRef =
           id === NEARXIDS[0]
             ? "0"
@@ -93,7 +93,7 @@ export default function WalletPanel() {
         token.inner = b_inner;
         token.near = toReadableNumber(
           decimals,
-          (updatedNearNonVisible || "0").toString()
+          (nearNonVisible || "0").toString()
         );
         token.aurora = toReadableNumber(
           decimals,
@@ -108,8 +108,6 @@ export default function WalletPanel() {
     JSON.stringify(v1balances || {}),
     JSON.stringify(DCLAccountBalance || {}),
     is_tokens_loading,
-    tokenIn?.balance,
-    tokenOut?.balance,
   ]);
   useEffect(() => {
     if (!is_tokens_loading) {
@@ -193,6 +191,11 @@ export default function WalletPanel() {
       clearTimeout(timer);
     };
   }, [tipVisible]);
+  useEffect(() => {
+    if (!isOpen) {
+      setActiveTab("near");
+    }
+  }, [isOpen]);
   function token_data_process(
     target_tokens: TokenMetadata[],
     accountType: keyof TokenMetadata

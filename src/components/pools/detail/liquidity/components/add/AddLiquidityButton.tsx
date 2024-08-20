@@ -176,11 +176,7 @@ export function AddLiquidityButton(props: any) {
     }
     return !(condition1 && condition2);
   }
-  const isAddLiquidityDisabled =
-    getButtonStatus() ||
-    configV2.BLACK_LIST_DCL_POOL_IDS_IN_POOLS.includes(
-      currentSelectedPool?.pool_id
-    );
+  const isAddLiquidityDisabled = getButtonStatus();
 
   const add_lp_func =
     liquidityShape === "Spot"
@@ -196,7 +192,10 @@ export function AddLiquidityButton(props: any) {
               ? "bg-gray-40 cursor-not-allowed text-gray-60"
               : ""
           }`}
-          onClick={add_lp_func}
+          onClick={() => {
+            if (isAddLiquidityDisabled) return;
+            add_lp_func();
+          }}
         >
           <ButtonTextWrapper
             loading={addLiquidityButtonLoading}

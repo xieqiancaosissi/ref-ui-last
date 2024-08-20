@@ -23,6 +23,7 @@ import { useAppStore } from "@/stores/app";
 import { showWalletSelectorModal } from "@/utils/wallet";
 import successToast from "@/components/common/toast/successToast";
 import failToast from "@/components/common/toast/failToast";
+import { openUrlLocal } from "@/services/commonV3";
 
 export const REF_FI_PRE_LIQUIDITY_ID_KEY = "REF_FI_PRE_LIQUIDITY_ID_VALUE";
 
@@ -58,7 +59,7 @@ export function myShares({
   return inPrecisionDisplayUserTotalShares + " " + `(${displayPercent}%)`;
 }
 
-export default function StableAdd(props: any) {
+export default function ClassicRemove(props: any) {
   const accountStore = useAccountStore();
   const intl = useIntl();
   const appStore = useAppStore();
@@ -72,6 +73,7 @@ export default function StableAdd(props: any) {
     setAddSuccess,
     addSuccess,
     shares,
+    fromYours,
   } = props;
 
   useEffect(() => {
@@ -116,8 +118,12 @@ export default function StableAdd(props: any) {
         if (!res) return;
         let status;
         if (res.status == "success") {
-          successToast();
-          setAddSuccess((pre: number) => pre + 1);
+          if (fromYours) {
+            openUrlLocal(`/pool/classic/${poolDetail.id}`);
+          } else {
+            successToast();
+            setAddSuccess((pre: number) => pre + 1);
+          }
         } else if (res.status == "error") {
           failToast(res.errorResult?.message);
         }
@@ -318,7 +324,7 @@ export default function StableAdd(props: any) {
                       <>
                         <div
                           key={ite.tokenId}
-                          className="flex lg:h-13 xsm:h-12 mt-2 p-2 lg:w-45 xsm:w-5/12 shrink-0 items-center rounded bg-gray-230"
+                          className="flex lg:h-13 xsm:h-12 mt-2 p-2 lg:w-45 xsm:w-5/12 shrink-0 items-center rounded bg-gray-310"
                         >
                           <Icon icon={ite.icon} className="h-7 w-7 mr-2" />
                           <span className="text-gray-50 text-base xsm:hidden">

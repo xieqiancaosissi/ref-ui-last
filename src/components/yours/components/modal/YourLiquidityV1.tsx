@@ -69,6 +69,7 @@ import { getPoolsDetailById } from "@/services/pool";
 import { useTokenMetadata } from "@/hooks/usePools";
 import { useRiskTokens } from "@/hooks/useRiskTokens";
 import { useYourliquidity } from "@/hooks/useStableShares";
+import { usePool } from "@/hooks/usePools";
 import {
   ShareInFarm,
   ShareInBurrow,
@@ -104,7 +105,11 @@ export function YourLiquidityV1(props: any) {
   const [count, setCount] = useState(0);
   const isSignedIn = accountStore.isSignedIn;
   const { pureIdList } = useRiskTokens();
+
   const [addSuccess, setAddSuccess] = useState(0);
+
+  //
+
   useEffect(() => {
     // get all stable pools;
     const ids = ALL_STABLE_POOL_IDS;
@@ -274,8 +279,8 @@ export function YourLiquidityV1(props: any) {
           showV1EmptyBar,
           router,
           pureIdList,
-          setAddSuccess,
           addSuccess,
+          setAddSuccess,
         }}
       >
         <LiquidityContainerStyle2></LiquidityContainerStyle2>
@@ -295,8 +300,8 @@ function LiquidityContainerStyle2() {
     v2StakeList,
     router,
     pureIdList,
-    setAddSuccess,
     addSuccess,
+    setAddSuccess,
   } = useContext(StakeListContext)!;
   const simplePoolsFinal = useMemo(() => {
     const activeSimplePools: PoolRPCView[] = pools.filter(
@@ -309,7 +314,7 @@ function LiquidityContainerStyle2() {
       }
     );
     return activeSimplePools;
-  }, [pools, batchTotalSharesSimplePools]);
+  }, [pools, batchTotalSharesSimplePools, addSuccess]);
   const stablePoolsFinal: PoolRPCView[] = useMemo(() => {
     const activeStablePools = stablePools.filter(
       (p: PoolRPCView, i: number) => {
@@ -317,7 +322,7 @@ function LiquidityContainerStyle2() {
       }
     );
     return activeStablePools;
-  }, [batchTotalShares]);
+  }, [batchTotalShares, addSuccess]);
   const titleList = [
     {
       name: "Pair",
@@ -356,11 +361,7 @@ function LiquidityContainerStyle2() {
         })}
       </div>
       {!vePool || !getConfig().REF_VE_CONTRACT_ID ? null : (
-        <YourClassicLiquidityLine
-          pool={vePool}
-          addSuccess={addSuccess}
-          setAddSuccess={setAddSuccess}
-        ></YourClassicLiquidityLine>
+        <YourClassicLiquidityLine pool={vePool}></YourClassicLiquidityLine>
       )}
       {stablePoolsFinal.map((pool: PoolRPCView) => {
         return (
@@ -368,8 +369,6 @@ function LiquidityContainerStyle2() {
             pool={pool}
             key={pool.id}
             type="stable"
-            addSuccess={addSuccess}
-            setAddSuccess={setAddSuccess}
           ></YourClassicLiquidityLine>
         );
       })}
@@ -378,8 +377,6 @@ function LiquidityContainerStyle2() {
           <YourClassicLiquidityLine
             pool={pool}
             key={pool.id}
-            addSuccess={addSuccess}
-            setAddSuccess={setAddSuccess}
           ></YourClassicLiquidityLine>
         );
       })}
@@ -533,6 +530,8 @@ function YourClassicLiquidityLine(props: any) {
   // image end
 
   // token symbol start
+  const { shares, pool: usePoolFullData } = usePool(+poolId);
+
   const [poolNew, setPoolNew] = useState<any>();
   const [sharesNew, setShares] = useState("");
   useEffect(() => {
@@ -728,6 +727,7 @@ function YourClassicLiquidityLine(props: any) {
     batchTotalSharesSimplePools,
     batchTotalShares,
     lp_in_vote,
+    addSuccess,
   ]);
   // get total lp value
   const lp_total_value = useMemo(() => {
@@ -745,14 +745,14 @@ function YourClassicLiquidityLine(props: any) {
         .toFixed();
     }
     return "0";
-  }, [lp_total, tvls]);
+  }, [lp_total, tvls, addSuccess]);
   // get seed status
   const seed_status = useMemo(() => {
     const allFarmV2_count = getFarmsCount(poolId.toString(), v2Farm);
     const endedFarmV2_count = getRealEndedFarmsCount(poolId.toString(), v2Farm);
     if (allFarmV2_count == endedFarmV2_count) return "e";
     return "r";
-  }, [v2Farm]);
+  }, [v2Farm, addSuccess]);
   function display_percent(percent: string) {
     const p = new BigNumber(percent).multipliedBy(100);
     if (p.isEqualTo(0)) {
@@ -801,6 +801,8 @@ function YourClassicLiquidityLine(props: any) {
         v2StakeList,
         router,
         pureIdList,
+        poolNew,
+        usePoolFullData,
         addSuccess,
         setAddSuccess,
       }}
@@ -839,6 +841,8 @@ function YourClassicLiquidityLinePage(props: any) {
     v2StakeList,
     router,
     pureIdList,
+    poolNew,
+    usePoolFullData,
     addSuccess,
     setAddSuccess,
   } = useContext(LiquidityContextData)!;
@@ -1369,7 +1373,7 @@ function YourClassicLiquidityLinePage(props: any) {
         </div>
       )}
 
-      {updatedMapList[0]?.token_account_ids && poolDetail && (
+      {updatedMapList[0]?.token_account_ids && poolDetail && usePoolFullData && (
         <>
           <ClassicAdd
             isOpen={showAdd}
@@ -1379,6 +1383,7 @@ function YourClassicLiquidityLinePage(props: any) {
             updatedMapList={updatedMapList}
             addSuccess={addSuccess}
             setAddSuccess={setAddSuccess}
+            fromYours
           />
 
           <ClassicRemove
@@ -1389,6 +1394,7 @@ function YourClassicLiquidityLinePage(props: any) {
             updatedMapList={updatedMapList}
             addSuccess={addSuccess}
             setAddSuccess={setAddSuccess}
+            fromYours
           />
 
           <>
@@ -1401,6 +1407,7 @@ function YourClassicLiquidityLinePage(props: any) {
               isMobile={isMobile}
               addSuccess={addSuccess}
               setAddSuccess={setAddSuccess}
+              fromYours
             />
 
             <StableRemove
@@ -1410,8 +1417,11 @@ function YourClassicLiquidityLinePage(props: any) {
               pureIdList={pureIdList}
               updatedMapList={updatedMapList}
               isMobile={isMobile}
+              pool={usePoolFullData}
               addSuccess={addSuccess}
+              shares={shares}
               setAddSuccess={setAddSuccess}
+              fromYours
             />
           </>
         </>

@@ -45,6 +45,7 @@ import { useNewPoolData } from "@/hooks/useStableShares";
 import { get_shadow_records } from "@/services/farm";
 import { list_farmer_seeds } from "@/services/farm";
 import { getPoolAvailableShare } from "@/hooks/useStableShares";
+import { openUrlLocal } from "@/services/commonV3";
 
 export function myShares({
   totalShares,
@@ -78,7 +79,7 @@ export function myShares({
   return inPrecisionDisplayUserTotalShares + " " + `(${displayPercent}%)`;
 }
 
-export default function StableAdd(props: any) {
+export default function StableRemove(props: any) {
   const accountStore = useAccountStore();
   const appStore = useAppStore();
   const {
@@ -92,6 +93,7 @@ export default function StableAdd(props: any) {
     pool,
     shares,
     addSuccess,
+    fromYours,
   } = props;
   const [balancesList, setBalances] = useState<any>([]);
   const [inputValList, setInputValList] = useState<any>([]);
@@ -197,8 +199,12 @@ export default function StableAdd(props: any) {
         .then((res: any) => {
           if (!res) return;
           if (res.status == "success") {
-            successToast();
-            setAddSuccess((pre: number) => pre + 1);
+            if (fromYours) {
+              openUrlLocal(`/pool/stable/${poolDetail.id}`);
+            } else {
+              successToast();
+              setAddSuccess((pre: number) => pre + 1);
+            }
           } else if (res.status == "error") {
             failToast(res.errorResult?.message);
           }
@@ -233,8 +239,12 @@ export default function StableAdd(props: any) {
         .then((res: any) => {
           if (!res) return;
           if (res.status == "success") {
-            successToast();
-            setAddSuccess((pre: number) => pre + 1);
+            if (fromYours) {
+              openUrlLocal(`/pool/stable/${poolDetail.id}`);
+            } else {
+              successToast();
+              setAddSuccess((pre: number) => pre + 1);
+            }
           } else if (res.status == "error") {
             failToast(res.errorResult?.message);
           }
@@ -652,7 +662,7 @@ export default function StableAdd(props: any) {
                         <>
                           <div
                             key={ite.tokenId}
-                            className="flex lg:h-13 xsm:h-12 mt-2 p-2 lg:w-45 xsm:w-5/12 shrink-0 items-center rounded bg-gray-230"
+                            className="flex lg:h-13 xsm:h-12 mt-2 p-2 lg:w-45 xsm:w-5/12 shrink-0 items-center rounded bg-gray-310"
                           >
                             <Icon icon={ite.icon} className="h-7 w-7 mr-2" />
                             <span className="text-gray-50 text-base xsm:hidden">

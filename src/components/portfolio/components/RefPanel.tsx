@@ -40,7 +40,6 @@ function RefPanel() {
     set_ref_profit_value,
     set_ref_profit_value_done,
     is_mobile,
-    accountId,
   } = useContext(OverviewData) as OverviewContextType;
   const router = useRouter();
   const [isRefModalOpen, setIsRefModalOpen] = useState<boolean>(false);
@@ -110,7 +109,6 @@ function RefPanel() {
     } else {
       setIsRefModalOpen(true);
     }
-    // setIsRefModalOpen(true);
   }
   function hideRefModal() {
     setIsRefModalOpen(false);

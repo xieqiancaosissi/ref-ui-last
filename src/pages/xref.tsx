@@ -441,10 +441,10 @@ export default function XrefPage(props: any) {
 const pageStyle = {
   backgroundImage: `url('https://img.ref.finance/images/XrefBg.png')`,
   backgroundSize: "cover",
-  backgroundPosition: "center",
-  height: "100vh",
+  backgroundPosition: "center calc(0% - 180px)",
   minHeight: "100%",
   backgroundColor: "#000a0a",
+  backgroundRepeat: "no-repeat",
 };
 
 export interface XrefMetaData {

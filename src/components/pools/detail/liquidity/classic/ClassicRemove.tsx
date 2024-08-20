@@ -24,6 +24,7 @@ import { showWalletSelectorModal } from "@/utils/wallet";
 import successToast from "@/components/common/toast/successToast";
 import failToast from "@/components/common/toast/failToast";
 import { openUrlLocal } from "@/services/commonV3";
+import { beautifyNumber } from "@/components/common/beautifyNumber";
 
 export const REF_FI_PRE_LIQUIDITY_ID_KEY = "REF_FI_PRE_LIQUIDITY_ID_VALUE";
 
@@ -210,15 +211,15 @@ export default function ClassicRemove(props: any) {
               <div>
                 <div className="flex items-center justify-between text-gray-50 mb-2 text-sm">
                   <span>Available LP Tokens</span>
-                  <span
-                    className={`underline hover:cursor-pointer lg:hover:text-white ${
-                      shareVal >= sharesDecimals
-                        ? "text-green-10"
-                        : "text-gray-50"
-                    }`}
-                    onClick={() => changeShareVal(sharesDecimals)}
-                  >
-                    Max
+                  <span onClick={() => changeShareVal(sharesDecimals)}>
+                    {beautifyNumber({
+                      num: sharesDecimals,
+                      className: `underline hover:cursor-pointer  ${
+                        shareVal >= sharesDecimals
+                          ? "text-green-10"
+                          : "text-gray-50 lg:hover:text-white"
+                      }`,
+                    })}
                   </span>
                 </div>
                 <div
@@ -330,7 +331,19 @@ export default function ClassicRemove(props: any) {
                           <span className="text-gray-50 text-base xsm:hidden">
                             {ite.symbol}
                           </span>
-                          <span className="text-base text-white ml-2 xsm:hidden">
+                          <span
+                            title={toInternationalCurrencySystem(
+                              toPrecision(
+                                toReadableNumber(
+                                  ite.decimals,
+                                  minimumAmounts[ite.id]
+                                ),
+                                4
+                              ),
+                              4
+                            )}
+                            className="text-base text-white ml-2 xsm:hidden text-ellipsis overflow-hidden whitespace-nowrap"
+                          >
                             {toInternationalCurrencySystem(
                               toPrecision(
                                 toReadableNumber(
@@ -343,7 +356,7 @@ export default function ClassicRemove(props: any) {
                             )}
                           </span>
 
-                          <div className="lg:hidden flex flex-col justify-center">
+                          <div className="lg:hidden flex flex-col justify-center text-ellipsis overflow-hidden whitespace-nowrap">
                             <span className="text-sm text-white">
                               {toInternationalCurrencySystem(
                                 toPrecision(

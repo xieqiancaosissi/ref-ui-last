@@ -46,7 +46,7 @@
 
 /* pool head */
 .headDiv {
-  @apply lg:frc text-gray-60 text-sm justify-between px-3 mt-8 mb-2 cursor-default xsm:w-full lg:w-276 xsm:hidden;
+  @apply lg:frc text-gray-60 text-sm justify-between px-3 mt-8 mb-2 cursor-default xsm:w-full lg:w-[1104px] xsm:hidden;
 }
 @media (min-width: 300px) and (max-width: 1024px) {
   /* .headDiv > div:first-child {

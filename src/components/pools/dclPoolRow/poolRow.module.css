@@ -1,5 +1,5 @@
 .poolContainer {
-  @apply lg:frcc xsm:fccc lg:w-276 xsm:w-full lg:h-15 xsm:min-h-15 mt-3 rounded-lg lg:px-3 text-white text-sm font-medium;
+  @apply lg:frcc xsm:fccc lg:w-[1104px] xsm:w-full lg:h-15 xsm:min-h-15 mt-3 rounded-lg lg:px-3 text-white text-sm font-medium;
 }
 .notfarm {
   background: rgba(33, 43, 53, 0.3);

@@ -57,6 +57,7 @@ import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import { FarmView } from "./FarmView";
 import { get24hVolumes } from "@/services/indexer";
 import { getVeSeedShare } from "@/services/farm";
+import NoContent from "@/components/common/NoContent";
 
 const { REF_VE_CONTRACT_ID, REF_UNI_V3_SWAP_CONTRACT_ID } = getConfig();
 export const FarmCommonDatas = createContext<FarmCommonDataContext | null>(
@@ -101,6 +102,7 @@ export default function Farms(props: any) {
   const accountStore = useAccountStore();
   const accountId = getAccountId();
   const isSignedIn = !!accountId || accountStore.isSignedIn;
+
   useEffect(() => {
     if (isSignedIn) {
       getBoostConfig();
@@ -108,6 +110,7 @@ export default function Farms(props: any) {
       get_your_liquidities();
     }
   }, [isSignedIn]);
+
   const { total_farms_value, total_farms_quantity } = useTotalFarmData({
     dcl_farms_value,
     classic_farms_value,
@@ -284,6 +287,9 @@ export default function Farms(props: any) {
     ((all_farms_Loading_done && Number(all_farms_quanity) === 0) ||
       !isSignedIn);
   const data_status = all_farms_Loading_done && Number(all_farms_quanity) > 0;
+
+  if (!isSignedIn) return <NoContent />;
+
   return (
     <>
       <FarmCommonDatas.Provider

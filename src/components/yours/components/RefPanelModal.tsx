@@ -156,7 +156,7 @@ export default function RefPanelModal() {
           className="lg:pt-12 lg:min-h-162 flex justify-center xsm:w-full lg:mb-16 xsm:mb-10"
           style={{ overflow: "auto" }}
         >
-          <div className="lg:w-276 xsm:w-full">
+          <div className="lg:w-[1104px] xsm:w-full">
             <div className={`${activeTab == "1" ? "" : "hidden"}`}>
               <Positions></Positions>
             </div>

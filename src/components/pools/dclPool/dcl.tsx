@@ -92,7 +92,7 @@ export default function Classic({
       </div>
       <div className="flex flex-col items-center  w-full lg:mt-8">
         {/*  */}
-        <div className="frc lg:w-276 xsm:w-full justify-between">
+        <div className="frc lg:w-[1104px] xsm:w-full justify-between">
           {/* head tab & hide low tvl pools*/}
           <div className="text-xs cursor-pointer frcc"></div>
           <div className="text-white text-xs cursor-pointer">
@@ -171,7 +171,7 @@ export default function Classic({
         )}
 
         {/* pagination */}
-        <div className="lg:w-276 xsm:w-full mt-4 mb-12">
+        <div className="lg:w-[1104px] xsm:w-full mt-4 mb-12">
           <Pagination
             totalItems={totalItems}
             itemsPerPage={20}

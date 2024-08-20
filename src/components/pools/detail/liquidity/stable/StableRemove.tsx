@@ -170,7 +170,8 @@ export default function StableRemove(props: any) {
   function submit() {
     if (removeTabActive == "share") {
       const removeShares = toNonDivisibleNumber(
-        poolDetail.pool_kind == "STABLE_SWAP"
+        poolDetail.pool_kind == "STABLE_SWAP" &&
+          poolDetail.pool_kind != "DEGEN_SWAP"
           ? STABLE_LP_TOKEN_DECIMALS
           : RATED_POOL_LP_TOKEN_DECIMALS,
         shareVal
@@ -262,7 +263,7 @@ export default function StableRemove(props: any) {
   // by share
   const { newPool } = useNewPoolData({ pool, shares });
   const sharesDecimals = toRoundedReadableNumber({
-    decimals: getStablePoolDecimal(poolDetail.id),
+    decimals: getStablePoolDecimal(poolDetail.id, poolDetail),
     number: newPool?.availableShareNonDivisible,
     precision: 12 || String(shares).length,
   });
@@ -283,13 +284,15 @@ export default function StableRemove(props: any) {
   useEffect(() => {
     // setCanSubmitByShare(true);
     const readableShares = toReadableNumber(
-      poolDetail.pool_kind == "STABLE_SWAP"
+      poolDetail.pool_kind == "STABLE_SWAP" &&
+        poolDetail.pool_kind != "DEGEN_SWAP"
         ? STABLE_LP_TOKEN_DECIMALS
         : RATED_POOL_LP_TOKEN_DECIMALS,
       shares
     );
     const shareParam = toNonDivisibleNumber(
-      poolDetail.pool_kind == "STABLE_SWAP"
+      poolDetail.pool_kind == "STABLE_SWAP" &&
+        poolDetail.pool_kind != "DEGEN_SWAP"
         ? STABLE_LP_TOKEN_DECIMALS
         : RATED_POOL_LP_TOKEN_DECIMALS,
       shareVal || "0"
@@ -311,7 +314,8 @@ export default function StableRemove(props: any) {
     const parsedAmounts = receiveAmounts.map((amount: any, i: number) =>
       toRoundedReadableNumber({
         decimals:
-          (poolDetail.pool_kind == "STABLE_SWAP"
+          (poolDetail.pool_kind == "STABLE_SWAP" &&
+          poolDetail.pool_kind != "DEGEN_SWAP"
             ? STABLE_LP_TOKEN_DECIMALS
             : RATED_POOL_LP_TOKEN_DECIMALS) -
           updatedMapList[0].token_account_ids[i].decimals,
@@ -385,7 +389,7 @@ export default function StableRemove(props: any) {
   useEffect(() => {
     if (addSuccess > 0 && newnewPool?.availableShareNonDivisible) {
       const sharesDecimals = toRoundedReadableNumber({
-        decimals: getStablePoolDecimal(poolDetail.id),
+        decimals: getStablePoolDecimal(poolDetail.id, poolDetail),
         number: newnewPool?.availableShareNonDivisible,
         precision: 12 || String(shares).length,
       });
@@ -409,7 +413,8 @@ export default function StableRemove(props: any) {
     const nonPrecisionValue = percentIncrese(
       feeValue,
       toReadableNumber(
-        poolDetail.pool_kind == "STABLE_SWAP"
+        poolDetail.pool_kind == "STABLE_SWAP" &&
+          poolDetail.pool_kind != "DEGEN_SWAP"
           ? STABLE_LP_TOKEN_DECIMALS
           : RATED_POOL_LP_TOKEN_DECIMALS,
         predictedRemoveShares
@@ -417,11 +422,22 @@ export default function StableRemove(props: any) {
     );
 
     const myReadableShare = toReadableNumber(
-      poolDetail.pool_kind == "STABLE_SWAP"
+      poolDetail.pool_kind == "STABLE_SWAP" &&
+        poolDetail.pool_kind != "DEGEN_SWAP"
         ? STABLE_LP_TOKEN_DECIMALS
         : RATED_POOL_LP_TOKEN_DECIMALS,
       shares
     );
+
+    console.log(
+      feeValue,
+      nonPrecisionValue,
+      myReadableShare,
+      poolDetail.pool_kind == "STABLE_SWAP" &&
+        poolDetail.pool_kind != "DEGEN_SWAP",
+      predictedRemoveShares
+    );
+
     if (error) return "0";
 
     return Number(nonPrecisionValue) > 0 && Number(nonPrecisionValue) < 0.001

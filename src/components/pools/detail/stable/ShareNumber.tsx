@@ -57,7 +57,7 @@ export default function ShareNumber(props: any) {
       <span className={`text-gray-10`}>
         {accountStore.isSignedIn
           ? ` / ${toRoundedReadableNumber({
-              decimals: getStablePoolDecimal(id),
+              decimals: getStablePoolDecimal(id, pool),
               number: scientificNotationToString(
                 userTotalShare.toExponential()
               ),

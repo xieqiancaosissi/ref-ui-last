@@ -70,25 +70,12 @@ export default function StablePoolDetail() {
     }
   }, [poolId, currentwatchListId]);
   //
-  // useEffect(() => {
-  //   if (poolId) {
-  //     getPoolsDetailById({ pool_id: poolId as any }).then((res) => {
-  //       PoolRouterGuard(res, "", true) &&
-  //         openUrlLocal(`${PoolRouterGuard(res, "", true)}/${poolId}`);
-  //       setPoolDetail(res);
-  //     });
-
-  //     if (currentwatchListId.length > 0) {
-  //       setIsCollect(currentwatchListId.includes(poolId));
-  //     }
-  //   }
-  // }, [poolId, currentwatchListId]);
 
   useEffect(() => {
     getAllTokenPrices().then((res) => {
       setTokenPriceList(res);
     });
-    poolStore.setPoolActiveTab("stable");
+    poolStore.setPoolActiveTab("degen");
   }, []);
 
   const collectPool = () => {

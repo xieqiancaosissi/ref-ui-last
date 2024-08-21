@@ -425,12 +425,14 @@ function useLpV2() {
           liquidities_tokens_metas[token_x],
           liquidities_tokens_metas[token_y],
         ];
-        const v = get_liquidity_value({
-          liquidity,
-          poolDetail,
-          tokenPriceList,
-          tokensMeta,
-        });
+        const v =
+          poolDetail &&
+          get_liquidity_value({
+            liquidity,
+            poolDetail,
+            tokenPriceList,
+            tokensMeta,
+          });
         if (v !== undefined) {
           total_value = total_value.plus(new BigNumber(v));
         }

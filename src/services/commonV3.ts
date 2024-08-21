@@ -1760,6 +1760,7 @@ export function get_liquidity_value({
   tokensMeta: TokenMetadata[];
 }) {
   const { left_point, right_point, amount } = liquidity;
+  if (!poolDetail) return;
   const { token_x, token_y } = poolDetail;
   if (!token_x || !token_y) {
     return;

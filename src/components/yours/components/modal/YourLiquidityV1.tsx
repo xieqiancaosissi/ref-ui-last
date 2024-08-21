@@ -15,6 +15,7 @@ import {
 } from "@/services/swap/swapConfig";
 import {
   getStablePoolDecimal,
+  isDegenPool,
   isStablePool,
   parsePool,
 } from "@/services/swap/swapUtils";
@@ -78,6 +79,8 @@ import {
 import { FiArrowUpRight } from "react-icons/fi";
 import { useFarmStakeAmount } from "@/hooks/useStableShares";
 import getConfigV2 from "@/utils/configV2";
+import getStablePoolConfig from "@/utils/getStablePoolConfig";
+const { DEGEN_POOLS_IDS } = getStablePoolConfig();
 
 const { BLACK_TOKEN_LIST } = getConfig();
 export const StakeListContext = createContext<any>(null);
@@ -112,9 +115,8 @@ export function YourLiquidityV1(props: any) {
 
   useEffect(() => {
     // get all stable pools;
-    const ids = ALL_STABLE_POOL_IDS;
+    const ids = ALL_STABLE_POOL_IDS.concat(DEGEN_POOLS_IDS);
     getPoolsByIds({ pool_ids: ids }).then((res) => {
-      console.log(res, "getPoolsByIds82");
       setStablePools(res.filter((p) => p.id.toString() !== NEARX_POOL_ID));
     });
   }, [addSuccess]);
@@ -368,7 +370,9 @@ function LiquidityContainerStyle2() {
           <YourClassicLiquidityLine
             pool={pool}
             key={pool.id}
-            type="stable"
+            type={
+              DEGEN_POOLS_IDS.includes(pool.id.toString()) ? "degen" : "stable"
+            }
           ></YourClassicLiquidityLine>
         );
       })}
@@ -413,8 +417,8 @@ function YourClassicLiquidityLine(props: any) {
   ) as PortfolioContextType;
 
   const { pool, type } = props;
-
   const { token_account_ids, id: poolId } = pool;
+
   const tokens = token_account_ids.map((id: number) => tokensMeta[id]) || [];
   const [switch_off, set_switch_off] = useState<boolean>(true);
 
@@ -692,7 +696,7 @@ function YourClassicLiquidityLine(props: any) {
   // get lp amount in pool && total lp (pool + farm) && user lp percent
   const [lp_in_pool, lp_total, user_lp_percent] = useMemo(() => {
     const { id, shares_total_supply } = pool;
-    const is_stable_pool = isStablePool(id);
+    const is_stable_pool = isStablePool(id) || isDegenPool(id);
     let amount_in_pool = "0";
     let total_amount = "0";
     if (is_stable_pool) {
@@ -924,6 +928,8 @@ function YourClassicLiquidityLinePage(props: any) {
             openUrlLocal(
               props?.type == "stable"
                 ? `/pool/stable/${pool.id}`
+                : props?.type == "degen"
+                ? `/pool/degen/${pool.id}`
                 : `/pool/classic/${pool.id}`
             );
           }}
@@ -932,7 +938,11 @@ function YourClassicLiquidityLinePage(props: any) {
             <div className="flex flex-col justify-center">
               <div className="flex pl-2">{Images}</div>
               <span className="text-xs text-gray-10 mt-1">
-                {props?.type == "stable" ? "Stable Pool" : ""}
+                {props?.type == "stable"
+                  ? "Stable Pool"
+                  : props?.type == "degen"
+                  ? "Degen Pool"
+                  : ""}
               </span>
             </div>
             <div className="ml-2">
@@ -1096,7 +1106,7 @@ function YourClassicLiquidityLinePage(props: any) {
                 className={`border-green-10 border font-bold rounded frcc w-21 h-8  mr-2.5 text-sm cursor-pointer hover:opacity-80 text-green-10 `}
                 onClick={(e) => {
                   e.stopPropagation();
-                  props?.type == "stable"
+                  props?.type == "stable" || props?.type == "degen"
                     ? setShowAddStable(true)
                     : setShowAdd(true);
                 }}
@@ -1111,7 +1121,7 @@ function YourClassicLiquidityLinePage(props: any) {
                   onClick={(e) => {
                     e.stopPropagation();
                     if (+userTotalShareToString == 0) return;
-                    props?.type == "stable"
+                    props?.type == "stable" || props?.type == "degen"
                       ? setShowRemoveStable(true)
                       : setShowRemove(true);
                   }}
@@ -1138,6 +1148,8 @@ function YourClassicLiquidityLinePage(props: any) {
             openUrlLocal(
               props?.type == "stable"
                 ? `/pool/stable/${pool.id}`
+                : props?.type == "degen"
+                ? `/pool/degen/${pool.id}`
                 : `/pool/classic/${pool.id}`
             );
           }}
@@ -1162,6 +1174,20 @@ function YourClassicLiquidityLinePage(props: any) {
                   }}
                 >
                   Stable Pool
+                </div>
+              )}
+
+              {props?.type == "degen" && (
+                <div
+                  className={`-mt-1 border border-dark-40 frcc italic px-1 rounded-2xl z-0`}
+                  style={{
+                    background: "#25445A",
+                    color: "#6F98B7",
+                    fontSize: "10px",
+                    zIndex: 0,
+                  }}
+                >
+                  Degen Pool
                 </div>
               )}
             </div>

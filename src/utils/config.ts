@@ -105,6 +105,7 @@ export default function getConfig(
         BLACK_TOKEN_LIST: ["token.pembrock.near"],
         REF_MEME_FARM_CONTRACT_ID: "meme-farming_011.ref-labs.near",
         REF_TOKEN_LOCKER_CONTRACT_ID: "token-locker.ref-labs.near",
+        DEGEN_POOLS_TOKEN_IDS: [],
       };
     case "pub-testnet":
       return {
@@ -180,6 +181,15 @@ export default function getConfig(
         BLACK_TOKEN_LIST: [],
         REF_MEME_FARM_CONTRACT_ID: "memefarm-dev2.ref-dev.testnet",
         REF_TOKEN_LOCKER_CONTRACT_ID: "token-locker.ref-labs.testnet",
+        DEGEN_POOLS_TOKEN_IDS: [
+          "eth.ft.ref-labs.testnet",
+          "usdtt.ft.ref-labs.testnet",
+          "usdcc.ft.ref-labs.testnet",
+          "usdte.ft.ref-labs.testnet",
+          "usdce.ft.ref-labs.testnet",
+          "wrap.testnet",
+          "usdcc.ft.ref-labs.testnet",
+        ],
       };
     case "testnet":
       return {
@@ -256,6 +266,15 @@ export default function getConfig(
         BLACK_TOKEN_LIST: [],
         REF_MEME_FARM_CONTRACT_ID: "memefarm-dev2.ref-dev.testnet",
         REF_TOKEN_LOCKER_CONTRACT_ID: "token-locker.testnet",
+        DEGEN_POOLS_TOKEN_IDS: [
+          "eth.ft.ref-labs.testnet",
+          "usdtt.ft.ref-labs.testnet",
+          "usdcc.ft.ref-labs.testnet",
+          "usdte.ft.ref-labs.testnet",
+          "usdce.ft.ref-labs.testnet",
+          "wrap.testnet",
+          "usdcc.ft.ref-labs.testnet",
+        ],
       };
     default:
       return {
@@ -357,6 +376,7 @@ export default function getConfig(
         BLACK_TOKEN_LIST: ["token.pembrock.near"],
         REF_MEME_FARM_CONTRACT_ID: "meme-farming_011.ref-labs.near",
         REF_TOKEN_LOCKER_CONTRACT_ID: "token-locker.ref-labs.near",
+        DEGEN_POOLS_TOKEN_IDS: [],
       };
   }
 }

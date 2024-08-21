@@ -579,7 +579,7 @@ export default function StableRemove(props: any) {
               ></RangeSlider>
 
               {/* slippage */}
-              <div className="flex items-center justify-between mt-12">
+              <div className="flex items-center justify-between mt-12 flex-wrap">
                 <div className="text-sm text-gray-50 frcc">
                   Slippage tolerance{" "}
                   <HoverTip
@@ -625,9 +625,21 @@ export default function StableRemove(props: any) {
                     <span className="text-gray-50 text-sm">%</span>
                   </div>
                 </div>
+                {(feeValue == 0 || feeValue >= 2) && (
+                  <div
+                    className={`w-full text-right mt-2 text-xs xsm:hidden ${
+                      feeValue == 0 ? "text-error" : "text-warn"
+                    }`}
+                    style={{ flex: "100%" }}
+                  >
+                    {feeValue == 0
+                      ? "The slippage tolerance is invalid"
+                      : "Be careful, please check the minimum you can receive"}
+                  </div>
+                )}
               </div>
               <div
-                className={`flex items-center justify-between flex-1 text-sm py-1 mt-2 lg:hidden`}
+                className={`flex items-center justify-between flex-1 text-sm py-1 mt-2 lg:hidden flex-wrap`}
               >
                 {feeList.map((item, index) => {
                   return (
@@ -666,6 +678,18 @@ export default function StableRemove(props: any) {
                   />
                   <span className="text-gray-50 text-sm">%</span>
                 </div>
+                {(feeValue == 0 || feeValue >= 2) && (
+                  <div
+                    className={`w-full text-right mt-2 text-xs lg:hidden ${
+                      feeValue == 0 ? "text-error" : "text-warn"
+                    }`}
+                    style={{ flex: "100%" }}
+                  >
+                    {feeValue == 0
+                      ? "The slippage tolerance is invalid"
+                      : "Be careful, please check the minimum you can receive"}
+                  </div>
+                )}
               </div>
 
               <div className="flex items-center justify-between mt-6">

@@ -237,12 +237,14 @@ export default function CreatePoolModal({
                 index={0}
                 handleToken={handleToken}
                 pureIdList={pureIdList}
+                isMobile={isMobile}
               />
               <TokenInput
                 title="Pair"
                 index={1}
                 handleToken={handleToken}
                 pureIdList={pureIdList}
+                isMobile={isMobile}
               />
             </div>
 

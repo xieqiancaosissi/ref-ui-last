@@ -5,17 +5,19 @@ import { ITokenMetadata } from "@/interfaces/tokens";
 import HoverTooltip from "@/components/common/HoverToolTip";
 import { MobileArrowUp } from "../../icon";
 import { WRAP_NEAR_CONTRACT_ID } from "@/services/wrap-near";
-import { TknIcon, TknxIcon } from "../../icon";
+import { TknIcon, TknxIcon, TknxIconMobile } from "../../icon";
 export default function PoolInput({
   title,
   index,
   handleToken,
   pureIdList,
+  isMobile,
 }: {
   title?: string;
   index: number;
   handleToken: (e: any) => void;
   pureIdList?: any;
+  isMobile?: boolean;
 }) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [selectToken, setSelectToken] = useState<ITokenMetadata>();
@@ -44,7 +46,7 @@ export default function PoolInput({
         <div className="w-full h-16 rounded bg-dark-60 flex items-center justify-between border border-transparent px-4 hover:border-green-10">
           <div className="lg:w-35 xsm:w-full frcc">
             {selectToken?.icon ? (
-              <div className="relative lg:w-[24px] lg:h-[24px] xsm:w-[36px] xsm:h-[36px] shrink-0">
+              <div className="relative lg:w-[24px] lg:h-[24px] xsm:w-[32px] xsm:h-[32px] shrink-0">
                 <img
                   src={selectToken?.icon}
                   alt=""
@@ -52,14 +54,25 @@ export default function PoolInput({
                 />
                 {pureIdList.includes(selectToken.id) &&
                   (selectToken.id.indexOf("tknx") != -1 ? (
-                    <TknxIcon
-                      className="absolute z-1"
-                      style={{
-                        bottom: "-1px",
-                        left: "50%",
-                        transform: "translateX(-50%)",
-                      }}
-                    />
+                    isMobile ? (
+                      <TknxIconMobile
+                        className="absolute z-1"
+                        style={{
+                          bottom: "-1.5px",
+                          left: "50%",
+                          transform: "translateX(-50%)",
+                        }}
+                      />
+                    ) : (
+                      <TknxIcon
+                        className="absolute z-1"
+                        style={{
+                          bottom: "-1px",
+                          left: "50%",
+                          transform: "translateX(-50%)",
+                        }}
+                      />
+                    )
                   ) : (
                     <TknIcon
                       className="absolute z-1"
@@ -72,7 +85,7 @@ export default function PoolInput({
                   ))}
               </div>
             ) : (
-              <div className="lg:w-6 lg:h-6 xsm:w-9 xsm:h-9 rounded-full bg-dark-40 shrink-0"></div>
+              <div className="lg:w-6 lg:h-6 xsm:w-8 xsm:h-8 rounded-full bg-dark-40 shrink-0"></div>
             )}
             <div
               className={`text-base font-medium ${

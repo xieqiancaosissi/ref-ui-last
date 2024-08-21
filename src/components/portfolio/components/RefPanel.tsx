@@ -39,6 +39,8 @@ function RefPanel() {
     set_ref_profit_value,
     set_ref_profit_value_done,
     is_mobile,
+    setIsOpen,
+    hidePortfolioPanelModal,
   } = useContext(OverviewData) as OverviewContextType;
   const router = useRouter();
   const [isRefModalOpen, setIsRefModalOpen] = useState<boolean>(false);
@@ -103,6 +105,8 @@ function RefPanel() {
   function showRefModal() {
     if (is_mobile) {
       router.push("/portfolioMobile");
+      setIsOpen(false);
+      hidePortfolioPanelModal();
     } else {
       setIsRefModalOpen(true);
     }

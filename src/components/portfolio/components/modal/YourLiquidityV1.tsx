@@ -520,6 +520,9 @@ function YourClassicLiquidityLinePage() {
     sharesNew,
     stakeList,
   } = useContext(LiquidityContextData)!;
+  const { onRequestClose, setIsOpen } = useContext(
+    PortfolioData
+  ) as PortfolioContextType;
   const router = useRouter();
   const { shares, shadowBurrowShare } = useYourliquidity(pool.id);
   const farmStakeTotal = useFarmStake({ poolId: Number(pool.id), stakeList });
@@ -554,9 +557,9 @@ function YourClassicLiquidityLinePage() {
           <span
             className="frcc text-xs text-gray-10 px-1 rounded-md border border-gray-90 mr-1.5 cursor-pointer"
             onClick={() => {
-              router
-                .push(`/pool/classic/${pool.id}`)
-                .then(() => window.location.reload());
+              router.push(`/pool/classic/${pool.id}`);
+              onRequestClose();
+              setIsOpen(false);
             }}
           >
             Classic

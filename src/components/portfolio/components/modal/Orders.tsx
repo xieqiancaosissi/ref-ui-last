@@ -154,6 +154,8 @@ function OrderCard({
     active_order_Loading_done,
     active_order_quanity,
     active_order_value,
+    onRequestClose,
+    setIsOpen,
   } = useContext(PortfolioData) as PortfolioContextType;
   const accountStore = useAccountStore();
   const accountId = getAccountId();
@@ -234,7 +236,7 @@ function OrderCard({
     index: number;
   }) {
     const tx_record = activeOrderTxMap[order.order_id];
-    const { tokenPriceList } = useContext(
+    const { tokenPriceList, onRequestClose, setIsOpen } = useContext(
       PortfolioData
     ) as PortfolioContextType;
     const [switch_off, set_switch_off] = useState<boolean>(true);
@@ -921,7 +923,9 @@ function OrderCard({
           <span
             className="text-white mx-1 underline cursor-pointer"
             onClick={() => {
-              router.push("/limit").then(() => window.location.reload());
+              router.push("/limit");
+              onRequestClose();
+              setIsOpen(false);
             }}
           >
             Limit Orders
@@ -947,7 +951,9 @@ function OrderCard({
                 <span
                   onClick={() => {
                     localStorage.setItem(SWAP_MODE_KEY, SWAP_MODE.LIMIT);
-                    router.push("/limit").then(() => window.location.reload());
+                    router.push("/limit");
+                    onRequestClose();
+                    setIsOpen(false);
                   }}
                   className="flex items-center justify-center text-xs text-gray-10 border border-gray-90 rounded-md px-1.5 cursor-pointer hover:text-white py-0.5"
                 >

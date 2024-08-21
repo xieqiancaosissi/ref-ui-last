@@ -30,6 +30,7 @@ import {
   ArrowUpIcon,
   JumpUpperLeft,
 } from "@/components/portfolio/components/icon";
+import { usePoolStore } from "@/stores/pool";
 const AssetData = createContext<AssetDataContextType | null>(null);
 export default function Asset() {
   const {
@@ -219,6 +220,7 @@ function AssetPage() {
     increase_percent_done,
   } = useContext(AssetData)!;
   const router = useRouter();
+  const poolStore = usePoolStore();
   return (
     <div className="mb-4">
       <div className="bg-gray-20 bg-opacity-70 rounded-md px-4 py-5 w-full mb-0.5">
@@ -269,7 +271,8 @@ function AssetPage() {
               className="cursor-pointer"
               onClick={() => {
                 localStorage.setItem("REF_FI_POOL_ACTIVE_TAB", "v2");
-                router.push("/pools").then(() => window.location.reload());
+                poolStore.setPoolActiveTab("dcl");
+                router.push("/pools");
               }}
             />
           </div>
@@ -280,7 +283,7 @@ function AssetPage() {
               className="text-xs text-gray-10 ml-1 underline cursor-pointer"
               onClick={() => {
                 localStorage.setItem("BOOST_FARM_TAB", "yours");
-                router.push("/farms").then(() => window.location.reload());
+                router.push("/farms");
               }}
             >
               in farm
@@ -294,7 +297,8 @@ function AssetPage() {
               className="cursor-pointer"
               onClick={() => {
                 localStorage.setItem("REF_FI_POOL_ACTIVE_TAB", "v2");
-                router.push("/pools").then(() => window.location.reload());
+                poolStore.setPoolActiveTab("classic");
+                router.push("/pools");
               }}
             />
           </div>
@@ -305,7 +309,7 @@ function AssetPage() {
               className="text-xs text-gray-10 ml-1 underline cursor-pointer"
               onClick={() => {
                 localStorage.setItem("BOOST_FARM_TAB", "yours");
-                router.push("/farms").then(() => window.location.reload());
+                router.push("/farms");
               }}
             >
               in farm
@@ -319,7 +323,7 @@ function AssetPage() {
               className="cursor-pointer"
               onClick={() => {
                 localStorage.setItem("REF_FI_POOL_ACTIVE_TAB", "v2");
-                router.push("/xref").then(() => window.location.reload());
+                router.push("/xref");
               }}
             />
           </div>

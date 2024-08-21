@@ -1,5 +1,5 @@
 import { ModalClose } from "@/components/farm/icon";
-import React, { createContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import Modal from "react-modal";
 import { PortfolioRefIcon } from "./icon";
 import { UserLiquidityInfo } from "@/services/commonV3";
@@ -13,6 +13,7 @@ import Positions from "./modal/Positions";
 import Farms from "./modal/Farms";
 import { useAccountStore } from "@/stores/account";
 import { getAssets } from "@/services/indexer";
+import { OverviewContextType, OverviewData } from "../index";
 
 export const PortfolioData = createContext<PortfolioContextType | null>(null);
 export default function RefPanelModal({
@@ -22,6 +23,7 @@ export default function RefPanelModal({
   isOpen: boolean;
   onRequestClose: () => void;
 }) {
+  const { setIsOpen } = useContext(OverviewData) as OverviewContextType;
   const accountStore = useAccountStore();
   const isSignedIn = accountStore.isSignedIn;
   // variables only used in mobile site start
@@ -200,6 +202,8 @@ export default function RefPanelModal({
 
               your_classic_lp_all_in_farms,
               set_your_classic_lp_all_in_farms,
+              onRequestClose,
+              setIsOpen,
             }}
           >
             <div style={{ height: "70vh", overflow: "auto" }}>
@@ -301,4 +305,6 @@ export interface PortfolioContextType {
   set_your_classic_lp_all_in_farms: React.Dispatch<
     React.SetStateAction<boolean>
   >;
+  onRequestClose: any;
+  setIsOpen: any;
 }

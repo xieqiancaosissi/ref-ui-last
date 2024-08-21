@@ -163,6 +163,9 @@ function AssetProfitPage() {
     show_total_fees_value,
     show_total_unClaimed_rewrads_value,
   } = useContext(AssetProfitData)!;
+  const { onRequestClose, setIsOpen } = useContext(
+    PortfolioData
+  ) as PortfolioContextType;
   const router = useRouter();
   return (
     <div className="flex mb-9">
@@ -192,7 +195,9 @@ function AssetProfitPage() {
               className="cursor-pointer"
               onClick={() => {
                 sessionStorage.setItem(REF_POOL_NAV_TAB_KEY, "/yourliquidity");
-                router.push("/pools").then(() => window.location.reload());
+                router.push("/yours");
+                onRequestClose();
+                setIsOpen(false);
               }}
             />
           </div>
@@ -205,7 +210,9 @@ function AssetProfitPage() {
               className="cursor-pointer"
               onClick={() => {
                 localStorage.setItem("farmV2Status", "my");
-                router.push("/farms").then(() => window.location.reload());
+                router.push("/farms");
+                onRequestClose();
+                setIsOpen(false);
               }}
             />
           </div>

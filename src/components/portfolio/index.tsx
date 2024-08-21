@@ -27,9 +27,11 @@ const is_mobile: boolean = !!isMobile();
 function Overview({
   isOpen,
   orderly_value,
+  setIsOpen,
 }: {
   isOpen: boolean;
   orderly_value: string;
+  setIsOpen: any;
 }) {
   const accountStore = useAccountStore();
   const accountId = getAccountId();
@@ -192,6 +194,8 @@ function Overview({
         burrow_borrowied_value,
         burrow_done,
         isOpen,
+        setIsOpen,
+        hidePortfolioPanelModal,
       }}
     >
       {/* pc */}
@@ -352,9 +356,21 @@ function Overview({
   );
 }
 const OverviewMemo = React.memo(Overview);
-export default function AccountOverview({ isOpen }: { isOpen: boolean }) {
+export default function AccountOverview({
+  isOpen,
+  setIsOpen,
+}: {
+  isOpen: boolean;
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
   const orderly_value = useHoldings();
-  return <OverviewMemo isOpen={isOpen} orderly_value={orderly_value} />;
+  return (
+    <OverviewMemo
+      isOpen={isOpen}
+      orderly_value={orderly_value}
+      setIsOpen={setIsOpen}
+    />
+  );
 }
 
 export interface OverviewContextType {
@@ -385,4 +401,6 @@ export interface OverviewContextType {
   burrow_borrowied_value: string;
   burrow_done: boolean;
   isOpen: boolean;
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  hidePortfolioPanelModal: any;
 }

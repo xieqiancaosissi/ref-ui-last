@@ -195,7 +195,7 @@ function AssetProfitPage() {
               className="cursor-pointer"
               onClick={() => {
                 sessionStorage.setItem(REF_POOL_NAV_TAB_KEY, "/yourliquidity");
-                router.push("/pools").then(() => window.location.reload());
+                router.push("/yours");
               }}
             />
           </div>
@@ -208,7 +208,7 @@ function AssetProfitPage() {
               className="cursor-pointer"
               onClick={() => {
                 localStorage.setItem("farmV2Status", "my");
-                router.push("/farms").then(() => window.location.reload());
+                router.push("/farms");
               }}
             />
           </div>

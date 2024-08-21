@@ -342,9 +342,9 @@ export default function ClassicAdd(props: any) {
                       <span>
                         Balance:{" "}
                         <span
-                          className={`underline hover:cursor-pointer hover:text-white  ${
+                          className={`underline hover:cursor-pointer  ${
                             inputValList[ind] == balancesList[ind]?.balance
-                              ? ""
+                              ? "text-green-10"
                               : "text-gray-50"
                           }`}
                           onClick={() => {

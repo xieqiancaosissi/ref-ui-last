@@ -88,6 +88,7 @@ export default function ShareContainer(props: any) {
               userTotalShare={userTotalShare}
               version={"Legacy"}
               hideIcon={isMobile}
+              useMx={true}
             />
           ) : null}
           {countV2 > endedFarmCountV2 || Number(farmStakeV2) > 0 ? (
@@ -98,6 +99,7 @@ export default function ShareContainer(props: any) {
               poolId={poolDetail.id}
               onlyEndedFarm={countV2 === endedFarmCountV2}
               hideIcon={isMobile}
+              useMx={true}
             />
           ) : null}
           {shadowBurrowShare?.stakeAmount &&

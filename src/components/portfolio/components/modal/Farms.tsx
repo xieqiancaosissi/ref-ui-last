@@ -650,6 +650,9 @@ function DclFarmRowPage() {
     tokens,
     rate_need_to_reverse_display,
   } = useContext(DCLData) as DCLDataContext;
+  const { onRequestClose, setIsOpen } = useContext(
+    PortfolioData
+  ) as PortfolioContextType;
   const router = useRouter();
   return (
     <div
@@ -668,7 +671,7 @@ function DclFarmRowPage() {
           <span
             className="frcc text-xs text-gray-10 px-1 rounded-md border border-gray-90 mr-1.5"
             onClick={() => {
-              goFarmDetailPage(seed, router);
+              goFarmDetailPage(seed, router, onRequestClose, setIsOpen);
             }}
           >
             DCL
@@ -1047,6 +1050,9 @@ function ClassicFarmRowPage() {
     showLpPower,
     getUserLpPercent,
   } = useContext(ClassicData)!;
+  const { onRequestClose, setIsOpen } = useContext(
+    PortfolioData
+  ) as PortfolioContextType;
   const router = useRouter();
   return (
     <div
@@ -1065,7 +1071,7 @@ function ClassicFarmRowPage() {
           <span
             className="ml-2 frcc text-xs text-gray-10 px-1 rounded-md border border-gray-90 mr-1.5 cursor-pointer"
             onClick={() => {
-              goFarmDetailPage(seed, router);
+              goFarmDetailPage(seed, router, onRequestClose, setIsOpen);
             }}
           >
             Classic
@@ -1167,7 +1173,12 @@ function sortTokens(tokens: TokenMetadata[]) {
   });
   return tokens;
 }
-function goFarmDetailPage(seed: Seed, router: any) {
+function goFarmDetailPage(
+  seed: Seed,
+  router: any,
+  onRequestClose: any,
+  setIsOpen: any
+) {
   // if (!seed.farmList || seed.farmList.length === 0) {
   //   return;
   // }
@@ -1184,9 +1195,9 @@ function goFarmDetailPage(seed: Seed, router: any) {
       temp_pool_id.split("&");
     mft_id = `${get_pool_name(pool_id)}[${left_point}-${right_point}]`;
   }
-  router
-    .push(`/farms/${mft_id}-${status}`)
-    .then(() => window.location.reload());
+  router.push(`/farms/${mft_id}-${status}`);
+  onRequestClose();
+  setIsOpen(false);
 }
 function getPoolIdBySeedId(seed_id: string) {
   const [contractId, temp_pool_id] = seed_id.split("@");

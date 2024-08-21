@@ -848,7 +848,7 @@ function OrderCard({
             <span
               onClick={() => {
                 localStorage.setItem(SWAP_MODE_KEY, SWAP_MODE.LIMIT);
-                router.push("/limit").then(() => window.location.reload());
+                router.push("/limit");
               }}
               className="flex items-center justify-center text-xs text-gray-10 border border-gray-90 rounded-md px-1.5 cursor-pointer hover:text-white py-0.5"
             >

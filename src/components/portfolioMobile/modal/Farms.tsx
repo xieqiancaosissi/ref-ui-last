@@ -63,6 +63,7 @@ import {
   OrdersArrow,
   PositionsMobileIcon,
 } from "@/components/portfolio/components/icon";
+import { useRouter } from "next/router";
 
 const { REF_VE_CONTRACT_ID, REF_UNI_V3_SWAP_CONTRACT_ID } = getConfig();
 export const FarmCommonDatas = createContext<FarmCommonDataContext | null>(
@@ -658,6 +659,7 @@ function DclFarmRowPage() {
     tokens,
     rate_need_to_reverse_display,
   } = useContext(DCLData) as DCLDataContext;
+  const router = useRouter();
   return (
     <div
       className={`rounded-xl mt-3 bg-gray-20 px-4 bg-opacity-30 ${
@@ -672,14 +674,14 @@ function DclFarmRowPage() {
           <span className="text-white font-bold text-sm paceGrotesk-Bold">
             {displaySymbols()}
           </span>
-          <span className="frcc text-xs text-gray-10 px-1 rounded-md border border-gray-90 mr-1.5">
+          <span
+            className="frcc text-xs text-gray-10 px-1 rounded-md border border-gray-90 mr-1.5"
+            onClick={() => {
+              goFarmDetailPage(seed, router);
+            }}
+          >
             DCL
-            <span
-              className="ml-1.5"
-              onClick={() => {
-                goFarmDetailPage(seed);
-              }}
-            >
+            <span className="ml-1.5">
               <OrdersArrow></OrdersArrow>
             </span>
           </span>
@@ -1082,6 +1084,7 @@ function ClassicFarmRowPage({
     showLpPower,
     getUserLpPercent,
   } = useContext(ClassicData)!;
+  const router = useRouter();
   return (
     <div className="mb-4">
       <div
@@ -1096,14 +1099,14 @@ function ClassicFarmRowPage({
             <span className="text-white font-bold text-sm paceGrotesk-Bold">
               {displaySymbols()}
             </span>
-            <span className="w-16 ml-2 frcc text-xs text-gray-10 px-1 rounded-md border border-gray-90">
+            <span
+              className="w-16 ml-2 frcc text-xs text-gray-10 px-1 rounded-md border border-gray-90"
+              onClick={() => {
+                goFarmDetailPage(seed, router);
+              }}
+            >
               Classic
-              <span
-                className="ml-1.5"
-                onClick={() => {
-                  goFarmDetailPage(seed);
-                }}
-              >
+              <span className="ml-1.5">
                 <OrdersArrow></OrdersArrow>
               </span>
             </span>
@@ -1201,7 +1204,7 @@ function sortTokens(tokens: TokenMetadata[]) {
   });
   return tokens;
 }
-function goFarmDetailPage(seed: Seed) {
+function goFarmDetailPage(seed: Seed, router: any) {
   if (!seed.farmList || seed.farmList.length === 0) {
     return;
   }
@@ -1218,7 +1221,7 @@ function goFarmDetailPage(seed: Seed) {
       temp_pool_id.split("&");
     mft_id = `${get_pool_name(pool_id)}[${left_point}-${right_point}]`;
   }
-  openUrl(`/farms/${mft_id}-${status}`);
+  router.push(`/farms/${mft_id}-${status}`);
 }
 function getPoolIdBySeedId(seed_id: string) {
   const [contractId, temp_pool_id] = seed_id.split("@");

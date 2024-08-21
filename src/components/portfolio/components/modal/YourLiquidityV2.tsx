@@ -83,6 +83,8 @@ export function YourLiquidityV2(props: any) {
     set_dcl_liquidities_details_list,
     set_dcl_tokens_metas,
     set_dcl_liquidities_details_list_done,
+    onRequestClose,
+    setIsOpen,
   } = (useContext(PortfolioData) as PortfolioContextType) || {};
   const {
     setYourLpValueV2,
@@ -170,6 +172,8 @@ export function YourLiquidityV2(props: any) {
           liquidityDetail: dcl_liquidities_details_map?.[lpt_id],
           liquidities_tokens_metas,
           router,
+          onRequestClose,
+          setIsOpen,
         });
       })
     ).then((yourLiquidityList) => {
@@ -388,6 +392,8 @@ async function getYourLiquidityData({
   liquidities_tokens_metas,
   liquidityDetail,
   router,
+  onRequestClose,
+  setIsOpen,
 }: {
   liquidity: UserLiquidityInfo;
   all_seeds: Seed[];
@@ -396,6 +402,8 @@ async function getYourLiquidityData({
   liquidities_tokens_metas: Record<string, TokenMetadata>;
   liquidityDetail: UserLiquidityInfo;
   router: any;
+  onRequestClose: any;
+  setIsOpen: any;
 }) {
   function get_your_liquidity_in_farm_range() {
     if (!related_seed_info.targetSeed || !related_seed_info.targetSeed.seed_id)
@@ -582,7 +590,9 @@ async function getYourLiquidityData({
       } else {
         url = `/farms/${link_params}-r`;
       }
-      router.push(url).then(() => window.location.reload());
+      router.push(url);
+      onRequestClose();
+      setIsOpen(false);
     }
   }
   function getRateMapTokens() {
@@ -1217,13 +1227,16 @@ function UserLiquidityLineStyleGroupPage() {
     poolDetail,
     tokenFeeValue,
   } = useContext(GroupData)!;
+  const { onRequestClose, setIsOpen } = useContext(
+    PortfolioData
+  ) as PortfolioContextType;
   const router = useRouter();
   const [switch_off, set_switch_off] = useState<boolean>(true);
   function goPoolDetailPage() {
     // const params_str = get_pool_name(poolDetail.pool_id);
-    router
-      .push(`/pool/dcl/${poolDetail.pool_id}`)
-      .then(() => window.location.reload());
+    router.push(`/pool/dcl/${poolDetail.pool_id}`);
+    onRequestClose();
+    setIsOpen(false);
   }
   return (
     <>

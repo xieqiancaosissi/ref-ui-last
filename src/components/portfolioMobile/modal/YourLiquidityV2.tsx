@@ -595,7 +595,7 @@ async function getYourLiquidityData({
       } else {
         url = `/farms/${link_params}-r`;
       }
-      router.push(url).then(() => window.location.reload());
+      router.push(url);
     }
   }
   function getRateMapTokens() {
@@ -1243,8 +1243,7 @@ function UserLiquidityLineStyleGroupPage({
   function goPoolDetailPage() {
     // const params_str = get_pool_name(poolDetail.pool_id);
     router
-      .push(`/pool/dcl/${poolDetail.pool_id}`)
-      .then(() => window.location.reload());
+      .push(`/pool/dcl/${poolDetail.pool_id}`);
   }
   return (
     <div className="mb-4">

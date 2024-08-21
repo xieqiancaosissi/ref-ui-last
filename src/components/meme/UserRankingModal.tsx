@@ -310,7 +310,7 @@ function UserRankingModal(props: any) {
               /> */}
             </div>
             {isOpenToken && (
-              <div className="absolute top-11 right-0 z-10 bg-dark-10 rounded-xl pb-1 pt-3 px-2 text-white w-60">
+              <div className="absolute top-11 right-0 z-10 bg-dark-40 rounded-xl pb-1 pt-3 px-2 text-white w-60">
                 <div
                   className={`flex items-center justify-between mb-1.5 p-1.5 cursor-pointer rounded-lg hover:bg-dark-60 xsm:border-none
                   ${selectedToken === "All" ? "border border-dark-80" : ""}`}
@@ -609,7 +609,7 @@ function UserRankingModal(props: any) {
 
                               {hoveredRow === index && (
                                 <div
-                                  className="absolute top-8 right-0 bg-boxBorder px-3 pt-3 z-50 rounded-md border border-toolTipBoxBorderColor max-h-64 overflow-auto"
+                                  className="absolute top-8 right-0 bg-dark-40 px-3 pt-3 z-50 rounded-md border border-toolTipBoxBorderColor max-h-64 overflow-auto"
                                   style={{
                                     ...getPopupPosition(rowRefs.current[index]),
                                     backdropFilter: "blur(4px)",
@@ -676,7 +676,7 @@ function UserRankingModal(props: any) {
                   <div
                     className={`w-7 rounded-lg h-7 flex items-center justify-center ${
                       currentPage === 1
-                        ? "border-memeUserStackeMobileBgColor"
+                        ? "border-gray-60"
                         : "border-primaryGreen"
                     } ${is_mobile ? "border" : ""}`}
                   >
@@ -685,7 +685,7 @@ function UserRankingModal(props: any) {
                         is_mobile
                           ? currentPage === 1
                             ? "#7E8A93"
-                            : "#00FFD1"
+                            : "#9EFF00"
                           : currentPage === 1
                           ? "#7E8A93"
                           : "#FFFFFF"
@@ -709,16 +709,14 @@ function UserRankingModal(props: any) {
                 >
                   <div
                     className={`w-7 rounded-lg h-7 flex items-center justify-center ${
-                      currentPage > 1
-                        ? "border-primaryGreen"
-                        : "border-memeUserStackeMobileBgColor"
+                      currentPage > 1 ? "border-primaryGreen" : "border-gray-60"
                     } ${is_mobile ? "border" : ""}`}
                   >
                     <UserStakeRankingPrevious
                       color={
                         is_mobile
                           ? currentPage > 1
-                            ? "#00FFD1"
+                            ? "#9EFF00"
                             : "#7E8A93"
                           : currentPage > 1
                           ? "#FFFFFF"
@@ -773,14 +771,14 @@ function UserRankingModal(props: any) {
                     className={`w-7 rounded-lg h-7 flex items-center justify-center ${
                       currentPage < totalPages
                         ? "border-primaryGreen"
-                        : "border-memeUserStackeMobileBgColor"
+                        : "border-gray-60"
                     } ${is_mobile ? "border" : ""}`}
                   >
                     <UserStakeRankingNext
                       color={
                         is_mobile
                           ? currentPage < totalPages
-                            ? "#00FFD1"
+                            ? "#9EFF00"
                             : "#7E8A93"
                           : currentPage < totalPages
                           ? "#FFFFFF"
@@ -803,7 +801,7 @@ function UserRankingModal(props: any) {
                   <div
                     className={`w-7 rounded-lg h-7 flex items-center justify-center ${
                       currentPage === totalPages
-                        ? "border-memeUserStackeMobileBgColor"
+                        ? "border-gray-60"
                         : "border-primaryGreen"
                     } ${is_mobile ? "border" : ""}`}
                   >
@@ -812,7 +810,7 @@ function UserRankingModal(props: any) {
                         is_mobile
                           ? currentPage === totalPages
                             ? "#7E8A93"
-                            : "#00FFD1"
+                            : "#9EFF00"
                           : currentPage === totalPages
                           ? "#7E8A93"
                           : "#FFFFFF"

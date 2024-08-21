@@ -71,6 +71,7 @@ import { getURLInfo } from "@/utils/transactionsPopup";
 import { checkTransactionStatus } from "@/utils/contract";
 import { REF_FI_CONTRACT_ID } from "@/utils/contract";
 import { checkTransaction } from "@/utils/contract";
+import { filterSpecialChar } from "@/utils/numbers";
 
 export default function ClassicPoolDetail() {
   const router = useRouter();
@@ -497,7 +498,7 @@ export default function ClassicPoolDetail() {
               <span className="text-2xl text-white font-bold ml-1 mr-2">
                 {poolDetail?.token_symbols
                   ?.map((item: any) =>
-                    item == "wNEAR" ? (item = "NEAR") : item
+                    item == "wNEAR" ? (item = "NEAR") : filterSpecialChar(item)
                   )
                   .join("-")}
               </span>
@@ -544,7 +545,7 @@ export default function ClassicPoolDetail() {
               <span className=" text-2xl text-white font-bold ml-1 mr-2 text-ellipsis overflow-hidden whitespace-nowrap">
                 {poolDetail?.token_symbols
                   ?.map((item: any) =>
-                    item == "wNEAR" ? (item = "NEAR") : item
+                    item == "wNEAR" ? (item = "NEAR") : filterSpecialChar(item)
                   )
                   .join("-")}
               </span>

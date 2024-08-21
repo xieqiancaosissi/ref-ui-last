@@ -432,3 +432,9 @@ export function generateRandomString(length: number) {
   }
   return result;
 }
+export function filterSpecialChar(str: string) {
+  if (/[^a-zA-Z0-9 ,.?!'"&%#@¥$^*()_\-~`+/<>:;\n\r\t\{\}\[\]\\\|]/.test(str)) {
+    return "?";
+  }
+  return str;
+}

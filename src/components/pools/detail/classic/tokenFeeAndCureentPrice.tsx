@@ -6,6 +6,7 @@ import {
 } from "@/utils/uiNumber";
 import { toReadableNumber, numberWithCommas } from "@/utils/numbers";
 import { beautifyNumber } from "@/components/common/beautifyNumber";
+import { filterSpecialChar } from "@/utils/numbers";
 
 export default function TokenFeeAndCureentPrice({
   poolDetail,
@@ -58,7 +59,7 @@ export default function TokenFeeAndCureentPrice({
           {/* token left name */}
           {poolDetail?.token_symbols[currentSort[0]] == "wNEAR"
             ? "NEAR"
-            : poolDetail?.token_symbols[currentSort[0]]}
+            : filterSpecialChar(poolDetail?.token_symbols[currentSort[0]])}
           {/* usd price */}
           {tokenPriceList && poolDetail && (
             <span className="text-gray-50 font-normal">
@@ -78,7 +79,7 @@ export default function TokenFeeAndCureentPrice({
           {/* token right name */}
           {poolDetail?.token_symbols[currentSort[1]] == "wNEAR"
             ? "NEAR"
-            : poolDetail?.token_symbols[currentSort[1]]}
+            : filterSpecialChar(poolDetail?.token_symbols[currentSort[1]])}
         </div>
       </div>
       <ExchangeIcon

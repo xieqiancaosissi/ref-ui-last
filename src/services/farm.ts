@@ -34,6 +34,7 @@ import { UserLiquidityInfo } from "./commonV3";
 import Big from "big.js";
 import { useEffect, useState } from "react";
 import { PoolInfo } from "./swapV3";
+import { filterSpecialChar } from "../utils/numbers";
 
 const config = getConfig();
 const {
@@ -555,6 +556,7 @@ export const getPoolIdBySeedId = (seed_id: string) => {
 };
 
 export const toRealSymbol = (symbol: string) => {
+  symbol = filterSpecialChar(symbol);
   if (!symbol) return "";
   const blackList = ["nUSDO", "nKOK"];
 

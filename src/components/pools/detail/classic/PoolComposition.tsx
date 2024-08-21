@@ -9,6 +9,7 @@ import {
 import { useRouter } from "next/router";
 import { usePersistSwapStore } from "@/stores/swap";
 import { getTokenUIId } from "@/services/swap/swapUtils";
+import { filterSpecialChar } from "@/utils/numbers";
 
 export default function PoolComposition(props: any) {
   const { poolDetail, tokenPriceList, updatedMapList } = props;
@@ -80,7 +81,7 @@ export default function PoolComposition(props: any) {
                   {TokenIconComponent({ ite })}
                   <div className="ml-3">
                     <h4 className="text-base text-white font-medium">
-                      {item.token_symbols[ind]}
+                      {filterSpecialChar(item.token_symbols[ind])}
                     </h4>
                     <p
                       className="text-xs text-gray-60 underline cursor-pointer"
@@ -142,7 +143,7 @@ export default function PoolComposition(props: any) {
                   <div className="flex items-center">
                     <div>
                       <h4 className="text-base text-white font-medium">
-                        {item.token_symbols[ind]}
+                        {filterSpecialChar(item.token_symbols[ind])}
                       </h4>
                       <p
                         className="text-xs text-gray-60 underline cursor-pointer"

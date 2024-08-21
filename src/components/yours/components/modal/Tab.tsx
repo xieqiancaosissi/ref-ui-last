@@ -8,6 +8,8 @@ import {
   useTotalLiquidityData,
   useTotalOrderData,
 } from "../Tool";
+import { useAccountStore } from "@/stores/account";
+import { getAccountId } from "@/utils/wallet";
 export default function Tab() {
   const {
     activeTab,
@@ -28,6 +30,9 @@ export default function Tab() {
     all_farms_quanity,
     all_farms_Loading_done,
   } = useContext(PortfolioData) as PortfolioContextType;
+  const accountStore = useAccountStore();
+  const accountId = getAccountId();
+  const isSignedIn = !!accountId || accountStore.isSignedIn;
   const [tabList, setTabList] = useState([
     {
       name: "Pools",
@@ -66,18 +71,39 @@ export default function Tab() {
   });
 
   useEffect(() => {
-    tabList[0].value = total_liquidity_value;
-    tabList[0].quantity = total_liquidity_quantity;
-    tabList[1].value = total_farms_value;
-    tabList[1].quantity = total_farms_quantity;
-    const parse_tabList = JSON.parse(JSON.stringify(tabList));
-    setTabList(parse_tabList);
+    if (!isSignedIn) {
+      setTabList([
+        {
+          name: "Pools",
+          id: "your_liquidity_2",
+          tag: "1",
+          value: "$-",
+          quantity: "-",
+        },
+        {
+          name: "Farms",
+          id: "yield_farming",
+          tag: "2",
+          value: "$-",
+          quantity: "-",
+        },
+      ]);
+    } else {
+      tabList[0].value = total_liquidity_value;
+      tabList[0].quantity = total_liquidity_quantity;
+      tabList[1].value = total_farms_value;
+      tabList[1].quantity = total_farms_quantity;
+      const parse_tabList = JSON.parse(JSON.stringify(tabList));
+      setTabList(parse_tabList);
+    }
   }, [
     total_farms_value,
     total_farms_quantity,
     total_liquidity_value,
     total_liquidity_quantity,
+    isSignedIn,
   ]);
+
   function switchTab(tag: string) {
     setActiveTab(tag);
   }

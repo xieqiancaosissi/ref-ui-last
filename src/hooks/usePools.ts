@@ -304,20 +304,22 @@ export const usePool = (id: number | string) => {
   );
 
   useEffect(() => {
-    getPoolDetails(Number(id)).then(setPool);
-    getSharesInPool(Number(id))
-      .then(setShares)
-      .catch(() => setShares);
+    if (isSignedIn) {
+      getPoolDetails(Number(id)).then(setPool);
+      getSharesInPool(Number(id))
+        .then(setShares)
+        .catch(() => setShares);
 
-    getStakedListByAccountId({})
-      .then(({ stakedList, finalStakeList, v2StakedList }) => {
-        setStakeList(stakedList);
-        setV2StakeList(v2StakedList);
-        setFinalStakeList(finalStakeList);
-      })
-      .catch((err: any) => {
-        console.log(err);
-      });
+      getStakedListByAccountId({})
+        .then(({ stakedList, finalStakeList, v2StakedList }) => {
+          setStakeList(stakedList);
+          setV2StakeList(v2StakedList);
+          setFinalStakeList(finalStakeList);
+        })
+        .catch((err: any) => {
+          console.log(err);
+        });
+    }
   }, [id, isSignedIn]);
 
   return {

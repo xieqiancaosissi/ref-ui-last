@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, useMemo } from "react";
 import * as charts from "echarts";
 import styles from "./style.module.css";
 import { useV3MonthTVL, useV3MonthVolume } from "@/hooks/usePoolDetailCharts";
@@ -11,6 +11,13 @@ import moment from "moment";
 import DclChart from "./d3Chart/DclChart";
 import { TOKEN_LIST_FOR_RATE } from "@/services/commonV3";
 import { beautifyNumber } from "@/components/common/beautifyNumber";
+import { getPriceByPoint } from "@/services/commonV3";
+import BigNumber from "bignumber.js";
+import { formatWithCommas } from "@/utils/numbers";
+import { toPrecision } from "@/utils/numbers";
+import { get_pool } from "@/services/swapV3";
+import { ftGetTokensMetadata } from "@/services/token";
+import { reverse_price } from "@/services/commonV3";
 
 export default function TvlAndVolumeCharts(props: any) {
   const [rateDirection, setRateDirection] = useState(true);
@@ -22,7 +29,7 @@ export default function TvlAndVolumeCharts(props: any) {
   const refDom: any = useRef(null);
   const [currentSort, setCurrenSort] = useState([0, 1]);
   const [isMobile, setIsMobile] = useState(false);
-
+  const [poolDetailFromRPC, setPoolDetailRPC] = useState<any>({});
   const exchange = () => {
     const [a, b] = currentSort;
     setCurrenSort([b, a]);
@@ -43,6 +50,9 @@ export default function TvlAndVolumeCharts(props: any) {
   ];
   let timer: any;
 
+  useEffect(() => {
+    get_pool_detail();
+  }, []);
   useEffect(() => {
     if (refDom.current) {
       setSvgWidth(refDom?.current?.clientWidth || svgDefaultWidth);
@@ -93,6 +103,36 @@ export default function TvlAndVolumeCharts(props: any) {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
+
+  const rateDOM = useMemo(() => {
+    if (Object.values(poolDetailFromRPC).length < 1) return;
+    const { current_point, token_x_metadata, token_y_metadata } =
+      poolDetailFromRPC;
+    const rate =
+      Math.pow(10, token_x_metadata.decimals) /
+      Math.pow(10, token_y_metadata.decimals);
+
+    const price = getPriceByPoint(current_point, rate);
+
+    return rateDirection
+      ? beautifyNumber({ num: reverse_price(price) })
+      : beautifyNumber({ num: price });
+  }, [poolDetailFromRPC, rateDirection]);
+
+  async function get_pool_detail() {
+    const detail: any = await get_pool(poolDetail.id);
+    if (detail) {
+      const { token_x, token_y } = detail;
+      const metaData: Record<string, any> = await ftGetTokensMetadata([
+        token_x,
+        token_y,
+      ]);
+      detail.token_x_metadata = metaData[token_x];
+      detail.token_y_metadata = metaData[token_y];
+      setPoolDetailRPC(detail);
+    }
+  }
+
   return (
     <div>
       {/* tab bar */}
@@ -153,21 +193,7 @@ export default function TvlAndVolumeCharts(props: any) {
             )} */}
               <span className="mx-1">=</span>
               {/* token right amount */}
-              {tokenPriceList && poolDetail && (
-                <span className="mr-1">
-                  {beautifyNumber({
-                    num:
-                      ((tokenPriceList[
-                        poolDetail?.token_account_ids[currentSort[0]]
-                      ].price /
-                        tokenPriceList[
-                          poolDetail?.token_account_ids[currentSort[1]]
-                        ].price) *
-                        100) /
-                      100,
-                  })}
-                </span>
-              )}
+              <span className="mr-1">{rateDOM}</span>
               {/* token right name */}
               {poolDetail?.token_symbols[currentSort[1]] == "wNEAR"
                 ? "NEAR"
@@ -201,19 +227,7 @@ export default function TvlAndVolumeCharts(props: any) {
             <span className="mx-1">=</span>
             {/* token right amount */}
             {tokenPriceList && poolDetail && (
-              <span className="mr-1">
-                {beautifyNumber({
-                  num:
-                    ((tokenPriceList[
-                      poolDetail?.token_account_ids[currentSort[0]]
-                    ].price /
-                      tokenPriceList[
-                        poolDetail?.token_account_ids[currentSort[1]]
-                      ].price) *
-                      100) /
-                    100,
-                })}
-              </span>
+              <span className="mr-1">{rateDOM}</span>
             )}
             {/* token right name */}
             {poolDetail?.token_symbols[currentSort[1]] == "wNEAR"

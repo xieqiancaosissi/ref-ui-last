@@ -25,6 +25,9 @@ import successToast from "@/components/common/toast/successToast";
 import failToast from "@/components/common/toast/failToast";
 import { openUrlLocal } from "@/services/commonV3";
 import { beautifyNumber } from "@/components/common/beautifyNumber";
+import { ShareInFarmV2 } from "../../stable/ShareInFarm";
+import { useCanFarmV1, useCanFarmV2 } from "@/hooks/useStableShares";
+import { useYourliquidity } from "@/hooks/useStableShares";
 
 export const REF_FI_PRE_LIQUIDITY_ID_KEY = "REF_FI_PRE_LIQUIDITY_ID_VALUE";
 
@@ -83,6 +86,17 @@ export default function ClassicRemove(props: any) {
     ).fill("");
   }, [updatedMapList[0]?.token_account_ids]);
 
+  const { farmCount: countV1, endedFarmCount: endedFarmCountV1 } = useCanFarmV1(
+    poolDetail.id,
+    true
+  );
+
+  const { farmCount: countV2, endedFarmCount: endedFarmCountV2 } = useCanFarmV2(
+    poolDetail.id,
+    true
+  );
+  const { farmStakeV1, farmStakeV2, userTotalShare, shadowBurrowShare } =
+    useYourliquidity(poolDetail.id);
   const originalSendSearchValue = (e: any) => {
     // setSearchValue(e.target.value);
   };
@@ -238,7 +252,32 @@ export default function ClassicRemove(props: any) {
                   />
                 </div>
               </div>
-
+              <div className="flex items-center mt-1">
+                {countV1 > endedFarmCountV1 || Number(farmStakeV1) > 0 ? (
+                  <ShareInFarmV2
+                    farmStake={farmStakeV1}
+                    userTotalShare={userTotalShare}
+                    version={"Legacy"}
+                    hideIcon={isMobile}
+                    useFarmAmount
+                    lpDecimal={24}
+                    useMx={false}
+                  />
+                ) : null}
+                {countV2 > endedFarmCountV2 || Number(farmStakeV2) > 0 ? (
+                  <ShareInFarmV2
+                    farmStake={farmStakeV2}
+                    userTotalShare={userTotalShare}
+                    version={"Classic"}
+                    poolId={poolDetail.id}
+                    onlyEndedFarm={countV2 === endedFarmCountV2}
+                    hideIcon={isMobile}
+                    useFarmAmount
+                    lpDecimal={24}
+                    useMx={false}
+                  />
+                ) : null}
+              </div>
               {/* slippage */}
               <div className="flex items-center justify-between mt-7">
                 <div className="text-sm text-gray-50 frcc">

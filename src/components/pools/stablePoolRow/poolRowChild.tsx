@@ -387,6 +387,7 @@ export default function PoolRow(props: any) {
                     farmStake={farmStakeV1}
                     userTotalShare={userTotalShare}
                     version={"Legacy"}
+                    useMx={true}
                   />
                 ) : null}
                 {countV2 > endedFarmCountV2 || Number(farmStakeV2) > 0 ? (
@@ -396,6 +397,7 @@ export default function PoolRow(props: any) {
                     version={"Classic"}
                     poolId={item.id}
                     onlyEndedFarm={countV2 === endedFarmCountV2}
+                    useMx={true}
                   />
                 ) : null}
               </div>

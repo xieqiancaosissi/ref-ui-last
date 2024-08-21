@@ -189,6 +189,9 @@ export const ShareInFarmV2 = ({
   poolId,
   onlyEndedFarm,
   hideIcon,
+  useFarmAmount,
+  lpDecimal,
+  useMx,
 }: {
   farmStake: string | number;
   userTotalShare: BigNumber;
@@ -197,6 +200,9 @@ export const ShareInFarmV2 = ({
   poolId?: number;
   onlyEndedFarm?: boolean;
   hideIcon?: boolean;
+  useFarmAmount?: boolean;
+  lpDecimal?: number;
+  useMx?: boolean;
 }) => {
   const router = useRouter();
 
@@ -219,16 +225,24 @@ export const ShareInFarmV2 = ({
   };
 
   return (
-    <div className="lg:frcc xsm:fccc mx-5 text-xs">
+    <div className={`lg:frcc xsm:fccc ${useMx ? "mx-5" : ""} text-xs`}>
       {/* <FarmDot inFarm={Number(farmShare) > 0} className="mr-1" /> */}
       {!hideIcon && <StableFarmIcon />}
       <div className="self-start whitespace-nowrap flex items-center text-gray-60 ">
         <span className="text-white ml-1 mr-0.5">
-          {`${
-            Number(farmSharePercent) < 0.1 && Number(farmSharePercent) > 0
-              ? "< 0.1"
-              : toPrecision(farmSharePercent, 2, false, false)
-          }% `}
+          {useFarmAmount
+            ? toPrecision(
+                toReadableNumber(
+                  lpDecimal || 24,
+                  scientificNotationToString(farmShare.toString())
+                ),
+                4
+              )
+            : `${
+                Number(farmSharePercent) < 0.1 && Number(farmSharePercent) > 0
+                  ? "< 0.1"
+                  : toPrecision(farmSharePercent, 2, false, false)
+              }% `}
         </span>
         <div onClick={() => toFarm()} className="cursor-pointer ml-0.5 frcc">
           <span className="text-gradientFrom">

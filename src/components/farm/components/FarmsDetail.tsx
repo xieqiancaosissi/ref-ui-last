@@ -987,10 +987,13 @@ export default function FarmsDetail(props: {
                   goPool={goPool}
                   detailData={detailData}
                   showAddLiquidityEntry={showAddLiquidityEntry}
+                  isSignedIn={isSignedIn}
                 ></AddLiquidityEntryBar>
               ) : null}
               <div
-                className={`h-full ${showAddLiquidityEntry ? "blur-2" : ""}`}
+                className={`h-full  ${
+                  !isSignedIn ? "blur-0" : showAddLiquidityEntry ? "blur-2" : ""
+                }`}
               >
                 <FarmsDetailStake
                   detailData={detailData}
@@ -1190,12 +1193,17 @@ export default function FarmsDetail(props: {
           ></UserStakeBlock>
           {isSignedIn ? (
             +freeAmount > 0 && is_support_lp ? (
-              <div className="text-xs mt-2 text-gray-60">
-                <span>How to get Ref’s farm APR + Burrow lending APR?</span>
-                <span>
-                  Step 1.{" "}
+              <div
+                className="text-sm mt-5 bg-white bg-opacity-5 p-4 rounded flex"
+                style={{ color: "rgba(255, 255, 255, 0.6)" }}
+              >
+                <div className="mt-1">
+                  <FarmLpIcon className="mr-2" />
+                </div>
+                <p className="mr-1.5">
+                  How to get Ref’s farm APR + Burrow Lending APR? Step 1.{" "}
                   <a
-                    className="text-yellow-30 underline cursor-pointer relative"
+                    className="text-white underline cursor-pointer relative"
                     tabIndex={99}
                     onBlur={() => {
                       setShowActivateBox(false);
@@ -1206,13 +1214,10 @@ export default function FarmsDetail(props: {
                   >
                     Activate
                     <ShadowTip show={showActivateBox} seed_id={seed_id} />
-                  </a>{" "}
-                  the {`Burrow's`} extra rewards
-                </span>
-                <span>
-                  Step 2. Go to supply LP on{" "}
+                  </a>
+                  the {`Burrow's`} extra rewards . Step 2. Go to supply LP on{" "}
                   <a
-                    className="text-yellow-30 text-xs underline cursor-pointer"
+                    className="text-white text-sm underline cursor-pointer"
                     onClick={() => {
                       const shadow_id = `shadow_ref_v1-${pool?.id}`;
                       const url = `https://app.burrow.finance/tokenDetail/${shadow_id}`;
@@ -1221,7 +1226,7 @@ export default function FarmsDetail(props: {
                   >
                     Burrow
                   </a>
-                </span>
+                </p>
               </div>
             ) : null
           ) : null}
@@ -1241,6 +1246,7 @@ export default function FarmsDetail(props: {
               detailData={detailData}
               showAddLiquidityEntry={showAddLiquidityEntry}
               goPool={goPool}
+              isSignedIn={isSignedIn}
             ></AddLiquidityEntryMobileBar>
           ) : (
             <div
@@ -1304,8 +1310,9 @@ function AddLiquidityEntryBar(props: {
   detailData: Seed;
   showAddLiquidityEntry: any;
   goPool: any;
+  isSignedIn: any;
 }) {
-  const { detailData, showAddLiquidityEntry, goPool } = props;
+  const { detailData, showAddLiquidityEntry, goPool, isSignedIn } = props;
   const [addLiquidityModalVisible, setAddLiquidityModalVisible] =
     useState(false);
   const poolA = detailData.pool;
@@ -1332,7 +1339,7 @@ function AddLiquidityEntryBar(props: {
 
   const needForbidden =
     (FARM_BLACK_LIST_V2 || []).indexOf(poolId?.toString() || "") > -1;
-  if (!showAddLiquidityEntry || needForbidden) return null;
+  if (!showAddLiquidityEntry || needForbidden || !isSignedIn) return null;
 
   return (
     <div
@@ -1359,8 +1366,9 @@ function AddLiquidityEntryMobileBar(props: {
   detailData: Seed;
   showAddLiquidityEntry: any;
   goPool: any;
+  isSignedIn: any;
 }) {
-  const { detailData, showAddLiquidityEntry, goPool } = props;
+  const { detailData, showAddLiquidityEntry, goPool, isSignedIn } = props;
   const [addLiquidityModalVisible, setAddLiquidityModalVisible] =
     useState(false);
   const poolA = detailData.pool;
@@ -1387,7 +1395,7 @@ function AddLiquidityEntryMobileBar(props: {
 
   const needForbidden =
     (FARM_BLACK_LIST_V2 || []).indexOf(poolId?.toString() || "") > -1;
-  if (!showAddLiquidityEntry || needForbidden) return null;
+  if (!showAddLiquidityEntry || needForbidden || !isSignedIn) return null;
 
   return (
     <div

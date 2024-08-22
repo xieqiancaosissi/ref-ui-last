@@ -362,7 +362,7 @@ function MemeVoteModal(props: any) {
             ) : (
               <div
                 onClick={showWalletSelector}
-                className="frcc h-12 rounded border border-primaryGreen px-4 font-semibold text-primaryGreen cursor-pointer"
+                className="frcc h-12 bg-greenGradient rounded mt-4 text-black font-bold text-base cursor-pointer"
               >
                 Connect Wallet
               </div>

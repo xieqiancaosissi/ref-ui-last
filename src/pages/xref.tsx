@@ -369,7 +369,9 @@ export default function XrefPage(props: any) {
               onClick={toggleDetails}
             >
               <XrefArrow
-                className={` ${showDetails ? " transform rotate-180" : ""}`}
+                className={` ${
+                  showDetails ? " transform rotate-180 text-primaryGreen" : ""
+                }`}
               />
             </div>
           </div>

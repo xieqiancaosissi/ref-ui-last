@@ -10,9 +10,12 @@ import { RefSymbol, XrefSwitch, XrefSymbol } from "./icon";
 import { IExecutionResult } from "@/interfaces/wallet";
 import failToast from "../common/toast/failToast";
 import successToast from "../common/toast/successToast";
+import { showWalletSelectorModal } from "@/utils/wallet";
+import { useAppStore } from "@/stores/app";
 
 export function InputView(props: any) {
   const [amount, setAmount] = useState("0");
+  const appStore = useAppStore();
   const [loading, setLoading] = useState(false);
   const { tab, max, hidden, isM, rate, fetchData } = props;
   const [forward, setForward] = useState(true);
@@ -220,7 +223,17 @@ export function InputView(props: any) {
             ></ButtonTextWrapper>
           )}
         </div>
-      ) : null}
+      ) : (
+        <div
+          className="flex items-center justify-center bg-greenGradient rounded mt-4 text-black font-bold text-base cursor-pointer"
+          style={{ height: "42px" }}
+          onClick={() => {
+            showWalletSelectorModal(appStore.setShowRiskModal);
+          }}
+        >
+          Connect Wallet
+        </div>
+      )}
     </div>
   );
 }

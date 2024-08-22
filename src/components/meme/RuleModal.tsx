@@ -16,7 +16,9 @@ function RuleModal(props: any) {
         },
         content: {
           outline: "none",
-          transform: "translate(-50%, -10%)",
+          transform: isMobile()
+            ? "translate(-50%, -10%)"
+            : "translate(-50%, -50%)",
         },
       }}
     >

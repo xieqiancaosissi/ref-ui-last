@@ -61,6 +61,7 @@ import { isMobile } from "@/utils/device";
 import { isStablePool } from "@/services/swap/swapUtils";
 import { showWalletSelectorModal } from "@/utils/wallet";
 import { useAppStore } from "@/stores/app";
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 
 const { REF_VE_CONTRACT_ID, REF_UNI_V3_SWAP_CONTRACT_ID } = getConfig();
 
@@ -127,7 +128,7 @@ export default function FarmsDclDetail(props: {
     }
     return false;
   }, [detailData]);
-  const [activeTab, setActiveTab] = useState(isEnded ? "Unstake" : "Stake");
+  const [activeTab, setActiveTab] = useState("Stake");
   const router = useRouter();
   const radio = getBoostMutil();
   useEffect(() => {
@@ -1159,34 +1160,28 @@ export default function FarmsDclDetail(props: {
               unFarimg={listLiquidities_unFarimg}
               unavailable={listLiquidities_unavailable}
             ></AddLiquidityEntryBar>
-
-            {!isEnded || canUnStake ? (
-              <div
-                className={`h-full p-5 ${
-                  !isSignedIn
-                    ? "blur-0"
-                    : listLiquiditiesLoading ||
-                      (!listLiquiditiesLoading &&
-                        listLiquidities_inFarimg.length === 0 &&
-                        listLiquidities_unFarimg.length === 0)
-                    ? "blur-2"
-                    : "blur-0"
-                }`}
+            {listLiquiditiesLoading && isSignedIn ? (
+              <SkeletonTheme
+                baseColor="rgba(33, 43, 53, 0.3)"
+                highlightColor="#2A3643"
               >
+                <Skeleton style={{ width: "100%" }} height={250} count={1} />
+              </SkeletonTheme>
+            ) : (
+              <div className={`h-full p-5`}>
                 <div className="flex items-center mb-8">
-                  {!isEnded ? (
-                    <button
-                      className={`text-lg ${
-                        activeTab === "Stake"
-                          ? styles.gradient_text
-                          : "text-gray-500"
-                      }`}
-                      onClick={() => setActiveTab("Stake")}
-                    >
-                      Stake
-                    </button>
-                  ) : null}
-                  {!isEnded && canUnStake ? (
+                  <button
+                    className={`text-lg ${
+                      activeTab === "Stake"
+                        ? styles.gradient_text
+                        : "text-gray-500"
+                    }`}
+                    onClick={() => setActiveTab("Stake")}
+                  >
+                    Stake
+                  </button>
+
+                  {canUnStake ? (
                     <div
                       className="h-4 bg-gray-50 mx-5"
                       style={{ width: "2px" }}
@@ -1205,51 +1200,61 @@ export default function FarmsDclDetail(props: {
                     </button>
                   ) : null}
                 </div>
-                {!isEnded || canUnStake ? (
+                {activeTab === "Stake" && (
                   <>
                     <p className="text-gray-50 text-sm mb-1.5">Available</p>
                     {!isSignedIn ? (
                       <p className="text-2xl mb-11 text-gray-50">-</p>
                     ) : (
                       <p className="text-2xl mb-11">{yp_unFarm_value}</p>
-                    )}{" "}
+                    )}
                   </>
-                ) : null}
-
-                {!isEnded ? (
+                )}
+                {canUnStake ? (
                   <>
-                    {activeTab === "Stake" && (
+                    {activeTab === "Unstake" && (
                       <>
+                        <p className="text-gray-50 text-sm mb-1.5">Liquidity</p>
                         {!isSignedIn ? (
-                          <div
-                            className=" w-full h-11 frcc rounded text-base text-primaryGreen border border-primaryGreen cursor-pointer"
-                            onClick={showWalletSelector}
-                          >
-                            Connect Wallet
-                          </div>
-                        ) : !isEnded ? (
-                          <div
-                            onClick={() => {
-                              if (!stakeDisabled) {
-                                batchStakeNFT();
-                              }
-                            }}
-                            className={` w-full h-11 frcc rounded paceGrotesk-Bold text-base  ${
-                              stakeDisabled
-                                ? "cursor-not-allowed bg-gray-40 text-gray-50"
-                                : "bg-greenGradient text-black cursor-pointer"
-                            }`}
-                          >
-                            <ButtonTextWrapper
-                              loading={nft_stake_loading}
-                              Text={() => <>Stake</>}
-                            />
-                          </div>
-                        ) : null}
+                          <p className="text-2xl mb-11 text-gray-50">-</p>
+                        ) : (
+                          <p className="text-2xl mb-11"> {yp_farming_value}</p>
+                        )}
                       </>
                     )}
                   </>
                 ) : null}
+
+                {activeTab === "Stake" && (
+                  <>
+                    {!isSignedIn ? (
+                      <div
+                        className=" w-full h-11 frcc rounded text-base text-primaryGreen border border-primaryGreen cursor-pointer"
+                        onClick={showWalletSelector}
+                      >
+                        Connect Wallet
+                      </div>
+                    ) : !isEnded ? (
+                      <div
+                        onClick={() => {
+                          if (!stakeDisabled) {
+                            batchStakeNFT();
+                          }
+                        }}
+                        className={` w-full h-11 frcc rounded paceGrotesk-Bold text-base  ${
+                          stakeDisabled
+                            ? "cursor-not-allowed bg-gray-40 text-gray-50"
+                            : "bg-greenGradient text-black cursor-pointer"
+                        }`}
+                      >
+                        <ButtonTextWrapper
+                          loading={nft_stake_loading}
+                          Text={() => <>Stake</>}
+                        />
+                      </div>
+                    ) : null}
+                  </>
+                )}
                 {canUnStake ? (
                   <>
                     {activeTab === "Unstake" && (
@@ -1261,7 +1266,7 @@ export default function FarmsDclDetail(props: {
                           >
                             Connect Wallet
                           </div>
-                        ) : canUnStake ? (
+                        ) : !isEnded ? (
                           <div
                             onClick={() => {
                               if (!nft_unStake_loading) {
@@ -1285,16 +1290,22 @@ export default function FarmsDclDetail(props: {
                   </>
                 ) : null}
               </div>
-            ) : null}
+            )}
           </div>
 
-          <div
-            className={`ml-80 bg-dark-10 rounded-md p-5  w-2/5 ${
-              isEmpty && isEnded ? "hidden" : ""
-            }`}
-          >
+          <div className={`ml-80 bg-dark-10 rounded-md p-5  w-2/5 `}>
             <p className="flex items-center text-gray-50 text-sm mb-1.5">
-              Unclaimed rewards <QuestionMark className="ml-1.5"></QuestionMark>
+              Unclaimed rewards
+              <div
+                className="text-white text-right ml-1.5"
+                data-class="reactTip"
+                data-tooltip-id={"unclaimedRewardQIdx"}
+                data-place="top"
+                data-tooltip-html={valueOfRewardsTip()}
+              >
+                <QuestionMark></QuestionMark>
+                <CustomTooltip id={"unclaimedRewardQIdx"} />
+              </div>
             </p>
             <div className="frcb">
               <p className="text-2xl frcc">
@@ -1313,19 +1324,25 @@ export default function FarmsDclDetail(props: {
                   </p>
                 ) : null}
               </p>
-              {unclaimedRewardsData.showClaimButton ? (
-                <div
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    claimReward();
-                  }}
-                  className="border border-green-10 rounded frcc py-1.5 px-7 text-green-10 cursor-pointer text-sm"
-                >
-                  <ButtonTextWrapper
-                    loading={claimLoading}
-                    Text={() => <>Claim</>}
-                  />
-                </div>
+              {!isEnded ? (
+                <>
+                  {unclaimedRewardsData.showClaimButton ? (
+                    <div
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        claimReward();
+                      }}
+                      className={`border border-green-10 rounded frcc py-1.5 px-7 text-green-10 cursor-pointer text-sm ${
+                        isEmpty || isEnded ? "hidden" : ""
+                      }  `}
+                    >
+                      <ButtonTextWrapper
+                        loading={claimLoading}
+                        Text={() => <>Claim</>}
+                      />
+                    </div>
+                  ) : null}
+                </>
               ) : null}
             </div>
             {unclaimedRewardsData.showClaimButton ? (
@@ -1473,14 +1490,24 @@ export default function FarmsDclDetail(props: {
         </div>
         <div className="bg-dark-210 rounded-md p-3.5 ">
           <p className="flex items-center text-gray-50 text-sm mb-1.5">
-            Unclaimed rewards <QuestionMark className="ml-1.5"></QuestionMark>
+            Unclaimed rewards
+            <div
+              className="text-white text-right ml-1.5"
+              data-class="reactTip"
+              data-tooltip-id={"unclaimedRewardQIdx"}
+              data-place="top"
+              data-tooltip-html={valueOfRewardsTip()}
+            >
+              <QuestionMark></QuestionMark>
+              <CustomTooltip id={"unclaimedRewardQIdx"} />
+            </div>
           </p>
           <div className="frcb">
             <p className="text-2xl frcc text-white">
               <FarmDetailsUnion className="mr-4" />
               {unclaimedRewardsData.worth}
             </p>
-            {unclaimedRewardsData.showClaimButton ? (
+            {!isEnded ? (
               <div
                 onClick={(e) => {
                   e.stopPropagation();
@@ -1527,12 +1554,14 @@ export default function FarmsDclDetail(props: {
               >
                 Stake
               </div>
-              <div
-                className="flex-1 text-primaryGreen border border-primaryGreen rounded frcc h-12"
-                onClick={() => handleTabClick("Unstake")}
-              >
-                Unstake
-              </div>
+              {canUnStake ? (
+                <div
+                  className="flex-1 text-primaryGreen border border-primaryGreen rounded frcc h-12"
+                  onClick={() => handleTabClick("Unstake")}
+                >
+                  Unstake
+                </div>
+              ) : null}
               {isModalOpen && (
                 <Modal
                   isOpen={isModalOpen}
@@ -1582,23 +1611,47 @@ export default function FarmsDclDetail(props: {
                           className={`h-4 bg-gray-50 xsm:hidden`}
                           style={{ width: "2px" }}
                         />
-                        <button
-                          className={`text-lg pl-5 xsm:flex-1 ${
-                            activeTab === "Unstake"
-                              ? styles.gradient_text
-                              : "text-gray-500"
-                          }`}
-                          onClick={() => setActiveTab("Unstake")}
-                        >
-                          Unstake
-                        </button>
+                        {canUnStake ? (
+                          <button
+                            className={`text-lg pl-5 xsm:flex-1 ${
+                              activeTab === "Unstake"
+                                ? styles.gradient_text
+                                : "text-gray-500"
+                            }`}
+                            onClick={() => setActiveTab("Unstake")}
+                          >
+                            Unstake
+                          </button>
+                        ) : null}
                       </div>
-                      <p className="text-gray-50 text-sm mb-2.5 mx-4">
-                        Available
-                      </p>
-                      <p className="text-2xl mb-20 text-gray-50 mx-4 bg-gray-10 bg-opacity-10 px-6 py-4 rounded">
-                        {yp_unFarm_value}
-                      </p>
+                      {activeTab === "Stake" && (
+                        <>
+                          <p className="text-gray-50 text-sm mb-2.5 mx-4">
+                            Available
+                          </p>
+                          <p className="text-2xl mb-20 text-gray-50 mx-4 bg-gray-10 bg-opacity-10 px-6 py-4 rounded">
+                            {yp_unFarm_value}
+                          </p>
+                        </>
+                      )}
+                      {canUnStake ? (
+                        <>
+                          {activeTab === "Unstake" && (
+                            <>
+                              <p className="text-gray-50 text-sm mb-2.5 mx-4">
+                                Liquidity
+                              </p>
+                              {!isSignedIn ? (
+                                <p className="text-2xl mb-11 text-gray-50">-</p>
+                              ) : (
+                                <p className="text-2xl mb-20 text-gray-50 mx-4 bg-gray-10 bg-opacity-10 px-6 py-4 rounded">
+                                  {yp_farming_value}
+                                </p>
+                              )}
+                            </>
+                          )}
+                        </>
+                      ) : null}
                       <div className="px-4 pb-4">
                         {activeTab === "Stake" && (
                           <>
@@ -1626,7 +1679,14 @@ export default function FarmsDclDetail(props: {
 
                         {activeTab === "Unstake" && (
                           <>
-                            {canUnStake ? (
+                            {!isSignedIn ? (
+                              <div
+                                className=" w-full h-11 frcc rounded text-base text-primaryGreen border border-primaryGreen cursor-pointer"
+                                onClick={showWalletSelector}
+                              >
+                                Connect Wallet
+                              </div>
+                            ) : !isEnded ? (
                               <div
                                 onClick={() => {
                                   if (!nft_unStake_loading) {

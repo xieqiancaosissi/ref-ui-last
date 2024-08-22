@@ -217,9 +217,10 @@ export default function FarmsDetailStake(props: {
     }
   }
   function displayLpBalance() {
-    if (lpBalance) {
-      return toPrecision(lpBalance || "0", 8);
+    if (lpBalance === undefined || lpBalance === null) {
+      return "Loading...";
     }
+    return toPrecision(lpBalance || "0", 8);
   }
   const isDisabledUnstake =
     !amount ||
@@ -494,7 +495,8 @@ export default function FarmsDetailStake(props: {
             </div>
           ) : (
             <div
-              className="frcc text-primaryGreen border border-primaryGreen py-2.5 rounded-md cursor-pointer"
+              className="flex items-center justify-center bg-greenGradient rounded mt-4 text-black font-bold text-base cursor-pointer"
+              style={{ height: "42px" }}
               onClick={showWalletSelector}
             >
               Connect Wallet

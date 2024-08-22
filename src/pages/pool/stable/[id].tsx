@@ -56,6 +56,19 @@ export default function StablePoolDetail() {
     useState("0");
   const { shares, pool } = usePool(poolDetail?.id);
 
+  // useEffect(() => {
+  //   if (poolId) {
+  //     getPoolsDetailById({ pool_id: poolId as any }).then((res) => {
+  //       PoolRouterGuard(res, "DEGEN_SWAP") &&
+  //         openUrlLocal(`${PoolRouterGuard(res, " DEGEN_SWAP")}/${poolId}`);
+  //       setPoolDetail(res);
+  //     });
+
+  //     if (currentwatchListId.length > 0) {
+  //       setIsCollect(currentwatchListId.includes(poolId));
+  //     }
+  //   }
+  // }, [poolId, currentwatchListId]);
   //
   useEffect(() => {
     if (poolId) {

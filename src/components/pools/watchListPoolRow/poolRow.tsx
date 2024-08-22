@@ -12,6 +12,7 @@ import { NearIcon, DangerousIcon, TknIcon } from "@/components/pools/icon";
 import tokenIcons from "@/utils/tokenIconConfig";
 import HoverTooltip from "@/components/common/HoverToolTip";
 import { PoolRouterGuard, PoolTypeGuard } from "@/utils/poolTypeGuard";
+import { TokenIconComponent } from "../TokenIconWithTkn";
 export default function PoolRow({
   list,
   pureIdList,
@@ -48,6 +49,17 @@ export default function PoolRow({
                   }`}
                 >
                   {item?.token_account_ids?.map((ite: any, ind: number) => {
+                    if (item.pool_kind == "SIMPLE_POOL") {
+                      return (
+                        <TokenIconComponent
+                          key={ite.tokenId + ind}
+                          ite={ite}
+                          tokenIcons={tokenIcons}
+                          pureIdList={pureIdList}
+                          ind={ind}
+                        />
+                      );
+                    }
                     const len = item?.token_account_ids?.length;
                     // if tokenid in tokenIcons
                     return Reflect.has(tokenIcons, ite.tokenId) ? (

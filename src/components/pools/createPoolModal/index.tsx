@@ -66,53 +66,20 @@ export default function CreatePoolModal({
     newToken[e.index] = e.value;
     setToken(newToken);
   };
-
-  // const { txHash } = getURLInfo();
-  // useEffect(() => {
-  //   if (txHash && accountStore.isSignedIn) {
-  //     checkTransactionStatus(txHash).then((res) => {
-  //       let status: any = res.status;
-
-  //       if (
-  //         res.transaction?.actions?.[0]?.FunctionCall?.method_name === "execute"
-  //       ) {
-  //         const receipt = res?.receipts_outcome?.find(
-  //           (o: any) => o?.outcome?.executor_id === REF_FI_CONTRACT_ID
-  //         );
-
-  //         if (receipt) {
-  //           status = receipt?.outcome?.status;
-  //         }
-  //       }
-
-  //       const data: string | undefined = status.SuccessValue;
-
-  //       if (data) {
-  //         const buff = Buffer.from(data, "base64");
-  //         const pool_id = buff.toString("ascii");
-
-  //         router.push(`/pool/classic/${pool_id}`);
-  //       } else {
-  //         router.replace(`/pools`);
-  //       }
-  //     });
-  //   }
-  // }, [txHash]);
-
   const createPool = () => {
     setShowSke(true);
     addSimpleLiquidityPool(token, Math.floor(createFee))
-      .then((res: any) => {
+      .then(async (res: any) => {
         if (!res) return;
-        let status;
+        let status: any;
         if (res.status == "success") {
-          successToast();
-
+          const checkResult = await checkTransactionStatus(res.txHash);
+          status = checkResult.status;
           if (
-            res.successResult[0].transaction?.actions[0]?.FunctionCall
-              ?.method_name === "execute"
+            checkResult.transaction?.actions?.[0]?.FunctionCall?.method_name ===
+            "execute"
           ) {
-            const receipt = res.successResult[0]?.receipts_outcome?.find(
+            const receipt = checkResult?.receipts_outcome?.find(
               (o: any) => o?.outcome?.executor_id === REF_FI_CONTRACT_ID
             );
 
@@ -121,8 +88,7 @@ export default function CreatePoolModal({
             }
           }
 
-          const data: string | undefined =
-            res.successResult[0].status.SuccessValue || status.SuccessValue;
+          const data: string | undefined = status.SuccessValue;
 
           if (data) {
             const buff = Buffer.from(data, "base64");

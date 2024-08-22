@@ -194,10 +194,10 @@ export default function Farms() {
       const k = await getPoolsDetailById({ pool_id: searchValue });
       if (k.id) {
         if (k.pool_kind == "SIMPLE_POOL") {
-          router.push(`/pool/classic/${k.id}`);
+          router.push(`/pools/${k.id}`);
         }
         if (k.pool_kind == "DCL") {
-          router.push(`/pool/dcl/${k.id}`);
+          router.push(`/poolV2/${k.id}`);
         }
 
         if (
@@ -205,11 +205,7 @@ export default function Farms() {
           k.pool_kind == "STABLE_SWAP" ||
           k.pool_kind == "DEGEN_SWAP"
         ) {
-          if (k.degens) {
-            router.push(`/pool/degen/${k.id}`);
-          } else {
-            router.push(`/pool/stable/${k.id}`);
-          }
+          router.push(`/sauce/${k.id}`);
         }
       }
     }

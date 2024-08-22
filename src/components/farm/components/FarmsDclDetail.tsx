@@ -903,7 +903,7 @@ export default function FarmsDclDetail(props: {
   function goPool() {
     const poolId = pool?.pool_id;
     if (poolId) {
-      router.push(`/pool/dcl/${poolId}`);
+      router.push(`/poolV2/${poolId}`);
     }
   }
   function getAprTip() {

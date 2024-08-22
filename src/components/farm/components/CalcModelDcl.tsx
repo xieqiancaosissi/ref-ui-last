@@ -237,7 +237,7 @@ function SeedInfo() {
   function goPool() {
     const poolId = seed?.pool?.pool_id;
     if (poolId) {
-      router.push(`/pool/dcl/${poolId}`);
+      router.push(`/poolV2/${poolId}`);
     }
   }
   return (

@@ -14,29 +14,29 @@ export const PoolRouterGuard = (
   }
   switch (res.pool_kind) {
     case "DEGEN_SWAP":
-      return "/pool/degen";
+      return "/sauce";
     case "SIMPLE_POOL":
-      return "/pool/classic";
+      return "/pools";
     case "DCL":
-      return "/pool/dcl";
+      return "/poolV2";
     case "RATED_SWAP":
     case "STABLE_SWAP":
-      return fromStable ? "" : "/pool/stable";
+      return fromStable ? "" : "/sauce";
     default:
-      return "/pool/unknown"; //
+      return "/pools"; //
   }
 };
 
 export const PoolTypeGuard = (res: PoolResponse) => {
   switch (res.pool_kind) {
     case "DEGEN_SWAP":
-      return "degen";
+      return "Degen";
     case "SIMPLE_POOL":
-      return "classic";
+      return "Classic";
     case "DCL":
-      return "dcl";
+      return "DCL";
     case "RATED_SWAP":
     case "STABLE_SWAP":
-      return "stable";
+      return "Stable";
   }
 };

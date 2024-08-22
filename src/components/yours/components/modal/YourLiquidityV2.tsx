@@ -1139,7 +1139,7 @@ function UserLiquidityLineStyleGroup({
         if (res.status == "success") {
           // successToast();
           // setAddSuccess((pre: number) => pre + 1);
-          openUrlLocal(`/pool/dcl/${poolDetail.pool_id}`);
+          openUrlLocal(`/poolV2/${poolDetail.pool_id}`);
         } else if (res.status == "error") {
           failToast(res.errorResult?.message);
         }
@@ -1307,7 +1307,7 @@ function UserLiquidityLineStyleGroupPage() {
         if (res.status == "success") {
           // successToast();
           // setAddSuccess((pre: number) => pre + 1);
-          openUrlLocal(`/pool/dcl/${poolDetail.pool_id}`);
+          openUrlLocal(`/poolV2/${poolDetail.pool_id}`);
         } else if (res.status == "error") {
           failToast(res.errorResult?.message);
         }
@@ -1335,7 +1335,7 @@ function UserLiquidityLineStyleGroupPage() {
           <div
             className={`min-h-18 w-full grid grid-cols-12`}
             onClick={() => {
-              openUrlLocal(`/pool/dcl/${poolDetail.pool_id}`);
+              openUrlLocal(`/poolV2/${poolDetail.pool_id}`);
             }}
           >
             {/* Pool */}
@@ -1647,7 +1647,7 @@ function UserLiquidityLineStyleGroupPage() {
           <div
             className={`min-h-44 w-full`}
             onClick={() => {
-              openUrlLocal(`/pool/dcl/${poolDetail.pool_id}`);
+              openUrlLocal(`/poolV2/${poolDetail.pool_id}`);
             }}
           >
             {/* token icon and symbol */}

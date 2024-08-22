@@ -81,7 +81,7 @@ export default function Asset() {
       total_value_done = true;
     }
     return [total_value, total_value_done];
-  }, [tokenPriceList, xrefBalance, xrefBalanceDone]);
+  }, [tokenPriceList, xrefBalance, xrefBalanceDone, isSignedIn]);
   const [total_user_invest_value_original, total_user_invest_value_done] =
     useMemo(() => {
       let total_value = new BigNumber(0);
@@ -94,12 +94,16 @@ export default function Asset() {
         total_value_done = true;
       }
       return [total_value.toFixed(), total_value_done];
-    }, [lpValueV1Done, lpValueV2Done, total_xref_value]);
+    }, [lpValueV1Done, lpValueV2Done, total_xref_value, isSignedIn]);
   const total_user_invest_value = useMemo(() => {
     return total_user_invest_value_done
       ? display_value(total_user_invest_value_original)
       : "$-";
-  }, [total_user_invest_value_original, total_user_invest_value_done]);
+  }, [
+    total_user_invest_value_original,
+    total_user_invest_value_done,
+    isSignedIn,
+  ]);
   const percent_in_classic_farms = useMemo(() => {
     let percent = new BigNumber(0);
     let percent_done = false;
@@ -124,7 +128,7 @@ export default function Asset() {
     return percent_done
       ? display_percentage(percent.multipliedBy(100).toFixed()) + "%"
       : "-%";
-  }, [lpValueV1Done, classic_farms_value_done]);
+  }, [lpValueV1Done, classic_farms_value_done, isSignedIn]);
   const percent_in_dcl_farms = useMemo(() => {
     let percent = new BigNumber(0);
     let percent_done = false;
@@ -137,7 +141,7 @@ export default function Asset() {
     return percent_done
       ? display_percentage(percent.multipliedBy(100).toFixed()) + "%"
       : "-%";
-  }, [lpValueV2Done, dcl_farms_value_done]);
+  }, [lpValueV2Done, dcl_farms_value_done, isSignedIn]);
   const [increase_percent_original, increase_percent_done] = useMemo(() => {
     let increase_percent = "0";
     let increase_percent_done = false;
@@ -158,10 +162,11 @@ export default function Asset() {
     total_user_invest_value_original,
     lpValueV1Done,
     lpValueV2Done,
+    isSignedIn,
   ]);
   const show_total_xref_value = useMemo(() => {
     return total_xref_value_done ? display_value(total_xref_value) : "$-";
-  }, [total_xref_value, total_xref_value_done]);
+  }, [total_xref_value, total_xref_value_done, isSignedIn]);
   function getTip() {
     const result: string = `<div class="text-navHighLightText text-xs text-left w-64 xsm:w-52">USD value of your investment on Ref:Classic pools + DCL pools (including staked in farms) + xREF</div>`;
     return result;
@@ -240,6 +245,9 @@ function AssetPage() {
     all_farms_quanity,
     all_farms_Loading_done,
   } = useContext(PortfolioData) as PortfolioContextType;
+  const accountStore = useAccountStore();
+  const accountId = getAccountId();
+  const isSignedIn = !!accountId || accountStore.isSignedIn;
   const [tabList, setTabList] = useState([
     {
       name: "Pools",
@@ -278,17 +286,37 @@ function AssetPage() {
   });
 
   useEffect(() => {
-    tabList[0].value = total_liquidity_value;
-    tabList[0].quantity = total_liquidity_quantity;
-    tabList[1].value = total_farms_value;
-    tabList[1].quantity = total_farms_quantity;
-    const parse_tabList = JSON.parse(JSON.stringify(tabList));
-    setTabList(parse_tabList);
+    if (!isSignedIn) {
+      setTabList([
+        {
+          name: "Pools",
+          id: "your_liquidity_2",
+          tag: "1",
+          value: "$-",
+          quantity: "-",
+        },
+        {
+          name: "Farms",
+          id: "yield_farming",
+          tag: "2",
+          value: "$-",
+          quantity: "-",
+        },
+      ]);
+    } else {
+      tabList[0].value = total_liquidity_value;
+      tabList[0].quantity = total_liquidity_quantity;
+      tabList[1].value = total_farms_value;
+      tabList[1].quantity = total_farms_quantity;
+      const parse_tabList = JSON.parse(JSON.stringify(tabList));
+      setTabList(parse_tabList);
+    }
   }, [
     total_farms_value,
     total_farms_quantity,
     total_liquidity_value,
     total_liquidity_quantity,
+    isSignedIn,
   ]);
   return (
     <div

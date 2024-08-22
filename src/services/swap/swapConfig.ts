@@ -25,6 +25,7 @@ export const {
   USDTT_USDCC_USDT_USDC_POOL_INDEX,
   USDT_USDC_POOL_INDEX,
   FRAX_USDC_POOL_INDEX,
+  DEGEN_POOLS_IDS,
 } = getStablePoolConfig();
 const {
   USDTT_USDCC_USDT_USDC_POOL_ID,
@@ -39,6 +40,7 @@ const {
   USDT_USDC_TOKEN_IDS,
   FRAX_USDC_TOKEN_IDS,
   STABLE_TOKEN_IDS,
+  DEGEN_POOLS_TOKEN_IDS,
 } = getConfig();
 export const ALL_STABLE_POOL_IDS = [
   USDTT_USDCC_USDT_USDC_POOL_ID,
@@ -103,5 +105,6 @@ export const AllStableTokenIds = new Array(
       .concat(USDTT_USDCC_USDT_USDC_TOKEN_IDS)
       .concat(USDT_USDC_TOKEN_IDS)
       .concat(FRAX_USDC_TOKEN_IDS)
+      .concat(DEGEN_POOLS_TOKEN_IDS)
   )
 );

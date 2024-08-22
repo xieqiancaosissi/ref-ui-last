@@ -1829,7 +1829,7 @@ export default function AddYourLiquidityPageV3() {
   const toDetail = () => {
     if (tokenX?.id && tokenY?.id)
       router.push(
-        `/pool/dcl/${tokenX?.id}|${tokenY?.id}|${
+        `/poolV2/${tokenX?.id}|${tokenY?.id}|${
           currentSelectedPool?.fee || 2000
         }`
       );

@@ -51,14 +51,14 @@ function DetailSymbol({
 
       <span
         className="cursor-pointer pl-2 py-0.5 text-gradientFrom xsm:hidden"
-        onClick={() => openUrlLocal(`/pool/classic/${id}`)}
+        onClick={() => openUrlLocal(`/pools/${id}`)}
       >
         <FiExternalLink />
       </span>
 
       <span
         className="cursor-pointer pl-2 py-0.5 text-gradientFrom lg:hidden"
-        onClick={() => openUrlLocal(`/pool/classic/${id}`)}
+        onClick={() => openUrlLocal(`/pools/${id}`)}
       >
         <ArrowTopRightIcon />
       </span>

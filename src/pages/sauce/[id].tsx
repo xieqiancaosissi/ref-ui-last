@@ -25,6 +25,8 @@ import { openUrlLocal } from "@/services/commonV3";
 import { usePool } from "@/hooks/usePools";
 import { getPoolDetails } from "@/services/pool_detail";
 import { getSharesInPool } from "@/services/pool";
+import getStablePoolConfig from "@/utils/getStablePoolConfig";
+const { DEGEN_POOLS_IDS } = getStablePoolConfig();
 
 export default function StablePoolDetail() {
   const appStore = useAppStore();
@@ -88,7 +90,9 @@ export default function StablePoolDetail() {
     getAllTokenPrices().then((res) => {
       setTokenPriceList(res);
     });
-    poolStore.setPoolActiveTab("stable");
+    DEGEN_POOLS_IDS.includes(poolId.toString())
+      ? poolStore.setPoolActiveTab("degen")
+      : poolStore.setPoolActiveTab("stable");
   }, []);
 
   const collectPool = () => {

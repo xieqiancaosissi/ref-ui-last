@@ -26,7 +26,7 @@ export default function PoolRow({
   const { isDealed, updatedMapList } = useTokenMetadata(list);
   const router = useRouter();
   const toDetail = (item: any) => {
-    router.push(`/pool/dcl/${item.id}`);
+    router.push(`/poolV2/${item.id}`);
   };
   const { currentwatchListId } = useWatchList();
   const [renderStarList, setRenderStarList] = useState<any>([]);

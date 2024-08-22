@@ -201,7 +201,7 @@ export default function StableRemove(props: any) {
           if (!res) return;
           if (res.status == "success") {
             if (fromYours) {
-              openUrlLocal(`/pool/stable/${poolDetail.id}`);
+              openUrlLocal(`/sauce/${poolDetail.id}`);
             } else {
               successToast();
               setAddSuccess((pre: number) => pre + 1);
@@ -241,7 +241,7 @@ export default function StableRemove(props: any) {
           if (!res) return;
           if (res.status == "success") {
             if (fromYours) {
-              openUrlLocal(`/pool/stable/${poolDetail.id}`);
+              openUrlLocal(`/sauce/${poolDetail.id}`);
             } else {
               successToast();
               setAddSuccess((pre: number) => pre + 1);
@@ -356,7 +356,7 @@ export default function StableRemove(props: any) {
         setnewFarmerSeeds(res);
       });
     }
-  }, [addSuccess]);
+  }, [addSuccess, shares]);
 
   useEffect(() => {
     // todo: pool mutated key and value update here
@@ -384,7 +384,7 @@ export default function StableRemove(props: any) {
       setnewNewPool(pool2);
     };
     updatePool();
-  }, [addSuccess, newShadowRecords, newFarmerSeeds]);
+  }, [addSuccess, newShadowRecords, newFarmerSeeds, shares]);
 
   useEffect(() => {
     if (addSuccess > 0 && newnewPool?.availableShareNonDivisible) {
@@ -395,7 +395,7 @@ export default function StableRemove(props: any) {
 
       setnewsharesDecimals(sharesDecimals);
     }
-  }, [newnewPool, addSuccess]);
+  }, [newnewPool, addSuccess, shares]);
 
   // by tokens
   const [error, setError]: any = useState(null);

@@ -63,7 +63,7 @@ export default function OverallLocking(props: any) {
   //
   const [your_locked_percent, your_unLocked_time, your_locked_balance] =
     useMemo(() => {
-      if (lp_locked_list[accountId] || addSuccess > 0) {
+      if (accountId && (lp_locked_list[accountId] || addSuccess > 0)) {
         const { locked_balance, unlock_time_sec } = lp_locked_list[accountId];
         return [
           getSharesPercent(locked_balance),

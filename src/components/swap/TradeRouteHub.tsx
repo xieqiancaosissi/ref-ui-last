@@ -18,12 +18,12 @@ const TradeRouteHub = ({
     if (!poolId) return;
     if (contract == "Ref_Classic") {
       if (isStablePool(poolId)) {
-        router.push(`/pool/stable/${poolId}`);
+        router.push(`/sauce/${poolId}`);
       } else {
-        router.push(`/pool/classic/${poolId}`);
+        router.push(`/pools/${poolId}`);
       }
     } else if (contract == "Ref_DCL") {
-      router.push(`/pool/dcl/${poolId}`);
+      router.push(`/poolV2/${poolId}`);
     }
   }
   return (

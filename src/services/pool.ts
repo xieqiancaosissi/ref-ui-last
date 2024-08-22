@@ -242,13 +242,16 @@ export const getPoolsDetailByIds = async ({
 
   return Promise.all(
     pool_ids.map((pool_id) => {
-      return fetch(getConfig().indexerUrl + "/pool/detail?pool_id=" + pool_id, {
-        method: "GET",
-        headers: {
-          "Content-type": "application/json; charset=UTF-8",
-          ...getAuthenticationHeaders("/pool/detail"),
-        },
-      })
+      return fetch(
+        getConfig().tvlAnd24hUrl + "/pool/detail?pool_id=" + pool_id,
+        {
+          method: "GET",
+          headers: {
+            "Content-type": "application/json; charset=UTF-8",
+            ...getAuthenticationHeaders("/pool/detail"),
+          },
+        }
+      )
         .then((res) => res.json())
         .then((pools) => {
           return pools.data;

@@ -1463,7 +1463,7 @@ export function useAddLiquidityUrlHandle(from?: string) {
           const pool_name = get_pool_name(`${tokenX}|${tokenY}|${fee}`);
           // router.replace("/pools/" + `${pool_name}`);
           if (from == "dcl") {
-            router.replace(`/pool/dcl/${tokenX}|${tokenY}|${fee}`);
+            router.replace(`/poolV2/${tokenX}|${tokenY}|${fee}`);
           } else {
             router.replace("/pools");
           }

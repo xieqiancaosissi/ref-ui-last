@@ -927,10 +927,10 @@ function YourClassicLiquidityLinePage(props: any) {
           onClick={() => {
             openUrlLocal(
               props?.type == "stable"
-                ? `/pool/stable/${pool.id}`
+                ? `/sauce/${pool.id}`
                 : props?.type == "degen"
-                ? `/pool/degen/${pool.id}`
-                : `/pool/classic/${pool.id}`
+                ? `/sauce/${pool.id}`
+                : `/pools/${pool.id}`
             );
           }}
         >
@@ -1147,10 +1147,10 @@ function YourClassicLiquidityLinePage(props: any) {
           onClick={() => {
             openUrlLocal(
               props?.type == "stable"
-                ? `/pool/stable/${pool.id}`
+                ? `/sauce/${pool.id}`
                 : props?.type == "degen"
-                ? `/pool/degen/${pool.id}`
-                : `/pool/classic/${pool.id}`
+                ? `/sauce/${pool.id}`
+                : `/pools/${pool.id}`
             );
           }}
         >

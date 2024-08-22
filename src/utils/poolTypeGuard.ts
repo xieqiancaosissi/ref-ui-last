@@ -14,16 +14,16 @@ export const PoolRouterGuard = (
   }
   switch (res.pool_kind) {
     case "DEGEN_SWAP":
-      return "/pool/degen";
+      return "/sauce";
     case "SIMPLE_POOL":
-      return "/pool/classic";
+      return "/pools";
     case "DCL":
-      return "/pool/dcl";
+      return "/poolV2";
     case "RATED_SWAP":
     case "STABLE_SWAP":
-      return fromStable ? "" : "/pool/stable";
+      return fromStable ? "" : "/sauce";
     default:
-      return "/pool/unknown"; //
+      return "/pools"; //
   }
 };
 

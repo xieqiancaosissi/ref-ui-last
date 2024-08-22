@@ -639,9 +639,9 @@ export default function FarmsDetail(props: {
     const poolId = pool?.id;
     const isStable = poolId !== undefined ? isStablePool(poolId) : false;
     if (isStable) {
-      router.push(`/pool/stable/${poolId}`);
+      router.push(`/sauce/${poolId}`);
     } else {
-      router.push(`/pool/classic/${poolId}`);
+      router.push(`/pools/${poolId}`);
     }
   }
   function showNewTag() {

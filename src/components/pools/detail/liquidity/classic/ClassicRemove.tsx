@@ -134,7 +134,7 @@ export default function ClassicRemove(props: any) {
         let status;
         if (res.status == "success") {
           if (fromYours) {
-            openUrlLocal(`/pool/classic/${poolDetail.id}`);
+            openUrlLocal(`/pools/${poolDetail.id}`);
           } else {
             successToast();
             setAddSuccess((pre: number) => pre + 1);

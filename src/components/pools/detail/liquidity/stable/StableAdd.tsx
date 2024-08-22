@@ -290,7 +290,7 @@ export default function StableAdd(props: any) {
         if (!res) return;
         if (res.status == "success") {
           if (fromYours) {
-            openUrlLocal(`/pool/stable/${poolDetail.id}`);
+            openUrlLocal(`/sauce/${poolDetail.id}`);
           } else {
             successToast();
             setAddSuccess((pre: number) => pre + 1);

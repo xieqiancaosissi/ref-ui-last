@@ -85,7 +85,7 @@ export default function MenuPc() {
   const [extraWidth, setExtraWidth] = useState("");
   useEffect(() => {
     setExtraBack("transparent");
-    if (router.route.indexOf("pool/stable") != -1) {
+    if (router.route.indexOf("/sauce") != -1) {
       setExtraBack("rgba(33, 43, 53, 0.4)");
       setExtraWidth("100%");
     } else if (oneLevelData?.children && oneLevelData.children.length > 3) {

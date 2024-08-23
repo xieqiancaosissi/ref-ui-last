@@ -217,10 +217,11 @@ export default function FarmsDetailStake(props: {
     }
   }
   function displayLpBalance() {
-    if (lpBalance === undefined || lpBalance === null) {
+    if (lpBalance === undefined || lpBalance === null || lpBalance === "") {
       return "Loading...";
+    } else {
+      return toPrecision(lpBalance, 8);
     }
-    return toPrecision(lpBalance || "0", 8);
   }
   const isDisabledUnstake =
     !amount ||

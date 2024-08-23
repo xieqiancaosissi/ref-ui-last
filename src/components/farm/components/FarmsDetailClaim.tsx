@@ -424,7 +424,7 @@ export default function UserStakeBlock(props: {
             </p>
             {unclaimedRewardsData.showClaimButton ? (
               <div
-                className="border border-green-10 rounded frcc py-2 px-7 text-green-10 cursor-pointer"
+                className="w-24 border border-green-10 rounded frcc py-2 px-7 text-green-10 cursor-pointer"
                 onClick={(e) => {
                   e.stopPropagation();
                   claimReward();

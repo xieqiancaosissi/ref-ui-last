@@ -142,6 +142,7 @@ export default function Withdraw({
       onRequestClose();
       get_user_unWithDraw_rewards();
       setCheckedList({});
+      setSelectAll(false);
     } else if (res.status == "error") {
       failToast(res.errorResult?.message);
     }

@@ -1229,7 +1229,7 @@ export default function FarmsDclDetail(props: {
                   <>
                     {!isSignedIn ? (
                       <div
-                        className=" w-full h-11 frcc rounded text-base text-primaryGreen border border-primaryGreen cursor-pointer"
+                        className=" w-full h-11 frcc rounded text-base text-black bg-greenGradient cursor-pointer"
                         onClick={showWalletSelector}
                       >
                         Connect Wallet
@@ -1261,7 +1261,7 @@ export default function FarmsDclDetail(props: {
                       <>
                         {!isSignedIn ? (
                           <div
-                            className=" w-full h-11 frcc rounded text-base text-primaryGreen border border-primaryGreen cursor-pointer"
+                            className=" w-full h-11 frcc rounded text-base text-black bg-greenGradient cursor-pointer"
                             onClick={showWalletSelector}
                           >
                             Connect Wallet
@@ -1527,7 +1527,7 @@ export default function FarmsDclDetail(props: {
           {!isSignedIn ? (
             <div className="bg-dark-230 rounded-t-2xl px-4 py-6 flex">
               <div
-                className=" w-full h-11 frcc rounded text-base text-primaryGreen border border-primaryGreen cursor-pointer "
+                className=" w-full h-11 frcc rounded text-base text-black bg-greenGradient cursor-pointer "
                 onClick={showWalletSelector}
               >
                 Connect Wallet
@@ -1681,7 +1681,7 @@ export default function FarmsDclDetail(props: {
                           <>
                             {!isSignedIn ? (
                               <div
-                                className=" w-full h-11 frcc rounded text-base text-primaryGreen border border-primaryGreen cursor-pointer"
+                                className=" w-full h-11 frcc rounded text-base text-black bg-greenGradient cursor-pointer"
                                 onClick={showWalletSelector}
                               >
                                 Connect Wallet

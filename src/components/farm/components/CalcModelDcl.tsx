@@ -1,5 +1,5 @@
 import React, { useContext, useMemo, createContext } from "react";
-import { ModalClose } from "../icon";
+import { ModalClose, QuestionMark } from "../icon";
 import { FormattedMessage, useIntl } from "react-intl";
 import { useState, useEffect, useRef } from "react";
 import { BigNumber } from "bignumber.js";
@@ -230,8 +230,8 @@ function SeedInfo() {
     }
   }
   function rewardRangeTip() {
-    const tip = intl.formatMessage({ id: "reward_range_tip" });
-    const result: string = `<div class="text-gray-50 text-xs text-left">${tip}</div>`;
+    const tip = "Farm reward within this range";
+    const result: string = `<div class="text-gray-60 text-xs text-left">${tip}</div>`;
     return result;
   }
   function goPool() {
@@ -272,7 +272,7 @@ function SeedInfo() {
             data-place="top"
             data-tooltip-html={rewardRangeTip()}
           >
-            {/* <QuestionMark></QuestionMark> */}
+            <QuestionMark></QuestionMark>
             <CustomTooltip id="rewardRangeTipId" />
           </div>
         </div>

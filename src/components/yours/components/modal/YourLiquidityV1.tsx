@@ -1522,7 +1522,9 @@ export const PoolFarmAmount = ({
             onClick={(e) => {
               e.stopPropagation();
               router.push(
-                `/v2farms/${pool.id}-${endedFarmV2 === supportFarmV2 ? "e" : "r"}`
+                `/v2farms/${pool.id}-${
+                  endedFarmV2 === supportFarmV2 ? "e" : "r"
+                }`
               );
             }}
             className="text-gray-10 mb-1.5 flex"

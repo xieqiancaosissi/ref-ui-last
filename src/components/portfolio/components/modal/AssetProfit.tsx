@@ -169,7 +169,10 @@ function AssetProfitPage() {
   const router = useRouter();
   return (
     <div className="flex mb-9">
-      <div className="bg-gray-20 bg-opacity-70 rounded-md p-4 w-1/4 mr-1">
+      <div
+        className="bg-gray-20 bg-opacity-70 rounded-md p-4 mr-1"
+        style={{ width: "30%" }}
+      >
         <div className="flex items-center mb-2">
           <p className="text-gray-50 text-sm">Unclaimed Earnings</p>
           <div
@@ -187,7 +190,10 @@ function AssetProfitPage() {
           {show_total_proft}
         </div>
       </div>
-      <div className="bg-gray-20 bg-opacity-70 rounded-md p-4 w-3/4 flex">
+      <div
+        className="bg-gray-20 bg-opacity-70 rounded-md p-4 flex"
+        style={{ width: "70%" }}
+      >
         <div className="flex-1">
           <div className="flex items-center mb-2">
             <p className="text-gray-50 text-sm mr-1">Unclaimed Pool Fees</p>

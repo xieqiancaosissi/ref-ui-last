@@ -1195,7 +1195,7 @@ function goFarmDetailPage(
       temp_pool_id.split("&");
     mft_id = `${get_pool_name(pool_id)}[${left_point}-${right_point}]`;
   }
-  router.push(`/farms/${mft_id}-${status}`);
+  router.push(`/v2farms/${mft_id}-${status}`);
   onRequestClose();
   setIsOpen(false);
 }

@@ -359,7 +359,7 @@ function AssetPage() {
               <div
                 className="frcc ml-2"
                 onClick={() => {
-                  openUrlLocal("/farms");
+                  openUrlLocal("/v2farms");
                 }}
               >
                 <span className="underline cursor-pointer text-gray-160 text-sm mr-1.5 hover:text-gray-60">
@@ -430,7 +430,7 @@ function AssetPage() {
           <div
             className="frcc ml-2"
             onClick={() => {
-              openUrlLocal("/farms");
+              openUrlLocal("/v2farms");
             }}
           >
             <span className="underline cursor-pointer text-gray-160 text-sm mr-1.5 hover:text-gray-60">

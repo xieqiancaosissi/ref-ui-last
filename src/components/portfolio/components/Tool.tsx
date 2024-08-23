@@ -440,7 +440,7 @@ export function get_detail_the_liquidity_refer_to_seed({
     const link_params = `${get_pool_name(
       dcl_pool_id
     )}[${left_point_seed}-${right_point_seed}]`;
-    link = `/farms/${link_params}-r`;
+    link = `/v2farms/${link_params}-r`;
     status = "run";
   }
   if (is_in_farming) {

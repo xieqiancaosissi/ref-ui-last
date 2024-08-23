@@ -220,7 +220,7 @@ export const ShareInFarmV2 = ({
     : "0";
 
   const toFarm = () => {
-    const key = `/farms/${poolId}-${onlyEndedFarm ? "e" : "r"}`;
+    const key = `/v2farms/${poolId}-${onlyEndedFarm ? "e" : "r"}`;
     router.push(key);
   };
 

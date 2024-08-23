@@ -463,7 +463,7 @@ const FarmsPage = (props: any, ref: any) => {
             const replace_str = `${get_pool_name(
               `${tokena_id}|${tokenb_id}|${fee}`
             )}[${lp}-${rp}]-${status}`;
-            location.replace(`/farms/${replace_str}`);
+            location.replace(`/v2farms/${replace_str}`);
             return layer1;
           }
           const layer2 = layer1.split("[");
@@ -530,7 +530,7 @@ const FarmsPage = (props: any, ref: any) => {
         }
       });
       if (!targetFarms) {
-        openUrl("/farms");
+        openUrl("/v2farms");
       } else {
         getDetailData({
           detailData: targetFarms,

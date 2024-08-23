@@ -208,7 +208,7 @@ function AssetProfitPage() {
               className="cursor-pointer"
               onClick={() => {
                 localStorage.setItem("farmV2Status", "my");
-                router.push("/farms");
+                router.push("/v2farms");
               }}
             />
           </div>

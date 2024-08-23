@@ -660,7 +660,7 @@ export function FarmView(props: {
         temp_pool_id.split("&");
       mft_id = `${get_pool_name(pool_id)}[${left_point}-${right_point}]`;
     }
-    router.push(`/farms/${mft_id}-${status}`);
+    router.push(`/v2farms/${mft_id}-${status}`);
   }
   const configV2 = getConfigV2();
   const is_support_lp = configV2.SUPPORT_SHADOW_POOL_IDS.includes(

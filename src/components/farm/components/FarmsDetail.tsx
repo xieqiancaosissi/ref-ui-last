@@ -215,7 +215,7 @@ export default function FarmsDetail(props: {
     }
   }
   const goBacktoFarms = () => {
-    router.push("/farms");
+    router.push("/v2farms");
     emptyDetailData();
   };
   const displayImgs = () => {

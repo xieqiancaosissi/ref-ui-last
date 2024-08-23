@@ -99,7 +99,7 @@ export function RelatedFarmsBox(props: any) {
     const link_params = `${get_pool_name(
       pool_id
     )}[${left_point}-${right_point}]`;
-    openUrlLocal(`/farms/${link_params}-r`);
+    openUrlLocal(`/v2farms/${link_params}-r`);
   }
   if (farm_loading) return null;
   if (!related_seed) return null;

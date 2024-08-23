@@ -903,9 +903,9 @@ function UserLiquidityLineStyleGroup({
       seed.farmList.length > 0 &&
       seed.farmList[0].status == "Ended"
     ) {
-      return `/farms/${link_params}-e`;
+      return `/v2farms/${link_params}-e`;
     } else {
-      return `/farms/${link_params}-r`;
+      return `/v2farms/${link_params}-r`;
     }
   }
   function getSeedApr(seed: Seed) {
@@ -1620,7 +1620,7 @@ function UserLiquidityLineStyleGroupPage() {
                         className="underline cursor-pointer"
                         onClick={() => {
                           localStorage.setItem("BOOST_FARM_TAB", "yours");
-                          openUrlLocal("/farms");
+                          openUrlLocal("/v2farms");
                         }}
                       >
                         Your Farm
@@ -1950,7 +1950,7 @@ function UserLiquidityLineStyleGroupPage() {
                     className="underline cursor-pointer"
                     onClick={() => {
                       localStorage.setItem("BOOST_FARM_TAB", "yours");
-                      openUrlLocal("/farms");
+                      openUrlLocal("/v2farms");
                     }}
                   >
                     Your Farm

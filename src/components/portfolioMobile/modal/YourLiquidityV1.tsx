@@ -590,7 +590,7 @@ function YourClassicLiquidityLinePage() {
                   <span
                     className="flex items-center"
                     onClick={() => {
-                      openUrlLocal(`/farms/${pool.id}-${seed_status}`);
+                      openUrlLocal(`/v2farms/${pool.id}-${seed_status}`);
                     }}
                   >
                     <label className="underline cursor-pointer mx-1">
@@ -695,7 +695,7 @@ function YourClassicLiquidityLinePage() {
                 <span
                   className="flex items-center"
                   onClick={() => {
-                    openUrlLocal(`/farms/${pool.id}-${seed_status}`);
+                    openUrlLocal(`/v2farms/${pool.id}-${seed_status}`);
                   }}
                 >
                   <label className="underline cursor-pointer mx-1">farm</label>{" "}

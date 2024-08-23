@@ -65,7 +65,7 @@ export function menuData(): IMenu[] {
           id: "farms",
           label: "Farms",
           icon: <FarmsIcon />,
-          path: "/farms",
+          path: "/v2farms",
         },
         {
           id: "yours",
@@ -127,7 +127,7 @@ export const routeMapIds = {
     "/poolV2/[id]",
     "/liquidity/[id]",
   ],
-  "earn-farms": ["/farms", "/farms/[id]"],
+  "earn-farms": ["/v2farms", "/v2farms/[id]"],
   "earn-stake": ["/xref"],
   "earn-yours": ["/yours"],
   meme: ["/meme", "/memeAirdop"],

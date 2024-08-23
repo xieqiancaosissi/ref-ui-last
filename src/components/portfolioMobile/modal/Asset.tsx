@@ -283,7 +283,7 @@ function AssetPage() {
               className="text-xs text-gray-10 ml-1 underline cursor-pointer"
               onClick={() => {
                 localStorage.setItem("BOOST_FARM_TAB", "yours");
-                router.push("/farms");
+                router.push("/v2farms");
               }}
             >
               in farm
@@ -309,7 +309,7 @@ function AssetPage() {
               className="text-xs text-gray-10 ml-1 underline cursor-pointer"
               onClick={() => {
                 localStorage.setItem("BOOST_FARM_TAB", "yours");
-                router.push("/farms");
+                router.push("/v2farms");
               }}
             >
               in farm

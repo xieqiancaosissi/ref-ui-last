@@ -621,7 +621,7 @@ export default function ClassicPoolDetail() {
                 background: "linear-gradient(to bottom, #9EFF01, #5F9901)",
               }}
               onClick={() => {
-                openUrlLocal(`/farms/${poolId}-r`);
+                openUrlLocal(`/v2farms/${poolId}-r`);
               }}
             >
               Farm Now!
@@ -916,7 +916,7 @@ export default function ClassicPoolDetail() {
                     background: "linear-gradient(to bottom, #9EFF01, #5F9901)",
                   }}
                   onClick={() => {
-                    openUrlLocal(`/farms/${poolId}-r`);
+                    openUrlLocal(`/v2farms/${poolId}-r`);
                   }}
                 >
                   Farm Now!

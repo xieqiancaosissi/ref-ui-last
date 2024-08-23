@@ -146,7 +146,7 @@ export default function FarmsDclDetail(props: {
     return tokens;
   }
   const goBacktoFarms = () => {
-    router.push("/farms");
+    router.push("/v2farms");
     emptyDetailData();
   };
   function getBoostMutil() {

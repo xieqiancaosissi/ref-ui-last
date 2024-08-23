@@ -613,7 +613,7 @@ function YourClassicLiquidityLinePage() {
                 <span
                   className="flex items-center"
                   onClick={() => {
-                    openUrl(`/farms/${pool.id}-${seed_status}`);
+                    openUrl(`/v2farms/${pool.id}-${seed_status}`);
                   }}
                 >
                   <label className="underline cursor-pointer mx-1">farm</label>{" "}

@@ -591,9 +591,9 @@ async function getYourLiquidityData({
       });
       let url;
       if (related_farms.length > 0 && actives.length == 0) {
-        url = `/farms/${link_params}-e`;
+        url = `/v2farms/${link_params}-e`;
       } else {
-        url = `/farms/${link_params}-r`;
+        url = `/v2farms/${link_params}-r`;
       }
       router.push(url);
     }
@@ -882,9 +882,9 @@ function UserLiquidityLineStyleGroup({
       seed.farmList.length > 0 &&
       seed.farmList[0].status == "Ended"
     ) {
-      return `/farms/${link_params}-e`;
+      return `/v2farms/${link_params}-e`;
     } else {
-      return `/farms/${link_params}-r`;
+      return `/v2farms/${link_params}-r`;
     }
   }
   function getSeedApr(seed: Seed) {

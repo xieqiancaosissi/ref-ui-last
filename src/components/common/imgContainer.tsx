@@ -46,11 +46,12 @@ export function RiskTipIcon() {
   if (mobile) return <RiskIcon />;
   return (
     <Tooltip
-      content={
-        <div className="text-gray-110 text-xs text-left border border-gray-110 border-opacity-20 rounded bg-gray-100 px-2 py-1">
-          Uncertified token, higher risk.
-        </div>
-      }
+      classNames={{
+        content: [
+          "border border-gray-110 border-opacity-20 rounded bg-gray-100 text-gray-110 text-xs text-left px-2 py-1",
+        ],
+      }}
+      content={<span>Uncertified token, higher risk.</span>}
       closeDelay={0}
     >
       <div>

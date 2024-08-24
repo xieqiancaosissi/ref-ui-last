@@ -9,7 +9,6 @@ import { ITokenMetadata } from "@/interfaces/tokens";
 import { SelectTokenContext } from "./Context";
 import { TokenMetadata } from "@/services/ft-contract";
 import { useSwapStore } from "@/stores/swap";
-import { formatTokenPrice } from "@/utils/uiNumber";
 import { purgeTokensByIds } from "./tokenUtils";
 import { beautifyNumber } from "@/components/common/beautifyNumber";
 export default function SelectTokenModal({

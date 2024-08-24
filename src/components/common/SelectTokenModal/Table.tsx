@@ -4,7 +4,6 @@ import Big from "big.js";
 import { CollectIcon, EmptyIcon } from "./Icons";
 import { ITokenMetadata } from "@/interfaces/tokens";
 import { useAccountStore } from "../../../stores/account";
-import { toPrecision } from "../../../utils/numbers";
 import { toInternationalCurrencySystem_usd } from "../../../utils/uiNumber";
 import { ButtonTextWrapper } from "../Button";
 import { useTokenStore, ITokenStore } from "../../../stores/token";
@@ -19,9 +18,10 @@ import {
   TokenImgWithRiskTag,
   RiskTipIcon,
 } from "@/components/common/imgContainer";
-import { isMobile } from "@/utils/device";
+import getConfigV2 from "@/utils/configV2";
 
 type ISort = "asc" | "desc";
+const configV2 = getConfigV2();
 export default function Table({
   displayTokens,
   sort,
@@ -45,7 +45,6 @@ export default function Table({
   const allTokenPrices = swapStore.getAllTokenPrices();
   const isSignedIn = accountStore.isSignedIn;
   const accountId = accountStore.getAccountId();
-  const mobile = isMobile();
   const empty = useMemo(() => {
     if (displayTokens?.length == 0 && !loading) {
       return true;
@@ -61,14 +60,6 @@ export default function Table({
     const p = Big(allTokenPrices?.[token.id]?.price || "0").mul(
       token.balance || 0
     );
-    // if (p.lt(1)) {
-    //   return beautifyNumber({
-    //     num: p.toFixed(),
-    //     className: "text-xs text-primaryGreen",
-    //     subClassName: "text-[8px]",
-    //     isUsd: true,
-    //   });
-    // }
     return toInternationalCurrencySystem_usd(p.toFixed());
   }
   function sortBy(tokenB: ITokenMetadata, tokenA: ITokenMetadata) {
@@ -128,6 +119,7 @@ export default function Table({
       ) : (
         <>
           {displayTokens?.sort(sortBy).map((token) => {
+            const is_native_token = configV2.NATIVE_TOKENS.includes(token.id);
             return (
               <div
                 className={`flexBetween hover:bg-gray-40 rounded-md pl-2 pr-1.5 cursor-pointer`}
@@ -142,7 +134,18 @@ export default function Table({
                   <TokenImgWithRiskTag token={token} />
                   <div className="flex flex-col gap-0.5">
                     <div className="flex items-center gap-1.5">
-                      <span className="text-sm text-white">{token.symbol}</span>
+                      <div className="flex items-center gap-1">
+                        <span className="text-sm text-white">
+                          {token.symbol}
+                        </span>
+
+                        {is_native_token ? (
+                          <div className="text-xs text-primaryGreen bg-primaryGreen bg-opacity-15 rounded-sm px-1">
+                            Native
+                          </div>
+                        ) : null}
+                      </div>
+
                       {token.isRisk ? <RiskTipIcon /> : null}
                     </div>
                     <span className="text-xs text-gray-60">

@@ -3,6 +3,7 @@ import { getRiskTagByToken } from "@/utils/commonUtil";
 import { RiskIcon } from "./SelectTokenModal/Icons";
 import CustomTooltip from "@/components/customTooltip/customTooltip";
 import { isMobile } from "@/utils/device";
+import { Tooltip } from "@nextui-org/react";
 export function TokenImgWithRiskTag({
   token,
   size,
@@ -43,25 +44,18 @@ export function TokenImgWithRiskTag({
 export function RiskTipIcon() {
   const mobile = isMobile();
   if (mobile) return <RiskIcon />;
-  function riskTip() {
-    return `
-    <div class="text-gray-110 text-xs text-left">
-    Uncertified token, higher risk.
-    </div>
-    `;
-  }
-  const random = Math.random();
-  const markId = "tknTipId" + random;
   return (
-    <div
-      className="text-white text-right"
-      data-class="reactTip"
-      data-tooltip-id={markId}
-      data-place="top"
-      data-tooltip-html={riskTip()}
+    <Tooltip
+      content={
+        <div className="text-gray-110 text-xs text-left border border-gray-110 border-opacity-20 rounded bg-gray-100 px-2 py-1">
+          Uncertified token, higher risk.
+        </div>
+      }
+      closeDelay={0}
     >
-      <RiskIcon />
-      <CustomTooltip id={markId} style={{ background: "#1B242C" }} />
-    </div>
+      <div>
+        <RiskIcon />
+      </div>
+    </Tooltip>
   );
 }

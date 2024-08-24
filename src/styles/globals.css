@@ -469,8 +469,8 @@ options-list::-webkit-scrollbar {
     position: absolute;
     left: 0;
     bottom: -8px;
-    height: 2px; /* 下划线的粗细 */
-    background-color: white; /* 下划线的颜色 */
-    width: 100%; /* 下划线的宽度 */
+    height: 2px;
+    background-color: white;
+    width: 100%;
   }
 }

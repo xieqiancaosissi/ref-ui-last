@@ -1,5 +1,6 @@
 import type { Config } from "tailwindcss";
 const plugin = require("tailwindcss/plugin");
+const { nextui } = require("@nextui-org/react");
 const getStyleMapping = (max: number, min: number) => {
   if (!max) {
     return;
@@ -288,6 +289,7 @@ const config: Config = {
         },
       });
     }),
+    nextui(),
   ],
 };
 export default config;

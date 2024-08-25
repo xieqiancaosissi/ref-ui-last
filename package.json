@@ -8,7 +8,8 @@
     "start": "next start",
     "prettier:fix": "prettier --write src",
     "lint": "next lint",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "preinstall": "npx only-allow pnpm"
   },
   "dependencies": {
     "@aurora-is-near/engine": "think-in-universe/aurora.js#6db862e",
@@ -132,6 +133,7 @@
     "eslint-config-prettier": "8.5.0",
     "eslint-plugin-prettier": "4.2.1",
     "husky": "^8.0.3",
+    "only-allow": "^1.2.1",
     "postcss": "^8",
     "prettier": "2.3.1",
     "tailwindcss": "^3.4.1",

@@ -5,7 +5,6 @@ import { useAccountStore } from "@/stores/account";
 import { ReturnIcon, WarningIcon } from "./icon";
 import { ExclamationIcon } from "@/components/common/Icons";
 import { FormattedMessage } from "react-intl";
-import { useHistory } from "react-router-dom";
 import useAllWhiteTokens from "@/hooks/useAllWhiteTokens";
 import { TokenMetadata } from "@/services/ft-contract";
 import { ftGetBalance, ftGetTokenMetadata } from "@/services/token";
@@ -110,7 +109,7 @@ export default function AddYourLiquidityPageV3() {
   const accoutStore = useAccountStore();
   const isSignedIn = accoutStore.isSignedIn;
   const nearBalance = useDepositableBalance("NEAR");
-  const history = useHistory();
+  const history = useRouter();
   const { totalList: refTokens } = useAllWhiteTokens();
   const OPEN_CREATE_POOL_ENTRY = false;
   const mobileDevice = isMobile();

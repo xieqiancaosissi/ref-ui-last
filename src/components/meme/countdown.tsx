@@ -10,6 +10,7 @@ import {
   CountdownRightBottomMobileBg,
   CountdownTitle,
 } from "./icons";
+// @ts-ignore
 import PropTypes from "prop-types";
 
 const formatNumber = (number: any) => (number < 10 ? `0${number}` : number);

@@ -232,7 +232,7 @@ export const calc_add_liquidity = (
 
   const token_num = old_c_amounts.length;
   const d_0 = calc_d(amp, old_c_amounts);
-  const c_amounts = [];
+  const c_amounts: any = [];
   for (let i = 0; i < old_c_amounts.length; i++) {
     c_amounts[i] = old_c_amounts[i] + deposit_c_amounts[i];
   }
@@ -346,7 +346,7 @@ export const getRemoveLiquidityByShare = (
   );
 
   // TODO:
-  return amounts.map((amount) =>
+  return amounts.map((amount: any) =>
     toPrecision(scientificNotationToString(amount.toString()), 0)
   );
 };
@@ -415,7 +415,7 @@ export const calc_remove_liquidity = (
   c_amounts: number[],
   pool_token_supply: number
 ) => {
-  const amounts = [];
+  const amounts: any = [];
   for (let i = 0; i < c_amounts.length; i++) {
     amounts[i] = (c_amounts[i] * shares) / pool_token_supply;
   }
@@ -431,7 +431,7 @@ export const calc_remove_liquidity_by_tokens = (
 ) => {
   const token_num = old_c_amounts.length;
   const d_0 = calc_d(amp, old_c_amounts);
-  const c_amounts = [];
+  const c_amounts: any = [];
   for (let i = 0; i < old_c_amounts.length; i++) {
     c_amounts[i] = old_c_amounts[i] - removed_c_amounts[i];
   }

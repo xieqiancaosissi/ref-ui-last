@@ -819,7 +819,7 @@ export const batch_stake_boost_nft = async ({
   }
   liquidities.forEach((l: UserLiquidityInfo) => {
     const { lpt_id, mft_id } = l;
-    const functionCalls = [];
+    const functionCalls: any = [];
     if (!mft_id) {
       mint_infos.push([lpt_id, JSON.parse(fixRange)]);
     } else if (liquidity_is_in_other_seed(seed_id, mft_id)) {

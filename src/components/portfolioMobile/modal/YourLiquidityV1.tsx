@@ -44,10 +44,8 @@ import {
 } from "@/utils/numbers";
 import { openUrlLocal } from "@/services/commonV3";
 import { LinkIcon } from "@/components/farm/icon";
-import { useHistory } from "react-router-dom";
 import { useFarmStake, useYourliquidity } from "@/hooks/useStableShares";
 import { useLpLocker } from "@/services/lplock";
-import Link from "next/link";
 import {
   PortfolioContextType,
   PortfolioData,

@@ -12,7 +12,6 @@ import {
   formatPercentage,
 } from "../../utils/uiNumber";
 import { openUrl } from "../../services/commonV3";
-import { useHistory } from "react-router";
 import { getMemeUiConfig, getMemeContractConfig } from "./memeConfig";
 import getConfig from "@/utils/config";
 const progressConfig = getMemeUiConfig();
@@ -24,7 +23,6 @@ function CallBackModal(props: any) {
     onRequestClose,
     txParams,
   }: { isOpen: boolean; onRequestClose: any; txParams: ITxParams } = props;
-  const history = useHistory();
   const cardWidth = isMobile() ? "95vw" : "28vw";
   const cardHeight = isMobile() ? "90vh" : "80vh";
   const [seed, amount, metadata, isXrefAction] = useMemo(() => {

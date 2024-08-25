@@ -5,7 +5,7 @@ import { useTokenStore, ITokenStore } from "@/stores/token";
 import { useAccountStore } from "@/stores/account";
 import useAllWhiteTokensWithBalances from "@/hooks/useAllWhiteTokensWithBalances";
 import { setSwapTokenAndBalances } from "@/components/common/SelectTokenModal/tokenUtils";
-import { getTokenUIId } from "@/services/swap/swapUtils";
+import { IUITokens } from "@/interfaces/tokens";
 const configV2 = getConfigV2();
 const { INIT_SWAP_PAIRS } = configV2;
 export default function InitData() {
@@ -66,16 +66,18 @@ export default function InitData() {
     }
   }, [tokenInId, tokenOutId, accountId]);
   useEffect(() => {
-    tokenStore.setDefaultAccountTokens(defaultAccountTokensHook || {});
+    tokenStore.setDefaultAccountTokens(
+      defaultAccountTokensHook || ({} as IUITokens)
+    );
   }, [JSON.stringify(defaultAccountTokensHook || {})]);
   useEffect(() => {
-    tokenStore.setTknAccountTokens(tknAccountTokensHook || {});
+    tokenStore.setTknAccountTokens(tknAccountTokensHook || ({} as IUITokens));
   }, [JSON.stringify(tknAccountTokensHook || {})]);
   useEffect(() => {
-    tokenStore.setTknxAccountTokens(tknxAccountTokensHook || {});
+    tokenStore.setTknxAccountTokens(tknxAccountTokensHook || ({} as IUITokens));
   }, [JSON.stringify(tknxAccountTokensHook || {})]);
   useEffect(() => {
-    tokenStore.setMcAccountTokens(mcAccountTokensHook || {});
+    tokenStore.setMcAccountTokens(mcAccountTokensHook || ({} as IUITokens));
   }, [JSON.stringify(mcAccountTokensHook || {})]);
   function getTokenId({
     idFromStore,

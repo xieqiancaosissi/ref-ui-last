@@ -1,5 +1,4 @@
 import React, { useState, useContext, useEffect, useMemo, useRef } from "react";
-import { useHistory } from "react-router";
 import Big from "big.js";
 import MarketSeedsBox from "./MarketSeedsBox";
 import MySeedsBox from "./MySeedsBox";
@@ -49,7 +48,6 @@ const SeedsBox = () => {
   const [txParams, setTxParams] = useState<ITxParams>();
   const { getIsSignedIn } = useAccountStore();
   const isSignedIn = getIsSignedIn();
-  const history = useHistory();
   const { seeds } = useContext(MemeContext)!;
   const memeDataConfig = getMemeDataConfig();
   const meme_winner_tokens = memeDataConfig.meme_winner_tokens;

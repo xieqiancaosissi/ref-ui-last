@@ -45,10 +45,8 @@ import {
 } from "@/utils/numbers";
 import { openUrl } from "@/services/commonV3";
 import { LinkIcon } from "@/components/farm/icon";
-import { useHistory } from "react-router-dom";
 import { useFarmStake, useYourliquidity } from "@/hooks/useStableShares";
 import { useLpLocker } from "@/services/lplock";
-import Link from "next/link";
 import { OrdersArrow } from "../icon";
 import { ShareInFarm } from "@/components/pools/detail/stable/ShareInFarm";
 import { getPoolDetails } from "@/services/pool_detail";

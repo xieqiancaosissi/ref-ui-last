@@ -30,7 +30,6 @@ import {
 import BigNumber from "bignumber.js";
 import _ from "lodash";
 import moment from "moment";
-import { useHistory } from "react-router-dom";
 import {
   LightningBase64Grey,
   LightningBase64,
@@ -114,7 +113,6 @@ export function FarmView(props: {
   const [yourApr, setYourApr] = useState("");
   const [yourActualAprRate, setYourActualAprRate] = useState("1");
   const tokens = sortTokens(seed.pool?.tokens_meta_data || []);
-  const history = useHistory();
   const router = useRouter();
   const [yourTvl, setYourTvl] = useState("");
   const unClaimedTokens = useTokens(

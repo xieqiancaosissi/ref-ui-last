@@ -51,7 +51,6 @@ import {
   openUrl,
 } from "../../services/commonV3";
 import { TokenMetadata } from "../../services/ft-contract";
-import { useHistory } from "react-router-dom";
 import { SearchIcon } from "./icon/FarmBoost";
 import { get24hVolumes } from "../../services/indexer";
 import { LOVE_TOKEN_DECIMAL, getLoveAmount } from "../../services/referendum";
@@ -119,7 +118,6 @@ const FarmsPage = (props: any, ref: any) => {
     tvl: "TVL",
     apr: "APR",
   };
-  const history = useHistory();
   const [farmTypeList, setFarmTypeList] = useState([
     { id: "all", label: "All" },
     { id: "classic", label: "Classic" },

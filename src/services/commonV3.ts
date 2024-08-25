@@ -38,7 +38,6 @@ import {
   getPoolIdBySeedId,
 } from "./farm";
 import { ftGetTokenMetadata } from "./token";
-import { useHistory } from "react-router-dom";
 
 const { REF_UNI_V3_SWAP_CONTRACT_ID, boostBlackList } = getConfig();
 
@@ -1788,7 +1787,7 @@ export function get_liquidity_value({
 }
 
 export function useRemoveLiquidityUrlHandle() {
-  const history = useHistory();
+  const history = useRouter();
   const accountStore = useAccountStore();
   const isSignedIn = accountStore.isSignedIn;
   const { txHash } = getURLInfo();

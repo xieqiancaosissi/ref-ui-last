@@ -5,10 +5,9 @@ import React, {
   useMemo,
   createContext,
 } from "react";
-import { useHistory } from "react-router";
-import { FormattedMessage, useIntl } from "react-intl";
 import BigNumber from "bignumber.js";
 import getConfig from "@/utils/config";
+import { useRouter } from "next/router";
 import {
   FarmBoost,
   Seed,
@@ -72,7 +71,6 @@ import { getDCLAccountFee } from "@/services/indexer";
 import { get_unClaimed_fee_data } from "@/components/pools/detail/dcl/d3Chart/DetailFun";
 import { ButtonTextWrapper } from "@/components/common/Button";
 import { RemovePoolV3 } from "@/components/pools/detail/liquidity/dclYourLiquidity/RemovePoolV3";
-import { useRouter } from "next/router";
 import {
   PortfolioContextType,
   PortfolioData,
@@ -740,7 +738,7 @@ function UserLiquidityLineStyleGroup({
 
   const tokens = sort_tokens_by_base(tokenMetadata_x_y);
   const accountId = getAccountId();
-  const history = useHistory();
+  const history = useRouter();
   useEffect(() => {
     if (
       poolDetail &&

@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
 import Modal from "react-modal";
-import { useHistory } from "react-router-dom";
 import CustomTooltip from "../components/customTooltip/customTooltip";
 import { Goback, RuleIcon, RuleTips } from "../components/meme/icons";
 import { memeComingSoonJson } from "@/components/meme/AirdropConfig";
@@ -14,9 +13,6 @@ export default function MemeComingSoon() {
   const [isShowModal, setIsShowModal] = useState<boolean>(false);
   //
   const [selectListItem, setSelectListItem] = useState<any>(null);
-  //
-  const history = useHistory();
-  //
   useEffect(() => {
     window.scrollTo({
       top: 0,

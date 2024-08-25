@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { BigNumber } from "bignumber.js";
 import { handleNumber, mftGetBalance } from "../../../services/farm";
 import Modal from "react-modal";
-import { Link, useHistory } from "react-router-dom";
+import Link from "next/link";
 import { getMftTokenId } from "../../../services/farm";
 import {
   LP_TOKEN_DECIMALS,
@@ -78,7 +78,6 @@ export default function CalcModelBooster(
     : LP_TOKEN_DECIMALS;
   const { getIsSignedIn } = useAccountStore();
   const isSignedIn = getIsSignedIn();
-  const history = useHistory();
   useEffect(() => {
     getUserLpTokenInPool();
   }, []);
@@ -312,9 +311,8 @@ export function LinkPool(props: { pooId: number }) {
     <div className="flex justify-center items-center">
       <Link
         title={intl.formatMessage({ id: "view_pool" })}
-        to={{
+        href={{
           pathname: `/pool/${pooId}`,
-          state: { backToFarms: true },
         }}
         target="_blank"
         rel="noopener noreferrer nofollow"

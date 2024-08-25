@@ -3,7 +3,6 @@ import { getTokenPairRate } from "@/services/indexer";
 import { TokenPairRate } from "@/interfaces/limit";
 import useTokenRate24h from "@/hooks/useTokenRate24h";
 import { maxBy, minBy } from "lodash";
-
 import {
   ResponsiveContainer,
   XAxis,
@@ -12,8 +11,9 @@ import {
   Tooltip,
   Area,
   ComposedChart,
+  // @ts-ignore
 } from "recharts";
-
+// @ts-ignore
 import moment from "moment";
 import { ChartNoData } from "./icons";
 import { LoadingIcon } from "@/components/common/Icons";

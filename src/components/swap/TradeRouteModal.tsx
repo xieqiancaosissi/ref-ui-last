@@ -58,11 +58,11 @@ export default function TradeRouteModal({
     try {
       const pools = identicalRoutes
         .map((r) => r[0])
-        .map((hub) => hub.pool) as Pool[];
+        .map((hub: any) => hub.pool) as Pool[];
       return getPoolAllocationPercents(pools);
     } catch (error) {
       if (identicalRoutes.length === 0) return ["100"];
-      else return identicalRoutes.map((r) => r[0].percent);
+      else return identicalRoutes.map((r: any) => r[0].percent);
     }
   }, [JSON.stringify(identicalRoutes || []), best]);
   const percentsServer = useMemo(() => {
@@ -103,7 +103,7 @@ export default function TradeRouteModal({
             <div className="w-[620px]">
               {best == "v1" && estimates ? (
                 <>
-                  {identicalRoutes.map((route, j) => {
+                  {identicalRoutes.map((route: any, j) => {
                     return (
                       <div key={j} className="relative flexBetween my-3">
                         <span className="text-xs text-gray-180">

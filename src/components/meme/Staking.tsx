@@ -15,14 +15,12 @@ import UserRankingModal from "./UserRankingModal";
 import MemeAirdropListForPc from "./memeAirdropListForPc";
 import VoteDetailsModal from "./VoteDetailsModal";
 import StakingChart from "./StakingChart";
-import { useHistory } from "react-router-dom";
 import { useAccountStore } from "@/stores/account";
 import { useScrollToTopOnFirstPage } from "@/services/meme";
 import { useRouter } from "next/router";
 
 const Staking = () => {
   const is_mobile = isMobile();
-  const history = useHistory();
   const [isVoteOpen, setIsVoteOpen] = useState(false);
   const [isMemeVoteOpen, setIsMemeVoteOpen] = useState(false);
   const [isDonateOpen, setIsDonateOpen] = useState(false);

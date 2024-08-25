@@ -5,6 +5,7 @@ import {
   Engine,
   FunctionCallArgsV2,
   parseHexString,
+  // @ts-ignore
 } from "@aurora-is-near/engine";
 import { useEffect, useState } from "react";
 import { useDebounce } from "react-use";
@@ -888,7 +889,7 @@ export const batchWithdrawAurora = async (tokens: TokenMetadata[]) => {
 };
 
 function splitArray(arr: Array<any>, splitNum: number) {
-  const result = [];
+  const result: any = [];
   const num = Math.ceil(arr.length / splitNum);
   for (let i = 0; i < num; i++) {
     const start_i = i * splitNum;

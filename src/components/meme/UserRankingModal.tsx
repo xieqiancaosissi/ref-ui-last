@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useContext, useEffect, useRef, useState } from "react";
 import Modal from "react-modal";
 import { isMobile } from "../../utils/device";

@@ -1,5 +1,7 @@
 import React, { useContext, useMemo, useState, useEffect } from "react";
+// @ts-ignore
 import PropTypes from "prop-types";
+// @ts-ignore
 import { PieChart, Pie, Sector, Cell } from "recharts";
 import Big from "big.js";
 import { MemeContext } from "./context";

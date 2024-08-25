@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState, useMemo, useEffect } from "react";
 import pageStyle from "./index.module.css";
 import { isMobile } from "@/utils/device";

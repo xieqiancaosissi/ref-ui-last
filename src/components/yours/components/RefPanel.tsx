@@ -1,5 +1,4 @@
 import { useContext, useEffect, useMemo, useState } from "react";
-import { useHistory } from "react-router-dom";
 import BigNumber from "bignumber.js";
 import { formatWithCommas_usd } from "@/utils/uiNumber";
 import { ftGetBalance, ftGetTokenMetadata } from "@/services/token";

@@ -5,9 +5,8 @@ import React, {
   useMemo,
   createContext,
 } from "react";
+import { useRouter } from "next/router";
 import styles from "../../yours.module.css";
-import { useHistory } from "react-router";
-import { FormattedMessage, useIntl } from "react-intl";
 import BigNumber from "bignumber.js";
 import getConfig from "@/utils/config";
 import { PortfolioContextType, PortfolioData } from "../RefPanelModal";
@@ -762,7 +761,7 @@ function UserLiquidityLineStyleGroup({
 
   const tokens = sort_tokens_by_base(tokenMetadata_x_y);
   const accountId = getAccountId();
-  const history = useHistory();
+  const history = useRouter();
   useEffect(() => {
     if (
       poolDetail &&

@@ -10,7 +10,6 @@ import {
   SymbolInfo,
   OrderAsset,
 } from "@/interfaces/orderbook";
-import Decimal from "decimal.js";
 import getConfigV2 from "@/utils/configV2";
 const configV2 = getConfigV2();
 
@@ -400,7 +399,7 @@ const getMMR = (
     new BigNumber(base_mmr)
       .div(new BigNumber(base_imr))
       .times(new BigNumber(imr_factor))
-      .times(new Decimal(position_notional).pow(4 / 5).toNumber())
+      .times(new BigNumber(position_notional).pow(4 / 5).toNumber())
   ).toFixed();
 
   return mmr_i;

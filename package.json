@@ -139,5 +139,9 @@
     "tailwindcss": "^3.4.1",
     "typescript": "^5",
     "webpack-bundle-analyzer": "^4.10.2"
+  },
+  "engines": {
+    "node": ">=18",
+    "npm": ">=8"
   }
 }

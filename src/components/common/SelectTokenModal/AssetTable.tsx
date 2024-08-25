@@ -1,13 +1,19 @@
 import React, { useState, useContext, useMemo } from "react";
 import _ from "lodash";
+import { Spinner } from "@nextui-org/react";
 import { SolidArrowDownIcon } from "./Icons";
 import Table from "./Table";
 import { SelectTokenContext } from "./Context";
 import { TokenMetadata } from "@/services/ft-contract";
-import { useTokenStore, ITokenStore } from "@/stores/token";
+import {
+  useTokenStore,
+  ITokenStore,
+  useTokenStoreRealTime,
+} from "@/stores/token";
 import CustomTooltip from "@/components/customTooltip/customTooltip";
 import { QuestionIcon } from "../Icons";
 import { purgeTokensByIds } from "./tokenUtils";
+
 export default function AssetTable({
   excludedTokenIds,
 }: {
@@ -16,10 +22,15 @@ export default function AssetTable({
   const [sort, setSort] = useState<"asc" | "desc">("desc");
   const [tab, setTab] = useState<"default" | "tkn" | "tknx" | "mc">("default");
   const tokenStore = useTokenStore() as ITokenStore;
+  const tokenStoreRealTime = useTokenStoreRealTime();
   const defaultAccountTokens = tokenStore.getDefaultAccountTokens();
   const tknAccountTokens = tokenStore.getTknAccountTokens();
   const tknxAccountTokens = tokenStore.getTknxAccountTokens();
   const mcAccountTokens = tokenStore.getMcAccountTokens();
+  const update_loading = tokenStoreRealTime.get_update_loading();
+  const tokenUpdatedSerialNumber =
+    tokenStoreRealTime.get_tokenUpdatedSerialNumber();
+  const isUpdate = tokenUpdatedSerialNumber > 1;
   const { searchText } = useContext(SelectTokenContext);
   const [
     defaultSearchResult,
@@ -109,78 +120,91 @@ export default function AssetTable({
     <div className="mt-7">
       {/* title */}
       <div className="flexBetween text-sm text-gray-60">
-        <div className="flex items-stretch border border-gray-100 rounded-md h-6 text-xs">
-          <span
-            className={`flexBetween cursor-pointer rounded-tl rounded-bl px-1.5 ${
-              tab == "default" ? "bg-gray-100 text-white" : ""
-            }`}
-            onClick={() => {
-              setTab("default");
-            }}
-          >
-            Default
-          </span>
-          <div
-            className={`flexBetween rounded-tr rounded-br gap-1 cursor-pointer px-1.5 ${
-              tab == "tkn" ? "bg-gray-100 text-white" : ""
-            }`}
-            onClick={() => {
-              setTab("tkn");
-            }}
-          >
-            <span>TKN</span>
-            <div
-              className="text-white text-right"
-              data-class="reactTip"
-              data-tooltip-id="tknTipId"
-              data-place="top"
-              data-tooltip-html={tknTip()}
+        <div className="flex items-center gap-2">
+          <div className="flex items-stretch border border-gray-100 rounded-md h-6 text-xs">
+            <span
+              className={`flexBetween cursor-pointer rounded-tl rounded-bl px-1.5 ${
+                tab == "default" ? "bg-gray-100 text-white" : ""
+              }`}
+              onClick={() => {
+                setTab("default");
+              }}
             >
-              <QuestionIcon className="text-gray-60 hover:text-white" />
-              <CustomTooltip id="tknTipId" />
+              Default
+            </span>
+            <div
+              className={`flexBetween rounded-tr rounded-br gap-1 cursor-pointer px-1.5 ${
+                tab == "tkn" ? "bg-gray-100 text-white" : ""
+              }`}
+              onClick={() => {
+                setTab("tkn");
+              }}
+            >
+              <span>TKN</span>
+              <div
+                className="text-white text-right"
+                data-class="reactTip"
+                data-tooltip-id="tknTipId"
+                data-place="top"
+                data-tooltip-html={tknTip()}
+              >
+                <QuestionIcon className="text-gray-60 hover:text-white" />
+                <CustomTooltip id="tknTipId" />
+              </div>
+            </div>
+            <div
+              className={`flexBetween rounded-tr rounded-br gap-1 cursor-pointer px-1.5 ${
+                tab == "tknx" ? "bg-gray-100 text-white" : ""
+              }`}
+              onClick={() => {
+                setTab("tknx");
+              }}
+            >
+              <span>TKNX</span>
+              <div
+                className="text-white text-right"
+                data-class="reactTip"
+                data-tooltip-id="tknxTipId"
+                data-place="top"
+                data-tooltip-html={tknxTip()}
+              >
+                <QuestionIcon className="text-gray-60 hover:text-white" />
+                <CustomTooltip id="tknxTipId" />
+              </div>
+            </div>
+            <div
+              className={`flexBetween rounded-tr rounded-br gap-1 cursor-pointer px-1.5 ${
+                tab == "mc" ? "bg-gray-100 text-white" : ""
+              }`}
+              onClick={() => {
+                setTab("mc");
+              }}
+            >
+              <span>MC</span>
+              <div
+                className="text-white text-right"
+                data-class="reactTip"
+                data-tooltip-id="mcTipId"
+                data-place="top"
+                data-tooltip-html={mcTip()}
+              >
+                <QuestionIcon className="text-gray-60 hover:text-white" />
+                <CustomTooltip id="mcTipId" />
+              </div>
             </div>
           </div>
-          <div
-            className={`flexBetween rounded-tr rounded-br gap-1 cursor-pointer px-1.5 ${
-              tab == "tknx" ? "bg-gray-100 text-white" : ""
-            }`}
-            onClick={() => {
-              setTab("tknx");
-            }}
-          >
-            <span>TKNX</span>
-            <div
-              className="text-white text-right"
-              data-class="reactTip"
-              data-tooltip-id="tknxTipId"
-              data-place="top"
-              data-tooltip-html={tknxTip()}
-            >
-              <QuestionIcon className="text-gray-60 hover:text-white" />
-              <CustomTooltip id="tknxTipId" />
-            </div>
-          </div>
-          <div
-            className={`flexBetween rounded-tr rounded-br gap-1 cursor-pointer px-1.5 ${
-              tab == "mc" ? "bg-gray-100 text-white" : ""
-            }`}
-            onClick={() => {
-              setTab("mc");
-            }}
-          >
-            <span>MC</span>
-            <div
-              className="text-white text-right"
-              data-class="reactTip"
-              data-tooltip-id="mcTipId"
-              data-place="top"
-              data-tooltip-html={mcTip()}
-            >
-              <QuestionIcon className="text-gray-60 hover:text-white" />
-              <CustomTooltip id="mcTipId" />
-            </div>
-          </div>
+          {update_loading && isUpdate ? (
+            <Spinner
+              size="sm"
+              className="mb-0.5"
+              classNames={{
+                circle1: "border-b-primaryGreen",
+                circle2: "border-b-primaryGreen",
+              }}
+            />
+          ) : null}
         </div>
+
         <div
           className="flex items-center gap-1.5 cursor-pointer pr-2"
           onClick={sortBalance}
@@ -195,7 +219,7 @@ export default function AssetTable({
         {/* Default */}
         <Table
           displayTokens={defaultSearchResult}
-          loading={!defaultAccountTokens.done}
+          loading={!defaultAccountTokens.done && !isUpdate}
           sort={sort}
           enableAddToken
           hidden={tab !== "default"}
@@ -203,19 +227,19 @@ export default function AssetTable({
         {/* TKN */}
         <Table
           displayTokens={tknSearchResult}
-          loading={!tknAccountTokens.done}
+          loading={!tknAccountTokens.done && !isUpdate}
           sort={sort}
           hidden={tab !== "tkn"}
         />
         <Table
           displayTokens={tknxSearchResult}
-          loading={!tknxAccountTokens.done}
+          loading={!tknxAccountTokens.done && !isUpdate}
           sort={sort}
           hidden={tab !== "tknx"}
         />
         <Table
           displayTokens={mcSearchResult}
-          loading={!mcAccountTokens.done}
+          loading={!mcAccountTokens.done && !isUpdate}
           sort={sort}
           hidden={tab !== "mc"}
         />

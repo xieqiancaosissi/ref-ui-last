@@ -155,11 +155,13 @@ export const getTriTokenIdsOnRef = async () => {
 
 export const useUserRegisteredTokensAllAndNearBalance = () => {
   const [tokens, setTokens] = useState<any[]>();
+  const [tokens_loading, set_tokens_loading] = useState<boolean>(true);
   const appStore = useAppStore();
   const personalDataUpdatedSerialNumber =
     appStore.getPersonalDataUpdatedSerialNumber();
   useDebounce(
     () => {
+      set_tokens_loading(true);
       getWhitelistedTokensAndNearTokens()
         .then(async (tokenList) => {
           const triTokenIds = await getTriTokenIdsOnRef();
@@ -184,12 +186,18 @@ export const useUserRegisteredTokensAllAndNearBalance = () => {
             token.nearNonVisible = result[1][index];
           });
           setTokens(arr);
+        })
+        .finally(() => {
+          set_tokens_loading(false);
         });
     },
     500,
     [personalDataUpdatedSerialNumber]
   );
-  return tokens;
+  return {
+    tokens,
+    tokens_loading,
+  };
 };
 
 export const auroraAddr = (nearAccount: string) =>

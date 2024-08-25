@@ -6,7 +6,11 @@ import { ITokenMetadata } from "@/interfaces/tokens";
 import { getTokenUIId } from "@/services/swap/swapUtils";
 import { setSwapTokenAndBalances } from "@/components/common/SelectTokenModal/tokenUtils";
 import { useAccountStore } from "@/stores/account";
-import { useTokenStore, ITokenStore } from "@/stores/token";
+import {
+  useTokenStore,
+  ITokenStore,
+  useTokenStoreRealTime,
+} from "@/stores/token";
 import { TokenImgWithRiskTag } from "@/components/common/imgContainer";
 
 import {
@@ -28,11 +32,14 @@ export default function SelectTokenButton(props: ISelectTokenButtonProps) {
   const accountStore = useAccountStore();
   const swapStore = useSwapStore();
   const tokenStore = useTokenStore() as ITokenStore;
+  const tokenStoreRealTime = useTokenStoreRealTime();
   const tokenIn = swapStore.getTokenIn();
   const tokenOut = swapStore.getTokenOut();
   const accountId = accountStore.getAccountId();
   const global_whitelisted_tokens_ids =
     tokenStore.get_global_whitelisted_tokens_ids();
+  const tokenUpdatedSerialNumber =
+    tokenStoreRealTime.get_tokenUpdatedSerialNumber();
   const showToken = isIn ? tokenIn : tokenOut;
   useEffect(() => {
     if (selectToken?.id && global_whitelisted_tokens_ids?.length > 0) {
@@ -52,6 +59,14 @@ export default function SelectTokenButton(props: ISelectTokenButtonProps) {
     accountId,
     global_whitelisted_tokens_ids?.length,
   ]);
+  useEffect(() => {
+    if (isOpen) {
+      tokenStoreRealTime.set_update_loading(true);
+      tokenStoreRealTime.set_tokenUpdatedSerialNumber(
+        tokenUpdatedSerialNumber + 1
+      );
+    }
+  }, [isOpen]);
   function showModal() {
     setIsOpen(true);
   }

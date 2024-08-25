@@ -39,6 +39,8 @@ export default function WalletPanel() {
     set_wallet_assets_value,
     setUserTokens,
     isOpen,
+    setWalletLoading,
+    setReloadLoading,
   } = useContext(OverviewData) as OverviewContextType;
   const [tipVisible, setTipVisible] = useState<boolean>(false);
   const [tabList, setTabList] = useState([{ name: "NEAR", tag: "near" }]);
@@ -52,7 +54,8 @@ export default function WalletPanel() {
   const [batch_withdraw_loading, set_batch_withdraw_loading] =
     useState<boolean>(false);
   const auroraAddress = auroraAddr(getAccountId() || "");
-  const userTokens = useUserRegisteredTokensAllAndNearBalance(); // balances in near wallet
+  const { tokens: userTokens, tokens_loading } =
+    useUserRegisteredTokensAllAndNearBalance(); // balances in near wallet
   const auroaBalances = useAuroraBalancesNearMapping(auroraAddress); // balances in aurora;
   const v1balances = useTokenBalances(); // balances in ref v1
   const DCLAccountBalance = useDCLAccountBalance(!!accountId); // balances in ref v3
@@ -68,6 +71,19 @@ export default function WalletPanel() {
   const appStore = useAppStore();
   const personalDataUpdatedSerialNumber =
     appStore.getPersonalDataUpdatedSerialNumber();
+  // for update
+  useEffect(() => {
+    setWalletLoading(tokens_loading);
+  }, [tokens_loading]);
+  useEffect(() => {
+    if (isOpen) {
+      setWalletLoading(true);
+    }
+  }, [isOpen]);
+  // for reload
+  useEffect(() => {
+    setReloadLoading(is_tokens_loading);
+  }, [is_tokens_loading]);
   useEffect(() => {
     if (isOpen) {
       appStore.setPersonalDataUpdatedSerialNumber(

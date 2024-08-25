@@ -20,6 +20,7 @@ import { XrefMobileArrow } from "../xref/icon";
 import FlipNumbers from "react-flip-numbers";
 import useHoldings from "@/hooks/orderbook/useHoldings";
 import { useAppStore } from "@/stores/app";
+import { Spinner } from "@nextui-org/react";
 
 export const OverviewData = createContext<OverviewContextType | null>(null);
 const is_mobile: boolean = !!isMobile();
@@ -62,6 +63,8 @@ function Overview({
     useState<boolean>(false);
   const [userTokens, setUserTokens] = useState<any[]>([]);
   const [activeTab, setActiveTab] = useState<string>("Wallet");
+  const [walletLoading, setWalletLoading] = useState<boolean>(false);
+  const [reloadLoading, setReloadLoading] = useState<boolean>(true);
 
   const [isWalletPanelOpen, setIsWalletPanelOpen] = useState<boolean>(false);
   const [isPortfolioPanelOpen, setIsPortfolioPanelOpen] =
@@ -196,6 +199,8 @@ function Overview({
         isOpen,
         setIsOpen,
         hidePortfolioPanelModal,
+        setWalletLoading,
+        setReloadLoading,
       }}
     >
       {/* pc */}
@@ -238,6 +243,17 @@ function Overview({
             >
               Portfolio
             </div>
+            <div className=" text-red-10"></div>
+            {walletLoading && !reloadLoading ? (
+              <Spinner
+                size="sm"
+                className="mb-2 ml-8"
+                classNames={{
+                  circle1: "border-b-primaryGreen",
+                  circle2: "border-b-primaryGreen",
+                }}
+              />
+            ) : null}
           </div>
           <div className="py-4 pr-1 overflow-auto h-[60vh]">
             <div className={activeTab === "Wallet" ? "" : "hidden"}>
@@ -403,4 +419,6 @@ export interface OverviewContextType {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   hidePortfolioPanelModal: any;
+  setWalletLoading: any;
+  setReloadLoading: any;
 }

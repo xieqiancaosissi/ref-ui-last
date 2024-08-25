@@ -457,6 +457,9 @@ options-list::-webkit-scrollbar {
 .nws-modal-wrapper .nws-modal .modal-right .wallet-what .icon-side {
   background: transparent !important;
 }
+.nws-modal-wrapper .nws-modal .modal-left .modal-left-title {
+  background: transparent !important;
+}
 /* wallet select modal ui end */
 
 .text-with-custom-underline {

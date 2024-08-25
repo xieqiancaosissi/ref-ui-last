@@ -8,7 +8,12 @@ import {
   YoursIcon,
   StakeIcon,
 } from "./icons";
-import { Rainbow, WalletCedeBridge, AggregateBridge } from "./icons2";
+import {
+  Rainbow,
+  WalletCedeBridge,
+  AggregateBridge,
+  TokenBridge,
+} from "./icons2";
 
 export interface IMenu {
   id: string;
@@ -104,6 +109,13 @@ export function menuData(): IMenu[] {
           icon: <WalletCedeBridge />,
           externalLink:
             "https://send.cede.store/?tokenSymbol=NEAR&network=near&source=ref_finance",
+          bridgeConfirm: true,
+        },
+        {
+          id: "tokenBridge",
+          label: "Token",
+          icon: <TokenBridge />,
+          externalLink: "https://tokenbridge.app",
           bridgeConfirm: true,
         },
       ],

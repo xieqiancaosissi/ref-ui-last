@@ -28,7 +28,6 @@ export type ITokenStore = {
   getBalancesOwner: () => string;
   setBalancesOwner: (balancesOwner: string) => void;
 };
-
 export const useTokenStore = create(
   persist(
     (set, get: any) => ({
@@ -92,4 +91,22 @@ export const useTokenStore = create(
       storage: createJSONStorage(() => localStorage),
     }
   )
+);
+
+interface ITokenStoreRealTime {
+  get_update_loading: () => boolean;
+  set_update_loading: (update_loading: boolean) => void;
+  get_tokenUpdatedSerialNumber: () => number;
+  set_tokenUpdatedSerialNumber: (tokenUpdatedSerialNumber: number) => void;
+}
+export const useTokenStoreRealTime = create<ITokenStoreRealTime>(
+  (set: any, get: any) => ({
+    update_loading: true,
+    tokenUpdatedSerialNumber: 0,
+    get_update_loading: () => get().update_loading,
+    set_update_loading: (update_loading: boolean) => set({ update_loading }),
+    get_tokenUpdatedSerialNumber: () => get().tokenUpdatedSerialNumber,
+    set_tokenUpdatedSerialNumber: (tokenUpdatedSerialNumber: number) =>
+      set({ tokenUpdatedSerialNumber }),
+  })
 );

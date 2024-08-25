@@ -2,7 +2,11 @@ import { useEffect, useMemo, useState } from "react";
 import { useDebounce, useThrottle } from "react-use";
 import { TokenMetadata } from "../services/ft-contract";
 import getConfigV2 from "../utils/configV2";
-import { useTokenStore, ITokenStore } from "../stores/token";
+import {
+  useTokenStore,
+  ITokenStore,
+  useTokenStoreRealTime,
+} from "../stores/token";
 import {
   getGlobalWhitelist,
   getAccountWhitelist,
@@ -61,6 +65,7 @@ const useAllWhiteTokensWithBalances = () => {
   const [mcAccountTokensHook, setMcAccountTokensHook] =
     useState<IUITokens>(initTokenAccountData);
   const tokenStore = useTokenStore() as ITokenStore;
+  const tokenStoreRealTime = useTokenStoreRealTime();
   const accountStore = useAccountStore();
   const accountId = accountStore.getAccountId();
   const walletLoading = accountStore.getWalletLoading();
@@ -69,6 +74,8 @@ const useAllWhiteTokensWithBalances = () => {
   const tknAccountTokens = tokenStore.getTknAccountTokens();
   const tknxAccountTokens = tokenStore.getTknxAccountTokens();
   const mcAccountTokens = tokenStore.getMcAccountTokens();
+  const tokenUpdatedSerialNumber =
+    tokenStoreRealTime.get_tokenUpdatedSerialNumber();
   const sourceDataFetchDone = useMemo(() => {
     return !!(
       globalWhitelistData.done &&
@@ -123,6 +130,7 @@ const useAllWhiteTokensWithBalances = () => {
       accountId,
       walletLoading,
       JSON.stringify(accountWhitelistData),
+      tokenUpdatedSerialNumber,
     ]
   );
   function clearCacheUITokens() {
@@ -209,7 +217,9 @@ const useAllWhiteTokensWithBalances = () => {
     });
   }
   async function getUITokensFromServer() {
-    clearCacheUITokens();
+    if (tokenUpdatedSerialNumber == 0) {
+      clearCacheUITokens();
+    }
     const { defaultTokens, tknTokens, tknxTokens, mcTokens, done } =
       (await getTokensFromServer()) as {
         defaultTokens: TokenMetadata[];
@@ -221,9 +231,13 @@ const useAllWhiteTokensWithBalances = () => {
     if (done) {
       tokenStore.setBalancesOwner(accountId);
       if (accountId) {
-        getTokensBalance(defaultTokens).then((res) => {
-          setDefaultAccountTokensHook({ data: res, done: true });
-        });
+        getTokensBalance(defaultTokens)
+          .then((res) => {
+            setDefaultAccountTokensHook({ data: res, done: true });
+          })
+          .finally(() => {
+            tokenStoreRealTime.set_update_loading(false);
+          });
         getTokensBalance(tknTokens).then((res) => {
           setTknAccountTokensHook({ data: res, done: true });
         });

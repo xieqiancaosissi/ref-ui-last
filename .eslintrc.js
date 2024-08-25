@@ -26,5 +26,6 @@ module.exports = {
     "@typescript-eslint/no-non-null-assertion": "off",
     "@typescript-eslint/no-inferrable-types": "off",
     "react/no-unescaped-entities": "off",
+    "@typescript-eslint/no-duplicate-enum-values": "off"
   },
 };

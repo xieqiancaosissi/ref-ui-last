@@ -17,7 +17,7 @@ const Banner = () => {
         src="https://img.ref.finance/images/memeBannerPc2.png"
       />
       <div
-        className="absolute right-60 bottom-60 z-10 bg-greenGradient py-3.5 px-5 flex items-center cursor-pointer"
+        className="absolute right-60 bottom-60 z-10 bg-greenGradient py-3.5 px-5 flex items-center cursor-pointer text-black"
         style={{ borderRadius: "54px" }}
         onClick={showRule}
       >

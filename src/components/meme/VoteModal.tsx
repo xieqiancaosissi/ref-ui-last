@@ -398,7 +398,7 @@ function VoteModel(props: any) {
             {isSignedIn ? (
               <div
                 onClick={stakeToken}
-                className={`flex flex-grow items-center justify-center  bg-greenGradient mt-6 rounded-xl h-12 text-base paceGrotesk-Bold focus:outline-none ${
+                className={`flex flex-grow items-center justify-center text-black  bg-greenGradient mt-6 rounded-xl h-12 text-base paceGrotesk-Bold focus:outline-none ${
                   disabled || stakeLoading
                     ? "opacity-40 cursor-not-allowed"
                     : "cursor-pointer"
@@ -455,7 +455,7 @@ const Tab = ({
 }) => {
   const baseStyle =
     "rounded-3xl border border-dark-40 pt-2 pl-2 pr-3 pb-2 flex items-center justify-between cursor-pointer outline-none";
-  const selectedStyle = "bg-primaryGreen";
+  const selectedStyle = "bg-primaryGreen text-black";
   const unselectedStyle = "bg-dark-70 text-white";
 
   return (

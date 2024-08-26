@@ -143,7 +143,7 @@ const MarketSeedsBox = ({
                   />
                 )}
                 <div
-                  className="flex items-center justify-center absolute top-16 xsm:top-12 bg-greenGradient 
+                  className="flex items-center justify-center absolute top-16 xsm:top-12 bg-greenGradient text-black
                 px-3.5 xsm:px-1.5 xsm:py-0 xsm:text-sm py-1 rounded-lg xs:rounded-md paceGrotesk-Bold border border-memeBorderBlackColor"
                 >
                   {displaySeedsPercent[seed_id]}
@@ -235,7 +235,7 @@ const MarketSeedsBox = ({
                   className={`flex flex-grow items-center justify-center rounded-xl h-12 paceGrotesk-Bold focus:outline-none xsm:w-full ${
                     stakeButtonDisabled
                       ? "bg-gray-40 text-dark-60 cursor-not-allowed"
-                      : "bg-primaryGreen cursor-pointer"
+                      : "bg-primaryGreen cursor-pointer text-black"
                   }`}
                 >
                   Feed {seed?.token_meta_data?.symbol}

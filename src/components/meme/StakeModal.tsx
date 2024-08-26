@@ -269,7 +269,7 @@ function StakeModal(props: any) {
               <div
                 className={`flex-grow w-1 ${
                   selectedTab === "meme"
-                    ? "bg-primaryGreen"
+                    ? "bg-primaryGreen text-black"
                     : "bg-dark-70 text-white"
                 } mr-4 rounded-3xl py-2 px-3 flex items-center justify-between cursor-pointer`}
                 onClick={() => setSelectedTab("meme")}
@@ -292,7 +292,7 @@ function StakeModal(props: any) {
               <div
                 className={`flex-grow w-1 ${
                   selectedTab === "xref"
-                    ? "bg-primaryGreen"
+                    ? "bg-primaryGreen text-black"
                     : "bg-dark-70 text-white"
                 } rounded-3xl py-2 px-3 flex items-center justify-between cursor-pointer`}
                 onClick={() => setSelectedTab("xref")}
@@ -400,7 +400,7 @@ function StakeModal(props: any) {
                   stakeToken();
                 }
               }}
-              className={`flex flex-grow items-center justify-center bg-primaryGreen text-boxBorder mt-6 rounded-xl h-12 
+              className={`flex flex-grow items-center justify-center text-black bg-primaryGreen text-boxBorder mt-6 rounded-xl h-12 
                 text-base paceGrotesk-Bold focus:outline-none ${
                   disabled || stakeLoading
                     ? "opacity-40 cursor-not-allowed"

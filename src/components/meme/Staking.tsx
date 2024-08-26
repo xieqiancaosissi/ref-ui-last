@@ -11,13 +11,13 @@ import VoteModal from "./VoteModal";
 import DonateModal from "./DonateModal";
 import MemeVoteModal from "./MemeVoteModal";
 import { Intro } from "./Intro";
-import UserRankingModal from "./UserRankingModal";
 import MemeAirdropListForPc from "./memeAirdropListForPc";
 import VoteDetailsModal from "./VoteDetailsModal";
 import StakingChart from "./StakingChart";
 import { useAccountStore } from "@/stores/account";
 import { useScrollToTopOnFirstPage } from "@/services/meme";
 import { useRouter } from "next/router";
+import UserRankingModal from "./UserRankingModal";
 
 const Staking = () => {
   const is_mobile = isMobile();

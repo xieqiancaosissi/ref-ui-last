@@ -200,7 +200,7 @@ const MySeedsBox = ({
                     )}
                     {Object.keys(displaySeedsPercent).includes(seed_id) ? (
                       <div
-                        className="flex items-center justify-center absolute top-16 xsm:top-12 
+                        className="flex items-center justify-center absolute top-16 xsm:top-12 text-black
                      bg-greenGradient text-base px-3.5 xsm:px-1.5 xsm:py-0 xsm:text-sm py-1 rounded-lg xs:rounded-md paceGrotesk-Bold border border-memeBorderBlackColor"
                       >
                         {displaySeedsPercent[seed_id]}
@@ -345,7 +345,7 @@ const MySeedsBox = ({
                       className={`flex flex-grow items-center justify-center text-boxBorder rounded-xl h-12 text-base paceGrotesk-Bold focus:outline-none w-1/2 xsm:w-full ${
                         claimButtonDisabled
                           ? "bg-gray-40 text-dark-60 cursor-not-allowed"
-                          : "bg-primaryGreen cursor-pointer"
+                          : "bg-primaryGreen cursor-pointer text-black"
                       }`}
                     >
                       <ButtonTextWrapper

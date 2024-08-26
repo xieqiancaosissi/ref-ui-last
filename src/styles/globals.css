@@ -458,7 +458,7 @@ options-list::-webkit-scrollbar {
   background: transparent !important;
 }
 .nws-modal-wrapper .nws-modal .modal-left .modal-left-title {
-  background: transparent !important;
+  background: rgba(49, 61, 70) !important;
 }
 /* wallet select modal ui end */
 

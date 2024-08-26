@@ -568,7 +568,7 @@ export default function YourLiquidityBox(props: {
             </div>
             <span
               className={`${
-                earned_fee ? "border-b border-dashed border-primaryText" : ""
+                earned_fee ? "border-b border-dashed border-white" : ""
               }`}
             >
               {earned_fee || "-"}

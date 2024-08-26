@@ -64,7 +64,7 @@ export default function getStablePoolConfig(
           "4513",
           "4514",
         ],
-        DEGEN_POOLS_IDS: [""],
+        DEGEN_POOLS_IDS: [],
         USDTT_USDCC_USDT_USDC_POOL_INDEX: {
           "usdt.tether-token.near": 0,
           "17208628f84f5d6ad33f0da3bbbeb27ffcb398eac501a31bd6ad2011e36133a1": 1,
@@ -254,7 +254,7 @@ export default function getStablePoolConfig(
           "4513",
           "4514",
         ],
-        DEGEN_POOLS_IDS: [""],
+        DEGEN_POOLS_IDS: [],
         USDTT_USDCC_USDT_USDC_POOL_INDEX: {
           "usdt.tether-token.near": 0,
           "17208628f84f5d6ad33f0da3bbbeb27ffcb398eac501a31bd6ad2011e36133a1": 1,

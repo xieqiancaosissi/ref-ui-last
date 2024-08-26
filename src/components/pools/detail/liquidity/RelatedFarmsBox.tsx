@@ -13,6 +13,7 @@ import {
 import { BigNumber } from "bignumber.js";
 import { Fire, FarmBoardInDetailDCLPool } from "./icon";
 import { FormattedMessage, useIntl } from "react-intl";
+import { GradientFarmBorder } from "../../icon";
 
 export function RelatedFarmsBox(props: any) {
   const { poolDetail, tokenPriceList, sole_seed } = props;
@@ -104,19 +105,14 @@ export function RelatedFarmsBox(props: any) {
   if (farm_loading) return null;
   if (!related_seed) return null;
   return (
-    <div className="relative py-5 px-3 z-0 mt-3">
-      <FarmBoardInDetailDCLPool
-        style={{
-          position: "absolute",
-          // transform: isClientMobie() ? 'scale(1,1.05)' : 'scale(1.05)',
-          zIndex: -1,
-          left: 0,
-          top: 0,
-        }}
-      ></FarmBoardInDetailDCLPool>
-      <div className="flex items-center justify-between">
-        <span className="text-base text-white font-bold">Farm APR</span>
-        <div className="flex items-center bg-dark-10 rounded-xl pl-1 pr-2 py-px">
+    <div className="flex flex-col mt-4 relative z-30 rounded lg:left-[28px]">
+      <GradientFarmBorder className="absolute -z-10 left-2"></GradientFarmBorder>
+      <div className="flex items-center px-6 pt-4 justify-between">
+        <div className="text-white whitespace-nowrap text-base font-normal">
+          Farm APR
+        </div>
+
+        <div className="rounded-lg flex items-center px-2 py-0.5">
           {getAllRewardsSymbols().map(([id, icon]: [any, any], index) => {
             return (
               <img
@@ -135,21 +131,24 @@ export function RelatedFarmsBox(props: any) {
               <span className={`relative bottom-1`}>...</span>
             </div>
           ) : null}
-
-          <span className="flex items-center text-sm text-gray-60 ml-1.5">
-            {totalTvlPerWeekDisplay()}/week
+          <span className="text-xs text-white">
+            {totalTvlPerWeekDisplay()}
+            /week
           </span>
         </div>
       </div>
-      <div className="flex items-center justify-between mt-3">
-        <div className="flex items-center">
-          <span className="text-yellow-10 text-xl font-bold mr-1">
-            {getTotalAprForSeed()}
-          </span>
-          <Fire></Fire>
+
+      <div className="flex items-center px-6 pt-1 justify-between">
+        <div className="flex items-center text-lg farmTextGradient">
+          <span className="mr-2">{getTotalAprForSeed()}</span>
+          <Fire />
         </div>
+
         <div
-          className="py-1.5 pb-1.5 px-2 flex rounded-lg items-center justify-center whitespace-nowrap"
+          className=" rounded text-white frcc w-28 h-8 text-sm cursor-pointer hover:opacity-90"
+          style={{
+            background: "linear-gradient(to bottom, #9EFF01, #5F9901)",
+          }}
           onClick={go_farm}
         >
           Farm Now!

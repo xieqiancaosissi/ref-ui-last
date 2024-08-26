@@ -78,6 +78,7 @@ import { OrdersArrow, WaterDropIcon } from "../icon";
 import { DCLIconNew } from "../icon";
 import successToast from "@/components/common/toast/successToast";
 import failToast from "@/components/common/toast/failToast";
+import { beautifyNumber } from "@/components/common/beautifyNumber";
 
 const { REF_UNI_V3_SWAP_CONTRACT_ID } = getConfig();
 export function YourLiquidityV2(props: any) {
@@ -1378,12 +1379,12 @@ function UserLiquidityLineStyleGroupPage() {
                         key={i + "id"}
                       >
                         <span>
-                          {displayNumberToAppropriateDecimals(range[0])}
+                          {beautifyNumber({ num: Big(range[0]).toFixed() })}
                         </span>
                         <span className="mx-1">-</span>
 
                         <span>
-                          {displayNumberToAppropriateDecimals(range[1])}
+                          {beautifyNumber({ num: Big(range[1]).toFixed() })}
                         </span>
                         {intersectionRangeList.length > 1 &&
                           i < intersectionRangeList.length - 1 && (
@@ -1842,12 +1843,12 @@ function UserLiquidityLineStyleGroupPage() {
                           key={i + "id"}
                         >
                           <span>
-                            {displayNumberToAppropriateDecimals(range[0])}
+                            {beautifyNumber({ num: Big(range[0]).toFixed() })}
                           </span>
                           <span className="mx-1">-</span>
 
                           <span>
-                            {displayNumberToAppropriateDecimals(range[1])}
+                            {beautifyNumber({ num: Big(range[1]).toFixed() })}
                           </span>
                           {intersectionRangeList.length > 1 &&
                             i < intersectionRangeList.length - 1 && (

@@ -14,11 +14,16 @@ import {
 import { useRouter } from "next/router";
 import { openUrlLocal, openUrl } from "@/services/commonV3";
 import getConfigV2 from "@/utils/configV2";
+import { useAccountStore } from "@/stores/account";
+import { getAccountId } from "@/utils/wallet";
 
 export default function ShareContainer(props: any) {
   const { poolDetail, setShowAdd, setShowRemove } = props;
 
   const router = useRouter();
+  const accountId = getAccountId();
+  const accountStore = useAccountStore();
+  const isSignedIn = !!accountId || accountStore.isSignedIn;
   const { farmCount: countV1, endedFarmCount: endedFarmCountV1 } = useCanFarmV1(
     poolDetail.id,
     true
@@ -82,7 +87,8 @@ export default function ShareContainer(props: any) {
         </div>
 
         <div className="lg:frcc lg:ml-10 xsm:flex xsm:mt-auto">
-          {countV1 > endedFarmCountV1 || Number(farmStakeV1) > 0 ? (
+          {(countV1 > endedFarmCountV1 || Number(farmStakeV1) > 0) &&
+          isSignedIn ? (
             <ShareInFarmV2
               farmStake={farmStakeV1}
               userTotalShare={userTotalShare}
@@ -91,7 +97,8 @@ export default function ShareContainer(props: any) {
               useMx={true}
             />
           ) : null}
-          {countV2 > endedFarmCountV2 || Number(farmStakeV2) > 0 ? (
+          {(countV2 > endedFarmCountV2 || Number(farmStakeV2) > 0) &&
+          isSignedIn ? (
             <ShareInFarmV2
               farmStake={farmStakeV2}
               userTotalShare={userTotalShare}
@@ -103,6 +110,7 @@ export default function ShareContainer(props: any) {
             />
           ) : null}
           {shadowBurrowShare?.stakeAmount &&
+            isSignedIn &&
             getConfigV2().SUPPORT_SHADOW_POOL_IDS.includes(
               poolDetail.id?.toString()
             ) && (

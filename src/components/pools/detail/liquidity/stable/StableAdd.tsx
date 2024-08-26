@@ -365,10 +365,10 @@ export default function StableAdd(props: any) {
                           <span>
                             Balance:{" "}
                             <span
-                              className={`underline hover:cursor-pointer hover:text-white  ${
+                              className={`underline hover:cursor-pointer  ${
                                 inputValList[ind] == balancesList[ind]?.balance
-                                  ? ""
-                                  : "text-gray-50"
+                                  ? "text-green-10"
+                                  : "text-gray-50 hover:text-white"
                               }`}
                               onClick={() => {
                                 changeVal(

@@ -130,10 +130,11 @@ export function TVlCharts(props: any) {
       },
       tooltip: {
         trigger: "axis",
+        alwaysShowContent: true,
         backgroundColor: "transparent",
         borderWidth: 0,
         borderColor: "transparent",
-        position: isMobile ? [0, -10] : [600, -70],
+        position: isMobile ? [0, -10] : [630, -72],
         extraCssText: "z-index: 2;",
         formatter(params: any) {
           let result = `<div style="display:flex;justify-content: space-between;font-size:14px;"> ${params[0].axisValue} </div>`; //
@@ -220,6 +221,14 @@ export function TVlCharts(props: any) {
 
     chartInstance.setOption(options);
 
+    chartInstance.dispatchAction({
+      type: "showTip",
+
+      seriesIndex: 0,
+
+      dataIndex: xTvl.length - 1,
+    });
+
     const handleResize = () => {
       if (chartInstance) {
         chartInstance.resize();
@@ -293,11 +302,12 @@ export function VolumeCharts(props: any) {
       },
       tooltip: {
         trigger: "axis",
+        alwaysShowContent: true,
         backgroundColor: "transparent",
         borderWidth: 0,
         extraCssText: "z-index: 2;",
         borderColor: "transparent",
-        position: isMobile ? [0, -10] : [600, -70],
+        position: isMobile ? [0, -10] : [630, -72],
         formatter(params: any) {
           let result = `<div style="display:flex;justify-content: space-between;font-size:14px;"> ${params[0].axisValue} </div>`; //
           for (let i = 0, l = params.length; i < l; i++) {
@@ -357,6 +367,14 @@ export function VolumeCharts(props: any) {
     };
 
     chartInstance.setOption(options);
+
+    chartInstance.dispatchAction({
+      type: "showTip",
+
+      seriesIndex: 0,
+
+      dataIndex: xMonth.length - 1,
+    });
 
     const handleResize = () => {
       if (chartInstance) {

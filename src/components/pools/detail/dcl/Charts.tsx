@@ -317,6 +317,7 @@ export function TVlCharts(props: any) {
       },
       tooltip: {
         trigger: "axis",
+        alwaysShowContent: true,
         backgroundColor: "transparent",
         borderWidth: 0,
         borderColor: "transparent",
@@ -415,6 +416,16 @@ export function TVlCharts(props: any) {
       dataIndex: xTvl.length - 1,
     });
 
+    // chartInstance.on("mouseout", function (params) {
+    //   setTimeout(() => {
+    //     chartInstance.dispatchAction({
+    //       type: "showTip",
+    //       seriesIndex: 0,
+    //       dataIndex: xTvl.length - 1,
+    //     });
+    //   }, 100); // 延迟100毫秒
+    // });
+
     const handleResize = () => {
       if (chartInstance) {
         chartInstance.resize();
@@ -431,6 +442,7 @@ export function TVlCharts(props: any) {
       }
     };
   }, []);
+
   return (
     <div
       ref={chartRef}
@@ -488,6 +500,7 @@ export function VolumeCharts(props: any) {
       },
       tooltip: {
         trigger: "axis",
+        alwaysShowContent: true,
         backgroundColor: "transparent",
         borderWidth: 0,
         borderColor: "transparent",

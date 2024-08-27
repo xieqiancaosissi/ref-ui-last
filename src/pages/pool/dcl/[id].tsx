@@ -338,7 +338,10 @@ export default function DCLPoolDetail() {
             />
 
             {/* pc fee */}
-            <TokenFeeAndCureentPrice poolDetail={poolDetail} />
+            <TokenFeeAndCureentPrice
+              poolDetail={poolDetail}
+              poolDetailV3={poolDetailV3}
+            />
           </>
         )}
       </div>
@@ -379,7 +382,10 @@ export default function DCLPoolDetail() {
 
       {/* mobile */}
       {updatedMapList && updatedMapList[0]?.token_account_ids && isMobile && (
-        <TokenFeeAndCureentPrice poolDetail={poolDetail} />
+        <TokenFeeAndCureentPrice
+          poolDetail={poolDetail}
+          poolDetailV3={poolDetailV3}
+        />
       )}
 
       {/* main */}

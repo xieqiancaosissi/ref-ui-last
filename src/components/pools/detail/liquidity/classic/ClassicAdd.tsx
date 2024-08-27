@@ -230,19 +230,31 @@ export default function ClassicAdd(props: any) {
   const [canSubmit, setCanSubmit] = useState(true);
   const [inputAmountIsEmpty, setInputAmountIsEmpty] = useState(true);
   const [notEnoughList, setNotEnoughList] = useState([]);
+  const [showNearGas, setShowNearGas] = useState(false);
   useEffect(() => {
     let flag: boolean = true;
     const emptyFlag = inputValList.every((amount: any) => Number(amount) > 0);
     const k: any = [];
+    let nearGas: boolean = false;
     inputValList.map((item: any, index: number) => {
-      if (+item > balancesList[index]?.balance) {
+      if (
+        emptyFlag &&
+        updatedMapList[0].token_account_ids[index].id == "wrap.near" &&
+        +item > balancesList[index]?.balance - 0.5
+      ) {
         flag = false;
-        k.push(balancesList[index]?.symbol);
+        nearGas = true;
+      } else {
+        if (+item > balancesList[index]?.balance) {
+          flag = false;
+          k.push(balancesList[index]?.symbol);
+        }
       }
     });
     setInputAmountIsEmpty(emptyFlag);
     setCanSubmit(flag);
     setNotEnoughList(k);
+    setShowNearGas(nearGas);
   }, [inputValList]);
 
   useEffect(() => {
@@ -345,13 +357,20 @@ export default function ClassicAdd(props: any) {
                           className={`underline hover:cursor-pointer  ${
                             inputValList[ind] == balancesList[ind]?.balance
                               ? "text-green-10"
-                              : "text-gray-50"
+                              : "text-gray-50 hover:text-white"
                           }`}
                           onClick={() => {
                             changeVal(
                               {
                                 target: {
-                                  value: balancesList[ind]?.balance,
+                                  value:
+                                    ite.tokenId == "wrap.near"
+                                      ? balancesList[ind]?.balance > 0.5
+                                        ? (
+                                            balancesList[ind]?.balance - 0.5
+                                          ).toString()
+                                        : ""
+                                      : balancesList[ind]?.balance,
                                 },
                               },
                               ind
@@ -404,7 +423,19 @@ export default function ClassicAdd(props: any) {
             </div>
           </div>
           {/* tips  */}
-          {!canSubmit && (
+          {!canSubmit && showNearGas && (
+            <div
+              className="text-yellow-10 text-sm border h-11 w-full rounded flex px-2 py-1 items-center mt-2"
+              style={{
+                borderColor: "rgba(230, 180, 1, 0.3)",
+                backgroundColor: "rgba(230, 180, 1, 0.14)",
+              }}
+            >
+              <span>{`Must have 0.5N or more left in wallet for gas fee.`}</span>
+            </div>
+          )}
+
+          {!canSubmit && notEnoughList.length > 0 && (
             <div
               className="text-yellow-10 text-sm border h-11 w-full rounded flex px-2 py-1 items-center mt-2"
               style={{

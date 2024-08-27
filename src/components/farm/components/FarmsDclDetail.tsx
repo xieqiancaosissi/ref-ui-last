@@ -894,12 +894,22 @@ export default function FarmsDclDetail(props: {
     const unStake_info: IStakeInfo = get_unStake_info();
     batch_unStake_boost_nft(unStake_info);
   }
+  function formatCheckedList(data) {
+    const formattedData = {};
+    for (const [key, value] of Object.entries(data)) {
+      formattedData[key] = { value: value.toString() };
+    }
+    return formattedData;
+  }
   function claimReward() {
     if (claimLoading) return;
+    const formattedCheckedList = formatCheckedList(user_unclaimed_map[seed_id]);
     setClaimLoading(true);
-    claimRewardBySeed_boost(detailData.seed_id).catch((error) => {
-      setClaimLoading(false);
-    });
+    claimRewardBySeed_boost(detailData.seed_id, formattedCheckedList).catch(
+      (error) => {
+        setClaimLoading(false);
+      }
+    );
   }
   function goPool() {
     const poolId = pool?.pool_id;

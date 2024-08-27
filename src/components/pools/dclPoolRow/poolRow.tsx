@@ -14,6 +14,10 @@ import HoverTooltip from "@/components/common/HoverToolTip";
 import { useWatchList } from "@/hooks/useWatchlist";
 import { StartWatchList } from "@/components/pools/icon";
 import { get_pool_name } from "@/services/commonV3";
+import {
+  sort_tokens_by_base,
+  sort_tokens_by_base_onlysymbol,
+} from "@/services/commonV3";
 
 export default function PoolRow({
   list,
@@ -40,6 +44,7 @@ export default function PoolRow({
   return (
     <div className="mb-2 min-h-90 overflow-auto hover:cursor-pointer xsm:w-full lg:w-[1104px]">
       {updatedMapList.map((item, index) => {
+        const tokens = sort_tokens_by_base(item.token_account_ids);
         return (
           <div
             key={item.id + "_" + index}
@@ -51,7 +56,7 @@ export default function PoolRow({
             {/* tokens */}
             <div className={`${styles.pcdiv1} flex items-center`}>
               <div className={styles.tokenImgContainer}>
-                {item?.token_account_ids?.map((ite: any, ind: number) => {
+                {tokens.map((ite: any, ind: number) => {
                   // if tokenid in tokenIcons
                   return Reflect.has(tokenIcons, ite.tokenId) ? (
                     // if token is near use new icon
@@ -69,7 +74,14 @@ export default function PoolRow({
                 })}
               </div>
               <span className={styles.symbol}>
-                {item.token_symbols.join("-")}
+                {tokens.map((ite: any, ind: number) => {
+                  // if tokenid in tokenIcons
+                  return ind + 1 < tokens.length
+                    ? ite.symbol + "-"
+                    : ite.symbol;
+                })}
+
+                {/* {item.token_symbols.join("-")} */}
               </span>
               {/* is collect */}
               {renderStarList.includes(item.id.toString()) && (

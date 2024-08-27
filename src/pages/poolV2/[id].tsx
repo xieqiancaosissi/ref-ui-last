@@ -48,6 +48,10 @@ import YourLiqAndClaimMobile from "@/components/pools/detail/liquidity/dclYourLi
 import { openUrlLocal } from "@/services/commonV3";
 import { PoolRouterGuard } from "@/utils/poolTypeGuard";
 import { get_pool_id } from "@/services/commonV3";
+import {
+  sort_tokens_by_base,
+  sort_tokens_by_base_onlysymbol,
+} from "@/services/commonV3";
 
 const YourLiquidityBox = dynamic(
   () =>
@@ -326,7 +330,7 @@ export default function DCLPoolDetail() {
             <TokenDetail {...poolDetail} updatedMapList={updatedMapList} />
             {/*  */}
             <span className=" text-2xl text-white font-bold ml-1 mr-2">
-              {poolDetail?.token_symbols
+              {sort_tokens_by_base_onlysymbol(poolDetail?.token_symbols)
                 ?.map((item: any) => (item == "wNEAR" ? (item = "NEAR") : item))
                 .join("-")}
             </span>
@@ -361,7 +365,7 @@ export default function DCLPoolDetail() {
               <TokenDetail {...poolDetail} updatedMapList={updatedMapList} />
               {/*  */}
               <span className=" text-2xl text-white font-bold ml-1 mr-2">
-                {poolDetail?.token_symbols
+                {sort_tokens_by_base_onlysymbol(poolDetail?.token_symbols)
                   ?.map((item: any) =>
                     item == "wNEAR" ? (item = "NEAR") : item
                   )

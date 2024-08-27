@@ -18,6 +18,10 @@ import { toPrecision } from "@/utils/numbers";
 import { get_pool } from "@/services/swapV3";
 import { ftGetTokensMetadata } from "@/services/token";
 import { reverse_price } from "@/services/commonV3";
+import {
+  sort_tokens_by_base,
+  sort_tokens_by_base_onlysymbol,
+} from "@/services/commonV3";
 
 export default function TvlAndVolumeCharts(props: any) {
   const [rateDirection, setRateDirection] = useState(true);
@@ -27,7 +31,9 @@ export default function TvlAndVolumeCharts(props: any) {
   const { monthTVLById, xTvl, yTvl } = useV3MonthTVL(poolDetail.id);
   const { monthVolumeById, xMonth, yMonth } = useV3MonthVolume(poolDetail.id);
   const refDom: any = useRef(null);
-  const [currentSort, setCurrenSort] = useState([0, 1]);
+  const [currentSort, setCurrenSort] = useState(
+    !rateDirection ? [1, 0] : [0, 1]
+  );
   const [isMobile, setIsMobile] = useState(false);
   const [poolDetailFromRPC, setPoolDetailRPC] = useState<any>({});
   const exchange = () => {
@@ -67,6 +73,7 @@ export default function TvlAndVolumeCharts(props: any) {
 
   useEffect(() => {
     if (poolDetail?.token_symbols) {
+      console.log(poolDetail?.token_symbols);
       if (TOKEN_LIST_FOR_RATE.indexOf(poolDetail?.token_symbols[0]) > -1) {
         setRateDirection(false);
       } else {
@@ -113,8 +120,7 @@ export default function TvlAndVolumeCharts(props: any) {
       Math.pow(10, token_y_metadata.decimals);
 
     const price = getPriceByPoint(current_point, rate);
-
-    return rateDirection
+    return !rateDirection
       ? beautifyNumber({ num: reverse_price(price) })
       : beautifyNumber({ num: price });
   }, [poolDetailFromRPC, rateDirection]);
@@ -132,6 +138,21 @@ export default function TvlAndVolumeCharts(props: any) {
       setPoolDetailRPC(detail);
     }
   }
+
+  const tokens = useMemo(() => {
+    if (poolDetail) {
+      return sort_tokens_by_base_onlysymbol(poolDetail.token_symbols);
+    }
+  }, [poolDetail]);
+
+  const tokensIds = useMemo(() => {
+    if (poolDetailFromRPC?.token_y_metadata) {
+      return sort_tokens_by_base([
+        poolDetailFromRPC.token_x_metadata,
+        poolDetailFromRPC.token_y_metadata,
+      ]);
+    }
+  }, [poolDetailFromRPC]);
 
   return (
     <div>
@@ -177,9 +198,9 @@ export default function TvlAndVolumeCharts(props: any) {
               {/* dom render in html formatter above: 1 Near($5.2) = 7Ref */}
               <span className="mr-1">1</span>
               {/* token left name */}
-              {poolDetail?.token_symbols[currentSort[0]] == "wNEAR"
+              {tokens[currentSort[0]] == "wNEAR"
                 ? "NEAR"
-                : poolDetail?.token_symbols[currentSort[0]]}
+                : tokens[currentSort[0]]}
               {/* usd price */}
               {/* {tokenPriceList && poolDetail && (
               <span className="text-gray-50 font-normal">
@@ -195,9 +216,9 @@ export default function TvlAndVolumeCharts(props: any) {
               {/* token right amount */}
               <span className="mr-1">{rateDOM}</span>
               {/* token right name */}
-              {poolDetail?.token_symbols[currentSort[1]] == "wNEAR"
+              {tokens[currentSort[1]] == "wNEAR"
                 ? "NEAR"
-                : poolDetail?.token_symbols[currentSort[1]]}
+                : tokens[currentSort[1]]}
             </p>
           </div>
         )}
@@ -210,16 +231,15 @@ export default function TvlAndVolumeCharts(props: any) {
             {/* dom render in html formatter above: 1 Near($5.2) = 7Ref */}
             <span className="mr-1">1</span>
             {/* token left name */}
-            {poolDetail?.token_symbols[currentSort[0]] == "wNEAR"
+            {tokens[currentSort[0]] == "wNEAR"
               ? "NEAR"
-              : poolDetail?.token_symbols[currentSort[0]]}
+              : tokens[currentSort[0]]}
             {/* usd price */}
-            {tokenPriceList && poolDetail && (
+            {tokenPriceList && poolDetail && tokensIds?.length > 0 && (
               <span className="text-gray-50 font-normal">
                 (
                 {toInternationalCurrencySystem_usd(
-                  tokenPriceList[poolDetail.token_account_ids[currentSort[0]]]
-                    .price
+                  tokenPriceList[tokensIds[currentSort[0]].id].price
                 )}
                 )
               </span>
@@ -230,9 +250,9 @@ export default function TvlAndVolumeCharts(props: any) {
               <span className="mr-1">{rateDOM}</span>
             )}
             {/* token right name */}
-            {poolDetail?.token_symbols[currentSort[1]] == "wNEAR"
+            {tokens[currentSort[1]] == "wNEAR"
               ? "NEAR"
-              : poolDetail?.token_symbols[currentSort[1]]}
+              : tokens[currentSort[1]]}
             <ExchangeIcon
               className="ml-1"
               onClick={() => {

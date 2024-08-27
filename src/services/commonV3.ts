@@ -434,6 +434,21 @@ export function sort_tokens_by_base(tokens: TokenMetadata[]) {
   return tokens_temp;
 }
 
+export function sort_tokens_by_base_onlysymbol(tokens: TokenMetadata[]) {
+  const tokens_temp = JSON.parse(JSON.stringify(tokens || []));
+  tokens_temp.sort((item2: any, item1: any) => {
+    if (TOKEN_LIST_FOR_RATE_EXTRA.indexOf(item2) > -1) return 1;
+    if (TOKEN_LIST_FOR_RATE_EXTRA.indexOf(item1) > -1) return -1;
+    return 0;
+  });
+  tokens_temp.sort((item2: any, item1: any) => {
+    if (TOKEN_LIST_FOR_RATE.indexOf(item2) > -1) return 1;
+    if (TOKEN_LIST_FOR_RATE.indexOf(item1) > -1) return -1;
+    return 0;
+  });
+  return tokens_temp;
+}
+
 /**
  * caculate price by point
  * @param pointDelta

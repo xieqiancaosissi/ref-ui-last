@@ -116,9 +116,11 @@ export const useYourliquidity = (poolId: number) => {
 export const useShadowRecord = (poolId: any) => {
   const [shadowRecords, setShadowRecords] = useState<any>({});
   useEffect(() => {
-    get_shadow_records().then((res) => {
-      setShadowRecords(res);
-    });
+    if (getAccountId()) {
+      get_shadow_records().then((res) => {
+        setShadowRecords(res);
+      });
+    }
   }, [getAccountId()]);
   return { shadowRecords, poolShadowRecord: shadowRecords[poolId] };
 };

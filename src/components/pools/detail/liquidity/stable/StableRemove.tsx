@@ -46,6 +46,7 @@ import { get_shadow_records } from "@/services/farm";
 import { list_farmer_seeds } from "@/services/farm";
 import { getPoolAvailableShare } from "@/hooks/useStableShares";
 import { openUrlLocal } from "@/services/commonV3";
+import { getAccountId } from "@/utils/wallet";
 
 export function myShares({
   totalShares,
@@ -344,7 +345,7 @@ export default function StableRemove(props: any) {
   const [newsharesDecimals, setnewsharesDecimals] = useState<any>("");
 
   useEffect(() => {
-    if (addSuccess > 0) {
+    if (addSuccess > 0 && getAccountId()) {
       // const { shadowRecords } = useShadowRecord(pool?.id);
       get_shadow_records().then((res) => {
         setnewShadowRecords(res);
@@ -356,7 +357,7 @@ export default function StableRemove(props: any) {
         setnewFarmerSeeds(res);
       });
     }
-  }, [addSuccess, shares]);
+  }, [addSuccess, shares, getAccountId()]);
 
   useEffect(() => {
     // todo: pool mutated key and value update here

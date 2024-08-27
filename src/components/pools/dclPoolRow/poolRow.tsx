@@ -13,6 +13,7 @@ import tokenIcons from "@/utils/tokenIconConfig";
 import HoverTooltip from "@/components/common/HoverToolTip";
 import { useWatchList } from "@/hooks/useWatchlist";
 import { StartWatchList } from "@/components/pools/icon";
+import { get_pool_name } from "@/services/commonV3";
 
 export default function PoolRow({
   list,
@@ -26,7 +27,8 @@ export default function PoolRow({
   const { isDealed, updatedMapList } = useTokenMetadata(list);
   const router = useRouter();
   const toDetail = (item: any) => {
-    router.push(`/poolV2/${item.id}`);
+    const pathname = get_pool_name(item.id);
+    router.push(`/poolV2/${pathname}`);
   };
   const { currentwatchListId } = useWatchList();
   const [renderStarList, setRenderStarList] = useState<any>([]);

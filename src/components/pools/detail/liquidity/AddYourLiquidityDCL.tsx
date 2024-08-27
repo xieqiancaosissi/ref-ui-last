@@ -1826,12 +1826,14 @@ export default function AddYourLiquidityPageV3() {
   };
 
   const toDetail = () => {
+    // const pathname = get_pool_name(poolD);
     if (tokenX?.id && tokenY?.id)
-      router.push(
-        `/poolV2/${tokenX?.id}|${tokenY?.id}|${
-          currentSelectedPool?.fee || 2000
-        }`
-      );
+      // router.push(
+      //   `/poolV2/${tokenX?.id}|${tokenY?.id}|${
+      //     currentSelectedPool?.fee || 2000
+      //   }`
+      // );
+      router.push(`/poolV2/${router.query.id}`);
   };
 
   return (

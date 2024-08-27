@@ -562,7 +562,8 @@ export const RemovePoolV3 = (props: any) => {
         if (!res) return;
         if (res.status == "success") {
           if (fromYours) {
-            openUrlLocal(`/poolV2/${pool_id}`);
+            const pathname = get_pool_name(pool_id);
+            openUrlLocal(`/poolV2/${pathname}`);
           } else {
             successToast();
             setAddSuccess((pre: any) => pre + 1);

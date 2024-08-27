@@ -34,6 +34,7 @@ import { dclHeader } from "@/components/pools/dclPool/config";
 import { getAllPoolData } from "@/services/pool";
 import { addThousandSeparator } from "@/utils/uiNumber";
 import Big from "big.js";
+import { get_pool_name } from "@/services/commonV3";
 
 export default function Farms() {
   const router = useRouter();
@@ -197,7 +198,8 @@ export default function Farms() {
           router.push(`/pools/${k.id}`);
         }
         if (k.pool_kind == "DCL") {
-          router.push(`/poolV2/${k.id}`);
+          const params_str = get_pool_name(k.id.toString());
+          router.push(`/poolV2/${params_str}`);
         }
 
         if (

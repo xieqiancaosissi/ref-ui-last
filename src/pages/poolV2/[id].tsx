@@ -47,6 +47,8 @@ import NoLiquidityMobile from "@/components/pools/detail/liquidity/NoLiquidityMo
 import YourLiqAndClaimMobile from "@/components/pools/detail/liquidity/dclYourLiquidity/YourLiqAndClaimMobile";
 import { openUrlLocal } from "@/services/commonV3";
 import { PoolRouterGuard } from "@/utils/poolTypeGuard";
+import { get_pool_id } from "@/services/commonV3";
+
 const YourLiquidityBox = dynamic(
   () =>
     import(
@@ -86,22 +88,30 @@ export default function DCLPoolDetail() {
   ];
   const [transactionActive, setTransactionActive] = useState("swap");
   const appStore = useAppStore();
+
+  const [pID, setPID] = useState<string>("");
+  useEffect(() => {
+    if (poolId) {
+      setPID(get_pool_id(poolId.toString()));
+    }
+  }, [poolId]);
+
   useEffect(() => {
     console.log(addSuccess, "addSuccess");
   }, [addSuccess]);
   useEffect(() => {
-    if (poolId || addSuccess > 0) {
-      getPoolsDetailById({ pool_id: poolId as any }).then((res) => {
+    if (pID || addSuccess > 0) {
+      getPoolsDetailById({ pool_id: pID as any }).then((res) => {
         PoolRouterGuard(res, "DCL") &&
-          openUrlLocal(`${PoolRouterGuard(res, "DCL")}/${poolId}`);
+          openUrlLocal(`${PoolRouterGuard(res, "DCL")}/${pID}`);
         setPoolDetail(res);
       });
 
       if (currentwatchListId.length > 0) {
-        setIsCollect(currentwatchListId.includes(poolId));
+        setIsCollect(currentwatchListId.includes(pID));
       }
     }
-  }, [poolId, currentwatchListId, addSuccess]);
+  }, [pID, currentwatchListId, addSuccess]);
 
   useEffect(() => {
     getAllTokenPrices().then((res) => {
@@ -119,9 +129,9 @@ export default function DCLPoolDetail() {
   const collectPool = () => {
     if (!accountId) showWalletSelectorModal(appStore.setShowRiskModal);
     if (isCollect) {
-      removePoolFromWatchList({ pool_id: poolId.toString() });
+      removePoolFromWatchList({ pool_id: pID.toString() });
     } else {
-      addPoolToWatchList({ pool_id: poolId.toString() });
+      addPoolToWatchList({ pool_id: pID.toString() });
     }
     setIsCollect((previos) => !previos);
   };
@@ -195,7 +205,7 @@ export default function DCLPoolDetail() {
     const all_seeds = await get_all_seeds();
     const matched_seeds = get_matched_seeds_for_dcl_pool({
       seeds: all_seeds,
-      pool_id: poolId.toString(),
+      pool_id: pID.toString(),
     });
     const target = matched_seeds[0];
     if (target) {
@@ -213,7 +223,7 @@ export default function DCLPoolDetail() {
       (liquidity: UserLiquidityInfo) => {
         const { lpt_id }: any = liquidity;
         const pool_id = lpt_id.split("#")[0];
-        if (pool_id == router.query.id) return true;
+        if (pool_id == pID) return true;
       }
     );
     const liquiditiesPromise = user_liquiditys_in_pool.map(
@@ -232,7 +242,7 @@ export default function DCLPoolDetail() {
           if (contractId == REF_UNI_V3_SWAP_CONTRACT_ID) {
             const [fixRange, pool_id, left_point, right_point] =
               mft_id.split("&");
-            return pool_id == router.query.id;
+            return pool_id == pID;
           }
         }
       );
@@ -266,7 +276,7 @@ export default function DCLPoolDetail() {
   useEffect(() => {
     if (!isSignedIn) return;
     get_user_list_liquidities();
-  }, [isSignedIn, addSuccess]);
+  }, [isSignedIn, pID, addSuccess]);
 
   const [isMobile, setIsMobile] = useState(false);
 
@@ -488,7 +498,7 @@ export default function DCLPoolDetail() {
               !isMobile && (
                 <RecentTransaction
                   activeTab={transactionActive}
-                  poolId={poolId}
+                  poolId={pID}
                   updatedMapList={updatedMapList}
                   tokens={tokens.map((t: any) => t.meta)}
                 />
@@ -500,7 +510,7 @@ export default function DCLPoolDetail() {
               isMobile && (
                 <RecentTransactionMobile
                   activeTab={transactionActive}
-                  poolId={poolId}
+                  poolId={pID}
                   updatedMapList={updatedMapList}
                   tokens={tokens.map((t: any) => t.meta)}
                 />
@@ -542,11 +552,11 @@ export default function DCLPoolDetail() {
         </div>
       </div>
 
-      {(user_liquidities.length == 0 || !poolId || !accountId) && isMobile && (
+      {(user_liquidities.length == 0 || !pID || !accountId) && isMobile && (
         <NoLiquidityMobile add={() => setShowYourLiq(true)} isLoading={false} />
       )}
 
-      {user_liquidities.length >= 1 && accountId && poolId && isMobile && (
+      {user_liquidities.length >= 1 && accountId && pID && isMobile && (
         <div
           className="h-24 frcc p-4 fixed bottom-8 z-10"
           style={{

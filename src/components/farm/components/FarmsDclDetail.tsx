@@ -62,6 +62,7 @@ import { isStablePool } from "@/services/swap/swapUtils";
 import { showWalletSelectorModal } from "@/utils/wallet";
 import { useAppStore } from "@/stores/app";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import { get_pool_name } from "@/services/commonV3";
 
 const { REF_VE_CONTRACT_ID, REF_UNI_V3_SWAP_CONTRACT_ID } = getConfig();
 
@@ -902,8 +903,9 @@ export default function FarmsDclDetail(props: {
   }
   function goPool() {
     const poolId = pool?.pool_id;
+    const pathname = get_pool_name(poolId);
     if (poolId) {
-      router.push(`/poolV2/${poolId}`);
+      router.push(`/poolV2/${pathname}`);
     }
   }
   function getAprTip() {

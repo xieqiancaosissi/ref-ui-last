@@ -1232,8 +1232,8 @@ function UserLiquidityLineStyleGroupPage() {
   const router = useRouter();
   const [switch_off, set_switch_off] = useState<boolean>(true);
   function goPoolDetailPage() {
-    // const params_str = get_pool_name(poolDetail.pool_id);
-    router.push(`/poolV2/${poolDetail.pool_id}`);
+    const params_str = get_pool_name(poolDetail.pool_id);
+    router.push(`/poolV2/${params_str}`);
     onRequestClose();
     setIsOpen(false);
   }

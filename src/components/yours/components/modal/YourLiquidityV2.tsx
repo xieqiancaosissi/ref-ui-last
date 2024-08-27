@@ -1139,7 +1139,8 @@ function UserLiquidityLineStyleGroup({
         if (res.status == "success") {
           // successToast();
           // setAddSuccess((pre: number) => pre + 1);
-          openUrlLocal(`/poolV2/${poolDetail.pool_id}`);
+          const params_str = get_pool_name(poolDetail.pool_id.toString());
+          openUrlLocal(`/poolV2/${params_str}`);
         } else if (res.status == "error") {
           failToast(res.errorResult?.message);
         }
@@ -1307,7 +1308,8 @@ function UserLiquidityLineStyleGroupPage() {
         if (res.status == "success") {
           // successToast();
           // setAddSuccess((pre: number) => pre + 1);
-          openUrlLocal(`/poolV2/${poolDetail.pool_id}`);
+          const params_str = get_pool_name(poolDetail.pool_id.toString());
+          openUrlLocal(`/poolV2/${params_str}`);
         } else if (res.status == "error") {
           failToast(res.errorResult?.message);
         }
@@ -1335,7 +1337,8 @@ function UserLiquidityLineStyleGroupPage() {
           <div
             className={`min-h-18 w-full grid grid-cols-12`}
             onClick={() => {
-              openUrlLocal(`/poolV2/${poolDetail.pool_id}`);
+              const params_str = get_pool_name(poolDetail.pool_id.toString());
+              openUrlLocal(`/poolV2/${params_str}`);
             }}
           >
             {/* Pool */}
@@ -1647,7 +1650,8 @@ function UserLiquidityLineStyleGroupPage() {
           <div
             className={`min-h-44 w-full`}
             onClick={() => {
-              openUrlLocal(`/poolV2/${poolDetail.pool_id}`);
+              const params_str = get_pool_name(poolDetail.pool_id.toString());
+              openUrlLocal(`/poolV2/${params_str}`);
             }}
           >
             {/* token icon and symbol */}

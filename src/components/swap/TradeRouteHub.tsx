@@ -4,6 +4,7 @@ import { SwapContractType } from "@/interfaces/swap";
 import { RefMarketRouteIcon, PoolLinkIcon } from "./icons";
 import { isStablePool } from "@/services/swap/swapUtils";
 import Token from "./Token";
+import { get_pool_name } from "@/services/commonV3";
 const TradeRouteHub = ({
   token,
   contract,
@@ -23,7 +24,8 @@ const TradeRouteHub = ({
         router.push(`/pools/${poolId}`);
       }
     } else if (contract == "Ref_DCL") {
-      router.push(`/poolV2/${poolId}`);
+      const params_str = get_pool_name(poolId.toString());
+      router.push(`/poolV2/${params_str}`);
     }
   }
   return (

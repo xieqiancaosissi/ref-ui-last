@@ -357,10 +357,10 @@ function AuthorizedApps({
                 batchClear();
               }
             }}
-            className={`frcc bg-greenGradient mt-4 rounded h-12 text-base paceGrotesk-Bold focus:outline-none ${
+            className={`frcc bg-greenGradient mt-4 rounded h-12 text-base text-black paceGrotesk-Bold focus:outline-none ${
               disabled || clear_loading
                 ? "opacity-40 cursor-not-allowed"
-                : "cursor-pointer"
+                : "cursor-pointer "
             }`}
           >
             <ButtonTextWrapper
@@ -537,10 +537,10 @@ function OrderlyKeys({
               batchClear();
             }
           }}
-          className={`frcc text-white mt-4 rounded h-12 text-base paceGrotesk-Bold focus:outline-none ${
+          className={`frcc mt-4 rounded h-12 text-base paceGrotesk-Bold focus:outline-none ${
             disabled || clear_loading
-              ? "opacity-40 cursor-not-allowed bg-gray-40"
-              : "cursor-pointer bg-greenGradient"
+              ? "opacity-40 cursor-not-allowed bg-gray-40 text-white"
+              : "cursor-pointer bg-greenGradient text-black"
           }`}
         >
           <ButtonTextWrapper

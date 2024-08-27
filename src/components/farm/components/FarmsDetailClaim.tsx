@@ -299,10 +299,11 @@ export default function UserStakeBlock(props: {
   }, [user_unclaimed_map[seed_id]]);
   async function claimReward() {
     if (claimLoading) return;
-    setClaimLoading(true);
-    claimRewardBySeed_boost(detailData.seed_id).then((res) => {
-      handleDataAfterTranstion(res);
-    });
+    // setClaimLoading(true);
+    console.log(detailData);
+    // claimRewardBySeed_boost(detailData.seed_id).then((res) => {
+    //   handleDataAfterTranstion(res);
+    // });
   }
   function handleDataAfterTranstion(res: IExecutionResult | undefined) {
     if (!res) return;

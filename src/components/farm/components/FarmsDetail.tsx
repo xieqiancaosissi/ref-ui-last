@@ -1255,7 +1255,7 @@ export default function FarmsDetail(props: {
               }`}
             >
               <div
-                className={`flex-1 bg-primaryGreen rounded mr-3.5 h-12 ${
+                className={`flex-1 bg-primaryGreen rounded mr-3.5 h-12 text-black ${
                   isEnded() ? "hidden" : "frcc"
                 }`}
                 onClick={() => {

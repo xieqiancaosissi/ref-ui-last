@@ -307,6 +307,7 @@ export default function DCLPoolDetail() {
   const hideYourLiq = () => {
     setShowYourLiq(false);
   };
+
   return (
     <div className="w-full fccc h-full  px-3">
       {/* return */}
@@ -325,7 +326,7 @@ export default function DCLPoolDetail() {
 
       {/*pc title */}
       <div className="lg:w-270  min-h-10 flex items-center xsm:hidden">
-        {poolDetail && updatedMapList?.length > 0 && (
+        {poolDetail && poolDetailV3 && updatedMapList?.length > 0 && (
           <>
             <TokenDetail {...poolDetail} updatedMapList={updatedMapList} />
             {/*  */}
@@ -352,7 +353,10 @@ export default function DCLPoolDetail() {
             />
 
             {/* pc fee */}
-            <TokenFeeAndCureentPrice poolDetail={poolDetail} />
+            <TokenFeeAndCureentPrice
+              poolDetail={poolDetail}
+              poolDetailV3={poolDetailV3}
+            />
           </>
         )}
       </div>
@@ -392,9 +396,16 @@ export default function DCLPoolDetail() {
       </div>
 
       {/* mobile */}
-      {updatedMapList && updatedMapList[0]?.token_account_ids && isMobile && (
-        <TokenFeeAndCureentPrice poolDetail={poolDetail} />
-      )}
+      {updatedMapList &&
+        updatedMapList[0]?.token_account_ids &&
+        isMobile &&
+        poolDetail &&
+        poolDetailV3 && (
+          <TokenFeeAndCureentPrice
+            poolDetail={poolDetail}
+            poolDetailV3={poolDetailV3}
+          />
+        )}
 
       {/* main */}
       <div className="flex lg:w-270 xsm:w-full mt-2">

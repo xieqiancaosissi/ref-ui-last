@@ -294,16 +294,25 @@ export default function UserStakeBlock(props: {
       };
     }
   }
+  function formatCheckedList(data) {
+    const formattedData = {};
+    for (const [key, value] of Object.entries(data)) {
+      formattedData[key] = { value: value.toString() };
+    }
+    return formattedData;
+  }
   const unclaimedRewardsData = useMemo(() => {
     return getTotalUnclaimedRewards();
   }, [user_unclaimed_map[seed_id]]);
   async function claimReward() {
     if (claimLoading) return;
-    // setClaimLoading(true);
-    console.log(detailData);
-    // claimRewardBySeed_boost(detailData.seed_id).then((res) => {
-    //   handleDataAfterTranstion(res);
-    // });
+    const formattedCheckedList = formatCheckedList(user_unclaimed_map[seed_id]);
+    setClaimLoading(true);
+    claimRewardBySeed_boost(detailData.seed_id, formattedCheckedList).then(
+      (res) => {
+        handleDataAfterTranstion(res);
+      }
+    );
   }
   function handleDataAfterTranstion(res: IExecutionResult | undefined) {
     if (!res) return;

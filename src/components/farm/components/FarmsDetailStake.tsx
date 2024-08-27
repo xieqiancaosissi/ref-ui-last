@@ -233,9 +233,17 @@ export default function FarmsDetailStake(props: {
     new BigNumber(amount).isLessThanOrEqualTo(0) ||
     new BigNumber(amount).isGreaterThan(new BigNumber(lpBalance));
 
+  function formatCheckedList(data) {
+    const formattedData = {};
+    for (const [key, value] of Object.entries(data)) {
+      formattedData[key] = { value: value.toString() };
+    }
+    return formattedData;
+  }
   function operationStake() {
     setStakeLoading(true);
     let msg = "";
+    const formattedCheckedList = formatCheckedList(user_unclaimed_map[seed_id]);
     if (
       stakeType == "free" ||
       min_locking_duration_sec == 0 ||
@@ -257,6 +265,7 @@ export default function FarmsDetailStake(props: {
         amount: toNonDivisibleNumber(DECIMALS, amount),
         amountByTransferInFarm: sharesInfo.amountByTransferInFarm,
         seed_id,
+        checkedList: formattedCheckedList,
       }).then((res) => {
         handleDataAfterTranstion(res, "stake");
       });
@@ -265,6 +274,7 @@ export default function FarmsDetailStake(props: {
         token_id: getMftTokenId((pool?.id || "").toString()),
         amount: toNonDivisibleNumber(DECIMALS, amount),
         msg,
+        checkedList: formattedCheckedList,
       }).then((res) => {
         handleDataAfterTranstion(res, "stake");
       });
@@ -272,6 +282,7 @@ export default function FarmsDetailStake(props: {
   }
   function operationUnStake() {
     setUnStakeLoading(true);
+    const formattedCheckedList = formatCheckedList(user_unclaimed_map[seed_id]);
     if (
       configV2.SUPPORT_SHADOW_POOL_IDS.includes((pool?.id || "").toString())
     ) {
@@ -280,6 +291,7 @@ export default function FarmsDetailStake(props: {
         unlock_amount: "0",
         withdraw_amount: toNonDivisibleNumber(DECIMALS, amount),
         amountByTransferInFarm: sharesInfo.amountByTransferInFarm,
+        checkedList: formattedCheckedList,
       }).then((res) => {
         handleDataAfterTranstion(res, "unstake");
       });
@@ -288,6 +300,7 @@ export default function FarmsDetailStake(props: {
         seed_id,
         unlock_amount: "0",
         withdraw_amount: toNonDivisibleNumber(DECIMALS, amount),
+        checkedList: formattedCheckedList,
       }).then((res) => {
         handleDataAfterTranstion(res, "unstake");
       });

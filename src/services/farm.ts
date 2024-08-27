@@ -11,7 +11,7 @@ import {
   refFarmViewFunction,
 } from "../utils/contract";
 import { scientificNotationToString } from "../utils/numbers";
-import { viewFunction } from "../utils/near";
+import { executeMultipleTransactions, viewFunction } from "../utils/near";
 import { executeFarmMultipleTransactions } from "../utils/contract";
 import { getAccountId, getCurrentWallet } from "../utils/wallet";
 import { TokenMetadata, ftGetStorageBalance } from "./ft-contract";
@@ -144,6 +144,7 @@ interface StakeOptions {
   token_id?: string;
   amount: string;
   msg?: string;
+  checkedList?: Record<string, any>;
 }
 
 interface StakeOptiones {
@@ -153,12 +154,14 @@ interface StakeOptiones {
   seed_id?: string;
   token_id?: string;
   msg?: string;
+  checkedList?: Record<string, any>;
 }
 
 interface UnStakeOptions {
   seed_id: string;
   unlock_amount: string;
   withdraw_amount: string;
+  checkedList?: Record<string, any>;
 }
 
 interface UnStakeOptiones {
@@ -166,6 +169,7 @@ interface UnStakeOptiones {
   unlock_amount: string;
   withdraw_amount: string;
   amountByTransferInFarm?: string | number;
+  checkedList?: Record<string, any>;
 }
 
 export interface IStakeInfo {
@@ -533,12 +537,32 @@ export const get_config = async () => {
 };
 
 export const claimRewardBySeed_boost = async (
-  seed_id: string
+  seed_id: string,
+  checkedList: Record<string, any>
 ): Promise<any> => {
-  return refFarmBoostFunctionCall({
-    methodName: "claim_reward_by_seed",
-    args: { seed_id },
-  });
+  const transactions: Transaction[] = [
+    {
+      receiverId: REF_FARM_BOOST_CONTRACT_ID,
+      functionCalls: [
+        {
+          methodName: "claim_reward_by_seed",
+          args: { seed_id },
+        },
+      ],
+    },
+  ];
+
+  const { storageDepositTransactions, withdrawRewardTransactions } =
+    await buildWithdrawRewardFunctionCalls(checkedList);
+  transactions.push(
+    ...storageDepositTransactions,
+    ...withdrawRewardTransactions
+  );
+
+  const nearWithdrawTransactions = buildWithdrawNearTransactions(checkedList);
+  transactions.push(...nearWithdrawTransactions);
+
+  return executeMultipleTransactions(transactions, false);
 };
 
 export const getPoolIdBySeedId = (seed_id: string) => {
@@ -578,63 +602,17 @@ export const getMftTokenId = (id: string) => {
 export const withdrawAllReward_boost = async (
   checkedList: Record<string, any>
 ) => {
-  const transactions: Transaction[] = [];
-  const token_id_list = Object.keys(checkedList);
-  const ftBalancePromiseList: any[] = [];
-  const functionCallsList: any[][] = [];
+  const transactions = [];
 
-  // Group function calls into chunks of 4
-  for (let i = 0; i < token_id_list.length; i += 4) {
-    const functionCalls: any[] = [];
-    for (let j = i; j < i + 4 && j < token_id_list.length; j++) {
-      const token_id = token_id_list[j];
-      const ftBalance = ftGetStorageBalance(token_id);
-      ftBalancePromiseList.push(ftBalance);
-      functionCalls.push({
-        methodName: "withdraw_reward",
-        args: {
-          token_id,
-        },
-        gas: "50000000000000",
-      });
-    }
-    functionCallsList.push(functionCalls);
-  }
+  const { storageDepositTransactions, withdrawRewardTransactions } =
+    await buildWithdrawRewardFunctionCalls(checkedList);
+  transactions.push(
+    ...storageDepositTransactions,
+    ...withdrawRewardTransactions
+  );
 
-  const resolvedBalanceList = await Promise.all(ftBalancePromiseList);
-  resolvedBalanceList.forEach((ftBalance, index) => {
-    if (!ftBalance) {
-      const token_id = token_id_list[index];
-      transactions.unshift({
-        receiverId: token_id,
-        functionCalls: [
-          storageDepositAction({
-            registrationOnly: true,
-            amount: STORAGE_TO_REGISTER_WITH_MFT,
-          }),
-        ],
-      });
-    }
-  });
-
-  functionCallsList.forEach((functionCalls) => {
-    transactions.push({
-      receiverId: REF_FARM_BOOST_CONTRACT_ID,
-      functionCalls,
-    });
-  });
-
-  if (Object.keys(checkedList).includes(WRAP_NEAR_CONTRACT_ID)) {
-    sessionStorage.setItem("near_with_draw_source", "farm_token");
-    transactions.push(
-      nearWithdrawTransaction(
-        toReadableNumber(
-          nearMetadata.decimals,
-          checkedList[WRAP_NEAR_CONTRACT_ID].value
-        )
-      )
-    );
-  }
+  const nearWithdrawTransactions = buildWithdrawNearTransactions(checkedList);
+  transactions.push(...nearWithdrawTransactions);
 
   return executeFarmMultipleTransactions(transactions);
 };
@@ -695,25 +673,26 @@ export const stake_boost = async ({
   token_id,
   amount,
   msg = "",
+  checkedList,
 }: StakeOptions) => {
-  const transactions: Transaction[] = [
-    {
-      receiverId: REF_FI_CONTRACT_ID,
-      functionCalls: [
-        {
-          methodName: "mft_transfer_call",
-          args: {
-            receiver_id: REF_FARM_BOOST_CONTRACT_ID,
-            token_id,
-            amount,
-            msg,
-          },
-          amount: ONE_YOCTO_NEAR,
-          gas: "180000000000000",
+  const transactions: Transaction[] = [];
+
+  transactions.push({
+    receiverId: REF_FI_CONTRACT_ID,
+    functionCalls: [
+      {
+        methodName: "mft_transfer_call",
+        args: {
+          receiver_id: REF_FARM_BOOST_CONTRACT_ID,
+          token_id,
+          amount,
+          msg,
         },
-      ],
-    },
-  ];
+        amount: ONE_YOCTO_NEAR,
+        gas: "180000000000000",
+      },
+    ],
+  });
 
   const neededStorage = await checkTokenNeedsStorageDeposit_boost();
   if (neededStorage) {
@@ -723,6 +702,16 @@ export const stake_boost = async ({
     });
   }
 
+  const { storageDepositTransactions, withdrawRewardTransactions } =
+    await buildWithdrawRewardFunctionCalls(checkedList);
+  transactions.push(
+    ...storageDepositTransactions,
+    ...withdrawRewardTransactions
+  );
+
+  const nearWithdrawTransactions = buildWithdrawNearTransactions(checkedList);
+  transactions.push(...nearWithdrawTransactions);
+
   return executeFarmMultipleTransactions(transactions);
 };
 
@@ -730,6 +719,7 @@ export const unStake_boost = async ({
   seed_id,
   unlock_amount,
   withdraw_amount,
+  checkedList,
 }: UnStakeOptions) => {
   const transactions: Transaction[] = [
     {
@@ -756,6 +746,16 @@ export const unStake_boost = async ({
       functionCalls: [storageDepositAction({ amount: neededStorage })],
     });
   }
+
+  const { storageDepositTransactions, withdrawRewardTransactions } =
+    await buildWithdrawRewardFunctionCalls(checkedList);
+  transactions.push(
+    ...storageDepositTransactions,
+    ...withdrawRewardTransactions
+  );
+
+  const nearWithdrawTransactions = buildWithdrawNearTransactions(checkedList);
+  transactions.push(...nearWithdrawTransactions);
 
   return executeFarmMultipleTransactions(transactions);
 };
@@ -1126,6 +1126,7 @@ export const stake_boost_shadow = async ({
   amount,
   amountByTransferInFarm,
   seed_id,
+  checkedList,
 }: StakeOptiones) => {
   const transactions: Transaction[] = [];
   let toFarmingAmount = amount;
@@ -1177,6 +1178,16 @@ export const stake_boost_shadow = async ({
     });
   }
 
+  const { storageDepositTransactions, withdrawRewardTransactions } =
+    await buildWithdrawRewardFunctionCalls(checkedList);
+  transactions.push(
+    ...storageDepositTransactions,
+    ...withdrawRewardTransactions
+  );
+
+  const nearWithdrawTransactions = buildWithdrawNearTransactions(checkedList);
+  transactions.push(...nearWithdrawTransactions);
+
   return executeFarmMultipleTransactions(transactions);
 };
 
@@ -1185,6 +1196,7 @@ export const unStake_boost_shadow = async ({
   unlock_amount,
   withdraw_amount,
   amountByTransferInFarm,
+  checkedList,
 }: UnStakeOptiones) => {
   const transactions: Transaction[] = [];
   if (amountByTransferInFarm && Big(amountByTransferInFarm).gt(0)) {
@@ -1259,5 +1271,83 @@ export const unStake_boost_shadow = async ({
     });
   }
 
+  const { storageDepositTransactions, withdrawRewardTransactions } =
+    await buildWithdrawRewardFunctionCalls(checkedList);
+  transactions.push(
+    ...storageDepositTransactions,
+    ...withdrawRewardTransactions
+  );
+
+  const nearWithdrawTransactions = buildWithdrawNearTransactions(checkedList);
+  transactions.push(...nearWithdrawTransactions);
+
   return executeFarmMultipleTransactions(transactions);
+};
+
+const buildWithdrawNearTransactions = (checkedList) => {
+  const transactions = [];
+
+  if (Object.keys(checkedList).includes(WRAP_NEAR_CONTRACT_ID)) {
+    sessionStorage.setItem("near_with_draw_source", "farm_token");
+    transactions.push(
+      nearWithdrawTransaction(
+        toReadableNumber(
+          nearMetadata.decimals,
+          checkedList[WRAP_NEAR_CONTRACT_ID].value
+        )
+      )
+    );
+  }
+
+  return transactions;
+};
+
+const buildWithdrawRewardFunctionCalls = async (checkedList) => {
+  const token_id_list = Object.keys(checkedList);
+  const ftBalancePromiseList = [];
+  const functionCallsList = [];
+
+  // Group withdraw_reward function calls into chunks of 4
+  for (let i = 0; i < token_id_list.length; i += 4) {
+    const functionCalls = [];
+    for (let j = i; j < i + 4 && j < token_id_list.length; j++) {
+      const token_id = token_id_list[j];
+      const ftBalance = ftGetStorageBalance(token_id);
+      ftBalancePromiseList.push(ftBalance);
+      functionCalls.push({
+        methodName: "withdraw_reward",
+        args: {
+          token_id,
+        },
+        gas: "50000000000000",
+      });
+    }
+    functionCallsList.push(functionCalls);
+  }
+
+  const resolvedBalanceList = await Promise.all(ftBalancePromiseList);
+  const storageDepositTransactions = resolvedBalanceList
+    .map((ftBalance, index) => {
+      if (!ftBalance) {
+        const token_id = token_id_list[index];
+        return {
+          receiverId: token_id,
+          functionCalls: [
+            storageDepositAction({
+              registrationOnly: true,
+              amount: STORAGE_TO_REGISTER_WITH_MFT,
+            }),
+          ],
+        };
+      }
+      return null;
+    })
+    .filter(Boolean);
+
+  const withdrawRewardTransactions = functionCallsList.map((functionCalls) => ({
+    receiverId: REF_FARM_BOOST_CONTRACT_ID,
+    functionCalls,
+  }));
+
+  return { storageDepositTransactions, withdrawRewardTransactions };
 };

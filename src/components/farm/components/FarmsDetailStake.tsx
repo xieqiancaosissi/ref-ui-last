@@ -457,6 +457,7 @@ export default function FarmsDetailStake(props: {
                   user_seeds_map={user_seeds_map}
                   user_unclaimed_map={user_unclaimed_map}
                   user_unclaimed_token_meta_map={user_unclaimed_token_meta_map}
+                  border={false}
                 ></CalcEle>
               </div>
             ) : null}
@@ -539,6 +540,7 @@ export default function FarmsDetailStake(props: {
                   user_seeds_map={user_seeds_map}
                   user_unclaimed_map={user_unclaimed_map}
                   user_unclaimed_token_meta_map={user_unclaimed_token_meta_map}
+                  border={false}
                 ></CalcEle>
               </div>
             ) : null}

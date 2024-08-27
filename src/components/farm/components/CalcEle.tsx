@@ -35,6 +35,7 @@ export function CalcEle(props: {
   user_seeds_map: Record<string, UserSeedInfo>;
   user_unclaimed_token_meta_map: Record<string, any>;
   user_unclaimed_map: Record<string, any>;
+  border?: boolean;
 }) {
   const {
     seed,
@@ -45,6 +46,7 @@ export function CalcEle(props: {
     user_seeds_map,
     user_unclaimed_token_meta_map,
     user_unclaimed_map,
+    border = true,
   } = props;
   const { getIsSignedIn } = useAccountStore();
   const isSignedIn = getIsSignedIn();
@@ -285,7 +287,11 @@ export function CalcEle(props: {
   }
   const { radio: seedRadio, amount: seed_free_amount, base } = getBoostMutil();
   return (
-    <div>
+    <div
+      className={` ${
+        !border ? "border border-gray-90 px-3.5 py-2.5 rounded mt-4" : ""
+      } `}
+    >
       <div>
         <div className="flex items-center justify-between">
           <label className="text-sm text-gray-50">Duration</label>
@@ -311,7 +317,7 @@ export function CalcEle(props: {
           })}
         </div>
       </div>
-      <div className="mt-3">
+      <div className={` ${!border ? "mt-0" : "mt-3"}`}>
         {!base ? null : (
           <div className="flex items-center">
             <div className="flex items-center justify-center w-1/2">
@@ -347,7 +353,11 @@ export function CalcEle(props: {
             </div>
           </div>
         )}
-        <div className="flex flex-col rounded p-3.5 border border-gray-90">
+        <div
+          className={`flex flex-col rounded ${
+            border ? "border border-gray-90 p-3.5" : "p-1 "
+          } `}
+        >
           {accountType == "cd" ? (
             <>
               <div className="flex items-center justify-between mb-4 mt-5">

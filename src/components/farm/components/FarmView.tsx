@@ -5,6 +5,7 @@ import {
   UserSeedInfo,
   claimRewardBySeed_boost,
   getPoolIdBySeedId,
+  list_liquidities,
 } from "../../../services/farm";
 import { useContext, useEffect, useMemo, useState } from "react";
 import { useAccountStore } from "../../../stores/account";
@@ -17,6 +18,10 @@ import {
   getEffectiveFarmList,
   getPriceByPoint,
   displayNumberToAppropriateDecimals,
+  UserLiquidityInfo,
+  get_valid_range,
+  get_total_value_by_liquidity_amount_dcl,
+  allocation_rule_liquidities,
 } from "../../../services/commonV3";
 import { TokenMetadata } from "../../../services/ft-contract";
 import { LOVE_TOKEN_DECIMAL } from "@/services/referendum";
@@ -59,6 +64,8 @@ import Countdown, { zeroPad } from "react-countdown";
 import { useRouter } from "next/router";
 import LPTip from "./LPTip";
 import getConfigV2 from "@/utils/configV2";
+import { formatPercentage, formatWithCommas_usd } from "@/utils/uiNumber";
+import Big from "big.js";
 
 const {
   REF_VE_CONTRACT_ID,
@@ -96,9 +103,14 @@ export function FarmView(props: {
   } = props;
   const { pool, seedTvl, total_seed_amount, seed_id, farmList, seed_decimal } =
     seed;
-  // const detailData = getDetailData();
   // console.log(detailData)
   const [contractId, temp_pool_id] = seed_id.split("@");
+  const [listLiquidities_inFarimg, set_listLiquidities_inFarimg] = useState<
+    UserLiquidityInfo[]
+  >([]);
+  const [listLiquidities_unFarimg, set_listLiquidities_unFarimg] = useState<
+    UserLiquidityInfo[]
+  >([]);
   let is_dcl_pool = false;
   if (contractId == REF_UNI_V3_SWAP_CONTRACT_ID) {
     is_dcl_pool = true;
@@ -134,6 +146,9 @@ export function FarmView(props: {
       setYourApr(yourApr);
     }
   }, [boostConfig, user_seeds_map]);
+  useEffect(() => {
+    get_list_liquidities();
+  }, [all_seeds]);
   useEffect(() => {
     const { free_amount, shadow_amount, locked_amount } =
       user_seeds_map[seed_id] || {};
@@ -664,6 +679,230 @@ export function FarmView(props: {
   const is_support_lp = configV2.SUPPORT_SHADOW_POOL_IDS.includes(
     (pool?.id || "").toString()
   );
+  const [yp_percent, yp_farming_value, yp_unFarm_value] = useMemo(() => {
+    const { farming_parts_value, can_farm_parts_value, un_farm_parts_value } =
+      caculate_values();
+    if (can_farm_parts_value.gt(0)) {
+      const percent = farming_parts_value.div(can_farm_parts_value).mul(100);
+      return [
+        formatPercentage(percent.toFixed()),
+        formatWithCommas_usd(farming_parts_value.toFixed()),
+        formatWithCommas_usd(un_farm_parts_value.toFixed()),
+      ];
+    } else {
+      return ["0%", "$0", "$0"];
+    }
+  }, [listLiquidities_inFarimg.length, listLiquidities_unFarimg.length]);
+  function caculate_values() {
+    const can_farm_liquidities = listLiquidities_inFarimg.concat(
+      listLiquidities_unFarimg
+    );
+    // The total value of the liquidity that can be farmed
+    let can_farm_parts_value = Big(0);
+    can_farm_liquidities.forEach((l: UserLiquidityInfo) => {
+      const l_v = get_range_part_value(l);
+      can_farm_parts_value = can_farm_parts_value.plus(l_v || 0);
+    });
+
+    // The total value of the unfarming portion of liquidity (including the remaining portion of the NFT in the farm)
+    let un_farm_parts_value = Big(0);
+    listLiquidities_unFarimg.forEach((l: UserLiquidityInfo) => {
+      const l_v = get_range_part_value(l);
+      un_farm_parts_value = un_farm_parts_value.plus(l_v || 0);
+    });
+    const [part_farm_liquidity] = listLiquidities_inFarimg.filter(
+      (l: UserLiquidityInfo) => {
+        return Big(l.unfarm_part_amount || 0).gt(0);
+      }
+    );
+    if (
+      part_farm_liquidity &&
+      part_farm_liquidity.part_farm_ratio !== undefined
+    ) {
+      const v = get_range_part_value(part_farm_liquidity);
+      if (v !== null && v !== undefined) {
+        const un_farm_part_value = Big(100)
+          .minus(part_farm_liquidity.part_farm_ratio)
+          .div(100)
+          .mul(Big(v));
+        un_farm_parts_value = un_farm_parts_value.plus(un_farm_part_value);
+      }
+    }
+    // The total value of the farming portion of liquidity
+    const farming_parts_value = can_farm_parts_value.minus(un_farm_parts_value);
+    return {
+      can_farm_parts_value,
+      un_farm_parts_value,
+      farming_parts_value,
+    };
+  }
+  function get_range_part_value(liquidity: UserLiquidityInfo) {
+    const [left_point, right_point] = get_valid_range(liquidity, seed_id);
+    const v = get_liquidity_value(liquidity, left_point, right_point);
+    return v;
+  }
+  function get_liquidity_value(
+    liquidity: UserLiquidityInfo,
+    leftPoint?: number,
+    rightPoint?: number
+  ) {
+    const { amount } = liquidity;
+    const poolDetail = pool;
+    if (!poolDetail) {
+      return null;
+    }
+    const { token_x, token_y } = poolDetail;
+    const tokenX = token_x as string;
+    const tokenY = token_y as string;
+    const v = get_total_value_by_liquidity_amount_dcl({
+      left_point: leftPoint || liquidity.left_point,
+      right_point: rightPoint || liquidity.right_point,
+      poolDetail,
+      amount,
+      price_x_y: {
+        [tokenX]: tokenPriceList[tokenX]?.price || "0",
+        [tokenY]: tokenPriceList[tokenY]?.price || "0",
+      },
+      metadata_x_y: {
+        [tokenX]: tokens[0],
+        [tokenY]: tokens[1],
+      },
+    });
+    return v;
+  }
+  async function get_list_liquidities() {
+    const list: UserLiquidityInfo[] = await list_liquidities();
+    if (list.length > 0 && all_seeds.length > 0) {
+      let temp_unavailable_final: UserLiquidityInfo[] = [];
+      let temp_free_final: UserLiquidityInfo[] = [];
+      let temp_farming_final: UserLiquidityInfo[] = [];
+      const { free_amount = "0", locked_amount = "0" } =
+        user_seeds_map[seed_id] || {};
+      const user_seed_amount = new BigNumber(free_amount)
+        .plus(locked_amount)
+        .toFixed();
+      const [temp_farming, temp_free, temp_unavailable] =
+        allocation_rule_liquidities({
+          list,
+          user_seed_amount,
+          seed,
+        });
+      temp_unavailable_final = temp_unavailable;
+      temp_free_final = temp_free;
+      temp_farming_final = temp_farming;
+      const liquidities_minted_in_another_seed = temp_unavailable.filter(
+        (liquidity: UserLiquidityInfo) => {
+          const { mft_id } = liquidity;
+          if (mft_id) {
+            const [contractId, temp_pool_id] = seed_id.split("@");
+            const [fixRange_s, pool_id_s, left_point_s, right_point_s] =
+              temp_pool_id.split("&");
+            const [fixRange_l, pool_id_l, left_point_l, right_point_l] =
+              mft_id.split("&");
+            return (
+              left_point_s != left_point_l || right_point_s != right_point_l
+            );
+          }
+        }
+      );
+      if (liquidities_minted_in_another_seed.length > 0) {
+        const another_seeds = get_another_seeds(
+          liquidities_minted_in_another_seed
+        );
+        Object.values(another_seeds).forEach((another_seed_detail: any) => {
+          const list_new = JSON.parse(JSON.stringify(list));
+          const [seed_another, user_seed_amount_another] = another_seed_detail;
+          const [
+            temp_farming_another,
+            temp_free_another,
+            temp_unavailable_another,
+          ] = allocation_rule_liquidities({
+            list: list_new,
+            user_seed_amount: user_seed_amount_another,
+            seed: seed_another,
+          });
+          const temp_farming_another_map: { [key: string]: UserLiquidityInfo } =
+            {};
+          temp_farming_another.forEach((liquidity: UserLiquidityInfo) => {
+            if (liquidity.lpt_id !== undefined) {
+              temp_farming_another_map[liquidity.lpt_id] = liquidity;
+            }
+          });
+
+          // const { min_deposit } = detailData;
+          liquidities_minted_in_another_seed.forEach(
+            (liquidity: UserLiquidityInfo) => {
+              if (liquidity.lpt_id !== undefined) {
+                const liquidity_another: UserLiquidityInfo | undefined =
+                  temp_farming_another_map[liquidity.lpt_id];
+
+                if (
+                  liquidity_another &&
+                  liquidity_another.part_farm_ratio !== undefined
+                ) {
+                  if (+liquidity_another.part_farm_ratio > 0) {
+                    liquidity.status_in_other_seed = "staked";
+                  }
+                }
+              }
+            }
+          );
+        });
+        const temp_unavailable_new: UserLiquidityInfo[] = [];
+        const frees_extra = temp_unavailable.filter(
+          (liquidity: UserLiquidityInfo) => {
+            const [left_point, right_point] = get_valid_range(
+              liquidity,
+              seed_id
+            );
+            const inRange = right_point > left_point;
+            const { amount, mft_id } = liquidity;
+            const amount_is_little = new BigNumber(amount).isLessThan(1000000);
+            if (
+              !(
+                liquidity.status_in_other_seed == "staked" ||
+                // liquidity.less_than_min_deposit ||
+                !inRange ||
+                (!mft_id && amount_is_little)
+              )
+            )
+              return true;
+            temp_unavailable_new.push(liquidity);
+          }
+        );
+        temp_free_final = temp_free.concat(frees_extra);
+        temp_unavailable_final = temp_unavailable_new;
+      }
+      const matched_liquidities = temp_farming_final
+        .concat(temp_free_final)
+        .concat(temp_unavailable_final);
+      set_listLiquidities_inFarimg(temp_farming_final);
+      set_listLiquidities_unFarimg(temp_free_final);
+    }
+  }
+  function get_another_seeds(minted_liquidities: UserLiquidityInfo[]) {
+    const target: any = {};
+    minted_liquidities.forEach((liquidity_minted_in_another_seed) => {
+      const { mft_id } = liquidity_minted_in_another_seed;
+      if (mft_id === undefined) {
+        return;
+      }
+      const seed_id_another =
+        REF_UNI_V3_SWAP_CONTRACT_ID + "@" + mft_id.slice(1);
+      const { free_amount = "0", locked_amount = "0" } =
+        user_seeds_map[seed_id_another] || {};
+      const user_seed_amount_another = new BigNumber(free_amount)
+        .plus(locked_amount)
+        .toFixed();
+      const seed_another: Seed | undefined = all_seeds.find((seed: Seed) => {
+        return seed.seed_id == seed_id_another;
+      });
+      if (seed_another) {
+        target[seed_another.seed_id] = [seed_another, user_seed_amount_another];
+      }
+    });
+    return target;
+  }
   return (
     <>
       <div
@@ -885,12 +1124,7 @@ export function FarmView(props: {
             <div className="frcb">
               <p className="text-gray-60 text-sm">Your stake/Unclaimed</p>
               <p className="text-sm frcc">
-                {Number(yourTvl) == 0 ? (
-                  <span className="opacity-50">$0</span>
-                ) : (
-                  "$" + toInternationalCurrencySystem(yourTvl, 2)
-                )}
-                /
+                {yp_unFarm_value}/
                 <p
                   className={`${
                     getTotalUnclaimedRewards() === "0"

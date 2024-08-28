@@ -16,6 +16,7 @@ import { IUiType } from "@/interfaces/orderbook";
 import { RightArrowIcon } from "./icons";
 import { checkConnectStatus } from "@/services/orderbook/contract";
 import { getSelectedWalletId } from "@/utils/wallet";
+import { useOrderbookStore } from "@/stores/orderbook/orderbookStore";
 export default function ConnectToOrderlyWidget({
   uiType,
 }: {
@@ -25,18 +26,22 @@ export default function ConnectToOrderlyWidget({
   const [isConfirmed, setIsConfirmed] = useState<boolean>(false);
   const [authorization, setAuthorization] = useState<boolean>(false);
   const orderbookDataStore = useOrderbookDataStore();
+  const orderbookStore = useOrderbookStore();
   const connectStatus = orderbookDataStore.getConnectStatus();
   const accountStore = useAccountStore();
   const walletLoading = accountStore.getWalletLoading();
   const accountId = accountStore.getAccountId();
+  const isOrderlyConnecting = orderbookStore.getIsOrderlyConnecting();
   const authorizationRequiredWalletIds = ["here-wallet", "ledger", "nightly"];
   const walletId = getSelectedWalletId();
   const needAuthorization = authorizationRequiredWalletIds.includes(walletId);
   useEffect(() => {
     if (
       connectStatus == "need_key_set" &&
-      (!needAuthorization || (needAuthorization && authorization))
+      (!needAuthorization || (needAuthorization && authorization)) &&
+      !isOrderlyConnecting
     ) {
+      orderbookStore.setIsOrderlyConnecting(true);
       is_orderly_key_announced(accountId)
         .then(async (key_announce) => {
           if (!key_announce) {
@@ -49,6 +54,7 @@ export default function ConnectToOrderlyWidget({
               await setTradingKey();
             }
             orderbookDataStore.setConnectStatus("has_connected");
+            orderbookStore.setIsOrderlyConnecting(false);
           });
         })
         .catch((e) => {
@@ -58,6 +64,7 @@ export default function ConnectToOrderlyWidget({
           } else {
             console.log(e?.message);
           }
+          orderbookStore.setIsOrderlyConnecting(false);
         });
     }
   }, [connectStatus, needAuthorization, authorization]);

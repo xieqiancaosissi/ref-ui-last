@@ -785,24 +785,26 @@ function ClassicFarms() {
   }
   function getYourTvl(seed: Seed) {
     const { pool, seed_id, seed_decimal } = seed;
-    const { free_amount = "0", locked_amount = "0" } =
-      user_seeds_map[seed_id] || {};
-    if (pool) {
-      const { tvl, shares_total_supply } = pool;
-      const amount = new BigNumber(free_amount || 0)
-        .plus(locked_amount || 0)
-        .toFixed();
-      const poolShares = toReadableNumber(seed_decimal, shares_total_supply);
-      const yourLpAmount = toReadableNumber(seed_decimal, amount);
-      const yourTvl =
-        +poolShares == 0
-          ? "0"
-          : new BigNumber(yourLpAmount)
-              .multipliedBy(tvl)
-              .dividedBy(poolShares)
-              .toFixed();
-      return yourTvl;
-    }
+    const {
+      free_amount = "0",
+      locked_amount = "0",
+      shadow_amount = "0",
+    } = user_seeds_map[seed_id] || {};
+    const { tvl, shares_total_supply } = pool;
+    const amount = new BigNumber(free_amount || 0)
+      .plus(locked_amount || 0)
+      .plus(shadow_amount)
+      .toFixed();
+    const poolShares = toReadableNumber(seed_decimal, shares_total_supply);
+    const yourLpAmount = toReadableNumber(seed_decimal, amount);
+    const yourTvl =
+      +poolShares == 0
+        ? "0"
+        : new BigNumber(yourLpAmount)
+            .multipliedBy(tvl)
+            .dividedBy(poolShares)
+            .toFixed();
+    return yourTvl;
   }
   const handleToggle = (index: any) => {
     setActiveIndex(index === activeIndex ? null : index);
@@ -844,6 +846,7 @@ function ClassicFarmRow({
     free_amount = "0",
     x_locked_amount = "0",
     locked_amount = "0",
+    shadow_amount,
   } = user_seeds_map[seed_id] || {};
   const { token_account_ids } = pool || {};
   const tokens = sortTokens(useTokens(token_account_ids) || []);
@@ -1026,22 +1029,21 @@ function ClassicFarmRow({
     return result;
   }
   function getYourTvl() {
-    if (pool) {
-      const { tvl, shares_total_supply } = pool;
-      const amount = new BigNumber(free_amount || 0)
-        .plus(locked_amount || 0)
-        .toFixed();
-      const poolShares = toReadableNumber(seed_decimal, shares_total_supply);
-      const yourLpAmount = toReadableNumber(seed_decimal, amount);
-      const yourTvl =
-        +poolShares == 0
-          ? "0"
-          : new BigNumber(yourLpAmount)
-              .multipliedBy(tvl)
-              .dividedBy(poolShares)
-              .toFixed();
-      return "$" + toInternationalCurrencySystem(yourTvl, 2);
-    }
+    const { tvl, shares_total_supply } = pool;
+    const amount = new BigNumber(free_amount || 0)
+      .plus(shadow_amount || 0)
+      .plus(locked_amount || 0)
+      .toFixed();
+    const poolShares = toReadableNumber(seed_decimal, shares_total_supply);
+    const yourLpAmount = toReadableNumber(seed_decimal, amount);
+    const yourTvl =
+      +poolShares == 0
+        ? "0"
+        : new BigNumber(yourLpAmount)
+            .multipliedBy(tvl)
+            .dividedBy(poolShares)
+            .toFixed();
+    return "$" + toInternationalCurrencySystem(yourTvl, 2);
   }
   return (
     <ClassicData.Provider

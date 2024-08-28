@@ -1023,7 +1023,7 @@ export default function FarmsDetail(props: {
             >
               <p className="flex mr-1.5">
                 <FarmLpIcon className="mr-2" />
-                How to get Ref’s farm APR + Burrow Lending APR?
+                How to stake LP on Burrow?
               </p>
               <div className="flex">
                 <p>
@@ -1041,7 +1041,7 @@ export default function FarmsDetail(props: {
                     Activate
                     <ShadowTip show={showActivateBox} seed_id={seed_id} />
                   </a>{" "}
-                  the {`Burrow's`} extra rewards
+                  the {`Burrow's`} LP as Collateral feature
                 </p>
                 <p>
                   Step 2. Go to supply LP on{" "}
@@ -1201,7 +1201,7 @@ export default function FarmsDetail(props: {
                   <FarmLpIcon className="mr-2" />
                 </div>
                 <p className="mr-1.5">
-                  How to get Ref’s farm APR + Burrow Lending APR? Step 1.{" "}
+                  How to stake LP on Burrow? Step 1.{" "}
                   <a
                     className="text-white underline cursor-pointer relative"
                     tabIndex={99}
@@ -1215,7 +1215,8 @@ export default function FarmsDetail(props: {
                     Activate
                     <ShadowTip show={showActivateBox} seed_id={seed_id} />
                   </a>
-                  the {`Burrow's`} extra rewards . Step 2. Go to supply LP on{" "}
+                  the {`Burrow's`} LP as Collateral feature. Step 2. Go to
+                  supply LP on{" "}
                   <a
                     className="text-white text-sm underline cursor-pointer"
                     onClick={() => {

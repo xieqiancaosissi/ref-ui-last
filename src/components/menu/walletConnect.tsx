@@ -165,6 +165,8 @@ export default function WalletConnect() {
   function showkeyModal() {
     setIsOpen(false);
     setKeyModalShow(true);
+    setShowGuider(false);
+    localStorage.setItem("ACCESS_MODAL_GUIDER", "1");
   }
 
   function closeKeyModal() {
@@ -252,6 +254,8 @@ export default function WalletConnect() {
                           onClick={() => {
                             if (!isKeyPomWallet) {
                               showWalletSelector();
+                              setShowGuider(false);
+                              localStorage.setItem("ACCESS_MODAL_GUIDER", "1");
                             }
                           }}
                           className={` text-gray-10  ${

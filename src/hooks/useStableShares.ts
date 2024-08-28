@@ -76,28 +76,63 @@ export const useCanFarmV2 = (poolId: number, withEnded?: boolean) => {
   return { farmCount, farmVersion, endedFarmCount };
 };
 
+//  const list_user_seeds = await list_farmer_seeds();
+
 export const useYourliquidity = (poolId: number) => {
   const { pool, shares, stakeList, v2StakeList, finalStakeList } =
     usePool(poolId);
-
+  // todo: check if can remove useFarmStake, use farmerSeeds only
   const farmStakeV1 = useFarmStake({ poolId, stakeList });
-  const farmStakeV2 = useFarmStake({ poolId, stakeList: v2StakeList });
+  const farmStakeV2Ori = useFarmStake({ poolId, stakeList: v2StakeList });
+  // const farmerSeeds = useListFarmerSeeds();
+  const [farmerSeeds, setFarmerSeeds] = useState<any>({});
+
+  useEffect(() => {
+    if (getAccountId()) {
+      list_farmer_seeds().then((res) => {
+        const transformedData = Object.keys(res).reduce((acc, key) => {
+          const newKey = key.replace("v2.ref-finance.near@", "");
+          acc[newKey] = res[key];
+          return acc;
+        }, {});
+        setFarmerSeeds(transformedData);
+      });
+    }
+  }, [getAccountId()]);
+
+  const poolSeed = farmerSeeds[poolId];
+  const farmStakeV2 = poolSeed
+    ? new BigNumber(poolSeed.free_amount).plus(poolSeed.shadow_amount).toFixed()
+    : farmStakeV2Ori || "0";
 
   const farmStakeTotal = useFarmStake({ poolId, stakeList: finalStakeList });
-
+  const { poolShadowRecord } = useShadowRecord(poolId);
+  const { shadow_in_farm, shadow_in_burrow } = poolShadowRecord || {};
   const userTotalShare = BigNumber.sum(shares, farmStakeTotal);
-
   const userTotalShareToString = userTotalShare
     .toNumber()
     .toLocaleString("fullwide", { useGrouping: false });
 
-  const { poolShadowRecord } = useShadowRecord(poolId);
-  const { shadow_in_farm, shadow_in_burrow } = poolShadowRecord || {};
-  const shadowBurrowShare = processShare(
-    shares,
-    shadow_in_burrow,
-    farmStakeTotal
-  );
+  const processShare = (share, stakeAmount = "0") => {
+    const totalShare = share
+      ? BigNumber.sum(share, farmStakeTotal)
+      : BigNumber("0");
+    const totalShareString = totalShare
+      .toNumber()
+      .toLocaleString("fullwide", { useGrouping: false });
+    const sharePercent = totalShare.isGreaterThan(0)
+      ? percent(
+          stakeAmount,
+          totalShare
+            .toNumber()
+            .toLocaleString("fullwide", { useGrouping: false })
+        ).toString()
+      : "0";
+
+    return { totalShare, totalShareString, sharePercent, stakeAmount };
+  };
+  const shadowBurrowShare = processShare(shares, shadow_in_burrow);
+
   return {
     pool,
     shares,
@@ -128,9 +163,11 @@ export const useShadowRecord = (poolId: any) => {
 export const useListFarmerSeeds = () => {
   const [farmerSeeds, setFarmerSeeds] = useState<any>({});
   useEffect(() => {
-    list_farmer_seeds().then((res) => {
-      setFarmerSeeds(res);
-    });
+    if (getAccountId()) {
+      list_farmer_seeds().then((res) => {
+        setFarmerSeeds(res);
+      });
+    }
   }, [getAccountId()]);
   return { farmerSeeds };
 };

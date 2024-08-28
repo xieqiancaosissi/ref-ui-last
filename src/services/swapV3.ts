@@ -40,6 +40,7 @@ import {
   Transaction,
 } from "@/interfaces/swap";
 import getConfig from "@/utils/config";
+import { get_pool_name } from "./commonV3";
 const LOG_BASE = 1.0001;
 
 export const REF_DCL_POOL_CACHE_KEY = "REF_DCL_POOL_CACHE_VALUE";
@@ -896,7 +897,13 @@ export const add_liquidity = async ({
       ],
     });
   }
-  return executeMultipleTransactions(transactions, false);
+  // only for dcl
+  const poolStr = get_pool_name(pool_id);
+  return executeMultipleTransactions(
+    transactions,
+    false,
+    location.origin + "/poolV2/" + poolStr
+  );
 };
 
 export const batch_add_liquidity = async ({

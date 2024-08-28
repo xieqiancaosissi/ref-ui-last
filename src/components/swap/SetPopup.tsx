@@ -61,11 +61,11 @@ export default function SetPopup() {
     }
     return status;
   }, [slippage]);
-  useEffect(() => {
-    if (accountId) {
-      ledgerJudge();
-    }
-  }, [accountId]);
+  // useEffect(() => {
+  //   if (accountId) {
+  //     ledgerJudge();
+  //   }
+  // }, [accountId]);
   useDebounce(
     () => {
       if (
@@ -213,7 +213,7 @@ export default function SetPopup() {
           <div className="flexBetween">
             <div className="flexBetween gap-1">
               <span className="text-sm text-gray-50">Disable Smart Router</span>
-              <div
+              {/* <div
                 className="text-white text-right"
                 data-class="reactTip"
                 data-tooltip-id="smartTipId"
@@ -222,7 +222,7 @@ export default function SetPopup() {
               >
                 <QuestionIcon className="text-gray-10 hover:text-white cursor-pointer" />
                 <CustomTooltip id="smartTipId" />
-              </div>
+              </div> */}
             </div>
             <div
               className={`flex items-center relative h-4 rounded-2xl cursor-pointer p-px w-8 ${

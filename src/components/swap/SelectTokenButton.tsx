@@ -27,7 +27,6 @@ interface ISelectTokenButtonProps {
 export default function SelectTokenButton(props: ISelectTokenButtonProps) {
   const { isIn, isOut } = props;
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [selectToken, setSelectToken] = useState<ITokenMetadata>();
   const persistSwapStore: IPersistSwapStore = usePersistSwapStore();
   const accountStore = useAccountStore();
   const swapStore = useSwapStore();
@@ -41,24 +40,6 @@ export default function SelectTokenButton(props: ISelectTokenButtonProps) {
   const tokenUpdatedSerialNumber =
     tokenStoreRealTime.get_tokenUpdatedSerialNumber();
   const showToken = isIn ? tokenIn : tokenOut;
-  useEffect(() => {
-    if (selectToken?.id && global_whitelisted_tokens_ids?.length > 0) {
-      const selectTokenId = getTokenUIId(selectToken);
-      setSwapTokenAndBalances({
-        tokenInId: isIn ? selectTokenId : getTokenUIId(tokenIn),
-        tokenOutId: isOut ? selectTokenId : getTokenUIId(tokenOut),
-        accountId,
-        swapStore,
-        persistSwapStore,
-        tokenStore,
-        global_whitelisted_tokens_ids,
-      });
-    }
-  }, [
-    JSON.stringify(selectToken || {}),
-    accountId,
-    global_whitelisted_tokens_ids?.length,
-  ]);
   useEffect(() => {
     if (isOpen) {
       tokenStoreRealTime.set_update_loading(true);
@@ -74,7 +55,21 @@ export default function SelectTokenButton(props: ISelectTokenButtonProps) {
     setIsOpen(false);
   }
   function onSelect(token: ITokenMetadata) {
-    setSelectToken(token);
+    updateSelectToken(token);
+  }
+  function updateSelectToken(selectToken) {
+    if (selectToken?.id && global_whitelisted_tokens_ids?.length > 0) {
+      const selectTokenId = getTokenUIId(selectToken);
+      setSwapTokenAndBalances({
+        tokenInId: isIn ? selectTokenId : getTokenUIId(tokenIn),
+        tokenOutId: isOut ? selectTokenId : getTokenUIId(tokenOut),
+        accountId,
+        swapStore,
+        persistSwapStore,
+        tokenStore,
+        global_whitelisted_tokens_ids,
+      });
+    }
   }
   return (
     <div>

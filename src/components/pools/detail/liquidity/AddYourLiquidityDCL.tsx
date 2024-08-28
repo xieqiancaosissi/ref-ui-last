@@ -1968,26 +1968,6 @@ export default function AddYourLiquidityPageV3() {
                         className={` text-sm rounded-lg frcc cursor-pointer py-3   ${
                           selectHover ? "text-white" : "text-gray-60"
                         }`}
-                        onMouseEnter={() => {
-                          if (!mobileDevice) {
-                            setSelectHover(true);
-                          }
-                        }}
-                        onMouseLeave={() => {
-                          if (!mobileDevice) {
-                            setSelectHover(false);
-                          }
-                        }}
-                        onClick={() => {
-                          if (mobileDevice) {
-                            setSelectHover(!selectHover);
-                          }
-                        }}
-                        onBlur={() => {
-                          if (mobileDevice) {
-                            setSelectHover(false);
-                          }
-                        }}
                       >
                         <TokenPairIcon></TokenPairIcon>
                       </div>

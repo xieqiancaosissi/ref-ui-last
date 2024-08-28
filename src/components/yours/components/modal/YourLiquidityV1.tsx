@@ -1467,6 +1467,8 @@ export const PoolFarmAmount = ({
   supportFarmV2,
   endedFarmV2,
   farmStakeV2,
+  onRequestClose,
+  setIsOpen,
 }: {
   pool: any;
   farmVersion: string;
@@ -1477,6 +1479,8 @@ export const PoolFarmAmount = ({
   supportFarmV2: any;
   endedFarmV2: any;
   farmStakeV2: any;
+  onRequestClose?: () => void;
+  setIsOpen?: any;
 }) => {
   const router = useRouter();
   const farmStakeAmount =
@@ -1494,6 +1498,8 @@ export const PoolFarmAmount = ({
               onClick={(e) => {
                 e.stopPropagation();
                 router.push(`/v2farms`);
+                onRequestClose && onRequestClose();
+                setIsOpen && setIsOpen(false);
               }}
               className="text-gray-10 mb-1.5 flex"
             >
@@ -1524,6 +1530,8 @@ export const PoolFarmAmount = ({
                   endedFarmV2 === supportFarmV2 ? "e" : "r"
                 }`
               );
+              onRequestClose && onRequestClose();
+              setIsOpen && setIsOpen(false);
             }}
             className="text-gray-10 mb-1.5 flex"
           >

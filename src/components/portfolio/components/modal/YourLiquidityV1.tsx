@@ -412,44 +412,50 @@ function YourClassicLiquidityLine(props: any) {
     return new BigNumber(lpInVote).shiftedBy(-24).toFixed();
   }, [lptAmount]);
   // get lp amount in pool && total lp (pool + farm) && user lp percent
-  const [lp_in_pool, lp_total, user_lp_percent] = useMemo(() => {
-    const { id, shares_total_supply } = pool;
-    const is_stable_pool = isStablePool(id);
-    let amount_in_pool = "0";
-    let total_amount = "0";
-    if (is_stable_pool) {
-      const i = stablePools.findIndex((p: PoolRPCView) => p.id === pool.id);
-      amount_in_pool = batchStableShares?.[i];
-      total_amount = batchTotalShares?.[i];
-    } else {
-      const i = pools.findIndex((p: PoolRPCView) => p.id === pool.id);
-      amount_in_pool = batchShares?.[i];
-      total_amount = batchTotalSharesSimplePools?.[i];
-    }
-    const read_amount_in_pool = new BigNumber(amount_in_pool)
-      .shiftedBy(-decimals)
-      .toFixed();
-    const read_total_amount = new BigNumber(total_amount)
-      .shiftedBy(-decimals)
-      .plus(lp_in_vote);
-    const read_shareSupply = new BigNumber(
-      shares_total_supply || "0"
-    ).shiftedBy(-decimals);
-    let percent = "0";
-    if (
-      read_shareSupply.isGreaterThan(0) &&
-      read_total_amount.isGreaterThan(0)
-    ) {
-      percent = read_total_amount.dividedBy(read_shareSupply).toFixed();
-    }
-    return [read_amount_in_pool, read_total_amount.toFixed(), percent];
-  }, [
-    batchShares,
-    batchStableShares,
-    batchTotalSharesSimplePools,
-    batchTotalShares,
-    lp_in_vote,
-  ]);
+  const [lp_in_pool, lp_total, user_lp_percent, lp_in_pool_non_divisible] =
+    useMemo(() => {
+      const { id, shares_total_supply } = pool;
+      const is_stable_pool = isStablePool(id);
+      let amount_in_pool = "0";
+      let total_amount = "0";
+      if (is_stable_pool) {
+        const i = stablePools.findIndex((p: PoolRPCView) => p.id === pool.id);
+        amount_in_pool = batchStableShares?.[i];
+        total_amount = batchTotalShares?.[i];
+      } else {
+        const i = pools.findIndex((p: PoolRPCView) => p.id === pool.id);
+        amount_in_pool = batchShares?.[i];
+        total_amount = batchTotalSharesSimplePools?.[i];
+      }
+      const read_amount_in_pool = new BigNumber(amount_in_pool)
+        .shiftedBy(-decimals)
+        .toFixed();
+      const read_total_amount = new BigNumber(total_amount)
+        .shiftedBy(-decimals)
+        .plus(lp_in_vote);
+      const read_shareSupply = new BigNumber(
+        shares_total_supply || "0"
+      ).shiftedBy(-decimals);
+      let percent = "0";
+      if (
+        read_shareSupply.isGreaterThan(0) &&
+        read_total_amount.isGreaterThan(0)
+      ) {
+        percent = read_total_amount.dividedBy(read_shareSupply).toFixed();
+      }
+      return [
+        read_amount_in_pool,
+        read_total_amount.toFixed(),
+        percent,
+        amount_in_pool,
+      ];
+    }, [
+      batchShares,
+      batchStableShares,
+      batchTotalSharesSimplePools,
+      batchTotalShares,
+      lp_in_vote,
+    ]);
   // get total lp value
   const lp_total_value = useMemo(() => {
     const { id, tvl, shares_total_supply } = pool;
@@ -667,6 +673,7 @@ function YourClassicLiquidityLine(props: any) {
         usePoolFullData,
         addSuccess,
         setAddSuccess,
+        lp_in_pool_non_divisible,
       }}
     >
       <YourClassicLiquidityLinePage></YourClassicLiquidityLinePage>
@@ -705,6 +712,7 @@ function YourClassicLiquidityLinePage() {
     usePoolFullData,
     addSuccess,
     setAddSuccess,
+    lp_in_pool_non_divisible,
   } = useContext(LiquidityContextData)!;
   const { onRequestClose, setIsOpen } = useContext(
     PortfolioData
@@ -860,7 +868,7 @@ function YourClassicLiquidityLinePage() {
                   </div>
                 )}
               {Big(LpLocked).gt(0) ? (
-                <div className="text-gray-10 ml-2">
+                <div className="text-gray-10 ml-2 mb-1.5">
                   <span className="text-white">
                     {toPrecision(
                       toReadableNumber(
@@ -905,17 +913,14 @@ function YourClassicLiquidityLinePage() {
                 </div>
               ) : null}
 
-              {ONLY_ZEROS.test(sharesNew) ||
-              (supportFarmV1 === 0 && supportFarmV2 === 0 && pool) ? null : (
-                <div className="flex items-center text-gray-10 ml-2 mb-1.5">
-                  <PoolAvailableAmount
-                    shares={sharesNew}
-                    pool={pool}
-                    className={"text-white"}
-                  />
-                  &nbsp;Holding
-                </div>
-              )}
+              <div className="flex items-center text-gray-10 ml-2 mb-1.5">
+                <PoolAvailableAmount
+                  shares={lp_in_pool_non_divisible}
+                  pool={pool}
+                  className={"text-white"}
+                />
+                &nbsp;Holding
+              </div>
             </div>
           </div>
         </div>

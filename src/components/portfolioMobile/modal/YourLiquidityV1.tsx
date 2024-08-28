@@ -7,7 +7,11 @@ import {
 import { checkFarmStake, toRealSymbol, useAllFarms } from "@/services/farm";
 import { getPoolsByIds, getYourPools } from "@/services/indexer";
 import { LP_TOKEN_DECIMALS } from "@/services/m-token";
-import { getVEPoolId, LOVE_TOKEN_DECIMAL, useAccountInfo } from "@/services/referendum";
+import {
+  getVEPoolId,
+  LOVE_TOKEN_DECIMAL,
+  useAccountInfo,
+} from "@/services/referendum";
 import {
   ALL_STABLE_POOL_IDS,
   AllStableTokenIds,
@@ -59,7 +63,10 @@ import { getSharesInPool } from "@/services/pool";
 import { usePool } from "@/hooks/usePools";
 import { PoolFarmAmount } from "@/components/yours/components/modal/YourLiquidityV1";
 import getConfigV2 from "@/utils/configV2";
-import { PoolAvailableAmount, ShareInBurrow } from "@/components/pools/detail/stable/ShareInFarm";
+import {
+  PoolAvailableAmount,
+  ShareInBurrow,
+} from "@/components/pools/detail/stable/ShareInFarm";
 import Big from "big.js";
 
 const { BLACK_TOKEN_LIST } = getConfig();
@@ -494,8 +501,8 @@ function YourClassicLiquidityLine(props: any) {
   const LpLocked = useLpLocker(`:${poolId}`);
   const userTotalShare = BigNumber.sum(sharesNew, farmStakeTotal, LpLocked);
   const userTotalShareToString = userTotalShare
-  .toNumber()
-  .toLocaleString("fullwide", { useGrouping: false });
+    .toNumber()
+    .toLocaleString("fullwide", { useGrouping: false });
   const ImagesMob = tokens.map((token: TokenMetadata, index: number) => {
     const { icon, id } = token;
     if (icon)

@@ -11,7 +11,7 @@ import { useAccountStore } from "@/stores/account";
 import { getAccountId } from "@/utils/wallet";
 import { ftGetBalance, ftGetTokenMetadata } from "@/services/token";
 import { XREF_TOKEN_ID } from "@/services/xref";
-import { toReadableNumber } from "@/utils/numbers";
+import { scientificNotationToString, toReadableNumber } from "@/utils/numbers";
 import { QuestionMark } from "@/components/farm/icon";
 import CustomTooltip from "@/components/customTooltip/customTooltip";
 import { openUrl } from "@/services/commonV3";
@@ -25,6 +25,9 @@ import { display_value } from "@/services/aurora";
 import { ArrowUpIcon, JumpUpperLeft } from "../icon";
 import { useRouter } from "next/router";
 import { usePoolStore } from "@/stores/pool";
+import { getStablePoolDecimal, isStablePool } from "@/services/swap/swapUtils";
+import { useShadowRecordStore } from "@/stores/liquidityStores";
+import { useShadowRecord } from "@/hooks/useStableShares";
 const AssetData = createContext<AssetDataContextType | null>(null);
 export default function Asset() {
   const {
@@ -321,6 +324,7 @@ function AssetPage() {
               in farm
             </p>
           </div>
+          <ShadowRecordPercentage />
         </div>
         <div className="flex-1">
           <div className="flex items-center mb-2">
@@ -341,6 +345,54 @@ function AssetPage() {
     </div>
   );
 }
+
+const ShadowRecordPercentage = () => {
+  const {
+    tokenPriceList,
+    YourLpValueV1,
+    YourLpValueV2,
+    lpValueV1Done,
+    lpValueV2Done,
+    history_total_asset,
+    history_total_asset_done,
+    your_classic_lp_all_in_farms,
+  } = useContext(PortfolioData);
+
+  const shadowRecords = useShadowRecord(
+    (state) => state.shadowRecords
+  ).shadowRecords;
+  let totalShadowValue = 0;
+  if (shadowRecords) {
+    Object.entries(shadowRecords).forEach(([shadowId, value]) => {
+      const inBurrow = shadowRecords?.[Number(shadowId)]?.shadow_in_burrow;
+      const decimal = isStablePool(shadowId)
+        ? getStablePoolDecimal(shadowId)
+        : 24;
+      const amount = toReadableNumber(
+        decimal,
+        scientificNotationToString(inBurrow.toString())
+      );
+      totalShadowValue += Number(amount);
+    });
+  }
+  if (totalShadowValue === 0) return null;
+  const percent = new BigNumber(totalShadowValue || 0).dividedBy(YourLpValueV1);
+  return (
+    <div>
+      <div className="bg-gray-60 bg-opacity-15 rounded py-0.5 px-1 flex items-center text-xs w-fit mt-1">
+        {display_percentage(percent.multipliedBy(100).toFixed()) + "%"}{" "}
+        <span
+          onClick={() => {
+            openUrl("https://app.burrow.finance/");
+          }}
+          className="text-sm text-gray-10 ml-1 underline cursor-pointer"
+        >
+          in Burrow
+        </span>{" "}
+      </div>
+    </div>
+  );
+};
 
 export interface AssetDataContextType {
   getTip: () => string;

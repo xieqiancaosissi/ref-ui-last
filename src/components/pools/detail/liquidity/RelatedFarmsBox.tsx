@@ -14,6 +14,7 @@ import { BigNumber } from "bignumber.js";
 import { Fire, FarmBoardInDetailDCLPool } from "./icon";
 import { FormattedMessage, useIntl } from "react-intl";
 import { GradientFarmBorder } from "../../icon";
+import { getAccountId } from "@/utils/wallet";
 
 export function RelatedFarmsBox(props: any) {
   const { poolDetail, tokenPriceList, sole_seed } = props;
@@ -105,7 +106,11 @@ export function RelatedFarmsBox(props: any) {
   if (farm_loading) return null;
   if (!related_seed) return null;
   return (
-    <div className="flex flex-col mt-4 relative z-30 rounded lg:left-[28px]">
+    <div
+      className={`flex flex-col mt-4 relative z-30 rounded ${
+        getAccountId() ? "lg:left-[28px]" : "lg:left-[0]"
+      }`}
+    >
       <GradientFarmBorder className="absolute -z-10 left-2"></GradientFarmBorder>
       <div className="flex items-center px-6 pt-4 justify-between">
         <div className="text-white whitespace-nowrap text-base font-normal">

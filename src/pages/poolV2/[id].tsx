@@ -194,7 +194,6 @@ export default function DCLPoolDetail() {
       };
       temp_list.push(temp_tokenx, temp_tokeny);
       setTokens(temp_list);
-      console.log(temp_list, "temp");
     }
   }, [poolDetailV3, addSuccess]);
 
@@ -205,18 +204,36 @@ export default function DCLPoolDetail() {
     router.push(`/liquidity/${pool_name}`);
   };
 
+  const [all_seeds, set_all_seeds] = useState<any>({});
   async function get_matched_seeds() {
-    const all_seeds = await get_all_seeds();
-    const matched_seeds = get_matched_seeds_for_dcl_pool({
-      seeds: all_seeds,
-      pool_id: pID.toString(),
-    });
-    const target = matched_seeds[0];
-    if (target) {
-      set_sole_seed(target);
-      set_matched_seeds(matched_seeds);
+    let all_seeds;
+    try {
+      all_seeds = await get_all_seeds();
+      set_all_seeds(all_seeds);
+    } catch (error) {
+      console.log(error);
     }
   }
+
+  useEffect(() => {
+    if (all_seeds?.length > 0) {
+      const matched_seeds = get_matched_seeds_for_dcl_pool({
+        seeds: all_seeds,
+        pool_id: pID.toString(),
+      });
+      set_matched_seeds(matched_seeds);
+    }
+  }, [JSON.stringify(all_seeds || {})]);
+
+  useEffect(() => {
+    if (matched_seeds?.length > 0) {
+      const target = matched_seeds[0];
+      if (target) {
+        set_sole_seed(target);
+        set_matched_seeds(matched_seeds);
+      }
+    }
+  }, [matched_seeds]);
 
   const [showSkection, setShowSkection] = useState(false);
   async function get_user_list_liquidities() {
@@ -554,16 +571,16 @@ export default function DCLPoolDetail() {
                   liquidities={user_liquidities}
                   setAddSuccess={setAddSuccess}
                 />
-                {!isMobile ? (
-                  <RelatedFarmsBox
-                    poolDetail={poolDetailV3}
-                    tokenPriceList={tokenPriceList}
-                    sole_seed={sole_seed}
-                  ></RelatedFarmsBox>
-                ) : null}
               </>
             )
           )}
+          {!isMobile && poolDetailV3 && sole_seed && tokenPriceList ? (
+            <RelatedFarmsBox
+              poolDetail={poolDetailV3}
+              tokenPriceList={tokenPriceList}
+              sole_seed={sole_seed}
+            ></RelatedFarmsBox>
+          ) : null}
         </div>
       </div>
 

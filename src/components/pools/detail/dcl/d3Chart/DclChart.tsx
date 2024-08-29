@@ -352,6 +352,7 @@ export default function DclChart({
       pool_id,
       account_id: accountId,
     });
+
     const price_x = (tokenPriceList as any)[token_x_metadata.id]?.price || 0;
     const price_y = (tokenPriceList as any)[token_y_metadata.id]?.price || 0;
 
@@ -361,7 +362,7 @@ export default function DclChart({
     let total_value = Big(0);
     let total_fee_earned = Big(0);
     let apr_24 = "";
-    if (dcl_fee_result) {
+    if (dcl_fee_result?.apr) {
       // total unClaimed fee
       const [
         unClaimed_tvl_fee,

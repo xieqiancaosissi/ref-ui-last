@@ -126,6 +126,8 @@ export function FarmView(props: {
   const [yourActualAprRate, setYourActualAprRate] = useState("1");
   const tokens = sortTokens(seed.pool?.tokens_meta_data || []);
   const router = useRouter();
+  const accountStore = useAccountStore();
+  const isSignedIn = accountStore.isSignedIn;
   const [yourTvl, setYourTvl] = useState("");
   const unClaimedTokens = useTokens(
     Object.keys(user_unclaimed_map[seed_id] || {})
@@ -147,7 +149,9 @@ export function FarmView(props: {
     }
   }, [boostConfig, user_seeds_map]);
   useEffect(() => {
-    get_list_liquidities();
+    if (isSignedIn) {
+      get_list_liquidities();
+    }
   }, [all_seeds]);
   useEffect(() => {
     const { free_amount, shadow_amount, locked_amount } =

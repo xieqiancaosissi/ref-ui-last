@@ -24,6 +24,9 @@ import {
 } from "./tool";
 import { ButtonTextWrapper } from "../common/Button";
 import { usePersistSwapStore } from "@/stores/swap";
+import { IExecutionResult } from "@/interfaces/wallet";
+import successToast from "../common/toast/successToast";
+import failToast from "../common/toast/failToast";
 const is_mobile = isMobile();
 const { MEME_TOKEN_XREF_MAP } = getMemeContractConfig();
 const progressConfig = getMemeUiConfig();
@@ -39,6 +42,7 @@ function StakeModal(props: any) {
     allTokenMetadatas,
     memeFarmContractUserData,
     xrefFarmContractUserData,
+    init_user,
   } = useContext(MemeContext)!;
   const { isOpen, onRequestClose, seed_id } = props;
   const { delay_withdraw_sec } = memeContractConfig;
@@ -199,12 +203,29 @@ function StakeModal(props: any) {
           toNonDivisibleNumber(xrefSeed.seed_decimal, xrefAmount)
         ).toFixed(0),
         contractId: MEME_TOKEN_XREF_MAP[seed_id],
+      }).then((res) => {
+        handleDataAfterTranstion(res);
       });
     } else {
       stake({
         seed,
         amount: Big(toNonDivisibleNumber(seed.seed_decimal, amount)).toFixed(0),
+      }).then((res) => {
+        handleDataAfterTranstion(res);
       });
+    }
+  }
+  async function handleDataAfterTranstion(res: IExecutionResult | undefined) {
+    if (!res) return;
+    if (res.status == "success") {
+      setStakeLoading(false);
+      successToast();
+      setAmount("0");
+      onRequestClose();
+      init_user();
+    } else if (res.status == "error") {
+      failToast(res.errorResult?.message);
+      setStakeLoading(false);
     }
   }
   const FeedIcon = progressConfig?.progress[seed_id]?.feedIcon;

@@ -24,6 +24,9 @@ import { useAccountStore } from "@/stores/account";
 import { ButtonTextWrapper } from "../common/Button";
 import { useAppStore } from "@/stores/app";
 import { showWalletSelectorModal } from "@/utils/wallet";
+import { IExecutionResult } from "@/interfaces/wallet";
+import successToast from "../common/toast/successToast";
+import failToast from "../common/toast/failToast";
 
 const { MEME_TOKEN_XREF_MAP } = getMemeContractConfig();
 const { meme_winner_tokens, meme_nonListed_tokens } = getMemeDataConfig();
@@ -43,6 +46,7 @@ function MemeVoteModal(props: any) {
     xrefContractConfig,
     seeds,
     memeContractConfig,
+    init_user,
   } = useContext(MemeContext)!;
   const { delay_withdraw_sec } = memeContractConfig;
   useEffect(() => {
@@ -75,7 +79,21 @@ function MemeVoteModal(props: any) {
       stake({
         seed,
         amount: Big(toNonDivisibleNumber(seed.seed_decimal, amount)).toFixed(0),
+      }).then((res) => {
+        handleDataAfterTranstion(res);
       });
+    }
+  }
+  async function handleDataAfterTranstion(res: IExecutionResult | undefined) {
+    if (!res) return;
+    if (res.status == "success") {
+      successToast();
+      setAmount("0");
+      onRequestClose();
+      init_user();
+    } else if (res.status == "error") {
+      failToast(res.errorResult?.message);
+      onRequestClose();
     }
   }
   const disabled =
@@ -339,8 +357,12 @@ function MemeVoteModal(props: any) {
           </OprationButton> */}
             {isSignedIn ? (
               <div
-                onClick={openMemeVoteConfirmModal}
                 // onClick={stakeToken}
+                onClick={() => {
+                  if (!disabled) {
+                    openMemeVoteConfirmModal();
+                  }
+                }}
                 className={`flex flex-grow items-center text-black justify-center bg-greenGradient mt-6 rounded-xl h-12 text-base paceGrotesk-Bold focus:outline-none ${
                   disabled || memeVoteLoading
                     ? "opacity-40 cursor-not-allowed"

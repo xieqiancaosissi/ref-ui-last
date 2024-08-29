@@ -47,6 +47,7 @@ export interface IMemeContext {
   xrefTokenId: string;
   donateBalances: Record<string, string>;
   loading: boolean;
+  init_user: any;
 }
 export interface IFarmAccount {
   withdraw_list: Record<string, IFarmerWithdraw>;
@@ -460,6 +461,7 @@ function MemeContextProvider({ children }: any) {
         xrefTokenId: xrefTokenId || "",
         donateBalances,
         loading,
+        init_user,
       }}
     >
       {children}

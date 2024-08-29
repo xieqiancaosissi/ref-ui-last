@@ -34,6 +34,9 @@ import { ButtonTextWrapper } from "../common/Button";
 import { showWalletSelectorModal } from "@/utils/wallet";
 import { useAppStore } from "@/stores/app";
 import { useRouter } from "next/router";
+import { IExecutionResult } from "@/interfaces/wallet";
+import successToast from "../common/toast/successToast";
+import failToast from "../common/toast/failToast";
 
 const { MEME_TOKEN_XREF_MAP } = getMemeContractConfig();
 const { meme_winner_tokens, meme_nonListed_tokens } = getMemeDataConfig();
@@ -51,6 +54,7 @@ function VoteModel(props: any) {
     xrefSeeds,
     xrefContractConfig,
     donateBalances,
+    init_user,
   } = useContext(MemeContext)!;
   const router = useRouter();
   useEffect(() => {
@@ -131,7 +135,22 @@ function VoteModel(props: any) {
           amount
         )
       ).toFixed(0),
+    }).then((res) => {
+      handleDataAfterTranstion(res);
     });
+  }
+  async function handleDataAfterTranstion(res: IExecutionResult | undefined) {
+    if (!res) return;
+    if (res.status == "success") {
+      setStakeLoading(false);
+      successToast();
+      setAmount("0");
+      onRequestClose();
+      init_user();
+    } else if (res.status == "error") {
+      failToast(res.errorResult?.message);
+      setStakeLoading(false);
+    }
   }
   const disabled =
     Big(amount || 0).lte(0) ||
@@ -397,7 +416,11 @@ function VoteModel(props: any) {
             </div>
             {isSignedIn ? (
               <div
-                onClick={stakeToken}
+                onClick={() => {
+                  if (!disabled) {
+                    stakeToken();
+                  }
+                }}
                 className={`flex flex-grow items-center justify-center text-black  bg-greenGradient mt-6 rounded-xl h-12 text-base paceGrotesk-Bold focus:outline-none ${
                   disabled || stakeLoading
                     ? "opacity-40 cursor-not-allowed"

@@ -16,6 +16,9 @@ import { Template } from "./StakeModal";
 import { getMemeContractConfig, getMemeDataConfig } from "./memeConfig";
 import { formatSeconds, memeWeight, getListedMemeSeeds } from "./tool";
 import { ButtonTextWrapper } from "../common/Button";
+import { IExecutionResult } from "@/interfaces/wallet";
+import successToast from "../common/toast/successToast";
+import failToast from "../common/toast/failToast";
 const { MEME_TOKEN_XREF_MAP } = getMemeContractConfig();
 const { meme_winner_tokens } = getMemeDataConfig();
 function UnStakeModal(props: any) {
@@ -29,6 +32,7 @@ function UnStakeModal(props: any) {
     xrefFarmContractUserData,
     memeFarmContractUserData,
     xrefContractConfig,
+    init_user,
   } = useContext(MemeContext)!;
   const { isOpen, onRequestClose, seed_id } = props;
   const { delay_withdraw_sec } = memeContractConfig;
@@ -139,6 +143,8 @@ function UnStakeModal(props: any) {
               withdrawAmount: xref_withdraw_list[xrefTokenId].amount,
             }
           : {}),
+      }).then((res) => {
+        handleDataAfterTranstion(res);
       });
     } else {
       unStake({
@@ -149,7 +155,22 @@ function UnStakeModal(props: any) {
               withdrawAmount: withdraw_list[seed_id].amount,
             }
           : {}),
+      }).then((res) => {
+        handleDataAfterTranstion(res);
       });
+    }
+  }
+  async function handleDataAfterTranstion(res: IExecutionResult | undefined) {
+    if (!res) return;
+    if (res.status == "success") {
+      setUnStakeLoading(false);
+      successToast();
+      setAmount("0");
+      onRequestClose();
+      init_user();
+    } else if (res.status == "error") {
+      failToast(res.errorResult?.message);
+      setUnStakeLoading(false);
     }
   }
   const cardWidth = isMobile() ? "100vw" : "28vw";

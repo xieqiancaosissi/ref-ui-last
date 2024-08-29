@@ -22,6 +22,9 @@ import { ButtonTextWrapper } from "../common/Button";
 import { Seed } from "@/services/farm";
 import CustomTooltip from "../customTooltip/customTooltip";
 import { useRouter } from "next/router";
+import { IExecutionResult } from "@/interfaces/wallet";
+import successToast from "../common/toast/successToast";
+import failToast from "../common/toast/failToast";
 
 const is_mobile = isMobile();
 const MySeedsBox = ({
@@ -40,6 +43,7 @@ const MySeedsBox = ({
     xrefTokenId,
     tokenPriceList,
     allTokenMetadatas,
+    init_user,
   } = useContext(MemeContext)!;
   const router = useRouter();
   const [isUnStakeOpen, setIsUnStakeOpen] = useState(false);
@@ -101,7 +105,20 @@ const MySeedsBox = ({
       seed,
       xrefSeed,
       xrefContractId,
+    }).then((res) => {
+      handleDataAfterTranstion(res);
     });
+  }
+  async function handleDataAfterTranstion(res: IExecutionResult | undefined) {
+    if (!res) return;
+    if (res.status == "success") {
+      successToast();
+      set_claim_id("");
+      init_user();
+    } else if (res.status == "error") {
+      failToast(res.errorResult?.message);
+      set_claim_id("");
+    }
   }
   function comeSoonTip() {
     const result = `<div class="px-2 text-xs text-farmText">

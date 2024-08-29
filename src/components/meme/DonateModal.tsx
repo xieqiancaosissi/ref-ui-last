@@ -16,14 +16,22 @@ import { useAccountStore } from "@/stores/account";
 import { ButtonTextWrapper } from "../common/Button";
 import { showWalletSelectorModal } from "@/utils/wallet";
 import { useAppStore } from "@/stores/app";
+import { IExecutionResult } from "@/interfaces/wallet";
+import successToast from "../common/toast/successToast";
+import failToast from "../common/toast/failToast";
 const { MEME_TOKEN_XREF_MAP } = getMemeContractConfig();
 function DonateModal(props: any) {
   const { isOpen, onRequestClose } = props;
   const [selectedTab, setSelectedTab] = useState("");
   const [confirmIsOpen, setConfirmIsOpen] = useState<boolean>(false);
   const [donateLoading, setDonateLoading] = useState<boolean>(false);
-  const { allTokenMetadatas, tokenPriceList, user_balances, xrefSeeds } =
-    useContext(MemeContext)!;
+  const {
+    allTokenMetadatas,
+    tokenPriceList,
+    user_balances,
+    xrefSeeds,
+    init_user,
+  } = useContext(MemeContext)!;
   const { getIsSignedIn } = useAccountStore();
   const isSignedIn = getIsSignedIn();
   const appStore = useAppStore();
@@ -53,7 +61,22 @@ function DonateModal(props: any) {
       amount: Big(
         toNonDivisibleNumber(allTokenMetadatas[selectedTab].decimals, amount)
       ).toFixed(0),
+    }).then((res) => {
+      handleDataAfterTranstion(res);
     });
+  }
+  async function handleDataAfterTranstion(res: IExecutionResult | undefined) {
+    if (!res) return;
+    if (res.status == "success") {
+      successToast();
+      setAmount("0");
+      onRequestClose();
+      closeDonateConfirmModal;
+      init_user();
+    } else if (res.status == "error") {
+      failToast(res.errorResult?.message);
+      onRequestClose();
+    }
   }
   const disabled =
     Big(amount || 0).lte(0) ||
@@ -214,8 +237,12 @@ function DonateModal(props: any) {
           </div>
           {isSignedIn ? (
             <div
-              onClick={openDonateConfirmModal}
-              className={`flex flex-grow items-center justify-center text-black cursor-pointer bg-greenGradient mt-6 rounded-xl h-12 text-base paceGrotesk-Bold focus:outline-none ${
+              onClick={() => {
+                if (!disabled) {
+                  openDonateConfirmModal();
+                }
+              }}
+              className={`flex flex-grow items-center justify-center text-black bg-greenGradient mt-6 rounded-xl h-12 text-base paceGrotesk-Bold focus:outline-none ${
                 disabled || donateLoading
                   ? "opacity-40 cursor-not-allowed"
                   : "cursor-pointer"

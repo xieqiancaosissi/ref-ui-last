@@ -12,6 +12,9 @@ import {
 } from "./tool";
 import { getMemeContractConfig } from "./memeConfig";
 import { ButtonTextWrapper } from "../common/Button";
+import { IExecutionResult } from "@/interfaces/wallet";
+import failToast from "../common/toast/failToast";
+import successToast from "../common/toast/successToast";
 interface IWithdraw {
   [id: string]: {
     amount: string;
@@ -30,6 +33,7 @@ const WithdrawList = () => {
     xrefFarmContractUserData,
     allTokenMetadatas,
     xrefTokenId,
+    init_user,
   } = useContext(MemeContext)!;
   const all_withdraw_list: IWithdraw = useMemo(() => {
     if (!memeFarmContractUserData || !xrefFarmContractUserData) return {};
@@ -80,13 +84,28 @@ const WithdrawList = () => {
       withdraw({
         seed_id: id,
         amount: all_withdraw_list[id].amount,
+      }).then((res) => {
+        handleDataAfterTranstion(res);
       });
     } else {
       xrefWithdraw({
         contractId: id,
         seed_id: xrefTokenId,
         amount: all_withdraw_list[id].amount,
+      }).then((res) => {
+        handleDataAfterTranstion(res);
       });
+    }
+  }
+  async function handleDataAfterTranstion(res: IExecutionResult | undefined) {
+    if (!res) return;
+    if (res.status == "success") {
+      successToast();
+      setActionSeedId("");
+      init_user();
+    } else if (res.status == "error") {
+      failToast(res.errorResult?.message);
+      setActionSeedId("");
     }
   }
   if (emptyObject(all_withdraw_list)) return null;

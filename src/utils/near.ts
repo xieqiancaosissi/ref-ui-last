@@ -15,7 +15,7 @@ import {
   TRANSACTION_WALLET_TYPE,
 } from "../utils/transactionsPopup";
 const config = getConfig();
-const webWalletIds = ["my-near-wallet", "mintbase-wallet"];
+const webWalletIds = ["my-near-wallet", "mintbase-wallet", "bitte-wallet"];
 
 export const ONE_YOCTO_NEAR = "0.000000000000000000000001";
 export const LP_STORAGE_AMOUNT = "0.01";

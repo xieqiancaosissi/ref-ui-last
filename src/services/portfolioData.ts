@@ -5,7 +5,7 @@ import {
   Transaction as WSTransaction,
 } from "@near-wallet-selector/core";
 
-const webWalletIds = ["my-near-wallet", "mintbase-wallet"];
+const webWalletIds = ["my-near-wallet", "mintbase-wallet", "bitte-wallet"];
 export async function batchDeleteKeys(publicKeys: string[]) {
   const accountId = getAccountId();
   const wallet = await window.selector.wallet();

@@ -128,6 +128,7 @@ export default function FarmsDetail(props: {
   const [isStakeMobileOpen, setStakeMobileOpen] = useState<boolean>(false);
   const [showActivateBox, setShowActivateBox] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState("stake");
+  const [isSharesInfoReady, setIsSharesInfoReady] = useState(false);
   const isSignedIn = accountStore.isSignedIn;
   const appStore = useAppStore();
   const [sharesInfo, setSharesInfo] = useState<{
@@ -154,6 +155,7 @@ export default function FarmsDetail(props: {
         amountByShadowInFarm: amountByShadowInFarm || "0",
         amountByTransferInFarm: amountByTransferInFarm || "0",
       });
+      setIsSharesInfoReady(true);
     }
   }
   function sortTokens(tokens: TokenMetadata[]) {
@@ -181,8 +183,15 @@ export default function FarmsDetail(props: {
     get_server_time();
   }, []);
   useEffect(() => {
-    updateSharesAndBalance();
-  }, [Object.keys(user_seeds_map).length, user_data_loading, sharesInfo]);
+    if (Object.keys(user_seeds_map).length && !user_data_loading) {
+      getSharesInfo();
+    }
+  }, [user_seeds_map, user_data_loading]);
+  useEffect(() => {
+    if (isSharesInfoReady) {
+      getStakeBalance();
+    }
+  }, [isSharesInfoReady]);
   async function updateSharesAndBalance() {
     await getSharesInfo();
     await getStakeBalance();

@@ -42,6 +42,7 @@ import getConfigV2 from "@/utils/configV2";
 import { IExecutionResult } from "@/interfaces/wallet";
 import successToast from "@/components/common/toast/successToast";
 import failToast from "@/components/common/toast/failToast";
+import { BeatLoader } from "react-spinners";
 
 const {
   STABLE_POOL_IDS,
@@ -218,7 +219,7 @@ export default function FarmsDetailStake(props: {
   }
   function displayLpBalance() {
     if (lpBalance === undefined || lpBalance === null || lpBalance === "") {
-      return "Loading...";
+      return <BeatLoader size={5} color={"#ffffff"} />;
     } else {
       return toPrecision(lpBalance, 8);
     }

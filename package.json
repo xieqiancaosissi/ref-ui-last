@@ -21,7 +21,7 @@
     "@near-wallet-selector/ledger": "^8.9.7",
     "@near-wallet-selector/math-wallet": "^8.9.7",
     "@near-wallet-selector/meteor-wallet": "8.9.12",
-    "@near-wallet-selector/mintbase-wallet": "^8.9.7",
+    "@near-wallet-selector/mintbase-wallet": "8.9.7",
     "@near-wallet-selector/modal-ui": "^8.9.7",
     "@near-wallet-selector/my-near-wallet": "^8.9.7",
     "@near-wallet-selector/near-mobile-wallet": "^8.9.7",

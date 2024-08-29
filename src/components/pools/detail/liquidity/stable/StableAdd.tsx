@@ -217,13 +217,14 @@ export default function StableAdd(props: any) {
   const [canSubmit, setCanSubmit] = useState(true);
   const [inputAmountIsEmpty, setInputAmountIsEmpty] = useState(true);
   const [notEnoughList, setNotEnoughList] = useState([]);
-
+  const [showNearGas, setShowNearGas] = useState(false);
   useEffect(() => {
     let flag: boolean = true;
     let emptyFlag: boolean = false;
     const k: any = [];
     const isAllMaxArray: any = [];
     let initBalance = 0;
+    let nearGas: boolean = false;
     inputValList.map((item: any, index: number) => {
       if (+item > balancesList[index]?.balance) {
         flag = false;
@@ -231,6 +232,14 @@ export default function StableAdd(props: any) {
       }
       if (item > 0) {
         emptyFlag = true;
+      }
+      if (
+        emptyFlag &&
+        updatedMapList[0].token_account_ids[index].id == "wrap.near" &&
+        +item > balancesList[index]?.balance - 0.5
+      ) {
+        flag = false;
+        nearGas = true;
       }
 
       initBalance += +balancesList[index]?.balance || 0;
@@ -256,6 +265,7 @@ export default function StableAdd(props: any) {
     setInputAmountIsEmpty(emptyFlag);
     setCanSubmit(flag);
     setNotEnoughList(k);
+    setShowNearGas(nearGas);
   }, [inputValList]);
 
   useEffect(() => {
@@ -374,7 +384,14 @@ export default function StableAdd(props: any) {
                                 changeVal(
                                   {
                                     target: {
-                                      value: balancesList[ind]?.balance,
+                                      value:
+                                        ite.tokenId == "wrap.near"
+                                          ? balancesList[ind]?.balance > 0.5
+                                            ? (
+                                                balancesList[ind]?.balance - 0.5
+                                              ).toString()
+                                            : ""
+                                          : balancesList[ind]?.balance,
                                     },
                                   },
                                   ind,
@@ -589,8 +606,21 @@ export default function StableAdd(props: any) {
               </div>
             </div>
           </div>
+
           {/* tips  */}
-          {!canSubmit && (
+          {showNearGas && notEnoughList.length < 1 && (
+            <div
+              className="text-yellow-10 text-sm border h-11 w-full rounded flex px-2 py-1 items-center mt-2"
+              style={{
+                borderColor: "rgba(230, 180, 1, 0.3)",
+                backgroundColor: "rgba(230, 180, 1, 0.14)",
+              }}
+            >
+              <span>{`Must have 0.5N or more left in wallet for gas fee.`}</span>
+            </div>
+          )}
+          {/* tips  */}
+          {!canSubmit && notEnoughList.length > 0 && (
             <div
               className="text-yellow-10 text-sm border h-11 w-full rounded flex px-4 py-1 items-center mt-6 mb-2"
               style={{

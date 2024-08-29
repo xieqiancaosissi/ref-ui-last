@@ -304,7 +304,7 @@ export const usePool = (id: number | string) => {
   );
 
   useEffect(() => {
-    if (isSignedIn) {
+    if (isSignedIn && !isNaN(Number(id))) {
       getPoolDetails(Number(id)).then(setPool);
       getSharesInPool(Number(id))
         .then(setShares)

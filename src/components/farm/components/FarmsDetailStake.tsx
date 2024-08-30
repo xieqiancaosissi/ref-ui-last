@@ -235,6 +235,9 @@ export default function FarmsDetailStake(props: {
     new BigNumber(amount).isGreaterThan(new BigNumber(lpBalance));
 
   function formatCheckedList(data) {
+    if (!data || typeof data !== "object") {
+      return {};
+    }
     const formattedData = {};
     for (const [key, value] of Object.entries(data)) {
       formattedData[key] = { value: value.toString() };

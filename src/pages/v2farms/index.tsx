@@ -35,10 +35,10 @@ export default function FarmsBoosterPage(props: any) {
     if (farmsPageRef.current) {
       farmsPageRef.current.init();
       farmsPageRef.current.getConfig();
-      farmsPageRef.current.get_user_unWithDraw_rewards();
+      // farmsPageRef.current.get_user_unWithDraw_rewards();
       farmsPageRef.current.get_user_seeds_and_unClaimedRewards();
-      farmsPageRef.current.getLoveTokenBalance();
-      farmsPageRef.current.get_ve_seed_share();
+      // // farmsPageRef.current.getLoveTokenBalance();
+      // farmsPageRef.current.get_ve_seed_share();
     }
   };
   const getDetailData_user_data = (data: {

@@ -387,9 +387,11 @@ export default function StableAdd(props: any) {
                                       value:
                                         ite.tokenId == "wrap.near"
                                           ? balancesList[ind]?.balance > 0.5
-                                            ? (
-                                                balancesList[ind]?.balance - 0.5
-                                              ).toString()
+                                            ? new BigNumber(
+                                                balancesList[ind]?.balance
+                                              )
+                                                .minus(0.5)
+                                                .toString()
                                             : ""
                                           : balancesList[ind]?.balance,
                                     },

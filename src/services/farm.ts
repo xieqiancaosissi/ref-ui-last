@@ -747,15 +747,17 @@ export const unStake_boost = async ({
     });
   }
 
-  const { storageDepositTransactions, withdrawRewardTransactions } =
-    await buildWithdrawRewardFunctionCalls(checkedList);
-  transactions.push(
-    ...storageDepositTransactions,
-    ...withdrawRewardTransactions
-  );
+  if (checkedList) {
+    const { storageDepositTransactions, withdrawRewardTransactions } =
+      await buildWithdrawRewardFunctionCalls(checkedList);
+    transactions.push(
+      ...storageDepositTransactions,
+      ...withdrawRewardTransactions
+    );
 
-  const nearWithdrawTransactions = buildWithdrawNearTransactions(checkedList);
-  transactions.push(...nearWithdrawTransactions);
+    const nearWithdrawTransactions = buildWithdrawNearTransactions(checkedList);
+    transactions.push(...nearWithdrawTransactions);
+  }
 
   return executeFarmMultipleTransactions(transactions);
 };
@@ -1270,16 +1272,17 @@ export const unStake_boost_shadow = async ({
       functionCalls: [storageDepositAction({ amount: neededStorage })],
     });
   }
+  if (checkedList) {
+    const { storageDepositTransactions, withdrawRewardTransactions } =
+      await buildWithdrawRewardFunctionCalls(checkedList);
+    transactions.push(
+      ...storageDepositTransactions,
+      ...withdrawRewardTransactions
+    );
 
-  const { storageDepositTransactions, withdrawRewardTransactions } =
-    await buildWithdrawRewardFunctionCalls(checkedList);
-  transactions.push(
-    ...storageDepositTransactions,
-    ...withdrawRewardTransactions
-  );
-
-  const nearWithdrawTransactions = buildWithdrawNearTransactions(checkedList);
-  transactions.push(...nearWithdrawTransactions);
+    const nearWithdrawTransactions = buildWithdrawNearTransactions(checkedList);
+    transactions.push(...nearWithdrawTransactions);
+  }
 
   return executeFarmMultipleTransactions(transactions);
 };

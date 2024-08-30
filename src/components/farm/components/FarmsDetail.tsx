@@ -142,6 +142,7 @@ export default function FarmsDetail(props: {
     amountByTransferInFarm: "0",
   });
   async function getSharesInfo() {
+    setIsSharesInfoReady(false);
     const { seed_id } = detailData;
     const { free_amount, shadow_amount } = user_seeds_map[seed_id] || {};
     if (pool) {
@@ -197,10 +198,6 @@ export default function FarmsDetail(props: {
       getStakeBalance();
     }
   }, [isSharesInfoReady]);
-  async function updateSharesAndBalance() {
-    await getSharesInfo();
-    await getStakeBalance();
-  }
   function getYourAprs() {
     const yourApr = getYourApr();
     if (yourApr) {
@@ -1026,7 +1023,7 @@ export default function FarmsDetail(props: {
                   user_unclaimed_token_meta_map={user_unclaimed_token_meta_map}
                   user_data_loading={user_data_loading}
                   radio={radio}
-                  updateSharesAndBalance={updateSharesAndBalance}
+                  updateSharesAndBalance={setSharesInfo}
                   ontriggerFarmsStakeUpdate={ontriggerFarmsStakeUpdate}
                 ></FarmsDetailStake>
               </div>
@@ -1314,7 +1311,7 @@ export default function FarmsDetail(props: {
           user_data_loading={user_data_loading}
           radio={radio}
           activeTab={activeTab}
-          updateSharesAndBalance={updateSharesAndBalance}
+          updateSharesAndBalance={setSharesInfo}
           ontriggerFarmsStakeUpdate={ontriggerFarmsStakeUpdate}
         />
       </div>

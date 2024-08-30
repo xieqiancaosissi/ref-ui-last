@@ -82,9 +82,9 @@ export default function LPTip({ seed_id }: { seed_id: string }) {
       >
         <BurrowIcon />
       </span>
-      {showShadowTip ? (
+      {/* {showShadowTip ? (
         <ShadowTip seed_id={seed_id} show={true} className="xsm:-right-8" />
-      ) : null}
+      ) : null} */}
       <div
         className={`absolute bottom-0 pb-6 xsm:-right-8 z-10 ${
           hover && !showShadowTip ? "" : "hidden"
@@ -94,7 +94,11 @@ export default function LPTip({ seed_id }: { seed_id: string }) {
           Stake LP tokens as collateral on
           <a
             className="text-yellow-30 underline cursor-pointer ml-1"
-            onClick={BurrowClick}
+            onClick={() => {
+              const shadow_id = `shadow_ref_v1-${poolId}`;
+              const url = `https://app.burrow.finance/tokenDetail/${shadow_id}`;
+              window.open(url);
+            }}
           >
             Burrow
           </a>{" "}

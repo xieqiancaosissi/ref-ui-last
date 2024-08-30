@@ -16,10 +16,14 @@ export default function ShadowTip({
 }) {
   const contextData = useContext(FarmsContextData);
   const [amount, setAmount] = useState("0");
+  const [formattedCheckedList, setFormattedCheckedList] = useState<any>({});
   useEffect(() => {
     const { free_amount } =
       contextData?.user_data?.user_seeds_map?.[seed_id] || {};
     setAmount(free_amount || "0");
+    setFormattedCheckedList(
+      formatCheckedList(user_unclaimed_map?.[seed_id] || {})
+    );
   }, [contextData]);
   function formatCheckedList(data) {
     const formattedData = {};
@@ -28,7 +32,6 @@ export default function ShadowTip({
     }
     return formattedData;
   }
-  const formattedCheckedList = formatCheckedList(user_unclaimed_map[seed_id]);
   function activeShadow() {
     stake_boost_shadow({
       pool_id: +seed_id.split("@")[1],

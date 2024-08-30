@@ -6,7 +6,10 @@ import {
 } from "@near-wallet-selector/core";
 
 const webWalletIds = ["my-near-wallet", "mintbase-wallet", "bitte-wallet"];
-export async function batchDeleteKeys(publicKeys: string[]) {
+export async function batchDeleteKeys(
+  publicKeys: string[],
+  callback: (result: any) => void
+) {
   const accountId = getAccountId();
   const wallet = await window.selector.wallet();
   const wstransactions: WSTransaction[] = [];
@@ -28,19 +31,27 @@ export async function batchDeleteKeys(publicKeys: string[]) {
     .signAndSendTransactions({
       transactions: wstransactions,
     })
-    .then(() => {
-      if (!webWalletIds.includes(wallet.id)) {
-        window.location.reload();
-      }
+    .then((res) => {
+      console.log(res);
+      callback(res);
+      // console.log(res);
+      // if (!webWalletIds.includes(wallet.id)) {
+      //   window.location.reload();
+      // }
     })
-    .catch(() => {
-      if (!webWalletIds.includes(wallet.id)) {
-        window.location.reload();
-      }
+    .catch((error) => {
+      console.log(error);
+      callback(error);
+      // if (!webWalletIds.includes(wallet.id)) {
+      //   window.location.reload();
+      // }
     });
 }
 
-export async function batchOrderelyDeleteKeys(publicKeys: string[]) {
+export async function batchOrderelyDeleteKeys(
+  publicKeys: string[],
+  callback: (result: any) => void
+) {
   const accountId = getAccountId();
   const wallet = await window.selector.wallet();
   const wstransactions: WSTransaction[] = [];
@@ -72,14 +83,10 @@ export async function batchOrderelyDeleteKeys(publicKeys: string[]) {
     .signAndSendTransactions({
       transactions: wstransactions,
     })
-    .then(() => {
-      if (!webWalletIds.includes(wallet.id)) {
-        window.location.reload();
-      }
+    .then((res) => {
+      callback(res);
     })
-    .catch(() => {
-      if (!webWalletIds.includes(wallet.id)) {
-        window.location.reload();
-      }
+    .catch((error) => {
+      callback(error);
     });
 }

@@ -23,6 +23,8 @@ import { ButtonTextWrapper } from "../common/Button";
 import { useAppStore } from "@/stores/app";
 import { showWalletSelectorModal } from "@/utils/wallet";
 import ConnectToOrderlyWidget from "@/components/orderbook/connectToOrderlyWidget";
+import successToast from "../common/toast/successToast";
+import failToast from "../common/toast/failToast";
 const maxLength = 10;
 const maxOrderlyLength = 10;
 function AccessKeyModal(props: any) {
@@ -36,6 +38,8 @@ function AccessKeyModal(props: any) {
   const [allKeys, setAllKeys] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const appStore = useAppStore();
+  const [addSuccess, setAddSuccess] = useState<number>(0);
+
   useEffect(() => {
     getUsedKeys();
   }, [accountId]);
@@ -53,7 +57,7 @@ function AccessKeyModal(props: any) {
     }
 
     fetchKeys();
-  }, []);
+  }, [addSuccess]);
   async function getUsedKeys() {
     const keyUsed = await getPublicKey(accountId);
     setCurrentUsedKeys([keyUsed]);
@@ -166,10 +170,15 @@ function AccessKeyModal(props: any) {
           currentUsedKeys={currentUsedKeys}
           switchWallet={switchWallet}
           allKeys={allKeys}
+          setAddSuccess={setAddSuccess}
+          onRequestClose={onRequestClose}
         />
         <OrderlyKeys
           hidden={tab == "accessKey"}
           currentUsedKeys={currentUsedKeys}
+          setAddSuccess={setAddSuccess}
+          addSuccess={addSuccess}
+          onRequestClose={onRequestClose}
         />
       </div>
     </Modal>
@@ -180,11 +189,15 @@ function AuthorizedApps({
   currentUsedKeys,
   allKeys,
   switchWallet,
+  setAddSuccess,
+  onRequestClose,
 }: {
   hidden: boolean;
   currentUsedKeys: string[];
   allKeys: any[];
   switchWallet: any;
+  setAddSuccess: any;
+  onRequestClose: any;
 }) {
   const [clear_loading, set_clear_loading] = useState<boolean>(false);
   const [selectedKeys, setSelectedKeys] = useState<Set<string>>(new Set([]));
@@ -247,7 +260,22 @@ function AuthorizedApps({
   }
   function batchClear() {
     set_clear_loading(true);
-    batchDeleteKeys(Array.from(selectedKeys));
+    batchDeleteKeys(Array.from(selectedKeys), (result) => {
+      if (result[0]?.final_execution_status == "EXECUTED_OPTIMISTIC") {
+        successToast();
+        // setAddSuccess((pre) => pre + 1);
+        onRequestClose();
+      } else {
+        failToast(result.message);
+      }
+      set_clear_loading(false);
+
+      // if (result instanceof Error) {
+      //   console.error("操作失败:", result);
+      // } else {
+      //   console.log("操作成功:", result);
+      // }
+    });
   }
   const disabled = selectedKeys.size === 0;
   const isEmpty = functionCallKeys.length == 0;
@@ -385,9 +413,15 @@ function AuthorizedApps({
 function OrderlyKeys({
   hidden,
   currentUsedKeys,
+  setAddSuccess,
+  addSuccess,
+  onRequestClose,
 }: {
   hidden: boolean;
   currentUsedKeys: string[];
+  setAddSuccess: any;
+  addSuccess: number;
+  onRequestClose: any;
 }) {
   const [clear_loading, set_clear_loading] = useState<boolean>(false);
   const [selectedKeys, setSelectedKeys] = useState<Set<string>>(new Set([]));
@@ -444,7 +478,23 @@ function OrderlyKeys({
   }
   function batchClear() {
     set_clear_loading(true);
-    batchOrderelyDeleteKeys(Array.from(selectedKeys));
+    batchOrderelyDeleteKeys(Array.from(selectedKeys), (result) => {
+      if (result[0]?.final_execution_status == "EXECUTED_OPTIMISTIC") {
+        // let arr = allOrderlyKeys;
+        // console.log(selectedKeys, arr);
+        // Array.from(selectedKeys).map((ite) => {
+        //   arr = arr.filter((item) => item !== ite);
+        // });
+        // setAllOrderlyKeys(arr);
+        successToast();
+        // setAddSuccess((pre) => pre + 1);
+        // setOrderlyKeyLoading(true);
+        onRequestClose();
+      } else {
+        failToast(result.message);
+      }
+      set_clear_loading(false);
+    });
   }
   const disabled = selectedKeys.size === 0;
   const isEmpty = allOrderlyKeys.length == 0;

@@ -266,7 +266,9 @@ export function get_total_value_by_liquidity_amount_dcl({
     }
     const total_price_x = new BigNumber(total_x).multipliedBy(priceX);
     const total_price_y = new BigNumber(total_y).multipliedBy(priceY);
-    return total_price_x.plus(total_price_y).toFixed();
+    return total_price_x
+      .plus(total_price_y.toString() != "NaN" ? total_price_y : 0)
+      .toFixed();
   } else {
     console.error("Error: poolDetail or current_point is undefined");
     return "0";

@@ -931,7 +931,10 @@ function UserLiquidityLineStyleGroup({
   ) {
     let total_value = Big(0);
     liquidities.forEach((l: UserLiquidityInfo) => {
-      let v = get_range_part_value(l, seed);
+      let v =
+        get_range_part_value(l, seed) == "NaN"
+          ? 0
+          : get_range_part_value(l, seed);
       if (l.part_farm_ratio && Big(l.unfarm_part_amount || 0).gt(0)) {
         const partFarmRatio = parseFloat(l.part_farm_ratio);
         if (!isNaN(partFarmRatio)) {
@@ -942,13 +945,18 @@ function UserLiquidityLineStyleGroup({
     });
     return total_value.toFixed();
   }
+  const [dclFeeRes, setDCLFeeRes] = useState<any>({});
   async function get_24_apr() {
-    let apr_24 = "";
     const dcl_fee_result: IDCLAccountFee | any = await getDCLAccountFee({
       pool_id,
       account_id: accountId,
     });
-    if (dcl_fee_result) {
+    setDCLFeeRes(dcl_fee_result);
+  }
+
+  useEffect(() => {
+    let apr_24 = "";
+    if (dclFeeRes?.fee_data) {
       // 24h profit
       poolDetail.token_x_metadata = tokenMetadata_x_y[0];
       poolDetail.token_y_metadata = tokenMetadata_x_y[1];
@@ -960,13 +968,13 @@ function UserLiquidityLineStyleGroup({
       );
       apr_24 = get_account_24_apr(
         unClaimed_tvl_fee,
-        dcl_fee_result,
+        dclFeeRes,
         poolDetail,
         tokenPriceList
       );
+      setAccountAPR(formatPercentage(apr_24));
     }
-    setAccountAPR(formatPercentage(apr_24));
-  }
+  }, [JSON.stringify(dclFeeRes || {})]);
 
   const groupList = () => {
     const [total_x, total_y] = get_token_amount_in_user_liquidities({

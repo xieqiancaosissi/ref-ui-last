@@ -142,6 +142,7 @@ export default function FarmsDetail(props: {
     amountByTransferInFarm: "0",
   });
   async function getSharesInfo() {
+    setIsSharesInfoReady(false);
     const { seed_id } = detailData;
     const { free_amount, shadow_amount } = user_seeds_map[seed_id] || {};
     if (pool) {

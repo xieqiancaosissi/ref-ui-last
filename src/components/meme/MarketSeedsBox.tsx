@@ -27,10 +27,12 @@ const MarketSeedsBox = ({
   hidden,
   displaySeedsPercent,
   origin,
+  setIsTxHashOpen,
 }: {
   hidden: boolean;
   displaySeedsPercent: Record<string, string>;
   origin?: string;
+  setIsTxHashOpen: any;
 }) => {
   const router = useRouter();
   const { setHasLoaingOver, hasLoaingOver } = introCurrentPageStore() as any;
@@ -266,6 +268,7 @@ const MarketSeedsBox = ({
             setIsStakeOpen(false);
           }}
           seed_id={modal_action_seed_id}
+          setIsTxHashOpen={setIsTxHashOpen}
         />
       ) : null}
     </div>

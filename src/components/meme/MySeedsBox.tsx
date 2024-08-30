@@ -30,9 +30,11 @@ const is_mobile = isMobile();
 const MySeedsBox = ({
   hidden,
   displaySeedsPercent,
+  setIsTxHashOpen,
 }: {
   hidden: boolean;
   displaySeedsPercent: Record<string, string>;
+  setIsTxHashOpen: any;
 }) => {
   const {
     seeds,
@@ -382,6 +384,7 @@ const MySeedsBox = ({
               setIsUnStakeOpen(false);
             }}
             seed_id={modal_action_seed_id}
+            setIsTxHashOpen={setIsTxHashOpen}
           />
         ) : null}
       </div>

@@ -140,10 +140,10 @@ export default function FarmsDetailStake(props: {
     }
   }, [unlpBalances]);
   useEffect(() => {
-    if (!user_data_loading) {
+    if (!user_data_loading && isSignedIn) {
       getSharesInfo();
     }
-  }, [Object.keys(user_seeds_map).length, user_data_loading]);
+  }, [Object.keys(user_seeds_map).length, user_data_loading, isSignedIn]);
   async function getSharesInfo() {
     const { seed_id } = detailData;
     const { free_amount, shadow_amount } = user_seeds_map[seed_id] || {};

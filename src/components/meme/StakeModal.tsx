@@ -44,7 +44,7 @@ function StakeModal(props: any) {
     xrefFarmContractUserData,
     init_user,
   } = useContext(MemeContext)!;
-  const { isOpen, onRequestClose, seed_id } = props;
+  const { isOpen, onRequestClose, seed_id, setIsTxHashOpen } = props;
   const { delay_withdraw_sec } = memeContractConfig;
   const xrefContractId = MEME_TOKEN_XREF_MAP[seed_id];
   const { delay_withdraw_sec: delay_withdraw_sec_xref } =
@@ -219,7 +219,8 @@ function StakeModal(props: any) {
     if (!res) return;
     if (res.status == "success") {
       setStakeLoading(false);
-      successToast();
+      // successToast();
+      setIsTxHashOpen(true);
       setAmount("0");
       onRequestClose();
       init_user();

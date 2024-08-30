@@ -111,7 +111,8 @@ export default function FarmsDetail(props: {
     pool && new Set(STABLE_POOL_IDS || []).has(pool.id?.toString())
       ? LP_STABLE_TOKEN_DECIMALS
       : LP_TOKEN_DECIMALS;
-  const { free_amount = "0" } = user_seeds_map[seed_id] || {};
+  const { free_amount = "0", shadow_amount = "0" } =
+    user_seeds_map[seed_id] || {};
   const freeAmount = toReadableNumber(DECIMALS, free_amount);
   const tokens = sortTokens(useTokens(token_account_ids) || []);
   const router = useRouter();
@@ -183,10 +184,14 @@ export default function FarmsDetail(props: {
     get_server_time();
   }, []);
   useEffect(() => {
-    if (Object.keys(user_seeds_map).length && !user_data_loading) {
+    if (
+      Object.keys(user_seeds_map).length &&
+      !user_data_loading &&
+      isSignedIn
+    ) {
       getSharesInfo();
     }
-  }, [user_seeds_map, user_data_loading]);
+  }, [user_seeds_map, user_data_loading, isSignedIn]);
   useEffect(() => {
     if (isSharesInfoReady) {
       getStakeBalance();
@@ -843,6 +848,10 @@ export default function FarmsDetail(props: {
   function showWalletSelector() {
     showWalletSelectorModal(appStore.setShowRiskModal);
   }
+  const unlpBalances = toReadableNumber(
+    DECIMALS,
+    BigNumber(free_amount).plus(shadow_amount).toFixed()
+  );
   const needForbidden =
     (FARM_BLACK_LIST_V2 || []).indexOf((pool?.id || 0).toString()) > -1;
   return (
@@ -1024,50 +1033,50 @@ export default function FarmsDetail(props: {
             </div>
           </div>
         </FarmsDetailContext.Provider>
-        {isSignedIn ? (
-          +freeAmount > 0 && is_support_lp ? (
-            <div
-              className="2xl:w-3/6 xl:w-4/6 lg:w-5/6 m-auto text-sm -mt-5 bg-white bg-opacity-5 p-4 rounded"
-              style={{ color: "rgba(255, 255, 255, 0.6)" }}
-            >
-              <p className="flex mr-1.5">
-                <FarmLpIcon className="mr-2" />
-                How to stake LP on Burrow?
-              </p>
-              <div className="flex">
-                <p>
-                  Step 1.{" "}
-                  <a
-                    className="text-white underline cursor-pointer relative"
-                    tabIndex={99}
-                    onBlur={() => {
-                      setShowActivateBox(false);
-                    }}
-                    onClick={() => {
-                      setShowActivateBox(!showActivateBox);
-                    }}
-                  >
-                    Activate
-                    <ShadowTip show={showActivateBox} seed_id={seed_id} />
-                  </a>{" "}
-                  the {`Burrow's`} LP as Collateral feature
-                </p>
-                <p>
-                  Step 2. Go to supply LP on{" "}
-                  <a
-                    className="text-white text-sm underline cursor-pointer"
-                    onClick={() => {
-                      const shadow_id = `shadow_ref_v1-${pool?.id}`;
-                      const url = `https://app.burrow.finance/tokenDetail/${shadow_id}`;
-                      window.open(url);
-                    }}
-                  >
-                    Burrow
-                  </a>
-                </p>
-              </div>
-            </div>
-          ) : null
+        {+freeAmount > 0 && is_support_lp ? (
+          <div
+            className="2xl:w-3/6 xl:w-4/6 lg:w-5/6 m-auto text-sm -mt-5 bg-white bg-opacity-5 p-4 rounded"
+            style={{ color: "rgba(255, 255, 255, 0.6)" }}
+          >
+            <p className="flex mr-1.5">
+              <FarmLpIcon className="mr-2" />
+              How to stake LP on Burrow?
+            </p>
+            <span>
+              Step 1.{" "}
+              <a
+                className="text-white underline cursor-pointer relative"
+                tabIndex={99}
+                onBlur={() => {
+                  setShowActivateBox(false);
+                }}
+                onClick={() => {
+                  setShowActivateBox(!showActivateBox);
+                }}
+              >
+                Activate
+                <ShadowTip
+                  show={showActivateBox}
+                  seed_id={seed_id}
+                  user_unclaimed_map={user_unclaimed_map}
+                />
+              </a>{" "}
+              the {`Burrow's`} LP as Collateral feature
+            </span>
+            <span>
+              Step 2. Go to supply LP on{" "}
+              <a
+                className="text-white text-sm underline cursor-pointer"
+                onClick={() => {
+                  const shadow_id = `shadow_ref_v1-${pool?.id}`;
+                  const url = `https://app.burrow.finance/tokenDetail/${shadow_id}`;
+                  window.open(url);
+                }}
+              >
+                Burrow
+              </a>
+            </span>
+          </div>
         ) : null}
         {calcVisible ? (
           <CalcModelBooster
@@ -1276,8 +1285,8 @@ export default function FarmsDetail(props: {
                 Stake
               </div>
               <div
-                className={`flex-1 text-primaryGreen border border-primaryGreen rounded h-12 ${
-                  Number(freeAmount) > 0 ? "frcc" : "hidden"
+                className={`flex-1 text-primaryGreen border border-primaryGreen rounded h-12  ${
+                  Number(unlpBalances) > 0 ? "frcc" : "hidden"
                 }`}
                 onClick={() => {
                   setActiveTab("unstake");

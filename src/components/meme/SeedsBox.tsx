@@ -191,6 +191,7 @@ const SeedsBox = () => {
                     hidden={tab === "market" ? false : true}
                     displaySeedsPercent={displaySeedsPercent}
                     origin={"intro"}
+                    setIsTxHashOpen={setIsTxHashOpen}
                   />
                 </div>
               )}
@@ -279,10 +280,12 @@ const SeedsBox = () => {
       <MarketSeedsBox
         hidden={tab === "market" ? false : true}
         displaySeedsPercent={displaySeedsPercent}
+        setIsTxHashOpen={setIsTxHashOpen}
       />
       <MySeedsBox
         hidden={tab === "your" ? false : true}
         displaySeedsPercent={displaySeedsPercent}
+        setIsTxHashOpen={setIsTxHashOpen}
       />
       {isTxHashOpen && txParams ? (
         <CallBackModal

@@ -193,8 +193,8 @@ export default function StablePoolRowCharts(props: any) {
       <div
         ref={chartRef}
         style={{
-          width: isMobile ? "100%" : "302px",
-          height: "302px",
+          width: isMobile ? "100%" : "360px",
+          height: "360px",
         }}
       ></div>
       {/* pc */}

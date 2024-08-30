@@ -240,11 +240,14 @@ export function YourLiquidityV1(props: any) {
             const single_lp_value = new BigNumber(pool_tvl).dividedBy(
               read_total_supply
             );
-            const value = single_lp_value.multipliedBy(read_total_amount);
+            const value = single_lp_value.multipliedBy(
+              read_total_amount.toString() != "NaN" ? read_total_amount : 0
+            );
             total_value_final = value.plus(total_value_final).toFixed();
           }
         });
         setLpValueV1Done(true);
+
         setYourLpValueV1(total_value_final);
       } else if (+count == 0) {
         setLpValueV1Done(true);

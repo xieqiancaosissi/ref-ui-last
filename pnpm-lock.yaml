@@ -51,7 +51,7 @@ importers:
         specifier: 8.9.7
         version: 8.9.7(near-api-js@3.0.4)
       '@near-wallet-selector/nightly':
-        specifier: ^8.9.10
+        specifier: 8.9.10
         version: 8.9.10(near-api-js@3.0.4)
       '@near-wallet-selector/okx-wallet':
         specifier: ^8.9.10

@@ -25,7 +25,7 @@ import { useAppStore } from "@/stores/app";
 import { walletIconConfig } from "./walletConfig";
 import { getSelectedWalletId } from "@/utils/wallet";
 import OrderlyKeyInit from "@/components/orderbook/OrderlyKeyInit";
-const Overview = dynamic(() => import("../portfolio"), { ssr: false });
+import Overview from "../portfolio";
 const is_mobile = isMobile();
 export default function WalletConnect() {
   const [accountId, setAccountId] = useState<string | undefined>();

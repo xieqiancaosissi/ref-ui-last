@@ -16,6 +16,8 @@ import "@/components/customModal/customModal.css";
 import RpcList from "@/components/rpc";
 import { useAccountStore } from "@/stores/account";
 import { addUserWallet } from "@/services/indexer";
+import Menu from "../components/menu";
+import WalletInit from "../components/menu/walletInit";
 const Footer = dynamic(() => import("../components/footer"), { ssr: false });
 const ModalGAPrivacy = dynamic(
   () => import("@/components/modalGAPrivacy/modalGAPrivacy"),
@@ -30,7 +32,7 @@ const RiskModal = dynamic(
     ssr: false,
   }
 );
-const Menu = dynamic(() => import("../components/menu"), { ssr: false });
+// const Menu = dynamic(() => import("../components/menu"), { ssr: false });
 
 export default function App({ Component, pageProps }: AppProps) {
   const [progress, setProgress] = useState(0);
@@ -97,6 +99,7 @@ export default function App({ Component, pageProps }: AppProps) {
           {/* <ModalGAPrivacy /> */}
           <RiskModal />
           <LedgerTransactionModal />
+          <WalletInit />
         </div>
       </NextUIProvider>
     </IntlProvider>

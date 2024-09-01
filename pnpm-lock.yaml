@@ -51,8 +51,8 @@ importers:
         specifier: 8.9.7
         version: 8.9.7(near-api-js@3.0.4)
       '@near-wallet-selector/nightly':
-        specifier: ^8.9.7
-        version: 8.9.12
+        specifier: ^8.9.10
+        version: 8.9.10(near-api-js@3.0.4)
       '@near-wallet-selector/okx-wallet':
         specifier: ^8.9.10
         version: 8.9.12
@@ -888,6 +888,11 @@ packages:
     peerDependencies:
       near-api-js: ^0.44.2 || ^1.0.0
 
+  '@near-wallet-selector/core@8.9.10':
+    resolution: {integrity: sha512-do+DDahRHPzr5VKiFS7NWKyNbspXu64/w7CuSBi8IUDsDsclmV7Os6Hp5HcVAq+X3Whi//NxKGX6mPMb+SRPqw==}
+    peerDependencies:
+      near-api-js: ^1.0.0 || ^2.0.0
+
   '@near-wallet-selector/core@8.9.12':
     resolution: {integrity: sha512-S23/IDi07kCr6JN28jxQZPQOwtp3MwZgMVbtwqZz2BP2N1puAFHIvKpUDrS2l2iZPBImHnU3tdOBvw6Yec7DjQ==}
 
@@ -932,8 +937,10 @@ packages:
     peerDependencies:
       near-api-js: ^1.0.0 || ^2.0.0
 
-  '@near-wallet-selector/nightly@8.9.12':
-    resolution: {integrity: sha512-UPcThvciSSjMwSqZAcD5dRVDpcLEShBdD+h9Qa6GZh5SgefldAtucWa8vH3YE9ZWf20qfdzVQmQ643jR0CViMw==}
+  '@near-wallet-selector/nightly@8.9.10':
+    resolution: {integrity: sha512-dRTxr4qJCOdXC1ercoGrsfyh3N82xHN3+Iqjm2RshDwlOiDMJO5WHNy9xlrxu6thgFDt/JFe9WEAq9aZ5qM8nQ==}
+    peerDependencies:
+      near-api-js: ^1.0.0 || ^2.0.0
 
   '@near-wallet-selector/okx-wallet@8.9.12':
     resolution: {integrity: sha512-Re1EqKZS50uh8L8WqCzECOR6OiliSXLF1vC/p4NwsHWgaHgHptMUti4k0qKPo+C8116LwQUK1E0pahHmvGCnsg==}
@@ -950,6 +957,11 @@ packages:
     resolution: {integrity: sha512-uH99A7K0eibZeWVHb+fFgP/rpaDskEfHQXZiAOuIzaDmWnm8KSG4VxA+l5GAR/X+OTpaYwNSd+AB/v3PdeH0Ug==}
     peerDependencies:
       near-api-js: ^0.44.2 || ^1.0.0
+
+  '@near-wallet-selector/wallet-utils@8.9.10':
+    resolution: {integrity: sha512-Jq00IUAMvltaH8lvkaI8SRP6JWhqE4c0427ODSv+X10NwlkM8WKul9ZNZMxeCTC2ncZH23kDyaA+3MiYTX+DUg==}
+    peerDependencies:
+      near-api-js: ^1.0.0 || ^2.0.0
 
   '@near-wallet-selector/wallet-utils@8.9.12':
     resolution: {integrity: sha512-3KcZlaaiQ3OyQAqI48Px0dM7Bz3/6gLOgnNepk7BVEygX9h7CuDyVh5Ug3qgObbsDQ59vCLCDey0y0eI4BxkKQ==}
@@ -7841,6 +7853,14 @@ snapshots:
       near-api-js: 3.0.4
       rxjs: 7.8.1
 
+  '@near-wallet-selector/core@8.9.10(near-api-js@3.0.4)':
+    dependencies:
+      borsh: 0.7.0
+      events: 3.3.0
+      js-sha256: 0.9.0
+      near-api-js: 3.0.4
+      rxjs: 7.8.1
+
   '@near-wallet-selector/core@8.9.12':
     dependencies:
       '@near-js/providers': 0.2.2
@@ -7961,14 +7981,12 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  '@near-wallet-selector/nightly@8.9.12':
+  '@near-wallet-selector/nightly@8.9.10(near-api-js@3.0.4)':
     dependencies:
-      '@near-wallet-selector/core': 8.9.12
-      '@near-wallet-selector/wallet-utils': 8.9.12
+      '@near-wallet-selector/core': 8.9.10(near-api-js@3.0.4)
+      '@near-wallet-selector/wallet-utils': 8.9.10(near-api-js@3.0.4)
       is-mobile: 4.0.0
-      near-api-js: 4.0.3
-    transitivePeerDependencies:
-      - encoding
+      near-api-js: 3.0.4
 
   '@near-wallet-selector/okx-wallet@8.9.12':
     dependencies:
@@ -8019,6 +8037,12 @@ snapshots:
   '@near-wallet-selector/wallet-utils@7.9.3(near-api-js@3.0.4)':
     dependencies:
       '@near-wallet-selector/core': 7.9.3(near-api-js@3.0.4)
+      bn.js: 5.2.1
+      near-api-js: 3.0.4
+
+  '@near-wallet-selector/wallet-utils@8.9.10(near-api-js@3.0.4)':
+    dependencies:
+      '@near-wallet-selector/core': 8.9.10(near-api-js@3.0.4)
       bn.js: 5.2.1
       near-api-js: 3.0.4
 
@@ -9058,15 +9082,13 @@ snapshots:
     transitivePeerDependencies:
       - '@parcel/core'
 
-  '@parcel/cache@2.12.0(@parcel/core@2.12.0(@swc/helpers@0.5.12))(@swc/helpers@0.5.12)':
+  '@parcel/cache@2.12.0(@parcel/core@2.12.0(@swc/helpers@0.5.12))':
     dependencies:
       '@parcel/core': 2.12.0(@swc/helpers@0.5.12)
       '@parcel/fs': 2.12.0(@parcel/core@2.12.0(@swc/helpers@0.5.12))(@swc/helpers@0.5.12)
       '@parcel/logger': 2.12.0
       '@parcel/utils': 2.12.0
       lmdb: 2.8.5
-    transitivePeerDependencies:
-      - '@swc/helpers'
 
   '@parcel/codeframe@2.12.0':
     dependencies:
@@ -9126,7 +9148,7 @@ snapshots:
   '@parcel/core@2.12.0(@swc/helpers@0.5.12)':
     dependencies:
       '@mischnic/json-sourcemap': 0.1.1
-      '@parcel/cache': 2.12.0(@parcel/core@2.12.0(@swc/helpers@0.5.12))(@swc/helpers@0.5.12)
+      '@parcel/cache': 2.12.0(@parcel/core@2.12.0(@swc/helpers@0.5.12))
       '@parcel/diagnostic': 2.12.0
       '@parcel/events': 2.12.0
       '@parcel/fs': 2.12.0(@parcel/core@2.12.0(@swc/helpers@0.5.12))(@swc/helpers@0.5.12)
@@ -9541,7 +9563,7 @@ snapshots:
 
   '@parcel/types@2.12.0(@parcel/core@2.12.0(@swc/helpers@0.5.12))(@swc/helpers@0.5.12)':
     dependencies:
-      '@parcel/cache': 2.12.0(@parcel/core@2.12.0(@swc/helpers@0.5.12))(@swc/helpers@0.5.12)
+      '@parcel/cache': 2.12.0(@parcel/core@2.12.0(@swc/helpers@0.5.12))
       '@parcel/diagnostic': 2.12.0
       '@parcel/fs': 2.12.0(@parcel/core@2.12.0(@swc/helpers@0.5.12))(@swc/helpers@0.5.12)
       '@parcel/package-manager': 2.12.0(@parcel/core@2.12.0(@swc/helpers@0.5.12))(@swc/helpers@0.5.12)

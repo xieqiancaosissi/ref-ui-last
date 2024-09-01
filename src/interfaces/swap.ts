@@ -27,6 +27,7 @@ export interface Pool {
   Dex?: string;
   pairAdd?: string;
   token0_ref_price?: string;
+  source?: IPoolSource;
 }
 
 export interface IPoolsByTokens {
@@ -247,3 +248,4 @@ export interface IDeflation {
   done: boolean;
 }
 export type ISource = "script" | "server";
+export type IPoolSource = "indexer" | "rpc";

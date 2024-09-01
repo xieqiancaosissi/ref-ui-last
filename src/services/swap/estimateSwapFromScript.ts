@@ -51,7 +51,7 @@ const estimateSwapFromScript = async ({
     parsedAmountIn,
   });
 
-  if (supportLedger) {
+  if (supportLedger || containPairsPools?.[0]?.source == "rpc") {
     return { estimates: supportLedgerRes, tag };
   }
   const orpools = hideLowTvlPools

@@ -3,7 +3,7 @@ import db from "@/db/RefDatabase";
 import getConfig from "@/utils/config";
 import { DEFAULT_PAGE_LIMIT, STABLE_LP_TOKEN_DECIMALS } from "@/utils/constant";
 import { getTopPools } from "../indexer";
-import { PoolRPCView, Pool, StablePool } from "@/interfaces/swap";
+import { PoolRPCView, Pool, StablePool, IPoolSource } from "@/interfaces/swap";
 import {
   parsePool,
   parsePools,
@@ -38,7 +38,7 @@ const fetchPoolsRPC = async (): Promise<Pool[]> => {
     await Promise.all([...Array(pages)].map((_, i) => getAllPools(i + 1)))
   )
     .flat()
-    .map((p) => ({ ...p, Dex: "ref" }));
+    .map((p) => ({ ...p, Dex: "ref", source: "rpc" as IPoolSource }));
 
   return res;
 };

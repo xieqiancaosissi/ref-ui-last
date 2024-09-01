@@ -186,7 +186,7 @@ export default function FarmsDetail(props: {
   }, []);
   useEffect(() => {
     if (
-      Object.keys(user_seeds_map).length &&
+      // Object.keys(user_seeds_map).length && // new user no data
       !user_data_loading &&
       isSignedIn
     ) {

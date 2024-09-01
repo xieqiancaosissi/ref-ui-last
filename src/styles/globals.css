@@ -24,8 +24,8 @@
 }
 
 body {
-  /* background: var(--background-color); */
   font-family: "SpaceGroteskRegular";
+  color-scheme: light!important;
 }
 
 @layer utilities {

@@ -5,11 +5,7 @@ import Button from "./Button";
 import SvgIcon from "./SvgIcon";
 import { BridgeConfig } from "@/config/bridge";
 import { useBridgeFormContext } from "@/providers/bridgeForm";
-import {
-  formatAmount,
-  formatFileUrl,
-  formatUSDCurrency,
-} from "@/utils/format";
+import { formatAmount, formatFileUrl, formatUSDCurrency } from "@/utils/format";
 import CustomTooltip from "@/components/customTooltip/customTooltip";
 import Big from "big.js";
 import { Image } from "@nextui-org/react";

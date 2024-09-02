@@ -21,9 +21,7 @@ const IconSets = {
   IconDirection: dynamic(() => import("./assets/direction.svg")),
   IconLoading: dynamic(() => import("./assets/loading.svg")),
   IconEmpty: dynamic(() => import("./assets/empty.svg")),
-  IconErrorCircleFill: dynamic(
-    () => import("./assets/error-circle-fill.svg")
-  ),
+  IconErrorCircleFill: dynamic(() => import("./assets/error-circle-fill.svg")),
   IconSuccessCircleFill: dynamic(
     () => import("./assets/success-circle-fill.svg")
   ),

@@ -64,7 +64,7 @@ const rainbowBridgeService = {
       });
     }
 
-    const nearAccount = await window.selector?.wallet() as any;
+    const nearAccount = (await window.selector?.wallet()) as any;
 
     const amount = new Big(amountIn).times(10 ** tokenIn.decimals).toFixed();
 

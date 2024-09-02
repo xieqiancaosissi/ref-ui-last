@@ -20,11 +20,12 @@ type BridgeHistoryFilter = {
 };
 
 function BridgeTransactionHistory() {
-  const defaultChain=storageStore()?.get<BridgeModel.BridgeTransferFormData["from"]>(
-    "bridgeFromValue"
-  )?.chain||SupportChains?.[0];
+  const defaultChain =
+    storageStore()?.get<BridgeModel.BridgeTransferFormData["from"]>(
+      "bridgeFromValue"
+    )?.chain || SupportChains?.[0];
   const [historyFilter, setHistoryFilter] = useState<BridgeHistoryFilter>({
-    chain:defaultChain,
+    chain: defaultChain,
     onlyUnclaimed: false,
   });
   const { getWallet } = useWalletConnectContext();
@@ -117,8 +118,6 @@ function BridgeTransactionHistory() {
     </div>
   );
 }
-
-
 
 const Page = () => {
   return <BridgeTransactionHistory />;

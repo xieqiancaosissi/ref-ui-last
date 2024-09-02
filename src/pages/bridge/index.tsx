@@ -261,8 +261,6 @@ function BridgeEntry() {
   );
 }
 
-
-
 const Page = () => {
   return <BridgeEntry />;
 };

@@ -9,11 +9,7 @@ import {
   EffectCallback,
 } from "react";
 import { debounce, DebounceSettings } from "lodash";
-import {
-  safeJSONParse,
-  safeJSONStringify,
-  storageStore,
-} from "@/utils/common";
+import { safeJSONParse, safeJSONStringify, storageStore } from "@/utils/common";
 import { useRouter } from "next/router";
 
 type DebounceOptions = number | ({ wait: number } & Partial<DebounceSettings>);

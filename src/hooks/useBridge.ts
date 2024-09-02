@@ -7,13 +7,13 @@ import {
   setNearConnection,
   act,
 } from "@near-eth/client";
-import { BridgeConfig, EVMConfig,APPID } from "@/config/bridge";
+import { BridgeConfig, EVMConfig, APPID } from "@/config/bridge";
 import { ethers } from "ethers";
 import { useCallback, useEffect, useState } from "react";
 import { useWalletConnectContext } from "@/providers/walletConcent";
 import { toast } from "react-toastify";
 import { Near, WalletConnection } from "near-api-js";
-import {  nearServices } from "@/services/bridge/contract";
+import { nearServices } from "@/services/bridge/contract";
 import bridgeServices, { BridgeTransferParams } from "@/services/bridge";
 import rainbowBridgeService from "@/services/bridge/rainbow";
 import { logger } from "@/utils/common";

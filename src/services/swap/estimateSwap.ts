@@ -46,10 +46,6 @@ const estimateSwap = async ({
       let poolsMap = {};
       let tokensMap = {};
       try {
-        const prices = await getAllTokenPrices();
-        // TODOX
-        const isLosePrice =
-          !prices?.[tokenIn.id]?.price || !prices?.[tokenOut.id]?.price;
         poolsMap = await getUsedPools(routes);
       } catch (error) {}
       try {

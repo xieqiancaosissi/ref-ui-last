@@ -309,7 +309,7 @@ export default function StablePoolDetail() {
       </div>
 
       {/* add */}
-      {updatedMapList && poolDetail && (addSuccess > 0 ? newPool : pool) && (
+      {updatedMapList && poolDetail && (
         <>
           <StableAdd
             isOpen={showAdd}

@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import dynamic from "next/dynamic";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import { Tooltip } from "react-tooltip";
 import "react-loading-skeleton/dist/skeleton.css";
@@ -25,18 +24,18 @@ import { useAppStore } from "@/stores/app";
 import { walletIconConfig } from "./walletConfig";
 import { getSelectedWalletId } from "@/utils/wallet";
 import OrderlyKeyInit from "@/components/orderbook/OrderlyKeyInit";
-const Overview = dynamic(() => import("../portfolio"), { ssr: false });
+import Overview from "../portfolio";
 const is_mobile = isMobile();
 export default function WalletConnect() {
-  const [accountId, setAccountId] = useState<string | undefined>();
   const [currentWallet, setCurrentWallet] = useState<Wallet>();
-  const [loading, setLoading] = useState<boolean>(true);
   const [tipVisible, setTipVisible] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [personalVisited, setPersonalVisited] = useState<boolean>(false);
   const [keyModalShow, setKeyModalShow] = useState<boolean>(false);
   const appStore = useAppStore();
   const accountStore = useAccountStore();
+  const accountId = accountStore.getAccountId();
+  const walletLoading = accountStore.getWalletLoading();
   const personalDataReloadSerialNumber =
     appStore.getPersonalDataReloadSerialNumber();
   const [showGuider, setShowGuider] = useState<boolean>(
@@ -50,9 +49,6 @@ export default function WalletConnect() {
   const isKeyPomWallet = selectedWalletId == "keypom";
   const isInMemePage = window.location.pathname.includes("meme");
   const walletId = getSelectedWalletId();
-  useEffect(() => {
-    init();
-  }, []);
 
   useEffect(() => {
     if (accountId) {
@@ -122,19 +118,6 @@ export default function WalletConnect() {
     };
   }, [isOpen]);
 
-  async function init() {
-    const { getWalletSelector } = await import("../../utils/wallet-selector");
-    await getWalletSelector({ onAccountChange: changeAccount });
-    setLoading(false);
-  }
-
-  async function changeAccount(accountId: string) {
-    accountStore.setAccountId(accountId);
-    accountStore.setIsSignedIn(!!accountId);
-    accountStore.setWalletLoading(false);
-    setAccountId(accountId);
-  }
-
   async function get_current_wallet() {
     const wallet = await getCurrentWallet();
     setCurrentWallet(wallet);
@@ -200,7 +183,7 @@ export default function WalletConnect() {
   }
   return (
     <div className="relative z-50">
-      {!loading ? (
+      {!walletLoading ? (
         <>
           {accountId ? (
             <div onClick={() => setIsOpen(!isOpen)}>

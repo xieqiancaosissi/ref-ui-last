@@ -399,7 +399,7 @@ export default function UserStakeBlock(props: {
       </div>
       <div
         className="bg-dark-10 rounded-md p-5 xsm:bg-dark-210 xsm:text-white"
-        style={{ minHeight: "108px" }}
+        style={{ minHeight: "128px" }}
       >
         <p className="flex items-center text-gray-50 text-sm mb-1.5">
           Unclaimed rewards{" "}

@@ -135,6 +135,11 @@ export default function Swap() {
       swapStore.setSwapError(undefined);
     }
   }, [tokenInAmount, tokenIn?.id, tokenOut?.id, isnearwnearSwap]);
+  useEffect(() => {
+    if (swapError?.message) {
+      swapStore.setTokenOutAmount("");
+    }
+  }, [swapError?.message]);
   const showSwapDetail = useMemo(() => {
     return (
       tokenIn?.id &&

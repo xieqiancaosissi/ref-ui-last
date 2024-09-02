@@ -1,3 +1,10 @@
+// CSR,
+const WalletConnect = dynamic(() => import("./walletConnect"), {
+  ssr: false,
+});
+const BuyNearButton = dynamic(() => import("../buyNear/button"), {
+  ssr: false,
+});
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import Big from "big.js";
@@ -9,13 +16,6 @@ import { useRefPrice } from "../../hooks/useRefPrice";
 import { menuData, IMenuChild, routeMapIds } from "./menuData";
 import { RefAnalyticsIcon } from "@/components/footer/icons";
 import { DownArrowIcon } from "./icons";
-// CSR,
-const WalletConnect = dynamic(() => import("./walletConnect"), {
-  ssr: false,
-});
-const BuyNearButton = dynamic(() => import("../buyNear/button"), {
-  ssr: false,
-});
 export default function MenuMobile() {
   const [showMoreMenu, setShowMoreMenu] = useState<boolean>(false);
   const [oneLevelMenuId, setOneLevelMenuId] = useState("trade");

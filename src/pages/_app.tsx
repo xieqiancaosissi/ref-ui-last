@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import "@/styles/globals.css";
 import Layout from "@/layout/default";
 import { NextUIProvider } from "@nextui-org/react";
+import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { useRouter } from "next/router";
 import { IntlProvider } from "react-intl";
 import type { AppProps } from "next/app";
@@ -18,6 +19,8 @@ import "@/styles/bridge.css";
 import RpcList from "@/components/rpc";
 import { useAccountStore } from "@/stores/account";
 import { addUserWallet } from "@/services/indexer";
+import Menu from "../components/menu";
+import WalletInit from "../components/menu/walletInit";
 const Footer = dynamic(() => import("../components/footer"), { ssr: false });
 const ModalGAPrivacy = dynamic(
   () => import("@/components/modalGAPrivacy/modalGAPrivacy"),
@@ -32,7 +35,7 @@ const RiskModal = dynamic(
     ssr: false,
   }
 );
-const Menu = dynamic(() => import("../components/menu"), { ssr: false });
+// const Menu = dynamic(() => import("../components/menu"), { ssr: false });
 
 export type AppPropsWithLayout = AppProps & {
   Component: {
@@ -90,26 +93,29 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
   }
   return (
     <IntlProvider messages={{}} locale={"en"}>
-      <NextUIProvider>
-        <LoadingBar
-          color="#9EFF00"
-          height={3}
-          progress={progress}
-          onLoaderFinished={() => setProgress(0)}
-        />
-        <div className="flex flex-col bg-primaryDark min-h-screen">
-          <Menu />
-          <div className="flex-grow lg:mt-20 xsm:mt-10">
-            {getLayout(<Component {...pageProps} />)}
+      <NextThemesProvider defaultTheme="light" attribute="class">
+        <NextUIProvider>
+          <LoadingBar
+            color="#9EFF00"
+            height={3}
+            progress={progress}
+            onLoaderFinished={() => setProgress(0)}
+          />
+          <div className="flex flex-col bg-primaryDark min-h-screen">
+            <Menu />
+            <div className="flex-grow lg:mt-20 xsm:mt-10">
+              {getLayout(<Component {...pageProps} />)}
+            </div>
+            <RpcList />
+            <Footer />
+            <ToastContainerEle />
+            {/* <ModalGAPrivacy /> */}
+            <RiskModal />
+            <LedgerTransactionModal />
+            <WalletInit />
           </div>
-          <RpcList />
-          <Footer />
-          <ToastContainerEle />
-          {/* <ModalGAPrivacy /> */}
-          <RiskModal />
-          <LedgerTransactionModal />
-        </div>
-      </NextUIProvider>
+        </NextUIProvider>
+      </NextThemesProvider>
     </IntlProvider>
   );
 }

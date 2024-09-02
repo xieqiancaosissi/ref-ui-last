@@ -1,18 +1,25 @@
+// CSR,
+const WalletConnect = dynamic(() => import("./walletConnect"), {
+  ssr: false,
+  loading: () => (
+    <SkeletonTheme baseColor="#1B242C" highlightColor="#9EFF00">
+      <Skeleton height={36} width={138} />
+    </SkeletonTheme>
+  ),
+});
+const BuyNearButton = dynamic(() => import("../buyNear/button"), {
+  ssr: false,
+});
 import { useEffect, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { MenuContainer } from "./icons";
 import Bridge from "./bridge";
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import BridgeConfirmModal from "./bridgeConfirmModal";
 import { menuData, IMenuChild, routeMapIds } from "./menuData";
-// CSR,
-const WalletConnect = dynamic(() => import("./walletConnect"), {
-  ssr: false,
-});
-const BuyNearButton = dynamic(() => import("../buyNear/button"), {
-  ssr: false,
-});
+
 export default function MenuPc() {
   const [oneLevelMenuId, setOneLevelMenuId] = useState("trade");
   const [twoLevelMenuId, setTwoLevelMenuId] = useState("swap");

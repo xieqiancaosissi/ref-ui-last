@@ -19,6 +19,8 @@ import { ButtonTextWrapper } from "../common/Button";
 import { IExecutionResult } from "@/interfaces/wallet";
 import successToast from "../common/toast/successToast";
 import failToast from "../common/toast/failToast";
+import { checkTransaction } from "@/utils/contract";
+import { parsedArgs } from "./SeedsBox";
 const { MEME_TOKEN_XREF_MAP } = getMemeContractConfig();
 const { meme_winner_tokens } = getMemeDataConfig();
 function UnStakeModal(props: any) {
@@ -34,7 +36,8 @@ function UnStakeModal(props: any) {
     xrefContractConfig,
     init_user,
   } = useContext(MemeContext)!;
-  const { isOpen, onRequestClose, seed_id, setIsTxHashOpen } = props;
+  const { isOpen, onRequestClose, seed_id, setTxParams, setIsTxHashOpen } =
+    props;
   const { delay_withdraw_sec } = memeContractConfig;
   const { delay_withdraw_sec: delay_withdraw_sec_xref } =
     xrefContractConfig[MEME_TOKEN_XREF_MAP[seed_id]];
@@ -163,11 +166,26 @@ function UnStakeModal(props: any) {
   async function handleDataAfterTranstion(res: IExecutionResult | undefined) {
     if (!res) return;
     if (res.status == "success") {
+      const txHash = res.txHashes?.split(",");
       setUnStakeLoading(false);
       // successToast();
-      setIsTxHashOpen(true);
       setAmount("0");
       onRequestClose();
+      checkTransaction(txHash[0]).then((res: any) => {
+        const { transaction, receipts } = res;
+        const args = parsedArgs(
+          res?.receipts?.[0]?.receipt?.Action?.actions?.[0]?.FunctionCall?.args
+        );
+        const receiver_id = transaction?.receiver_id;
+        const parsedInputArgs = JSON.parse(args || "");
+        setIsTxHashOpen(true);
+        setTxParams({
+          action: "unstake",
+          params: parsedInputArgs,
+          txHash: txHash[0],
+          receiver_id,
+        });
+      });
       init_user();
     } else if (res.status == "error") {
       failToast(res.errorResult?.message);

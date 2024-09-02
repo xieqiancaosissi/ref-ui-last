@@ -57,7 +57,6 @@ export default function SwapButton({
   const personalDataUpdatedSerialNumber =
     appStore.getPersonalDataUpdatedSerialNumber();
   const isnearwnearSwap = is_near_wnear_swap(tokenIn, tokenOut);
-  const decimals = isnearwnearSwap ? 24 : undefined;
   const buttonStatus = useMemo(() => {
     return getButtonStatus();
   }, [

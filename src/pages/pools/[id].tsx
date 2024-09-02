@@ -989,7 +989,7 @@ export default function ClassicPoolDetail() {
         )}
 
       {/* add */}
-      {accountId && updatedMapList[0]?.token_account_ids && poolDetail && (
+      {updatedMapList[0]?.token_account_ids && poolDetail && (
         <>
           <ClassicAdd
             isOpen={showAdd}

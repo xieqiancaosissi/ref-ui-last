@@ -9,7 +9,7 @@ import StargateOFTUSDCAbi from "@/services/bridge/abi/stargateOFTUSDC.json";
 import { formatFileUrl } from "@/utils/format";
 
 export const APPID = "ref-finance";
-export const APP_HOST = "https://app.ref.finance";
+export const APP_HOST = "https://old.app.ref.finance";
 
 export const IS_MAINNET = !["testnet", "pub-testnet"].includes(
   process.env.REACT_APP_NEAR_ENV

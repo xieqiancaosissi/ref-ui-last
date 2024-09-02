@@ -85,7 +85,7 @@ export async function getWalletSelector({
         dAppMetadata: {
           name: "ref finance",
           logoUrl: "https://img.ref.finance/images/REF-black-logo.png",
-          url: "https://app.ref.finance",
+          url: "https://old.app.ref.finance",
         },
       }),
       setupNeth({

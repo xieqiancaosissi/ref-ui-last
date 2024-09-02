@@ -52,7 +52,7 @@ export function menuData(): IMenu[] {
           id: "orderbook",
           label: "Orderbook",
           icon: <OrderbookIcon />,
-          externalLink: "https://app.ref.finance/orderbook/spot",
+          externalLink: "https://old.app.ref.finance/orderbook/spot",
         },
       ],
     },

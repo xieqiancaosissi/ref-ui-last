@@ -10,7 +10,7 @@ export default function OrderlyPanel() {
   const connectStatus = orderbookDataStore.getConnectStatus();
   const totalAssetsUsd = useHoldings();
   const handleOrderlyClick = () => {
-    window.open("https://app.ref.finance/orderly", "_blank");
+    window.open("https://old.app.ref.finance/orderly", "_blank");
   };
   return (
     <div className="relative bg-gray-20 bg-opacity-40 mb-4">

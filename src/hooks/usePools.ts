@@ -355,13 +355,6 @@ export const useAllPoolsV2 = (forPool?: boolean) => {
       .then((list: PoolInfo[]) => {
         let final = list;
         if (forPool) {
-          // release black list
-          // final = list.filter(
-          //   (p: any) =>
-          //     !getConfigV2().BLACK_LIST_DCL_POOL_IDS_IN_POOLS.includes(
-          //       p.pool_id
-          //     )
-          // );
         } else {
           final = list.filter((p: any) =>
             getConfigV2().WHITE_LIST_DCL_POOL_IDS_IN_LIMIT_ORDERS.includes(

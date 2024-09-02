@@ -123,24 +123,7 @@ export default function Classic({
 
         {/* pool header */}
         <header className={styles.headDiv}>
-          <div className="flex items-center xsm:w-full">
-            <span className="xsm:hidden">Pair</span>
-            {poolsFilterList.map((item, index) => {
-              return (
-                <div
-                  key={item.key + "_stablepool_" + index}
-                  className={`w-10 h-5 frcc border border-gray-40 rounded-xl text-xs p-2 mx-1 hover:cursor-pointer ${
-                    activePools == item.key
-                      ? "bg-gray-100 text-white"
-                      : "text-gray-10 "
-                  }`}
-                  onClick={() => setActivePools(item.key)}
-                >
-                  {item.value}
-                </div>
-              );
-            })}
-          </div>
+          <div className="flex items-center xsm:w-full"></div>
           <div className="xsm:hidden">
             {classicHeader.map((item, index) => {
               return item.key ? (

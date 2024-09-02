@@ -1030,7 +1030,7 @@ export default function FarmsDetail(props: {
             </div>
           </div>
         </FarmsDetailContext.Provider>
-        {+freeAmount > 0 && is_support_lp ? (
+        {+freeAmount > 0 && is_support_lp && isSignedIn ? (
           <div
             className="2xl:w-3/6 xl:w-4/6 lg:w-5/6 m-auto text-sm -mt-5 bg-white bg-opacity-5 p-4 rounded"
             style={{ color: "rgba(255, 255, 255, 0.6)" }}

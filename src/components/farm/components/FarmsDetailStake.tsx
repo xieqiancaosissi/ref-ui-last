@@ -528,7 +528,7 @@ export default function FarmsDetailStake(props: {
                 setShowCalc(!showCalc);
               }}
             >
-              <div className="frcc">
+              <div className="frcc pt-5">
                 <CalcIcon />
                 <label className="text-sm text-gray-10 ml-3 mr-4  cursor-pointer">
                   ROI Calculator
@@ -626,10 +626,11 @@ export default function FarmsDetailStake(props: {
               Text={() => <>Unstake</>}
             />
           </div>
-          <div className="mt-5 flex items-center mb-2 xsm:items-start">
+          <div className="mt-5 flex items-start mb-2">
             <FarmDetailsWarn className="xsm:mt-0.5" />
             <p className="ml-1.5 text-gray-10 text-sm">
-              Staking or unstaking will automatically claim your rewards.
+              Staking or unstaking will automatically claim your rewards to your
+              wallet.
             </p>
           </div>
         </div>

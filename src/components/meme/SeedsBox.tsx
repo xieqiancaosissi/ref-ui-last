@@ -175,7 +175,6 @@ const SeedsBox = () => {
       setPositionInfo(pagePositions[currentPage]);
     }
   }, [currentPage]);
-
   return (
     <div className="mt-14">
       {/* gudie start */}
@@ -191,6 +190,7 @@ const SeedsBox = () => {
                     hidden={tab === "market" ? false : true}
                     displaySeedsPercent={displaySeedsPercent}
                     origin={"intro"}
+                    setTxParams={setTxParams}
                     setIsTxHashOpen={setIsTxHashOpen}
                   />
                 </div>
@@ -280,11 +280,13 @@ const SeedsBox = () => {
       <MarketSeedsBox
         hidden={tab === "market" ? false : true}
         displaySeedsPercent={displaySeedsPercent}
+        setTxParams={setTxParams}
         setIsTxHashOpen={setIsTxHashOpen}
       />
       <MySeedsBox
         hidden={tab === "your" ? false : true}
         displaySeedsPercent={displaySeedsPercent}
+        setTxParams={setTxParams}
         setIsTxHashOpen={setIsTxHashOpen}
       />
       {isTxHashOpen && txParams ? (

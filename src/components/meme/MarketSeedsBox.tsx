@@ -27,11 +27,13 @@ const MarketSeedsBox = ({
   hidden,
   displaySeedsPercent,
   origin,
+  setTxParams,
   setIsTxHashOpen,
 }: {
   hidden: boolean;
   displaySeedsPercent: Record<string, string>;
   origin?: string;
+  setTxParams: any;
   setIsTxHashOpen: any;
 }) => {
   const router = useRouter();
@@ -268,6 +270,7 @@ const MarketSeedsBox = ({
             setIsStakeOpen(false);
           }}
           seed_id={modal_action_seed_id}
+          setTxParams={setTxParams}
           setIsTxHashOpen={setIsTxHashOpen}
         />
       ) : null}

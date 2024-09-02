@@ -60,7 +60,7 @@ import { isStablePool } from "@/services/swap/swapUtils";
 import styles from "@/components/farm/farm.module.css";
 import { showWalletSelectorModal } from "@/utils/wallet";
 import { useAppStore } from "@/stores/app";
-
+import getStablePoolTypeConfig from "@/utils/stablePoolConfig/stablePoolTypeConfig";
 interface IShareInfo {
   sharesInfo: {
     sharesInPool: string | number;
@@ -69,12 +69,10 @@ interface IShareInfo {
   };
 }
 const ONLY_ZEROS = /^0*\.?0*$/;
-const {
-  STABLE_POOL_IDS,
-  FARM_LOCK_SWITCH,
-  REF_VE_CONTRACT_ID,
-  FARM_BLACK_LIST_V2,
-} = getConfig();
+const stablePoolTypeConfig = getStablePoolTypeConfig();
+const { STABLE_POOL_IDS } = stablePoolTypeConfig;
+const { FARM_LOCK_SWITCH, REF_VE_CONTRACT_ID, FARM_BLACK_LIST_V2 } =
+  getConfig();
 const FarmsDetailContext = createContext<IShareInfo | null>(null);
 export default function FarmsDetail(props: {
   detailData: Seed;

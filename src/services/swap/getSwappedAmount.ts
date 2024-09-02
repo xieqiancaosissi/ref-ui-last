@@ -17,7 +17,6 @@ const getSwappedAmount = (
 ) => {
   const amp = stablePool.amp;
   const trade_fee = stablePool.total_fee;
-  // TODO TYPE
   const STABLE_TOKEN_INDEX: any = getStableTokenIndex(stablePool.id);
 
   const in_token_idx = STABLE_TOKEN_INDEX[tokenInId];

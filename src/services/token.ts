@@ -19,7 +19,6 @@ import { registerTokenAction } from "./creator/token";
 import { checkTokenNeedsStorageDeposit } from "./swap/registerToken";
 import { storageDepositAction } from "./creator/storage";
 import { refFiViewFunction } from "@/utils/contract";
-import { extraStableTokenIds } from "./swap/swapConfig";
 import { useEffect, useState } from "react";
 import { NEAR_META_TX_DATA } from "@/utils/nearMetaData";
 import { useAppStore } from "@/stores/app";
@@ -192,13 +191,7 @@ export const getWhitelistedTokens = async (): Promise<string[]> => {
     });
   }
 
-  return [
-    ...new Set<string>([
-      ...globalWhitelist,
-      ...userWhitelist,
-      ...extraStableTokenIds,
-    ]),
-  ];
+  return [...new Set<string>([...globalWhitelist, ...userWhitelist])];
 };
 
 export const getDepositTransactions = async ({

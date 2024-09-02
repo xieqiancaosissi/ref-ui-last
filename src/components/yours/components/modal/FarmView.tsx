@@ -61,13 +61,15 @@ import styles from "@/components/farm/farm.module.css";
 import CalcModelDcl from "@/components/farm/components/CalcModelDcl";
 import Countdown, { zeroPad } from "react-countdown";
 import { useRouter } from "next/router";
+import getStablePoolTypeConfig from "@/utils/stablePoolConfig/stablePoolTypeConfig";
+const stablePoolTypeConfig = getStablePoolTypeConfig();
+const { STABLE_POOL_IDS } = stablePoolTypeConfig;
 
 const {
   REF_VE_CONTRACT_ID,
   FARM_BLACK_LIST_V2,
   REF_UNI_V3_SWAP_CONTRACT_ID,
   WRAP_NEAR_CONTRACT_ID,
-  STABLE_POOL_IDS,
 } = getConfig();
 
 export function FarmView(props: {

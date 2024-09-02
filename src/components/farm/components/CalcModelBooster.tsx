@@ -35,9 +35,10 @@ import { useAccountStore } from "../../../stores/account";
 import { CalcEle } from "./CalcEle";
 import { useRouter } from "next/router";
 import { isStablePool } from "@/services/swap/swapUtils";
+import getStablePoolTypeConfig from "@/utils/stablePoolConfig/stablePoolTypeConfig";
 
-const config = getConfig();
-const { STABLE_POOL_IDS, FARM_LOCK_SWITCH, REF_VE_CONTRACT_ID } = config;
+const stablePoolTypeConfig = getStablePoolTypeConfig();
+const { STABLE_POOL_IDS } = stablePoolTypeConfig;
 
 export default function CalcModelBooster(
   props: ReactModal.Props & {

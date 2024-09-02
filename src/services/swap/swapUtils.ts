@@ -13,7 +13,7 @@ import {
   toPrecision,
 } from "@/utils/numbers";
 import { ALL_STABLE_POOL_IDS, AllStableTokenIds } from "./swapConfig";
-import getStablePoolConfig from "@/utils/getStablePoolConfig";
+import getStablePoolTypeConfig from "@/utils/stablePoolConfig/stablePoolTypeConfig";
 import { StablePool, EstimateSwapView, IServerRoute } from "@/interfaces/swap";
 import {
   STABLE_LP_TOKEN_DECIMALS,
@@ -26,7 +26,7 @@ import { NEAR_META_DATA, WNEAR_META_DATA } from "@/utils/nearMetaData";
 import getConfig from "@/utils/config";
 
 const { WRAP_NEAR_CONTRACT_ID } = getConfig();
-const { RATED_POOLS_IDS, DEGEN_POOLS_IDS } = getStablePoolConfig();
+const { RATED_POOLS_IDS, DEGEN_POOLS_IDS } = getStablePoolTypeConfig();
 export const parsePool = (pool: PoolRPCView, id: number): Pool => ({
   id: Number(id >= 0 ? id : pool.id),
   tokenIds: pool.token_account_ids,

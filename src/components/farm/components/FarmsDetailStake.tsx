@@ -43,13 +43,11 @@ import { IExecutionResult } from "@/interfaces/wallet";
 import successToast from "@/components/common/toast/successToast";
 import failToast from "@/components/common/toast/failToast";
 import { BeatLoader } from "react-spinners";
-
-const {
-  STABLE_POOL_IDS,
-  FARM_LOCK_SWITCH,
-  REF_VE_CONTRACT_ID,
-  FARM_BLACK_LIST_V2,
-} = getConfig();
+import getStablePoolTypeConfig from "@/utils/stablePoolConfig/stablePoolTypeConfig";
+const stablePoolTypeConfig = getStablePoolTypeConfig();
+const { STABLE_POOL_IDS } = stablePoolTypeConfig;
+const { FARM_LOCK_SWITCH, REF_VE_CONTRACT_ID, FARM_BLACK_LIST_V2 } =
+  getConfig();
 const configV2 = getConfigV2();
 export default function FarmsDetailStake(props: {
   detailData: Seed;

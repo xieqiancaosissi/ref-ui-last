@@ -31,9 +31,6 @@ import {
 import CustomTooltip from "../../customTooltip/customTooltip";
 import { RefreshIcon } from "@/components/swap/icons";
 import { useRouter } from "next/router";
-
-const config = getConfig();
-const { STABLE_POOL_IDS, FARM_LOCK_SWITCH, REF_VE_CONTRACT_ID } = config;
 interface DclContextType {
   seed: Seed;
   tokenPriceList: Record<string, any>;

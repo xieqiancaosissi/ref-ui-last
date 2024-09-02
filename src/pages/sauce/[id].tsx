@@ -25,8 +25,8 @@ import { openUrlLocal } from "@/services/commonV3";
 import { usePool } from "@/hooks/usePools";
 import { getPoolDetails } from "@/services/pool_detail";
 import { getSharesInPool } from "@/services/pool";
-import getStablePoolConfig from "@/utils/getStablePoolConfig";
-const { DEGEN_POOLS_IDS } = getStablePoolConfig();
+import getStablePoolTypeConfig from "@/utils/stablePoolConfig/stablePoolTypeConfig";
+const { DEGEN_POOLS_IDS } = getStablePoolTypeConfig();
 
 export default function StablePoolDetail() {
   const appStore = useAppStore();

@@ -36,13 +36,12 @@ import { ButtonTextWrapper } from "@/components/common/Button";
 import { IExecutionResult } from "@/interfaces/wallet";
 import failToast from "@/components/common/toast/failToast";
 import successToast from "@/components/common/toast/successToast";
+import getStablePoolTypeConfig from "@/utils/stablePoolConfig/stablePoolTypeConfig";
 
-const {
-  STABLE_POOL_IDS,
-  FARM_LOCK_SWITCH,
-  REF_VE_CONTRACT_ID,
-  FARM_BLACK_LIST_V2,
-} = getConfig();
+const stablePoolTypeConfig = getStablePoolTypeConfig();
+const { STABLE_POOL_IDS } = stablePoolTypeConfig;
+const { FARM_LOCK_SWITCH, REF_VE_CONTRACT_ID, FARM_BLACK_LIST_V2 } =
+  getConfig();
 export default function UserStakeBlock(props: {
   detailData: Seed;
   tokenPriceList: any;

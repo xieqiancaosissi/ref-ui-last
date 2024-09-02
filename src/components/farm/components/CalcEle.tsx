@@ -22,9 +22,12 @@ import BigNumber from "bignumber.js";
 import { useState, useEffect } from "react";
 import { BoostOptIcon, LightningIcon } from "../icon/FarmBoost";
 import getConfig from "@/utils/config";
+import getStablePoolTypeConfig from "@/utils/stablePoolConfig/stablePoolTypeConfig";
 
 const config = getConfig();
-const { STABLE_POOL_IDS, REF_VE_CONTRACT_ID } = config;
+const stablePoolTypeConfig = getStablePoolTypeConfig();
+const { REF_VE_CONTRACT_ID } = config;
+const { STABLE_POOL_IDS } = stablePoolTypeConfig;
 
 export function CalcEle(props: {
   seed: Seed;

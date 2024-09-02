@@ -43,9 +43,6 @@ const {
   WRAP_NEAR_CONTRACT_ID,
 } = config;
 export const DEFAULT_PAGE_LIMIT = 300;
-const STABLE_POOL_ID = getConfig().STABLE_POOL_ID;
-const STABLE_POOL_IDS = getConfig().STABLE_POOL_IDS;
-const STABLE_POOL_USN_ID = getConfig().STABLE_POOL_USN_ID;
 const expand = 6;
 
 export const classificationOfCoins_key = [

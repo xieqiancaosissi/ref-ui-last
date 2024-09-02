@@ -77,8 +77,8 @@ import {
 import { FiArrowUpRight } from "react-icons/fi";
 import { useFarmStakeAmount } from "@/hooks/useStableShares";
 import getConfigV2 from "@/utils/configV2";
-import getStablePoolConfig from "@/utils/getStablePoolConfig";
-const { DEGEN_POOLS_IDS } = getStablePoolConfig();
+import getStablePoolTypeConfig from "@/utils/stablePoolConfig/stablePoolTypeConfig";
+const { DEGEN_POOLS_IDS } = getStablePoolTypeConfig();
 
 const { BLACK_TOKEN_LIST } = getConfig();
 export const StakeListContext = createContext<any>(null);

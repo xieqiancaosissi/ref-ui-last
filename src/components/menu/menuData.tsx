@@ -94,7 +94,7 @@ export function menuData(): IMenu[] {
           id: "aggregate",
           label: "Aggregate",
           icon: <AggregateBridge />,
-          externalLink: "https://app.ref.finance/bridge",
+          path: "/bridge",
         },
         {
           id: "rainbow",

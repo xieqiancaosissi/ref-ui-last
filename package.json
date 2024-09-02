@@ -14,6 +14,12 @@
   "dependencies": {
     "@aurora-is-near/engine": "think-in-universe/aurora.js#6db862e",
     "@keypom/selector": "^1.2.3",
+    "@near-eth/aurora-erc20": "^2.8.0",
+    "@near-eth/aurora-ether": "^3.0.0",
+    "@near-eth/aurora-nep141": "^1.5.3",
+    "@near-eth/client": "^1.12.0",
+    "@near-eth/near-ether": "^3.0.0",
+    "@near-eth/nep141-erc20": "^2.5.1",
     "@near-js/wallet-account": "^1.0.2",
     "@near-wallet-selector/bitte-wallet": "^8.9.12",
     "@near-wallet-selector/core": "^8.9.7",
@@ -39,6 +45,10 @@
     "@walletconnect/qrcode-modal": "2.0.0-alpha.20",
     "@walletconnect/sign-client": "2.0.0-beta.102-6a30ee7.0",
     "@walletconnect/types": "^2.0.0-beta.102",
+    "@web3-onboard/injected-wallets": "^2.11.2",
+    "@web3-onboard/ledger": "^2.7.1",
+    "@web3-onboard/react": "^2.9.2",
+    "@web3-onboard/walletconnect": "^2.6.1",
     "axios": "^0.21.1",
     "big.js": "^6.1.1",
     "bigint-buffer": "^1.1.5",
@@ -86,6 +96,7 @@
     "zustand": "^4.3.7"
   },
   "devDependencies": {
+    "@svgr/webpack": "^8.1.0",
     "@types/animejs": "^3.1.4",
     "@types/big.js": "^6.1.2",
     "@types/bn.js": "^5.1.0",

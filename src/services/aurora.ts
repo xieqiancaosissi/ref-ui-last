@@ -60,12 +60,7 @@ const orderConfig = getOrderlyConfig();
 export const oneETH = new Big(10).pow(18);
 
 export const AuroraCallGas = "150000000000000";
-const keyStore = new keyStores.BrowserLocalStorageKeyStore();
-const near = new Near({
-  keyStore,
-  headers: {},
-  ...config,
-});
+
 class AuroraWalletConnection extends WalletConnection {
   async _completeSignInWithAccessKey() {
     const currentUrl = new URL(window.location.href);
@@ -88,7 +83,13 @@ class AuroraWalletConnection extends WalletConnection {
     }
   }
 }
-const getAurora = () => {
+export const getAurora = () => {
+  const keyStore = new keyStores.BrowserLocalStorageKeyStore();
+  const near = new Near({
+    keyStore,
+    headers: {},
+    ...config,
+  });
   const aurora_walletConnection = new AuroraWalletConnection(near, "aurora");
   const account = new AuroraWalletConnection(
     near,

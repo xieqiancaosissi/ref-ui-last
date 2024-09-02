@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import "@/styles/globals.css";
+import Layout from "@/layout/default";
 import { NextUIProvider } from "@nextui-org/react";
 import { useRouter } from "next/router";
 import { IntlProvider } from "react-intl";
@@ -13,6 +14,7 @@ import LedgerTransactionModal from "@/components/common/ledger/ledgerTransaction
 import "@/components/common/ModalDefaultStyle";
 import "@/components/modalGAPrivacy/modalGAPrivacy.css";
 import "@/components/customModal/customModal.css";
+import "@/styles/bridge.css";
 import RpcList from "@/components/rpc";
 import { useAccountStore } from "@/stores/account";
 import { addUserWallet } from "@/services/indexer";
@@ -32,7 +34,16 @@ const RiskModal = dynamic(
 );
 const Menu = dynamic(() => import("../components/menu"), { ssr: false });
 
-export default function App({ Component, pageProps }: AppProps) {
+export type AppPropsWithLayout = AppProps & {
+  Component: {
+    customLayout?: (page: React.ReactNode) => React.ReactNode;
+  };
+};
+
+export default function App({ Component, pageProps }: AppPropsWithLayout) {
+  const getLayout =
+    Component.customLayout || ((page) => <Layout>{page}</Layout>);
+
   const [progress, setProgress] = useState(0);
   const router = useRouter();
   const accountStore = useAccountStore();
@@ -89,7 +100,7 @@ export default function App({ Component, pageProps }: AppProps) {
         <div className="flex flex-col bg-primaryDark min-h-screen">
           <Menu />
           <div className="flex-grow lg:mt-20 xsm:mt-10">
-            <Component {...pageProps} />
+            {getLayout(<Component {...pageProps} />)}
           </div>
           <RpcList />
           <Footer />

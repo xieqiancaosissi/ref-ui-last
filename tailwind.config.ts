@@ -22,6 +22,9 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      fontFamily:{
+        'SpaceGroteskBold':['SpaceGroteskBold']
+      },
       colors: {
         chartsPink: "#657EFF",
         primaryDark: "#030F16",

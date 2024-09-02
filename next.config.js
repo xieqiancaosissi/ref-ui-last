@@ -2,7 +2,7 @@ const webpack = require("webpack");
 // import { BundleAnalyzerPlugin } from "webpack-bundle-analyzer";
 module.exports = {
   reactStrictMode: true,
-  output: "standalone",
+  // output: "standalone",
   transpilePackages: ["@near-wallet-selector/wallet-connect"],
   experimental: {
     esmExternals: "loose",

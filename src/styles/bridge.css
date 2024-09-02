@@ -209,12 +209,12 @@
 .bridge-status-process::before {
   @apply absolute left-1 top-1/2 w-9 h-1;
   content: "";
-  background: url("./../pages/bridge/assets/line.svg") no-repeat center;
+  background: url("./../components/bridge/assets/line.svg") no-repeat center;
 }
 .bridge-status-process::after {
   @apply absolute right-1 top-1/2 w-9 h-1;
   content: "";
-  background: url("./../pages/bridge/assets/line.svg") no-repeat center;
+  background: url("./../components/bridge/assets/line.svg") no-repeat center;
 }
 
 .animate-waiting {

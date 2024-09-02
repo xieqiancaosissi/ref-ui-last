@@ -1,6 +1,6 @@
-import BridgeFormProvider from "@/pages/bridge/providers/bridgeForm";
-import BridgeTransactionProvider from "@/pages/bridge/providers/bridgeTransaction";
-import { WalletConnectProvider } from "@/pages/bridge/providers/walletConcent";
+import BridgeFormProvider from "@/providers/bridgeForm";
+import BridgeTransactionProvider from "@/providers/bridgeTransaction";
+import { WalletConnectProvider } from "@/providers/walletConcent";
 
 export default function BridgeLayout({
   children,

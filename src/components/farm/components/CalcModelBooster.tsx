@@ -69,6 +69,7 @@ export default function CalcModelBooster(
   const [userLpTokenNumActual, setUserLpTokenNumActual] = useState("");
   const [inputType, setInputType] = useState(true);
   const [symbols, setSymbols] = useState("");
+  const [isMaxValue, setIsMaxValue] = useState(false);
   const pool = seed.pool;
   const { token_account_ids } = pool!;
   const tokens = useTokens(token_account_ids) || [];
@@ -136,6 +137,12 @@ export default function CalcModelBooster(
     } else {
       displayLp = handleNumber(lpNum);
     }
+    if (Number(lpNum) === Number(userLpTokenNumActual)) {
+      setIsMaxValue(true);
+    } else {
+      setIsMaxValue(false);
+    }
+
     setLpTokenNum(lpNum);
     setUsd(actualUsd);
     setLpTokenNumDisplay(displayLp);
@@ -273,9 +280,17 @@ export default function CalcModelBooster(
           </div>
           <div className="mt-2.5 frcb">
             <span className="text-gray-50 text-sm">
-              LP Tokens: {userLpTokenNum}
+              LP Tokens:
+              <span
+                onClick={showMaxLp}
+                className={`underline cursor-pointer ml-1 ${
+                  isMaxValue ? "text-primaryGreen" : ""
+                }`}
+              >
+                {userLpTokenNum}
+              </span>
             </span>
-            <label
+            {/* <label
               onClick={showMaxLp}
               style={{ zoom: 0.8 }}
               className={
@@ -283,7 +298,7 @@ export default function CalcModelBooster(
               }
             >
               MAX
-            </label>
+            </label> */}
           </div>
         </div>
         <div className="mt-5">

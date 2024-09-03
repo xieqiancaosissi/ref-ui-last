@@ -29,6 +29,7 @@ export default function FarmsBoosterPage(props: any) {
       farmsPageRef.current.init();
       farmsPageRef.current.getConfig();
       farmsPageRef.current.get_user_unWithDraw_rewards();
+      farmsPageRef.current.get_user_seeds_and_unClaimedRewards();
     }
   };
   const ontriggerFarmsStakeUpdate = () => {

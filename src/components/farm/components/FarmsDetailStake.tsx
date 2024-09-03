@@ -119,6 +119,8 @@ export default function FarmsDetailStake(props: {
   const defaultTab = isEnded ? "unstake" : "stake";
   const [activeTab, setActiveTab] = useState(activeMobileTab || defaultTab);
   const [amountAvailableCheck, setAmountAvailableCheck] = useState(true);
+  const [isMaxAmount, setIsMaxAmount] = useState(false);
+  const [isLpMaxAmount, setLpIsMaxAmount] = useState(false);
   const unlpBalances = toReadableNumber(
     DECIMALS,
     BigNumber(free_amount).plus(shadow_amount).toFixed()
@@ -214,6 +216,16 @@ export default function FarmsDetailStake(props: {
     } else {
       setAmountAvailableCheck(true);
     }
+    if (value === lpBalance) {
+      setIsMaxAmount(true);
+    } else {
+      setIsMaxAmount(false);
+    }
+    if (value === unlpBalances) {
+      setLpIsMaxAmount(true);
+    } else {
+      setLpIsMaxAmount(false);
+    }
   }
   function displayLpBalance() {
     if (lpBalance === undefined || lpBalance === null || lpBalance === "") {
@@ -227,10 +239,14 @@ export default function FarmsDetailStake(props: {
     new BigNumber(amount).isLessThanOrEqualTo(0) ||
     new BigNumber(amount).isGreaterThan(new BigNumber(unlpBalances));
 
+  const minDepositReadable = toReadableNumber(DECIMALS, min_deposit);
   const isDisabledStake =
     !amount ||
     new BigNumber(amount).isLessThanOrEqualTo(0) ||
-    new BigNumber(amount).isGreaterThan(new BigNumber(lpBalance));
+    new BigNumber(amount).isGreaterThan(new BigNumber(lpBalance)) ||
+    new BigNumber(amount).isLessThanOrEqualTo(
+      new BigNumber(minDepositReadable)
+    );
 
   function formatCheckedList(data) {
     if (!data || typeof data !== "object") {
@@ -344,6 +360,9 @@ export default function FarmsDetailStake(props: {
           onClick={() => {
             setActiveTab("stake");
             setAmount("");
+            setLpIsMaxAmount(false);
+            setIsMaxAmount(false);
+            setAmountAvailableCheck(false);
           }}
         >
           Stake
@@ -364,6 +383,9 @@ export default function FarmsDetailStake(props: {
             onClick={() => {
               setActiveTab("unstake");
               setAmount("");
+              setLpIsMaxAmount(false);
+              setIsMaxAmount(false);
+              setAmountAvailableCheck(false);
             }}
           >
             Unstake
@@ -480,7 +502,9 @@ export default function FarmsDetailStake(props: {
           <div className="mt-2.5 text-sm mb-6 xsm:hidden">
             {isSignedIn ? (
               <span
-                className="underline cursor-pointer hover:text-primaryGreen"
+                className={`underline cursor-pointer hover:text-primaryGreen ${
+                  isMaxAmount ? "text-primaryGreen" : ""
+                }`}
                 onClick={() => {
                   changeAmount(lpBalance);
                 }}
@@ -599,7 +623,9 @@ export default function FarmsDetailStake(props: {
           <div className="mt-2.5 text-sm mb-6 frcb xsm:hidden">
             <p className="text-gray-10 ml-1">Lp Tokens</p>
             <p
-              className="underline cursor-pointer hover:text-primaryGreen"
+              className={`underline cursor-pointer hover:text-primaryGreen ${
+                isLpMaxAmount ? "text-primaryGreen" : ""
+              }`}
               onClick={() => {
                 changeAmount(unlpBalances);
               }}

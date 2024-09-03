@@ -529,7 +529,7 @@ export default function FarmsDclDetail(props: {
       tokenList.push(tempTokenData);
       const txt = "ended_search";
       const itemHtml = `<div class="flex justify-between items-center h-8 active">
-          <img class="w-5 h-5 rounded-full mr-7" src="${icon}"/>
+          <img class="w-5 h-5 rounded-full mr-7  border border-primaryGreen " src="${icon}"/>
             <div class="flex flex-col items-end text-xs text-navHighLightText">
             ${formatWithCommas(displayNum)}
             ${
@@ -789,7 +789,7 @@ export default function FarmsDclDetail(props: {
                     </div>`;
       } else {
         itemHtml = `<div class="flex justify-between items-center h-8 my-2">
-                      <image class="w-5 h-5 rounded-full mr-7" src="${
+                      <image class="w-5 h-5 rounded-full mr-7  border border-primaryGreen " src="${
                         token.icon
                       }"/>
                       <label class="text-xs text-navHighLightText">${display_number(
@@ -981,7 +981,7 @@ export default function FarmsDclDetail(props: {
         const startDate = moment.unix(startTime).format("YYYY-MM-DD");
         const txt = "start";
         itemHtml = `<div class="flex justify-between items-center h-8">
-          <image class="w-5 h-5 rounded-full mr-7" style="filter: grayscale(100%)" src="${
+          <image class="w-5 h-5 rounded-full mr-7  border border-primaryGreen " style="filter: grayscale(100%)" src="${
             token.icon
           }"/>
           <div class="flex flex-col items-end">
@@ -998,7 +998,7 @@ export default function FarmsDclDetail(props: {
       </div>`;
       } else {
         itemHtml = `<div class="flex justify-between items-center h-8">
-          <image class="w-5 h-5 rounded-full mr-7" src="${token.icon}"/>
+          <image class="w-5 h-5 rounded-full mr-7  border border-primaryGreen " src="${token.icon}"/>
           <label class="text-xs text-gray-60">${
             (apr == 0 ? "-" : formatWithCommas(toPrecision(apr, 2))) + "%"
           }</label>

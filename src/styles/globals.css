@@ -25,6 +25,7 @@
 
 body {
   font-family: "SpaceGroteskRegular";
+  color-scheme: light !important;
 }
 
 @layer utilities {

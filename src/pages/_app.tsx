@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import "@/styles/globals.css";
 import Layout from "@/layout/default";
 import { NextUIProvider } from "@nextui-org/react";
-import { ThemeProvider as NextThemesProvider } from "next-themes";
+// import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { useRouter } from "next/router";
 import { IntlProvider } from "react-intl";
 import type { AppProps } from "next/app";
@@ -93,29 +93,29 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
   }
   return (
     <IntlProvider messages={{}} locale={"en"}>
-      <NextThemesProvider defaultTheme="light" attribute="class">
-        <NextUIProvider>
-          <LoadingBar
-            color="#9EFF00"
-            height={3}
-            progress={progress}
-            onLoaderFinished={() => setProgress(0)}
-          />
-          <div className="flex flex-col bg-primaryDark min-h-screen">
-            <Menu />
-            <div className="flex-grow lg:mt-20 xsm:mt-10">
-              {getLayout(<Component {...pageProps} />)}
-            </div>
-            <RpcList />
-            <Footer />
-            <ToastContainerEle />
-            {/* <ModalGAPrivacy /> */}
-            <RiskModal />
-            <LedgerTransactionModal />
-            <WalletInit />
+      {/* <NextThemesProvider defaultTheme="light" attribute="class"> */}
+      <NextUIProvider>
+        <LoadingBar
+          color="#9EFF00"
+          height={3}
+          progress={progress}
+          onLoaderFinished={() => setProgress(0)}
+        />
+        <div className="flex flex-col bg-primaryDark min-h-screen">
+          <Menu />
+          <div className="flex-grow lg:mt-20 xsm:mt-10">
+            {getLayout(<Component {...pageProps} />)}
           </div>
-        </NextUIProvider>
-      </NextThemesProvider>
+          <RpcList />
+          <Footer />
+          <ToastContainerEle />
+          {/* <ModalGAPrivacy /> */}
+          <RiskModal />
+          <LedgerTransactionModal />
+          <WalletInit />
+        </div>
+      </NextUIProvider>
+      {/* </NextThemesProvider> */}
     </IntlProvider>
   );
 }

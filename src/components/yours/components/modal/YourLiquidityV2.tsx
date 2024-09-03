@@ -79,6 +79,7 @@ import { DCLIconNew } from "../icon";
 import successToast from "@/components/common/toast/successToast";
 import failToast from "@/components/common/toast/failToast";
 import { beautifyNumber } from "@/components/common/beautifyNumber";
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 
 const { REF_UNI_V3_SWAP_CONTRACT_ID } = getConfig();
 export function YourLiquidityV2(props: any) {
@@ -208,7 +209,6 @@ export function YourLiquidityV2(props: any) {
           };
         }
       }, {} as Record<string, any[]>);
-
       setGroupYourLiquidity(groupedLiquidity);
     });
   }, [
@@ -400,7 +400,7 @@ export function YourLiquidityV2(props: any) {
           );
         })}
       </div>
-      {groupYourLiquidity &&
+      {groupYourLiquidity && Object.entries(groupYourLiquidity).length > 0 ? (
         Object.entries(groupYourLiquidity).map(
           ([id, liquidity]: any, index: number) => {
             return (
@@ -415,7 +415,20 @@ export function YourLiquidityV2(props: any) {
               />
             );
           }
-        )}
+        )
+      ) : (
+        <SkeletonTheme
+          baseColor="rgba(33, 43, 53, 0.3)"
+          highlightColor="#2A3643"
+        >
+          <Skeleton
+            style={{ width: "100%" }}
+            height={60}
+            count={4}
+            className="mt-4"
+          />
+        </SkeletonTheme>
+      )}
     </div>
   );
 }

@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
+import React from "react";
 import Modal from "react-modal";
 import { CloseIcon } from "@/components/common/Icons";
 
-export default function BridgeConfirmModal(props: any) {
+function BridgeConfirmModal(props: any) {
   const { isOpen, onRequestClose, bridgeData } = props;
   function jump() {
     if (bridgeData.externalLink) {
@@ -59,3 +59,5 @@ export default function BridgeConfirmModal(props: any) {
     </Modal>
   );
 }
+
+export default React.memo(BridgeConfirmModal);

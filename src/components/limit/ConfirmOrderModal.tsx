@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import Modal from "react-modal";
 import Big from "big.js";
 import {
@@ -170,4 +170,4 @@ function Image({ icon }: { icon: string }) {
     />
   );
 }
-export default ConfirmOrderModal;
+export default React.memo(ConfirmOrderModal);

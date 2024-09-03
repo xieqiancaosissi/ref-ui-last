@@ -8,7 +8,7 @@ import RateExchange from "./RateExchange";
 import useTokenRate24h from "@/hooks/useTokenRate24h";
 import { priceFormatter } from "@/services/limit/limitUtils";
 import { IoArrowUpOutline } from "../reactIcons";
-export default function ChartTopBar() {
+function ChartTopBar() {
   const limitChartStore = useLimitOrderChartStore();
   const tokenIn = limitChartStore.getTokenIn();
   const tokenOut = limitChartStore.getTokenOut();
@@ -108,3 +108,4 @@ export default function ChartTopBar() {
     </div>
   );
 }
+export default React.memo(ChartTopBar);

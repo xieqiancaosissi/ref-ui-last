@@ -1,6 +1,7 @@
+import React from "react";
 import { TokenMetadata } from "@/services/ft-contract";
 import { toPrecision } from "@/utils/numbers";
-export function SellTokenAmount({
+function SellTokenAmountPre({
   sellToken,
   orderIn,
 }: {
@@ -29,7 +30,7 @@ export function SellTokenAmount({
     </span>
   );
 }
-export function BuyTokenAmount({
+function BuyTokenAmountPre({
   buyToken,
   buyAmount,
 }: {
@@ -61,3 +62,6 @@ export function BuyTokenAmount({
     </span>
   );
 }
+
+export const SellTokenAmount = React.memo(SellTokenAmountPre);
+export const BuyTokenAmount = React.memo(BuyTokenAmountPre);

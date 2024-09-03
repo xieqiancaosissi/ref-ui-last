@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import getConfigV2 from "@/utils/configV2";
 import { usePersistSwapStore, useSwapStore } from "@/stores/swap";
 import { useTokenStore, ITokenStore } from "@/stores/token";
@@ -8,7 +8,7 @@ import { setSwapTokenAndBalances } from "@/components/common/SelectTokenModal/to
 import { IUITokens } from "@/interfaces/tokens";
 const configV2 = getConfigV2();
 const { INIT_SWAP_PAIRS } = configV2;
-export default function InitData() {
+function InitData() {
   const {
     defaultAccountTokensHook,
     tknAccountTokensHook,
@@ -92,3 +92,4 @@ export default function InitData() {
   }
   return null;
 }
+export default React.memo(InitData);

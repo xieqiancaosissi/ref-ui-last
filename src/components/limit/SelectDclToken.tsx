@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import Modal from "react-modal";
 import { IPoolDcl } from "@/interfaces/swapDcl";
 import { TokenMetadata } from "@/services/ft-contract";
@@ -8,7 +8,7 @@ import { SelectedIcon, SelectedIconBig } from "./icons";
 import { getBestTvlPoolList } from "@/services/limit/limitUtils";
 import { SearchIcon } from "@/components/common/Icons";
 import { CloseButttonIcon } from "@/components/common/SelectTokenModal/Icons";
-export default function SelectDclTokenBox({
+function SelectDclTokenBox({
   onSelect,
   show,
 }: {
@@ -98,7 +98,7 @@ export default function SelectDclTokenBox({
     </div>
   );
 }
-export function SelectDclTokenModal({
+export function SelectDclTokenModalPre({
   onSelect,
   show,
   onRequestClose,
@@ -229,3 +229,6 @@ function Symbols({ tokens }: { tokens: TokenMetadata[] }) {
     </div>
   );
 }
+
+export default React.memo(SelectDclTokenBox);
+export const SelectDclTokenModal = React.memo(SelectDclTokenModalPre);

@@ -1,4 +1,5 @@
 import { useRouter } from "next/router";
+import React from "react";
 import { TokenMetadata } from "@/services/ft-contract";
 import { SwapContractType } from "@/interfaces/swap";
 import { RefMarketRouteIcon, PoolLinkIcon } from "./icons";
@@ -59,5 +60,4 @@ const TradeRouteHub = ({
     </div>
   );
 };
-
-export default TradeRouteHub;
+export default React.memo(TradeRouteHub);

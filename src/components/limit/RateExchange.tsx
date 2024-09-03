@@ -1,10 +1,6 @@
-import { useState, useRef } from "react";
+import React, { useState, useRef } from "react";
 import { LimitArrowTop, LimitArrowBottom } from "./icons";
-export default function SwapRateExchange({
-  onChange,
-}: {
-  onChange: (e?: any) => void;
-}) {
+function SwapRateExchange({ onChange }: { onChange: (e?: any) => void }) {
   const [hover, setHover] = useState<boolean>(false);
   const upRow = useRef(null) as any;
   const downRow = useRef(null) as any;
@@ -54,3 +50,5 @@ export default function SwapRateExchange({
     </div>
   );
 }
+
+export default React.memo(SwapRateExchange);

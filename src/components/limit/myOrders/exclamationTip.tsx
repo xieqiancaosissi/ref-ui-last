@@ -2,7 +2,7 @@ import React from "react";
 import { useIntl } from "react-intl";
 import CustomTooltip from "@/components/customTooltip/customTooltip";
 import { TipIcon } from "../icons2";
-export default function ExclamationTip({
+function ExclamationTip({
   id,
   color,
   width,
@@ -66,3 +66,4 @@ export default function ExclamationTip({
     </div>
   );
 }
+export default React.memo(ExclamationTip);

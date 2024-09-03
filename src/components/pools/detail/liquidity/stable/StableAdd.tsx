@@ -362,11 +362,11 @@ export default function StableAdd(props: any) {
             }}
           />
         </div>
-        <div className="lg:w-108 xsm:w-full lg:min-h-123  rounded-lg bg-dark-10 px-4 py-5">
-          <div className="lg:hidden text-white font-medium text-lg mb-6">
+        <div className="lg:w-108 xsm:w-full lg:min-h-123  rounded-lg bg-dark-10 py-5">
+          <div className="lg:hidden text-white font-medium text-lg mb-6 px-4">
             Add Liquidity
           </div>
-          <div className="max-h-[492px]  overflow-auto">
+          <div className="max-h-[492px]  overflow-auto px-4">
             <div className="overflow-y-auto xsm:w-full">
               {updatedMapList[0]?.token_account_ids?.map(
                 (ite: any, ind: number) => {
@@ -613,67 +613,70 @@ export default function StableAdd(props: any) {
               </div>
             </div>
           </div>
-
-          {/* tips  */}
-          {showNearGas && notEnoughList.length < 1 && (
-            <div
-              className="text-yellow-10 text-sm border h-11 w-full rounded flex px-2 py-1 items-center mt-2"
-              style={{
-                borderColor: "rgba(230, 180, 1, 0.3)",
-                backgroundColor: "rgba(230, 180, 1, 0.14)",
-              }}
-            >
-              <span>{`Must have 0.5N or more left in wallet for gas fee.`}</span>
-            </div>
-          )}
-          {/* tips  */}
-          {!canSubmit && notEnoughList.length > 0 && (
-            <div
-              className="text-yellow-10 text-sm border h-11 w-full rounded flex px-4 py-1 items-center mt-6 mb-2"
-              style={{
-                borderColor: "rgba(230, 180, 1, 0.3)",
-                backgroundColor: "rgba(230, 180, 1, 0.14)",
-              }}
-            >
-              <span>{`You don't have enough ${notEnoughList.join("｜")}`}</span>
-            </div>
-          )}
-          <AddLiqTip
-            tips={
-              "Fees automatically contribute to your liquidity for market making."
-            }
-          ></AddLiqTip>
-          {/* submit */}
-          {accountStore.isSignedIn ? (
-            canSubmit && inputAmountIsEmpty ? (
+          <div className="px-4">
+            {/* tips  */}
+            {showNearGas && notEnoughList.length < 1 && (
               <div
-                className="poolBtnStyleBase h-11 mt-1 cursor-pointer hover:opacity-90"
-                onClick={() => {
-                  setIsLoading(true);
-                  submit();
+                className="text-yellow-10 text-sm border h-11 w-full rounded flex px-2 py-1 items-center mt-2"
+                style={{
+                  borderColor: "rgba(230, 180, 1, 0.3)",
+                  backgroundColor: "rgba(230, 180, 1, 0.14)",
                 }}
               >
-                <ButtonTextWrapper
-                  loading={isLoading}
-                  Text={() => <span>Add Liquidity</span>}
-                />
+                <span>{`Must have 0.5N or more left in wallet for gas fee.`}</span>
               </div>
+            )}
+            {/* tips  */}
+            {!canSubmit && notEnoughList.length > 0 && (
+              <div
+                className="text-yellow-10 text-sm border h-11 w-full rounded flex px-4 py-1 items-center mt-6 mb-2"
+                style={{
+                  borderColor: "rgba(230, 180, 1, 0.3)",
+                  backgroundColor: "rgba(230, 180, 1, 0.14)",
+                }}
+              >
+                <span>{`You don't have enough ${notEnoughList.join(
+                  "｜"
+                )}`}</span>
+              </div>
+            )}
+            <AddLiqTip
+              tips={
+                "Fees automatically contribute to your liquidity for market making."
+              }
+            ></AddLiqTip>
+            {/* submit */}
+            {accountStore.isSignedIn ? (
+              canSubmit && inputAmountIsEmpty ? (
+                <div
+                  className="poolBtnStyleBase h-11 mt-1 cursor-pointer hover:opacity-90"
+                  onClick={() => {
+                    setIsLoading(true);
+                    submit();
+                  }}
+                >
+                  <ButtonTextWrapper
+                    loading={isLoading}
+                    Text={() => <span>Add Liquidity</span>}
+                  />
+                </div>
+              ) : (
+                <div className="poolBtnStyleDefaultBase h-11 mt-1 cursor-not-allowed">
+                  Add Liquidity
+                </div>
+              )
             ) : (
-              <div className="poolBtnStyleDefaultBase h-11 mt-1 cursor-not-allowed">
-                Add Liquidity
+              <div
+                className="flex items-center justify-center bg-greenGradient rounded mt-4 text-black font-bold text-base cursor-pointer"
+                style={{ height: "42px" }}
+                onClick={() => {
+                  showWalletSelectorModal(appStore.setShowRiskModal);
+                }}
+              >
+                Connect Wallet
               </div>
-            )
-          ) : (
-            <div
-              className="flex items-center justify-center bg-greenGradient rounded mt-4 text-black font-bold text-base cursor-pointer"
-              style={{ height: "42px" }}
-              onClick={() => {
-                showWalletSelectorModal(appStore.setShowRiskModal);
-              }}
-            >
-              Connect Wallet
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
     </Modal>

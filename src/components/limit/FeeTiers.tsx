@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Modal from "react-modal";
 import CustomTooltip from "@/components/customTooltip/customTooltip";
 import { TipIcon, SelectedIcon } from "./icons";
@@ -9,7 +9,7 @@ import { toPrecision, calculateFeePercent } from "@/utils/numbers";
 import { usePersistLimitStore, IPersistLimitStore } from "@/stores/limitOrder";
 import { isMobile } from "@/utils/device";
 
-export default function FeeTiers(props: any) {
+function FeeTiers() {
   const [showFeeTiers, setShowFeeTiers] = useState(false);
   const persistLimitStore: IPersistLimitStore = usePersistLimitStore();
   const dclPool = persistLimitStore.getDclPool();
@@ -230,3 +230,4 @@ function FeeTiersSelectorPc({
     </div>
   );
 }
+export default React.memo(FeeTiers);

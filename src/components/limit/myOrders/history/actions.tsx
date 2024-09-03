@@ -1,5 +1,5 @@
-import { FormattedMessage } from "react-intl";
 import React from "react";
+import { FormattedMessage } from "react-intl";
 import Big from "big.js";
 import { ONLY_ZEROS } from "@/utils/numbers";
 import { UserOrderInfo } from "@/services/swapV3";
@@ -10,7 +10,7 @@ import {
   PikespeakIcon,
   TxLeftArrow,
 } from "@/components/pools/icon";
-export default function Actions({
+function Actions({
   order,
   orderTx,
   loadingStates,
@@ -138,3 +138,4 @@ export default function Actions({
     </div>
   );
 }
+export default React.memo(Actions);

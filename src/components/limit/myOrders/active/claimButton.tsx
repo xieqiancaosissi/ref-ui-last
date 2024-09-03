@@ -14,7 +14,7 @@ import {
 import { updateTokensBalance } from "@/services/limit/limit";
 import { ButtonTextWrapper } from "@/components/common/Button";
 import { useAppStore } from "@/stores/app";
-export default function ClaimButton({
+function ClaimButton({
   unClaimedAmount,
   order,
 }: {
@@ -80,3 +80,4 @@ export default function ClaimButton({
     </button>
   );
 }
+export default React.memo(ClaimButton);

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Big from "big.js";
 import { twMerge } from "tailwind-merge";
 import dynamic from "next/dynamic";
@@ -28,7 +28,7 @@ interface IInputProps {
   isIn?: boolean;
   isOut?: boolean;
 }
-export default function Input(props: IInputProps) {
+function Input(props: IInputProps) {
   const { className, token, isIn, isOut } = props;
   const [showNearTip, setShowNearTip] = useState<boolean>(false);
   const swapStore = useSwapStore();
@@ -163,3 +163,4 @@ export default function Input(props: IInputProps) {
     </div>
   );
 }
+export default React.memo(Input);

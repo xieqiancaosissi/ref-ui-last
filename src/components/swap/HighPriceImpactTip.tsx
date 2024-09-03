@@ -1,11 +1,7 @@
 import React from "react";
 import { WarnIcon } from "@/components/swap/icons";
 import { CloseIcon } from "@/components/common/Icons";
-export default function HighPriceImpactTip({
-  handleClose,
-}: {
-  handleClose: any;
-}) {
+function HighPriceImpactTip({ handleClose }: { handleClose: any }) {
   return (
     <div
       className="absolute right-0 lg:w-[390px] xsm:w-[340px]"
@@ -17,6 +13,7 @@ export default function HighPriceImpactTip({
     </div>
   );
 }
+export default React.memo(HighPriceImpactTip);
 
 function AnchorDot() {
   return (

@@ -1,3 +1,4 @@
+import React from "react";
 // CSR,
 const WalletConnect = dynamic(() => import("./walletConnect"), {
   ssr: false,
@@ -16,7 +17,7 @@ import { useRefPrice } from "../../hooks/useRefPrice";
 import { menuData, IMenuChild, routeMapIds } from "./menuData";
 import { RefAnalyticsIcon } from "@/components/footer/icons";
 import { DownArrowIcon } from "./icons";
-export default function MenuMobile() {
+function MenuMobile() {
   const [showMoreMenu, setShowMoreMenu] = useState<boolean>(false);
   const [oneLevelMenuId, setOneLevelMenuId] = useState("trade");
   const [twoLevelMenuId, setTwoLevelMenuId] = useState("swap");
@@ -245,3 +246,4 @@ export default function MenuMobile() {
     </div>
   );
 }
+export default React.memo(MenuMobile);

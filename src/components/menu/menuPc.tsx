@@ -1,3 +1,4 @@
+import React from "react";
 // CSR,
 const WalletConnect = dynamic(() => import("./walletConnect"), {
   ssr: false,
@@ -20,7 +21,7 @@ import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import BridgeConfirmModal from "./bridgeConfirmModal";
 import { menuData, IMenuChild, routeMapIds } from "./menuData";
 
-export default function MenuPc() {
+function MenuPc() {
   const [oneLevelMenuId, setOneLevelMenuId] = useState("trade");
   const [twoLevelMenuId, setTwoLevelMenuId] = useState("swap");
   const [twoLevelMenuShow, setTwoLevelMenuShow] = useState<boolean>(true);
@@ -185,3 +186,4 @@ export default function MenuPc() {
     </div>
   );
 }
+export default React.memo(MenuPc);

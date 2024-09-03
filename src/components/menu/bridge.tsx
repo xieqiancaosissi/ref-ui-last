@@ -1,11 +1,11 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { Rainbow, WalletCedeBridge } from "./icons2";
 import { ArrowIcon } from "./icons";
 import BridgeConfirmModal from "./bridgeConfirmModal";
 import BridgeModal from "./bridgeModal";
 import { isMobile } from "@/utils/device";
 
-export default function Bridge() {
+function Bridge() {
   const [hover, setHover] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isBridgeOpen, setIsBridgeOpen] = useState<boolean>(false);
@@ -113,3 +113,5 @@ export default function Bridge() {
     </div>
   );
 }
+
+export default React.memo(Bridge);

@@ -27,7 +27,7 @@ import { Dimensions } from "@/interfaces/limit";
 
 const REF_FI_SWAP_RATE_DIMENSIONS = "REF_FI_SWAP_RATE_DIMENSIONS";
 
-export default function RateChartContainer(props: any) {
+function RateChartContainer(props: any) {
   const limitChartStore = useLimitOrderChartStore();
   const tokenIn = limitChartStore.getTokenIn();
   const tokenOut = limitChartStore.getTokenOut();
@@ -501,3 +501,4 @@ function RateChart() {
     </div>
   );
 }
+export default React.memo(RateChartContainer);

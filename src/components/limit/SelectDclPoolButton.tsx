@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import dynamic from "next/dynamic";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import { ArrowDownIcon } from "../../components/swap/icons";
@@ -27,7 +27,7 @@ const SelectDclTokenModal = dynamic(
     ssr: false,
   }
 );
-export default function SelectDclPoolButton({
+function SelectDclPoolButton({
   isIn,
   isOut,
 }: {
@@ -156,3 +156,5 @@ export default function SelectDclPoolButton({
     </div>
   );
 }
+
+export default React.memo(SelectDclPoolButton);

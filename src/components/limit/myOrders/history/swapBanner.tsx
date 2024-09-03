@@ -1,3 +1,4 @@
+import React from "react";
 import { FormattedMessage } from "react-intl";
 import Big from "big.js";
 import { UserOrderInfo } from "@/services/swapV3";
@@ -8,7 +9,7 @@ import { isClientMobie } from "@/utils/device";
 import { MyOrderInstantSwapArrowRight } from "../../icons2";
 import { BsCheckCircle } from "@/components/reactIcons";
 import { useSwapStore } from "@/stores/swap";
-export default function SwapBanner({
+function SwapBanner({
   order,
   totalIn,
   totalOut,
@@ -224,3 +225,4 @@ export default function SwapBanner({
     </td>
   );
 }
+export default React.memo(SwapBanner);

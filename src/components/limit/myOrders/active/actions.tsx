@@ -13,7 +13,7 @@ import {
 import { updateTokensBalance } from "@/services/limit/limit";
 import checkTxBeforeShowToast from "@/components/common/toast/checkTxBeforeShowToast";
 
-export default function Actions({ order }: { order: UserOrderInfo }) {
+function Actions({ order }: { order: UserOrderInfo }) {
   const [cancelLoading, setCancelLoading] = useState<boolean>(false);
   const limitStore = useLimitStore();
   const appStore = useAppStore();
@@ -64,3 +64,4 @@ export default function Actions({ order }: { order: UserOrderInfo }) {
     </button>
   );
 }
+export default React.memo(Actions);

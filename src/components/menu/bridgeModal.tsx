@@ -1,8 +1,8 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import Modal from "react-modal";
 import { CloseIcon } from "@/components/common/Icons";
 
-export default function BridgeModal(props: any) {
+function BridgeModal(props: any) {
   const { isOpen, onRequestClose, bridgeList } = props;
   const [selecteData, setSelecteData] = useState<any>({});
   function jump() {
@@ -85,3 +85,4 @@ export default function BridgeModal(props: any) {
     </Modal>
   );
 }
+export default React.memo(BridgeModal);

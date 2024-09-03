@@ -1,8 +1,8 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import Modal from "react-modal";
 import { CloseIcon } from "../common/Icons";
 import { HeavyWarning } from "./icons";
-export default function SkyWardModal(props: ReactModal.Props) {
+function SkyWardModal(props: ReactModal.Props) {
   const [hover, setHover] = useState<boolean>(false);
   const { onRequestClose } = props as any;
   return (
@@ -70,3 +70,4 @@ export default function SkyWardModal(props: ReactModal.Props) {
     </Modal>
   );
 }
+export default React.memo(SkyWardModal);

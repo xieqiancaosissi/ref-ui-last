@@ -5,7 +5,7 @@ import LimitOrderTable from "./LimitOrderTable";
 import { isMobile } from "@/utils/device";
 import { useLimitOrderChartStore } from "@/stores/limitChart";
 
-export default function LimitOrderChartAndTable() {
+function LimitOrderChartAndTable() {
   const limitChartStore = useLimitOrderChartStore();
   const showViewOrder = limitChartStore.getShowViewAll();
   const mobile = isMobile();
@@ -37,3 +37,5 @@ export default function LimitOrderChartAndTable() {
     </div>
   );
 }
+
+export default React.memo(LimitOrderChartAndTable);

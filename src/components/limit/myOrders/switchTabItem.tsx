@@ -1,4 +1,5 @@
-export default function SwitchTabItem(props: any) {
+import React from "react";
+function SwitchTabItem(props: any) {
   const { active, clickEvent } = props;
   return (
     <div
@@ -23,3 +24,4 @@ export default function SwitchTabItem(props: any) {
     </div>
   );
 }
+export default React.memo(SwitchTabItem);

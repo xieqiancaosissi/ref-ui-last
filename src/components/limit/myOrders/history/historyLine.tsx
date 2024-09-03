@@ -7,7 +7,7 @@ import {
   V3_POOL_SPLITER,
   pointToPrice,
 } from "@/services/swapV3";
-import { MobileHistoryOrderStamp, MyOrderMobileArrow } from "../../icons2";
+import { MyOrderMobileArrow } from "../../icons2";
 import {
   calculateFeePercent,
   ONLY_ZEROS,
@@ -35,7 +35,7 @@ import Claimed from "./claimed";
 import Created from "./created";
 import Actions from "./actions";
 import SwapBanner from "./swapBanner";
-export default function HistoryLine({
+function HistoryLine({
   order,
   index,
   tokensMap,
@@ -513,3 +513,4 @@ export default function HistoryLine({
     </Fragment>
   );
 }
+export default React.memo(HistoryLine);

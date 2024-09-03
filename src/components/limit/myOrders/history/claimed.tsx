@@ -1,9 +1,10 @@
+import React from "react";
 import { TokenMetadata } from "@/services/ft-contract";
 import { toReadableNumber, toPrecision } from "@/utils/numbers";
 import ClaimTip from "./claimTip";
 import { UserOrderInfo } from "@/services/swapV3";
 
-export default function Claimed({
+function Claimed({
   buyToken,
   order,
   claimedAmount,
@@ -60,3 +61,4 @@ export default function Claimed({
     </span>
   );
 }
+export default React.memo(Claimed);

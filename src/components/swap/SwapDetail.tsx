@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import * as math from "mathjs";
 import BigNumber from "bignumber.js";
 import Big from "big.js";
@@ -20,7 +20,7 @@ import GetPriceImpact from "./GetPriceImpact";
 import SwapRouter from "./SwapRouter";
 import { beautifyNumber } from "@/components/common/beautifyNumber";
 
-export default function SwapDetail() {
+function SwapDetail() {
   const [show, setShow] = useState<boolean>(false);
   const [isRevert, setIsRevert] = useState<boolean>(false);
   const swapStore = useSwapStore();
@@ -202,3 +202,4 @@ export default function SwapDetail() {
     </div>
   );
 }
+export default React.memo(SwapDetail);

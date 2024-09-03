@@ -5,7 +5,7 @@ import { formatNumber, GEARS, isInvalid } from "@/services/limit/limitUtils";
 import { IOrderPointItem, ISide } from "@/interfaces/limit";
 import { useLimitOrderChartStore } from "@/stores/limitChart";
 import { formatPriceWithCommas } from "@/components/pools/detail/dcl/d3Chart/utils";
-export default function OrderChart() {
+function OrderChart() {
   const limitOrderChartStore = useLimitOrderChartStore();
   const buy_list = limitOrderChartStore.get_buy_list();
   const sell_list = limitOrderChartStore.get_sell_list();
@@ -610,3 +610,4 @@ export default function OrderChart() {
     </div>
   );
 }
+export default React.memo(OrderChart);

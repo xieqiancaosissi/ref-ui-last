@@ -420,6 +420,7 @@ export function YourLiquidityV2(props: any) {
         <SkeletonTheme
           baseColor="rgba(33, 43, 53, 0.3)"
           highlightColor="#2A3643"
+          duration={5}
         >
           <Skeleton
             style={{ width: "100%" }}

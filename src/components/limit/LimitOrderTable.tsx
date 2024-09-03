@@ -22,7 +22,7 @@ import { fillDclPool } from "@/services/limit/limitUtils";
 import Loading from "@/components/limit/myOrders/loading";
 import { isMobile } from "@/utils/device";
 
-export default function LimitOrderTable() {
+function LimitOrderTable() {
   // CONST start
   const limitOrderContainerHeight = "150";
   // CONST end
@@ -514,3 +514,5 @@ export default function LimitOrderTable() {
     </div>
   );
 }
+
+export default React.memo(LimitOrderTable);

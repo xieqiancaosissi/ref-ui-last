@@ -244,7 +244,7 @@ export default function DclChart({
       const W = rightX - x - dragBarWidth / 2;
       d3.select(`${randomId} .overlap rect`)
         .attr("transform", `translate(${x + dragBarWidth / 2}, 0)`)
-        .attr("width", W);
+        .attr("width", W > 0 ? W : 0);
     }
   }, [dragLeftPoint, price_range, drawChartDone]);
   useEffect(() => {
@@ -293,7 +293,7 @@ export default function DclChart({
           .slice(10)
       );
       const W = x - leftX - dragBarWidth / 2;
-      d3.select(`${randomId} .overlap rect`).attr("width", W);
+      d3.select(`${randomId} .overlap rect`).attr("width", W > 0 ? W : 0);
     }
   }, [dragRightPoint, price_range, drawChartDone]);
   useEffect(() => {
@@ -894,11 +894,11 @@ export default function DclChart({
       .join("rect")
       .transition()
       .attr("width", function (d: any) {
-        return (
+        const W =
           scale(Big(d.price_r).toNumber()) -
           scale(Big(d.price_l).toNumber()) -
-          1
-        );
+          1;
+        return W > 0 ? W : 0;
       })
       .attr("height", function (d) {
         return get_final_bar_height(scaleBar(+d.liquidity));
@@ -936,11 +936,11 @@ export default function DclChart({
       .join("rect")
       .transition()
       .attr("width", function (d: any) {
-        return (
+        const W =
           scale(Big(d.price_r).toNumber()) -
           scale(Big(d.price_l).toNumber()) -
-          1
-        );
+          1;
+        return W > 0 ? W : 0;
       })
       .attr("height", function (d: any) {
         return get_final_bar_height(scaleBar(+d.order_liquidity));
@@ -1016,11 +1016,11 @@ export default function DclChart({
       })
       .transition()
       .attr("width", function (d: any) {
-        return (
+        const W =
           scale(Big(d.price_r).toNumber()) -
           scale(Big(d.price_l).toNumber()) -
-          1
-        );
+          1;
+        return W > 0 ? W : 0;
       })
       .attr("height", function (d) {
         return wholeBarHeight;
@@ -1053,11 +1053,11 @@ export default function DclChart({
       })
       .transition()
       .attr("width", function () {
-        return (
+        const W =
           scale(sortP[sortP.length - 1]) -
           scale(sortP[0]) +
-          whole_bars_background_padding * 2
-        );
+          whole_bars_background_padding * 2;
+        return W > 0 ? W : 0;
       })
       .attr("height", function () {
         return (
@@ -1098,11 +1098,17 @@ export default function DclChart({
     d3.select(`${randomId} .remove_bars_background`)
       .attr("width", function () {
         if (all) {
-          return scale(max_bin_price) - scale(min_bin_price);
+          return scale(max_bin_price) - scale(min_bin_price) > 0
+            ? scale(max_bin_price) - scale(min_bin_price)
+            : 0;
         } else if (fromLeft) {
-          return scale(remove_to_price) - scale(min_bin_price);
+          return scale(remove_to_price) - scale(min_bin_price) > 0
+            ? scale(remove_to_price) - scale(min_bin_price)
+            : 0;
         } else if (fromRight) {
-          return scale(max_bin_price) - scale(remove_to_price);
+          return scale(max_bin_price) - scale(remove_to_price) > 0
+            ? scale(max_bin_price) - scale(remove_to_price)
+            : 0;
         }
       } as any)
       .attr("height", function () {
@@ -1589,7 +1595,7 @@ export default function DclChart({
             <g className="leftBar">
               <g className="percentLeft">
                 <rect
-                  width={percentBoxWidth}
+                  width={percentBoxWidth > 0 ? percentBoxWidth : 0}
                   height="22"
                   fill="transparent"
                   rx="1"
@@ -1603,7 +1609,11 @@ export default function DclChart({
                 ></text>
               </g>
               <g className="drag-left" style={{ cursor: "ew-resize" }}>
-                <rect width={dragBarWidth} height="253" opacity="0"></rect>
+                <rect
+                  width={dragBarWidth > 0 ? dragBarWidth : 0}
+                  height="253"
+                  opacity="0"
+                ></rect>
                 <path
                   d="M15 245L15 -3.69549e-06"
                   stroke="#9EFE01"
@@ -1633,7 +1643,7 @@ export default function DclChart({
             <g className="rightBar">
               <g className="percentRight">
                 <rect
-                  width={percentBoxWidth}
+                  width={percentBoxWidth > 0 ? percentBoxWidth : 0}
                   height="22"
                   fill="transparent"
                   rx="1"
@@ -1648,7 +1658,7 @@ export default function DclChart({
               </g>
               <g className="drag-right" style={{ cursor: "ew-resize" }}>
                 <rect
-                  width={dragBarWidth}
+                  width={dragBarWidth > 0 ? dragBarWidth : 0}
                   height="253"
                   opacity="0"
                   x={`-${dragBarWidth / 2}`}
@@ -1688,7 +1698,7 @@ export default function DclChart({
             {/*  show bar in radius mode */}
             <g className="radiusBar">
               <rect
-                width={radiusDragBarWidth}
+                width={radiusDragBarWidth > 0 ? radiusDragBarWidth : 0}
                 height="253"
                 opacity="0"
                 x={`-3`}

@@ -63,6 +63,9 @@ import { showWalletSelectorModal } from "@/utils/wallet";
 import { useAppStore } from "@/stores/app";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import { get_pool_name } from "@/services/commonV3";
+import { IExecutionResult } from "@/interfaces/wallet";
+import { failToast } from "@/components/orderbook/transactionTipPopUp";
+import successToast from "@/components/common/toast/successToast";
 
 const { REF_VE_CONTRACT_ID, REF_UNI_V3_SWAP_CONTRACT_ID } = getConfig();
 
@@ -76,6 +79,7 @@ export default function FarmsDclDetail(props: {
   user_data_loading: Boolean;
   dayVolumeMap: Record<string, string>;
   all_seeds: Seed[];
+  onTriggerFarmsPageUpdate: any;
 }) {
   const {
     detailData,
@@ -86,6 +90,7 @@ export default function FarmsDclDetail(props: {
     user_data,
     user_data_loading,
     all_seeds,
+    onTriggerFarmsPageUpdate,
   } = props;
   const cardWidth = isMobile() ? "100vw" : "430px";
   const cardHeight = isMobile() ? "90vh" : "80vh";
@@ -887,12 +892,42 @@ export default function FarmsDclDetail(props: {
       total_v_liquidity,
       withdraw_amount,
       seed_id: detailData.seed_id,
+    }).then((res) => {
+      handleStakeTranstion(res);
     });
+  }
+  async function handleStakeTranstion(res: IExecutionResult | undefined) {
+    if (!res) return;
+    if (res.status == "success") {
+      set_nft_stake_loading(false);
+      onTriggerFarmsPageUpdate();
+      successToast();
+      get_list_liquidities();
+      get_mft_balance_of();
+    } else if (res.status == "error") {
+      failToast(res.errorResult?.message);
+      set_nft_stake_loading(false);
+    }
   }
   function batchUnStakeNFT() {
     set_nft_unStake_loading(true);
     const unStake_info: IStakeInfo = get_unStake_info();
-    batch_unStake_boost_nft(unStake_info);
+    batch_unStake_boost_nft(unStake_info).then((res) => {
+      handleUnStakeTranstion(res);
+    });
+  }
+  async function handleUnStakeTranstion(res: IExecutionResult | undefined) {
+    if (!res) return;
+    if (res.status == "success") {
+      set_nft_unStake_loading(false);
+      onTriggerFarmsPageUpdate();
+      successToast();
+      get_list_liquidities();
+      get_mft_balance_of();
+    } else if (res.status == "error") {
+      failToast(res.errorResult?.message);
+      set_nft_unStake_loading(false);
+    }
   }
   function formatCheckedList(data) {
     const formattedData = {};

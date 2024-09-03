@@ -128,6 +128,7 @@ export default function FarmsBoosterPage(props: any) {
             user_data_loading={user_data_loading}
             dayVolumeMap={dayVolumeMap}
             all_seeds={all_seeds}
+            onTriggerFarmsPageUpdate={triggerFarmsPageUpdate}
           ></FarmsDclDetail>
         ) : null}
       </FarmsContextData.Provider>

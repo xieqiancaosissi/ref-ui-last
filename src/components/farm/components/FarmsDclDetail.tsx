@@ -998,7 +998,9 @@ export default function FarmsDclDetail(props: {
       </div>`;
       } else {
         itemHtml = `<div class="flex justify-between items-center h-8">
-          <image class="w-5 h-5 rounded-full mr-7  border border-primaryGreen " src="${token.icon}"/>
+          <image class="w-5 h-5 rounded-full mr-7  border border-primaryGreen " src="${
+            token.icon
+          }"/>
           <label class="text-xs text-gray-60">${
             (apr == 0 ? "-" : formatWithCommas(toPrecision(apr, 2))) + "%"
           }</label>

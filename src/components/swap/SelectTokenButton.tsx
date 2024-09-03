@@ -1,3 +1,4 @@
+import React from "react";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import SelectTokenModal from "../../components/common/SelectTokenModal/Index";
 import { ArrowDownIcon } from "../../components/swap/icons";
@@ -24,7 +25,7 @@ interface ISelectTokenButtonProps {
   isIn?: boolean;
   isOut?: boolean;
 }
-export default function SelectTokenButton(props: ISelectTokenButtonProps) {
+function SelectTokenButton(props: ISelectTokenButtonProps) {
   const { isIn, isOut } = props;
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const persistSwapStore: IPersistSwapStore = usePersistSwapStore();
@@ -100,3 +101,4 @@ export default function SelectTokenButton(props: ISelectTokenButtonProps) {
     </div>
   );
 }
+export default React.memo(SelectTokenButton);

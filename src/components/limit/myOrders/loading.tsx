@@ -1,5 +1,6 @@
+import React from "react";
 import { LoadingIcon } from "@/components/common/Icons";
-export default function Loading() {
+function Loading() {
   return (
     <div
       className="flex flex-col relative items-center justify-center"
@@ -13,3 +14,4 @@ export default function Loading() {
     </div>
   );
 }
+export default React.memo(Loading);

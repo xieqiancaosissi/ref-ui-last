@@ -631,7 +631,7 @@ function Checkbox({
   );
 }
 
-export default AccessKeyModal;
+export default React.memo(AccessKeyModal);
 
 export interface Ipermission {
   FunctionCall: {
@@ -639,11 +639,4 @@ export interface Ipermission {
     method_names: string[];
     receiver_id: string;
   };
-}
-interface IAccountKey {
-  access_key: {
-    nonce: number;
-    permission: string | Ipermission;
-  };
-  public_key: string;
 }

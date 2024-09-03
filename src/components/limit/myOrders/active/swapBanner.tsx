@@ -1,5 +1,5 @@
 import { FormattedMessage } from "react-intl";
-import React, { useState, useMemo, Fragment, useRef } from "react";
+import React, { useState, useRef } from "react";
 import Big from "big.js";
 import { UserOrderInfo } from "@/services/swapV3";
 import {
@@ -25,7 +25,7 @@ import {
   PikespeakIcon,
   TxLeftArrow,
 } from "@/components/pools/icon";
-export default function SwapBanner({
+function SwapBanner({
   order,
   totalIn,
   totalOut,
@@ -489,3 +489,5 @@ export default function SwapBanner({
     </td>
   );
 }
+
+export default React.memo(SwapBanner);

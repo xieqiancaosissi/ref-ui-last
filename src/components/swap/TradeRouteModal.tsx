@@ -1,4 +1,4 @@
-import { useMemo, useEffect, useState } from "react";
+import React, { useMemo, useEffect, useState } from "react";
 import Modal from "react-modal";
 import { useSwapStore } from "@/stores/swap";
 import {
@@ -13,10 +13,9 @@ import { LeftBracket, RightBracket } from "@/components/swap/Bracket";
 import Token from "@/components/swap/Token";
 import { PolygonArrowIcon, RefMarketRouteIcon } from "./icons";
 import { CloseIcon } from "@/components/common/Icons";
-import { isMobile } from "@/utils/device";
 import { getTokensOfRoute } from "@/services/swap/smartRouterFromServer";
 
-export default function TradeRouteModal({
+function TradeRouteModal({
   isOpen,
   onRequestClose,
 }: {
@@ -222,3 +221,4 @@ export default function TradeRouteModal({
     </Modal>
   );
 }
+export default React.memo(TradeRouteModal);

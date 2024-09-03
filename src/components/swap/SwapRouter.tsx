@@ -1,11 +1,11 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import Big from "big.js";
 import { useSwapStore } from "@/stores/swap";
 import { TokenMetadata } from "@/services/ft-contract";
-import { RefMarketIcon, ArrowTopRightIcon, ArrowRightIcon } from "./icons";
+import { ArrowTopRightIcon, ArrowRightIcon } from "./icons";
 import TradeRouteModal from "./TradeRouteModal";
 
-export default function SwapRouter() {
+function SwapRouter() {
   const [showRouteDetail, setShowRouteDetail] = useState<boolean>(false);
   const swapStore = useSwapStore();
   const best = swapStore.getBest();
@@ -82,7 +82,7 @@ export default function SwapRouter() {
     </div>
   );
 }
-
+export default React.memo(SwapRouter);
 function OneRouter({ tokens }: { tokens: TokenMetadata[] }) {
   return tokens.map((token: TokenMetadata, index) => {
     return (

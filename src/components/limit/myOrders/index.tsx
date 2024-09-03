@@ -9,7 +9,7 @@ import { useAccountStore } from "@/stores/account";
 import useHistoryOrderSwapInfo from "@/hooks/useHistoryOrderSwapInfo";
 import OrderCard from "./order/orderCard";
 
-export default function MyOrder() {
+function MyOrder() {
   const [oldOrders, setOldOrders] = useState<UserOrderInfo[]>();
   const accountStore = useAccountStore();
   const accountId = accountStore.getAccountId();
@@ -96,3 +96,4 @@ export default function MyOrder() {
     </div>
   );
 }
+export default React.memo(MyOrder);

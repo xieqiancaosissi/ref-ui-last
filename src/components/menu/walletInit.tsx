@@ -1,7 +1,7 @@
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { getWalletSelector } from "../../utils/wallet-selector";
 import { useAccountStore } from "../../stores/account";
-export default function WalletInit() {
+function WalletInit() {
   const accountStore = useAccountStore();
   useEffect(() => {
     getWalletSelector({ onAccountChange: changeAccount });
@@ -14,3 +14,5 @@ export default function WalletInit() {
 
   return null;
 }
+
+export default React.memo(WalletInit);

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Big from "big.js";
 import { twMerge } from "tailwind-merge";
 import dynamic from "next/dynamic";
@@ -24,7 +24,7 @@ interface IInputProps {
   amountOut?: string;
   isnearwnearSwap?: boolean;
 }
-export default function Input(props: IInputProps) {
+function Input(props: IInputProps) {
   const { className, disable, token, isIn, isOut, amountOut, isnearwnearSwap } =
     props;
   const [amount, setAmount] = useState<string>("1");
@@ -123,3 +123,4 @@ export default function Input(props: IInputProps) {
     </div>
   );
 }
+export default React.memo(Input);

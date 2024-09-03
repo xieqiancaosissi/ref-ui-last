@@ -2,11 +2,9 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useDebounce } from "react-use";
 import { motion } from "framer-motion";
 import { SetIcon, WarnIcon } from "../../components/swap/icons";
-import { QuestionIcon } from "../../components/common/Icons";
 import { usePersistSwapStore, IPersistSwapStore } from "../../stores/swap";
 import { INIT_SLIPPAGE_VALUE } from "@/utils/constant";
 import swapStyles from "./swap.module.css";
-import CustomTooltip from "@/components/customTooltip/customTooltip";
 import SupportLedgerGuide from "@/components/common/ledger/SupportLedgerGuide";
 import { useAccountStore } from "@/stores/account";
 import { useSwapStore } from "@/stores/swap";
@@ -14,7 +12,7 @@ import { getAccount } from "@/utils/near";
 import HighPriceImpactTip from "./HighPriceImpactTip";
 import { PRICE_IMPACT_RED_VALUE } from "@/utils/constant";
 
-export default function SetPopup() {
+function SetPopup() {
   const [show, setShow] = useState<boolean>();
   const [isLedgerUser, setIsLedgerUser] = useState<boolean>(false);
   const [ledgerTip, setLedgerTip] = useState<boolean>(false);
@@ -249,3 +247,4 @@ export default function SetPopup() {
     </div>
   );
 }
+export default React.memo(SetPopup);

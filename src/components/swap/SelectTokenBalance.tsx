@@ -1,6 +1,5 @@
-import { useMemo } from "react";
+import React, { useMemo } from "react";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
-import { toPrecision } from "@/utils/numbers";
 import { beautifyNumber } from "@/components/common/beautifyNumber";
 import { useSwapStore } from "@/stores/swap";
 import { useAccountStore } from "@/stores/account";
@@ -11,7 +10,7 @@ interface ISelectTokenBalanceProps {
   setMaxAmount: () => void;
   isIn?: boolean;
 }
-export default function SelectTokenBalance(props: ISelectTokenBalanceProps) {
+function SelectTokenBalance(props: ISelectTokenBalanceProps) {
   const { isIn, setMaxAmount, token } = props;
   const accountStore = useAccountStore();
   const walletLoading = accountStore.getWalletLoading();
@@ -50,3 +49,4 @@ export default function SelectTokenBalance(props: ISelectTokenBalanceProps) {
     </>
   );
 }
+export default React.memo(SelectTokenBalance);

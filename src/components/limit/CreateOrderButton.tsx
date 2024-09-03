@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import Big from "big.js";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import { useAccountStore } from "@/stores/account";
@@ -10,7 +10,7 @@ import ConfirmOrderModal from "./ConfirmOrderModal";
 import { useAppStore } from "@/stores/app";
 import { showWalletSelectorModal } from "@/utils/wallet";
 
-export default function CreateOrderButton() {
+function CreateOrderButton() {
   const [showConfirmModal, setShowConfirmModal] = useState<boolean>(false);
   const accountStore = useAccountStore();
   const limitStore = useLimitStore();
@@ -119,3 +119,4 @@ export default function CreateOrderButton() {
     </>
   );
 }
+export default React.memo(CreateOrderButton);

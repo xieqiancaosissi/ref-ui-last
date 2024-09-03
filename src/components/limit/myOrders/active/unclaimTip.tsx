@@ -1,10 +1,10 @@
+import React from "react";
 import getUnclaimAmountTip from "./unclaimAmountTip";
 import CustomTooltip from "@/components/customTooltip/customTooltip";
 import { UserOrderInfo } from "@/services/swapV3";
-import { QuestionMark } from "@/components/farm/icon";
 import { ONLY_ZEROS } from "@/utils/numbers";
 import { TipIcon } from "../../icons2";
-export default function UnClaimTip({
+function UnClaimTip({
   claimedAmount,
   unClaimedAmount,
   pendingAmount,
@@ -60,3 +60,5 @@ export default function UnClaimTip({
     </div>
   );
 }
+
+export default React.memo(UnClaimTip);

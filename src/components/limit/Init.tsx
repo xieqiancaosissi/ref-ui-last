@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import {
   pointToPrice,
   regularizedPoint,
@@ -12,7 +12,7 @@ import {
   IPersistLimitStore,
 } from "@/stores/limitOrder";
 
-export default function Init() {
+function Init() {
   const limitStore = useLimitStore();
   const persistLimitStore: IPersistLimitStore = usePersistLimitStore();
   const dclPool = persistLimitStore.getDclPool();
@@ -43,3 +43,4 @@ export default function Init() {
   }, [dclPool?.pool_id, dclPool?.current_point, tokenIn?.id, tokenOut?.id]);
   return null;
 }
+export default React.memo(Init);

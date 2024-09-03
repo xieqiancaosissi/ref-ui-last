@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { FormattedMessage } from "react-intl";
 import _ from "lodash";
 import { UserOrderInfo } from "@/services/swapV3";
@@ -6,7 +6,7 @@ import { IOrderType } from "@/interfaces/limit";
 import { isMobile } from "@/utils/device";
 const ORDER_TYPE_KEY = "REF_FI_ORDER_TYPE_VALUE";
 
-export default function OrderTab({
+function OrderTab({
   activeOrderList,
   historyOrderList,
   orderType,
@@ -138,3 +138,4 @@ export default function OrderTab({
     </div>
   );
 }
+export default React.memo(OrderTab);

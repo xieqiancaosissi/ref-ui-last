@@ -1,7 +1,8 @@
+import React from "react";
 import moment from "moment";
 import { UserOrderInfo } from "@/services/swapV3";
 import { TIMESTAMP_DIVISOR } from "@/utils/constant";
-export default function Created({ order }: { order: UserOrderInfo }) {
+function Created({ order }: { order: UserOrderInfo }) {
   return (
     <span
       className=" relative  whitespace-nowrap    text-gray-10 xs:text-xs flex flex-col   xsm:justify-center  text-left xs:opacity-50"
@@ -26,3 +27,4 @@ export default function Created({ order }: { order: UserOrderInfo }) {
     </span>
   );
 }
+export default React.memo(Created);

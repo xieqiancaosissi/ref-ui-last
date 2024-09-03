@@ -497,4 +497,4 @@ const PrivacyContent = () => {
   );
 };
 
-export default ModalGAPrivacy;
+export default React.memo(ModalGAPrivacy);

@@ -860,4 +860,4 @@ async function ping_gas(url: string) {
     responseTime,
   };
 }
-export default RpcList;
+export default React.memo(RpcList);

@@ -21,7 +21,7 @@ import OrderTab from "./orderTab";
 const REF_FI_MY_ORDER_SHOW_HISTORY_SWAP_INFO =
   "REF_FI_MY_ORDER_SHOW_HISTORY_SWAP_INFO";
 const ORDER_TYPE_KEY = "REF_FI_ORDER_TYPE_VALUE";
-export default function OrderCard({
+function OrderCard({
   activeOrder,
   historyOrder,
   tokensMap,
@@ -601,3 +601,4 @@ export default function OrderCard({
     </div>
   );
 }
+export default React.memo(OrderCard);

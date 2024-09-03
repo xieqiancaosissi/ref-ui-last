@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import React, { useMemo } from "react";
 import Big from "big.js";
 import CustomTooltip from "@/components/customTooltip/customTooltip";
 import { SubIcon, AddIcon, UnLockIcon, LockIcon } from "./icons";
@@ -13,7 +13,7 @@ import { regularizedPrice } from "@/services/swapV3";
 import { toPrecision } from "@/utils/numbers";
 import { getReverseRate } from "@/services/limit/limitUtils";
 
-export default function RateContainer() {
+function RateContainer() {
   const limitStore = useLimitStore() as ILimitStore;
   const persistLimitStore = usePersistLimitStore() as IPersistLimitStore;
   const rate = limitStore.getRate();
@@ -205,3 +205,4 @@ export default function RateContainer() {
     </div>
   );
 }
+export default React.memo(RateContainer);

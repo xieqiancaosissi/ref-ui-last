@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import { Tooltip } from "react-tooltip";
@@ -26,7 +26,7 @@ import { getSelectedWalletId } from "@/utils/wallet";
 import OrderlyKeyInit from "@/components/orderbook/OrderlyKeyInit";
 import Overview from "../portfolio";
 const is_mobile = isMobile();
-export default function WalletConnect() {
+function WalletConnect() {
   const [currentWallet, setCurrentWallet] = useState<Wallet>();
   const [tipVisible, setTipVisible] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -328,3 +328,5 @@ export default function WalletConnect() {
     </div>
   );
 }
+
+export default React.memo(WalletConnect);

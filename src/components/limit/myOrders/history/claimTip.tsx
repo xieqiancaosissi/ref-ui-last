@@ -1,9 +1,10 @@
+import React from "react";
 import getClaimAmountTip from "./claimAmountTip";
 import CustomTooltip from "@/components/customTooltip/customTooltip";
 import { UserOrderInfo } from "@/services/swapV3";
 import { TipIcon } from "../../icons2";
 import { ONLY_ZEROS } from "@/utils/numbers";
-export default function ClaimTip({
+function ClaimTip({
   claimedAmount,
   cancelAmount,
   order,
@@ -55,3 +56,5 @@ export default function ClaimTip({
     </div>
   );
 }
+
+export default React.memo(ClaimTip);

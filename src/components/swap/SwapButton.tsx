@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import Big from "big.js";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import { useAccountStore } from "@/stores/account";
@@ -24,7 +24,7 @@ import { useTokenStore, ITokenStore } from "@/stores/token";
 import { checkSwapTx } from "@/services/swap/swapTx";
 import checkTxBeforeShowToast from "@/components/common/toast/checkTxBeforeShowToast";
 
-export default function SwapButton({
+function SwapButton({
   isHighImpact,
   highImpactCheck,
 }: {
@@ -239,3 +239,4 @@ export default function SwapButton({
     </>
   );
 }
+export default React.memo(SwapButton);

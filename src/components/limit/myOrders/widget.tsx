@@ -1,6 +1,7 @@
+import React from "react";
 import { FormattedMessage } from "react-intl";
 import { MyOrderCircle } from "../icons2";
-export const MobileInfoBanner = ({
+const MobileInfoBannerPre = ({
   text,
   value,
 }: {
@@ -14,8 +15,7 @@ export const MobileInfoBanner = ({
     </div>
   );
 };
-
-export function NoOrderCard({ text }: { text: "active" | "history" }) {
+function NoOrderCardPre({ text }: { text: "active" | "history" }) {
   return (
     <div className="w-full rounded-xl overflow-hidden h-48 relative text-white font-normal  flex items-center justify-center">
       <div className="flex items-center flex-col relative text-center z-50 mx-auto">
@@ -34,3 +34,5 @@ export function NoOrderCard({ text }: { text: "active" | "history" }) {
     </div>
   );
 }
+export const MobileInfoBanner = React.memo(MobileInfoBannerPre);
+export const NoOrderCard = React.memo(NoOrderCardPre);

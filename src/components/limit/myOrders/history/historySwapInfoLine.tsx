@@ -1,4 +1,4 @@
-import React, { useState, useContext, Fragment, useRef } from "react";
+import React, { useState, Fragment, useRef } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 import _ from "lodash";
 import BigNumber from "bignumber.js";
@@ -24,7 +24,7 @@ import {
   TxLeftArrow,
 } from "@/components/pools/icon";
 
-export default function HistorySwapInfoLine({
+function HistorySwapInfoLine({
   index,
   tokensMap,
   orderTx,
@@ -513,3 +513,4 @@ export default function HistorySwapInfoLine({
     </>
   );
 }
+export default React.memo(HistorySwapInfoLine);

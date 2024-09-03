@@ -1,4 +1,5 @@
-export default function Token({ icon, size }: { icon: string; size: string }) {
+import React from "react";
+function Token({ icon, size }: { icon: string; size: string }) {
   return (
     <img
       src={icon}
@@ -7,3 +8,4 @@ export default function Token({ icon, size }: { icon: string; size: string }) {
     />
   );
 }
+export default React.memo(Token);

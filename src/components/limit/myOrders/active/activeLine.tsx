@@ -27,7 +27,6 @@ import UnclaimTip from "./unclaimTip";
 import { MobileInfoBanner } from "../widget";
 import { ONLY_ZEROS } from "@/utils/numbers";
 import { getTxId } from "@/services/indexer";
-import { HiOutlineExternalLink } from "@/components/reactIcons";
 import { ArrowTopRightIcon } from "../../icons2";
 import {
   NearblocksIcon,
@@ -35,7 +34,7 @@ import {
   TxLeftArrow,
 } from "@/components/pools/icon";
 import getConfig from "@/utils/config";
-export default function ActiveLine({
+function ActiveLine({
   tokensMap,
   order,
   index,
@@ -527,3 +526,4 @@ export default function ActiveLine({
     </Fragment>
   );
 }
+export default React.memo(ActiveLine);

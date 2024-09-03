@@ -93,7 +93,7 @@ export default function MenuPc() {
   useEffect(() => {
     setExtraBack("transparent");
     if (router.route.indexOf("/sauce") != -1) {
-      setExtraBack("rgba(33, 43, 53, 0.4)");
+      setExtraBack("#0e1A23");
       setExtraWidth("100%");
     } else if (oneLevelData?.children && oneLevelData.children.length > 3) {
       setExtraWidth("680px");

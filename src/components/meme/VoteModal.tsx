@@ -37,11 +37,13 @@ import { useRouter } from "next/router";
 import { IExecutionResult } from "@/interfaces/wallet";
 import successToast from "../common/toast/successToast";
 import failToast from "../common/toast/failToast";
+import { checkTransaction } from "@/utils/contract";
+import { parsedArgs } from "./SeedsBox";
 
 const { MEME_TOKEN_XREF_MAP } = getMemeContractConfig();
 const { meme_winner_tokens, meme_nonListed_tokens } = getMemeDataConfig();
 function VoteModel(props: any) {
-  const { isOpen, onRequestClose } = props;
+  const { isOpen, onRequestClose, setTxParams, setIsTxHashOpen } = props;
   const [selectedTab, setSelectedTab] = useState("");
   const [amount, setAmount] = useState("");
   const [stakeLoading, setStakeLoading] = useState(false);
@@ -142,11 +144,27 @@ function VoteModel(props: any) {
   async function handleDataAfterTranstion(res: IExecutionResult | undefined) {
     if (!res) return;
     if (res.status == "success") {
+      const txHash = res.txHashes?.split(",");
       setStakeLoading(false);
-      successToast();
+      // successToast();
       setAmount("0");
       onRequestClose();
       init_user();
+      checkTransaction(txHash[0]).then((res: any) => {
+        const { transaction, receipts } = res;
+        const args = parsedArgs(
+          res?.receipts?.[0]?.receipt?.Action?.actions?.[0]?.FunctionCall?.args
+        );
+        const receiver_id = transaction?.receiver_id;
+        const parsedInputArgs = JSON.parse(args || "");
+        setIsTxHashOpen(true);
+        setTxParams({
+          action: "stake",
+          params: parsedInputArgs,
+          txHash: txHash[0],
+          receiver_id,
+        });
+      });
     } else if (res.status == "error") {
       failToast(res.errorResult?.message);
       setStakeLoading(false);

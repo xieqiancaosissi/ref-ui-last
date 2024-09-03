@@ -18,6 +18,8 @@ import { useAccountStore } from "@/stores/account";
 import { useScrollToTopOnFirstPage } from "@/services/meme";
 import { useRouter } from "next/router";
 import UserRankingModal from "./UserRankingModal";
+import CallBackModal from "./CallBackModal";
+import { ITxParams } from "./SeedsBox";
 
 const Staking = () => {
   const is_mobile = isMobile();
@@ -28,7 +30,9 @@ const Staking = () => {
   const [isShowAirdropModal, setShowAirdropModal] = useState(false);
   const [isShowVoteDetailsModal, setVoteDetailsModal] = useState(false);
   const { currentPage, introRef, hasGuided } = useScrollToTopOnFirstPage();
+  const [isTxHashOpen, setIsTxHashOpen] = useState(false);
   const [showRank, setShowRank] = useState(false);
+  const [txParams, setTxParams] = useState<ITxParams>();
   const { getIsSignedIn } = useAccountStore();
   const isSignedIn = getIsSignedIn();
   const router = useRouter();
@@ -218,6 +222,8 @@ const Staking = () => {
           onRequestClose={() => {
             setIsVoteOpen(false);
           }}
+          setTxParams={setTxParams}
+          setIsTxHashOpen={setIsTxHashOpen}
         />
       ) : null}
       {isMemeVoteOpen ? (
@@ -226,6 +232,8 @@ const Staking = () => {
           onRequestClose={() => {
             setIsMemeVoteOpen(false);
           }}
+          setTxParams={setTxParams}
+          setIsTxHashOpen={setIsTxHashOpen}
         />
       ) : null}
       {isDonateOpen ? (
@@ -258,6 +266,16 @@ const Staking = () => {
           onRequestClose={() => {
             setVoteDetailsModal(false);
           }}
+        />
+      ) : null}
+      {isTxHashOpen && txParams ? (
+        <CallBackModal
+          isOpen={isTxHashOpen}
+          onRequestClose={() => {
+            setIsTxHashOpen(false);
+            // history.replace("/meme");
+          }}
+          txParams={txParams}
         />
       ) : null}
     </div>

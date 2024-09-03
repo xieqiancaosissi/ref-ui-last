@@ -1255,6 +1255,7 @@ const FarmsPage = (props: any, ref: any) => {
                 <SkeletonTheme
                   baseColor="rgba(33, 43, 53, 0.3)"
                   highlightColor="#2A3643"
+                  duration={3}
                 >
                   <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 w-full">
                     <div className="w-full">
@@ -1514,6 +1515,7 @@ const FarmsPage = (props: any, ref: any) => {
               <SkeletonTheme
                 baseColor="rgba(33, 43, 53, 0.3)"
                 highlightColor="#2A3643"
+                duration={3}
               >
                 <Skeleton
                   style={{ width: "100%" }}

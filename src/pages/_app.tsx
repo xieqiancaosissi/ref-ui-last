@@ -35,8 +35,6 @@ const RiskModal = dynamic(
     ssr: false,
   }
 );
-// const Menu = dynamic(() => import("../components/menu"), { ssr: false });
-
 export type AppPropsWithLayout = AppProps & {
   Component: {
     customLayout?: (page: React.ReactNode) => React.ReactNode;
@@ -52,12 +50,18 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
   const accountStore = useAccountStore();
   const accountId = accountStore.getAccountId();
   useEffect(() => {
-    router.events.on("routeChangeStart", () => {
+    const handleRouteChangeStart = () => {
       setProgress(30);
-    });
-    router.events.on("routeChangeComplete", () => {
+    };
+    const handleRouteChangeComplete = () => {
       setProgress(100);
-    });
+    };
+    router.events.on("routeChangeStart", handleRouteChangeStart);
+    router.events.on("routeChangeComplete", handleRouteChangeComplete);
+    return () => {
+      router.events.off("routeChangeStart", handleRouteChangeStart);
+      router.events.off("routeChangeComplete", handleRouteChangeComplete);
+    };
   }, []);
   useEffect(() => {
     UIInit();

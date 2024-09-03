@@ -16,7 +16,6 @@ import dynamic from "next/dynamic";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { MenuContainer } from "./icons";
-import Bridge from "./bridge";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import BridgeConfirmModal from "./bridgeConfirmModal";
 import { menuData, IMenuChild, routeMapIds } from "./menuData";

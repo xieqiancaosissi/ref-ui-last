@@ -93,7 +93,7 @@ export function InputAmount({
             }}
           />
           <span
-            className={`text-2xl font-bold mx-2.5 whitespace-nowrap frcc min-w-10 ${
+            className={`text-2xl font-bold mx-2.5 whitespace-nowrap shrink-0 frcc min-w-10 ${
               currentSelectedPool?.pool_id
                 ? "text-white"
                 : "text-v3feeTextColor"

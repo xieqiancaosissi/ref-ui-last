@@ -408,7 +408,9 @@ export default function PoolRow(props: any) {
                     onClick={(e) => {
                       e.stopPropagation();
                       e.preventDefault();
-                      openUrl(`https://app.burrow.finance/`);
+                      const shadow_id = `shadow_ref_v1-${item?.id}`;
+                      const url = `https://app.burrow.finance/tokenDetail/${shadow_id}`;
+                      window.open(url);
                     }}
                   >
                     <ShareInBurrow

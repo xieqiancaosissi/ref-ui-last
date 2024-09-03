@@ -82,6 +82,7 @@ import { beautifyNumber } from "@/components/common/beautifyNumber";
 
 const { REF_UNI_V3_SWAP_CONTRACT_ID } = getConfig();
 export function YourLiquidityV2(props: any) {
+  const router = useRouter();
   const {
     set_dcl_liquidities_list,
     set_dcl_liquidities_details_list,
@@ -177,6 +178,7 @@ export function YourLiquidityV2(props: any) {
           poolDetail: all_pools_map?.[liquidity.pool_id],
           liquidityDetail: dcl_liquidities_details_map?.[lpt_id],
           liquidities_tokens_metas,
+          router,
         });
       })
     ).then((yourLiquidityList) => {
@@ -426,6 +428,7 @@ async function getYourLiquidityData({
   poolDetail,
   liquidities_tokens_metas,
   liquidityDetail,
+  router,
 }: {
   liquidity: UserLiquidityInfo;
   all_seeds: Seed[];
@@ -433,6 +436,7 @@ async function getYourLiquidityData({
   poolDetail: PoolInfo;
   liquidities_tokens_metas: Record<string, TokenMetadata>;
   liquidityDetail: UserLiquidityInfo;
+  router: any;
 }) {
   function get_your_liquidity_in_farm_range() {
     if (!related_seed_info.targetSeed || !related_seed_info.targetSeed.seed_id)
@@ -619,7 +623,7 @@ async function getYourLiquidityData({
       } else {
         url = `/v2farms/${link_params}-r`;
       }
-      openUrlLocal(url);
+      router.push(url);
     }
   }
   function getRateMapTokens() {
@@ -1148,7 +1152,7 @@ function UserLiquidityLineStyleGroup({
           // successToast();
           // setAddSuccess((pre: number) => pre + 1);
           const params_str = get_pool_name(poolDetail.pool_id.toString());
-          openUrlLocal(`/poolV2/${params_str}`);
+          history.push(`/poolV2/${params_str}`);
         } else if (res.status == "error") {
           failToast(res.errorResult?.message);
         }
@@ -1285,11 +1289,12 @@ function UserLiquidityLineStyleGroupPage() {
     showRemoveBox,
     setAddSuccess,
     addSuccess,
+    history,
   } = useContext(GroupData)!;
   const [switch_off, set_switch_off] = useState<boolean>(true);
   function goPoolDetailPage() {
     const params_str = get_pool_name(poolDetail.pool_id);
-    openUrlLocal(`/poolV2/${params_str}`);
+    history.push(`/poolV2/${params_str}`);
   }
   const canClaim = +tokenFeeLeft != 0 && +tokenFeeRight != 0;
   const [claim_loading, set_claim_loading] = useState(false);
@@ -1317,7 +1322,7 @@ function UserLiquidityLineStyleGroupPage() {
           // successToast();
           // setAddSuccess((pre: number) => pre + 1);
           const params_str = get_pool_name(poolDetail.pool_id.toString());
-          openUrlLocal(`/poolV2/${params_str}`);
+          history.push(`/poolV2/${params_str}`);
         } else if (res.status == "error") {
           failToast(res.errorResult?.message);
         }
@@ -1328,7 +1333,7 @@ function UserLiquidityLineStyleGroupPage() {
   }
 
   const toDclLiq = (id: string) => {
-    openUrlLocal(`/liquidity/${get_pool_name(id)}`);
+    history.push(`/liquidity/${get_pool_name(id)}`);
   };
 
   return (
@@ -1346,7 +1351,7 @@ function UserLiquidityLineStyleGroupPage() {
             className={`min-h-18 w-full grid grid-cols-12`}
             onClick={() => {
               const params_str = get_pool_name(poolDetail.pool_id.toString());
-              openUrlLocal(`/poolV2/${params_str}`);
+              history.push(`/poolV2/${params_str}`);
             }}
           >
             {/* Pool */}
@@ -1500,7 +1505,7 @@ function UserLiquidityLineStyleGroupPage() {
                                   className="cursor-pointer underline"
                                   onClick={(e) => {
                                     e.stopPropagation();
-                                    openUrlLocal(go_farm_url_link);
+                                    history.push(go_farm_url_link);
                                   }}
                                 >
                                   farm
@@ -1518,7 +1523,7 @@ function UserLiquidityLineStyleGroupPage() {
                                   className={`cursor-pointer underline text-primaryText hover:text-greenColor`}
                                   onClick={(e) => {
                                     e.stopPropagation();
-                                    openUrlLocal(go_farm_url_link);
+                                    history.push(go_farm_url_link);
                                   }}
                                 >
                                   farm (
@@ -1631,7 +1636,7 @@ function UserLiquidityLineStyleGroupPage() {
                         className="underline cursor-pointer"
                         onClick={() => {
                           localStorage.setItem("BOOST_FARM_TAB", "yours");
-                          openUrlLocal("/v2farms");
+                          history.push("/v2farms");
                         }}
                       >
                         Your Farm
@@ -1659,7 +1664,7 @@ function UserLiquidityLineStyleGroupPage() {
             className={`min-h-44 w-full`}
             onClick={() => {
               const params_str = get_pool_name(poolDetail.pool_id.toString());
-              openUrlLocal(`/poolV2/${params_str}`);
+              history.push(`/poolV2/${params_str}`);
             }}
           >
             {/* token icon and symbol */}
@@ -1791,7 +1796,7 @@ function UserLiquidityLineStyleGroupPage() {
                                       className="cursor-pointer underline"
                                       onClick={(e) => {
                                         e.stopPropagation();
-                                        openUrlLocal(go_farm_url_link);
+                                        history.push(go_farm_url_link);
                                       }}
                                     >
                                       farm
@@ -1809,7 +1814,7 @@ function UserLiquidityLineStyleGroupPage() {
                                       className={`cursor-pointer underline text-primaryText hover:text-greenColor`}
                                       onClick={(e) => {
                                         e.stopPropagation();
-                                        openUrlLocal(go_farm_url_link);
+                                        history.push(go_farm_url_link);
                                       }}
                                     >
                                       farm (
@@ -1962,7 +1967,7 @@ function UserLiquidityLineStyleGroupPage() {
                     className="underline cursor-pointer"
                     onClick={() => {
                       localStorage.setItem("BOOST_FARM_TAB", "yours");
-                      openUrlLocal("/v2farms");
+                      history.push("/v2farms");
                     }}
                   >
                     Your Farm

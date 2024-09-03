@@ -74,7 +74,7 @@ export default function StablePoolDetail() {
     if (poolId) {
       getPoolsDetailById({ pool_id: poolId as any }).then((res) => {
         PoolRouterGuard(res, "", true) &&
-          openUrlLocal(`${PoolRouterGuard(res, "", true)}/${poolId}`);
+          router.push(`${PoolRouterGuard(res, "", true)}/${poolId}`);
         setPoolDetail(res);
       });
 

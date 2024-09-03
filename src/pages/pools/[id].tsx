@@ -112,7 +112,7 @@ export default function ClassicPoolDetail() {
         } else {
           res &&
             PoolRouterGuard(res, "SIMPLE_POOL") &&
-            openUrlLocal(`${PoolRouterGuard(res, "SIMPLE_POOL")}/${poolId}`);
+            router.push(`${PoolRouterGuard(res, "SIMPLE_POOL")}/${poolId}`);
           setPoolDetail(res);
         }
       });
@@ -621,7 +621,7 @@ export default function ClassicPoolDetail() {
                 background: "linear-gradient(to bottom, #9EFF01, #5F9901)",
               }}
               onClick={() => {
-                openUrlLocal(`/v2farms/${poolId}-r`);
+                router.push(`/v2farms/${poolId}-r`);
               }}
             >
               Farm Now!
@@ -916,7 +916,7 @@ export default function ClassicPoolDetail() {
                     background: "linear-gradient(to bottom, #9EFF01, #5F9901)",
                   }}
                   onClick={() => {
-                    openUrlLocal(`/v2farms/${poolId}-r`);
+                    router.push(`/v2farms/${poolId}-r`);
                   }}
                 >
                   Farm Now!

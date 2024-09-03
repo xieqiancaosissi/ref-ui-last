@@ -926,7 +926,7 @@ function YourClassicLiquidityLinePage(props: any) {
         <div
           className="w-full min-h-17 grid grid-cols-12 py-4 xsm:hidden"
           onClick={() => {
-            openUrlLocal(
+            router.push(
               props?.type == "stable"
                 ? `/sauce/${pool.id}`
                 : props?.type == "degen"
@@ -1020,7 +1020,9 @@ function YourClassicLiquidityLinePage(props: any) {
                     onClick={(e) => {
                       e.stopPropagation();
                       e.preventDefault();
-                      openUrl(`https://app.burrow.finance/`);
+                      const shadow_id = `shadow_ref_v1-${pool?.id}`;
+                      const url = `https://app.burrow.finance/tokenDetail/${shadow_id}`;
+                      window.open(url);
                     }}
                   >
                     <ShareInBurrow
@@ -1055,7 +1057,7 @@ function YourClassicLiquidityLinePage(props: any) {
                   onClick={(e) => {
                     e.stopPropagation();
                     e.preventDefault();
-                    openUrlLocal("/referendum");
+                    router.push("/referendum");
                   }}
                   className="text-gray-10 mb-1.5 flex whitespace-nowrap items-center"
                 >
@@ -1146,7 +1148,7 @@ function YourClassicLiquidityLinePage(props: any) {
         <div
           className="w-full min-h-17 lg:hidden"
           onClick={() => {
-            openUrlLocal(
+            router.push(
               props?.type == "stable"
                 ? `/sauce/${pool.id}`
                 : props?.type == "degen"
@@ -1282,7 +1284,9 @@ function YourClassicLiquidityLinePage(props: any) {
                       onClick={(e) => {
                         e.stopPropagation();
                         e.preventDefault();
-                        openUrl(`https://app.burrow.finance/`);
+                        const shadow_id = `shadow_ref_v1-${pool?.id}`;
+                        const url = `https://app.burrow.finance/tokenDetail/${shadow_id}`;
+                        window.open(url);
                       }}
                     >
                       <ShareInBurrow
@@ -1319,7 +1323,7 @@ function YourClassicLiquidityLinePage(props: any) {
                     onClick={(e) => {
                       e.stopPropagation();
                       e.preventDefault();
-                      openUrlLocal("/referendum");
+                      router.push("/referendum");
                     }}
                     className="text-gray-10 mb-1.5 flex whitespace-nowrap items-center"
                   >

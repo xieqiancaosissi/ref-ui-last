@@ -47,6 +47,7 @@ import { list_farmer_seeds } from "@/services/farm";
 import { getPoolAvailableShare } from "@/hooks/useStableShares";
 import { openUrlLocal } from "@/services/commonV3";
 import { getAccountId } from "@/utils/wallet";
+import { useRouter } from "next/router";
 
 export function myShares({
   totalShares,
@@ -82,6 +83,7 @@ export function myShares({
 
 export default function StableRemove(props: any) {
   const accountStore = useAccountStore();
+  const router = useRouter();
   const appStore = useAppStore();
   const {
     isOpen,
@@ -202,7 +204,7 @@ export default function StableRemove(props: any) {
           if (!res) return;
           if (res.status == "success") {
             if (fromYours) {
-              openUrlLocal(`/sauce/${poolDetail.id}`);
+              router.push(`/sauce/${poolDetail.id}`);
             } else {
               successToast();
               setAddSuccess((pre: number) => pre + 1);
@@ -242,7 +244,7 @@ export default function StableRemove(props: any) {
           if (!res) return;
           if (res.status == "success") {
             if (fromYours) {
-              openUrlLocal(`/sauce/${poolDetail.id}`);
+              router.push(`/sauce/${poolDetail.id}`);
             } else {
               successToast();
               setAddSuccess((pre: number) => pre + 1);

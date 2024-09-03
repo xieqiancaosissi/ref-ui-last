@@ -11,6 +11,7 @@ import {
   toInternationalCurrencySystem,
   toReadableNumber,
 } from "@/utils/numbers";
+import { useRouter } from "next/router";
 
 function DetailIcons({ tokens }: { tokens: TokenMetadata[] }) {
   return (
@@ -43,6 +44,7 @@ function DetailSymbol({
   tokens: TokenMetadata[];
   id: string | number;
 }) {
+  const router = useRouter();
   return (
     <div className="text-sm text-gray-50 flex items-center">
       <span className="pl-2">
@@ -51,14 +53,14 @@ function DetailSymbol({
 
       <span
         className="cursor-pointer pl-2 py-0.5 text-gradientFrom xsm:hidden"
-        onClick={() => openUrlLocal(`/pools/${id}`)}
+        onClick={() => router.push(`/pools/${id}`)}
       >
         <FiExternalLink />
       </span>
 
       <span
         className="cursor-pointer pl-2 py-0.5 text-gradientFrom lg:hidden"
-        onClick={() => openUrlLocal(`/pools/${id}`)}
+        onClick={() => router.push(`/pools/${id}`)}
       >
         <ArrowTopRightIcon />
       </span>

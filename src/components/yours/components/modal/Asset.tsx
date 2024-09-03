@@ -15,6 +15,7 @@ import { toReadableNumber } from "@/utils/numbers";
 import { QuestionMark } from "@/components/farm/icon";
 import CustomTooltip from "@/components/customTooltip/customTooltip";
 import { openUrlLocal } from "@/services/commonV3";
+import { useRouter } from "next/router";
 import {
   ArrowJump,
   REF_FI_POOL_ACTIVE_TAB,
@@ -225,7 +226,7 @@ function AssetPage() {
     display_increase_percent,
     increase_percent_done,
   } = useContext(AssetData)!;
-
+  const router = useRouter();
   const {
     activeTab,
     setActiveTab,
@@ -338,7 +339,7 @@ function AssetPage() {
               <div
                 className="frcc ml-2"
                 onClick={() => {
-                  openUrlLocal("/pools");
+                  router.push("/pools");
                 }}
               >
                 <span className="underline cursor-pointer text-gray-160 text-sm mr-1.5 hover:text-gray-60">
@@ -359,7 +360,7 @@ function AssetPage() {
               <div
                 className="frcc ml-2"
                 onClick={() => {
-                  openUrlLocal("/v2farms");
+                  router.push("/v2farms");
                 }}
               >
                 <span className="underline cursor-pointer text-gray-160 text-sm mr-1.5 hover:text-gray-60">
@@ -382,7 +383,7 @@ function AssetPage() {
               <div
                 className="frcc ml-2"
                 onClick={() => {
-                  openUrlLocal("/xref");
+                  router.push("/xref");
                 }}
               >
                 <span className="underline cursor-pointer text-gray-160 text-sm mr-1.5 hover:text-gray-60">
@@ -409,7 +410,7 @@ function AssetPage() {
           <div
             className="frcc ml-2"
             onClick={() => {
-              openUrlLocal("/pools");
+              router.push("/pools");
             }}
           >
             <span className="underline cursor-pointer text-gray-160 text-sm mr-1.5 hover:text-gray-60">
@@ -430,7 +431,7 @@ function AssetPage() {
           <div
             className="frcc ml-2"
             onClick={() => {
-              openUrlLocal("/v2farms");
+              router.push("/v2farms");
             }}
           >
             <span className="underline cursor-pointer text-gray-160 text-sm mr-1.5 hover:text-gray-60">
@@ -453,7 +454,7 @@ function AssetPage() {
           <div
             className="frcc ml-2"
             onClick={() => {
-              openUrlLocal("/xref");
+              router.push("/xref");
             }}
           >
             <span className="underline cursor-pointer text-gray-160 text-sm mr-1.5 hover:text-gray-60">

@@ -93,7 +93,7 @@ export default function DCLPoolDetail() {
     if (poolId || addSuccess > 0) {
       getPoolsDetailById({ pool_id: poolId as any }).then((res) => {
         PoolRouterGuard(res, "DCL") &&
-          openUrlLocal(`${PoolRouterGuard(res, "DCL")}/${poolId}`);
+          router.push(`${PoolRouterGuard(res, "DCL")}/${poolId}`);
         setPoolDetail(res);
       });
 

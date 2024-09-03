@@ -219,7 +219,9 @@ export const ShareInFarmV2 = ({
       ).toString()
     : "0";
 
-  const toFarm = () => {
+  const toFarm = (e: any) => {
+    e.stopPropagation();
+    e.preventDefault();
     const key = `/v2farms/${poolId}-${onlyEndedFarm ? "e" : "r"}`;
     router.push(key);
   };
@@ -244,7 +246,7 @@ export const ShareInFarmV2 = ({
                   : toPrecision(farmSharePercent, 2, false, false)
               }% `}
         </span>
-        <div onClick={() => toFarm()} className="cursor-pointer ml-0.5 frcc">
+        <div onClick={(e) => toFarm(e)} className="cursor-pointer ml-0.5 frcc">
           <span className="text-gradientFrom">
             {version && (
               <span>

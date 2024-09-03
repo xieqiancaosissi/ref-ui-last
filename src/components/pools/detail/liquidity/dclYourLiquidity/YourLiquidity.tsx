@@ -624,7 +624,7 @@ export default function YourLiquidityBox(props: {
                 className="underline cursor-pointer"
                 onClick={() => {
                   localStorage.setItem("BOOST_FARM_TAB", "yours");
-                  openUrlLocal("/v2farms");
+                  router.push("/v2farms");
                 }}
               >
                 Your Farm

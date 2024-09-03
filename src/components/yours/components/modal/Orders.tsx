@@ -45,9 +45,11 @@ import {
 } from "../icon";
 import { BlueCircleLoading } from "@/components/pools/icon";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import { useRouter } from "next/router";
 
 const { explorerUrl } = getConfig();
 export default function Orders(props: any) {
+  const router = useRouter();
   const {
     tokenPriceList,
     set_active_order_value_done,
@@ -232,6 +234,7 @@ function OrderCard({
     index: number;
   }) {
     const tx_record = activeOrderTxMap[order.order_id];
+    const router = useRouter();
     const { tokenPriceList } = useContext(
       PortfolioData
     ) as PortfolioContextType;
@@ -548,7 +551,7 @@ function OrderCard({
         <OrdersArrow
           onClick={() => {
             const txHash = activeOrderTxMap[order.order_id];
-            openUrlLocal(`${explorerUrl}/txns/${txHash}`);
+            router.push(`${explorerUrl}/txns/${txHash}`);
           }}
           className={`ml-1.5 text-gray-10 cursor-pointer hover:text-white ${
             tx_record ? "" : "hidden"

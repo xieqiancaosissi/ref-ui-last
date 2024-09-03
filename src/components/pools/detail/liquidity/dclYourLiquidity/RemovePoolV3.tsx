@@ -50,12 +50,14 @@ import { useAppStore } from "@/stores/app";
 import { showWalletSelectorModal } from "@/utils/wallet";
 import successToast from "@/components/common/toast/successToast";
 import failToast from "@/components/common/toast/failToast";
+import { useRouter } from "next/router";
 
 export const REF_POOL_NAV_TAB_KEY = "REF_POOL_NAV_TAB_VALUE";
 
 export type RemoveType = "left" | "right" | "all";
 
 export const RemovePoolV3 = (props: any) => {
+  const router = useRouter();
   const {
     setAddSuccess,
     fromYours,
@@ -563,7 +565,7 @@ export const RemovePoolV3 = (props: any) => {
         if (res.status == "success") {
           if (fromYours) {
             const pathname = get_pool_name(pool_id);
-            openUrlLocal(`/poolV2/${pathname}`);
+            router.push(`/poolV2/${pathname}`);
           } else {
             successToast();
             setAddSuccess((pre: any) => pre + 1);

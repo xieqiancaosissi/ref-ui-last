@@ -106,7 +106,7 @@ export default function PoolComposition(props: any) {
                           className=""
                           onClick={(e) => {
                             e.stopPropagation();
-                            openUrlLocal((TokenLinks as any)[item.meta.symbol]);
+                            router.push((TokenLinks as any)[item.meta.symbol]);
                           }}
                         >
                           <FiArrowUpRight className="text-gray-10 hover:text-green-10 cursor-pointer" />
@@ -170,7 +170,7 @@ export default function PoolComposition(props: any) {
                           className=""
                           onClick={(e) => {
                             e.stopPropagation();
-                            openUrlLocal((TokenLinks as any)[item.meta.symbol]);
+                            router.push((TokenLinks as any)[item.meta.symbol]);
                           }}
                         >
                           <FiArrowUpRight className="text-white" />

@@ -28,6 +28,7 @@ import { beautifyNumber } from "@/components/common/beautifyNumber";
 import { ShareInFarmV2 } from "../../stable/ShareInFarm";
 import { useCanFarmV1, useCanFarmV2 } from "@/hooks/useStableShares";
 import { useYourliquidity } from "@/hooks/useStableShares";
+import { useRouter } from "next/router";
 
 export const REF_FI_PRE_LIQUIDITY_ID_KEY = "REF_FI_PRE_LIQUIDITY_ID_VALUE";
 
@@ -64,6 +65,7 @@ export function myShares({
 }
 
 export default function ClassicRemove(props: any) {
+  const router = useRouter();
   const accountStore = useAccountStore();
   const intl = useIntl();
   const appStore = useAppStore();
@@ -134,7 +136,7 @@ export default function ClassicRemove(props: any) {
         let status;
         if (res.status == "success") {
           if (fromYours) {
-            openUrlLocal(`/pools/${poolDetail.id}`);
+            router.push(`/pools/${poolDetail.id}`);
           } else {
             successToast();
             setAddSuccess((pre: number) => pre + 1);

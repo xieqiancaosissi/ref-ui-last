@@ -27,6 +27,7 @@ import { showWalletSelectorModal } from "@/utils/wallet";
 import successToast from "@/components/common/toast/successToast";
 import failToast from "@/components/common/toast/failToast";
 import { openUrlLocal } from "@/services/commonV3";
+import { useRouter } from "next/router";
 
 export function myShares({
   totalShares,
@@ -61,6 +62,8 @@ export function myShares({
 }
 
 export default function ClassicAdd(props: any) {
+  const router = useRouter();
+
   const accountStore = useAccountStore();
   const {
     isOpen,
@@ -288,7 +291,7 @@ export default function ClassicAdd(props: any) {
         let status;
         if (res.status == "success") {
           if (fromYours) {
-            openUrlLocal(`/pools/${poolDetail.id}`);
+            router.push(`/pools/${poolDetail.id}`);
           } else {
             successToast();
             setAddSuccess((pre: number) => pre + 1);

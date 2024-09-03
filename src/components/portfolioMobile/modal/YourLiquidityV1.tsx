@@ -746,7 +746,7 @@ function YourClassicLiquidityLinePage() {
                   <span
                     className="ml-1.5"
                     onClick={() => {
-                      openUrlLocal(`/pools/${pool.id}`);
+                      router.push(`/pools/${pool.id}`);
                     }}
                   >
                     <OrdersArrow></OrdersArrow>
@@ -849,7 +849,7 @@ function YourClassicLiquidityLinePage() {
                     onClick={(e) => {
                       e.stopPropagation();
                       e.preventDefault();
-                      openUrlLocal("/referendum");
+                      router.push("/referendum");
                     }}
                     className="text-gray-10 ml-2 flex whitespace-nowrap items-center mb-1.5"
                   >

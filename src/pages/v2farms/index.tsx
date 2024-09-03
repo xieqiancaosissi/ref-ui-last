@@ -1,10 +1,18 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Seed, BoostConfig, UserSeedInfo } from "../../services/farm";
-import FarmsPage from "@/components/farm";
-import FarmsDetail from "@/components/farm/components/FarmsDetail";
 import { useRouter } from "next/router";
-import FarmsDclDetail from "@/components/farm/components/FarmsDclDetail";
 import { FarmsContextData } from "@/components/farm/components/FarmsContext";
+import dynamic from "next/dynamic";
+
+const FarmsPage = dynamic(() => import("@/components/farm"), { ssr: false });
+const FarmsDetail = dynamic(
+  () => import("@/components/farm/components/FarmsDetail"),
+  { ssr: false }
+);
+const FarmsDclDetail = dynamic(
+  () => import("@/components/farm/components/FarmsDclDetail"),
+  { ssr: false }
+);
 
 export default function FarmsBoosterPage(props: any) {
   const router = useRouter();
@@ -22,26 +30,7 @@ export default function FarmsBoosterPage(props: any) {
   const [all_seeds, set_all_seeds] = useState<Seed[]>([]);
   const paramId = router.query.id || "";
   const is_dcl = paramId.indexOf("<>") > -1 || paramId.indexOf("|") > -1;
-  const farmsPageRef = useRef<any>(null);
 
-  const triggerFarmsPageUpdate = () => {
-    if (farmsPageRef.current) {
-      farmsPageRef.current.init();
-      farmsPageRef.current.getConfig();
-      farmsPageRef.current.get_user_unWithDraw_rewards();
-      farmsPageRef.current.get_user_seeds_and_unClaimedRewards();
-    }
-  };
-  const ontriggerFarmsStakeUpdate = () => {
-    if (farmsPageRef.current) {
-      farmsPageRef.current.init();
-      farmsPageRef.current.getConfig();
-      // farmsPageRef.current.get_user_unWithDraw_rewards();
-      farmsPageRef.current.get_user_seeds_and_unClaimedRewards();
-      // // farmsPageRef.current.getLoveTokenBalance();
-      // farmsPageRef.current.get_ve_seed_share();
-    }
-  };
   const getDetailData_user_data = (data: {
     user_seeds_map: Record<string, UserSeedInfo>;
     user_unclaimed_token_meta_map: Record<string, any>;
@@ -95,13 +84,20 @@ export default function FarmsBoosterPage(props: any) {
   const showLoading = paramId && !showDetailPage && !showDclDetailPage;
   return (
     <>
-      <FarmsContextData.Provider value={{ user_data }}>
+      <FarmsContextData.Provider
+        value={{
+          user_data,
+          init: () => {},
+          getConfig: () => {},
+          get_user_unWithDraw_rewards: () => {},
+          get_user_seeds_and_unClaimedRewards: () => {},
+        }}
+      >
         <FarmsPage
           getDetailData={getDetailData}
           getDetailData_user_data={getDetailData_user_data}
           getDetailData_boost_config={getDetailData_boost_config}
           getDayVolumeMap={getDayVolumeMap}
-          ref={farmsPageRef}
         ></FarmsPage>
         {showDetailPage ? (
           <FarmsDetail
@@ -113,8 +109,6 @@ export default function FarmsBoosterPage(props: any) {
             user_data={user_data}
             user_data_loading={user_data_loading}
             dayVolumeMap={dayVolumeMap}
-            onTriggerFarmsPageUpdate={triggerFarmsPageUpdate}
-            ontriggerFarmsStakeUpdate={ontriggerFarmsStakeUpdate}
           ></FarmsDetail>
         ) : null}
         {showDclDetailPage ? (
@@ -128,7 +122,6 @@ export default function FarmsBoosterPage(props: any) {
             user_data_loading={user_data_loading}
             dayVolumeMap={dayVolumeMap}
             all_seeds={all_seeds}
-            onTriggerFarmsPageUpdate={triggerFarmsPageUpdate}
           ></FarmsDclDetail>
         ) : null}
       </FarmsContextData.Provider>

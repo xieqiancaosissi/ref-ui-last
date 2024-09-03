@@ -83,8 +83,6 @@ export default function FarmsDetail(props: {
   user_data: Record<string, any>;
   user_data_loading: Boolean;
   dayVolumeMap: Record<string, string>;
-  onTriggerFarmsPageUpdate: () => void;
-  ontriggerFarmsStakeUpdate: () => void;
 }) {
   const {
     detailData,
@@ -95,8 +93,6 @@ export default function FarmsDetail(props: {
     user_data,
     user_data_loading,
     dayVolumeMap,
-    onTriggerFarmsPageUpdate,
-    ontriggerFarmsStakeUpdate,
   } = props;
   const {
     user_seeds_map = {},
@@ -991,7 +987,6 @@ export default function FarmsDetail(props: {
                 user_unclaimed_token_meta_map={user_unclaimed_token_meta_map}
                 user_data_loading={user_data_loading}
                 radio={radio}
-                onTriggerFarmsPageUpdate={onTriggerFarmsPageUpdate}
               ></UserStakeBlock>
             </div>
             <div className="relative flex-1 h-full">
@@ -1022,7 +1017,6 @@ export default function FarmsDetail(props: {
                   user_data_loading={user_data_loading}
                   radio={radio}
                   updateSharesAndBalance={setSharesInfo}
-                  ontriggerFarmsStakeUpdate={ontriggerFarmsStakeUpdate}
                 ></FarmsDetailStake>
               </div>
             </div>
@@ -1202,7 +1196,6 @@ export default function FarmsDetail(props: {
             user_unclaimed_token_meta_map={user_unclaimed_token_meta_map}
             user_data_loading={user_data_loading}
             radio={radio}
-            onTriggerFarmsPageUpdate={onTriggerFarmsPageUpdate}
           ></UserStakeBlock>
           {isSignedIn ? (
             +freeAmount > 0 && is_support_lp ? (
@@ -1310,7 +1303,6 @@ export default function FarmsDetail(props: {
           radio={radio}
           activeTab={activeTab}
           updateSharesAndBalance={setSharesInfo}
-          ontriggerFarmsStakeUpdate={ontriggerFarmsStakeUpdate}
         />
       </div>
     </>

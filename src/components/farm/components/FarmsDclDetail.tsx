@@ -46,7 +46,7 @@ import {
 } from "@/utils/numbers";
 import BigNumber from "bignumber.js";
 import { CalcIcon } from "../icon/FarmBoost";
-import { useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import CalcModelDcl from "./CalcModelDcl";
 import CustomTooltip from "@/components/customTooltip/customTooltip";
 import moment from "moment";
@@ -66,6 +66,7 @@ import { get_pool_name } from "@/services/commonV3";
 import { IExecutionResult } from "@/interfaces/wallet";
 import { failToast } from "@/components/orderbook/transactionTipPopUp";
 import successToast from "@/components/common/toast/successToast";
+import { FarmsContextData } from "./FarmsContext";
 
 const { REF_VE_CONTRACT_ID, REF_UNI_V3_SWAP_CONTRACT_ID } = getConfig();
 
@@ -79,7 +80,6 @@ export default function FarmsDclDetail(props: {
   user_data_loading: Boolean;
   dayVolumeMap: Record<string, string>;
   all_seeds: Seed[];
-  onTriggerFarmsPageUpdate: any;
 }) {
   const {
     detailData,
@@ -90,8 +90,13 @@ export default function FarmsDclDetail(props: {
     user_data,
     user_data_loading,
     all_seeds,
-    onTriggerFarmsPageUpdate,
   } = props;
+  const {
+    init,
+    getConfig,
+    get_user_unWithDraw_rewards,
+    get_user_seeds_and_unClaimedRewards,
+  } = useContext(FarmsContextData);
   const cardWidth = isMobile() ? "100vw" : "430px";
   const cardHeight = isMobile() ? "90vh" : "80vh";
   const is_mobile = isMobile();
@@ -900,7 +905,10 @@ export default function FarmsDclDetail(props: {
     if (!res) return;
     if (res.status == "success") {
       set_nft_stake_loading(false);
-      onTriggerFarmsPageUpdate();
+      init();
+      getConfig();
+      get_user_unWithDraw_rewards();
+      get_user_seeds_and_unClaimedRewards();
       successToast();
       get_list_liquidities();
       get_mft_balance_of();
@@ -920,7 +928,10 @@ export default function FarmsDclDetail(props: {
     if (!res) return;
     if (res.status == "success") {
       set_nft_unStake_loading(false);
-      onTriggerFarmsPageUpdate();
+      init();
+      getConfig();
+      get_user_unWithDraw_rewards();
+      get_user_seeds_and_unClaimedRewards();
       successToast();
       get_list_liquidities();
       get_mft_balance_of();

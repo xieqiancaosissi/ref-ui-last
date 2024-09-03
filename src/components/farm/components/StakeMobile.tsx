@@ -21,7 +21,6 @@ export default function StakeMobile(props: {
   radio: string | number;
   activeTab: string;
   updateSharesAndBalance: any;
-  ontriggerFarmsStakeUpdate: any;
 }) {
   const {
     isOpen,
@@ -40,7 +39,6 @@ export default function StakeMobile(props: {
     radio,
     activeTab,
     updateSharesAndBalance,
-    ontriggerFarmsStakeUpdate,
   } = props;
   const cardWidth = isMobile() ? "100vw" : "430px";
   const cardHeight = isMobile() ? "90vh" : "80vh";
@@ -94,7 +92,6 @@ export default function StakeMobile(props: {
             radio={radio}
             activeMobileTab={activeTab}
             updateSharesAndBalance={updateSharesAndBalance}
-            ontriggerFarmsStakeUpdate={ontriggerFarmsStakeUpdate}
           ></FarmsDetailStake>
         </div>
       </div>

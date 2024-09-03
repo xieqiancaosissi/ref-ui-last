@@ -37,6 +37,7 @@ import { IExecutionResult } from "@/interfaces/wallet";
 import failToast from "@/components/common/toast/failToast";
 import successToast from "@/components/common/toast/successToast";
 import getStablePoolTypeConfig from "@/utils/stablePoolConfig/stablePoolTypeConfig";
+import { FarmsContextData } from "./FarmsContext";
 
 const stablePoolTypeConfig = getStablePoolTypeConfig();
 const { STABLE_POOL_IDS } = stablePoolTypeConfig;
@@ -53,7 +54,6 @@ export default function UserStakeBlock(props: {
   user_unclaimed_map: Record<string, any>;
   user_data_loading: Boolean;
   radio: string | number;
-  onTriggerFarmsPageUpdate: () => void;
 }) {
   const {
     detailData,
@@ -66,8 +66,13 @@ export default function UserStakeBlock(props: {
     user_unclaimed_map,
     user_data_loading,
     radio,
-    onTriggerFarmsPageUpdate,
   } = props;
+  const {
+    init,
+    getConfig,
+    get_user_unWithDraw_rewards,
+    get_user_seeds_and_unClaimedRewards,
+  } = useContext(FarmsContextData);
   // const [yourTvl, setYourTvl] = useState("");
   const { pool, min_locking_duration_sec, slash_rate, seed_id, seed_decimal } =
     detailData;
@@ -318,7 +323,10 @@ export default function UserStakeBlock(props: {
     if (res.status == "success") {
       successToast();
       getTotalUnclaimedRewards();
-      onTriggerFarmsPageUpdate();
+      init();
+      getConfig();
+      get_user_unWithDraw_rewards();
+      get_user_seeds_and_unClaimedRewards();
     } else if (res.status == "error") {
       failToast(res.errorResult?.message);
     }

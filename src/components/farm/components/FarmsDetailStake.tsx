@@ -10,7 +10,7 @@ import {
   mftGetBalance,
   unStake_boost_shadow,
 } from "@/services/farm";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import styles from "../farm.module.css";
 import {
   LP_STABLE_TOKEN_DECIMALS,
@@ -44,6 +44,7 @@ import successToast from "@/components/common/toast/successToast";
 import failToast from "@/components/common/toast/failToast";
 import { BeatLoader } from "react-spinners";
 import getStablePoolTypeConfig from "@/utils/stablePoolConfig/stablePoolTypeConfig";
+import { FarmsContextData } from "./FarmsContext";
 const stablePoolTypeConfig = getStablePoolTypeConfig();
 const { STABLE_POOL_IDS } = stablePoolTypeConfig;
 const { FARM_LOCK_SWITCH, REF_VE_CONTRACT_ID, FARM_BLACK_LIST_V2 } =
@@ -64,7 +65,6 @@ export default function FarmsDetailStake(props: {
   radio: string | number;
   activeMobileTab?: string;
   updateSharesAndBalance: any;
-  ontriggerFarmsStakeUpdate: any;
 }) {
   const {
     detailData,
@@ -80,8 +80,13 @@ export default function FarmsDetailStake(props: {
     activeMobileTab,
     user_data_loading,
     updateSharesAndBalance,
-    ontriggerFarmsStakeUpdate,
   } = props;
+  const {
+    init,
+    getConfig,
+    get_user_unWithDraw_rewards,
+    get_user_seeds_and_unClaimedRewards,
+  } = useContext(FarmsContextData);
   const {
     pool,
     min_locking_duration_sec,
@@ -332,8 +337,12 @@ export default function FarmsDetailStake(props: {
     if (res.status == "success") {
       successToast();
       setAmount("0");
-      ontriggerFarmsStakeUpdate();
+      // ontriggerFarmsStakeUpdate();
       updateSharesAndBalance();
+      init();
+      getConfig();
+      get_user_unWithDraw_rewards();
+      get_user_seeds_and_unClaimedRewards();
     } else if (res.status == "error") {
       failToast(res.errorResult?.message);
     }

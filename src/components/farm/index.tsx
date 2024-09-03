@@ -2,6 +2,7 @@
 import {
   SetStateAction,
   forwardRef,
+  useContext,
   useEffect,
   useImperativeHandle,
   useMemo,
@@ -59,6 +60,7 @@ import SelectBox from "./components/SelectBox";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import WithDrawBox from "./components/WithDrawBox";
 import NoContent from "../common/NoContent";
+import { FarmsContextData } from "./components/FarmsContext";
 
 const {
   REF_VE_CONTRACT_ID,
@@ -113,6 +115,7 @@ const FarmsPage = (props: any, ref: any) => {
   const [loveTokenBalance, setLoveTokenBalance] = useState("0");
   const [maxLoveShareAmount, setMaxLoveShareAmount] = useState<string>("0");
   const [globalConfigLoading, setGlobalConfigLoading] = useState<boolean>(true);
+  const farmsContext = useContext(FarmsContextData);
   const refreshTime = 300000;
   const sortList: { [key: string]: string } = {
     tvl: "TVL",
@@ -168,14 +171,13 @@ const FarmsPage = (props: any, ref: any) => {
       getYourFarmsQuantity();
     }
   }, [farm_display_List]);
-  useImperativeHandle(ref, () => ({
-    init,
-    getConfig,
-    get_user_unWithDraw_rewards,
-    get_user_seeds_and_unClaimedRewards,
-    getLoveTokenBalance,
-    get_ve_seed_share,
-  }));
+  useEffect(() => {
+    farmsContext.init = init;
+    farmsContext.getConfig = getConfig;
+    farmsContext.get_user_unWithDraw_rewards = get_user_unWithDraw_rewards;
+    farmsContext.get_user_seeds_and_unClaimedRewards =
+      get_user_seeds_and_unClaimedRewards;
+  }, [farmsContext]);
   const handleCheckbox = (value: SetStateAction<string>) => {
     setSelected(value);
   };
@@ -1603,4 +1605,4 @@ const FarmsPage = (props: any, ref: any) => {
   );
 };
 
-export default forwardRef(FarmsPage);
+export default FarmsPage;

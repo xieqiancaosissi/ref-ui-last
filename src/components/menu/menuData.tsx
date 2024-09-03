@@ -144,4 +144,5 @@ export const routeMapIds = {
   "earn-yours": ["/yours"],
   meme: ["/meme", "/memeAirdop"],
   "-": ["/risks"],
+  "bridge-aggregate": ["/bridge", "/bridge/history"],
 };

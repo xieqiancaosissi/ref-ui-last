@@ -131,7 +131,11 @@ export default function Positions(props: any) {
       <div className="">
         {/* liquidities list */}
         <div
-          className={`${activeTab == "1" && poolType == "dcl" ? "" : "hidden"}`}
+          className={`${
+            activeTab == "1" && poolType == "dcl" && !noData_status2
+              ? ""
+              : "hidden"
+          }`}
         >
           <YourLiquidityV2
             setYourLpValueV2={setYourLpValueV2}

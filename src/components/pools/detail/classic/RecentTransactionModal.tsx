@@ -6,7 +6,7 @@ import getConfig from "@/utils/config";
 import { NearblocksIcon } from "../../icon";
 import { getTxId } from "@/services/indexer";
 
-export default function RecentTransactionModal(props: any) {
+function RecentTransactionModal(props: any) {
   const { isOpen, onRequestClose, receipt_id } = props;
 
   async function handleTxClick(receipt_id: any, url: string) {
@@ -78,3 +78,4 @@ export default function RecentTransactionModal(props: any) {
     </Modal>
   );
 }
+export default React.memo(RecentTransactionModal);

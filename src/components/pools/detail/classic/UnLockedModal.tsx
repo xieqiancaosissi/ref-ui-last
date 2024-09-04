@@ -145,4 +145,4 @@ function UnLockedModal(props: any) {
   );
 }
 
-export default UnLockedModal;
+export default React.memo(UnLockedModal);

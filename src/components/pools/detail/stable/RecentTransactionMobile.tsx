@@ -21,7 +21,7 @@ import Big from "big.js";
 import RecentTransactionModal from "../classic/RecentTransactionModal";
 import { MoreExpand, MoreCollapse } from "../../icon";
 
-export default function RecentTransactionMobile(props: any) {
+function RecentTransactionMobile(props: any) {
   const { activeTab, poolId, updatedMapList } = props;
   const [title, setTitle] = useState<any>([]);
   const { swapTransaction, liquidityTransactions } = useClassicPoolTransaction({
@@ -336,3 +336,4 @@ export default function RecentTransactionMobile(props: any) {
     </div>
   );
 }
+export default React.memo(RecentTransactionMobile);

@@ -9,7 +9,7 @@ import { beautifyNumber } from "@/components/common/beautifyNumber";
 import { filterSpecialChar } from "@/utils/numbers";
 import Big from "big.js";
 
-export default function TokenFeeAndCureentPrice({
+function TokenFeeAndCureentPrice({
   poolDetail,
   tokenPriceList,
   updatedMapList,
@@ -90,3 +90,4 @@ export default function TokenFeeAndCureentPrice({
     </div>
   );
 }
+export default React.memo(TokenFeeAndCureentPrice);

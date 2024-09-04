@@ -9,7 +9,7 @@ import PoolDocTips from "@/components/pools/poolDocTips/index";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import NoContent from "@/components/common/NoContent";
 
-export default function Classic({
+function Classic({
   searchValue,
   pureIdList,
   mobilePros,
@@ -209,3 +209,4 @@ export default function Classic({
     </>
   );
 }
+export default React.memo(Classic);

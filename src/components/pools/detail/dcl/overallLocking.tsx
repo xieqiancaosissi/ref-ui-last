@@ -1,22 +1,7 @@
 import React, { useEffect, useState, useMemo, use } from "react";
-import {
-  toInternationalCurrencySystem_usd,
-  format_apy,
-  formatPercentage,
-} from "@/utils/uiNumber";
-import styles from "./style.module.css";
-import {
-  mft_has_registered,
-  get_accounts_paged,
-  ILock,
-} from "@/services/lplock";
-import getConfig from "@/utils/config";
-import Big from "big.js";
-import { useAccountStore } from "@/stores/account";
-import { secToTime } from "@/utils/time";
-import { getSharesInPool } from "@/services/pool";
+import { toInternationalCurrencySystem_usd } from "@/utils/uiNumber";
 
-export default function OverallLocking(props: any) {
+function OverallLocking(props: any) {
   const { poolDetail, updatedMapList, isMobile } = props;
   const detailItem = [
     {
@@ -66,3 +51,4 @@ export default function OverallLocking(props: any) {
     </div>
   );
 }
+export default React.memo(OverallLocking);

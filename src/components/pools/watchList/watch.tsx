@@ -14,7 +14,7 @@ import { getPoolsDetailByIds } from "@/services/pool";
 import NoContent from "@/components/common/NoContent/index";
 import { error } from "console";
 
-export default function WatchList({
+function WatchList({
   searchValue,
   pureIdList,
   mobilePros,
@@ -91,3 +91,5 @@ export default function WatchList({
     </>
   );
 }
+
+export default React.memo(WatchList);

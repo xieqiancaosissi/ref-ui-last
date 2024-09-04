@@ -73,7 +73,7 @@ import { REF_FI_CONTRACT_ID } from "@/utils/contract";
 import { checkTransaction } from "@/utils/contract";
 import { filterSpecialChar } from "@/utils/numbers";
 
-export default function ClassicPoolDetail() {
+function ClassicPoolDetail() {
   const router = useRouter();
   const { pureIdList } = useRiskTokens();
   const appStore = useAppStore();
@@ -1019,3 +1019,5 @@ export default function ClassicPoolDetail() {
     </div>
   );
 }
+
+export default React.memo(ClassicPoolDetail);

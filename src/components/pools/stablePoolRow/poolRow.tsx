@@ -2,7 +2,7 @@ import React from "react";
 import { useTokenMetadata } from "@/hooks/usePools";
 import PoolRowChild from "./poolRowChild";
 
-export default function PoolRow({
+function PoolRow({
   list,
 }: {
   list: Array<any>;
@@ -23,3 +23,5 @@ export default function PoolRow({
     </div>
   );
 }
+
+export default React.memo(PoolRow);

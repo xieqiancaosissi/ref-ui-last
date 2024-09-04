@@ -22,7 +22,7 @@ import {
 } from "../detail/stable/ShareInFarm";
 import { useCanFarmV1, useCanFarmV2 } from "@/hooks/useStableShares";
 
-export default function PoolRow(props: any) {
+function PoolRow(props: any) {
   const { item, index } = props;
   const router = useRouter();
   const {
@@ -430,3 +430,4 @@ export default function PoolRow(props: any) {
     </div>
   );
 }
+export default React.memo(PoolRow);

@@ -5,7 +5,7 @@ import { useMonthTVL, useMonthVolume } from "@/hooks/usePoolDetailCharts";
 import { toInternationalCurrencySystem_number } from "@/utils/uiNumber";
 import moment from "moment";
 
-export default function TvlAndVolumeCharts(props: any) {
+function TvlAndVolumeCharts(props: any) {
   const [isActive, setActive] = useState("24h");
   const [isFinished, setIsFinished] = useState(false);
   const { monthTVLById, xTvl, yTvl } = useMonthTVL(props.poolId);
@@ -84,7 +84,7 @@ export default function TvlAndVolumeCharts(props: any) {
     </div>
   );
 }
-
+export default React.memo(TvlAndVolumeCharts);
 // tvl charts
 export function TVlCharts(props: any) {
   const chartRef = useRef(null);

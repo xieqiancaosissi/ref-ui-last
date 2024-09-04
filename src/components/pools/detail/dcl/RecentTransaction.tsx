@@ -20,7 +20,7 @@ import Big from "big.js";
 import { sort_tokens_by_base, reverse_price } from "@/services/commonV3";
 import { pointToPrice } from "@/services/swapV3";
 
-export default function RecentTransaction(props: any) {
+function RecentTransaction(props: any) {
   const { activeTab, poolId, updatedMapList, tokens } = props;
   const [title, setTitle] = useState<any>([{ colSpan: "", key: "" }]);
 
@@ -643,3 +643,4 @@ export default function RecentTransaction(props: any) {
     </div>
   );
 }
+export default React.memo(RecentTransaction);

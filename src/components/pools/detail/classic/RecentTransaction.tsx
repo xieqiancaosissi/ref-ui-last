@@ -19,7 +19,7 @@ import {
 import styles from "./style.module.css";
 import Big from "big.js";
 
-export default function RecentTransaction(props: any) {
+function RecentTransaction(props: any) {
   const { activeTab, poolId, updatedMapList } = props;
   const [title, setTitle] = useState<any>([]);
   const { swapTransaction, liquidityTransactions } = useClassicPoolTransaction({
@@ -422,3 +422,4 @@ export default function RecentTransaction(props: any) {
     </div>
   );
 }
+export default React.memo(RecentTransaction);

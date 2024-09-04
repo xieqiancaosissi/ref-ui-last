@@ -29,7 +29,7 @@ import YourLiquidityBox from "./YourLiquidity";
 import { UnclaimedFeesBox } from "../UnclaimedFeesBox";
 import { RelatedFarmsBox } from "../RelatedFarmsBox";
 
-export default function YourLiqAndClaimMobile(props: any) {
+function YourLiqAndClaimMobile(props: any) {
   const accountStore = useAccountStore();
   const {
     isOpen,
@@ -167,3 +167,4 @@ export default function YourLiqAndClaimMobile(props: any) {
     </Modal>
   );
 }
+export default React.memo(YourLiqAndClaimMobile);

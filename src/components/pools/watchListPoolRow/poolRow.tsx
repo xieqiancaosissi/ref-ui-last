@@ -14,7 +14,7 @@ import HoverTooltip from "@/components/common/HoverToolTip";
 import { PoolRouterGuard, PoolTypeGuard } from "@/utils/poolTypeGuard";
 import { TokenIconComponent } from "../TokenIconWithTkn";
 import { get_pool_name } from "@/services/commonV3";
-export default function PoolRow({
+function PoolRow({
   list,
   pureIdList,
   activeTab,
@@ -288,3 +288,5 @@ export default function PoolRow({
     </>
   );
 }
+
+export default React.memo(PoolRow);

@@ -9,7 +9,7 @@ import { toReadableNumber } from "@/utils/numbers";
 import HoverTip from "@/components/common/Tips";
 import BigNumber from "bignumber.js";
 import { colorMap } from "@/utils/config";
-export default function StablePoolRowCharts(props: any) {
+function StablePoolRowCharts(props: any) {
   const chartRef = useRef(null);
   const { updatedMapList, poolDetail, tokenPriceList } = props;
   const [sumToken, setSumToken] = useState(0);
@@ -355,3 +355,4 @@ export default function StablePoolRowCharts(props: any) {
     </div>
   );
 }
+export default React.memo(StablePoolRowCharts);

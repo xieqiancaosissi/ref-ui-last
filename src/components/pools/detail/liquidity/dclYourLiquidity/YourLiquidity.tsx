@@ -43,7 +43,7 @@ import { getDCLAccountFee } from "@/services/indexer";
 import { get_unClaimed_fee_data } from "../../dcl/d3Chart/DetailFun";
 import { SelectLiquidityBox } from "./SelectLiquidityBox";
 
-export default function YourLiquidityBox(props: {
+function YourLiquidityBox(props: {
   poolDetail: PoolInfo;
   liquidities: UserLiquidityInfo[];
   tokenPriceList: any;
@@ -660,3 +660,4 @@ export default function YourLiquidityBox(props: {
     </div>
   );
 }
+export default React.memo(YourLiquidityBox);

@@ -2,7 +2,7 @@ import React from "react";
 import { LiquidityEmptyIcon, AddLiqRightIcon } from "./icon";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 
-export default function NoLiquidityMobile({
+function NoLiquidityMobile({
   add,
   isLoading,
 }: {
@@ -43,3 +43,4 @@ export default function NoLiquidityMobile({
     </div>
   );
 }
+export default React.memo(NoLiquidityMobile);

@@ -11,7 +11,7 @@ import { usePersistSwapStore } from "@/stores/swap";
 import { getTokenUIId } from "@/services/swap/swapUtils";
 import { filterSpecialChar } from "@/utils/numbers";
 
-export default function PoolComposition(props: any) {
+function PoolComposition(props: any) {
   const { poolDetail, tokenPriceList, updatedMapList } = props;
   const title = ["Pair", "Amount", "Value"];
   const persistSwapStore = usePersistSwapStore();
@@ -184,3 +184,4 @@ export default function PoolComposition(props: any) {
     </div>
   );
 }
+export default React.memo(PoolComposition);

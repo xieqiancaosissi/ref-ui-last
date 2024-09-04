@@ -1,4 +1,4 @@
-import { Component, useEffect, useRef, useState } from "react";
+import React, { Component, useEffect, useRef, useState } from "react";
 import { useAccountStore } from "@/stores/account";
 import { getAccountNearBalance } from "@/services/token";
 import poolStyle from "@/components/pools/pool.module.css";
@@ -36,7 +36,7 @@ import { addThousandSeparator } from "@/utils/uiNumber";
 import Big from "big.js";
 import { get_pool_name } from "@/services/commonV3";
 
-export default function Farms() {
+function Pools() {
   const router = useRouter();
   const accountStore = useAccountStore();
   const accountId = accountStore.getAccountId();
@@ -909,3 +909,5 @@ export default function Farms() {
     </>
   );
 }
+
+export default React.memo(Pools);

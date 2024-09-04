@@ -28,7 +28,7 @@ import { getSharesInPool } from "@/services/pool";
 import getStablePoolTypeConfig from "@/utils/stablePoolConfig/stablePoolTypeConfig";
 const { DEGEN_POOLS_IDS } = getStablePoolTypeConfig();
 
-export default function StablePoolDetail() {
+function StablePoolDetail() {
   const appStore = useAppStore();
   const router = useRouter();
   const poolId = router.query.id || "";
@@ -343,3 +343,5 @@ export default function StablePoolDetail() {
     </div>
   );
 }
+
+export default React.memo(StablePoolDetail);

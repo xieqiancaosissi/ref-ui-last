@@ -28,7 +28,7 @@ import MyShares from "./Myshare";
 import { toRealSymbol } from "@/services/farm";
 import { getVEPoolId } from "@/services/referendum";
 
-export default function YourLiqMobile(props: any) {
+function YourLiqMobile(props: any) {
   const accountStore = useAccountStore();
   const {
     isOpen,
@@ -190,3 +190,4 @@ export default function YourLiqMobile(props: any) {
     </Modal>
   );
 }
+export default React.memo(YourLiqMobile);

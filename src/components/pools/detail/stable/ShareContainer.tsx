@@ -17,7 +17,7 @@ import getConfigV2 from "@/utils/configV2";
 import { useAccountStore } from "@/stores/account";
 import { getAccountId } from "@/utils/wallet";
 
-export default function ShareContainer(props: any) {
+function ShareContainer(props: any) {
   const { poolDetail, setShowAdd, setShowRemove } = props;
 
   const router = useRouter();
@@ -159,3 +159,4 @@ export default function ShareContainer(props: any) {
     </div>
   );
 }
+export default React.memo(ShareContainer);

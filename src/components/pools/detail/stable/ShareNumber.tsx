@@ -9,7 +9,7 @@ import { PoolAvailableAmount } from "./ShareInFarm";
 import { getYourPools } from "@/services/indexer";
 import { isStablePool } from "@/services/swap/swapUtils";
 import { getVEPoolId } from "@/services/referendum";
-export default function ShareNumber(props: any) {
+function ShareNumber(props: any) {
   const { id } = props;
   const { shares, pool } = usePool(id);
   const accountStore = useAccountStore();
@@ -68,3 +68,4 @@ export default function ShareNumber(props: any) {
     </div>
   );
 }
+export default React.memo(ShareNumber);

@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import { toPrecision } from "@/utils/numbers";
 import Big from "big.js";
-export default function RangeSlider(props: any) {
+function RangeSlider(props: any) {
   const { setAmount, sliderAmount, setSliderAmount, max } = props;
 
   const [splitList] = useState([0, 25, 50, 75, 100]);
@@ -110,3 +110,4 @@ export default function RangeSlider(props: any) {
     </div>
   );
 }
+export default React.memo(RangeSlider);

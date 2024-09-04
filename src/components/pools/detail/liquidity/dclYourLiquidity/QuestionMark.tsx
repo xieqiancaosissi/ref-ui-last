@@ -1,7 +1,7 @@
 import React from "react";
 import { useState } from "react";
 
-export default function QuestionMark(props: {
+function QuestionMark(props: {
   color?: "bright" | "dark";
   colorhex?: string;
   className?: string;
@@ -65,3 +65,4 @@ export default function QuestionMark(props: {
     </label>
   );
 }
+export default React.memo(QuestionMark);

@@ -4,7 +4,7 @@ import { TokenIconComponent } from "@/components/pools/TokenIconWithTkn/index";
 import { useRiskTokens } from "@/hooks/useRiskTokens";
 import styles from "./style.module.css";
 
-export default function TokenDetail({
+function TokenDetail({
   poolDetail,
   updatedMapList,
 }: {
@@ -36,3 +36,4 @@ export default function TokenDetail({
     </div>
   );
 }
+export default React.memo(TokenDetail);

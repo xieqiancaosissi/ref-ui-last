@@ -3,7 +3,7 @@ import { SplitRectangleIcon } from "@/components/pools/icon";
 import { formatPercentage } from "@/utils/uiNumber";
 import { useDCLTopBinFee } from "@/hooks/useTopBinApr";
 
-export default function TokenFeeAndCureentPrice({
+function TokenFeeAndCureentPrice({
   poolDetail,
   poolDetailV3,
 }: {
@@ -29,3 +29,4 @@ export default function TokenFeeAndCureentPrice({
     </div>
   );
 }
+export default React.memo(TokenFeeAndCureentPrice);

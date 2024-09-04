@@ -5,7 +5,7 @@ import { useRiskTokens } from "@/hooks/useRiskTokens";
 import styles from "./style.module.css";
 import { sort_tokens_by_base } from "@/services/commonV3";
 
-export default function TokenDetail({
+function TokenDetail({
   poolDetail,
   updatedMapList,
 }: {
@@ -39,3 +39,4 @@ export default function TokenDetail({
     </div>
   );
 }
+export default React.memo(TokenDetail);

@@ -22,7 +22,7 @@ import { pointToPrice } from "@/services/swapV3";
 import RecentTransactionModal from "../classic/RecentTransactionModal";
 import { MoreExpand, MoreCollapse } from "../../icon";
 
-export default function RecentTransactionMobile(props: any) {
+function RecentTransactionMobile(props: any) {
   const { activeTab, poolId, updatedMapList, tokens } = props;
   const [title, setTitle] = useState<any>([{ colSpan: "", key: "" }]);
 
@@ -510,3 +510,4 @@ export default function RecentTransactionMobile(props: any) {
     </div>
   );
 }
+export default React.memo(RecentTransactionMobile);

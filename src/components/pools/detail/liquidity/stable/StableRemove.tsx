@@ -81,7 +81,7 @@ export function myShares({
   return inPrecisionDisplayUserTotalShares + " " + `(${displayPercent}%)`;
 }
 
-export default function StableRemove(props: any) {
+function StableRemove(props: any) {
   const accountStore = useAccountStore();
   const router = useRouter();
   const appStore = useAppStore();
@@ -961,3 +961,4 @@ export default function StableRemove(props: any) {
     </Modal>
   );
 }
+export default React.memo(StableRemove);

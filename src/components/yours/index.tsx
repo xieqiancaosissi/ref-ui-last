@@ -15,7 +15,7 @@ import RefPanel from "./components/RefPanel";
 export const OverviewData = createContext<OverviewContextType | null>(null);
 const is_mobile: boolean = !!isMobile();
 
-export default function Overview() {
+function Overview() {
   const accountStore = useAccountStore();
   const accountId = getAccountId();
   const isSignedIn = accountStore.isSignedIn;
@@ -134,7 +134,7 @@ export default function Overview() {
     </OverviewData.Provider>
   );
 }
-
+export default React.memo(Overview);
 export interface OverviewContextType {
   tokenPriceList: any;
   isSignedIn: boolean;

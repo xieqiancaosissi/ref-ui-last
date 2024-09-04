@@ -3,7 +3,7 @@ import * as charts from "echarts";
 import { toInternationalCurrencySystem_number } from "@/utils/uiNumber";
 import { colorMap } from "@/utils/config";
 
-export default function StablePoolRowCharts({
+function StablePoolRowCharts({
   legendJson,
   highlight,
   jsonMap,
@@ -115,3 +115,5 @@ export default function StablePoolRowCharts({
     ></div>
   );
 }
+
+export default React.memo(StablePoolRowCharts);

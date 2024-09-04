@@ -7,6 +7,8 @@ const ClientCom = dynamic(
   }
 );
 
-export default function Liq() {
+function Liq() {
   return <ClientCom />;
 }
+
+export default React.memo(Liq);

@@ -61,7 +61,7 @@ export function myShares({
   return inPrecisionDisplayUserTotalShares + " " + `(${displayPercent}%)`;
 }
 
-export default function ClassicAdd(props: any) {
+function ClassicAdd(props: any) {
   const router = useRouter();
 
   const accountStore = useAccountStore();
@@ -510,3 +510,4 @@ export default function ClassicAdd(props: any) {
     </Modal>
   );
 }
+export default React.memo(ClassicAdd);

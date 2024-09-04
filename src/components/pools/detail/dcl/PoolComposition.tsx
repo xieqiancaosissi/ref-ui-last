@@ -10,7 +10,7 @@ import { FiArrowUpRight } from "react-icons/fi";
 import { openUrlLocal } from "@/services/commonV3";
 import HoverTooltip from "@/components/common/HoverToolTip";
 
-export default function PoolComposition(props: any) {
+function PoolComposition(props: any) {
   const { tokenPriceList, tokens } = props;
   const title = ["Pair", "Amount", "Value"];
   const persistSwapStore = usePersistSwapStore();
@@ -210,3 +210,5 @@ export default function PoolComposition(props: any) {
     </div>
   );
 }
+
+export default React.memo(PoolComposition);

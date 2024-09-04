@@ -230,4 +230,4 @@ function LockedModal(props: any) {
   );
 }
 
-export default LockedModal;
+export default React.memo(LockedModal);

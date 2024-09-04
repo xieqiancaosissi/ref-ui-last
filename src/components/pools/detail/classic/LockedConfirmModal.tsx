@@ -138,4 +138,4 @@ function LockedConfirmModal(props: any) {
   );
 }
 
-export default LockedConfirmModal;
+export default React.memo(LockedConfirmModal);

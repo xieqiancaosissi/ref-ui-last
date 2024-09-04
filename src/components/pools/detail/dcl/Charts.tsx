@@ -23,7 +23,7 @@ import {
   sort_tokens_by_base_onlysymbol,
 } from "@/services/commonV3";
 
-export default function TvlAndVolumeCharts(props: any) {
+function TvlAndVolumeCharts(props: any) {
   const [rateDirection, setRateDirection] = useState(true);
   const [isActive, setActive] = useState("liquidity");
   const [isFinished, setIsFinished] = useState(false);
@@ -291,7 +291,7 @@ export default function TvlAndVolumeCharts(props: any) {
     </div>
   );
 }
-
+export default React.memo(TvlAndVolumeCharts);
 // tvl charts
 export function TVlCharts(props: any) {
   const chartRef = useRef(null);

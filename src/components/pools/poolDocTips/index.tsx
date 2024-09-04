@@ -1,7 +1,7 @@
 import React from "react";
 import styles from "./index.module.css";
 import { ExclamationIcon } from "@/components/common/Icons";
-export default function DocTips({ tips, src }: { tips: string; src: string }) {
+function DocTips({ tips, src }: { tips: string; src: string }) {
   return (
     <div className={`${styles.dclTips}`}>
       <div className="flex lg:items-center lg:pl-4 xsm:pl-2">
@@ -25,3 +25,5 @@ export default function DocTips({ tips, src }: { tips: string; src: string }) {
     </div>
   );
 }
+
+export default React.memo(DocTips);

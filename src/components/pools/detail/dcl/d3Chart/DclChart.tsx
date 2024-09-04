@@ -55,7 +55,7 @@ import { get_unClaimed_fee_data } from "./DetailFun";
 import { AddIcon, SubIcon } from "./Icon";
 import { isValid, createRandomString } from "./utils";
 import { getAccountId } from "@/utils/wallet";
-export default function DclChart({
+function DclChart({
   pool_id,
   leftPoint,
   rightPoint,
@@ -1962,3 +1962,4 @@ export default function DclChart({
     </>
   );
 }
+export default React.memo(DclChart);

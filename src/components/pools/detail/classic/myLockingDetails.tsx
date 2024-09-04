@@ -113,4 +113,4 @@ const MyLockingDetailTip = ({
   );
 };
 
-export default MyLockingDetailTip;
+export default React.memo(MyLockingDetailTip);

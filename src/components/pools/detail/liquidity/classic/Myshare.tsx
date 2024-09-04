@@ -9,7 +9,7 @@ import {
 } from "@/utils/numbers";
 import { LP_TOKEN_DECIMALS } from "@/services/m-token";
 
-export default function MyShares({
+function MyShares({
   shares,
   totalShares,
   poolId,
@@ -87,3 +87,4 @@ export default function MyShares({
     </div>
   );
 }
+export default React.memo(MyShares);

@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from "react";
 import * as charts from "echarts";
 
-export default function OverallLockingPie({ percent }: { percent: number }) {
+function OverallLockingPie({ percent }: { percent: number }) {
   const chartRef = useRef(null);
   useEffect(() => {
     const chartInstance = charts.init(chartRef.current);
@@ -68,3 +68,4 @@ export default function OverallLockingPie({ percent }: { percent: number }) {
     ></div>
   );
 }
+export default React.memo(OverallLockingPie);

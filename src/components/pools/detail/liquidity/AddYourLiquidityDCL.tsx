@@ -62,7 +62,7 @@ import { SelectFeeTiers } from "./components/add/SelectFeeTiers";
 import { FeeTipDcl } from "./components/add/FeeTip";
 
 export const LiquidityProviderData = createContext(null);
-export default function AddYourLiquidityPageV3() {
+function AddYourLiquidityPageV3() {
   const router = useRouter();
   const [addSuccess, setAddSuccess] = useState(0);
   const [tokenX, setTokenX] = useState<TokenMetadata | any>(null);
@@ -2120,3 +2120,4 @@ export default function AddYourLiquidityPageV3() {
     </LiquidityProviderData.Provider>
   );
 }
+export default React.memo(AddYourLiquidityPageV3);

@@ -65,7 +65,7 @@ const YourLiquidityBox = dynamic(
 
 const { REF_UNI_V3_SWAP_CONTRACT_ID } = getConfig();
 
-export default function DCLPoolDetail() {
+function DCLPoolDetail() {
   const router = useRouter();
   const accountStore = useAccountStore();
   const isSignedIn = accountStore.getIsSignedIn();
@@ -638,3 +638,5 @@ export default function DCLPoolDetail() {
     </div>
   );
 }
+
+export default React.memo(DCLPoolDetail);

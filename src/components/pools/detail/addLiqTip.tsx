@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function AddLiqTip(props: any) {
+function AddLiqTip(props: any) {
   const { tips } = props;
   return (
     <div
@@ -16,3 +16,4 @@ export default function AddLiqTip(props: any) {
     </div>
   );
 }
+export default React.memo(AddLiqTip);

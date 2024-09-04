@@ -24,7 +24,7 @@ import LockedModal from "./LockedModal";
 import UnLockedModal from "./UnLockedModal";
 import { ArrowDown, ArrowUpWithYellow } from "../liquidity/components/add/Icon";
 
-export default function OverallLocking(props: any) {
+function OverallLocking(props: any) {
   const { poolDetail, updatedMapList, shares } = props;
   const [addSuccess, setAddSuccess] = useState(0);
   const detailItem = [
@@ -493,3 +493,4 @@ export default function OverallLocking(props: any) {
     </div>
   );
 }
+export default React.memo(OverallLocking);

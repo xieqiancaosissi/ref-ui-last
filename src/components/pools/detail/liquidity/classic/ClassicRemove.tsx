@@ -64,7 +64,7 @@ export function myShares({
   return inPrecisionDisplayUserTotalShares + " " + `(${displayPercent}%)`;
 }
 
-export default function ClassicRemove(props: any) {
+function ClassicRemove(props: any) {
   const router = useRouter();
   const accountStore = useAccountStore();
   const intl = useIntl();
@@ -477,3 +477,4 @@ export default function ClassicRemove(props: any) {
     </Modal>
   );
 }
+export default React.memo(ClassicRemove);

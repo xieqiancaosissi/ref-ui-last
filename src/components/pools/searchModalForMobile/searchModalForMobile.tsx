@@ -4,7 +4,7 @@ import poolStyle from "../pool.module.css";
 import { SearchIcon } from "../icon";
 import _ from "lodash";
 
-export default function SearchModalForMobile(props: any) {
+function SearchModalForMobile(props: any) {
   const { isOpen, onRequestClose, setMobilePros } = props;
   const [isActive, setActive] = useState("");
   const [keyWordsType, setKeyWordsType] = useState("token");
@@ -85,3 +85,5 @@ export default function SearchModalForMobile(props: any) {
     </Modal>
   );
 }
+
+export default React.memo(SearchModalForMobile);

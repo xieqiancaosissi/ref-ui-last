@@ -68,7 +68,7 @@ export function myShares({
   return inPrecisionDisplayUserTotalShares + " " + `(${displayPercent}%)`;
 }
 
-export default function StableAdd(props: any) {
+function StableAdd(props: any) {
   const accountStore = useAccountStore();
   const router = useRouter();
   const {
@@ -682,3 +682,4 @@ export default function StableAdd(props: any) {
     </Modal>
   );
 }
+export default React.memo(StableAdd);

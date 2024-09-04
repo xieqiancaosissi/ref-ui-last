@@ -55,6 +55,7 @@ import { LOVE_TOKEN_DECIMAL } from "@/services/referendum";
 import CustomTooltip from "@/components/customTooltip/customTooltip";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import { useRouter } from "next/router";
+import NoContent from "@/components/common/NoContent";
 
 const { REF_VE_CONTRACT_ID, REF_UNI_V3_SWAP_CONTRACT_ID } = getConfig();
 export const FarmCommonDatas = createContext<FarmCommonDataContext | null>(
@@ -302,7 +303,7 @@ export default function Farms(props: any) {
           <DclFarms></DclFarms>
         </div>
         {/* pc loading */}
-        {loading_status || noData_status ? (
+        {loading_status ? (
           <SkeletonTheme
             baseColor="rgba(33, 43, 53, 0.3)"
             highlightColor="#2A3643"
@@ -316,11 +317,7 @@ export default function Farms(props: any) {
           </SkeletonTheme>
         ) : null}
         {/* pc no data */}
-        {/* {noData_status ? (
-          <NoDataCard
-            text={intl.formatMessage({ id: "yield_farming_appear_here_tip" })}
-          ></NoDataCard>
-        ) : null} */}
+        {noData_status ? <NoContent h="h-[260px]" /> : null}
       </FarmCommonDatas.Provider>
     </>
   );

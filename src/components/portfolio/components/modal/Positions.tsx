@@ -8,6 +8,7 @@ import { BlueCircleLoading } from "@/components/pools/icon";
 import { YourLiquidityV2 } from "./YourLiquidityV2";
 import { YourLiquidityV1 } from "./YourLiquidityV1";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import NoContent from "@/components/common/NoContent";
 
 export default function Positions(props: any) {
   const {
@@ -74,7 +75,7 @@ export default function Positions(props: any) {
       </div>
 
       {/* pc loading */}
-      {loading_status || noData_status ? (
+      {loading_status ? (
         <SkeletonTheme
           baseColor="rgba(33, 43, 53, 0.3)"
           highlightColor="#2A3643"
@@ -87,12 +88,7 @@ export default function Positions(props: any) {
           />
         </SkeletonTheme>
       ) : null}
-      {/* {noData_status ? (
-        <NoDataCard
-          text={intl.formatMessage({ id: "position_will_appear_here" })}
-        ></NoDataCard>
-        <div>nodata</div>
-      ) : null} */}
+      {noData_status ? <NoContent h="h-[260px]" /> : null}
     </div>
   );
 }

@@ -313,7 +313,7 @@ function UserRankingModal(props: any) {
               /> */}
             </div>
             {isOpenToken && (
-              <div className="absolute top-11 right-0 z-10 bg-dark-40 rounded-xl pb-1 pt-3 px-2 text-white w-60">
+              <div className="absolute top-11 right-0 z-10 bg-gray-30 border border-gray-40 rounded-xl pb-1 pt-3 px-2 text-white w-60">
                 <div
                   className={`flex items-center justify-between mb-1.5 p-1.5 cursor-pointer rounded-lg hover:bg-dark-60 xsm:border-none
                   ${selectedToken === "All" ? "border border-dark-80" : ""}`}

@@ -51,6 +51,7 @@ import { showWalletSelectorModal } from "@/utils/wallet";
 import successToast from "@/components/common/toast/successToast";
 import failToast from "@/components/common/toast/failToast";
 import { useRouter } from "next/router";
+import { get_pool_name } from "@/services/commonV3";
 
 export const REF_POOL_NAV_TAB_KEY = "REF_POOL_NAV_TAB_VALUE";
 

@@ -36,24 +36,28 @@ function WalletConnect() {
   const accountStore = useAccountStore();
   const accountId = accountStore.getAccountId();
   const walletLoading = accountStore.getWalletLoading();
+  const isInMemePage = window.location.pathname.includes("meme");
   const personalDataReloadSerialNumber =
     appStore.getPersonalDataReloadSerialNumber();
   const [showGuider, setShowGuider] = useState<boolean>(
     !!(
       localStorage.getItem("ACCESS_MODAL_GUIDER") !== "1" &&
       accountId &&
-      !is_mobile
+      !is_mobile &&
+      !isInMemePage
     )
   );
   const selectedWalletId = window.selector?.store?.getState()?.selectedWalletId;
   const isKeyPomWallet = selectedWalletId == "keypom";
-  const isInMemePage = window.location.pathname.includes("meme");
+
   const walletId = getSelectedWalletId();
 
   useEffect(() => {
     if (accountId) {
       const guiderCondition =
-        localStorage.getItem("ACCESS_MODAL_GUIDER") !== "1" && !is_mobile;
+        localStorage.getItem("ACCESS_MODAL_GUIDER") !== "1" &&
+        !is_mobile &&
+        !isInMemePage;
       setShowGuider(guiderCondition);
     }
   }, [accountId]);

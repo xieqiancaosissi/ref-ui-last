@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { BannerCoreBtnIconBg } from "./icons";
 import RuleModal from "./RuleModal";
+import CheckInButtonPC from "./CheckInButtonPC";
 
 const Banner = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -27,6 +28,9 @@ const Banner = () => {
           <p className="text-xs leading-3">Competition</p>
           <p className="text-base leading-4">Rules</p>
         </div>
+      </div>
+      <div className="absolute right-60 bottom-10 z-10">
+        <CheckInButtonPC />
       </div>
       <RuleModal isOpen={isOpen} onRequestClose={closeRule} />
     </div>

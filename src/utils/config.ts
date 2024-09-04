@@ -54,6 +54,8 @@ export default function getConfig(
         REF_MEME_FARM_CONTRACT_ID: "meme-farming_011.ref-labs.near",
         REF_TOKEN_LOCKER_CONTRACT_ID: "token-locker.ref-labs.near",
         REF_VE_CONTRACT_ID: "",
+        MEME_CHECK_IN_CONTRACT_ID: "checkin.refnft.near",
+        MEME_NFT_CONTRACT_ID: "ms5.refnft.near",
       };
     case "pub-testnet":
       return {
@@ -96,6 +98,8 @@ export default function getConfig(
         REF_MEME_FARM_CONTRACT_ID: "memefarm-dev2.ref-dev.testnet",
         REF_TOKEN_LOCKER_CONTRACT_ID: "token-locker.ref-labs.testnet",
         REF_VE_CONTRACT_ID: "",
+        MEME_CHECK_IN_CONTRACT_ID: "check-in.testnet",
+        MEME_NFT_CONTRACT_ID: "ms_5.refnft.testnet",
       };
     case "testnet":
       return {
@@ -138,6 +142,8 @@ export default function getConfig(
         REF_MEME_FARM_CONTRACT_ID: "memefarm-dev2.ref-dev.testnet",
         REF_TOKEN_LOCKER_CONTRACT_ID: "token-locker.testnet",
         REF_VE_CONTRACT_ID: "",
+        MEME_CHECK_IN_CONTRACT_ID: "check-in.testnet",
+        MEME_NFT_CONTRACT_ID: "ms_5.refnft.testnet",
       };
     default:
       return {
@@ -188,6 +194,8 @@ export default function getConfig(
         REF_MEME_FARM_CONTRACT_ID: "meme-farming_011.ref-labs.near",
         REF_TOKEN_LOCKER_CONTRACT_ID: "token-locker.ref-labs.near",
         REF_VE_CONTRACT_ID: "",
+        MEME_CHECK_IN_CONTRACT_ID: "checkin.refnft.near",
+        MEME_NFT_CONTRACT_ID: "ms5.refnft.near",
       };
   }
 }

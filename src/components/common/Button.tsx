@@ -1,4 +1,5 @@
 import { BeatLoader } from "react-spinners";
+import { showWalletSelectorModal } from "@/utils/wallet";
 export function ButtonTextWrapper({
   Text,
   loading,
@@ -16,5 +17,19 @@ export function ButtonTextWrapper({
         <Text />
       )}
     </>
+  );
+}
+
+export function ConnectToNearBtn(appStore: any) {
+  return (
+    <div
+      className="flex items-center justify-center bg-greenGradient rounded-2xl text-black font-bold text-base cursor-pointer"
+      style={{ height: "42px" }}
+      onClick={() => {
+        showWalletSelectorModal(appStore.setShowRiskModal);
+      }}
+    >
+      Connect Wallet
+    </div>
   );
 }

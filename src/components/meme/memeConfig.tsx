@@ -30,6 +30,7 @@ import {
   ShitzuBodyMobile,
 } from "./ani_mobile";
 import { isMobile } from "../../utils/device";
+import { LevelIcon0, LevelIcon1, LevelIcon2, LevelIcon3 } from "./icons2";
 const is_mobile = isMobile();
 export const DONATE_RECEIVER_ID = ["pub-testnet", "testnet"].includes(
   process.env.REACT_APP_NEAR_ENV || ""
@@ -227,7 +228,7 @@ export function getMemeContractConfig(
           "memefarm-xref-intel.ref-labs.near",
           "memefarm-xref-dd.ref-labs.near",
           "memefarm-xref-neiro.ref-labs.near",
-          'memefarm-xref-corgi.ref-labs.near',
+          "memefarm-xref-corgi.ref-labs.near",
         ],
         MEME_TOKEN_XREF_MAP: {
           "blackdragon.tkn.near": "memefarm-xref-blackdragon.ref-labs.near",
@@ -249,7 +250,7 @@ export function getMemeContractConfig(
           "intel.tkn.near": "memefarm-xref-intel.ref-labs.near",
           "dd.tg": "memefarm-xref-dd.ref-labs.near",
           "neiro.token0.near": "memefarm-xref-neiro.ref-labs.near",
-          'corgi.token0.near': 'memefarm-xref-corgi.ref-labs.near',
+          "corgi.token0.near": "memefarm-xref-corgi.ref-labs.near",
         } as { [key: string]: string },
       };
   }
@@ -357,16 +358,16 @@ export function getMemeDataConfig(): any {
           "Introducing $SHITZU, the original Meme coin of Aurora, and now available on NEAR mainnet. 100% driven by community effort.",
       },
       lp_farm: {
-        'token.lonkingnearbackto2024.near': '4314',
-        'ftv2.nekotoken.near': '3807',
-        'blackdragon.tkn.near': '4276',
-        'token.0xshitzu.near': '4369',
-        'nkok.tkn.near': '4820',
-        '438e48ed4ce6beecf503d43b9dbd3c30d516e7fd.factory.bridge.near': '4528',
-        'touched.tkn.near': '4771',
-        'usmeme.tg': '4949',
-        'nearnvidia.near': '4547',
-        'gear.enleap.near': '3411',
+        "token.lonkingnearbackto2024.near": "4314",
+        "ftv2.nekotoken.near": "3807",
+        "blackdragon.tkn.near": "4276",
+        "token.0xshitzu.near": "4369",
+        "nkok.tkn.near": "4820",
+        "438e48ed4ce6beecf503d43b9dbd3c30d516e7fd.factory.bridge.near": "4528",
+        "touched.tkn.near": "4771",
+        "usmeme.tg": "4949",
+        "nearnvidia.near": "4547",
+        "gear.enleap.near": "3411",
       },
       token_icon: {
         "ftv2.nekotoken.near":
@@ -375,54 +376,54 @@ export function getMemeDataConfig(): any {
           "https://img.ref.finance/images/blackdragon-icon.png",
       },
       meme_winner_tokens: [
-        'blackdragon.tkn.near',
-        'token.lonkingnearbackto2024.near',
-        'touched.tkn.near',
-        'gear.enleap.near',
-        'token.0xshitzu.near',
+        "blackdragon.tkn.near",
+        "token.lonkingnearbackto2024.near",
+        "touched.tkn.near",
+        "gear.enleap.near",
+        "token.0xshitzu.near",
       ],
       meme_nonListed_tokens: [
-        'usmeme.tg',
-        'nkok.tkn.near',
-        '438e48ed4ce6beecf503d43b9dbd3c30d516e7fd.factory.bridge.near',
-        'nearnvidia.near',
-        'bean.tkn.near',
-        'ftv2.nekotoken.near',
-        'marmaj.tkn.near',
-        'babyblackdragon.tkn.near',
-        'hat.tkn.near',
-        'intel.tkn.near',
-        'dd.tg',
-        'neiro.token0.near',
-        'corgi.token0.near',
+        "usmeme.tg",
+        "nkok.tkn.near",
+        "438e48ed4ce6beecf503d43b9dbd3c30d516e7fd.factory.bridge.near",
+        "nearnvidia.near",
+        "bean.tkn.near",
+        "ftv2.nekotoken.near",
+        "marmaj.tkn.near",
+        "babyblackdragon.tkn.near",
+        "hat.tkn.near",
+        "intel.tkn.near",
+        "dd.tg",
+        "neiro.token0.near",
+        "corgi.token0.near",
       ],
       pie_color: {
-        'blackdragon.tkn.near': '#413B41',
-        'token.lonkingnearbackto2024.near': '#009400',
-        'gear.enleap.near': '#AF6B0A',
-        'touched.tkn.near': '#8BA340',
-        'usmeme.tg': '#FFBF33',
-        '438e48ed4ce6beecf503d43b9dbd3c30d516e7fd.factory.bridge.near':
-          '#FED501',
-        'nearnvidia.near': '#A4AED8',
-        'nkok.tkn.near': '#E81F27',
-        'bean.tkn.near': '#984D2E',
-        'token.0xshitzu.near': '#50ED99',
-        'ftv2.nekotoken.near': '#FFFFFF',
-        'marmaj.tkn.near': '#92D5EC',
-        'babyblackdragon.tkn.near': '#FF8F00',
-        'hat.tkn.near': '#F7AE07',
-        'intel.tkn.near': '#2C3D4C',
-        'dd.tg': '#FCC01C',
-        'neiro.token0.near': '#E7C391',
-        'corgi.token0.near': '#A96538',
+        "blackdragon.tkn.near": "#413B41",
+        "token.lonkingnearbackto2024.near": "#009400",
+        "gear.enleap.near": "#AF6B0A",
+        "touched.tkn.near": "#8BA340",
+        "usmeme.tg": "#FFBF33",
+        "438e48ed4ce6beecf503d43b9dbd3c30d516e7fd.factory.bridge.near":
+          "#FED501",
+        "nearnvidia.near": "#A4AED8",
+        "nkok.tkn.near": "#E81F27",
+        "bean.tkn.near": "#984D2E",
+        "token.0xshitzu.near": "#50ED99",
+        "ftv2.nekotoken.near": "#FFFFFF",
+        "marmaj.tkn.near": "#92D5EC",
+        "babyblackdragon.tkn.near": "#FF8F00",
+        "hat.tkn.near": "#F7AE07",
+        "intel.tkn.near": "#2C3D4C",
+        "dd.tg": "#FCC01C",
+        "neiro.token0.near": "#E7C391",
+        "corgi.token0.near": "#A96538",
       },
       meme_cap_tokens: [
-        'token.lonkingnearbackto2024.near',
-        'blackdragon.tkn.near',
-        'gear.enleap.near',
-        'touched.tkn.near',
-        'token.0xshitzu.near',
+        "token.lonkingnearbackto2024.near",
+        "blackdragon.tkn.near",
+        "gear.enleap.near",
+        "touched.tkn.near",
+        "token.0xshitzu.near",
       ],
     };
   }
@@ -561,6 +562,89 @@ export function getMemeUiConfig(): any {
           initW: is_mobile ? "28" : "42",
           feedIcon: SHITZU_CONFIG.feedIcon,
           stakeTip: "Woof-woof!",
+        },
+      },
+    };
+  }
+}
+
+export function getMemeCheckInConfig(): any {
+  const env: string = process.env.REACT_APP_NEAR_ENV;
+  if (env == "pub-testnet") {
+    return {
+      token_id_list: ["ref.fakes.testnet", "usdt.fakes.testnet"],
+      nftMetaData: {
+        title: "MEME Honorary NFT 5",
+        description: "REF MemeSeason5 NFT",
+      },
+      level: {
+        0: {
+          value: 1000,
+          icon: <LevelIcon0 />,
+        },
+        1: {
+          value: 5000,
+          icon: <LevelIcon1 />,
+        },
+        2: {
+          value: 100000,
+          icon: <LevelIcon2 />,
+        },
+        3: {
+          icon: <LevelIcon3 />,
+        },
+      },
+    };
+  } else if (env == "testnet") {
+    return {
+      token_id_list: ["ref.fakes.testnet", "usdt.fakes.testnet"],
+      nftMetaData: {
+        title: "MEME Honorary NFT 5",
+        description: "REF MemeSeason5 NFT",
+      },
+      level: {
+        0: {
+          value: 1000,
+          icon: <LevelIcon0 />,
+        },
+        1: {
+          value: 5000,
+          icon: <LevelIcon1 />,
+        },
+        2: {
+          value: 100000,
+          icon: <LevelIcon2 />,
+        },
+        3: {
+          icon: <LevelIcon3 />,
+        },
+      },
+    };
+  } else {
+    return {
+      token_id_list: [
+        "token.lonkingnearbackto2024.near",
+        "blackdragon.tkn.near",
+      ],
+      nftMetaData: {
+        title: "MEME Honorary NFT 5",
+        description: "REF MemeSeason5 NFT",
+      },
+      level: {
+        0: {
+          value: 1000,
+          icon: <LevelIcon0 />,
+        },
+        1: {
+          value: 5000,
+          icon: <LevelIcon1 />,
+        },
+        2: {
+          value: 100000,
+          icon: <LevelIcon2 />,
+        },
+        3: {
+          icon: <LevelIcon3 />,
         },
       },
     };

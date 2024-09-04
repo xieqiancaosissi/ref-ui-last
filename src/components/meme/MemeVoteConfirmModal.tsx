@@ -27,7 +27,7 @@ function MemeVoteConfirmModal(props: any) {
       }}
     >
       <div
-        className="border border-memeDonateBorderColor border-opacity-20 bg-memeDonateBgColor rounded-2xl p-5 pt-4 text-white"
+        className="border border-dark-300 border-opacity-20 bg-dark-10 rounded-2xl p-5 pt-4 text-white"
         style={{
           width: cardWidth,
           background: "#213441",

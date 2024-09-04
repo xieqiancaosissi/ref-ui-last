@@ -53,6 +53,7 @@ export const walletsRejectError = [
 ];
 
 export const getURLInfo = () => {
+  if (typeof window !== "object") return {};
   const search = window.location.search;
 
   const pathname = window.location.pathname;

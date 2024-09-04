@@ -253,7 +253,7 @@ const MarketSeedsBox = ({
                     Unstake
                   </div>
                   <div
-                    className={`flex flex-grow items-center cursor-pointer justify-center rounded-xl h-12 paceGrotesk-Bold focus:outline-none w-1/2 xsm:w-full ${"bg-greenLight"}`}
+                    className={`flex flex-grow items-center cursor-pointer justify-center rounded-xl h-12 paceGrotesk-Bold focus:outline-none w-1/2 xsm:w-full ${"bg-primaryGreen"}`}
                   >
                     Claim
                   </div>

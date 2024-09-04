@@ -286,7 +286,7 @@ const CheckInModal = (props: any) => {
             <div
               className={`flex items-center justify-center rounded-xl mt-8 ${
                 claimed || claimed == undefined
-                  ? "bg-memePoolBoxBorderColor cursor-not-allowed"
+                  ? "bg-gray-40 text-gray-50 cursor-not-allowed"
                   : "bg-greenGradient"
               } ${
                 checkInLoading

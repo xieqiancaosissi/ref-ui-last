@@ -86,7 +86,7 @@ export const getSearchResult = async ({
     const url = !onlyUseId
       ? `/pool/search?type=${type}&sort=${sort}&limit=${limit}&labels=${labels}&offset=${offset}&hide_low_pool=${hide_low_pool}&order_by=${order}&token_type=${tktype}&token_list=${token_list}&pool_id_list=${pool_id_list}`
       : `/pool/search?pool_id_list=${pool_id_list}`;
-    pools = await fetch(getConfig().tvlAnd24hUrl + url, {
+    pools = await fetch(getConfig().indexerUrl + url, {
       method: "GET",
       headers: {
         "Content-type": "application/json; charset=UTF-8",
@@ -141,10 +141,11 @@ export const addSimpleLiquidityPool = async (
 export const getPoolIndexTvlOR24H = async (type: string, day: any) => {
   try {
     const url = `/v3/${type}/chart/line?day=${day}`;
-    const resp = await fetch(getConfig().tvlAnd24hUrl + url, {
+    const resp = await fetch(getConfig().indexerUrl + url, {
       method: "GET",
       headers: {
         "Content-type": "application/json; charset=UTF-8",
+        ...getAuthenticationHeaders(`/v3/${type}/chart/line`),
       },
     }).then((res) => res.json());
     const waitExportMap: {
@@ -199,7 +200,7 @@ export const findSamePools = async (
   createFee: number
 ) => {
   return await fetch(
-    getConfig().tvlAnd24hUrl +
+    getConfig().indexerUrl +
       `/pool/same?token_list=${tokenList.join(",")}&fee=${createFee}`,
     {
       method: "GET",
@@ -215,7 +216,7 @@ export const findSamePools = async (
 };
 
 export const getPoolsDetailById = async ({ pool_id }: { pool_id: string }) => {
-  return fetch(getConfig().tvlAnd24hUrl + "/pool/detail?pool_id=" + pool_id, {
+  return fetch(getConfig().indexerUrl + "/pool/detail?pool_id=" + pool_id, {
     method: "GET",
     headers: {
       "Content-type": "application/json; charset=UTF-8",
@@ -242,16 +243,13 @@ export const getPoolsDetailByIds = async ({
 
   return Promise.all(
     pool_ids.map((pool_id) => {
-      return fetch(
-        getConfig().tvlAnd24hUrl + "/pool/detail?pool_id=" + pool_id,
-        {
-          method: "GET",
-          headers: {
-            "Content-type": "application/json; charset=UTF-8",
-            ...getAuthenticationHeaders("/pool/detail"),
-          },
-        }
-      )
+      return fetch(getConfig().indexerUrl + "/pool/detail?pool_id=" + pool_id, {
+        method: "GET",
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+          ...getAuthenticationHeaders("/pool/detail"),
+        },
+      })
         .then((res) => res.json())
         .then((pools) => {
           return pools.data;

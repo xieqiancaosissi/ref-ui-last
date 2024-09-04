@@ -470,7 +470,7 @@ export const getAd = async () => {
     method: "GET",
     headers: {
       "Content-type": "application/json; charset=UTF-8",
-      ...getAuthenticationHeaders("/add-user-wallet"),
+      ...getAuthenticationHeaders("/v3/ad"),
     },
   })
     .then((res) => res.json())
@@ -483,13 +483,13 @@ export const getAd = async () => {
 };
 export const checkIn = async (account_id: string) => {
   return await fetch(
-    config.memeRankApiUrl +
+    config.indexerUrl +
       `/v3/meme-farming/season/check-in?account_id=${account_id}`,
     {
       method: "POST",
       headers: {
         "Content-type": "application/json; charset=UTF-8",
-        ...getAuthenticationHeaders("/add-user-wallet"),
+        ...getAuthenticationHeaders("/v3/meme-farming/season/check-in"),
       },
     }
   )

@@ -157,8 +157,12 @@ export const currentTokensPrice = async (ids: string): Promise<any> => {
 };
 
 export const getMemeFarmingTokens = async (): Promise<any> => {
-  return await fetch(config.memeRankApiUrl + "/v3/meme-farming/tokens", {
+  return await fetch(config.indexerUrl + "/v3/meme-farming/tokens", {
     method: "GET",
+    headers: {
+      "Content-type": "application/json; charset=UTF-8",
+      ...getAuthenticationHeaders("/v3/meme-farming/tokens"),
+    },
   })
     .then((res) => res.json())
     .then((data) => {
@@ -180,11 +184,12 @@ export const getMemeFarmingTotalAssetsList = async (
     order_by: orderBy,
   });
   const url = `${
-    config.memeRankApiUrl
+    config.indexerUrl
   }/v3/meme-farming/total?${queryParams.toString()}`;
 
   return await fetch(url, {
     method: "GET",
+    ...getAuthenticationHeaders("/v3/meme-farming/total"),
   })
     .then((res) => res.json())
     .then((data) => {
@@ -210,11 +215,12 @@ export const getMemeFarmingAssetsList = async (
     order_by: orderBy,
   });
   const url = `${
-    config.memeRankApiUrl
+    config.indexerUrl
   }/v3/meme-farming/list?${queryParams.toString()}`;
 
   return await fetch(url, {
     method: "GET",
+    ...getAuthenticationHeaders("/v3/meme-farming/list"),
   })
     .then((res) => res.json())
     .then((data) => {

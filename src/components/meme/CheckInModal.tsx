@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState, useContext } from "react";
 import Modal from "react-modal";
 import Big from "big.js";
 import dayjs from "@/utils/dayjs";
@@ -21,6 +21,10 @@ import NFTTaskModal from "@/components/meme/NFTTaskModal";
 import { getMemeFarmingTotalAssetsList } from "../../services/api";
 import { ConnectToNearBtn } from "@/components/common/Button";
 import { useAccountStore } from "@/stores/account";
+import failToast from "@/components/common/toast/failToast";
+import checkTxBeforeShowToast from "@/components/common/toast/checkTxBeforeShowToast";
+import { checkIn } from "@/services/indexer";
+import { MemeContext } from "../../components/meme/context";
 const CheckInModal = (props: any) => {
   const { isOpen, onRequestClose } = props;
   const [isNftTaskOpen, setIsNftTaskOpen] = useState<boolean>(false);
@@ -42,6 +46,7 @@ const CheckInModal = (props: any) => {
   const memeCheckInConfig = getMemeCheckInConfig();
   const token_id_list = memeCheckInConfig.token_id_list;
   const level = memeCheckInConfig.level;
+  const { txHandle } = useContext(MemeContext);
   useEffect(() => {
     get_nft_metadata().then((res) => {
       set_nft_metadata(res);
@@ -59,37 +64,39 @@ const CheckInModal = (props: any) => {
   }, [shareButtonClicked]);
   useEffect(() => {
     if (accountId && isOpen) {
-      query_user_claimed(token_id_list[0]).then((claimedTime) => {
-        if (
-          dayjs(Number(claimedTime || 0)).isBefore(dayjs().utc().startOf("day"))
-        ) {
-          setClaimed(false);
-        } else {
-          setClaimed(true);
-        }
-      });
-      is_account_already_minted().then((res) => {
-        set_already_minted(res);
-      });
-      query_user_nftInfo().then((res) => {
-        if (res?.length > 0) {
-          setHasNft(true);
-        } else {
-          setHasNft(false);
-        }
-      });
-      getMemeFarmingTotalAssetsList(10000, 0, "desc").then((res) => {
-        setStakeList(res.data.list || []);
-      });
+      checkIn(accountId);
+      queryUserClaimed();
+      isAccountAlreadyMinted();
+      queryUserNftInfo();
+      getMemeFarmingTotalAssetsListData();
     }
   }, [accountId, isOpen]);
-  useEffect(() => {
-    if (accountId) {
-      getMemeFarmingTotalAssetsList(10000, 0, "desc").then((res) => {
-        setStakeList(res.data.list || []);
-      });
+  async function queryUserClaimed() {
+    const claimedTime = await query_user_claimed(token_id_list[0]);
+    if (
+      dayjs(Number(claimedTime || 0)).isBefore(dayjs().utc().startOf("day"))
+    ) {
+      setClaimed(false);
+    } else {
+      setClaimed(true);
     }
-  }, [accountId]);
+  }
+  async function queryUserNftInfo() {
+    const res = await query_user_nftInfo();
+    if (res?.length > 0) {
+      setHasNft(true);
+    } else {
+      setHasNft(false);
+    }
+  }
+  async function isAccountAlreadyMinted() {
+    const res = await is_account_already_minted();
+    set_already_minted(res);
+  }
+  async function getMemeFarmingTotalAssetsListData() {
+    const res = await getMemeFarmingTotalAssetsList(10000, 0, "desc");
+    setStakeList(res.data.list || []);
+  }
   useMemo(() => {
     if (stakeList.length && accountId) {
       const find = stakeList.find((item) => {
@@ -160,13 +167,35 @@ const CheckInModal = (props: any) => {
     }
     if (claimLoading || shareButtonClicked == "1") return;
     setClaimLoading(true);
-    claim_nft({ media: nft_metadata.base_uri });
+    claim_nft({ media: nft_metadata.base_uri }).then(async (res) => {
+      if (!res) return;
+      if (res.status == "success") {
+        checkTxBeforeShowToast({ txHash: res.txHash });
+        await queryUserNftInfo();
+        await isAccountAlreadyMinted();
+        await checkIn(accountId);
+      } else if (res.status == "error") {
+        failToast(res.errorResult?.message);
+      }
+      setClaimLoading(false);
+    });
   }
   function callCheckIn() {
     if (checkInLoading || claimed) return;
     setCheckInLoading(true);
-    check_in(token_id_list);
+    check_in(token_id_list).then(async (res) => {
+      if (!res) return;
+      if (res.status == "success") {
+        await queryUserClaimed();
+        onRequestClose();
+        txHandle(res.txHash);
+      } else if (res.status == "error") {
+        failToast(res.errorResult?.message);
+      }
+      setCheckInLoading(false);
+    });
   }
+
   function onNftTaskRequestClose() {
     setIsNftTaskOpen(false);
   }

@@ -12,10 +12,10 @@ export const APPID = "ref-finance";
 export const APP_HOST = "https://old.app.ref.finance";
 
 export const IS_MAINNET = !["testnet", "pub-testnet"].includes(
-  process.env.REACT_APP_NEAR_ENV
+  process.env.NEXT_PUBLIC_NEAR_ENV
 );
 export const IS_TESTNET = ["testnet", "pub-testnet"].includes(
-  process.env.REACT_APP_NEAR_ENV
+  process.env.NEXT_PUBLIC_NEAR_ENV
 );
 
 const INFURA_KEY = "45ad2962c1b5465bb6fe62db0d35b42f";

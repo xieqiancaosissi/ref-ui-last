@@ -1,5 +1,5 @@
 export function getAuroraConfig(
-  env: string = process.env.REACT_APP_NEAR_ENV || ""
+  env: string = process.env.NEXT_PUBLIC_NEAR_ENV || ""
 ) {
   switch (env) {
     case "production":

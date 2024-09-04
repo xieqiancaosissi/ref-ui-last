@@ -33,7 +33,7 @@ import { isMobile } from "../../utils/device";
 import { LevelIcon0, LevelIcon1, LevelIcon2, LevelIcon3 } from "./icons2";
 const is_mobile = isMobile();
 export const DONATE_RECEIVER_ID = ["pub-testnet", "testnet"].includes(
-  process.env.REACT_APP_NEAR_ENV || ""
+  process.env.NEXT_PUBLIC_NEAR_ENV || ""
 )
   ? "juaner.testnet"
   : "meme-donation.ref-labs.near";
@@ -158,7 +158,7 @@ const SHITZU_CONFIG = {
   feedIcon: BoneIcon,
 };
 export function getMemeContractConfig(
-  env: string | undefined = process.env.REACT_APP_NEAR_ENV
+  env: string | undefined = process.env.NEXT_PUBLIC_NEAR_ENV
 ) {
   switch (env) {
     case "pub-testnet":
@@ -256,7 +256,7 @@ export function getMemeContractConfig(
   }
 }
 export function getMemeDataConfig(): any {
-  const env: string | undefined = process.env.REACT_APP_NEAR_ENV;
+  const env: string | undefined = process.env.NEXT_PUBLIC_NEAR_ENV;
   if (env == "pub-testnet") {
     return {
       description: {
@@ -429,7 +429,7 @@ export function getMemeDataConfig(): any {
   }
 }
 export function getMemeUiConfig(): any {
-  const env: string | undefined = process.env.REACT_APP_NEAR_ENV;
+  const env: string | undefined = process.env.NEXT_PUBLIC_NEAR_ENV;
   if (env == "pub-testnet") {
     return {
       progress: {
@@ -569,7 +569,7 @@ export function getMemeUiConfig(): any {
 }
 
 export function getMemeCheckInConfig(): any {
-  const env: string = process.env.REACT_APP_NEAR_ENV;
+  const env: string = process.env.NEXT_PUBLIC_NEAR_ENV;
   if (env == "pub-testnet") {
     return {
       token_id_list: ["ref.fakes.testnet", "usdt.fakes.testnet"],

@@ -1,11 +1,11 @@
 import getOrderlyConfig from "@/utils/orderlyConfig";
 import { getAccountId } from "@/utils/wallet";
+import { webWalletIds } from "@/utils/wallet";
 import {
   Action,
   Transaction as WSTransaction,
 } from "@near-wallet-selector/core";
 
-const webWalletIds = ["my-near-wallet", "mintbase-wallet", "bitte-wallet"];
 export async function batchDeleteKeys(
   publicKeys: string[],
   callback: (result: any) => void

@@ -10,6 +10,7 @@ import { ftGetTokenMetadata } from "@/services/token";
 import { toReadableNumber } from "../../utils/numbers";
 import { toInternationalCurrencySystem_number } from "../../utils/uiNumber";
 import { MemeContext } from "../../components/meme/context";
+import { webWalletIds, getSelectedWalletId } from "@/utils/wallet";
 
 const CheckInSuccessModal = () => {
   const [list, setList] = useState<IUiReward[]>([]);
@@ -41,7 +42,10 @@ const CheckInSuccessModal = () => {
   }
   function onRequestClose() {
     setIsOpen(false);
-    router.replace("/meme");
+    const selectedWalletId = getSelectedWalletId();
+    if (webWalletIds.includes(selectedWalletId)) {
+      router.replace("/meme");
+    }
   }
   if (list.length == 0) return null;
   return (

@@ -35,3 +35,9 @@ export function addQueryParams(
   }
   return url.toString();
 }
+
+export const webWalletIds = [
+  "my-near-wallet",
+  "mintbase-wallet",
+  "bitte-wallet",
+];

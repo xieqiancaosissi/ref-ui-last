@@ -4,7 +4,7 @@ import BN from "bn.js";
 import { getCurrentWallet } from "../utils/wallet";
 import { Transaction } from "../interfaces/wallet";
 import getConfig from "../utils/config";
-import { getSelectedWalletId } from "../utils/wallet";
+import { getSelectedWalletId, webWalletIds } from "../utils/wallet";
 import {
   ledgerTipTrigger,
   ledgerTipClose,
@@ -15,7 +15,6 @@ import {
   TRANSACTION_WALLET_TYPE,
 } from "../utils/transactionsPopup";
 const config = getConfig();
-const webWalletIds = ["my-near-wallet", "mintbase-wallet", "bitte-wallet"];
 
 export const ONE_YOCTO_NEAR = "0.000000000000000000000001";
 export const LP_STORAGE_AMOUNT = "0.01";

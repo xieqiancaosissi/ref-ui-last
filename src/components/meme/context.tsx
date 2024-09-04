@@ -53,6 +53,7 @@ export interface IMemeContext {
   loading: boolean;
   init_user: any;
   earnRewards: IReward[];
+  txHandle: any;
 }
 export interface IFarmAccount {
   withdraw_list: Record<string, IFarmerWithdraw>;
@@ -110,27 +111,7 @@ function MemeContextProvider({ children }: any) {
   }, [accountId]);
   useEffect(() => {
     if (txHash && isSignedIn) {
-      checkTransaction(txHash).then((res: any) => {
-        const { transaction, receipts, receipts_outcome } = res;
-        const isNeth =
-          transaction?.actions?.[0]?.FunctionCall?.method_name === "execute";
-        const methodNameNeth =
-          receipts?.[0]?.receipt?.Action?.actions?.[0]?.FunctionCall
-            ?.method_name;
-        const methodNameNormal =
-          transaction?.actions[0]?.FunctionCall?.method_name;
-        const methodName = isNeth ? methodNameNeth : methodNameNormal;
-        if (methodName == "check_in") {
-          const logs = receipts_outcome[0].outcome.logs;
-          const parsedLogs = logs.map((log) => {
-            const logObj = JSON.parse(
-              log.match(/EVENT_JSON:(.*)/)?.[1] || "{}"
-            );
-            return logObj.data || [];
-          });
-          setEarnRewards(parsedLogs.flat());
-        }
-      });
+      txHandle(txHash);
     }
   }, [txHash, isSignedIn]);
   useEffect(() => {
@@ -153,6 +134,24 @@ function MemeContextProvider({ children }: any) {
       setXrefTokenId(Object.values(xrefSeeds || {})?.[0]?.seed_id);
     }
   }, [xrefSeeds]);
+  async function txHandle(txHash) {
+    const res = await checkTransaction(txHash);
+    const { transaction, receipts, receipts_outcome } = res as any;
+    const isNeth =
+      transaction?.actions?.[0]?.FunctionCall?.method_name === "execute";
+    const methodNameNeth =
+      receipts?.[0]?.receipt?.Action?.actions?.[0]?.FunctionCall?.method_name;
+    const methodNameNormal = transaction?.actions[0]?.FunctionCall?.method_name;
+    const methodName = isNeth ? methodNameNeth : methodNameNormal;
+    if (methodName == "check_in") {
+      const logs = receipts_outcome[0].outcome.logs;
+      const parsedLogs = logs.map((log) => {
+        const logObj = JSON.parse(log.match(/EVENT_JSON:(.*)/)?.[1] || "{}");
+        return logObj.data || [];
+      });
+      setEarnRewards(parsedLogs.flat());
+    }
+  }
   async function init() {
     const tokenPriceList = await getBoostTokenPrices();
     const memeContractConfig = await get_config();
@@ -501,6 +500,7 @@ function MemeContextProvider({ children }: any) {
         loading,
         earnRewards,
         init_user,
+        txHandle,
       }}
     >
       {children}

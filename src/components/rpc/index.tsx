@@ -420,7 +420,7 @@ const ModalAddCustomNetWork = (props: any) => {
       }
     }
     // do not support testnet
-    const env = process.env.REACT_APP_NEAR_ENV;
+    const env = process.env.NEXT_PUBLIC_NEAR_ENV;
     if (env == "testnet" || env == "pub-testnet") {
       setNotSupportTestnetError(true);
       setCustomLoading(false);
@@ -824,7 +824,7 @@ async function pingChain(url: string) {
     chain_id,
   };
 }
-// const isPrd = (env: string = process.env.REACT_APP_NEAR_ENV) => {
+// const isPrd = (env: string = process.env.NEXT_PUBLIC_NEAR_ENV) => {
 //   if (env != "pub-testnet" && env != "testnet") return true;
 // };
 function trimStr(str: string = "") {

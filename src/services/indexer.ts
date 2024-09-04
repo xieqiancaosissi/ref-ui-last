@@ -466,7 +466,7 @@ export const addUserWallet = async (params: any) => {
   });
 };
 export const getAd = async () => {
-  return await fetch("https://test.api.cclp.finance/v3/ad", {
+  return await fetch(config.indexerUrl + "/v3/ad", {
     method: "GET",
     headers: {
       "Content-type": "application/json; charset=UTF-8",

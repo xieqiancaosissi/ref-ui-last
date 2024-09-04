@@ -158,6 +158,7 @@ export default function FarmsDclDetail(props: {
   }
   const goBacktoFarms = () => {
     router.push("/v2farms");
+    init();
     emptyDetailData();
   };
   function getBoostMutil() {
@@ -876,6 +877,16 @@ export default function FarmsDclDetail(props: {
       </>
     );
   }
+  function formatCheckedList(data) {
+    if (!data || typeof data !== "object") {
+      return {};
+    }
+    const formattedData = {};
+    for (const [key, value] of Object.entries(data)) {
+      formattedData[key] = { value: value.toString() };
+    }
+    return formattedData;
+  }
   function get_unStake_info() {
     const { free_amount = "0", locked_amount = "0" } =
       user_seeds_map[detailData.seed_id] || {};
@@ -890,6 +901,7 @@ export default function FarmsDclDetail(props: {
   }
   function batchStakeNFT() {
     set_nft_stake_loading(true);
+    const formattedCheckedList = formatCheckedList(user_unclaimed_map[seed_id]);
     const { liquidities, total_v_liquidity, withdraw_amount } =
       get_stake_info();
     batch_stake_boost_nft({
@@ -897,6 +909,7 @@ export default function FarmsDclDetail(props: {
       total_v_liquidity,
       withdraw_amount,
       seed_id: detailData.seed_id,
+      checkedList: formattedCheckedList,
     }).then((res) => {
       handleStakeTranstion(res);
     });
@@ -905,13 +918,14 @@ export default function FarmsDclDetail(props: {
     if (!res) return;
     if (res.status == "success") {
       set_nft_stake_loading(false);
-      init();
       getConfig();
       get_user_unWithDraw_rewards();
       get_user_seeds_and_unClaimedRewards();
       successToast();
-      get_list_liquidities();
+      await get_list_liquidities();
+      setActiveTab("Unstake");
       get_mft_balance_of();
+      init();
     } else if (res.status == "error") {
       failToast(res.errorResult?.message);
       set_nft_stake_loading(false);
@@ -919,8 +933,15 @@ export default function FarmsDclDetail(props: {
   }
   function batchUnStakeNFT() {
     set_nft_unStake_loading(true);
-    const unStake_info: IStakeInfo = get_unStake_info();
-    batch_unStake_boost_nft(unStake_info).then((res) => {
+    // const unStake_info: IStakeInfo = get_unStake_info();
+    const { liquidities, withdraw_amount, seed_id } = get_unStake_info();
+    const formattedCheckedList = formatCheckedList(user_unclaimed_map[seed_id]);
+    batch_unStake_boost_nft({
+      seed_id,
+      withdraw_amount,
+      liquidities,
+      checkedList: formattedCheckedList,
+    }).then((res) => {
       handleUnStakeTranstion(res);
     });
   }
@@ -933,29 +954,37 @@ export default function FarmsDclDetail(props: {
       get_user_unWithDraw_rewards();
       get_user_seeds_and_unClaimedRewards();
       successToast();
-      get_list_liquidities();
+      await get_list_liquidities();
+      setActiveTab("Stake");
       get_mft_balance_of();
     } else if (res.status == "error") {
       failToast(res.errorResult?.message);
       set_nft_unStake_loading(false);
     }
   }
-  function formatCheckedList(data) {
-    const formattedData = {};
-    for (const [key, value] of Object.entries(data)) {
-      formattedData[key] = { value: value.toString() };
-    }
-    return formattedData;
-  }
   function claimReward() {
     if (claimLoading) return;
     const formattedCheckedList = formatCheckedList(user_unclaimed_map[seed_id]);
     setClaimLoading(true);
-    claimRewardBySeed_boost(detailData.seed_id, formattedCheckedList).catch(
-      (error) => {
-        setClaimLoading(false);
+    claimRewardBySeed_boost(detailData.seed_id, formattedCheckedList).then(
+      (res) => {
+        handleclaimTranstion(res);
       }
     );
+  }
+  async function handleclaimTranstion(res: IExecutionResult | undefined) {
+    if (!res) return;
+    if (res.status == "success") {
+      setClaimLoading(false);
+      init();
+      getConfig();
+      get_user_unWithDraw_rewards();
+      get_user_seeds_and_unClaimedRewards();
+      successToast();
+    } else if (res.status == "error") {
+      failToast(res.errorResult?.message);
+      setClaimLoading(false);
+    }
   }
   function goPool() {
     const poolId = pool?.pool_id;
@@ -1225,7 +1254,7 @@ export default function FarmsDclDetail(props: {
                 baseColor="rgba(33, 43, 53, 0.3)"
                 highlightColor="#2A3643"
               >
-                <Skeleton style={{ width: "100%" }} height={250} count={1} />
+                <Skeleton style={{ width: "100%" }} height={260} count={1} />
               </SkeletonTheme>
             ) : (
               <div className={`h-full p-5`}>
@@ -1326,7 +1355,7 @@ export default function FarmsDclDetail(props: {
                           >
                             Connect Wallet
                           </div>
-                        ) : !isEnded ? (
+                        ) : (
                           <div
                             onClick={() => {
                               if (!nft_unStake_loading) {
@@ -1344,7 +1373,7 @@ export default function FarmsDclDetail(props: {
                               Text={() => <>Unstake</>}
                             />
                           </div>
-                        ) : null}
+                        )}
                       </>
                     )}
                   </>
@@ -1384,25 +1413,21 @@ export default function FarmsDclDetail(props: {
                   </p>
                 ) : null}
               </p>
-              {!isEnded ? (
-                <>
-                  {unclaimedRewardsData.showClaimButton ? (
-                    <div
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        claimReward();
-                      }}
-                      className={`border border-green-10 rounded frcc py-1.5 px-7 text-green-10 cursor-pointer text-sm ${
-                        isEmpty || isEnded ? "hidden" : ""
-                      }  `}
-                    >
-                      <ButtonTextWrapper
-                        loading={claimLoading}
-                        Text={() => <>Claim</>}
-                      />
-                    </div>
-                  ) : null}
-                </>
+              {unclaimedRewardsData.showClaimButton ? (
+                <div
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    claimReward();
+                  }}
+                  className={`border border-green-10 rounded frcc py-1.5 px-7 text-green-10 cursor-pointer text-sm ${
+                    isEmpty || isEnded ? "hidden" : ""
+                  }  `}
+                >
+                  <ButtonTextWrapper
+                    loading={claimLoading}
+                    Text={() => <>Claim</>}
+                  />
+                </div>
               ) : null}
             </div>
             {unclaimedRewardsData.showClaimButton ? (

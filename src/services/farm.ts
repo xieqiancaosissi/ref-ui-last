@@ -175,6 +175,7 @@ export interface IStakeInfo {
   withdraw_amount?: string;
   canStake?: boolean;
   seed_id?: string;
+  checkedList?: Record<string, any>;
 }
 
 export const frontConfigBoost: FrontConfigBoost = {
@@ -798,6 +799,7 @@ export const batch_stake_boost_nft = async ({
   total_v_liquidity,
   withdraw_amount,
   seed_id,
+  checkedList,
 }: IStakeInfo) => {
   let need_split = false;
   const selectedWalletId = window.selector?.store?.getState()?.selectedWalletId;
@@ -917,6 +919,19 @@ export const batch_stake_boost_nft = async ({
       functionCalls: [storageDepositAction({ amount: neededStorage })],
     });
   }
+
+  if (checkedList) {
+    const { storageDepositTransactions, withdrawRewardTransactions } =
+      await buildWithdrawRewardFunctionCalls(checkedList);
+    transactions.push(
+      ...storageDepositTransactions,
+      ...withdrawRewardTransactions
+    );
+
+    const nearWithdrawTransactions = buildWithdrawNearTransactions(checkedList);
+    transactions.push(...nearWithdrawTransactions);
+  }
+
   return executeFarmMultipleTransactions(transactions);
 };
 
@@ -924,6 +939,7 @@ export const batch_unStake_boost_nft = async ({
   seed_id,
   withdraw_amount,
   liquidities,
+  checkedList,
 }: IStakeInfo) => {
   let need_split = false;
   const max_length = 2;
@@ -999,6 +1015,18 @@ export const batch_unStake_boost_nft = async ({
       receiverId: REF_FARM_BOOST_CONTRACT_ID,
       functionCalls: [storageDepositAction({ amount: neededStorage })],
     });
+  }
+
+  if (checkedList) {
+    const { storageDepositTransactions, withdrawRewardTransactions } =
+      await buildWithdrawRewardFunctionCalls(checkedList);
+    transactions.push(
+      ...storageDepositTransactions,
+      ...withdrawRewardTransactions
+    );
+
+    const nearWithdrawTransactions = buildWithdrawNearTransactions(checkedList);
+    transactions.push(...nearWithdrawTransactions);
   }
 
   return executeFarmMultipleTransactions(transactions);

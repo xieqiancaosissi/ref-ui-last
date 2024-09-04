@@ -371,7 +371,7 @@ export default function FarmsDetailStake(props: {
             setAmount("");
             setLpIsMaxAmount(false);
             setIsMaxAmount(false);
-            setAmountAvailableCheck(false);
+            setAmountAvailableCheck(true);
           }}
         >
           Stake
@@ -394,7 +394,7 @@ export default function FarmsDetailStake(props: {
               setAmount("");
               setLpIsMaxAmount(false);
               setIsMaxAmount(false);
-              setAmountAvailableCheck(false);
+              setAmountAvailableCheck(true);
             }}
           >
             Unstake

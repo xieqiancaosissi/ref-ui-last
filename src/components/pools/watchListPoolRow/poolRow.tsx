@@ -13,6 +13,7 @@ import tokenIcons from "@/utils/tokenIconConfig";
 import HoverTooltip from "@/components/common/HoverToolTip";
 import { PoolRouterGuard, PoolTypeGuard } from "@/utils/poolTypeGuard";
 import { TokenIconComponent } from "../TokenIconWithTkn";
+import { get_pool_name } from "@/services/commonV3";
 export default function PoolRow({
   list,
   pureIdList,
@@ -25,7 +26,11 @@ export default function PoolRow({
   const { updatedMapList } = useTokenMetadata(list);
   const router = useRouter();
   const toDetail = (item: any) => {
-    router.push(`${PoolRouterGuard(item, "")}/${item.id}`);
+    router.push(
+      `${PoolRouterGuard(item, "")}/${
+        item?.pool_kind == "DCL" ? get_pool_name(item.id) : item.id
+      }`
+    );
   };
 
   return (

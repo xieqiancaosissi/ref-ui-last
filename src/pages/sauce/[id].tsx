@@ -65,12 +65,14 @@ function StablePoolDetail() {
           router.push(`${PoolRouterGuard(res, "", true)}/${poolId}`);
         setPoolDetail(res);
       });
-
-      if (currentwatchListId.length > 0) {
-        setIsCollect(currentwatchListId.includes(poolId));
-      }
     }
-  }, [poolId, currentwatchListId]);
+  }, [poolId]);
+
+  useEffect(() => {
+    if (currentwatchListId.length > 0) {
+      setIsCollect(currentwatchListId.includes(poolId));
+    }
+  }, [currentwatchListId]);
 
   useEffect(() => {
     getAllTokenPrices().then((res) => {

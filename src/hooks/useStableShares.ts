@@ -18,6 +18,7 @@ import { getAccountId } from "@/utils/wallet";
 import getConfigV2 from "@/utils/configV2";
 import { list_farmer_seeds } from "@/services/farm";
 import { isStablePool } from "@/services/swap/swapUtils";
+import { REF_FI_CONTRACT_ID } from "@/utils/contract";
 
 const FEE_DIVISOR = 10000;
 export const useFarmStake = ({
@@ -91,7 +92,7 @@ export const useYourliquidity = (poolId: number) => {
     if (getAccountId()) {
       list_farmer_seeds().then((res) => {
         const transformedData = Object.keys(res).reduce((acc, key) => {
-          const newKey = key.replace("v2.ref-finance.near@", "");
+          const newKey = key.replace(`${REF_FI_CONTRACT_ID}@`, "");
           acc[newKey] = res[key];
           return acc;
         }, {});
@@ -520,7 +521,7 @@ export const useFarmStakeAmount = ({
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const { farmerSeeds } = useListFarmerSeeds();
   const poolSeed =
-    farmerSeeds[`v2.ref-finance.near@${poolId}`] || farmerSeeds[poolId];
+    farmerSeeds[`${REF_FI_CONTRACT_ID}@${poolId}`] || farmerSeeds[poolId];
 
   const { shadow_in_farm } = shadowRecords?.[Number(poolId)] || {};
 

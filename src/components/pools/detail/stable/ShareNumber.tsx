@@ -10,10 +10,8 @@ import { getYourPools } from "@/services/indexer";
 import { isStablePool } from "@/services/swap/swapUtils";
 import { getVEPoolId } from "@/services/referendum";
 function ShareNumber(props: any) {
-  const { id } = props;
-  const { shares, pool } = usePool(id);
+  const { id, userTotalShare, shares, pool } = props;
   const accountStore = useAccountStore();
-  const { userTotalShare } = useYourliquidity(id);
   const [pools, setPools] = useState<any>([]);
   const [vePool, setVePool] = useState<any>([]);
   const isSignedIn = accountStore.isSignedIn;
@@ -55,7 +53,7 @@ function ShareNumber(props: any) {
         "-"
       )}
       <span className={`text-gray-10`}>
-        {accountStore.isSignedIn
+        {accountStore.isSignedIn && userTotalShare
           ? ` / ${toRoundedReadableNumber({
               decimals: getStablePoolDecimal(id, pool),
               number: scientificNotationToString(

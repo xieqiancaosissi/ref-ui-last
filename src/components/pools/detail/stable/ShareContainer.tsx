@@ -39,6 +39,7 @@ function ShareContainer(props: any) {
     userTotalShare,
     shares,
     shadowBurrowShare,
+    pool,
   } = useYourliquidity(poolDetail.id);
 
   const toSauce = (type: string) => {
@@ -71,7 +72,14 @@ function ShareContainer(props: any) {
           />
           <span>Shares</span>
           <p className="ml-2">
-            <ShareNumber id={poolDetail.id} />
+            {pool && (
+              <ShareNumber
+                id={poolDetail.id}
+                userTotalShare={userTotalShare}
+                shares={shares}
+                pool={pool}
+              />
+            )}
           </p>
         </div>
 
@@ -82,7 +90,14 @@ function ShareContainer(props: any) {
           />
           <span>Shares</span>
           <p className="ml-2">
-            <ShareNumber id={poolDetail.id} />
+            {pool && (
+              <ShareNumber
+                id={poolDetail.id}
+                userTotalShare={userTotalShare}
+                shares={shares}
+                pool={pool}
+              />
+            )}
           </p>
         </div>
 

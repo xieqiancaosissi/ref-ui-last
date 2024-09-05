@@ -80,6 +80,7 @@ function ClassicRemove(props: any) {
     addSuccess,
     shares,
     fromYours,
+    pool,
   } = props;
 
   useEffect(() => {
@@ -165,8 +166,9 @@ function ClassicRemove(props: any) {
     }
     setShareVal(val ? val : "");
   };
+
   const { minimumAmounts, removeLiquidity } = useRemoveLiquidity({
-    pool: updatedMapList[0],
+    pool,
     slippageTolerance: feeValue,
     shares: shareVal ? toNonDivisibleNumber(24, shareVal || "0") : "0",
   });

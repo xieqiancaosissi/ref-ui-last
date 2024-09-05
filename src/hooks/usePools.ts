@@ -775,7 +775,8 @@ export const useRemoveLiquidity = ({
         calculateFairShare({
           shareOf: totalSupply,
           contribution: shares,
-          totalContribution: (pool as any).shares_total_supply,
+          totalContribution:
+            pool?.shareSupply || (pool as any)?.shares_total_supply,
         })
       ),
       0

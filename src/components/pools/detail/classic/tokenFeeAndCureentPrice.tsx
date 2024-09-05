@@ -8,18 +8,22 @@ import { toReadableNumber, numberWithCommas } from "@/utils/numbers";
 import { beautifyNumber } from "@/components/common/beautifyNumber";
 import { filterSpecialChar } from "@/utils/numbers";
 import Big from "big.js";
+import { usePool } from "@/hooks/usePools";
 
 function TokenFeeAndCureentPrice({
   poolDetail,
   tokenPriceList,
   updatedMapList,
+  pool,
+  share,
 }: {
   poolDetail: any;
   tokenPriceList: any;
   updatedMapList: any;
+  pool: any;
+  share: any;
 }) {
   const [currentSort, setCurrenSort] = useState([0, 1]);
-
   const exchange = () => {
     const [a, b] = currentSort;
     setCurrenSort([b, a]);
@@ -28,15 +32,11 @@ function TokenFeeAndCureentPrice({
 
   const first_token_num = toReadableNumber(
     updatedMapList[0].token_account_ids[currentSort[0]].decimals ?? 24,
-    updatedMapList[0].supplies[
-      updatedMapList[0].token_account_ids[currentSort[0]].id
-    ]
+    pool.supplies[updatedMapList[0].token_account_ids[currentSort[0]].id]
   );
   const second_token_num = toReadableNumber(
     updatedMapList[0].token_account_ids[currentSort[1]].decimals ?? 24,
-    updatedMapList[0].supplies[
-      updatedMapList[0].token_account_ids[currentSort[1]].id
-    ]
+    pool.supplies[updatedMapList[0].token_account_ids[currentSort[1]].id]
   );
 
   const rate =

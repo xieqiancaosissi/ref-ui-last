@@ -75,6 +75,7 @@ function ClassicAdd(props: any) {
     setAddSuccess,
     addSuccess,
     fromYours,
+    pool,
   } = props;
   const [balancesList, setBalances] = useState<any>([]);
   const [inputValList, setInputValList] = useState<any>([]);
@@ -119,15 +120,16 @@ function ClassicAdd(props: any) {
   ) => {
     if (!updatedMapList[0].token_account_ids) return;
     const fairShares = calculateFairShare({
-      shareOf: Reflect.has(updatedMapList[0], "shareSupply")
-        ? updatedMapList[0]?.shareSupply
-        : updatedMapList[0]?.shares_total_supply,
+      // shareOf: Reflect.has(updatedMapList[0], "shareSupply")
+      //   ? pool.shareSupply
+      //   : updatedMapList[0]?.shares_total_supply,
+      shareOf: pool.shareSupply,
       contribution: toNonDivisibleNumber(
         updatedMapList[0]?.token_account_ids[ind]?.decimals,
         currentList[ind]
       ),
       totalContribution:
-        updatedMapList[0].supplies[updatedMapList[0].token_account_ids[ind].id],
+        pool.supplies[updatedMapList[0].token_account_ids[ind].id],
     });
     let secondAmount = "";
     if (currentList[ind]) {
@@ -135,13 +137,12 @@ function ClassicAdd(props: any) {
         updatedMapList[0]?.token_account_ids[anotherInd]?.decimals,
         calculateFairShare({
           shareOf:
-            updatedMapList[0]?.supplies[
-              updatedMapList[0]?.token_account_ids[anotherInd].id
-            ],
+            pool?.supplies[updatedMapList[0]?.token_account_ids[anotherInd].id],
           contribution: fairShares,
-          totalContribution: Reflect.has(updatedMapList[0], "shareSupply")
-            ? updatedMapList[0]?.shareSupply
-            : updatedMapList[0]?.shares_total_supply,
+          // totalContribution: Reflect.has(updatedMapList[0], "shareSupply")
+          //   ? pool.shareSupply
+          //   : updatedMapList[0]?.shares_total_supply,
+          totalContribution: pool.shareSupply,
         })
       );
     }

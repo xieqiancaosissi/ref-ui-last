@@ -523,12 +523,15 @@ function ClassicPoolDetail() {
 
               {/* pc fee */}
               {updatedMapList &&
+                pool &&
                 updatedMapList[0]?.token_account_ids &&
                 !isMobile && (
                   <TokenFeeAndCureentPrice
                     poolDetail={poolDetail}
                     tokenPriceList={tokenPriceList}
                     updatedMapList={updatedMapList}
+                    pool={pool}
+                    share={shares}
                   />
                 )}
             </>
@@ -575,6 +578,8 @@ function ClassicPoolDetail() {
           poolDetail={poolDetail}
           tokenPriceList={tokenPriceList}
           updatedMapList={updatedMapList}
+          pool={pool}
+          share={shares}
         />
       )}
 
@@ -989,7 +994,7 @@ function ClassicPoolDetail() {
         )}
 
       {/* add */}
-      {updatedMapList[0]?.token_account_ids && poolDetail && (
+      {updatedMapList[0]?.token_account_ids && poolDetail && pool && (
         <>
           <ClassicAdd
             isOpen={showAdd}
@@ -1001,6 +1006,7 @@ function ClassicPoolDetail() {
             setAddSuccess={setAddSuccess}
             addSuccess={addSuccess}
             shares={addSuccess > 0 ? newShares : shares}
+            pool={addSuccess > 0 ? newPool : pool}
           />
 
           <ClassicRemove
@@ -1013,6 +1019,7 @@ function ClassicPoolDetail() {
             setAddSuccess={setAddSuccess}
             addSuccess={addSuccess}
             shares={addSuccess > 0 ? newShares : shares}
+            pool={addSuccess > 0 ? newPool : pool}
           />
         </>
       )}

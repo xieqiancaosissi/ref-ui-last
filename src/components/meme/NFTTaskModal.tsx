@@ -9,7 +9,8 @@ const NFTTaskModal = (props: any) => {
   const w = is_mobile ? "100vw" : "320px";
   function share() {
     setShareButtonClicked("1");
-    onRequestClose(0);
+    onRequestClose();
+    window.open('https://x.com/finance_ref/status/1831519988601254119');
   }
   return (
     <Modal

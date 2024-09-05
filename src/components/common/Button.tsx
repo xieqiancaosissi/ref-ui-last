@@ -20,7 +20,7 @@ export function ButtonTextWrapper({
   );
 }
 
-export function ConnectToNearBtn(appStore: any) {
+export function ConnectToNearBtn({ appStore }: any) {
   return (
     <div
       className="flex items-center justify-center bg-greenGradient rounded-2xl text-black font-bold text-base cursor-pointer"

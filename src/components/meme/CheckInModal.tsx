@@ -25,6 +25,7 @@ import failToast from "@/components/common/toast/failToast";
 import checkTxBeforeShowToast from "@/components/common/toast/checkTxBeforeShowToast";
 import { checkIn } from "@/services/indexer";
 import { MemeContext } from "../../components/meme/context";
+import { useAppStore } from "@/stores/app";
 const CheckInModal = (props: any) => {
   const { isOpen, onRequestClose } = props;
   const [isNftTaskOpen, setIsNftTaskOpen] = useState<boolean>(false);
@@ -47,6 +48,7 @@ const CheckInModal = (props: any) => {
   const token_id_list = memeCheckInConfig.token_id_list;
   const level = memeCheckInConfig.level;
   const { txHandle } = useContext(MemeContext);
+  const appStore = useAppStore();
   useEffect(() => {
     get_nft_metadata().then((res) => {
       set_nft_metadata(res);
@@ -334,7 +336,7 @@ const CheckInModal = (props: any) => {
           </div>
         ) : (
           <div className="mt-8">
-            <ConnectToNearBtn />
+            <ConnectToNearBtn appStore={appStore} />
           </div>
         )}
 

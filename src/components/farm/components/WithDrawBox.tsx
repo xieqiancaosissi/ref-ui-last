@@ -146,24 +146,30 @@ export default function WithDrawBox(props: {
           <div>
             <p className="text-sm text-gray-50">Claimed Rewards</p>
             <h1 className="text-3xl paceGrotesk-Bold frcc">
-              {yourReward}
-              {Object.values(rewardList).length > 0 ? (
-                <div className="flex items-center ml-3">
-                  {Object.values(rewardList)
-                    .slice(0, maxLength)
-                    .map((reward: any, index: number) => {
-                      return (
-                        <img
-                          key={index}
-                          src={reward.rewardToken.icon}
-                          className={`w-5 h-5 rounded-full  bg-cardBg border border-green-10 ${
-                            index > 0 ? "-ml-1" : ""
-                          }`}
-                        ></img>
-                      );
-                    })}
-                </div>
-              ) : null}
+              {isSignedIn ? (
+                <>
+                  {yourReward}
+                  {Object.values(rewardList).length > 0 && (
+                    <div className="flex items-center ml-3">
+                      {Object.values(rewardList)
+                        .slice(0, maxLength)
+                        .map((reward: any, index: number) => {
+                          return (
+                            <img
+                              key={index}
+                              src={reward.rewardToken.icon}
+                              className={`w-5 h-5 rounded-full bg-cardBg border border-green-10 ${
+                                index > 0 ? "-ml-1" : ""
+                              }`}
+                            />
+                          );
+                        })}
+                    </div>
+                  )}
+                </>
+              ) : (
+                "$0.00"
+              )}
             </h1>
           </div>
         </div>

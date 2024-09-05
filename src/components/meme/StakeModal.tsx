@@ -134,7 +134,7 @@ function StakeModal(props: any) {
           const reward_token_price = Number(
             tokenPriceList[reward_token]?.price || 0
           );
-          if (seedCopy.seedTvl) {
+          if (seedCopy.seedTvl && Number(seedCopy.seedTvl) !== 0) {
             farm.apr = new Big(daily_reward_amount)
               .mul(reward_token_price)
               .mul(365)

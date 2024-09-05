@@ -386,8 +386,10 @@ function StableRemove(props: any) {
       pool2.availableShareNonDivisible = availableShareNonDivisible;
       setnewNewPool(pool2);
     };
-    updatePool();
-  }, [addSuccess, newShadowRecords, newFarmerSeeds, shares]);
+    if (pool?.id) {
+      updatePool();
+    }
+  }, [addSuccess, newShadowRecords, newFarmerSeeds, shares, pool]);
 
   useEffect(() => {
     if (addSuccess > 0 && newnewPool?.availableShareNonDivisible) {

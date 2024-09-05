@@ -559,7 +559,7 @@ export const useNewPoolData = ({
   );
 
   useEffect(() => {
-    if (pool) {
+    if (pool?.id) {
       updatePool();
     }
   }, [pool, shadowRecords, farmerSeeds]);

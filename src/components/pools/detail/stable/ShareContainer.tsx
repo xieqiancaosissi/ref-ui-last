@@ -71,7 +71,7 @@ function ShareContainer(props: any) {
             extraStyles={"w-46"}
           />
           <span>Shares</span>
-          <p className="ml-2">
+          <div className="ml-2">
             {pool && (
               <ShareNumber
                 id={poolDetail.id}
@@ -80,7 +80,7 @@ function ShareContainer(props: any) {
                 pool={pool}
               />
             )}
-          </p>
+          </div>
         </div>
 
         <div className="frcc lg:hidden">
@@ -89,7 +89,7 @@ function ShareContainer(props: any) {
             extraStyles={"w-46"}
           />
           <span>Shares</span>
-          <p className="ml-2">
+          <div className="ml-2">
             {pool && (
               <ShareNumber
                 id={poolDetail.id}
@@ -98,7 +98,7 @@ function ShareContainer(props: any) {
                 pool={pool}
               />
             )}
-          </p>
+          </div>
         </div>
 
         <div className="lg:frcc lg:ml-10 xsm:flex xsm:mt-auto">

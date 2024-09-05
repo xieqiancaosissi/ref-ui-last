@@ -9,10 +9,15 @@
     "prettier:fix": "prettier --write src",
     "lint": "next lint",
     "prepare": "husky install",
-    "preinstall": "npx only-allow pnpm"
+    "preinstall": "npx only-allow pnpm",
+    "pages:build": "npx @cloudflare/next-on-pages",
+    "preview": "npm run pages:build && wrangler pages dev",
+    "deploy": "npm run pages:build && wrangler pages deploy",
+    "cf-typegen": "wrangler types --env-interface CloudflareEnv env.d.ts"
   },
   "dependencies": {
     "@aurora-is-near/engine": "think-in-universe/aurora.js#6db862e",
+    "@cloudflare/next-on-pages": "^1.13.2",
     "@keypom/selector": "^1.2.3",
     "@near-eth/aurora-erc20": "^2.8.0",
     "@near-eth/aurora-ether": "^3.0.0",
@@ -57,6 +62,7 @@
     "browserify-fs": "^1.0.0",
     "comlink": "^4.4.1",
     "d3": "^7.7.0",
+    "dayjs": "^1.11.10",
     "dexie": "^3.0.3",
     "echarts": "^5.5.0",
     "echarts-for-react": "^3.0.2",
@@ -92,9 +98,10 @@
     "rxjs": "7.8.1",
     "swiper": "8.4.7",
     "tailwind-merge": "^2.3.0",
+    "vercel": "^37.3.0",
     "web3-eth-abi": "1.8.2",
-    "zustand": "^4.3.7",
-    "dayjs": "^1.11.10"
+    "wrangler": "^3.74.0",
+    "zustand": "^4.3.7"
   },
   "devDependencies": {
     "@svgr/webpack": "^8.1.0",

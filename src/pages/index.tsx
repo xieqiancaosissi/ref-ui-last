@@ -313,11 +313,3 @@ export default function Swap() {
     </main>
   );
 }
-// SSR
-export function getServerSideProps(context: any) {
-  return {
-    props: {
-      data: "testdata",
-    },
-  };
-}

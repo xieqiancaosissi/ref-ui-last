@@ -25,8 +25,8 @@ import UnLockedModal from "./UnLockedModal";
 import { ArrowDown, ArrowUpWithYellow } from "../liquidity/components/add/Icon";
 
 function OverallLocking(props: any) {
-  const { poolDetail, updatedMapList, shares } = props;
-  const [addSuccess, setAddSuccess] = useState(0);
+  const { poolDetail, updatedMapList, shares, addSuccess, setAddSuccess } =
+    props;
   const detailItem = [
     {
       title: "TVL",

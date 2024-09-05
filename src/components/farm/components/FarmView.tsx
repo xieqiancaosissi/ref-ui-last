@@ -1130,7 +1130,12 @@ export function FarmView(props: {
             <div className="frcb">
               <p className="text-gray-60 text-sm">Your stake/Unclaimed</p>
               <p className="text-sm frcc">
-                {yp_unFarm_value}/
+                {isSignedIn
+                  ? Number(yp_unFarm_value) === 0
+                    ? "0"
+                    : yp_unFarm_value
+                  : "0"}
+                /
                 <p
                   className={`${
                     getTotalUnclaimedRewards() === "0"
@@ -1138,10 +1143,14 @@ export function FarmView(props: {
                       : "text-green-10"
                   } frcc`}
                 >
-                  {getTotalUnclaimedRewards() !== "0" ? (
+                  {isSignedIn && getTotalUnclaimedRewards() !== "0" ? (
                     <FarmListRewards className="ml-1 mr-1" />
                   ) : null}
-                  {getTotalUnclaimedRewards()}
+                  {isSignedIn ? (
+                    getTotalUnclaimedRewards()
+                  ) : (
+                    <span className="text-white">0</span>
+                  )}
                 </p>
               </p>
             </div>
@@ -1181,9 +1190,11 @@ export function FarmView(props: {
             <div className="frcb">
               <p className="text-gray-60 text-sm">Your stake/Unclaimed</p>
               <p className="text-sm frcc">
-                {Number(yourTvl) == 0
-                  ? "0"
-                  : "$" + toInternationalCurrencySystem(yourTvl, 2)}
+                {isSignedIn
+                  ? Number(yourTvl) === 0
+                    ? "0"
+                    : "$" + toInternationalCurrencySystem(yourTvl, 2)
+                  : "0"}
                 /
                 <p
                   className={`${
@@ -1192,10 +1203,14 @@ export function FarmView(props: {
                       : "text-green-10"
                   } frcc`}
                 >
-                  {getTotalUnclaimedRewards() !== "0" ? (
+                  {isSignedIn && getTotalUnclaimedRewards() !== "0" ? (
                     <FarmListRewards className="ml-1 mr-1" />
                   ) : null}
-                  {getTotalUnclaimedRewards()}
+                  {isSignedIn ? (
+                    getTotalUnclaimedRewards()
+                  ) : (
+                    <span className="text-white">0</span>
+                  )}
                 </p>
               </p>
             </div>

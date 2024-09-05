@@ -121,10 +121,10 @@ function OverallLocking(props: any) {
   }
   //
   useEffect(() => {
-    if (addSuccess > 0 || poolDetail) {
+    if (addSuccess > 0 || poolDetail?.id) {
       init();
     }
-  }, [poolDetail, addSuccess]);
+  }, [JSON.stringify(poolDetail || {}), addSuccess]);
 
   useEffect(() => {
     if (shares) setLockButtonDisabled(Big(shares || 0).lte(0));

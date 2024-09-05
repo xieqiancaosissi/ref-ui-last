@@ -312,7 +312,7 @@ function ClassicPoolDetail() {
     if (poolDetail?.id) {
       setSeedId(poolDetail?.id.toString());
     }
-  }, [poolDetail]);
+  }, [JSON.stringify(poolDetail || {})]);
 
   function totalTvlPerWeekDisplay() {
     const farms = seedFarms;

@@ -319,6 +319,8 @@ export const usePool = (id: number | string) => {
         .catch((err: any) => {
           console.log(err);
         });
+    } else if (!isSignedIn && !isNaN(Number(id))) {
+      getPoolDetails(Number(id)).then(setPool);
     }
   }, [id, isSignedIn]);
 

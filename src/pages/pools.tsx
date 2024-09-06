@@ -32,7 +32,10 @@ import { useRouter } from "next/router";
 import DocTips from "@/components/pools/poolDocTips";
 import { dclHeader } from "@/components/pools/dclPool/config";
 import { getAllPoolData } from "@/services/pool";
-import { addThousandSeparator } from "@/utils/uiNumber";
+import {
+  addThousandSeparator,
+  toInternationalCurrencySystem_number,
+} from "@/utils/uiNumber";
 import Big from "big.js";
 import { get_pool_name } from "@/services/commonV3";
 
@@ -371,7 +374,10 @@ function Pools() {
           >
             <p className="text-sm">TVL</p>
             <p className="text-lg text-white mt-2 overflow-hidden text-ellipsis whitespace-nowrap">
-              ${addThousandSeparator(new Big(allTVL || "0").toFixed(2))}
+              $
+              {toInternationalCurrencySystem_number(
+                new Big(allTVL || "0").toFixed(2)
+              )}
             </p>
           </div>
 
@@ -384,7 +390,10 @@ function Pools() {
           >
             <p className="text-sm">Volume(24h)</p>
             <p className="text-lg text-white mt-2">
-              ${addThousandSeparator(new Big(allVolume24h || "0").toFixed(2))}
+              $
+              {toInternationalCurrencySystem_number(
+                new Big(allVolume24h || "0").toFixed(2)
+              )}
             </p>
           </div>
         </div>

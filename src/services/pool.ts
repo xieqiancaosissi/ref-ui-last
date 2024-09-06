@@ -201,7 +201,7 @@ export const findSamePools = async (
 ) => {
   return await fetch(
     getConfig().indexerUrl +
-      `/pool/same?token_list=${tokenList.join(",")}&fee=${createFee}`,
+      `/v3/pool/same?token_list=${tokenList.join(",")}&fee=${createFee}`,
     {
       method: "GET",
       headers: {

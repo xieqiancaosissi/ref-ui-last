@@ -135,7 +135,7 @@ export default function Charts({
           <div className="text-gray-50 text-sm">{title}</div>
           <div className="text-white text-xl">
             $
-            {addThousandSeparator(
+            {toInternationalCurrencySystem_number(
               type == "tvl"
                 ? new Big(allTVL || "0").toFixed(2)
                 : new Big(allVolume24h || "0").toFixed(2)

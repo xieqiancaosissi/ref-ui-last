@@ -1349,11 +1349,7 @@ const FarmsPage = (props: any, ref: any) => {
                           return (
                             <div
                               key={seed.seed_id + index}
-                              className={
-                                seed.hidden
-                                  ? "hidden"
-                                  : "bg-dark-290 rounded-2xl opacity-50"
-                              }
+                              className={seed.hidden ? "hidden" : ""}
                             >
                               <FarmView
                                 seed={seed}

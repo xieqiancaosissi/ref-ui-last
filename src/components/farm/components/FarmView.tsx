@@ -919,7 +919,7 @@ export function FarmView(props: {
           isEnded() || needForbidden
             ? styles.farmEnded
             : !showNewTag()
-            ? "bg-dark-290"
+            ? "bg-dark-290 "
             : "bg-farmItemBg rounded-lg"
         }
         `}

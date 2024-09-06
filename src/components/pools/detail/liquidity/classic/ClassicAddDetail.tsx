@@ -24,12 +24,14 @@ function DetailIcons({ tokens }: { tokens: TokenMetadata[] }) {
               index != 0 ? "-ml-1" : ""
             }`}
             alt=""
+            key={token.icon + index}
           />
         ) : (
           <div
             className={`w-6 h-6 rounded-full border border-gradientFrom bg-cardBg ${
               index != 0 ? "-ml-1" : ""
             }`}
+            key={"empty_" + index}
           ></div>
         );
       })}

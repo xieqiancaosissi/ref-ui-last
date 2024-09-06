@@ -735,21 +735,27 @@ function ClassicPoolDetail() {
               </div>
             </div>
             {/*  */}
-            {poolDetail && updatedMapList?.length > 0 && !isMobile && (
-              <RecentTransaction
-                activeTab={transactionActive}
-                poolId={poolId}
-                updatedMapList={updatedMapList}
-              />
-            )}
+            {poolDetail &&
+              updatedMapList?.length > 0 &&
+              updatedMapList[0]?.token_account_ids &&
+              !isMobile && (
+                <RecentTransaction
+                  activeTab={transactionActive}
+                  poolId={poolId}
+                  updatedMapList={updatedMapList}
+                />
+              )}
 
-            {poolDetail && updatedMapList?.length > 0 && isMobile && (
-              <RecentTransactionMobile
-                activeTab={transactionActive}
-                poolId={poolId}
-                updatedMapList={updatedMapList}
-              />
-            )}
+            {poolDetail &&
+              updatedMapList?.length > 0 &&
+              updatedMapList[0]?.token_account_ids &&
+              isMobile && (
+                <RecentTransactionMobile
+                  activeTab={transactionActive}
+                  poolId={poolId}
+                  updatedMapList={updatedMapList}
+                />
+              )}
           </div>
         </div>
 

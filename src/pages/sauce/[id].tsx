@@ -314,34 +314,36 @@ function StablePoolDetail() {
       </div>
 
       {/* add */}
-      {updatedMapList && poolDetail && (
-        <>
-          <StableAdd
-            isOpen={showAdd}
-            onRequestClose={hideAdd}
-            poolDetail={poolDetail}
-            pureIdList={pureIdList}
-            updatedMapList={updatedMapList}
-            isMobile={isMobile}
-            tokenPriceList={tokenPriceList}
-            setAddSuccess={setAddSuccess}
-            addSuccess={addSuccess}
-          />
+      {updatedMapList?.length > 0 &&
+        updatedMapList[0]?.token_account_ids &&
+        poolDetail && (
+          <>
+            <StableAdd
+              isOpen={showAdd}
+              onRequestClose={hideAdd}
+              poolDetail={poolDetail}
+              pureIdList={pureIdList}
+              updatedMapList={updatedMapList}
+              isMobile={isMobile}
+              tokenPriceList={tokenPriceList}
+              setAddSuccess={setAddSuccess}
+              addSuccess={addSuccess}
+            />
 
-          <StableRemove
-            isOpen={showRemove}
-            onRequestClose={hideRemove}
-            poolDetail={poolDetail}
-            pureIdList={pureIdList}
-            updatedMapList={updatedMapList}
-            isMobile={isMobile}
-            setAddSuccess={setAddSuccess}
-            shares={addSuccess > 0 ? newShares : shares}
-            pool={addSuccess > 0 ? newPool : pool}
-            addSuccess={addSuccess}
-          />
-        </>
-      )}
+            <StableRemove
+              isOpen={showRemove}
+              onRequestClose={hideRemove}
+              poolDetail={poolDetail}
+              pureIdList={pureIdList}
+              updatedMapList={updatedMapList}
+              isMobile={isMobile}
+              setAddSuccess={setAddSuccess}
+              shares={addSuccess > 0 ? newShares : shares}
+              pool={addSuccess > 0 ? newPool : pool}
+              addSuccess={addSuccess}
+            />
+          </>
+        )}
     </div>
   );
 }

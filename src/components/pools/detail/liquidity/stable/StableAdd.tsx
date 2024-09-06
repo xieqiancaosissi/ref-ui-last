@@ -133,8 +133,8 @@ function StableAdd(props: any) {
     setInputValList(array);
     const fetchBalances = async () => {
       try {
-        const promises = updatedMapList[0].token_account_ids.map((token: any) =>
-          returnBalance(token)
+        const promises = updatedMapList[0].token_account_ids?.map(
+          (token: any) => returnBalance(token)
         );
         const resolvedBalances = await Promise.all(promises);
         setBalances(resolvedBalances);

@@ -136,11 +136,11 @@ function RecentTransactionMobile(props: any) {
 
   const renderSwapTransactions = swapTransaction.map((tx, index) => {
     if (index >= 5 && !showItem) return false;
-    const swapIn = updatedMapList[0].token_account_ids.find(
+    const swapIn = updatedMapList[0].token_account_ids?.find(
       (t: any) => t.id === tx.token_in
     );
 
-    const swapOut = updatedMapList[0].token_account_ids.find(
+    const swapOut = updatedMapList[0].token_account_ids?.find(
       (t: any) => t.id === tx.token_out
     );
 

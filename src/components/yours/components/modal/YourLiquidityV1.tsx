@@ -544,7 +544,7 @@ function YourClassicLiquidityLine(props: any) {
     getSharesInPool(+poolId)
       .then(setShares)
       .catch(() => setShares);
-  }, [addSuccess]);
+  }, []);
 
   const farmStakeTotal = useFarmStake({ poolId, stakeList: finalStakeList });
   const LpLocked = useLpLocker(`:${poolId}`);

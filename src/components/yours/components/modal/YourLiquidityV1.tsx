@@ -851,7 +851,10 @@ function YourClassicLiquidityLinePage(props: any) {
     addSuccess,
     setAddSuccess,
   } = useContext(LiquidityContextData)!;
-  const lpDecimal = isStablePool(pool.id) ? getStablePoolDecimal(pool.id) : 24;
+  const lpDecimal =
+    pool?.id && isStablePool(pool.id.toString())
+      ? getStablePoolDecimal(pool.id.toString())
+      : 24;
   const supportFarmV1 = getFarmsCount(pool.id.toString(), v1Farm);
   const supportFarmV2 = getFarmsCount(pool.id.toString(), v2Farm);
   const endedFarmV1 = getEndedFarmsCount(pool.id.toString(), v1Farm);

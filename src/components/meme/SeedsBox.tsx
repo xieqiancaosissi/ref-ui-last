@@ -1,5 +1,6 @@
 import React, { useState, useContext, useEffect, useMemo, useRef } from "react";
 import Big from "big.js";
+import { useRouter } from "next/router";
 import MarketSeedsBox from "./MarketSeedsBox";
 import MySeedsBox from "./MySeedsBox";
 import CallBackModal from "./CallBackModal";
@@ -22,6 +23,7 @@ import { useAccountStore } from "@/stores/account";
 import { checkTransaction } from "@/utils/contract";
 import { useScrollToTopOnFirstPage } from "@/services/meme";
 import { Seed } from "@/services/farm";
+import { getURLInfoSubFirst } from "@/utils/transactionsPopup";
 
 export enum TRANSACTION_WALLET_TYPE {
   NEAR_WALLET = "transactionHashes",
@@ -53,49 +55,8 @@ const SeedsBox = () => {
   const meme_winner_tokens = memeDataConfig.meme_winner_tokens;
   const [isUserRanking, setUserRanking] = useState(false);
   const [isShowAirdropModal, setShowAirdropModal] = useState<boolean>(false);
-  const [urlInfo, setUrlInfo] = useState({
-    txHash: "",
-    pathname: "",
-    errorType: "",
-    signInErrorType: "",
-    errorCode: "",
-    txHashes: [] as string[],
-  });
-  useEffect(() => {
-    const getURLInfo = () => {
-      const search = window.location.search;
-      const pathname = window.location.pathname;
-      const errorType = new URLSearchParams(search).get("errorType") || "";
-      const errorCode = new URLSearchParams(search).get("errorCode") || "";
-      const signInErrorType =
-        new URLSearchParams(search).get("signInErrorType") || "";
-      const txHashes =
-        (
-          new URLSearchParams(search).get(
-            TRANSACTION_WALLET_TYPE.NEAR_WALLET
-          ) ||
-          new URLSearchParams(search).get(
-            TRANSACTION_WALLET_TYPE.SENDER_WALLET
-          ) ||
-          new URLSearchParams(search).get(
-            TRANSACTION_WALLET_TYPE.WalletSelector
-          )
-        )?.split(",") || [];
-
-      return {
-        txHash: txHashes.length > 0 ? txHashes[0] : "",
-        pathname,
-        errorType,
-        signInErrorType,
-        errorCode,
-        txHashes,
-      };
-    };
-
-    setUrlInfo(getURLInfo());
-  }, []);
-
-  const { txHash } = urlInfo;
+  const { txHash } = getURLInfoSubFirst();
+  const router = useRouter();
   useEffect(() => {
     if (txHash && isSignedIn) {
       checkTransaction(txHash).then((res: any) => {
@@ -294,7 +255,7 @@ const SeedsBox = () => {
           isOpen={isTxHashOpen}
           onRequestClose={() => {
             setIsTxHashOpen(false);
-            // history.replace("/meme");
+            router.replace("/meme");
           }}
           txParams={txParams}
         />

@@ -1,5 +1,6 @@
 import React, { useContext, useMemo } from "react";
 import Big from "big.js";
+import { useRouter } from "next/router";
 import { isMobile } from "../../utils/device";
 import { ModalCloseIcon, ArrowRightIcon } from "./icons";
 import Modal from "react-modal";
@@ -25,6 +26,7 @@ function CallBackModal(props: any) {
   }: { isOpen: boolean; onRequestClose: any; txParams: ITxParams } = props;
   const cardWidth = isMobile() ? "95vw" : "28vw";
   const cardHeight = isMobile() ? "90vh" : "80vh";
+  const router = useRouter();
   const [seed, amount, metadata, isXrefAction] = useMemo(() => {
     const { action, receiver_id, params } = txParams;
     const { XREF_MEME_FARM_CONTRACT_IDS } = getMemeContractConfig();
@@ -85,7 +87,7 @@ function CallBackModal(props: any) {
 
   if (!seed && !isXrefAction) return null;
   function goNearblocks() {
-    // history.replace("/meme");
+    router.replace("/meme");
     onRequestClose();
     openUrl(`${getConfig().explorerUrl}/txns/${txParams.txHash}`);
   }
@@ -95,8 +97,6 @@ function CallBackModal(props: any) {
       onRequestClose={onRequestClose}
       style={{
         overlay: {
-          // backdropFilter: 'blur(15px)',
-          // WebkitBackdropFilter: 'blur(15px)',
           overflow: "auto",
         },
         content: {

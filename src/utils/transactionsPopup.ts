@@ -1,3 +1,4 @@
+import { getSelectedWalletId } from "@/utils/wallet";
 export function addQueryParams(
   baseUrl: string,
   queryParams: {
@@ -54,6 +55,8 @@ export const walletsRejectError = [
 
 export const getURLInfo = () => {
   if (typeof window !== "object") return {};
+  const selectedWalletId = getSelectedWalletId();
+  if (!selectedWalletId) return {};
   const search = window.location.search;
 
   const pathname = window.location.pathname;
@@ -63,16 +66,56 @@ export const getURLInfo = () => {
   const errorCode = new URLSearchParams(search).get("errorCode");
 
   const signInErrorType = new URLSearchParams(search).get("signInErrorType");
-
-  const txHashes = (
+  let txHashes = [];
+  const txHashesStr =
     new URLSearchParams(search).get(TRANSACTION_WALLET_TYPE.NEAR_WALLET) ||
     new URLSearchParams(search).get(TRANSACTION_WALLET_TYPE.SENDER_WALLET) ||
-    new URLSearchParams(search).get(TRANSACTION_WALLET_TYPE.WalletSelector)
-  )?.split(",");
-
+    new URLSearchParams(search).get(TRANSACTION_WALLET_TYPE.WalletSelector);
+  if (selectedWalletId == "bitte-wallet") {
+    txHashes = decodeURIComponent(decodeURIComponent(txHashesStr || "")).split(
+      ","
+    );
+  } else {
+    txHashes = (txHashesStr || "").split(",");
+  }
   return {
     txHash:
       txHashes && txHashes.length > 0 ? txHashes[txHashes.length - 1] : "",
+    pathname,
+    errorType,
+    signInErrorType,
+    errorCode,
+    txHashes,
+  };
+};
+export const getURLInfoSubFirst = () => {
+  if (typeof window !== "object") return {};
+  const selectedWalletId = getSelectedWalletId();
+  if (!selectedWalletId) return {};
+  const search = window.location.search;
+
+  const pathname = window.location.pathname;
+
+  const errorType = new URLSearchParams(search).get("errorType");
+
+  const errorCode = new URLSearchParams(search).get("errorCode");
+
+  const signInErrorType = new URLSearchParams(search).get("signInErrorType");
+  let txHashes = [];
+  const txHashesStr =
+    new URLSearchParams(search).get(TRANSACTION_WALLET_TYPE.NEAR_WALLET) ||
+    new URLSearchParams(search).get(TRANSACTION_WALLET_TYPE.SENDER_WALLET) ||
+    new URLSearchParams(search).get(TRANSACTION_WALLET_TYPE.WalletSelector);
+  if (selectedWalletId == "bitte-wallet") {
+    txHashes = decodeURIComponent(decodeURIComponent(txHashesStr || "")).split(
+      ","
+    );
+  } else {
+    txHashes = (txHashesStr || "").split(",");
+  }
+
+  return {
+    txHash: txHashes.length > 0 ? txHashes[0] : "",
     pathname,
     errorType,
     signInErrorType,

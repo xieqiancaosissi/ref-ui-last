@@ -1830,7 +1830,7 @@ export function get_liquidity_value({
 }
 
 export function useRemoveLiquidityUrlHandle() {
-  const history = useRouter();
+  const router = useRouter();
   const accountStore = useAccountStore();
   const isSignedIn = accountStore.isSignedIn;
   const { txHash } = getURLInfo();
@@ -1856,12 +1856,12 @@ export function useRemoveLiquidityUrlHandle() {
           sessionStorage.removeItem("REMOVE_POOL_ID");
           if (pool_id) {
             const pool_name = get_pool_name(pool_id);
-            history.replace(`/liquidity/${pool_name}`);
+            router.replace(`/liquidity/${pool_name}`);
           } else {
-            history.replace("/yours");
+            router.replace("/yours");
           }
         } else {
-          history.replace(`${location.pathname}`);
+          router.replace(`${location.pathname}`);
         }
       });
     }

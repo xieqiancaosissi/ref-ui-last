@@ -273,7 +273,7 @@ const Staking = () => {
           isOpen={isTxHashOpen}
           onRequestClose={() => {
             setIsTxHashOpen(false);
-            // history.replace("/meme");
+            router.replace("/meme");
           }}
           txParams={txParams}
         />

@@ -768,7 +768,7 @@ export const useRemoveLiquidity = ({
   shares: string;
   slippageTolerance: number;
 }) => {
-  const minimumAmounts = Object.entries(pool.supplies).reduce<{
+  const minimumAmounts = Object.entries(pool?.supplies).reduce<{
     [tokenId: string]: string;
   }>((acc, [tokenId, totalSupply]) => {
     acc[tokenId] = toPrecision(

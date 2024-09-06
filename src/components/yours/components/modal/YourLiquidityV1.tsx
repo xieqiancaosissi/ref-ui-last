@@ -1404,59 +1404,65 @@ function YourClassicLiquidityLinePage(props: any) {
         </div>
       )}
 
-      {updatedMapList[0]?.token_account_ids && poolDetail && usePoolFullData && (
-        <>
-          <ClassicAdd
-            isOpen={showAdd}
-            onRequestClose={hideAdd}
-            poolDetail={poolDetail}
-            pureIdList={pureIdList}
-            updatedMapList={updatedMapList}
-            addSuccess={addSuccess}
-            setAddSuccess={setAddSuccess}
-            fromYours
-          />
-
-          <ClassicRemove
-            isOpen={showRemove}
-            onRequestClose={hideRemove}
-            poolDetail={poolDetail}
-            pureIdList={pureIdList}
-            updatedMapList={updatedMapList}
-            addSuccess={addSuccess}
-            setAddSuccess={setAddSuccess}
-            fromYours
-          />
-
+      {updatedMapList[0]?.token_account_ids &&
+        poolDetail &&
+        usePoolFullData?.id && (
           <>
-            <StableAdd
-              isOpen={showAddStable}
-              onRequestClose={hideAddStable}
+            <ClassicAdd
+              isOpen={showAdd}
+              onRequestClose={hideAdd}
               poolDetail={poolDetail}
               pureIdList={pureIdList}
               updatedMapList={updatedMapList}
-              isMobile={isMobile}
               addSuccess={addSuccess}
               setAddSuccess={setAddSuccess}
               fromYours
+              pool={usePoolFullData}
+              shares={shares}
             />
 
-            <StableRemove
-              isOpen={showRemoveStable}
-              onRequestClose={hideRemoveStable}
+            <ClassicRemove
+              isOpen={showRemove}
+              onRequestClose={hideRemove}
               poolDetail={poolDetail}
               pureIdList={pureIdList}
               updatedMapList={updatedMapList}
-              isMobile={isMobile}
-              pool={usePoolFullData}
               addSuccess={addSuccess}
-              shares={shares}
               setAddSuccess={setAddSuccess}
               fromYours
+              pool={usePoolFullData}
+              shares={shares}
             />
+
+            <>
+              <StableAdd
+                isOpen={showAddStable}
+                onRequestClose={hideAddStable}
+                poolDetail={poolDetail}
+                pureIdList={pureIdList}
+                updatedMapList={updatedMapList}
+                isMobile={isMobile}
+                addSuccess={addSuccess}
+                setAddSuccess={setAddSuccess}
+                fromYours
+              />
+
+              <StableRemove
+                isOpen={showRemoveStable}
+                onRequestClose={hideRemoveStable}
+                poolDetail={poolDetail}
+                pureIdList={pureIdList}
+                updatedMapList={updatedMapList}
+                isMobile={isMobile}
+                pool={usePoolFullData}
+                addSuccess={addSuccess}
+                shares={shares}
+                setAddSuccess={setAddSuccess}
+                fromYours
+              />
+            </>
           </>
-        </>
-      )}
+        )}
     </div>
   );
 }

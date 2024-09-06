@@ -15,6 +15,7 @@ import { getURLInfo } from "@/utils/transactionsPopup";
 import { getAccountId } from "@/utils/wallet";
 import { useAccountStore } from "@/stores/account";
 import { REF_FI_CONTRACT_ID } from "@/utils/contract";
+import { useClassicUrlHandle } from "@/services/commonV3";
 
 export default function CreatePoolModal({
   isOpen,
@@ -38,7 +39,7 @@ export default function CreatePoolModal({
     active: false,
     tip: "",
   });
-
+  useClassicUrlHandle();
   const handleFee = (e: any) => {
     setCreateFee(e * 100);
     if (!e) {

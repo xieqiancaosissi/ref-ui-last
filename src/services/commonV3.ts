@@ -1489,6 +1489,32 @@ export function useAddLiquidityUrlHandle(from?: string) {
   }, [txHash, isSignedIn]);
 }
 
+export function useClassicUrlHandle(from?: string) {
+  const router = useRouter();
+  const accountStore = useAccountStore();
+  const isSignedIn = accountStore.isSignedIn;
+  const { txHash } = getURLInfo();
+  useEffect(() => {
+    if (txHash && isSignedIn) {
+      checkTransaction(txHash).then((res: any) => {
+        const { transaction, status, receipts, receipts_outcome } = res;
+        const successValueNormal: string | undefined = status?.SuccessValue;
+        const successValueNeth: string | undefined =
+          receipts_outcome?.[1]?.outcome?.status?.SuccessValue;
+        const isNeth =
+          transaction?.actions?.[0]?.FunctionCall?.method_name === "execute";
+        const successValue = isNeth ? successValueNeth : successValueNormal;
+        if (successValue) {
+          const buff = Buffer.from(successValue, "base64");
+          const v = buff.toString("ascii");
+          router.push(`/pools/${v}`);
+          // returnValue = v.substring(1, v.length - 1);
+        }
+      });
+    }
+  }, [txHash, isSignedIn]);
+}
+
 /**
  * caculate bin point by price
  * @param pointDelta

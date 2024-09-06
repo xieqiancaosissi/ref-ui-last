@@ -122,7 +122,7 @@ const CheckInModal = (props: any) => {
   function getNftTip() {
     return `
     <div class="flex flex-col gap-2 items-start w-80 xsm:w-72 text-left">
-      <div class="gotham_bold">MEME Honorary NFT Overview</div>
+      <div class="paceGrotesk-Bold">MEME Honorary NFT Overview</div>
       <div class="flex items-start gap-1.5">
         <span class="relative top-1.5 w-1 h-1 rounded-full bg-white flex-shrink-0"></span>
         <span>Airdropped MEME Honorary NFT 4 to OG users via a snapshot.</span>
@@ -153,7 +153,7 @@ const CheckInModal = (props: any) => {
   function getLevelTip() {
     return `
     <div class="flex flex-col gap-2 items-start w-80 xsm:w-72">
-      <div class="gotham_bold">Meme Level</div>
+      <div class="paceGrotesk-Bold">Meme Level</div>
       <p>Level 0: Stake Meme Value < $1000</p>
       <p>Level 1 : Stake Meme Value < $5000</p>
       <p>Level 2 : Stake Meme Value < $100000</p>
@@ -228,7 +228,9 @@ const CheckInModal = (props: any) => {
         style={{ width: w }}
       >
         <div className="flex items-center justify-between">
-          <span className="text-white text-lg gotham_bold">Daily Check-In</span>
+          <span className="text-white text-lg paceGrotesk-Bold">
+            Daily Check-In
+          </span>
           <ModalCloseIcon className="cursor-pointer" onClick={onRequestClose} />
         </div>
         <div
@@ -247,7 +249,9 @@ const CheckInModal = (props: any) => {
             </div>
             <div className="flex flex-col gap-2">
               <div className="flex items-center gap-1.5">
-                <span className="text-base text-white gotham_bold">NFT</span>
+                <span className="text-base text-white paceGrotesk-Bold">
+                  NFT
+                </span>
                 <div
                   className="text-white text-right"
                   data-class="reactTip"
@@ -283,7 +287,7 @@ const CheckInModal = (props: any) => {
             {level[accountStakeLevel].icon}
             <div className="flex flex-col gap-2">
               <div className="flex items-center gap-1.5">
-                <span className="text-base text-white gotham_bold">
+                <span className="text-base text-white paceGrotesk-Bold">
                   Lv.{accountStakeLevel}
                 </span>
                 <div

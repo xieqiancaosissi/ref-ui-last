@@ -91,7 +91,7 @@ export function SuccessIcon() {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <circle cx="15" cy="15" r="15" fill="#32CA82" />
+      <circle cx="15" cy="15" r="15" fill="#9EFF00" />
       <path
         fillRule="evenodd"
         clipRule="evenodd"

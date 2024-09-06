@@ -39,7 +39,7 @@ const NFTTaskModal = (props: any) => {
         style={{ width: w }}
       >
         <div className="flex items-center justify-between">
-          <span className="text-white text-base gotham_bold">
+          <span className="text-white text-base paceGrotesk-Bold">
             MEME Honorary NFT5
           </span>
           <ModalCloseIcon className="cursor-pointer" onClick={onRequestClose} />

@@ -17,7 +17,7 @@ export default function Guider({ clearGuilder }: any) {
           className="absolute text-base text-black text-left"
           style={{ right: "0", top: "65px", width: "320px" }}
         >
-          {/* <span className="gotham_bold">Approved Key</span> is here！ You can
+          {/* <span className="paceGrotesk-Bold">Approved Key</span> is here！ You can
           clear all key records here. */}
         </div>
         <Step />

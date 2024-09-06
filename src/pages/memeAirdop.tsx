@@ -74,7 +74,10 @@ export default function MemeComingSoon() {
                   style={{ width: "2.5rem", height: "2.5rem" }}
                 />
               ) : null}
-              <span className="gotham_bold text-xl ml-3"> {item.title} </span>
+              <span className="paceGrotesk-Bold text-xl ml-3">
+                {" "}
+                {item.title}{" "}
+              </span>
             </div>
 
             {/* introduce */}
@@ -85,7 +88,7 @@ export default function MemeComingSoon() {
             {/* amount */}
             <div>
               <h5 className="text-sm">Amount</h5>
-              <p className="text-xl gotham_bold text-primaryGreen">
+              <p className="text-xl paceGrotesk-Bold text-primaryGreen">
                 {item.amount}
               </p>
             </div>
@@ -93,7 +96,7 @@ export default function MemeComingSoon() {
             {/* air drop */}
             <div className="my-3">
               <h5 className="text-sm">Airdrop time</h5>
-              <p className="text-xl gotham_bold text-primaryGreen">
+              <p className="text-xl paceGrotesk-Bold text-primaryGreen">
                 {item.airdropTime}
               </p>
             </div>

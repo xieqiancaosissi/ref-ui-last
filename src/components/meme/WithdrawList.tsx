@@ -124,7 +124,7 @@ const WithdrawList = () => {
   return (
     <div className="lg:bg-dark-10 lg:border lg:border-dark-100 lg:px-5 rounded-2xl mt-8">
       {is_mobile ? (
-        <div className="flex justify-center text-white text-xl gotham_bold mb-6">
+        <div className="flex justify-center text-white text-xl paceGrotesk-Bold mb-6">
           Withdraw
         </div>
       ) : null}
@@ -190,7 +190,7 @@ const WithdrawList = () => {
                   ) : null}
                 </div>
                 <div className="flex items-center gap-2.5 text-white text-base xsm:hidden">
-                  <span className="gotham_bold">
+                  <span className="paceGrotesk-Bold">
                     {toInternationalCurrencySystem_number(
                       toReadableNumber(token_meta_data?.decimals || 0, amount)
                     )}{" "}
@@ -199,7 +199,7 @@ const WithdrawList = () => {
                   is available to be withdraw {remainingTimeStr}
                 </div>
                 <div className=" text-white text-base lg:hidden">
-                  <span className="gotham_bold">
+                  <span className="paceGrotesk-Bold">
                     {toInternationalCurrencySystem_number(
                       toReadableNumber(token_meta_data?.decimals || 0, amount)
                     )}{" "}

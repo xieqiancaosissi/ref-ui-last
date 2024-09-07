@@ -144,7 +144,7 @@ function MemeContextProvider({ children }: any) {
     const methodNameNormal = transaction?.actions[0]?.FunctionCall?.method_name;
     const methodName = isNeth ? methodNameNeth : methodNameNormal;
     if (methodName == "check_in") {
-      const logs = receipts_outcome[0].outcome.logs;
+      const logs = receipts_outcome[isNeth ? 1 : 0].outcome.logs;
       const parsedLogs = logs.map((log) => {
         const logObj = JSON.parse(log.match(/EVENT_JSON:(.*)/)?.[1] || "{}");
         return logObj.data || [];

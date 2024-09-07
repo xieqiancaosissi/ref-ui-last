@@ -18,6 +18,7 @@ const LedgerTransactionModal = () => {
             background: "#1B242C",
             minWidth: "280px",
             borderRadius: "8px",
+            zIndex: "1000",
           }}
         >
           <div

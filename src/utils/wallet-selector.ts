@@ -69,6 +69,7 @@ export async function getWalletSelector({
       localStorage.removeItem("endPoint");
     }
   } catch (error) {}
+  console.log('0000000000000-wallet loading start');
   const selector = await setupWalletSelector({
     network: {
       networkId: getConfig().networkId as NetworkId,
@@ -128,6 +129,7 @@ export async function getWalletSelector({
       }),
     ],
   });
+  console.log('2222222222222-wallet loading end');
   const modal = setupModal(selector, {
     contractId: getOrderlyConfig().ORDERLY_ASSET_MANAGER,
   });

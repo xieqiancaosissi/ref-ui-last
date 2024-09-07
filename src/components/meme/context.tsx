@@ -99,16 +99,10 @@ function MemeContextProvider({ children }: any) {
   const [earnRewards, setEarnRewards] = useState<IReward[]>([]);
   const accountStore = useAccountStore();
   const isSignedIn = accountStore.getIsSignedIn();
-  const accountId = accountStore.getAccountId();
   const { txHash } = getURLInfo();
   useEffect(() => {
     init();
   }, []);
-  useEffect(() => {
-    if (accountId) {
-      checkIn(accountId);
-    }
-  }, [accountId]);
   useEffect(() => {
     if (txHash && isSignedIn) {
       txHandle(txHash);

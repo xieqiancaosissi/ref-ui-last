@@ -16,7 +16,7 @@ importers:
         version: 1.13.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)(vercel@37.3.0(@swc/core@1.7.21(@swc/helpers@0.5.12)))(wrangler@3.74.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))
       '@keypom/selector':
         specifier: ^1.2.3
-        version: 1.2.3(@near-js/accounts@1.2.2)(@near-js/crypto@1.3.0)(@near-js/keystores-browser@0.1.0)(@near-js/keystores-node@0.0.13)(@near-js/keystores@0.1.0)(@near-js/transactions@1.2.3)(@near-js/types@0.2.1)(@near-js/utils@0.3.0)(@near-js/wallet-account@1.2.3)(@near-wallet-selector/core@8.9.12)(@types/react@18.3.4)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        version: 1.2.3(@near-js/accounts@1.2.2)(@near-js/crypto@1.3.0)(@near-js/keystores-browser@0.1.0)(@near-js/keystores-node@0.0.13)(@near-js/keystores@0.1.0)(@near-js/transactions@1.2.3)(@near-js/types@0.2.1)(@near-js/utils@0.3.0)(@near-js/wallet-account@1.2.3)(@near-wallet-selector/core@8.9.10(near-api-js@3.0.4))(@types/react@18.3.4)(near-api-js@3.0.4)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@near-eth/aurora-erc20':
         specifier: ^2.8.0
         version: 2.8.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
@@ -42,8 +42,8 @@ importers:
         specifier: ^8.9.12
         version: 8.9.12
       '@near-wallet-selector/core':
-        specifier: ^8.9.7
-        version: 8.9.12
+        specifier: 8.9.10
+        version: 8.9.10(near-api-js@3.0.4)
       '@near-wallet-selector/here-wallet':
         specifier: ^8.9.7
         version: 8.9.12(bn.js@5.2.1)(borsh@1.0.0)
@@ -6173,12 +6173,12 @@ packages:
   eth-lib@0.2.8:
     resolution: {integrity: sha512-ArJ7x1WcWOlSpzdoTBX8vkwlkSQ85CjjifSZtV4co64vWxSV8geWfPI9x4SVYu3DSxnX4yWFVTtGL+j9DUFLNw==}
 
-  eth-object@git+https://git@github.com:aurora-is-near/eth-object.git#378b8dbf44a71f7049666cea5a16ab88d45aed06:
-    resolution: {commit: 378b8dbf44a71f7049666cea5a16ab88d45aed06, repo: git@github.com:aurora-is-near/eth-object.git, type: git}
+  eth-object@https://codeload.github.com/aurora-is-near/eth-object/tar.gz/378b8dbf44a71f7049666cea5a16ab88d45aed06:
+    resolution: {tarball: https://codeload.github.com/aurora-is-near/eth-object/tar.gz/378b8dbf44a71f7049666cea5a16ab88d45aed06}
     version: 1.0.3
 
-  eth-util-lite@git+https://git@github.com:near/eth-util-lite.git#427b7634a123d171432f3b38c6542913a3897ac7:
-    resolution: {commit: 427b7634a123d171432f3b38c6542913a3897ac7, repo: git@github.com:near/eth-util-lite.git, type: git}
+  eth-util-lite@https://codeload.github.com/near/eth-util-lite/tar.gz/427b7634a123d171432f3b38c6542913a3897ac7:
+    resolution: {tarball: https://codeload.github.com/near/eth-util-lite/tar.gz/427b7634a123d171432f3b38c6542913a3897ac7}
     version: 1.0.1
 
   ethereum-bloom-filters@1.2.0:
@@ -11639,7 +11639,7 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.0
 
-  '@keypom/core@1.0.2(@near-js/accounts@1.2.2)(@near-js/crypto@1.3.0)(@near-js/keystores-browser@0.1.0)(@near-js/keystores@0.1.0)(@near-js/transactions@1.2.3)(@near-js/types@0.2.1)(@near-js/utils@0.3.0)(@near-js/wallet-account@1.2.3)':
+  '@keypom/core@1.0.2(@near-js/accounts@1.2.2)(@near-js/crypto@1.3.0)(@near-js/keystores-browser@0.1.0)(@near-js/keystores@0.1.0)(@near-js/transactions@1.2.3)(@near-js/types@0.2.1)(@near-js/utils@0.3.0)(@near-js/wallet-account@1.2.3)(near-api-js@3.0.4)':
     dependencies:
       '@near-js/accounts': 1.2.2
       '@near-js/crypto': 1.3.0
@@ -11649,17 +11649,17 @@ snapshots:
       '@near-js/types': 0.2.1
       '@near-js/utils': 0.3.0
       '@near-js/wallet-account': 1.2.3
-      '@near-wallet-selector/core': 8.9.12
+      '@near-wallet-selector/core': 8.9.10(near-api-js@3.0.4)
       bn.js: 5.2.1
       borsh: 0.7.0
       near-seed-phrase: 0.2.1
       util: 0.12.5
     transitivePeerDependencies:
-      - encoding
+      - near-api-js
 
-  '@keypom/selector@1.2.3(@near-js/accounts@1.2.2)(@near-js/crypto@1.3.0)(@near-js/keystores-browser@0.1.0)(@near-js/keystores-node@0.0.13)(@near-js/keystores@0.1.0)(@near-js/transactions@1.2.3)(@near-js/types@0.2.1)(@near-js/utils@0.3.0)(@near-js/wallet-account@1.2.3)(@near-wallet-selector/core@8.9.12)(@types/react@18.3.4)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@keypom/selector@1.2.3(@near-js/accounts@1.2.2)(@near-js/crypto@1.3.0)(@near-js/keystores-browser@0.1.0)(@near-js/keystores-node@0.0.13)(@near-js/keystores@0.1.0)(@near-js/transactions@1.2.3)(@near-js/types@0.2.1)(@near-js/utils@0.3.0)(@near-js/wallet-account@1.2.3)(@near-wallet-selector/core@8.9.10(near-api-js@3.0.4))(@types/react@18.3.4)(near-api-js@3.0.4)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
-      '@keypom/core': 1.0.2(@near-js/accounts@1.2.2)(@near-js/crypto@1.3.0)(@near-js/keystores-browser@0.1.0)(@near-js/keystores@0.1.0)(@near-js/transactions@1.2.3)(@near-js/types@0.2.1)(@near-js/utils@0.3.0)(@near-js/wallet-account@1.2.3)
+      '@keypom/core': 1.0.2(@near-js/accounts@1.2.2)(@near-js/crypto@1.3.0)(@near-js/keystores-browser@0.1.0)(@near-js/keystores@0.1.0)(@near-js/transactions@1.2.3)(@near-js/types@0.2.1)(@near-js/utils@0.3.0)(@near-js/wallet-account@1.2.3)(near-api-js@3.0.4)
       '@near-js/accounts': 1.2.2
       '@near-js/crypto': 1.3.0
       '@near-js/keystores-browser': 0.1.0
@@ -11668,7 +11668,7 @@ snapshots:
       '@near-js/types': 0.2.1
       '@near-js/utils': 0.3.0
       '@near-js/wallet-account': 1.2.3
-      '@near-wallet-selector/core': 8.9.12
+      '@near-wallet-selector/core': 8.9.10(near-api-js@3.0.4)
       '@types/react': 18.3.4
       bn.js: 5.2.1
       borsh: 0.7.0
@@ -11676,7 +11676,7 @@ snapshots:
       react-dom: 18.3.1(react@18.3.1)
     transitivePeerDependencies:
       - '@near-js/keystores'
-      - encoding
+      - near-api-js
 
   '@ledgerhq/connect-kit@1.1.12(rollup@3.29.4)':
     dependencies:
@@ -11962,7 +11962,7 @@ snapshots:
     dependencies:
       bn.js: 5.2.1
       bs58: 4.0.1
-      eth-object: git+https://git@github.com:aurora-is-near/eth-object.git#378b8dbf44a71f7049666cea5a16ab88d45aed06(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      eth-object: https://codeload.github.com/aurora-is-near/eth-object/tar.gz/378b8dbf44a71f7049666cea5a16ab88d45aed06(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       ethereumjs-util: 7.1.5
       ethers: 5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       lite-merkle-patricia-tree: 1.0.1
@@ -13581,15 +13581,13 @@ snapshots:
     transitivePeerDependencies:
       - '@parcel/core'
 
-  '@parcel/cache@2.12.0(@parcel/core@2.12.0(@swc/helpers@0.5.12))(@swc/helpers@0.5.12)':
+  '@parcel/cache@2.12.0(@parcel/core@2.12.0(@swc/helpers@0.5.12))':
     dependencies:
       '@parcel/core': 2.12.0(@swc/helpers@0.5.12)
       '@parcel/fs': 2.12.0(@parcel/core@2.12.0(@swc/helpers@0.5.12))(@swc/helpers@0.5.12)
       '@parcel/logger': 2.12.0
       '@parcel/utils': 2.12.0
       lmdb: 2.8.5
-    transitivePeerDependencies:
-      - '@swc/helpers'
 
   '@parcel/codeframe@2.12.0':
     dependencies:
@@ -13649,7 +13647,7 @@ snapshots:
   '@parcel/core@2.12.0(@swc/helpers@0.5.12)':
     dependencies:
       '@mischnic/json-sourcemap': 0.1.1
-      '@parcel/cache': 2.12.0(@parcel/core@2.12.0(@swc/helpers@0.5.12))(@swc/helpers@0.5.12)
+      '@parcel/cache': 2.12.0(@parcel/core@2.12.0(@swc/helpers@0.5.12))
       '@parcel/diagnostic': 2.12.0
       '@parcel/events': 2.12.0
       '@parcel/fs': 2.12.0(@parcel/core@2.12.0(@swc/helpers@0.5.12))(@swc/helpers@0.5.12)
@@ -14064,7 +14062,7 @@ snapshots:
 
   '@parcel/types@2.12.0(@parcel/core@2.12.0(@swc/helpers@0.5.12))(@swc/helpers@0.5.12)':
     dependencies:
-      '@parcel/cache': 2.12.0(@parcel/core@2.12.0(@swc/helpers@0.5.12))(@swc/helpers@0.5.12)
+      '@parcel/cache': 2.12.0(@parcel/core@2.12.0(@swc/helpers@0.5.12))
       '@parcel/diagnostic': 2.12.0
       '@parcel/fs': 2.12.0(@parcel/core@2.12.0(@swc/helpers@0.5.12))(@swc/helpers@0.5.12)
       '@parcel/package-manager': 2.12.0(@parcel/core@2.12.0(@swc/helpers@0.5.12))(@swc/helpers@0.5.12)
@@ -19107,9 +19105,9 @@ snapshots:
       elliptic: 6.5.7
       xhr-request-promise: 0.1.3
 
-  eth-object@git+https://git@github.com:aurora-is-near/eth-object.git#378b8dbf44a71f7049666cea5a16ab88d45aed06(bufferutil@4.0.8)(utf-8-validate@5.0.10):
+  eth-object@https://codeload.github.com/aurora-is-near/eth-object/tar.gz/378b8dbf44a71f7049666cea5a16ab88d45aed06(bufferutil@4.0.8)(utf-8-validate@5.0.10):
     dependencies:
-      eth-util-lite: git+https://git@github.com:near/eth-util-lite.git#427b7634a123d171432f3b38c6542913a3897ac7
+      eth-util-lite: https://codeload.github.com/near/eth-util-lite/tar.gz/427b7634a123d171432f3b38c6542913a3897ac7
       ethereumjs-util: 7.1.5
       web3: 1.10.4(bufferutil@4.0.8)(utf-8-validate@5.0.10)
     transitivePeerDependencies:
@@ -19118,7 +19116,7 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  eth-util-lite@git+https://git@github.com:near/eth-util-lite.git#427b7634a123d171432f3b38c6542913a3897ac7:
+  eth-util-lite@https://codeload.github.com/near/eth-util-lite/tar.gz/427b7634a123d171432f3b38c6542913a3897ac7:
     dependencies:
       bn.js: 4.12.0
       js-sha3: 0.8.0

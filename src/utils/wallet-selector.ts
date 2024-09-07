@@ -3,7 +3,6 @@ import { map, distinctUntilChanged } from "rxjs";
 import { NetworkId, setupWalletSelector } from "@near-wallet-selector/core";
 import type {
   WalletSelector,
-  AccountState,
   Network,
 } from "@near-wallet-selector/core";
 import { setupModal } from "@near-wallet-selector/modal-ui";
@@ -69,8 +68,8 @@ export async function getWalletSelector({
       localStorage.removeItem("endPoint");
     }
   } catch (error) {}
-  console.log('0000000000000-wallet loading start');
-  const selector = await setupWalletSelector({
+  console.log("0000000000000-wallet loading start");
+  const selector: any = await setupWalletSelector({
     network: {
       networkId: getConfig().networkId as NetworkId,
       nodeUrl: RPC_LIST[endPoint].url,
@@ -129,7 +128,7 @@ export async function getWalletSelector({
       }),
     ],
   });
-  console.log('2222222222222-wallet loading end');
+  console.log("2222222222222-wallet loading end");
   const modal = setupModal(selector, {
     contractId: getOrderlyConfig().ORDERLY_ASSET_MANAGER,
   });

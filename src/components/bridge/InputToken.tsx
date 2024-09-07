@@ -113,7 +113,7 @@ function InputToken({
         <ErrorMessage className="animate-fadeIn mt-2" text={errorMessage} />
       ) : null}
       {!getWallet(model.chain).isSignedIn && (
-        <div className="absolute top-0 left-0 z-20 w-full h-full flex items-center justify-center backdrop-filter backdrop-blur-md bg-black bg-opacity-10 bridge-input bridge-input-token">
+        <div className="absolute top-0 left-0 z-10 w-full h-full flex items-center justify-center backdrop-filter backdrop-blur-md bg-black bg-opacity-10 bridge-input bridge-input-token">
           <ConnectWallet
             currentChain={model.chain}
             connectPlaceholder={`Connect to ${model.chain}`}

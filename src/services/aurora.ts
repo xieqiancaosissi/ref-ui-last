@@ -325,7 +325,7 @@ export const useAuroraBalances = (address: string) => {
         );
       });
     },
-    500,
+    1500,
     [tokensData, isSignedIn, address, personalDataUpdatedSerialNumber]
   );
 

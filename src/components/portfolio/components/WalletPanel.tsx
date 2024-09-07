@@ -51,6 +51,7 @@ export default function WalletPanel() {
   const [near_total_value, set_near_total_value] = useState<string>("0");
   const [aurora_total_value, set_aurora_total_value] = useState<string>("0");
   const [inner_total_value, set_inner_total_value] = useState<string>("0");
+  const [userTokensLast, setUserTokensLast] = useState<any[]>([]);
   const [batch_withdraw_loading, set_batch_withdraw_loading] =
     useState<boolean>(false);
   const auroraAddress = auroraAddr(getAccountId() || "");
@@ -116,6 +117,7 @@ export default function WalletPanel() {
           auroaBalances[id] || "0"
         ).toString();
       });
+      setUserTokensLast(JSON.parse(JSON.stringify(userTokens || [])));
     }
   }, [
     JSON.stringify(tokenPriceList || {}),
@@ -130,7 +132,7 @@ export default function WalletPanel() {
       const near_tokens_temp: TokenMetadata[] = [];
       const aurora_tokens_temp: TokenMetadata[] = [];
       const inter_tokens_temp: TokenMetadata[] = [];
-      userTokens.forEach((token: TokenMetadata) => {
+      userTokensLast.forEach((token: TokenMetadata) => {
         const { near, aurora, id, inner } = token;
         if (id === NEARXIDS[0]) return;
         if (near && +near > 0) {
@@ -174,14 +176,14 @@ export default function WalletPanel() {
     }
   }, [
     JSON.stringify(tokenPriceList || {}),
-    JSON.stringify(userTokens || []),
+    JSON.stringify(userTokensLast || []),
     is_tokens_loading,
   ]);
   useEffect(() => {
-    if (userTokens) {
-      setUserTokens(userTokens);
+    if (userTokensLast) {
+      setUserTokens(userTokensLast);
     }
-  }, [JSON.stringify(userTokens || [])]);
+  }, [JSON.stringify(userTokensLast || [])]);
   useEffect(() => {
     if (is_tokens_loading) return;
     if (

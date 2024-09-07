@@ -1,10 +1,7 @@
 import { map, distinctUntilChanged } from "rxjs";
 
 import { NetworkId, setupWalletSelector } from "@near-wallet-selector/core";
-import type {
-  WalletSelector,
-  Network,
-} from "@near-wallet-selector/core";
+import type { WalletSelector, Network } from "@near-wallet-selector/core";
 import { setupModal } from "@near-wallet-selector/modal-ui";
 import type { WalletSelectorModal } from "@near-wallet-selector/modal-ui";
 import { setupMyNearWallet } from "@near-wallet-selector/my-near-wallet";
@@ -68,7 +65,7 @@ export async function getWalletSelector({
       localStorage.removeItem("endPoint");
     }
   } catch (error) {}
-  console.log("0000000000000-wallet loading start");
+  console.log("00000000000002-wallet loading start");
   const selector: any = await setupWalletSelector({
     network: {
       networkId: getConfig().networkId as NetworkId,

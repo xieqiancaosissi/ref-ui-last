@@ -38,12 +38,16 @@ const RiskModal = dynamic(
 export type AppPropsWithLayout = AppProps & {
   Component: {
     customLayout?: (page: React.ReactNode) => React.ReactNode;
+    isClientRender?: boolean;
   };
 };
 
 export default function App({ Component, pageProps }: AppPropsWithLayout) {
   const getLayout =
-    Component.customLayout || ((page) => <Layout>{page}</Layout>);
+    Component.customLayout ||
+    ((page) => (
+      <Layout isClientRender={Component.isClientRender}>{page}</Layout>
+    ));
 
   const [progress, setProgress] = useState(0);
   const router = useRouter();

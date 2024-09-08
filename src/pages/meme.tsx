@@ -9,7 +9,7 @@ import Countdown from "@/components/meme/countdown";
 import { isMobile } from "@/utils/device";
 import React, { useState } from "react";
 
-export default function MemePage() {
+function MemePage() {
   const is_mobile = isMobile();
   const [showCountdown, setShowCountdown] = useState(true);
   const handleCountdownFinish = () => {
@@ -33,3 +33,5 @@ export default function MemePage() {
     </MemeContextProvider>
   );
 }
+MemePage.isClientRender = true;
+export default MemePage;

@@ -346,7 +346,7 @@ function HistoryLine({
             <BuyTokenAmount buyToken={buyToken} buyAmount={buyAmount} />
           </div>
           <div className="grid grid-cols-3 pb-1.5">
-            <div className="flex items-center justify-center bg-gray-290 rounded-xl text-xs text-gray-10 justify-self-start px-2 py-0.5">
+            <div className="flex items-center justify-center bg-gray-270 rounded-xl text-xs text-gray-10 justify-self-start px-2 py-0.5">
               {ONLY_ZEROS.test(order.cancel_amount)
                 ? "Filled"
                 : new Big(order.original_deposit_amount).eq(order.cancel_amount)

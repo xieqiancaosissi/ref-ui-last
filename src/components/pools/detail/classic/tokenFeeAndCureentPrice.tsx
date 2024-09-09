@@ -38,7 +38,7 @@ function TokenFeeAndCureentPrice({
     updatedMapList[0].token_account_ids[currentSort[1]].decimals ?? 24,
     pool.supplies[updatedMapList[0].token_account_ids[currentSort[1]].id]
   );
-
+  console.log(updatedMapList[0], pool, "poolpoolpool");
   const rate =
     // tokenPriceList[poolDetail.token_account_ids[currentSort[1]]]?.price /
     //   tokenPriceList[poolDetail.token_account_ids[currentSort[0]]]?.price ||

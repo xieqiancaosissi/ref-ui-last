@@ -524,7 +524,8 @@ function ClassicPoolDetail() {
               {/* pc fee */}
               {updatedMapList &&
                 pool &&
-                updatedMapList[0]?.token_account_ids &&
+                Object.values(pool?.supplies).length > 0 &&
+                updatedMapList[0]?.token_account_ids?.length > 0 &&
                 !isMobile && (
                   <TokenFeeAndCureentPrice
                     poolDetail={poolDetail}

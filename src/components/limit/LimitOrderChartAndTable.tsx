@@ -25,7 +25,7 @@ function LimitOrderChartAndTable() {
           overlayClassName={showViewOrder ? "" : "hidden"}
           style={{
             overlay: {
-              zIndex: 90,
+              zIndex: 300,
             },
           }}
         >

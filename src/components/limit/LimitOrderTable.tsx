@@ -355,7 +355,7 @@ function LimitOrderTable() {
               <div className="flex items-center rounded border border-gray-70 p-[3px]">
                 <span
                   className={`px-2 h-5 rounded ${
-                    dclTokens[0].id == tokenIn.id ? "bg-gray-100" : ""
+                    dclTokens?.[0]?.id == tokenIn?.id ? "bg-gray-100" : ""
                   }`}
                   onClick={() => {
                     limitChartStore.setTokenIn(dclTokens[0]);

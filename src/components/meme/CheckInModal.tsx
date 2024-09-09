@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState, useContext } from "react";
 import Modal from "react-modal";
+import { useDebounce } from "react-use";
 import Big from "big.js";
 import dayjs from "@/utils/dayjs";
 import { ModalCloseIcon } from "./icons";
@@ -66,13 +67,17 @@ const CheckInModal = (props: any) => {
   }, [shareButtonClicked]);
   useEffect(() => {
     if (accountId && isOpen) {
-      checkIn(accountId);
       queryUserClaimed();
       isAccountAlreadyMinted();
       queryUserNftInfo();
       getMemeFarmingTotalAssetsListData();
     }
   }, [accountId, isOpen]);
+  useDebounce(() => {
+    if (accountId && isOpen) {
+      checkIn(accountId);
+    }
+  }, 1000, [accountId, isOpen]);
   async function queryUserClaimed() {
     const claimedTime = await query_user_claimed(token_id_list[0]);
     if (

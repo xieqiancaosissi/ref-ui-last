@@ -73,11 +73,15 @@ const CheckInModal = (props: any) => {
       getMemeFarmingTotalAssetsListData();
     }
   }, [accountId, isOpen]);
-  useDebounce(() => {
-    if (accountId && isOpen) {
-      checkIn(accountId);
-    }
-  }, 1000, [accountId, isOpen]);
+  useDebounce(
+    () => {
+      if (accountId && isOpen) {
+        checkIn(accountId);
+      }
+    },
+    1000,
+    [accountId, isOpen]
+  );
   async function queryUserClaimed() {
     const claimedTime = await query_user_claimed(token_id_list[0]);
     if (

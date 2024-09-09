@@ -13,13 +13,14 @@ export default function getStablePoolTypeConfig(
           "4179",
           "4513",
           "4514",
+          "5219",
         ],
         DEGEN_POOLS_IDS: [],
         STABLE_POOL_IDS: ["1910", "3020", "3364", "3433"],
       };
     case "pub-testnet":
       return {
-        RATED_POOLS_IDS: ["568", "571", "1044", "1751", "1752", "1843"],
+        RATED_POOLS_IDS: ["568", "571", "1044", "1751", "1752", "1843", "1919"],
         DEGEN_POOLS_IDS: ["2022", "2031", "2065"],
         STABLE_POOL_IDS: ["218", "356", "456", "494"],
       };
@@ -40,6 +41,7 @@ export default function getStablePoolTypeConfig(
           "4179",
           "4513",
           "4514",
+          "5219",
         ],
         DEGEN_POOLS_IDS: [],
         STABLE_POOL_IDS: ["1910", "3020", "3364", "3433"],

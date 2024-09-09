@@ -28,6 +28,7 @@ import successToast from "@/components/common/toast/successToast";
 import failToast from "@/components/common/toast/failToast";
 import { openUrlLocal } from "@/services/commonV3";
 import { useRouter } from "next/router";
+import { getAccountId } from "@/utils/wallet";
 
 export function myShares({
   totalShares,
@@ -110,7 +111,7 @@ function ClassicAdd(props: any) {
       }
     };
     fetchBalances();
-  }, [updatedMapList[0], addSuccess]);
+  }, [updatedMapList[0], addSuccess, getAccountId()]);
 
   const [preShare, setPreShare] = useState("0");
   const dealTokenAmounts = (

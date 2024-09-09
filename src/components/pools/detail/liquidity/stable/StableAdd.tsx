@@ -26,7 +26,7 @@ import { toNonDivisibleNumber } from "@/utils/numbers";
 import { addLiquidityToStablePool } from "@/services/pool";
 import AddLiqTip from "../../addLiqTip";
 import { useAppStore } from "@/stores/app";
-import { showWalletSelectorModal } from "@/utils/wallet";
+import { getAccountId, showWalletSelectorModal } from "@/utils/wallet";
 import successToast from "@/components/common/toast/successToast";
 import failToast from "@/components/common/toast/failToast";
 import { openUrlLocal } from "@/services/commonV3";
@@ -143,7 +143,7 @@ function StableAdd(props: any) {
       }
     };
     fetchBalances();
-  }, [updatedMapList[0]?.token_account_ids, addSuccess]);
+  }, [updatedMapList[0]?.token_account_ids, addSuccess, getAccountId()]);
 
   const changeVal = (e: any, ind: number, ite: any, radioActivestr: string) => {
     if (radioActivestr == "init") {

@@ -32,19 +32,30 @@ function TokenFeeAndCureentPrice({
 
   const first_token_num = toReadableNumber(
     updatedMapList[0].token_account_ids[currentSort[0]].decimals ?? 24,
-    pool.supplies[updatedMapList[0].token_account_ids[currentSort[0]].id]
+    Object.values(pool.supplies)[currentSort[0]] ||
+      pool.supplies[updatedMapList[0].token_account_ids[currentSort[0]].id]
   );
   const second_token_num = toReadableNumber(
     updatedMapList[0].token_account_ids[currentSort[1]].decimals ?? 24,
-    pool.supplies[updatedMapList[0].token_account_ids[currentSort[1]].id]
+    Object.values(pool.supplies)[currentSort[1]] ||
+      pool.supplies[updatedMapList[0].token_account_ids[currentSort[1]].id]
   );
-  console.log(updatedMapList[0], pool, "poolpoolpool");
+  console.log(
+    updatedMapList[0],
+    pool,
+    first_token_num,
+    second_token_num,
+    updatedMapList[0].token_account_ids[currentSort[0]].decimals ?? 24,
+    pool.supplies[updatedMapList[0].token_account_ids[currentSort[0]].id],
+    "poolpoolpool"
+  );
   const rate =
     // tokenPriceList[poolDetail.token_account_ids[currentSort[1]]]?.price /
     //   tokenPriceList[poolDetail.token_account_ids[currentSort[0]]]?.price ||
     Number(second_token_num) / Number(first_token_num);
   // rate < 0.001 ? "< 0.001" : numberWithCommas(rate.toFixed(3));
-  const showRate = rate && beautifyNumber({ num: Big(rate).toFixed() });
+  const showRate =
+    rate && beautifyNumber({ num: Big(isNaN(rate) ? 0 : rate).toFixed() });
   return (
     <div className="flex items-center text-white h-10 lg:justify-around  xsm:w-full xsm:justify-start">
       <div className="text-sm">

@@ -65,7 +65,7 @@ export async function getWalletSelector({
       localStorage.removeItem("endPoint");
     }
   } catch (error) {}
-  console.log("00000000000005-wallet loading start");
+  console.log("00000000000006-wallet loading start");
   const selector: any = await setupWalletSelector({
     network: {
       networkId: getConfig().networkId as NetworkId,

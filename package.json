@@ -28,7 +28,7 @@
     "@near-wallet-selector/bitte-wallet": "^8.9.12",
     "@near-wallet-selector/core": "8.9.10",
     "@near-wallet-selector/here-wallet": "^8.9.7",
-    "@near-wallet-selector/ledger": "^8.9.10",
+    "@near-wallet-selector/ledger": "^8.9.7",
     "@near-wallet-selector/math-wallet": "^8.9.7",
     "@near-wallet-selector/meteor-wallet": "8.9.12",
     "@near-wallet-selector/mintbase-wallet": "8.9.7",

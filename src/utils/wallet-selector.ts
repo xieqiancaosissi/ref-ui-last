@@ -20,7 +20,7 @@ import { setupBitteWallet } from "@near-wallet-selector/bitte-wallet";
 import "@near-wallet-selector/modal-ui/styles.css";
 import getConfig from "./config";
 import getOrderlyConfig from "./orderlyConfig";
-import { getCustomAddRpcSelectorList, getRpcSelectorList } from "./rpc";
+import { getSelectedRpc } from "./rpc";
 declare global {
   interface Window {
     selector: WalletSelector & { getAccountId: () => string };
@@ -28,6 +28,7 @@ declare global {
     modal: WalletSelectorModal;
     accountId: string;
     sender?: any;
+    adaptiveRPC?: string;
   }
 }
 interface GetWalletSelectorArgs {
@@ -54,22 +55,12 @@ export async function getWalletSelector({
     ],
   };
   const signInContractId = getOrderlyConfig().ORDERLY_ASSET_MANAGER;
-  let endPoint = "defaultRpc";
-  const RPCLIST_system = getRpcSelectorList().RPC_LIST;
-  const RPCLIST_custom = getCustomAddRpcSelectorList();
-  const RPC_LIST = Object.assign(RPCLIST_system, RPCLIST_custom);
-  try {
-    endPoint = window.localStorage.getItem("endPoint") || endPoint;
-    if (!RPC_LIST[endPoint]) {
-      endPoint = "defaultRpc";
-      localStorage.removeItem("endPoint");
-    }
-  } catch (error) {}
-  console.log("00000000000002-wallet loading start");
+  const RPC = getSelectedRpc();
+  console.log("00000000000003-wallet loading start");
   const selector: any = await setupWalletSelector({
     network: {
       networkId: getConfig().networkId as NetworkId,
-      nodeUrl: RPC_LIST[endPoint].url,
+      nodeUrl: RPC.url,
     } as Network,
     debug: false,
     modules: [

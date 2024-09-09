@@ -2,30 +2,6 @@ export function getRpcSelectorList(
   env: string | undefined = process.env.NEXT_PUBLIC_NEAR_ENV
 ) {
   switch (env) {
-    case "production":
-    case "mainnet":
-      return {
-        RPC_LIST: {
-          defaultRpc: {
-            url: "https://rpc.mainnet.near.org",
-            simpleName: "official rpc",
-          },
-          lavaRpc: {
-            url: "https://near.lava.build",
-            simpleName: "lava rpc",
-          },
-          betaRpc: {
-            url: "https://beta.rpc.mainnet.near.org",
-            simpleName: "official beta rpc",
-          },
-          fastnearRpc: {
-            url: "https://free.rpc.fastnear.com",
-            simpleName: "fastnear rpc",
-          },
-        },
-        pool_protocol: "indexer",
-      };
-    case "development":
     case "pub-testnet":
       return {
         RPC_LIST: {
@@ -78,6 +54,12 @@ export function getRpcSelectorList(
       };
   }
 }
+export const adaptive_rpc = {
+  adaptiveRPC: {
+    simpleName: "adaptive rpc",
+    url: "",
+  },
+};
 export function getCustomAddRpcSelectorList() {
   let customRpcMapStr: string | null = null;
   try {
@@ -93,23 +75,66 @@ export function getCustomAddRpcSelectorList() {
   return customRpcMap;
 }
 
-export function getRPCList() {
-  const RPC_LIST_system = getRpcSelectorList().RPC_LIST;
-  const RPC_LIST_custom = getCustomAddRpcSelectorList();
-  const RPC_LIST = Object.assign(RPC_LIST_system, RPC_LIST_custom) as any;
-  return RPC_LIST;
+export function getAdaptiveRpc() {
+  try {
+    const adapterInStorage = window.localStorage.getItem("adaptiveRPC");
+    if (adapterInStorage) {
+      adaptive_rpc.adaptiveRPC.url = adapterInStorage;
+      return adaptive_rpc;
+    }
+    return adaptive_rpc;
+  } catch (error) {
+    return {};
+  }
 }
+export const getRPCList = (excludeAdapter = false) => {
+  const RPCLIST_system = getRpcSelectorList().RPC_LIST;
+  const RPCLIST_custom = getCustomAddRpcSelectorList();
+  let RPCLIST;
+  if (excludeAdapter) {
+    RPCLIST = Object.assign(RPCLIST_system, RPCLIST_custom);
+  } else {
+    const RPC_adapter = getAdaptiveRpc();
+    RPCLIST = Object.assign(RPCLIST_system, RPCLIST_custom, RPC_adapter);
+  }
+  return RPCLIST;
+};
+
 export function getSelectedRpc() {
   const RPC_LIST = getRPCList();
   let endPoint = "defaultRpc";
   try {
     endPoint = window.localStorage.getItem("endPoint") || endPoint;
-    if (!RPC_LIST[endPoint]) {
+    const adaptive_url = getBusinessAdaptiveRpcInStorage();
+    if (endPoint == "adaptiveRPC") {
+      return {
+        simpleName: adaptive_rpc.adaptiveRPC.simpleName,
+        url: adaptive_url,
+      };
+    } else if (!RPC_LIST[endPoint]) {
       endPoint = "defaultRpc";
       localStorage.removeItem("endPoint");
     }
   } catch (error) {}
   return RPC_LIST[endPoint];
+}
+
+export function getBusinessAdaptiveRpcInStorage() {
+  const url = localStorage.getItem("adaptiveRPC");
+  if (window.adaptiveRPC) return window.adaptiveRPC;
+  window.adaptiveRPC = url;
+  return url;
+}
+export function getRpcKeyByUrl(url: string) {
+  const rpcList = getRPCList(true);
+  const finded = Object.entries(rpcList).find(([, o]: any) => o?.url == url);
+  if (finded) {
+    return finded[0];
+  }
+}
+
+export function updateAdaptiveRpcInStorage(url: string) {
+  localStorage.setItem("adaptiveRPC", url);
 }
 
 type CustomRpcEntry = {

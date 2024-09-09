@@ -1,26 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { FiChevronDown } from "../reactIcons";
-import {
-  CircleIcon,
-  AddButtonIcon,
-  MoreButtonIcon,
-  CircleIconLarge,
-  SelectedButtonIcon,
-  SetButtonIcon,
-  ReturnArrowButtonIcon,
-  DeleteButtonIcon,
-  BeatLoading,
-} from "./icon";
-import { getRpcSelectorList, getCustomAddRpcSelectorList } from "@/utils/rpc";
+import { MoreButtonIcon } from "./icon";
 import { isMobile } from "@/utils/device";
-import Modal from "react-modal";
-import { FormattedMessage, useIntl } from "react-intl";
-import { Checkbox, CheckboxSelected, ModalClose } from "../farm/icon";
-import { ButtonTextWrapper } from "../common/Button";
-const MAXELOADTIMES = 3;
+import { switchPoint, displayCurrentRpc, ping } from "./rpcUtil";
+import ModalAddCustomNetWork from "./modalAddCustomNetWork";
+import ClientLayout from "@/layout/client_only";
+import {
+  updateAdaptiveRpcInStorage,
+  getRPCList,
+  getRpcKeyByUrl,
+} from "@/utils/rpc";
 const RpcList = () => {
   const is_mobile = isMobile();
-  const rpclist = getRpcList();
+  const rpclist = getRPCList();
   const [hover, setHover] = useState(false);
   const [hoverSet, setHoverSet] = useState(false);
   const [responseTimeList, setResponseTimeList] = useState<{
@@ -28,52 +20,27 @@ const RpcList = () => {
   }>({});
   const [modalCustomVisible, setModalCustomVisible] = useState(false);
   const [currentEndPoint, setCurrentEndPoint] = useState("defaultRpc");
-  const [isClient, setIsClient] = useState(false);
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      setIsClient(true);
-
-      let endPoint = localStorage.getItem("endPoint") || "defaultRpc";
-      if (!(endPoint in rpclist)) {
-        endPoint = "defaultRpc";
-        localStorage.removeItem("endPoint");
-      }
-      setCurrentEndPoint(endPoint);
+    let endPoint = localStorage.getItem("endPoint") || "defaultRpc";
+    if (!(endPoint in rpclist)) {
+      endPoint = "defaultRpc";
+      localStorage.removeItem("endPoint");
     }
+    setCurrentEndPoint(endPoint);
   }, [rpclist]);
   useEffect(() => {
-    if (isClient) {
-      const fetchPingTimes = async () => {
-        const times = await Promise.all(
-          Object.entries(rpclist).map(async ([key, data]) => {
-            const time = await ping(data.url, key);
-            return { key, time };
-          })
-        );
-        const newResponseTimeList = times.reduce(
-          (acc: { [key: string]: number }, { key, time }) => {
-            acc[key] = time as number;
-            return acc;
-          },
-          {}
-        );
-        setResponseTimeList(newResponseTimeList);
-      };
-      fetchPingTimes();
-
-      const handleStorageChange = (e: any) => {
-        if (e.key === "customRpcList") {
-          localStorage.setItem(e.key, e.oldValue);
-        }
-      };
-
-      window.addEventListener("storage", handleStorageChange);
-
-      return () => {
-        window.removeEventListener("storage", handleStorageChange);
-      };
-    }
-  }, [isClient]);
+    fetchPingTimes();
+    // Manual storage modification is not allowed
+    const handleStorageChange = (e: any) => {
+      if (e.key === "customRpcList" || e.key == "adaptiveRPC") {
+        localStorage.setItem(e.key, e.oldValue);
+      }
+    };
+    window.addEventListener("storage", handleStorageChange);
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
+  }, []);
   function updateResponseTimeList(data: any) {
     const { key, responseTime, isDelete } = data;
     if (isDelete) {
@@ -89,14 +56,50 @@ const RpcList = () => {
   function addCustomNetwork() {
     setModalCustomVisible(true);
   }
+  async function fetchPingTimes() {
+    const list = getRPCList(true);
+    const times = await Promise.all(
+      Object.entries(list).map(async ([key, data]: any) => {
+        const time = await ping(data.url, key);
+        return { key, time };
+      })
+    );
+    const newResponseTimeList = times.reduce(
+      (acc: { [key: string]: number }, { key, time }) => {
+        acc[key] = time as number;
+        return acc;
+      },
+      {}
+    );
+    // random avalible rpc into store
+    const nodeKey = getRandomAvailableNode(newResponseTimeList);
+    updateAdaptiveRpcInStorage(list[nodeKey]?.url);
+    const current_used_url = window.adaptiveRPC || list[nodeKey]?.url;
+    const current_used_key = getRpcKeyByUrl(current_used_url);
+    setResponseTimeList(
+      Object.assign(newResponseTimeList, {
+        adaptiveRPC: newResponseTimeList[current_used_key || nodeKey],
+      })
+    );
+  }
+  function getRandomAvailableNode(newResponseTimeList) {
+    const keys = Object.keys(newResponseTimeList);
+    const availableNodes = Object.entries(newResponseTimeList).filter(
+      ([, time]) => time !== -1
+    );
+    if (availableNodes.length > 0) {
+      const index = Math.floor(Math.random() * availableNodes.length);
+      return availableNodes[index][0];
+    } else {
+      return keys[0];
+    }
+  }
+  function getSimpleName() {
+    return rpclist[currentEndPoint]?.simpleName;
+  }
   const minWidth = "180px";
   const maxWith = "230px";
   const mobile = isMobile();
-  //   const prd = isPrd();
-  if (!isClient) {
-    return null;
-  }
-
   return (
     <>
       {mobile ? (
@@ -117,7 +120,8 @@ const RpcList = () => {
               <div className="flex items-center w-3/4">
                 <label className="text-xs text-gray-60 mr-5">RPC</label>
                 <label className="text-xs text-gray-60 cursor-pointer pr-5 whitespace-nowrap overflow-hidden overflow-ellipsis">
-                  {rpclist[currentEndPoint].simpleName}
+                  {/* {rpclist[currentEndPoint].simpleName} */}
+                  {getSimpleName()}
                 </label>
               </div>
               <div className="flex items-center">
@@ -143,6 +147,7 @@ const RpcList = () => {
             }}
             className="relative"
           >
+            {/* current selected endpoint */}
             <div className="pt-3">
               <div
                 className="frcb px-2  bg-dark-10 bg-opacity-80 rounded cursor-pointer"
@@ -154,7 +159,8 @@ const RpcList = () => {
               >
                 <div className="flex items-center w-2/3">
                   <label className="text-xs w-full text-gray-10 cursor-pointer pr-2 whitespace-nowrap overflow-hidden overflow-ellipsis">
-                    {rpclist[currentEndPoint].simpleName}
+                    {/* {rpclist[currentEndPoint].simpleName} */}
+                    {getSimpleName()}
                   </label>
                 </div>
                 <div className="flex items-center">
@@ -167,12 +173,13 @@ const RpcList = () => {
                 </div>
               </div>
             </div>
+            {/* hover list */}
             <div
               className={`absolute py-2 bottom-7 flex flex-col w-full bg-dark-10 bg-opacity-80 rounded ${
                 hover ? "" : "hidden"
               }`}
             >
-              {Object.entries(rpclist).map(([key, data]) => {
+              {Object.entries(rpclist).map(([key, data]: any) => {
                 return (
                   <div
                     key={key}
@@ -201,6 +208,7 @@ const RpcList = () => {
               })}
             </div>
           </div>
+          {/* dot dot dot more */}
           <div
             onMouseEnter={() => {
               setHoverSet(true);
@@ -218,6 +226,7 @@ const RpcList = () => {
           </div>
         </div>
       )}
+      {/* add custom rpc modal */}
       <ModalAddCustomNetWork
         isOpen={modalCustomVisible}
         onRequestClose={() => {
@@ -249,615 +258,10 @@ const RpcList = () => {
     </>
   );
 };
-
-const ModalBox = (props: any) => {
-  const { rpclist, responseTimeList, currentEndPoint, ...rest } = props;
-  const [selectCheckbox, setSelectCheckbox] = useState(currentEndPoint);
+export default React.memo(function Memo() {
   return (
-    <Modal {...rest}>
-      <div
-        className="px-5 py-3.5 text-white bg-cardBg border border-gradientFrom border-opacity-50 rounded-lg"
-        style={{ width: "90vw" }}
-      >
-        <div className="flex items-center justify-between mb-2">
-          <label className="text-base text-white font-semibold ">RPC</label>
-          <span
-            onClick={() => {
-              props.onRequestClose();
-            }}
-          >
-            <ModalClose></ModalClose>
-          </span>
-        </div>
-        <div>
-          {Object.entries(rpclist).map(([key, data]: any) => {
-            return (
-              <div
-                key={key}
-                className={`flex items-center py-3 justify-between text-gray-10`}
-              >
-                <label
-                  className={`text-sm pr-5 whitespace-nowrap overflow-hidden overflow-ellipsis cursor-pointer`}
-                >
-                  {data.simpleName}
-                </label>
-                <div className={`flex items-center`}>
-                  {displayCurrentRpc(responseTimeList, key)}
-                  {selectCheckbox == key ? (
-                    <CheckboxSelected />
-                  ) : (
-                    <span
-                      onClick={() => {
-                        setSelectCheckbox(key);
-                        switchPoint(key);
-                      }}
-                    >
-                      <Checkbox />
-                    </span>
-                  )}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    </Modal>
+    <ClientLayout>
+      <RpcList />
+    </ClientLayout>
   );
-};
-
-const switchPoint = (chooseEndPoint: string) => {
-  localStorage.setItem("endPoint", chooseEndPoint);
-  window.location.reload();
-};
-const displayCurrentRpc = (
-  responseTimeList: any,
-  key: any,
-  inBox?: boolean
-) => {
-  if (responseTimeList[key] == -1) {
-    return (
-      <>
-        <span className={`cursor-pointer text-error`}>
-          {inBox ? (
-            <CircleIconLarge></CircleIconLarge>
-          ) : (
-            <CircleIcon></CircleIcon>
-          )}
-        </span>
-        <label className="text-xs ml-1.5 mr-2.5 cursor-pointer text-error whitespace-nowrap">
-          time out
-        </label>
-      </>
-    );
-  } else if (responseTimeList[key]) {
-    return (
-      <>
-        <span className="cursor-pointer text-primaryGreen">
-          {inBox ? (
-            <CircleIconLarge></CircleIconLarge>
-          ) : (
-            <CircleIcon></CircleIcon>
-          )}
-        </span>
-        <label className="text-xs text-gray-10 ml-1.5 mr-2.5 cursor-pointer whitespace-nowrap">
-          {responseTimeList[key]}ms
-        </label>
-      </>
-    );
-  } else {
-    return (
-      <label className="mr-2.5 whitespace-nowrap">
-        <BeatLoading />
-      </label>
-    );
-  }
-};
-const specialRpcs: string[] = [
-  "https://near-mainnet.infura.io/v3",
-  "https://gynn.io",
-];
-const ModalAddCustomNetWork = (props: any) => {
-  const { rpclist, currentEndPoint, responseTimeList, onRequestClose, isOpen } =
-    props;
-  const [customLoading, setCustomLoading] = useState(false);
-  const [customRpcName, setCustomRpcName] = useState("");
-  const [customRpUrl, setCustomRpUrl] = useState("");
-  const [customShow, setCustomShow] = useState(false);
-  const [unavailableError, setUnavailableError] = useState(false);
-  const [testnetError, setTestnetError] = useState(false);
-  const [notSupportTestnetError, setNotSupportTestnetError] = useState(false);
-  const [nameError, setNameError] = useState(false);
-  const [isInEditStatus, setIsInEditStatus] = useState(false);
-  const cardWidth = isMobile() ? "100vw" : "350px";
-  const cardHeight = isMobile() ? "40vh" : "336px";
-  useEffect(() => {
-    hideCustomNetWork();
-  }, [isOpen]);
-  async function addCustomNetWork() {
-    setCustomLoading(true);
-    const rpcMap = getRpcList();
-    // check if has same url and same name
-    const fondItem = Object.values(rpcMap).find((item) => {
-      if (trimStr(item.simpleName) == trimStr(customRpcName)) {
-        return true;
-      }
-    });
-    if (fondItem) {
-      setNameError(true);
-      setCustomLoading(false);
-      return;
-    }
-    // check network
-    let responseTime;
-    // special check
-    if (checkContain(customRpUrl)) {
-      const { status, responseTime: responseTime_gas } = await ping_gas(
-        customRpUrl
-      );
-      if (!status) {
-        setUnavailableError(true);
-        setCustomLoading(false);
-        return;
-      }
-      responseTime = responseTime_gas;
-    } else {
-      // common check
-      const {
-        status,
-        responseTime: responseTime_status,
-        chain_id,
-      } = await pingChain(customRpUrl);
-      responseTime = responseTime_status;
-      if (!status) {
-        setUnavailableError(true);
-        setCustomLoading(false);
-        return;
-      }
-      if (status && chain_id == "testnet") {
-        setTestnetError(true);
-        setCustomLoading(false);
-        return;
-      }
-    }
-    // do not support testnet
-    const env = process.env.NEXT_PUBLIC_NEAR_ENV;
-    if (env == "testnet" || env == "pub-testnet") {
-      setNotSupportTestnetError(true);
-      setCustomLoading(false);
-      return;
-    }
-    const customRpcMap = getCustomAddRpcSelectorList();
-    const key = "custom" + Object.keys(customRpcMap).length + 1;
-    customRpcMap[key] = {
-      url: customRpUrl,
-      simpleName: trimStr(customRpcName),
-      custom: true,
-    };
-
-    localStorage.setItem("customRpcList", JSON.stringify(customRpcMap));
-    setCustomLoading(false);
-    props.updateResponseTimeList({
-      key,
-      responseTime,
-    });
-    setCustomShow(false);
-  }
-  function checkContain(url: string) {
-    const res = specialRpcs.find((rpc: string) => {
-      if (url.indexOf(rpc) > -1) return true;
-    });
-    return !!res;
-  }
-  function changeNetName(v: string) {
-    setNameError(false);
-    setCustomRpcName(v);
-  }
-  function changeNetUrl(v: string) {
-    setUnavailableError(false);
-    setTestnetError(false);
-    setCustomRpUrl(v);
-  }
-  function showCustomNetWork() {
-    setCustomShow(true);
-    initData();
-  }
-  function hideCustomNetWork() {
-    setCustomShow(false);
-    initData();
-  }
-  function closeModal() {
-    setCustomShow(false);
-    initData();
-    onRequestClose();
-  }
-  function switchEditStatus() {
-    setIsInEditStatus(!isInEditStatus);
-  }
-  function deleteCustomNetwork(key: string) {
-    const customMap = getCustomAddRpcSelectorList();
-    delete customMap[key];
-    localStorage.setItem("customRpcList", JSON.stringify(customMap));
-    if (key == currentEndPoint) {
-      window.location.reload();
-    } else {
-      props.updateResponseTimeList({
-        key,
-        isDelete: true,
-      });
-      if (Object.keys(customMap).length == 0) {
-        setIsInEditStatus(false);
-      }
-    }
-  }
-  function initData() {
-    setCustomRpcName("");
-    setCustomRpUrl("");
-    setTestnetError(false);
-    setNameError(false);
-    setUnavailableError(false);
-    setIsInEditStatus(false);
-    setNotSupportTestnetError(false);
-  }
-  const submitStatus =
-    trimStr(customRpcName) &&
-    trimStr(customRpUrl) &&
-    !unavailableError &&
-    !nameError &&
-    !testnetError;
-  return (
-    <Modal {...props}>
-      <div className="relative frcc">
-        <div
-          className="absolute top-0 bottom-0"
-          style={{
-            filter: "blur(50px)",
-            width: cardWidth,
-          }}
-        ></div>
-        <div
-          className="relative z-10 p-6 text-white bg-dark-10 lg:rounded-lg xs:rounded-t-2xl xs:border xs:border-modalGrayBg"
-          style={{
-            width: cardWidth,
-          }}
-        >
-          {customShow ? (
-            <div>
-              <div className="frcb text-lg text-white">
-                <div className="flex items-center">
-                  <ReturnArrowButtonIcon
-                    className="mr-3 cursor-pointer"
-                    onClick={hideCustomNetWork}
-                  ></ReturnArrowButtonIcon>
-                  Add Custom Network
-                </div>
-                <span onClick={closeModal} className="cursor-pointer">
-                  <ModalClose></ModalClose>
-                </span>
-              </div>
-              <div className="flex flex-col  mt-6">
-                <span className="text-gray-10 text-sm mb-2.5">
-                  Network Name
-                </span>
-                <div
-                  className={`overflow-hidden rounded-md ${
-                    nameError ? "border border-warnRedColor" : ""
-                  }`}
-                >
-                  <input
-                    className="px-3 h-10 bg-black bg-opacity-20"
-                    onChange={({ target }) => changeNetName(target.value)}
-                  ></input>
-                </div>
-                <span
-                  className={`errorTip text-redwarningColor text-sm mt-2 ${
-                    nameError ? "" : "hidden"
-                  }`}
-                >
-                  The network name was already taken
-                </span>
-              </div>
-              <div className="flex flex-col mt-6">
-                <span className="text-gray-10 text-sm mb-2.5">RPC URL</span>
-                <div
-                  className={`overflow-hidden rounded-md ${
-                    unavailableError ? "border border-warnRedColor" : ""
-                  }`}
-                >
-                  <input
-                    className="px-3 h-10 rounded-md bg-black bg-opacity-20"
-                    onChange={({ target }) => changeNetUrl(target.value)}
-                  ></input>
-                </div>
-                <span
-                  className={`errorTip text-warn text-sm mt-2 ${
-                    unavailableError ? "" : "hidden"
-                  }`}
-                >
-                  The network was invalid
-                </span>
-                <span
-                  className={`errorTip text-warn text-sm mt-2 ${
-                    testnetError ? "" : "hidden"
-                  }`}
-                >
-                  RPC server&apos;s network (testnet) is different with this
-                  network (mainnet)
-                </span>
-                <span
-                  className={`errorTip text-warn text-sm mt-2 ${
-                    notSupportTestnetError ? "" : "hidden"
-                  }`}
-                >
-                  Testnet does not support adding custom RPC
-                </span>
-              </div>
-              <div
-                color="#fff"
-                className={`w-full h-10 text-center text-base rounded text-black mt-6 focus:outline-none font-semibold bg-greenGradient frcc ${
-                  submitStatus
-                    ? "cursor-pointer"
-                    : "opacity-40 cursor-not-allowed"
-                }`}
-                onClick={addCustomNetWork}
-                // disabled={!submitStatus}
-                // loading={customLoading}
-              >
-                <div className={`${isInEditStatus ? "hidden" : ""}`}>
-                  <ButtonTextWrapper
-                    loading={customLoading}
-                    Text={() => {
-                      return <>Add</>;
-                    }}
-                  />
-                </div>
-              </div>
-            </div>
-          ) : (
-            <div>
-              <div className="frcb text-lg text-white mb-5">
-                RPC
-                <span onClick={closeModal} className="cursor-pointer">
-                  <ModalClose></ModalClose>
-                </span>
-              </div>
-              <div
-                style={{ maxHeight: cardHeight }}
-                className="overflow-y-auto overflow-x-hidden"
-              >
-                {Object.entries(rpclist).map(
-                  ([key, data]: any, index: number) => {
-                    return (
-                      <div className="flex items-center" key={data.simpleName}>
-                        <div
-                          className={`relative flex items-center rounded h-9 px-4 border border-dark-50 ${
-                            isInEditStatus && data.custom ? "w-4/5" : "w-full"
-                          } ${
-                            index != Object.entries(rpclist).length - 1
-                              ? "mb-3"
-                              : ""
-                          } ${isInEditStatus ? "" : "cursor-pointer"} ${
-                            isInEditStatus && !data.custom
-                              ? ""
-                              : "bg-black bg-opacity-20 hover:bg-dark-180 hover:bg-opacity-80"
-                          } justify-between text-gray-10 ${
-                            currentEndPoint == key && !isInEditStatus
-                              ? "bg-opacity-30"
-                              : ""
-                          }`}
-                          onClick={() => {
-                            if (!isInEditStatus) {
-                              switchPoint(key);
-                            }
-                          }}
-                        >
-                          <label
-                            className={`text-sm pr-5 whitespace-nowrap overflow-hidden overflow-ellipsis w-3/5`}
-                          >
-                            {data.simpleName}
-                          </label>
-                          <div className={`flex items-center text-sm w-1/5`}>
-                            {displayCurrentRpc(responseTimeList, key, true)}
-                          </div>
-                          <div className="w-1/5 flex justify-end">
-                            {currentEndPoint == key && !isInEditStatus ? (
-                              <SelectedButtonIcon className=""></SelectedButtonIcon>
-                            ) : null}
-                          </div>
-                        </div>
-                        {isInEditStatus && data.custom ? (
-                          <div>
-                            <DeleteButtonIcon
-                              className="cursor-pointer ml-4"
-                              onClick={() => {
-                                deleteCustomNetwork(key);
-                              }}
-                            ></DeleteButtonIcon>
-                          </div>
-                        ) : null}
-                      </div>
-                    );
-                  }
-                )}
-              </div>
-              <div
-                className={`flex items-center mt-8 ${
-                  isInEditStatus ? "justify-end" : "justify-between"
-                }`}
-              >
-                <div
-                  color="#fff"
-                  className={`pt-2 h-10 px-4 text-center text-base text-black focus:outline-none font-semibold bg-greenGradient rounded ${
-                    isInEditStatus ? "hidden" : ""
-                  }`}
-                  onClick={showCustomNetWork}
-                >
-                  <div className={"flex items-center cursor-pointer"}>
-                    {/* <AddButtonIcon
-                      style={{ zoom: 1.35 }}
-                      className="mr-1 text-white"
-                    ></AddButtonIcon> */}
-                    Add
-                  </div>
-                </div>
-                {Object.keys(rpclist).length > 2 ? (
-                  <div className="flex items-center">
-                    {isInEditStatus ? (
-                      <span
-                        className="text-sm text-white cursor-pointer mr-2"
-                        onClick={switchEditStatus}
-                      >
-                        Finish
-                      </span>
-                    ) : null}
-                    <SetButtonIcon
-                      className="cursor-pointer text-gray-10 hover:text-white"
-                      onClick={switchEditStatus}
-                    ></SetButtonIcon>
-                  </div>
-                ) : null}
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-    </Modal>
-  );
-};
-const getRpcList = () => {
-  const RPCLIST_system = getRpcSelectorList().RPC_LIST;
-  const RPCLIST_custom = getCustomAddRpcSelectorList();
-  const RPCLIST = Object.assign(RPCLIST_system, RPCLIST_custom);
-  return RPCLIST;
-};
-async function ping(url: string, key: string) {
-  const RPCLIST = getRpcList();
-  const start = new Date().getTime();
-  const businessRequest = fetch(url, {
-    method: "POST",
-    headers: { "Content-type": "application/json; charset=UTF-8" },
-    body: JSON.stringify({
-      jsonrpc: "2.0",
-      id: "dontcare",
-      method: "gas_price",
-      params: [null],
-    }),
-  });
-  const timeoutPromise = new Promise((resolve, reject) => {
-    setTimeout(() => {
-      reject(-1);
-    }, 8000);
-  });
-  const responseTime = await Promise.race([businessRequest, timeoutPromise])
-    .then(() => {
-      const end = new Date().getTime();
-      return end - start;
-    })
-    .catch((result) => {
-      if (result == -1) {
-        // timeout
-        return -1;
-      } else {
-        // other exception
-        const currentRpc = localStorage.getItem("endPoint") || "defaultRpc";
-        if (currentRpc != key) {
-          return -1;
-        } else {
-          const availableRpc =
-            Object.keys(RPCLIST).find((item) => item != key) || "defaultRpc";
-          let reloadedTimes = Number(
-            localStorage.getItem("rpc_reload_number") || 0
-          );
-          setTimeout(() => {
-            reloadedTimes = reloadedTimes + 1;
-            if (reloadedTimes > MAXELOADTIMES) {
-              localStorage.setItem("endPoint", "defaultRpc");
-              localStorage.setItem("rpc_reload_number", "");
-              return -1;
-            } else {
-              localStorage.setItem("endPoint", availableRpc);
-              window.location.reload();
-              localStorage.setItem(
-                "rpc_reload_number",
-                reloadedTimes.toString()
-              );
-            }
-          }, 1000);
-        }
-      }
-    });
-  return responseTime;
-}
-async function pingChain(url: string) {
-  const start = new Date().getTime();
-  let status;
-  let responseTime;
-  let chain_id;
-  try {
-    const res = await fetch(url, {
-      method: "POST",
-      headers: { "Content-type": "application/json; charset=UTF-8" },
-      body: JSON.stringify({
-        jsonrpc: "2.0",
-        id: "dontcare",
-        method: "status",
-        params: [],
-      }),
-    })
-      .then((res) => {
-        return res.json();
-      })
-      .catch(() => {
-        return {};
-      });
-    if (res?.result?.chain_id) {
-      const end = new Date().getTime();
-      responseTime = end - start;
-      status = true;
-      chain_id = res.result.chain_id;
-    }
-  } catch {
-    status = false;
-  }
-  return {
-    status,
-    responseTime,
-    chain_id,
-  };
-}
-// const isPrd = (env: string = process.env.NEXT_PUBLIC_NEAR_ENV) => {
-//   if (env != "pub-testnet" && env != "testnet") return true;
-// };
-function trimStr(str: string = "") {
-  return str.replace(/(^\s*)|(\s*$)/g, "");
-}
-async function ping_gas(url: string) {
-  const start = new Date().getTime();
-  const businessRequest = fetch(url, {
-    method: "POST",
-    headers: { "Content-type": "application/json; charset=UTF-8" },
-    body: JSON.stringify({
-      jsonrpc: "2.0",
-      id: "dontcare",
-      method: "gas_price",
-      params: [null],
-    }),
-  });
-  let r;
-  try {
-    r = await businessRequest;
-    if (r?.status == 200) {
-      r = true;
-    } else {
-      r = false;
-    }
-  } catch (error) {
-    r = false;
-  }
-  const end = new Date().getTime();
-  const responseTime = end - start;
-  return {
-    status: !!r,
-    responseTime,
-  };
-}
-export default React.memo(RpcList);
+});

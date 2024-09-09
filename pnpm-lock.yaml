@@ -48,8 +48,8 @@ importers:
         specifier: ^8.9.7
         version: 8.9.12(bn.js@5.2.1)(borsh@1.0.0)
       '@near-wallet-selector/ledger':
-        specifier: ^8.9.7
-        version: 8.9.12(typescript@5.5.4)
+        specifier: ^8.9.10
+        version: 8.9.10(near-api-js@3.0.4)(typescript@5.5.4)
       '@near-wallet-selector/math-wallet':
         specifier: ^8.9.7
         version: 8.9.12
@@ -1701,8 +1701,8 @@ packages:
   '@ledgerhq/errors@6.18.0':
     resolution: {integrity: sha512-L3jQWAGyooxRDk/MRlW2v4Ji9+kloBtdmz9wBkHaj2j0n+05rweJSV3GHw9oye1BYMbVFqFffmT4H3hlXlCasw==}
 
-  '@ledgerhq/hw-transport-webhid@6.29.2':
-    resolution: {integrity: sha512-kmVsctlR3rpHmxpT2SB1mEayrBMXCc3Fb+VT9xZnpcZhMSXVDA+AdpuXamJkGl2ow72JDN+QcSPfoVT1entXwA==}
+  '@ledgerhq/hw-transport-webhid@6.28.3':
+    resolution: {integrity: sha512-MNxdK1M+35QA9A+8e4ETSefK3iTO6MaHjB1tKClEngcmcJ2no+Mw8GuMyfaKkrKs2N7KbSQdVHcu9ouCL1NZhw==}
 
   '@ledgerhq/hw-transport@6.30.3':
     resolution: {integrity: sha512-eqtTCGy8wFCxl+hZSEpjVqn1EDjQhFCne/qUyY0aA36efhWUF6bCRAhkq1e5i7g2P6TbxcIM5P5PW67dILuqIQ==}
@@ -2011,8 +2011,10 @@ packages:
   '@near-wallet-selector/here-wallet@8.9.12':
     resolution: {integrity: sha512-rE1TWI52y8zIk/+MSpJdyqV2Rgh5GZVlcZkDEQpvlNdQoT3sQeroyAgmQIJMw85WvjoZHmNf3gXMpQ3IHmMIkg==}
 
-  '@near-wallet-selector/ledger@8.9.12':
-    resolution: {integrity: sha512-aBPlf1JpogCCzEIgB/MUSjuCRN3QwvYqB7o+uAulaZVnA3tXiAozOl/FxPhKQB7jyG6H7cNVoNLBf+k+DEM6nA==}
+  '@near-wallet-selector/ledger@8.9.10':
+    resolution: {integrity: sha512-XMgFTEuP+p0GY6AxYKLug3boZIYkmP7YA/23WUjwjErPtZ+8dDEJJontqtI8x/jIlZiHSfh1vGVZxabt9TgZeg==}
+    peerDependencies:
+      near-api-js: ^1.0.0 || ^2.0.0
 
   '@near-wallet-selector/math-wallet@8.9.12':
     resolution: {integrity: sha512-vWzN2XJA1vO4rnc7i3baJrhz15TX8LBddpzv4ZjKyvOo8ZxUulD0iYlUrlC8QLfomNdm7wCjKnq4UEHlBHvIeg==}
@@ -11694,7 +11696,7 @@ snapshots:
 
   '@ledgerhq/errors@6.18.0': {}
 
-  '@ledgerhq/hw-transport-webhid@6.29.2':
+  '@ledgerhq/hw-transport-webhid@6.28.3':
     dependencies:
       '@ledgerhq/devices': 8.4.2
       '@ledgerhq/errors': 6.18.0
@@ -12392,17 +12394,17 @@ snapshots:
       - borsh
       - encoding
 
-  '@near-wallet-selector/ledger@8.9.12(typescript@5.5.4)':
+  '@near-wallet-selector/ledger@8.9.10(near-api-js@3.0.4)(typescript@5.5.4)':
     dependencies:
       '@ledgerhq/hw-transport': 6.30.3
-      '@ledgerhq/hw-transport-webhid': 6.29.2
-      '@near-wallet-selector/core': 8.9.12
-      '@near-wallet-selector/wallet-utils': 8.9.12
+      '@ledgerhq/hw-transport-webhid': 6.28.3
+      '@near-wallet-selector/core': 8.9.10(near-api-js@3.0.4)
+      '@near-wallet-selector/wallet-utils': 8.9.10(near-api-js@3.0.4)
+      bn.js: 5.2.1
       is-mobile: 4.0.0
-      near-api-js: 4.0.3
+      near-api-js: 3.0.4
       ts-essentials: 7.0.3(typescript@5.5.4)
     transitivePeerDependencies:
-      - encoding
       - typescript
 
   '@near-wallet-selector/math-wallet@8.9.12':

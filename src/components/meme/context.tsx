@@ -98,25 +98,25 @@ function MemeContextProvider({ children }: any) {
   const [xrefTokenId, setXrefTokenId] = useState<string>();
   const [earnRewards, setEarnRewards] = useState<IReward[]>([]);
   const accountStore = useAccountStore();
-  const isSignedIn = accountStore.getIsSignedIn();
+  const accountId = accountStore.getAccountId();
   const { txHash } = getURLInfo();
   useEffect(() => {
     init();
   }, []);
   useEffect(() => {
-    if (txHash && isSignedIn) {
+    if (txHash && accountId) {
       txHandle(txHash);
     }
-  }, [txHash, isSignedIn]);
+  }, [txHash, accountId]);
   useEffect(() => {
     if (
-      isSignedIn &&
+      accountId &&
       Object.keys(seeds).length &&
       Object.keys(xrefSeeds).length
     ) {
       init_user();
     }
-  }, [isSignedIn, Object.keys(seeds).length, Object.keys(xrefSeeds).length]);
+  }, [accountId, Object.keys(seeds).length, Object.keys(xrefSeeds).length]);
   useEffect(() => {
     setAllTokenMetadatas({ ...memeTokenMetadatas, ...xrefTokenMetadatas });
   }, [memeTokenMetadatas, xrefTokenMetadatas]);

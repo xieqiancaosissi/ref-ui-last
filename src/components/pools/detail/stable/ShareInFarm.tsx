@@ -41,7 +41,6 @@ export const ShareInBurrow = ({
   const shadowRecordsKey = "shadow_in_burrow";
   const inBurrowAmount =
     shadowRecords?.[Number(poolId)]?.[shadowRecordsKey] || 0;
-
   const [hover, setHovet] = useState<boolean>(false);
   const farmSharePercent = userTotalShare.isGreaterThan(0)
     ? percent(
@@ -209,7 +208,6 @@ export const ShareInFarmV2 = ({
   const farmShare = Number(farmStake).toLocaleString("fullwide", {
     useGrouping: false,
   });
-
   const farmSharePercent = userTotalShare.isGreaterThan(0)
     ? percent(
         farmShare,
@@ -238,7 +236,7 @@ export const ShareInFarmV2 = ({
                   lpDecimal || 24,
                   scientificNotationToString(farmShare.toString())
                 ),
-                4
+                2
               )
             : `${
                 Number(farmSharePercent) < 0.1 && Number(farmSharePercent) > 0

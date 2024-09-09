@@ -304,8 +304,10 @@ export const usePool = (id: number | string) => {
   );
 
   useEffect(() => {
-    if (isSignedIn && !isNaN(Number(id))) {
-      getPoolDetails(Number(id)).then(setPool);
+    if (isSignedIn && !isNaN(Number(id)) && id) {
+      getPoolDetails(Number(id)).then((res) => {
+        setPool(res);
+      });
       getSharesInPool(Number(id))
         .then(setShares)
         .catch(() => setShares);
@@ -319,8 +321,10 @@ export const usePool = (id: number | string) => {
         .catch((err: any) => {
           console.log(err);
         });
-    } else if (!isSignedIn && !isNaN(Number(id))) {
-      getPoolDetails(Number(id)).then(setPool);
+    } else if (!isSignedIn && !isNaN(Number(id)) && id) {
+      getPoolDetails(Number(id)).then((res) => {
+        setPool(res);
+      });
     }
   }, [id, isSignedIn]);
 

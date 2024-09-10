@@ -116,10 +116,12 @@ function ClassicPoolDetail() {
           setPoolDetail(res);
         }
       });
+    }
+  }, [poolId, addSuccess]);
 
-      if (currentwatchListId.length > 0) {
-        setIsCollect(currentwatchListId.includes(poolId));
-      }
+  useEffect(() => {
+    if (currentwatchListId.length > 0 && poolId) {
+      setIsCollect(currentwatchListId.includes(poolId));
     }
   }, [poolId, currentwatchListId, addSuccess]);
 

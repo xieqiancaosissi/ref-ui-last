@@ -144,7 +144,12 @@ function YourLiquidityBox(props: {
       get_24_apr_and_fee();
       get_tokens_amount_liquidities();
     }
-  }, [poolDetail, tokenPriceList.length, liquidities.length, addSuccess]);
+  }, [
+    JSON.stringify(poolDetail || {}),
+    tokenPriceList.length,
+    liquidities.length,
+    addSuccess,
+  ]);
 
   useEffect(() => {
     if (liquidities) {

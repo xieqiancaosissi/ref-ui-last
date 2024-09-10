@@ -338,14 +338,19 @@ function DclChart({
   // to get user detail when hover on chart
   useEffect(() => {
     if (
-      user_liquidities.length &&
-      pool &&
+      user_liquidities.length > 0 &&
+      pool?.pool_id &&
       chartType == "USER" &&
       tokenPriceList
     ) {
       get_user_liquidities_detail();
     }
-  }, [user_liquidities, pool, chartType, tokenPriceList]);
+  }, [
+    user_liquidities?.length,
+    JSON.stringify(pool || {}),
+    chartType,
+    JSON.stringify(tokenPriceList || {}),
+  ]);
   async function get_user_liquidities_detail() {
     const { token_x_metadata, token_y_metadata, pool_id }: any = pool;
     const dcl_fee_result: IDCLAccountFee | any = await getDCLAccountFee({

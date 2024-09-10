@@ -110,10 +110,12 @@ function DCLPoolDetail() {
           router.push(`${PoolRouterGuard(res, "DCL")}/${pID}`);
         setPoolDetail(res);
       });
+    }
+  }, [pID, addSuccess]);
 
-      if (currentwatchListId.length > 0) {
-        setIsCollect(currentwatchListId.includes(pID));
-      }
+  useEffect(() => {
+    if (pID && currentwatchListId.length > 0) {
+      setIsCollect(currentwatchListId.includes(pID));
     }
   }, [pID, currentwatchListId, addSuccess]);
 

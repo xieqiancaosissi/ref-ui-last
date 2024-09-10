@@ -2,12 +2,13 @@ import React, { useEffect, useState } from "react";
 import { FiChevronDown } from "../reactIcons";
 import { MoreButtonIcon } from "./icon";
 import { isMobile } from "@/utils/device";
-import { switchPoint, displayCurrentRpc, ping } from "./rpcUtil";
+import { switchPoint, displayCurrentRpc, ping, MAXELOADTIMES } from "./rpcUtil";
 import ModalAddCustomNetWork from "./modalAddCustomNetWork";
 import {
   updateAdaptiveRpcInStorage,
   getRPCList,
   getRpcKeyByUrl,
+  getBusinessAdaptiveRpcInStorage,
 } from "@/utils/rpc";
 const RpcList = () => {
   const is_mobile = isMobile();
@@ -40,6 +41,24 @@ const RpcList = () => {
       window.removeEventListener("storage", handleStorageChange);
     };
   }, []);
+  useEffect(() => {
+    // random avalible rpc into store
+    if (
+      Object.keys(responseTimeList).length ==
+      Object.keys(rpclist || {}).length - 1
+    ) {
+      const list = getRPCList(true);
+      const nodeKey = getRandomAvailableNode(responseTimeList);
+      updateAdaptiveRpcInStorage(list[nodeKey]?.url);
+      const current_used_url = window.adaptiveRPC || list[nodeKey]?.url;
+      const current_used_key = getRpcKeyByUrl(current_used_url);
+      const res = Object.assign(responseTimeList, {
+        adaptiveRPC: responseTimeList[current_used_key || nodeKey],
+      });
+
+      setResponseTimeList(JSON.parse(JSON.stringify(res)));
+    }
+  }, [JSON.stringify(responseTimeList || {})]);
   function updateResponseTimeList(data: any) {
     const { key, responseTime, isDelete } = data;
     if (isDelete) {
@@ -57,30 +76,45 @@ const RpcList = () => {
   }
   async function fetchPingTimes() {
     const list = getRPCList(true);
-    const times = await Promise.all(
-      Object.entries(list).map(async ([key, data]: any) => {
-        const time = await ping(data.url, key);
-        return { key, time };
-      })
-    );
-    const newResponseTimeList = times.reduce(
-      (acc: { [key: string]: number }, { key, time }) => {
-        acc[key] = time as number;
-        return acc;
-      },
-      {}
-    );
-    // random avalible rpc into store
-    const nodeKey = getRandomAvailableNode(newResponseTimeList);
-    updateAdaptiveRpcInStorage(list[nodeKey]?.url);
-    const current_used_url = window.adaptiveRPC || list[nodeKey]?.url;
-    const current_used_key = getRpcKeyByUrl(current_used_url);
-    setResponseTimeList(
-      Object.assign(newResponseTimeList, {
-        adaptiveRPC: newResponseTimeList[current_used_key || nodeKey],
-      })
-    );
+    Object.entries(list).forEach(([key, data]: any) => {
+      ping(data.url, key).then((time) => {
+        responseTimeList[key] = time;
+        setResponseTimeList(Object.assign({}, responseTimeList));
+        doSelfAdaptation(time, {
+          key,
+          url: data.url,
+        });
+      });
+    });
   }
+  function doSelfAdaptation(time, o) {
+    const endPoint = localStorage.getItem("endPoint") || "defaultRpc";
+    if (
+      time == -1 &&
+      endPoint == "adaptiveRPC" &&
+      o.url == getBusinessAdaptiveRpcInStorage()
+    ) {
+      let reloadedTimes = Number(
+        localStorage.getItem("rpc_reload_number") || 0
+      );
+      const list = getRPCList(true);
+      const copy = JSON.parse(JSON.stringify(list));
+      delete copy[o.key];
+      const keys = Object.keys(copy);
+      const randomKey = keys[Math.floor(Math.random() * keys.length)];
+      updateAdaptiveRpcInStorage(copy[randomKey]?.url);
+      setTimeout(() => {
+        reloadedTimes = reloadedTimes + 1;
+        if (reloadedTimes > MAXELOADTIMES) {
+          localStorage.setItem("rpc_reload_number", "");
+        } else {
+          localStorage.setItem("rpc_reload_number", reloadedTimes.toString());
+          location.reload();
+        }
+      }, 1000);
+    }
+  }
+
   function getRandomAvailableNode(newResponseTimeList) {
     const keys = Object.keys(newResponseTimeList);
     const availableNodes = Object.entries(newResponseTimeList).filter(
@@ -119,7 +153,6 @@ const RpcList = () => {
               <div className="flex items-center w-3/4">
                 <label className="text-xs text-gray-60 mr-5">RPC</label>
                 <label className="text-xs text-gray-60 cursor-pointer pr-5 whitespace-nowrap overflow-hidden overflow-ellipsis">
-                  {/* {rpclist[currentEndPoint].simpleName} */}
                   {getSimpleName()}
                 </label>
               </div>
@@ -158,7 +191,6 @@ const RpcList = () => {
               >
                 <div className="flex items-center w-2/3">
                   <label className="text-xs w-full text-gray-10 cursor-pointer pr-2 whitespace-nowrap overflow-hidden overflow-ellipsis">
-                    {/* {rpclist[currentEndPoint].simpleName} */}
                     {getSimpleName()}
                   </label>
                 </div>

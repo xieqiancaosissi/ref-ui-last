@@ -56,7 +56,7 @@ export async function getWalletSelector({
   };
   const signInContractId = getOrderlyConfig().ORDERLY_ASSET_MANAGER;
   const RPC = getSelectedRpc();
-  console.log("00000000000003-wallet loading start");
+  console.log("00000000000001-wallet loading start");
   const selector: any = await setupWalletSelector({
     network: {
       networkId: getConfig().networkId as NetworkId,

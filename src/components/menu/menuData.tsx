@@ -7,7 +7,6 @@ import {
   FarmsIcon,
   YoursIcon,
   StakeIcon,
-  VaultIcon,
 } from "./icons";
 import {
   Rainbow,
@@ -72,12 +71,6 @@ export function menuData(): IMenu[] {
           label: "Farms",
           icon: <FarmsIcon />,
           path: "/v2farms",
-        },
-        {
-          id: "vault",
-          label: "Vault",
-          icon: <VaultIcon />,
-          path: "/vault",
         },
         {
           id: "yours",
@@ -149,7 +142,6 @@ export const routeMapIds = {
   "earn-farms": ["/v2farms", "/v2farms/[id]"],
   "earn-stake": ["/xref"],
   "earn-yours": ["/yours"],
-  "earn-vault": ["/vault"],
   meme: ["/meme", "/memeAirdop"],
   "-": ["/risks"],
   "bridge-aggregate": ["/bridge", "/bridge/history"],

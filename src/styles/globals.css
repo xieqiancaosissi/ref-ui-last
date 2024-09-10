@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 @import url("./aggregationClass.css");
+@import url("./bridge.css");
 @font-face {
   font-family: "SpaceGrotesk";
   src: url("../../public/SpaceGrotesk-Light.ttf");

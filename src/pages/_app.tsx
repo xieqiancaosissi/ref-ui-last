@@ -15,7 +15,7 @@ import LedgerTransactionModal from "@/components/common/ledger/ledgerTransaction
 import "@/components/common/ModalDefaultStyle";
 import "@/components/modalGAPrivacy/modalGAPrivacy.css";
 import "@/components/customModal/customModal.css";
-// import "@/styles/bridge.css";
+
 import { useAccountStore } from "@/stores/account";
 import { addUserWallet } from "@/services/indexer";
 import Menu from "../components/menu";

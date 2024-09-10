@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import BigNumber from "bignumber.js";
 import { formatWithCommas_usd } from "@/utils/uiNumber";
 import { ftGetBalance, ftGetTokenMetadata } from "@/services/token";
@@ -107,7 +107,7 @@ function RefPanel() {
   }
   return <RefPanelModal />;
 }
-export default RefPanel;
+export default React.memo(RefPanel);
 
 function useXref() {
   const { tokenPriceList, isSignedIn, accountId } = useContext(
@@ -204,7 +204,7 @@ function useLpV1() {
         );
       }
     );
-  }, [pools]);
+  }, [JSON.stringify(pools || {})]);
   const data_fetch_status =
     !stablePools ||
     !pools ||

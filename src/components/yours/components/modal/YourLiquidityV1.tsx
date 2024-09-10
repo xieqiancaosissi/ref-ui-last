@@ -117,7 +117,7 @@ export function YourLiquidityV1(props: any) {
     getPoolsByIds({ pool_ids: ids }).then((res) => {
       setStablePools(res.filter((p) => p.id.toString() !== NEARX_POOL_ID));
     });
-  }, [addSuccess]);
+  }, []);
   useEffect(() => {
     if (!isSignedIn) return;
     // get all simple pools;

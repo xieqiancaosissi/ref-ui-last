@@ -22,8 +22,8 @@ const config: Config = {
   ],
   theme: {
     extend: {
-      fontFamily:{
-        'SpaceGroteskBold':['SpaceGroteskBold']
+      fontFamily: {
+        SpaceGroteskBold: ["SpaceGroteskBold"],
       },
       colors: {
         chartsPink: "#657EFF",
@@ -101,7 +101,7 @@ const config: Config = {
           270: "#121D26",
           280: "rgba(145, 162, 174, 0.2)",
           290: "#0C171F",
-          300: "rgba(151, 151, 151, 0.2)"
+          300: "rgba(151, 151, 151, 0.2)",
         },
         green: {
           10: "#9EFE01",
@@ -187,6 +187,8 @@ const config: Config = {
       xl: { min: "1280px" },
       "2xl": { min: "1536px" },
       "3xl": { min: "1792px" },
+      vxsm: { min: "300px", max: "767px" },
+      vlg: { min: "768px" },
     },
   },
   plugins: [

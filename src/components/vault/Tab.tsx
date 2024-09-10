@@ -29,14 +29,14 @@ export default function Tab() {
       }}
     >
       <div className="flex items-center lg:w-[1104px] xsm:w-full">
-        <div className={styles.filterPoolType}>
+        <div className={`${styles.filterPoolType}`}>
           {vaultTabList().map((item, index) => {
             return (
               <div
                 key={`${item.key}_${index}`}
                 className={`
                 ${
-                  item.value == activeTab
+                  item.key == activeTab
                     ? "text-white bg-poolsTypelinearGrayBg rounded"
                     : "text-gray-60"
                 }
@@ -52,19 +52,8 @@ export default function Tab() {
                       }`}
                     >
                       {item.value}
-                      <span className="lg:hidden">({item.count})</span>
+                      <span>({item.count})</span>
                     </span>
-                    <div
-                      className={`
-                          ${
-                            item.key == activeTab
-                              ? styles.tagActive
-                              : styles.tagDisable
-                          }
-                        `}
-                    >
-                      {item.count}
-                    </div>
                   </div>
                 </div>
               </div>

@@ -61,7 +61,7 @@ function InitData() {
           global_whitelisted_tokens_ids,
           doNotshowLoading: true,
         });
-      }, 8000);
+      }, 10000);
       return () => clearInterval(timerId);
     }
   }, [tokenInId, tokenOutId, accountId]);

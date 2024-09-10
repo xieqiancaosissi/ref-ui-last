@@ -104,8 +104,8 @@ export function menuData(): IMenu[] {
           bridgeConfirm: true,
         },
         {
-          id: "cex",
-          label: "CEX",
+          id: "cede",
+          label: "Cede",
           icon: <WalletCedeBridge />,
           externalLink:
             "https://send.cede.store/?tokenSymbol=NEAR&network=near&source=ref_finance",

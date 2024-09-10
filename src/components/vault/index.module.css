@@ -2,14 +2,14 @@
   @apply text-xs cursor-pointer border border-gray-100 rounded  h-9 frcc;
 }
 
-@media screen and (min-width: 200px) and (max-width: 767px) {  
-   .filterPoolType {
-    @apply w-full
-   }
+@media screen and (min-width: 200px) and (max-width: 767px) {
+  .filterPoolType {
+    @apply w-full;
+  }
 }
 
-@media screen and (min-width: 768px) {  
-    .filterPoolType {
-     @apply w-[583px]
-    }
- }
+@media screen and (min-width: 768px) {
+  .filterPoolType {
+    @apply w-[583px];
+  }
+}

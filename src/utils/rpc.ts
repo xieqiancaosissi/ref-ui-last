@@ -37,6 +37,7 @@ export function getRpcSelectorList(
             url: "https://rpc.mainnet.near.org",
             simpleName: "official rpc",
           },
+          adaptiveRPC: null,
           lavaRpc: {
             url: "https://near.lava.build",
             simpleName: "lava rpc",
@@ -92,16 +93,18 @@ export const getRPCList = (excludeAdapter = false) => {
   const RPCLIST_custom = getCustomAddRpcSelectorList();
   let RPCLIST;
   if (excludeAdapter) {
+    delete RPCLIST_system.adaptiveRPC;
     RPCLIST = Object.assign(RPCLIST_system, RPCLIST_custom);
   } else {
-    const RPC_adapter = getAdaptiveRpc();
-    RPCLIST = Object.assign(RPCLIST_system, RPCLIST_custom, RPC_adapter);
+    const RPC_adapter = getAdaptiveRpc() as any;
+    RPCLIST_system.adaptiveRPC = RPC_adapter.adaptiveRPC;
+    RPCLIST = Object.assign(RPCLIST_system, RPCLIST_custom);
   }
   return RPCLIST;
 };
 
 export function getSelectedRpc() {
-  const RPC_LIST = getRPCList();
+  const rpclist = getRPCList();
   let endPoint = "defaultRpc";
   try {
     endPoint = window.localStorage.getItem("endPoint") || endPoint;
@@ -111,12 +114,12 @@ export function getSelectedRpc() {
         simpleName: adaptive_rpc.adaptiveRPC.simpleName,
         url: adaptive_url,
       };
-    } else if (!RPC_LIST[endPoint]) {
+    } else if (!rpclist[endPoint]) {
       endPoint = "defaultRpc";
       localStorage.removeItem("endPoint");
     }
   } catch (error) {}
-  return RPC_LIST[endPoint];
+  return rpclist[endPoint];
 }
 
 export function getBusinessAdaptiveRpcInStorage() {

@@ -15,13 +15,13 @@ import LedgerTransactionModal from "@/components/common/ledger/ledgerTransaction
 import "@/components/common/ModalDefaultStyle";
 import "@/components/modalGAPrivacy/modalGAPrivacy.css";
 import "@/components/customModal/customModal.css";
-import "@/styles/bridge.css";
-import RpcList from "@/components/rpc";
+// import "@/styles/bridge.css";
 import { useAccountStore } from "@/stores/account";
 import { addUserWallet } from "@/services/indexer";
 import Menu from "../components/menu";
 import WalletInit from "../components/menu/walletInit";
 const Footer = dynamic(() => import("../components/footer"), { ssr: false });
+const RpcList = dynamic(() => import("@/components/rpc"), { ssr: false });
 const ModalGAPrivacy = dynamic(
   () => import("@/components/modalGAPrivacy/modalGAPrivacy"),
   { ssr: false }

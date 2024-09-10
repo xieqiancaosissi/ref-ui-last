@@ -4,7 +4,6 @@ import { MoreButtonIcon } from "./icon";
 import { isMobile } from "@/utils/device";
 import { switchPoint, displayCurrentRpc, ping } from "./rpcUtil";
 import ModalAddCustomNetWork from "./modalAddCustomNetWork";
-import ClientLayout from "@/layout/client_only";
 import {
   updateAdaptiveRpcInStorage,
   getRPCList,
@@ -258,10 +257,4 @@ const RpcList = () => {
     </>
   );
 };
-export default React.memo(function Memo() {
-  return (
-    <ClientLayout>
-      <RpcList />
-    </ClientLayout>
-  );
-});
+export default React.memo(RpcList);

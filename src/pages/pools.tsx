@@ -254,11 +254,21 @@ function Pools() {
         {/* charts & pools filter */}
         <div className={poolStyle.chartsContainter}>
           {/* charts */}
-          <div className="w-full frcc">
-            <Charts title="TVL(Total Value Locked)" type="tvl"></Charts>
-            <div className="ml-4 mr-4"></div>
-            <Charts title="Volume(24h)" type="24h"></Charts>
-          </div>
+          {(allTVL || allVolume24h) && (
+            <div className="w-full frcc">
+              <Charts
+                title="TVL(Total Value Locked)"
+                type="tvl"
+                all={{ allTVL, allVolume24h }}
+              ></Charts>
+              <div className="ml-4 mr-4"></div>
+              <Charts
+                title="Volume(24h)"
+                type="24h"
+                all={{ allTVL, allVolume24h }}
+              ></Charts>
+            </div>
+          )}
 
           {/* search input */}
           <div className="w-full frcc mt-4">

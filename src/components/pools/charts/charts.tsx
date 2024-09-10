@@ -20,9 +20,11 @@ import { MobileArrowUp } from "../icon";
 export default function Charts({
   title,
   type,
+  all,
 }: {
   title: string;
   type: string;
+  all?: any;
 }) {
   const chartRef = useRef(null);
   const [isActive, setActive] = useState(30);
@@ -104,10 +106,15 @@ export default function Charts({
     getPoolIndexTvlOR24H(type, isActive).then((res) => {
       setChartsData(res);
     });
-    getAllPoolData().then((res) => {
-      setAllTVL(res.tvl);
-      setAllVolume24h(res.volume_24h);
-    });
+    if (all?.allTVL || all?.allVolume24h) {
+      setAllTVL(all.allTVL);
+      setAllVolume24h(all.allVolume24h);
+    } else {
+      getAllPoolData().then((res) => {
+        setAllTVL(res.tvl);
+        setAllVolume24h(res.volume_24h);
+      });
+    }
   }, [isActive]);
 
   const [showTime, setShowTime] = useState(false);

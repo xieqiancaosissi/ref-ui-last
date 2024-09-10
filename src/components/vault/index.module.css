@@ -1,0 +1,3 @@
+.filterPoolType {
+    @apply text-xs cursor-pointer border border-gray-100 rounded lg:w-[583px] xsm:w-full  h-9 frcc;
+  }

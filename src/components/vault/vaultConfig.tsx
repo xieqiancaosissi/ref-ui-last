@@ -23,7 +23,7 @@ export function vaultConfig() {
       aprName: "Highest APR",
       aprValue: "100%",
       riskLevel: "2",
-      category: "Launchapd",
+      category: "Launchpad",
       title: "REF Farming",
     },
     {
@@ -51,4 +51,44 @@ export function vaultConfig() {
       title: "Delta DCA",
     },
   ];
+}
+
+export function vaultTabList() {
+  const data = vaultConfig();
+  const list = [
+    {
+      key: "",
+      value: "All",
+      count: data.length,
+    },
+    {
+      key: "lp",
+      value: "LP",
+      count: 0,
+    },
+    {
+      key: "lending",
+      value: "Lending",
+      count: 0,
+    },
+    {
+      key: "bot",
+      value: "Bot",
+      count: 0,
+    },
+    {
+      key: "launchpad",
+      value: "Launchpad",
+      count: 0,
+    },
+  ];
+  data.map((item: any) => {
+    list.map((ite: any) => {
+      if (item.category == ite.value) {
+        ite.count = ite.count + 1;
+      }
+    });
+  });
+
+  return list;
 }

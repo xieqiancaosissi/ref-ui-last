@@ -111,6 +111,7 @@ export default function FarmsDetailStake(props: {
   const { getIsSignedIn } = useAccountStore();
   const isSignedIn = getIsSignedIn();
   const freeAmount = toReadableNumber(DECIMALS, free_amount);
+  const lockAmount = toReadableNumber(DECIMALS, locked_amount);
   const lockedAmount = toReadableNumber(DECIMALS, locked_amount);
   const [selectedLockData, setSelectedLockData] = useState<Lock | null>(null);
   const [lockDataList, setLockDataList] = useState<Lock[]>([]);
@@ -358,7 +359,11 @@ export default function FarmsDetailStake(props: {
   return (
     <div
       className={`bg-dark-10 rounded-md p-5 xsm:p-0 ${
-        isEnded && Number(freeAmount) === 0 ? "hidden" : ""
+        !isSignedIn ||
+        (isEnded &&
+          Number(freeAmount) + Number(lockAmount) + Number(shadow_amount) == 0)
+          ? "hidden"
+          : ""
       }`}
     >
       <div className="flex items-center mb-4 xsm:mb-7 xsm:border-b xsm:border-white xsm:border-opacity-10 xsm:px-4">

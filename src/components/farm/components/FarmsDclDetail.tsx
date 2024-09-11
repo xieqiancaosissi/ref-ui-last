@@ -1109,7 +1109,7 @@ export default function FarmsDclDetail(props: {
       {/* pc */}
       <main
         className={`dark:text-white xsm:hidden ${
-          isEnded ? styles.farmEnded : ""
+          isEnded ? styles.farmDetailsEnded : ""
         }`}
       >
         {/* title */}

@@ -20,7 +20,7 @@ function Bridge() {
     },
     {
       icon: <WalletCedeBridge />,
-      name: "CEX Bridge",
+      name: "Cede Bridge",
       link: "https://send.cede.store/?tokenSymbol=NEAR&network=near&source=ref_finance",
     },
   ];

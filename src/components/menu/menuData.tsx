@@ -7,7 +7,6 @@ import {
   FarmsIcon,
   YoursIcon,
   StakeIcon,
-  VaultIcon,
 } from "./icons";
 import {
   Rainbow,
@@ -74,12 +73,6 @@ export function menuData(): IMenu[] {
           path: "/v2farms",
         },
         {
-          id: "vault",
-          label: "Vault",
-          icon: <VaultIcon />,
-          path: "/vault",
-        },
-        {
           id: "yours",
           label: "Yours",
           icon: <YoursIcon />,
@@ -111,8 +104,8 @@ export function menuData(): IMenu[] {
           bridgeConfirm: true,
         },
         {
-          id: "cex",
-          label: "CEX",
+          id: "cede",
+          label: "Cede",
           icon: <WalletCedeBridge />,
           externalLink:
             "https://send.cede.store/?tokenSymbol=NEAR&network=near&source=ref_finance",
@@ -149,7 +142,6 @@ export const routeMapIds = {
   "earn-farms": ["/v2farms", "/v2farms/[id]"],
   "earn-stake": ["/xref"],
   "earn-yours": ["/yours"],
-  "earn-vault": ["/vault"],
   meme: ["/meme", "/memeAirdop"],
   "-": ["/risks"],
   "bridge-aggregate": ["/bridge", "/bridge/history"],

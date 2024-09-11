@@ -62,6 +62,37 @@
 .farmEnded .active img {
   filter: initial;
 }
+
+.farmDetailsEnded {
+  /* background-color: #0c171f;
+  opacity: 0.6; */
+}
+.farmDetailsEnded .border-gradientFromHover {
+  border-color: #73818b;
+}
+.farmDetailsEnded .border-gradientFrom {
+  border-color: #73818b;
+}
+
+.farmDetailsEnded .text-white {
+  color: #73818b;
+}
+.farmDetailsEnded .dclIcon.text-white {
+  color: #fff;
+}
+.farmDetailsEnded img {
+  filter: grayscale(100%);
+}
+.farmDetailsEnded .bg-blue-10.text-white {
+  color: #fff;
+}
+.farmDetailsEnded .active .text-navHighLightText {
+  color: #fff;
+}
+.farmDetailsEnded .active img {
+  filter: initial;
+}
+
 .gradient_text {
   background: linear-gradient(90deg, #ffffff 0%, #91a2ae 100%);
   -webkit-background-clip: text;

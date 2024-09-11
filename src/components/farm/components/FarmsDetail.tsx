@@ -850,7 +850,7 @@ export default function FarmsDetail(props: {
       {/* pc */}
       <main
         className={`dark:text-white xsm:hidden ${
-          isEnded() || needForbidden ? styles.farmEnded : ""
+          isEnded() || needForbidden ? styles.farmDetailsEnded : ""
         }`}
       >
         {/* title */}

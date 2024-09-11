@@ -91,15 +91,14 @@ export function getAdaptiveRpc() {
 export const getRPCList = (excludeAdapter = false) => {
   const RPCLIST_system = getRpcSelectorList().RPC_LIST;
   const RPCLIST_custom = getCustomAddRpcSelectorList();
-  let RPCLIST;
-  if (excludeAdapter) {
-    delete RPCLIST_system.adaptiveRPC;
-    RPCLIST = Object.assign(RPCLIST_system, RPCLIST_custom);
-  } else {
-    const RPC_adapter = getAdaptiveRpc() as any;
-    RPCLIST_system.adaptiveRPC = RPC_adapter.adaptiveRPC;
-    RPCLIST = Object.assign(RPCLIST_system, RPCLIST_custom);
-  }
+  // if (excludeAdapter) {
+  delete RPCLIST_system.adaptiveRPC;
+  const RPCLIST = Object.assign(RPCLIST_system, RPCLIST_custom);
+  // } else {
+  //   const RPC_adapter = getAdaptiveRpc() as any;
+  //   RPCLIST_system.adaptiveRPC = RPC_adapter.adaptiveRPC;
+  //   RPCLIST = Object.assign(RPCLIST_system, RPCLIST_custom);
+  // }
   return RPCLIST;
 };
 

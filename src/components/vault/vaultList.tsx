@@ -1,8 +1,19 @@
 import React from "react";
 import { vaultConfig, VaultColorConfig } from "./vaultConfig";
+import { openUrl } from "@/services/commonV3";
+import { useRouter } from "next/router";
 
 export default function VaultList(props: any) {
   const { currentTag } = props;
+  const router = useRouter();
+  const blink = (params: any) => {
+    if (params?.path) {
+      router.push(params.path);
+    }
+    if (params?.url) {
+      openUrl(params.url);
+    }
+  };
   return (
     <div
       className={`vlg:flex vlg:items-center vlg:flex-wrap vlg:w-[1104px] xsm:w-full xsm:px-[12px]`}
@@ -13,6 +24,7 @@ export default function VaultList(props: any) {
           <div
             key={"VaultList" + index}
             className={`vlg:mr-[30px] cursor-pointer vlg:hover:shadow-green-10 vlg:hover:shadow-sm vlg:w-[334px] vxsm:w-full xsm:my-[15px] rounded-lg bg-dark-290 border border-gray-90 p-[20px] h-[159px] vlg:mb-[30px] flex flex-col justify-between`}
+            onClick={() => blink(item)}
           >
             <div className="flex items-center">
               <div className="w-[38px] h-[38px]">{item.icon}</div>

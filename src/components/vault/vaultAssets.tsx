@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function ValutAssets() {
+export default function VaultAssets() {
   return (
     <div
       className="w-full lg:h-70 lg:fixed lg:frcc top-[0px] z-[51]"

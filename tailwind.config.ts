@@ -38,6 +38,7 @@ const config: Config = {
         whiteOpacity: "rgba(255, 255, 255, 0.4)",
         v3feeTextColor: "#586F80",
         refPublicBoxDarkBg: "rgba(27, 36, 44, 0.4)",
+        vaultTagBot: "#0057FF",
         gray: {
           10: "#91A2AE",
           20: "#212B35",
@@ -150,6 +151,10 @@ const config: Config = {
       },
       backgroundImage: (theme) => ({
         topLinearGradient: "linear-gradient( #FFDA19, #FF833E)",
+        vaultTagLaunchpad:
+          "linear-gradient(to right, rgba(0, 255, 209, 1), rgba(0, 148, 255, 1))",
+        vaultTagLending:
+          "linear-gradient(to right, rgba(255, 75, 118, 1), rgba(125, 45, 153, 1))",
 
         poolsTypelinearGrayBg:
           "linear-gradient(356.54deg, #2A3643 2.38%, #6A88A9 90.82%)",

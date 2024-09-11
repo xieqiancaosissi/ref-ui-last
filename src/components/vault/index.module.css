@@ -1,15 +1,7 @@
 .filterPoolType {
-  @apply text-xs cursor-pointer border border-gray-100 rounded  h-9 frcc;
+  @apply text-xs cursor-pointer border border-gray-100 rounded  h-9 frcc vlg:w-[583px] vxsm:hidden;
 }
 
-@media screen and (min-width: 200px) and (max-width: 767px) {
-  .filterPoolType {
-    @apply w-full;
-  }
-}
-
-@media screen and (min-width: 768px) {
-  .filterPoolType {
-    @apply w-[583px];
-  }
+.filterPoolTypeMobile {
+  @apply text-xs cursor-pointer border border-gray-100 rounded  h-9 frcc vxsm:w-full  vlg:hidden;
 }

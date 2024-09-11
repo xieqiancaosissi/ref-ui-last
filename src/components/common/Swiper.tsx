@@ -80,9 +80,9 @@ export default function AdSwiper() {
                     }}
                   >
                     {is_mobile ? (
-                      <img src={ad.image_mobile_url} />
+                      <img src={ad.image_mobile_url} className="mt-3" />
                     ) : (
-                      <img src={ad.image_url} />
+                      <img src={ad.image_url} className="mt-2" />
                     )}
                   </div>
                 </SwiperSlide>

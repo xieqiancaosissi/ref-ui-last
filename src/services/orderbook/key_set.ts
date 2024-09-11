@@ -31,7 +31,8 @@ export const announceKey = async () => {
     wallet.id === "here-wallet" ||
     wallet.id === "nightly" ||
     wallet.id === "keypom" ||
-    wallet.id === "near-mobile-wallet"
+    wallet.id === "near-mobile-wallet" ||
+    wallet.id == "coin98-wallet"
   ) {
     if (wallet.id == "near-mobile-wallet") {
       const keyPair = getNearMobileWalletKeyPairObject();
@@ -72,7 +73,8 @@ export const setTradingKey = async () => {
     wallet.id === "here-wallet" ||
     wallet.id === "nightly" ||
     wallet.id === "keypom" ||
-    wallet.id === "near-mobile-wallet"
+    wallet.id === "near-mobile-wallet" ||
+    wallet.id == "coin98-wallet"
   ) {
     const contract: any = await getContract();
     return await contract.user_request_set_trading_key({

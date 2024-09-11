@@ -42,8 +42,8 @@ importers:
         specifier: 8.9.12
         version: 8.9.12
       '@near-wallet-selector/coin98-wallet':
-        specifier: 8.9.12
-        version: 8.9.12
+        specifier: 8.9.10
+        version: 8.9.10(near-api-js@3.0.4)
       '@near-wallet-selector/core':
         specifier: 8.9.10
         version: 8.9.10(near-api-js@3.0.4)
@@ -1975,8 +1975,10 @@ packages:
   '@near-wallet-selector/bitte-wallet@8.9.12':
     resolution: {integrity: sha512-yzEL/9KAc3eqLjvfFBM1YZzzbfObEfj9PZPbljdESPm/vW93GfhLq3MPvQmRyahT3areDqeHqMUlWObvrYcLaQ==}
 
-  '@near-wallet-selector/coin98-wallet@8.9.12':
-    resolution: {integrity: sha512-7KG4iT6COF0OOLJORdyicigoeO+HO4ttHtSU1DLye1eiIBAdh8+WQnCpa13qXYDsLLbZiP9XStxjSBWqH08hYg==}
+  '@near-wallet-selector/coin98-wallet@8.9.10':
+    resolution: {integrity: sha512-G03KSXDcyTaZAinH2PtXK2L2Oe5+o0xE81E+pXRSTGokoEhnIAO/tHYbBhQkj2N0pwYxV8LjpvmjDYq2ZzPHLw==}
+    peerDependencies:
+      near-api-js: ^1.0.0 || ^2.0.0
 
   '@near-wallet-selector/core@7.9.1':
     resolution: {integrity: sha512-BJGsTK0snZAU1Je+W9TFJG5KW+jk+Ots9LuxsALZ/wZpqSeGT+w4xw36TZt3QsEm+I84im1+L+PIIW/bM2A9rQ==}
@@ -6120,12 +6122,12 @@ packages:
   eth-lib@0.2.8:
     resolution: {integrity: sha512-ArJ7x1WcWOlSpzdoTBX8vkwlkSQ85CjjifSZtV4co64vWxSV8geWfPI9x4SVYu3DSxnX4yWFVTtGL+j9DUFLNw==}
 
-  eth-object@git+https://git@github.com:aurora-is-near/eth-object.git#378b8dbf44a71f7049666cea5a16ab88d45aed06:
-    resolution: {commit: 378b8dbf44a71f7049666cea5a16ab88d45aed06, repo: git@github.com:aurora-is-near/eth-object.git, type: git}
+  eth-object@https://codeload.github.com/aurora-is-near/eth-object/tar.gz/378b8dbf44a71f7049666cea5a16ab88d45aed06:
+    resolution: {tarball: https://codeload.github.com/aurora-is-near/eth-object/tar.gz/378b8dbf44a71f7049666cea5a16ab88d45aed06}
     version: 1.0.3
 
-  eth-util-lite@git+https://git@github.com:near/eth-util-lite.git#427b7634a123d171432f3b38c6542913a3897ac7:
-    resolution: {commit: 427b7634a123d171432f3b38c6542913a3897ac7, repo: git@github.com:near/eth-util-lite.git, type: git}
+  eth-util-lite@https://codeload.github.com/near/eth-util-lite/tar.gz/427b7634a123d171432f3b38c6542913a3897ac7:
+    resolution: {tarball: https://codeload.github.com/near/eth-util-lite/tar.gz/427b7634a123d171432f3b38c6542913a3897ac7}
     version: 1.0.1
 
   ethereum-bloom-filters@1.2.0:
@@ -11803,7 +11805,7 @@ snapshots:
     dependencies:
       bn.js: 5.2.1
       bs58: 4.0.1
-      eth-object: git+https://git@github.com:aurora-is-near/eth-object.git#378b8dbf44a71f7049666cea5a16ab88d45aed06(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      eth-object: https://codeload.github.com/aurora-is-near/eth-object/tar.gz/378b8dbf44a71f7049666cea5a16ab88d45aed06(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       ethereumjs-util: 7.1.5
       ethers: 5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       lite-merkle-patricia-tree: 1.0.1
@@ -12179,14 +12181,12 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  '@near-wallet-selector/coin98-wallet@8.9.12':
+  '@near-wallet-selector/coin98-wallet@8.9.10(near-api-js@3.0.4)':
     dependencies:
-      '@near-wallet-selector/core': 8.9.12
-      '@near-wallet-selector/wallet-utils': 8.9.12
+      '@near-wallet-selector/core': 8.9.10(near-api-js@3.0.4)
+      '@near-wallet-selector/wallet-utils': 8.9.10(near-api-js@3.0.4)
       is-mobile: 4.0.0
-      near-api-js: 4.0.3
-    transitivePeerDependencies:
-      - encoding
+      near-api-js: 3.0.4
 
   '@near-wallet-selector/core@7.9.1(near-api-js@3.0.4)':
     dependencies:
@@ -18738,9 +18738,9 @@ snapshots:
       elliptic: 6.5.7
       xhr-request-promise: 0.1.3
 
-  eth-object@git+https://git@github.com:aurora-is-near/eth-object.git#378b8dbf44a71f7049666cea5a16ab88d45aed06(bufferutil@4.0.8)(utf-8-validate@5.0.10):
+  eth-object@https://codeload.github.com/aurora-is-near/eth-object/tar.gz/378b8dbf44a71f7049666cea5a16ab88d45aed06(bufferutil@4.0.8)(utf-8-validate@5.0.10):
     dependencies:
-      eth-util-lite: git+https://git@github.com:near/eth-util-lite.git#427b7634a123d171432f3b38c6542913a3897ac7
+      eth-util-lite: https://codeload.github.com/near/eth-util-lite/tar.gz/427b7634a123d171432f3b38c6542913a3897ac7
       ethereumjs-util: 7.1.5
       web3: 1.10.4(bufferutil@4.0.8)(utf-8-validate@5.0.10)
     transitivePeerDependencies:
@@ -18749,7 +18749,7 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  eth-util-lite@git+https://git@github.com:near/eth-util-lite.git#427b7634a123d171432f3b38c6542913a3897ac7:
+  eth-util-lite@https://codeload.github.com/near/eth-util-lite/tar.gz/427b7634a123d171432f3b38c6542913a3897ac7:
     dependencies:
       bn.js: 4.12.0
       js-sha3: 0.8.0

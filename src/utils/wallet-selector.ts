@@ -17,6 +17,7 @@ import { setupKeypom } from "@keypom/selector";
 import { setupMintbaseWallet } from "@near-wallet-selector/mintbase-wallet";
 import { setupOKXWallet } from "@near-wallet-selector/okx-wallet";
 import { setupBitteWallet } from "@near-wallet-selector/bitte-wallet";
+import { setupCoin98Wallet } from "@near-wallet-selector/coin98-wallet";
 import "@near-wallet-selector/modal-ui/styles.css";
 import getConfig from "./config";
 import getOrderlyConfig from "./orderlyConfig";
@@ -114,6 +115,7 @@ export async function getWalletSelector({
         contractId: signInContractId,
         deprecated: false,
       }),
+      setupCoin98Wallet({}),
     ],
   });
   console.log("2222222222222-wallet loading end");

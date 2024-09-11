@@ -86,7 +86,7 @@ export function VaultColorConfig(type: string) {
       return "text-black bg-vaultTagLaunchpad";
     case "Lending":
       return "text-white bg-vaultTagLending";
-    case "AutoBot":
+    case "Bot":
       return "text-white bg-vaultTagBot";
     default:
       return "text-white bg-vaultTagBot";
@@ -107,6 +107,11 @@ export function vaultTabList() {
       count: 0,
     },
     {
+      key: "autobot",
+      value: "AutoBot",
+      count: 0,
+    },
+    {
       key: "reffarming",
       value: "RefFarming",
       count: 0,
@@ -114,11 +119,6 @@ export function vaultTabList() {
     {
       key: "lending",
       value: "Lending",
-      count: 0,
-    },
-    {
-      key: "autobot",
-      value: "AutoBot",
       count: 0,
     },
   ];
@@ -147,8 +147,8 @@ export function vaultTabListMobile() {
       count: 0,
     },
     {
-      key: "reffarming",
-      value: "RefFarming",
+      key: "autobot",
+      value: "AutoBot",
       count: 0,
     },
   ];

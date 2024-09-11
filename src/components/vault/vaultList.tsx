@@ -5,7 +5,7 @@ export default function VaultList(props: any) {
   const { currentTag } = props;
   return (
     <div
-      className={`vlg:flex vlg:items-center vlg:flex-wrap vlg:w-[1104px] xsm:w-full xsm:px-[20px]`}
+      className={`vlg:flex vlg:items-center vlg:flex-wrap vlg:w-[1104px] xsm:w-full xsm:px-[12px]`}
     >
       {vaultConfig().map((item: any, index: any) => {
         if (currentTag != "All" && item.category != currentTag) return null;

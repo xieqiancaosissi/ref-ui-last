@@ -113,7 +113,7 @@ export function vaultTabListMobile() {
   const data = vaultConfig();
   const list = [
     {
-      key: "all",
+      key: "All",
       value: "All",
       count: data.length,
     },

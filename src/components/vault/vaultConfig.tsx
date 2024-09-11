@@ -8,16 +8,25 @@ export function vaultConfig() {
       aprName: "Highest APY",
       aprValue: "100%",
       riskLevel: "2",
-      category: "LP",
-      title: "REF Classic + Stable LP",
+      category: "POOL",
+      title: "REF Classic LP",
+      path: "/pools",
+    },
+    {
+      icon: <RefVaultIcon />,
+      aprName: "Highest APY",
+      aprValue: "100%",
+      riskLevel: "1",
+      category: "POOL",
+      title: "REF Stable LP",
       path: "/pools",
     },
     {
       icon: <RefVaultIcon />,
       aprName: "Top Bin APY",
       aprValue: "100%",
-      riskLevel: "3",
-      category: "LP",
+      riskLevel: "2",
+      category: "POOL",
       title: "REF DCL LP",
       path: "/pools",
     },
@@ -25,16 +34,16 @@ export function vaultConfig() {
       icon: <RefVaultIcon />,
       aprName: "Highest APY",
       aprValue: "100%",
-      riskLevel: "2",
-      category: "Launchpad",
+      riskLevel: "1",
+      category: "RefFarming",
       title: "REF Farming",
       path: "/v2farms",
     },
     {
       icon: <BurrowVaultIcon />,
-      aprName: "Highest APR",
+      aprName: "Highest APY",
       aprValue: "100%",
-      riskLevel: "2",
+      riskLevel: "1",
       category: "Lending",
       title: "Burrow",
       url: "https://app.burrow.finance/",
@@ -43,8 +52,8 @@ export function vaultConfig() {
       icon: <DeltaVaultIcon />,
       aprName: "Historical ROI",
       aprValue: "100%",
-      riskLevel: "1",
-      category: "Bot",
+      riskLevel: "2",
+      category: "AutoBot",
       title: "Delta Grid",
       url: "https://www.deltatrade.ai/bots/grid/vaults/",
     },
@@ -52,8 +61,17 @@ export function vaultConfig() {
       icon: <DeltaVaultIcon />,
       aprName: "Historical ROI",
       aprValue: "100%",
-      riskLevel: "1",
-      category: "Bot",
+      riskLevel: "2",
+      category: "AutoBot",
+      title: "Delta Swing",
+      url: "https://www.deltatrade.ai/bots/swing/vaults/",
+    },
+    {
+      icon: <DeltaVaultIcon />,
+      aprName: "Historical ROI",
+      aprValue: "100%",
+      riskLevel: "2",
+      category: "AutoBot",
       title: "Delta DCA",
       url: "https://www.deltatrade.ai/bots/dca/vaults/",
     },
@@ -62,13 +80,13 @@ export function vaultConfig() {
 
 export function VaultColorConfig(type: string) {
   switch (type) {
-    case "LP":
+    case "POOL":
       return "text-black bg-green-10";
-    case "Launchpad":
+    case "RefFarming":
       return "text-black bg-vaultTagLaunchpad";
     case "Lending":
       return "text-white bg-vaultTagLending";
-    case "Bot":
+    case "AutoBot":
       return "text-white bg-vaultTagBot";
     default:
       return "text-white bg-vaultTagBot";
@@ -84,8 +102,13 @@ export function vaultTabList() {
       count: data.length,
     },
     {
-      key: "lp",
-      value: "LP",
+      key: "pool",
+      value: "POOL",
+      count: 0,
+    },
+    {
+      key: "reffarming",
+      value: "RefFarming",
       count: 0,
     },
     {
@@ -94,13 +117,8 @@ export function vaultTabList() {
       count: 0,
     },
     {
-      key: "bot",
-      value: "Bot",
-      count: 0,
-    },
-    {
-      key: "launchpad",
-      value: "Launchpad",
+      key: "autobot",
+      value: "AutoBot",
       count: 0,
     },
   ];
@@ -124,38 +142,13 @@ export function vaultTabListMobile() {
       count: data.length,
     },
     {
-      key: "lp",
-      value: "LP",
+      key: "pool",
+      value: "POOL",
       count: 0,
     },
     {
-      key: "lending",
-      value: "Lending",
-      count: 0,
-    },
-  ];
-  data.map((item: any) => {
-    list.map((ite: any) => {
-      if (item.category == ite.value) {
-        ite.count = ite.count + 1;
-      }
-    });
-  });
-
-  return list;
-}
-
-export function vaultTabListMobileDropDown() {
-  const data = vaultConfig();
-  const list = [
-    {
-      key: "bot",
-      value: "Bot",
-      count: 0,
-    },
-    {
-      key: "launchpad",
-      value: "Launchpad",
+      key: "reffarming",
+      value: "RefFarming",
       count: 0,
     },
   ];

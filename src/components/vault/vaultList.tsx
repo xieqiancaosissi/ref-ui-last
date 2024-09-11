@@ -1,9 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { vaultConfig, VaultColorConfig } from "./vaultConfig";
 import { openUrl } from "@/services/commonV3";
 import { useRouter } from "next/router";
+import { getSearchResult } from "@/services/pool";
 
 export default function VaultList(props: any) {
+  //api.ref.finance/pool/search?type=classic&sort=apy&limit=20&labels=&offset=0&hide_low_pool=true&order_by=desc&token_type=&token_list=&pool_id_list=
+
   const { currentTag } = props;
   const router = useRouter();
   const blink = (params: any) => {
@@ -14,6 +17,29 @@ export default function VaultList(props: any) {
       openUrl(params.url);
     }
   };
+
+  const getRes = async (poolType: string) => {
+    const res = await getSearchResult({
+      type: poolType,
+      sort: "apy",
+      limit: "20",
+      offset: "0",
+      hide_low_pool: true,
+      order: "desc",
+      token_type: "",
+      token_list: "",
+      pool_id_list: "",
+      onlyUseId: false,
+      labels: "", //all | farm | new | meme | other
+    });
+    console.log(res);
+  };
+
+  useEffect(() => {
+    getRes("classic");
+    getRes("stable");
+    getRes("dcl");
+  }, []);
   return (
     <div
       className={`vlg:flex vlg:items-center vlg:flex-wrap vlg:w-[1104px] xsm:w-full xsm:px-[12px]`}

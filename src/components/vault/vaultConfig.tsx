@@ -11,6 +11,7 @@ export function vaultConfig() {
       category: "POOL",
       title: "REF Classic LP",
       path: "/pools",
+      name: "classic",
     },
     {
       icon: <RefVaultIcon />,
@@ -20,6 +21,7 @@ export function vaultConfig() {
       category: "POOL",
       title: "REF Stable LP",
       path: "/pools",
+      name: "stable",
     },
     {
       icon: <RefVaultIcon />,
@@ -29,6 +31,7 @@ export function vaultConfig() {
       category: "POOL",
       title: "REF DCL LP",
       path: "/pools",
+      name: "dcl",
     },
     {
       icon: <RefVaultIcon />,
@@ -38,6 +41,7 @@ export function vaultConfig() {
       category: "RefFarming",
       title: "REF Farming",
       path: "/v2farms",
+      name: "farm",
     },
     {
       icon: <BurrowVaultIcon />,
@@ -47,6 +51,7 @@ export function vaultConfig() {
       category: "Lending",
       title: "Burrow",
       url: "https://app.burrow.finance/",
+      name: "burrow",
     },
     {
       icon: <DeltaVaultIcon />,
@@ -56,6 +61,7 @@ export function vaultConfig() {
       category: "AutoBot",
       title: "Delta Grid",
       url: "https://www.deltatrade.ai/bots/grid/vaults/",
+      name: "grid",
     },
     {
       icon: <DeltaVaultIcon />,
@@ -65,6 +71,7 @@ export function vaultConfig() {
       category: "AutoBot",
       title: "Delta Swing",
       url: "https://www.deltatrade.ai/bots/swing/vaults/",
+      name: "swing",
     },
     {
       icon: <DeltaVaultIcon />,
@@ -74,6 +81,7 @@ export function vaultConfig() {
       category: "AutoBot",
       title: "Delta DCA",
       url: "https://www.deltatrade.ai/bots/dca/vaults/",
+      name: "dca",
     },
   ];
 }

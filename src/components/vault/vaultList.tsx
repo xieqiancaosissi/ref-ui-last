@@ -1,25 +1,13 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { vaultConfig, VaultColorConfig } from "./vaultConfig";
 import { openUrl } from "@/services/commonV3";
 import { useRouter } from "next/router";
 import { getSearchResult } from "@/services/pool";
+import { Span } from "next/dist/trace";
 
-export default function VaultList(props: any) {
-  //api.ref.finance/pool/search?type=classic&sort=apy&limit=20&labels=&offset=0&hide_low_pool=true&order_by=desc&token_type=&token_list=&pool_id_list=
-
-  const { currentTag } = props;
-  const router = useRouter();
-  const blink = (params: any) => {
-    if (params?.path) {
-      router.push(params.path);
-    }
-    if (params?.url) {
-      openUrl(params.url);
-    }
-  };
-
-  const getRes = async (poolType: string) => {
-    const res = await getSearchResult({
+const fetchMaxApr = async (poolType, label) => {
+  try {
+    const res: any = await getSearchResult({
       type: poolType,
       sort: "apy",
       limit: "20",
@@ -30,16 +18,75 @@ export default function VaultList(props: any) {
       token_list: "",
       pool_id_list: "",
       onlyUseId: false,
-      labels: "", //all | farm | new | meme | other
+      labels: label,
     });
-    console.log(res);
+
+    if (res?.list?.length > 0) {
+      const aprs = res.list.map((item) => item.apy * 1 + item.farm_apy * 1);
+      return Math.max(...aprs);
+    }
+  } catch (error) {
+    console.error(`Failed to fetch APR for ${poolType}:`, error);
+  }
+  return 0; // Default value if no data is available
+};
+
+export default function VaultList(props: any) {
+  const { currentTag } = props;
+  const router = useRouter();
+  const blink = (params: any) => {
+    if (params?.path) {
+      router.push(params.path);
+    }
+    if (params?.url) {
+      openUrl(params.url);
+    }
   };
+  const [classicApr, setClassicApr] = useState(0);
+  const [stableApr, setStableApr] = useState(0);
+  const [dclApr, setDclApr] = useState(0);
+
+  const [classicAprFarm, setClassicAprFarm] = useState(0);
+  const [stableAprFarm, setStableAprFarm] = useState(0);
+  const [dclAprFarm, setDclAprFarm] = useState(0);
+
+  const maxFarm = useMemo(
+    () => Math.max(classicAprFarm, stableAprFarm, dclAprFarm),
+    [classicAprFarm, stableAprFarm, dclAprFarm]
+  );
 
   useEffect(() => {
-    getRes("classic");
-    getRes("stable");
-    getRes("dcl");
+    // Concurrently fetch APR values for all pool types
+    const fetchAllAprs = async () => {
+      const [classicApr, stableApr, dclApr] = await Promise.all([
+        fetchMaxApr("classic", ""),
+        fetchMaxApr("stable", ""),
+        fetchMaxApr("dcl", ""),
+      ]);
+      setClassicApr(classicApr);
+      setStableApr(stableApr);
+      setDclApr(dclApr);
+    };
+
+    fetchAllAprs();
   }, []);
+
+  useEffect(() => {
+    // Concurrently fetch farm APR values for all pool types
+    const fetchAllFarmAprs = async () => {
+      const [classicAprFarm, stableAprFarm, dclAprFarm] = await Promise.all([
+        fetchMaxApr("classic", "farm"),
+        fetchMaxApr("stable", "farm"),
+        fetchMaxApr("dcl", "farm"),
+      ]);
+      setClassicAprFarm(classicAprFarm);
+      setStableAprFarm(stableAprFarm);
+      setDclAprFarm(dclAprFarm);
+    };
+
+    fetchAllFarmAprs();
+  }, []);
+
   return (
     <div
       className={`vlg:flex vlg:items-center vlg:flex-wrap vlg:w-[1104px] xsm:w-full xsm:px-[12px]`}
@@ -68,7 +115,13 @@ export default function VaultList(props: any) {
             <div className="text-sm">
               <p className="flex items-center justify-between">
                 <span className="text-gray-60"> {item.aprName}</span>
-                <span>{item.aprValue}</span>
+                {/* <span>{item.aprValue}</span> */}
+                {item.name == "classic" && (
+                  <span>{classicApr.toFixed(2)}%</span>
+                )}
+                {item.name == "stable" && <span>{stableApr.toFixed(2)}%</span>}
+                {item.name == "dcl" && <span>{dclApr.toFixed(2)}%</span>}
+                {item.name == "farm" && <span>{maxFarm.toFixed(2)}%</span>}
               </p>
               <p className="flex items-center justify-between mt-[14px]">
                 <span className="text-gray-60">Risk Level </span>

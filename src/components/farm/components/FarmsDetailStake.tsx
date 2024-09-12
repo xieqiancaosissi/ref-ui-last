@@ -144,6 +144,10 @@ function FarmsDetailStake(props: {
   useEffect(() => {
     if (Number(unlpBalances) === 0) {
       setActiveTab("stake");
+    } else {
+      if (isEnded) {
+        setActiveTab("unstake");
+      }
     }
   }, [unlpBalances]);
   useEffect(() => {

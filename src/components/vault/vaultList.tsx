@@ -3,7 +3,12 @@ import { vaultConfig, VaultColorConfig } from "./vaultConfig";
 import { openUrl } from "@/services/commonV3";
 import { useRouter } from "next/router";
 import { getSearchResult } from "@/services/pool";
-import { getBurrowApy,getDeltaGridApy,getDeltaSwingApy,getDeltaDCAApy } from "./apy";
+import {
+  getBurrowApy,
+  getDeltaGridApy,
+  getDeltaSwingApy,
+  getDeltaDCAApy,
+} from "./apy";
 
 const fetchMaxApr = async (poolType, label) => {
   try {
@@ -31,7 +36,6 @@ const fetchMaxApr = async (poolType, label) => {
   return 0; // Default value if no data is available
 };
 
-
 export default function VaultList(props: any) {
   const { currentTag } = props;
   const router = useRouter();
@@ -52,24 +56,23 @@ export default function VaultList(props: any) {
   const [classicAprFarm, setClassicAprFarm] = useState(0);
   const [stableAprFarm, setStableAprFarm] = useState(0);
   const [dclAprFarm, setDclAprFarm] = useState(0);
-  
+
   // burrow
-  const [burrowApr, setBurrowApr] = useState(0)
+  const [burrowApr, setBurrowApr] = useState(0);
 
   // delta
-  const [gridApr, setGridApr] = useState(0)
-  const [swingApr, setSwingApr] = useState(0)
-  const [dcaApr, setDcaApr] = useState(0)
-
+  const [gridApr, setGridApr] = useState(0);
+  const [swingApr, setSwingApr] = useState(0);
+  const [dcaApr, setDcaApr] = useState(0);
 
   const maxFarm = useMemo(
     () => Math.max(classicAprFarm, stableAprFarm, dclAprFarm),
     [classicAprFarm, stableAprFarm, dclAprFarm]
   );
 
-  useEffect(()=>{
-    fetchBurrowData()
-  },[])
+  useEffect(() => {
+    fetchBurrowData();
+  }, []);
 
   useEffect(() => {
     // Concurrently fetch APR values for all pool types
@@ -104,34 +107,37 @@ export default function VaultList(props: any) {
   }, []);
 
   // delta
-  useEffect(()=>{
-    getDeltaGridApy().then((res:any)=>{
+  useEffect(() => {
+    getDeltaGridApy().then((res: any) => {
       if (res?.list?.length > 0) {
-        setGridApr(res.list[0].apy_24)
+        setGridApr(res.list[0].apy_24);
       }
-    })
-    getDeltaDCAApy().then((res:any)=>{
+    });
+    getDeltaDCAApy().then((res: any) => {
       if (res?.list?.length > 0) {
-        setDcaApr(res.list[0].profit_percent)
+        setDcaApr(res.list[0].profit_percent);
       }
-    })
-    getDeltaSwingApy().then((res:any)=>{
+    });
+    getDeltaSwingApy().then((res: any) => {
       if (res?.list?.length > 0) {
-        setSwingApr(res.list[0].apy_24)
+        setSwingApr(res.list[0].apy_24);
       }
-    })
-  },[])
+    });
+  }, []);
 
   const fetchBurrowData = async () => {
-    const response = await fetch('/api/listTokenData');
+    const response = await fetch("/api/listTokenData");
     const list = await response.json();
     if (list?.data?.length > 0) {
-    const aprs =list?.data?.map((item) => Number(item.base_apy) + Number(item.supply_apy) + Number(item.supply_farm_apy));
-    setBurrowApr(Math.max(...aprs));
-    } 
+      const aprs = list?.data?.map(
+        (item) =>
+          Number(item.base_apy) +
+          Number(item.supply_apy) +
+          Number(item.supply_farm_apy)
+      );
+      setBurrowApr(Math.max(...aprs));
+    }
   };
-
-  
 
   return (
     <div

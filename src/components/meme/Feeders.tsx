@@ -26,4 +26,4 @@ function Feeders({ seed_id }: { seed_id: string }) {
     </div>
   );
 }
-export default Feeders;
+export default React.memo(Feeders);

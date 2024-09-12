@@ -19,7 +19,6 @@ import {
   useUserRegisteredTokensAllAndNearBalance,
 } from "@/services/aurora";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
-import { WalletTokenList } from "./WalletTokenList";
 import { AuroraIcon, AuroraIconActive, MyNearWalltIcon } from "./icon";
 import { CopyIcon } from "@/components/menu/icons";
 import CopyToClipboard from "react-copy-to-clipboard";
@@ -29,8 +28,10 @@ import failToast from "@/components/common/toast/failToast";
 import { useAppStore } from "@/stores/app";
 import { useSwapStore } from "@/stores/swap";
 import { Tooltip } from "react-tooltip";
+import React from "react";
+import WalletTokenList from "./WalletTokenList";
 
-export default function WalletPanel() {
+function WalletPanel() {
   const {
     tokenPriceList,
     isSignedIn,
@@ -468,3 +469,5 @@ export default function WalletPanel() {
     </>
   );
 }
+
+export default React.memo(WalletPanel);

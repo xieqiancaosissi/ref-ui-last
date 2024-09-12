@@ -232,4 +232,4 @@ const WithdrawList = () => {
   );
 };
 
-export default WithdrawList;
+export default React.memo(WithdrawList);

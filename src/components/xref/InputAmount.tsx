@@ -7,7 +7,7 @@ interface InputAmountProps extends React.InputHTMLAttributes<HTMLInputElement> {
   onChangeAmount?: (amount: string) => void;
 }
 
-export default function InputAmount({
+function InputAmount({
   max,
   className,
   onChangeAmount,
@@ -61,3 +61,5 @@ export default function InputAmount({
     </>
   );
 }
+
+export default React.memo(InputAmount);

@@ -83,4 +83,4 @@ function TotalFeed({ seed_id }: { seed_id: string }) {
     </div>
   );
 }
-export default TotalFeed;
+export default React.memo(TotalFeed);

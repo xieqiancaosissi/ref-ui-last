@@ -22,7 +22,7 @@ type Props = {
   isAurora?: boolean;
 };
 
-export const WalletTokenList = ({
+const WalletTokenList = ({
   token,
   tokenBalance,
   getTokenPrice,
@@ -136,3 +136,5 @@ export const WalletTokenList = ({
     </div>
   );
 };
+
+export default React.memo(WalletTokenList);

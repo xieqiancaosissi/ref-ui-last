@@ -400,4 +400,4 @@ const MySeedsBox = ({
     </div>
   );
 };
-export default MySeedsBox;
+export default React.memo(MySeedsBox);

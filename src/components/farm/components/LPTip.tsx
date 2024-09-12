@@ -7,7 +7,7 @@ import { useAccountStore } from "@/stores/account";
 import { BurrowIcon } from "../icon";
 import ShadowTip from "./ShadowTip";
 
-export default function LPTip({ seed_id }: { seed_id: string }) {
+function LPTip({ seed_id }: { seed_id: string }) {
   const mobile = isMobile();
   const [hover, setHover] = useState<Boolean>(false);
   const [has_shadow_in_farm, set_has_shadow_in_farm] = useState(false);
@@ -132,3 +132,5 @@ export default function LPTip({ seed_id }: { seed_id: string }) {
     </div>
   );
 }
+
+export default React.memo(LPTip);

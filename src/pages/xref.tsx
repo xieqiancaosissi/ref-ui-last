@@ -20,10 +20,10 @@ import { useAccountStore } from "@/stores/account";
 import { ftGetBalance, ftGetTokenMetadata } from "@/services/token";
 import getConfig from "@/utils/config";
 import { XREF_TOKEN_DECIMALS, getPrice, metadata } from "@/services/xref";
-import { InputView } from "@/components/xref/InputView";
 import { QuestionMark } from "@/components/farm/icon";
 import XrefDetailsModal from "@/components/xref/xrefDetailsModal";
 import { isMobile } from "@/utils/device";
+import InputView from "@/components/xref/InputView";
 
 const {
   XREF_TOKEN_ID,

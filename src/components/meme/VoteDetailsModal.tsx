@@ -325,4 +325,4 @@ function DonateListMobile({ donateList }: { donateList: IDonate[] }) {
     </div>
   );
 }
-export default VoteDetailsModal;
+export default React.memo(VoteDetailsModal);

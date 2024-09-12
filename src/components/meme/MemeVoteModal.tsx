@@ -465,4 +465,4 @@ const Tab = ({
   );
 };
 
-export default MemeVoteModal;
+export default React.memo(MemeVoteModal);

@@ -51,7 +51,7 @@ import {
 } from "@/components/portfolio/components/icon";
 
 const { explorerUrl } = getConfig();
-export default function Orders(props: any) {
+function Orders(props: any) {
   const {
     tokenPriceList,
     set_active_order_value_done,
@@ -876,3 +876,4 @@ function OrderCard({
     </div>
   );
 }
+export default React.memo(Orders);

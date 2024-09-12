@@ -28,4 +28,4 @@ const RewardList = ({ rewards }: { rewards: any }) => {
     </div>
   );
 };
-export default RewardList;
+export default React.memo(RewardList);

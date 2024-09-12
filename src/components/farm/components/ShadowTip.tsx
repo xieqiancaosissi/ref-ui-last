@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { FarmsContextData } from "./FarmsContext";
 import { stake_boost_shadow } from "@/services/farm";
 
-export default function ShadowTip({
+function ShadowTip({
   show,
   seed_id,
   className,
@@ -58,3 +58,5 @@ export default function ShadowTip({
     </div>
   );
 }
+
+export default React.memo(ShadowTip);

@@ -83,7 +83,7 @@ import {
 } from "@/components/portfolio/components/icon";
 
 const { REF_UNI_V3_SWAP_CONTRACT_ID } = getConfig();
-export function YourLiquidityV2(props: any) {
+function YourLiquidityV2(props: any) {
   const {
     set_dcl_liquidities_list,
     set_dcl_liquidities_details_list,
@@ -1535,3 +1535,5 @@ interface ILatestSeedTip {
   seed_apr: string;
   go_farm_url_link: string;
 }
+
+export default React.memo(YourLiquidityV2);

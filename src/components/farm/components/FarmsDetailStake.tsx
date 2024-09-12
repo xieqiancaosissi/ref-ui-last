@@ -33,7 +33,6 @@ import {
   GoldLevel4,
   VEARROW,
 } from "../icon";
-import { CalcEle } from "./CalcEle";
 import { CalcIcon } from "../icon/FarmBoost";
 import { useAccountStore } from "@/stores/account";
 import { showWalletSelectorModal } from "@/utils/wallet";
@@ -45,12 +44,14 @@ import failToast from "@/components/common/toast/failToast";
 import { BeatLoader } from "react-spinners";
 import getStablePoolTypeConfig from "@/utils/stablePoolConfig/stablePoolTypeConfig";
 import { FarmsContextData } from "./FarmsContext";
+import CalcEle from "./CalcEle";
+import React from "react";
 const stablePoolTypeConfig = getStablePoolTypeConfig();
 const { STABLE_POOL_IDS } = stablePoolTypeConfig;
 const { FARM_LOCK_SWITCH, REF_VE_CONTRACT_ID, FARM_BLACK_LIST_V2 } =
   getConfig();
 const configV2 = getConfigV2();
-export default function FarmsDetailStake(props: {
+function FarmsDetailStake(props: {
   detailData: Seed;
   tokenPriceList: any;
   lpBalance: string;
@@ -683,3 +684,5 @@ interface Lock {
   icon: any;
   multiplier: number;
 }
+
+export default React.memo(FarmsDetailStake);

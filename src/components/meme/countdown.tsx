@@ -103,4 +103,4 @@ Countdown.propTypes = {
   onCountdownFinish: PropTypes.func.isRequired,
 };
 
-export default Countdown;
+export default React.memo(Countdown);

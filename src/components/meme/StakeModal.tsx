@@ -514,4 +514,4 @@ export function Template({
     </div>
   );
 }
-export default StakeModal;
+export default React.memo(StakeModal);

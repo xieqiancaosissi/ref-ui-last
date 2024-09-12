@@ -61,6 +61,7 @@ import styles from "@/components/farm/farm.module.css";
 import { showWalletSelectorModal } from "@/utils/wallet";
 import { useAppStore } from "@/stores/app";
 import getStablePoolTypeConfig from "@/utils/stablePoolConfig/stablePoolTypeConfig";
+import React from "react";
 interface IShareInfo {
   sharesInfo: {
     sharesInPool: string | number;
@@ -74,7 +75,7 @@ const { STABLE_POOL_IDS } = stablePoolTypeConfig;
 const { FARM_LOCK_SWITCH, REF_VE_CONTRACT_ID, FARM_BLACK_LIST_V2 } =
   getConfig();
 const FarmsDetailContext = createContext<IShareInfo | null>(null);
-export default function FarmsDetail(props: {
+function FarmsDetail(props: {
   detailData: Seed;
   emptyDetailData: Function;
   tokenPriceList: any;
@@ -1418,3 +1419,5 @@ function AddLiquidityEntryMobileBar(props: {
     </div>
   );
 }
+
+export default React.memo(FarmsDetail);

@@ -61,7 +61,7 @@ const { REF_VE_CONTRACT_ID, REF_UNI_V3_SWAP_CONTRACT_ID } = getConfig();
 export const FarmCommonDatas = createContext<FarmCommonDataContext | null>(
   null
 );
-export default function Farms(props: any) {
+function Farms(props: any) {
   const {
     tokenPriceList,
     set_classic_farms_value,
@@ -1225,6 +1225,7 @@ function isPending(seed: Seed) {
   return pending;
 }
 
+export default React.memo(Farms);
 interface FarmCommonDataContext {
   classicSeeds: Seed[];
   dclSeeds: Seed[];

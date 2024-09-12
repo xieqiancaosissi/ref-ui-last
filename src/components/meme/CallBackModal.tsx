@@ -172,4 +172,4 @@ function CallBackModal(props: any) {
   );
 }
 
-export default CallBackModal;
+export default React.memo(CallBackModal);

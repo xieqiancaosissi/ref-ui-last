@@ -131,4 +131,4 @@ function RuleModal(props: any) {
   );
 }
 
-export default RuleModal;
+export default React.memo(RuleModal);

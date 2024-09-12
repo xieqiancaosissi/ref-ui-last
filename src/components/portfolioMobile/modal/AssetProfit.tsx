@@ -22,7 +22,7 @@ import {
 } from "../../../pages/portfolioMobile";
 import { JumpUpperLeft } from "@/components/portfolio/components/icon";
 const AssetProfitData = createContext<AssetProfitDataContextType | null>(null);
-export default function AssetProfit() {
+function AssetProfit() {
   const {
     tokenPriceList,
     user_unclaimed_map,
@@ -227,3 +227,5 @@ interface AssetProfitDataContextType {
   show_total_fees_value: string;
   show_total_unClaimed_rewrads_value: string;
 }
+
+export default React.memo(AssetProfit);

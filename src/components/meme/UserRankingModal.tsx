@@ -878,4 +878,4 @@ const PaginationComponent: React.FC<PaginationComponentProps> = ({
     </>
   );
 };
-export default UserRankingModal;
+export default React.memo(UserRankingModal);

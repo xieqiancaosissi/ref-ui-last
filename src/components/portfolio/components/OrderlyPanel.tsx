@@ -4,8 +4,9 @@ import ConnectToOrderlyWidget from "@/components/orderbook/connectToOrderlyWidge
 import useHoldings from "@/hooks/orderbook/useHoldings";
 import { toInternationalCurrencySystem_usd } from "@/utils/uiNumber";
 import OrderlyDataInit from "@/components/orderbook/OrderlyDataInit";
+import React from "react";
 
-export default function OrderlyPanel() {
+function OrderlyPanel() {
   const orderbookDataStore = useOrderbookDataStore();
   const connectStatus = orderbookDataStore.getConnectStatus();
   const totalAssetsUsd = useHoldings();
@@ -47,3 +48,5 @@ export default function OrderlyPanel() {
     </div>
   );
 }
+
+export default React.memo(OrderlyPanel);

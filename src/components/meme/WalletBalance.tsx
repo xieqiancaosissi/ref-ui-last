@@ -104,4 +104,4 @@ function WalletBalance({ seed_id }: { seed_id: string }) {
     </div>
   );
 }
-export default WalletBalance;
+export default React.memo(WalletBalance);

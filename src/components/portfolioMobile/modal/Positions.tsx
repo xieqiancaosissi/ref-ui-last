@@ -7,16 +7,16 @@ import {
 import { useAccountStore } from "@/stores/account";
 import { getAccountId } from "@/utils/wallet";
 import { BlueCircleLoading } from "@/components/pools/icon";
-import { YourLiquidityV2 } from "./YourLiquidityV2";
-import { YourLiquidityV1 } from "./YourLiquidityV1";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import {
   PortfolioContextType,
   PortfolioData,
 } from "../../../pages/portfolioMobile";
 import NoContent from "@/components/common/NoContent";
+import YourLiquidityV2 from "./YourLiquidityV2";
+import YourLiquidityV1 from "./YourLiquidityV1";
 
-export default function Positions(props: any) {
+function Positions(props: any) {
   const {
     setYourLpValueV2,
     setYourLpValueV1,
@@ -98,3 +98,5 @@ export default function Positions(props: any) {
     </div>
   );
 }
+
+export default React.memo(Positions);

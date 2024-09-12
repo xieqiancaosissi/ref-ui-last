@@ -55,12 +55,13 @@ import { TokenMetadata } from "../../services/ft-contract";
 import { SearchIcon } from "./icon/FarmBoost";
 import { get24hVolumes } from "../../services/indexer";
 import { LOVE_TOKEN_DECIMAL, getLoveAmount } from "../../services/referendum";
-import { FarmView } from "./components/FarmView";
 import SelectBox from "./components/SelectBox";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import WithDrawBox from "./components/WithDrawBox";
 import NoContent from "../common/NoContent";
 import { FarmsContextData } from "./components/FarmsContext";
+import React from "react";
+import FarmView from "./components/FarmView";
 
 const {
   REF_VE_CONTRACT_ID,
@@ -1603,4 +1604,4 @@ const FarmsPage = (props: any, ref: any) => {
   );
 };
 
-export default FarmsPage;
+export default React.memo(FarmsPage);

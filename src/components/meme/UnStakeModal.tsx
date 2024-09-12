@@ -408,4 +408,4 @@ function UnStakeModal(props: any) {
   );
 }
 
-export default UnStakeModal;
+export default React.memo(UnStakeModal);

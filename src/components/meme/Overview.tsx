@@ -231,4 +231,4 @@ function TemplateMobile({ title, children, ...props }: any) {
     </div>
   );
 }
-export default Overview;
+export default React.memo(Overview);

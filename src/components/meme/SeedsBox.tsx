@@ -263,4 +263,4 @@ const SeedsBox = () => {
     </div>
   );
 };
-export default SeedsBox;
+export default React.memo(SeedsBox);

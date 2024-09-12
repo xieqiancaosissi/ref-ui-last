@@ -32,15 +32,15 @@ import { SwitchBtn, VEARROW } from "../icon/index";
 import { openUrl } from "../../../services/commonV3";
 import { ModalClose, HandIcon, LinkIcon } from "../icon";
 import { useAccountStore } from "../../../stores/account";
-import { CalcEle } from "./CalcEle";
 import { useRouter } from "next/router";
 import { isStablePool } from "@/services/swap/swapUtils";
 import getStablePoolTypeConfig from "@/utils/stablePoolConfig/stablePoolTypeConfig";
+import CalcEle from "./CalcEle";
 
 const stablePoolTypeConfig = getStablePoolTypeConfig();
 const { STABLE_POOL_IDS } = stablePoolTypeConfig;
 
-export default function CalcModelBooster(
+function CalcModelBooster(
   props: ReactModal.Props & {
     seed: Seed;
     tokenPriceList: Record<string, string>;
@@ -413,3 +413,5 @@ function LpInput(props: {
     </div>
   );
 }
+
+export default React.memo(CalcModelBooster);

@@ -19,7 +19,7 @@ import { IExecutionResult } from "@/interfaces/wallet";
 import successToast from "@/components/common/toast/successToast";
 import failToast from "@/components/common/toast/failToast";
 
-export default function Withdraw({
+function Withdraw({
   isOpen,
   onRequestClose,
   rewardList,
@@ -315,3 +315,5 @@ export default function Withdraw({
     </Modal>
   );
 }
+
+export default React.memo(Withdraw);

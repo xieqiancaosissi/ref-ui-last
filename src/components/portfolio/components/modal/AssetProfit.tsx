@@ -19,7 +19,7 @@ import { REF_POOL_NAV_TAB_KEY } from "@/components/pools/detail/liquidity/dclYou
 import { JumpUpperLeft } from "../icon";
 import { useRouter } from "next/router";
 const AssetProfitData = createContext<AssetProfitDataContextType | null>(null);
-export default function AssetProfit() {
+function AssetProfit() {
   const {
     tokenPriceList,
     user_unclaimed_map,
@@ -238,3 +238,5 @@ interface AssetProfitDataContextType {
   show_total_fees_value: string;
   show_total_unClaimed_rewrads_value: string;
 }
+
+export default React.memo(AssetProfit);

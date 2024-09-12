@@ -1,7 +1,7 @@
 import React from "react";
 // import { FormattedMessage, useIntl } from "react-intl";
 
-export default function SelectBox(props: any) {
+function SelectBox(props: any) {
   const { list, selectedId, setSelectedId, type, disabled } = props;
   function switchOption(id: string) {
     if (disabled) return;
@@ -56,3 +56,5 @@ export default function SelectBox(props: any) {
     </div>
   );
 }
+
+export default React.memo(SelectBox);

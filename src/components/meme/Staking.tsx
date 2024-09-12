@@ -281,4 +281,4 @@ const Staking = () => {
     </div>
   );
 };
-export default Staking;
+export default React.memo(Staking);

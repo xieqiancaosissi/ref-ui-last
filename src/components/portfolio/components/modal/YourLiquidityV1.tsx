@@ -67,10 +67,11 @@ import { usePool } from "@/hooks/usePools";
 import { PoolFarmAmount } from "@/components/yours/components/modal/YourLiquidityV1";
 import Big from "big.js";
 import getConfigV2 from "@/utils/configV2";
+import React from "react";
 
 const { BLACK_TOKEN_LIST } = getConfig();
 export const StakeListContext = createContext<any>(null);
-export function YourLiquidityV1(props: any) {
+function YourLiquidityV1(props: any) {
   const {
     setYourLpValueV1,
     setLpValueV1Done,
@@ -931,3 +932,5 @@ function YourClassicLiquidityLinePage() {
 export const REF_FI_YOUR_LP_VALUE = "REF_FI_YOUR_LP_VALUE";
 
 export const REF_FI_YOUR_LP_VALUE_V1_COUNT = "REF_FI_YOUR_LP_VALUE_V1_COUNT";
+
+export default React.memo(YourLiquidityV1);

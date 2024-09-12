@@ -23,13 +23,14 @@ import { useState, useEffect } from "react";
 import { BoostOptIcon, LightningIcon } from "../icon/FarmBoost";
 import getConfig from "@/utils/config";
 import getStablePoolTypeConfig from "@/utils/stablePoolConfig/stablePoolTypeConfig";
+import React from "react";
 
 const config = getConfig();
 const stablePoolTypeConfig = getStablePoolTypeConfig();
 const { REF_VE_CONTRACT_ID } = config;
 const { STABLE_POOL_IDS } = stablePoolTypeConfig;
 
-export function CalcEle(props: {
+function CalcEle(props: {
   seed: Seed;
   tokenPriceList: Record<string, string>;
   lpTokenNumAmount: string;
@@ -446,3 +447,5 @@ export function CalcEle(props: {
     </div>
   );
 }
+
+export default React.memo(CalcEle);

@@ -5,7 +5,7 @@ import { AnalysisTextItem } from "@/pages/xref";
 import { QuestionMark } from "../farm/icon";
 import CustomTooltip from "../customTooltip/customTooltip";
 
-export default function XrefDetailsModal({
+function XrefDetailsModal({
   isOpen,
   onRequestClose,
   analysisText,
@@ -97,3 +97,5 @@ export default function XrefDetailsModal({
     </Modal>
   );
 }
+
+export default React.memo(XrefDetailsModal);

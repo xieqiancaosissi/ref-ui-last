@@ -108,4 +108,4 @@ function YourRewards({ seed_id }: { seed_id: string }) {
     </div>
   );
 }
-export default YourRewards;
+export default React.memo(YourRewards);

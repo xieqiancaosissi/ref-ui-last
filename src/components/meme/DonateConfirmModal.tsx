@@ -67,4 +67,4 @@ function DonateConfirmModal(props: any) {
   );
 }
 
-export default DonateConfirmModal;
+export default React.memo(DonateConfirmModal);

@@ -4,7 +4,7 @@ import { isMobile } from "@/utils/device";
 import FarmsDetailStake from "./FarmsDetailStake";
 import { BoostConfig, Seed, UserSeedInfo } from "@/services/farm";
 
-export default function StakeMobile(props: {
+function StakeMobile(props: {
   isOpen: boolean;
   onRequestClose: () => void;
   detailData: Seed;
@@ -98,3 +98,5 @@ export default function StakeMobile(props: {
     </Modal>
   );
 }
+
+export default React.memo(StakeMobile);

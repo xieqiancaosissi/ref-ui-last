@@ -67,6 +67,7 @@ import getConfigV2 from "@/utils/configV2";
 import { formatPercentage, formatWithCommas_usd } from "@/utils/uiNumber";
 import Big from "big.js";
 import getStablePoolTypeConfig from "@/utils/stablePoolConfig/stablePoolTypeConfig";
+import React from "react";
 const stablePoolTypeConfig = getStablePoolTypeConfig();
 const { STABLE_POOL_IDS } = stablePoolTypeConfig;
 
@@ -77,7 +78,7 @@ const {
   WRAP_NEAR_CONTRACT_ID,
 } = getConfig();
 
-export function FarmView(props: {
+function FarmView(props: {
   seed: Seed;
   all_seeds?: Seed[];
   tokenPriceList: Record<string, any>;
@@ -1266,3 +1267,5 @@ export function FarmView(props: {
     </>
   );
 }
+
+export default React.memo(FarmView);

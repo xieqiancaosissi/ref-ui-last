@@ -12,8 +12,9 @@ import failToast from "../common/toast/failToast";
 import successToast from "../common/toast/successToast";
 import { showWalletSelectorModal } from "@/utils/wallet";
 import { useAppStore } from "@/stores/app";
+import React from "react";
 
-export function InputView(props: any) {
+function InputView(props: any) {
   const [amount, setAmount] = useState("0");
   const appStore = useAppStore();
   const [loading, setLoading] = useState(false);
@@ -237,3 +238,5 @@ export function InputView(props: any) {
     </div>
   );
 }
+
+export default React.memo(InputView);

@@ -69,4 +69,4 @@ function MemeVoteConfirmModal(props: any) {
   );
 }
 
-export default MemeVoteConfirmModal;
+export default React.memo(MemeVoteConfirmModal);

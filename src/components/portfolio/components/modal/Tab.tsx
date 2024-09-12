@@ -7,7 +7,7 @@ import {
   useTotalLiquidityData,
   useTotalOrderData,
 } from "../Tool";
-export default function Tab() {
+function Tab() {
   const {
     activeTab,
     setActiveTab,
@@ -183,3 +183,5 @@ export default function Tab() {
     </div>
   );
 }
+
+export default React.memo(Tab);

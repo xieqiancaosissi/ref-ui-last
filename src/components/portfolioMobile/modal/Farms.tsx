@@ -70,7 +70,7 @@ const { REF_VE_CONTRACT_ID, REF_UNI_V3_SWAP_CONTRACT_ID } = getConfig();
 export const FarmCommonDatas = createContext<FarmCommonDataContext | null>(
   null
 );
-export default function Farms(props: any) {
+function Farms(props: any) {
   const {
     tokenPriceList,
     set_classic_farms_value,
@@ -1285,3 +1285,5 @@ type ClassicDataContext = {
   showLpPower: () => string | React.JSX.Element;
   getUserLpPercent: () => string;
 };
+
+export default React.memo(Farms);

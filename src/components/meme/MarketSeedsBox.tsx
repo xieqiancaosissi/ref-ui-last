@@ -277,4 +277,4 @@ const MarketSeedsBox = ({
     </div>
   );
 };
-export default MarketSeedsBox;
+export default React.memo(MarketSeedsBox);

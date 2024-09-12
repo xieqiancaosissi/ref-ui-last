@@ -67,10 +67,11 @@ import { IExecutionResult } from "@/interfaces/wallet";
 import { failToast } from "@/components/orderbook/transactionTipPopUp";
 import successToast from "@/components/common/toast/successToast";
 import { FarmsContextData } from "./FarmsContext";
+import React from "react";
 
 const { REF_VE_CONTRACT_ID, REF_UNI_V3_SWAP_CONTRACT_ID } = getConfig();
 
-export default function FarmsDclDetail(props: {
+function FarmsDclDetail(props: {
   detailData: Seed;
   emptyDetailData: Function;
   tokenPriceList: any;
@@ -1901,3 +1902,5 @@ function AddLiquidityEntryMobileBar(props: {
     </div>
   );
 }
+
+export default React.memo(FarmsDclDetail);

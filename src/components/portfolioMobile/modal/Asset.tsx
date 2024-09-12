@@ -34,7 +34,7 @@ import { usePoolStore } from "@/stores/pool";
 import { useShadowRecord } from "@/hooks/useStableShares";
 import { getStablePoolDecimal, isStablePool } from "@/services/swap/swapUtils";
 const AssetData = createContext<AssetDataContextType | null>(null);
-export default function Asset() {
+function Asset() {
   const {
     tokenPriceList,
     YourLpValueV1,
@@ -398,3 +398,5 @@ export interface AssetDataContextType {
   display_increase_percent: () => string;
   increase_percent_done: boolean;
 }
+
+export default React.memo(Asset);

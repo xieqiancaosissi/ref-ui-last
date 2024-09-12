@@ -14,10 +14,11 @@ import Withdraw from "./WithdrawModal";
 import styles from "../farm.module.css";
 import { showWalletSelectorModal } from "@/utils/wallet";
 import { useAppStore } from "@/stores/app";
+import React from "react";
 
 const { WRAP_NEAR_CONTRACT_ID } = getConfig();
 
-export default function WithDrawBox(props: {
+function WithDrawBox(props: {
   userRewardList: any;
   tokenPriceList: any;
   farmDisplayList: Seed[];
@@ -241,3 +242,5 @@ export default function WithDrawBox(props: {
     </>
   );
 }
+
+export default React.memo(WithDrawBox);

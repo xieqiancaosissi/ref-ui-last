@@ -18,7 +18,7 @@ import { shrinkToken } from "@/services/burrow-utils";
 import { formatWithCommas_usd } from "@/utils/uiNumber";
 import { PortfolioArrow, PortfolioBurrowIcon } from "./icon";
 import { BeatLoader } from "react-spinners";
-export default function BurrowPanel() {
+function BurrowPanel() {
   const {
     isSignedIn,
     accountId,
@@ -248,3 +248,5 @@ export default function BurrowPanel() {
     </>
   );
 }
+
+export default React.memo(BurrowPanel);

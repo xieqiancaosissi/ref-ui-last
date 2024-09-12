@@ -123,4 +123,4 @@ function YourFeed({ seed_id }: { seed_id: string }) {
     </div>
   );
 }
-export default YourFeed;
+export default React.memo(YourFeed);

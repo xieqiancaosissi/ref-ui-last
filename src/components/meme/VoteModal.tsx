@@ -514,4 +514,4 @@ const Tab = ({
   );
 };
 
-export default VoteModel;
+export default React.memo(VoteModel);

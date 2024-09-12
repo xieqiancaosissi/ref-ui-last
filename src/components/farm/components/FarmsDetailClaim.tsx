@@ -38,12 +38,13 @@ import failToast from "@/components/common/toast/failToast";
 import successToast from "@/components/common/toast/successToast";
 import getStablePoolTypeConfig from "@/utils/stablePoolConfig/stablePoolTypeConfig";
 import { FarmsContextData } from "./FarmsContext";
+import React from "react";
 
 const stablePoolTypeConfig = getStablePoolTypeConfig();
 const { STABLE_POOL_IDS } = stablePoolTypeConfig;
 const { FARM_LOCK_SWITCH, REF_VE_CONTRACT_ID, FARM_BLACK_LIST_V2 } =
   getConfig();
-export default function UserStakeBlock(props: {
+function UserStakeBlock(props: {
   detailData: Seed;
   tokenPriceList: any;
   lpBalance: string;
@@ -512,3 +513,5 @@ export default function UserStakeBlock(props: {
     </>
   );
 }
+
+export default React.memo(UserStakeBlock);

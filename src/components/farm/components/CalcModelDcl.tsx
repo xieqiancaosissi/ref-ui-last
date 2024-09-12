@@ -45,7 +45,7 @@ interface DclContextType {
 
 const DclContext = React.createContext<DclContextType | null>(null);
 
-export default function CalcModelDcl(
+function CalcModelDcl(
   props: ReactModal.Props & {
     seed: Seed;
     tokenPriceList: Record<string, any>;
@@ -642,3 +642,5 @@ function CalcEle() {
     </div>
   );
 }
+
+export default React.memo(CalcModelDcl);

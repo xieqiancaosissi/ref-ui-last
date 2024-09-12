@@ -16,7 +16,7 @@ import { getAssets } from "@/services/indexer";
 import { OverviewContextType, OverviewData } from "../index";
 
 export const PortfolioData = createContext<PortfolioContextType | null>(null);
-export default function RefPanelModal({
+function RefPanelModal({
   isOpen,
   onRequestClose,
 }: {
@@ -228,7 +228,7 @@ export default function RefPanelModal({
     </Modal>
   );
 }
-
+export default React.memo(RefPanelModal);
 export interface PortfolioContextType {
   main_active_tab: string;
   set_main_active_tab: React.Dispatch<React.SetStateAction<string>>;

@@ -251,4 +251,4 @@ StakingChart.propTypes = {
   chartType: PropTypes.oneOf(["meme", "xref"]).isRequired,
 };
 
-export default StakingChart;
+export default React.memo(StakingChart);

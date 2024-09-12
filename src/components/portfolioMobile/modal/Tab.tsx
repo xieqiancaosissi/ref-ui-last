@@ -10,7 +10,7 @@ import {
   PortfolioContextType,
   PortfolioData,
 } from "../../../pages/portfolioMobile";
-export default function Tab() {
+function Tab() {
   const {
     activeTab,
     setActiveTab,
@@ -155,3 +155,4 @@ export default function Tab() {
     </div>
   );
 }
+export default React.memo(Tab);

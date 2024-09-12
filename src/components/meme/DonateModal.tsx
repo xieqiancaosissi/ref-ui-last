@@ -319,4 +319,4 @@ const Tab = ({
   );
 };
 
-export default DonateModal;
+export default React.memo(DonateModal);

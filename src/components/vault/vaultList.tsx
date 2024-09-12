@@ -175,9 +175,15 @@ export default function VaultList(props: any) {
                 {item.name == "dcl" && <span>{dclApr.toFixed(2)}%</span>}
                 {item.name == "farm" && <span>{maxFarm.toFixed(2)}%</span>}
                 {item.name == "burrow" && <span>{burrowApr.toFixed(2)}%</span>}
-                {item.name == "swing" && <span>{Number(swingApr).toFixed(2)}%</span>}
-                {item.name == "dca" && <span>{Number(dcaApr).toFixed(2)}%</span>}
-                {item.name == "grid" && <span>{Number(gridApr).toFixed(2)}%</span>}
+                {item.name == "swing" && (
+                  <span>{Number(swingApr).toFixed(2)}%</span>
+                )}
+                {item.name == "dca" && (
+                  <span>{Number(dcaApr).toFixed(2)}%</span>
+                )}
+                {item.name == "grid" && (
+                  <span>{Number(gridApr).toFixed(2)}%</span>
+                )}
               </p>
               <p className="flex items-center justify-between mt-[14px]">
                 <span className="text-gray-60">Risk Level </span>

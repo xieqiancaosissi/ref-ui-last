@@ -32,3 +32,15 @@ export function getTokenByAddress(
     )
   );
 }
+
+export function getTokenDecimals(
+  symbol: string,
+  chain?: BridgeModel.BridgeSupportChain
+) {
+  const tokenMeta = tokens[symbol];
+  return (
+    Object.entries(tokenMeta?.decimals).find(
+      ([c, d]) => c.toLowerCase() === chain.toLowerCase()
+    )?.[1] || tokenMeta?.decimals.default
+  );
+}

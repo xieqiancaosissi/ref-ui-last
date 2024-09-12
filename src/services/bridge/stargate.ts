@@ -18,7 +18,11 @@ import { formatAmount, parseAmount } from "@/utils/format";
 import { logger } from "@/utils/common";
 import { Optional, Transaction } from "@near-wallet-selector/core";
 import { BridgeConfig, BridgeTokenRoutes } from "@/config/bridge";
-import { getChainMainToken, getTokenMeta } from "@/utils/token";
+import {
+  getChainMainToken,
+  getTokenDecimals,
+  getTokenMeta,
+} from "@/utils/token";
 import Big from "big.js";
 import { startCase } from "lodash";
 
@@ -77,7 +81,7 @@ const stargateBridgeService = {
       logger.log("feeAmount", feeAmount);
       const readableFeeAmount = formatAmount(
         feeAmount,
-        params.tokenIn.decimals
+        getTokenDecimals(params.tokenIn.symbol, params.from)
       );
       logger.log("readableFeeAmount", readableFeeAmount);
       const usdFee = readableFeeAmount;
@@ -119,7 +123,7 @@ const stargateBridgeService = {
           .toFixed(0);
         const readableProtocolFee = formatAmount(
           protocolFee,
-          params.tokenOut.decimals
+          getTokenDecimals(params.tokenIn.symbol, params.from)
         );
         const minAmountWithSlippage = new Big(sendParam.minAmountLD.toString())
           .times(1 - params.slippage)
@@ -132,11 +136,11 @@ const stargateBridgeService = {
         newSendParam.minAmountLD = BigNumber.from(minAmountWithSlippage);
         const readableMinAmount = formatAmount(
           minAmount,
-          params.tokenIn.decimals
+          getTokenDecimals(params.tokenIn.symbol, params.from)
         );
         const readableMinAmountWithSlippage = formatAmount(
           minAmountWithSlippage,
-          params.tokenIn.decimals
+          getTokenDecimals(params.tokenIn.symbol, params.from)
         );
         return {
           minAmount,
@@ -162,7 +166,10 @@ const stargateBridgeService = {
       const { nativeFee, lzTokenFee } = messagingFee;
       const feeAmount = new Big(nativeFee).plus(lzTokenFee).toString();
       const mainToken = getChainMainToken(params.from);
-      const readableFeeAmount = formatAmount(feeAmount, mainToken.decimals);
+      const readableFeeAmount = formatAmount(
+        feeAmount,
+        getTokenDecimals(mainToken.symbol, params.from)
+      );
       const ethPriceInUSD = await tokenServices.getEvmPrice(mainToken.symbol);
       const usdFee = new Big(readableFeeAmount).times(ethPriceInUSD).toString();
       const newSendParam = { ...sendParam };
@@ -175,7 +182,7 @@ const stargateBridgeService = {
         .toFixed(0);
       const readableProtocolFee = formatAmount(
         protocolFee,
-        params.tokenOut.decimals
+        getTokenDecimals(params.tokenIn.symbol, params.from)
       );
       const minAmountWithSlippage = new Big(sendParam.minAmountLD.toString())
         .times(1 - params.slippage)
@@ -187,11 +194,11 @@ const stargateBridgeService = {
       logger.log("origin minAmountLD", sendParam.minAmountLD.toString());
       const readableMinAmount = formatAmount(
         minAmount,
-        params.tokenIn.decimals
+        getTokenDecimals(params.tokenIn.symbol, params.from)
       );
       const readableMinAmountWithSlippage = formatAmount(
         minAmountWithSlippage,
-        params.tokenIn.decimals
+        getTokenDecimals(params.tokenIn.symbol, params.from)
       );
 
       return {
@@ -278,7 +285,10 @@ const stargateBridgeService = {
       | "orchestrateTransaction" = "prepareTakeTaxiStargate"
   ) {
     const { from, to, tokenIn, amount, recipient } = params;
-    const rawAmount = parseAmount(amount, tokenIn.decimals);
+    const rawAmount = parseAmount(
+      amount,
+      getTokenDecimals(tokenIn.symbol, params.from)
+    );
     if (from === "NEAR") {
       try {
         const chainId = BridgeConfig.Stargate.bridgeParams[to].eid;
@@ -338,87 +348,98 @@ const stargateBridgeService = {
         )} is not supported for this bridge, please use other wallet.`
       );
     }
-    const { from, tokenIn, amount, sender } = params;
-    const auroraAccount = auroraAddr(sender);
-    const nearTokenAddress = tokenIn.addresses.NEAR;
-    const auroraTokenAddress = tokenIn.addresses.Aurora;
-    const rawTotalAmount = parseAmount(amount, tokenIn.decimals);
+    try {
+      const { from, tokenIn, amount, sender } = params;
+      const auroraAccount = auroraAddr(sender);
+      const nearTokenAddress = tokenIn.addresses.NEAR;
+      const auroraTokenAddress = tokenIn.addresses.Aurora;
+      const rawTotalAmount = parseAmount(
+        amount,
+        getTokenDecimals(tokenIn.symbol, params.from)
+      );
 
-    const transferTransaction = {
-      receiverId: nearTokenAddress,
-      signerId: sender,
-      actions: [
-        {
-          type: "FunctionCall",
-          params: {
-            methodName: "ft_transfer_call",
-            args: {
-              receiver_id: "aurora",
-              amount: rawTotalAmount,
-              msg:
-                (tokenIn.symbol === "ETH"
-                  ? `${auroraAccount}:${"0".repeat(64)}`
-                  : "") + `${auroraAccount.substring(2)}`,
+      const transferTransaction = {
+        receiverId: nearTokenAddress,
+        signerId: sender,
+        actions: [
+          {
+            type: "FunctionCall",
+            params: {
+              methodName: "ft_transfer_call",
+              args: {
+                receiver_id: "aurora",
+                amount: rawTotalAmount,
+                msg:
+                  (tokenIn.symbol === "ETH"
+                    ? `${auroraAccount}:${"0".repeat(64)}`
+                    : "") + `${auroraAccount.substring(2)}`,
+              },
+              gas: "300000000000000",
+              deposit: "1",
             },
-            gas: "300000000000000",
-            deposit: "1",
           },
-        },
-      ],
-    } as Transaction;
+        ],
+      } as Transaction;
 
-    const auroraTransaction: Optional<Transaction, "signerId"> = {
-      receiverId: "aurora",
-      signerId: sender,
-      actions: [],
-    };
-    if (tokenIn.symbol !== "ETH") {
-      const actionParams = await auroraServices.checkErc20Approve(
-        auroraAccount,
-        auroraTokenAddress,
-        BridgeConfig.Stargate.bridgeParams.Aurora.receive,
-        formatAmount(rawTotalAmount, tokenIn.decimals),
-        tokenIn.decimals
+      const auroraTransaction: Optional<Transaction, "signerId"> = {
+        receiverId: "aurora",
+        signerId: sender,
+        actions: [],
+      };
+      if (tokenIn.symbol !== "ETH") {
+        const actionParams = await auroraServices.checkErc20Approve(
+          auroraAccount,
+          auroraTokenAddress,
+          BridgeConfig.Stargate.bridgeParams.Aurora.receive,
+          formatAmount(
+            rawTotalAmount,
+            getTokenDecimals(tokenIn.symbol, params.from)
+          ),
+          getTokenDecimals(tokenIn.symbol, params.from)
+        );
+        if (actionParams)
+          auroraTransaction.actions.push({
+            type: "FunctionCall",
+            params: actionParams as any,
+          });
+      }
+
+      const { discounted, messagingFee, sendParam } =
+        await stargateBridgeService.query(params);
+
+      const sendInput = buildInput(
+        StargateAbi,
+        discounted ? "sendStargateWithDiscount" : "sendStargate",
+        [sendParam, messagingFee, auroraAccount, rawTotalAmount]
       );
-      if (actionParams)
-        auroraTransaction.actions.push({
-          type: "FunctionCall",
-          params: actionParams as any,
-        });
-    }
-
-    const { discounted, messagingFee, sendParam } =
-      await stargateBridgeService.query(params);
-
-    const sendInput = buildInput(
-      StargateAbi,
-      discounted ? "sendStargateWithDiscount" : "sendStargate",
-      [sendParam, messagingFee, auroraAccount, rawTotalAmount]
-    );
-    const sendActionParams = auroraCallToAction(
-      toAddress(BridgeConfig.Stargate.bridgeParams.Aurora.receive),
-      sendInput
-      // valueToSend
-    );
-    auroraTransaction.actions.push({
-      type: "FunctionCall",
-      params: sendActionParams as any,
-    });
-    logger.log("bridge: send params", {
-      transactions: [transferTransaction, auroraTransaction].filter(Boolean),
-    });
-    const res = await wallet.signAndSendTransactions({
-      transactions: [transferTransaction, auroraTransaction],
-    });
-    if (Array.isArray(res)) {
-      const transaction = res.find(
-        (item) =>
-          item.transaction.receiver_id === "aurora" &&
-          item.transaction.actions?.[0]?.FunctionCall?.method_name === "call"
+      const sendActionParams = auroraCallToAction(
+        toAddress(BridgeConfig.Stargate.bridgeParams.Aurora.receive),
+        sendInput
+        // valueToSend
       );
-      logger.log("bridge: send success", res);
-      logger.log("bridge: send success2", transaction);
-      return transaction?.transaction.hash;
+      auroraTransaction.actions.push({
+        type: "FunctionCall",
+        params: sendActionParams as any,
+      });
+      logger.log("bridge: send params", {
+        transactions: [transferTransaction, auroraTransaction].filter(Boolean),
+      });
+      const res = await wallet.signAndSendTransactions({
+        transactions: [transferTransaction, auroraTransaction],
+      });
+      console.log("bridge: send success", res);
+      if (Array.isArray(res)) {
+        const transaction = res.find(
+          (item) =>
+            item.transaction.receiver_id === "aurora" &&
+            item.transaction.actions?.[0]?.FunctionCall?.method_name === "call"
+        );
+        logger.log("bridge: send success", res);
+        logger.log("bridge: send success2", transaction);
+        return transaction?.transaction.hash;
+      }
+    } catch (error) {
+      console.error("bridge: send error", error);
     }
   },
   async evmToNear(params: BridgeTransferParams) {

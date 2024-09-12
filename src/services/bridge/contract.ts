@@ -16,6 +16,7 @@ import {
   getChainMainToken,
   getTokenAddress,
   getTokenByAddress,
+  getTokenDecimals,
   getTokenMeta,
 } from "@/utils/token";
 import { toast } from "react-toastify";
@@ -107,7 +108,10 @@ export const evmServices = {
         });
         balance = Interface.decodeFunctionResult("balanceOf", rawBalance)[0];
       }
-      const formattedBalance = formatAmount(balance, token.decimals);
+      const formattedBalance = formatAmount(
+        balance,
+        getTokenDecimals(token.symbol, chain)
+      );
       return formattedBalance;
     } catch (error) {
       console.error(error);
@@ -484,7 +488,9 @@ export const nearServices = {
           })) || "0";
       }
       const _decimals =
-        decimals || getTokenByAddress(address)?.decimals || NEAR_DECIMALS;
+        decimals ||
+        getTokenDecimals(getTokenByAddress(address)?.symbol, "NEAR") ||
+        NEAR_DECIMALS;
       return formatAmount(balance, _decimals);
     } catch (error) {
       console.error(error);
@@ -527,7 +533,10 @@ export const tokenServices = {
       return balance.value;
     }
     const res = await (chain === "NEAR"
-      ? nearServices.getBalance(token.addresses.NEAR, token.decimals)
+      ? nearServices.getBalance(
+          token.addresses.NEAR,
+          getTokenDecimals(token.symbol, "NEAR")
+        )
       : evmServices.getBalance(chain, token));
     tokenServices.balances[cacheKey] = {
       value: res,

@@ -9,6 +9,7 @@ import { formatAmount, formatFileUrl, formatUSDCurrency } from "@/utils/format";
 import CustomTooltip from "@/components/customTooltip/customTooltip";
 import Big from "big.js";
 import { Image } from "@nextui-org/react";
+import { getTokenDecimals } from "@/utils/token";
 
 const routeConfig = {
   Rainbow: {
@@ -69,11 +70,7 @@ function BridgeRouteItem({
         </div>
         <div className="grid grid-cols-2 justify-between gap-2">
           <div className="text-white text-sm font-medium">
-            ~
-            {formatAmount(
-              channelInfoMap?.[channel]?.minAmount,
-              bridgeToValue.tokenMeta.decimals
-            )}{" "}
+            ~{channelInfoMap?.[channel]?.readableMinAmount}{" "}
             {bridgeToValue.tokenMeta.symbol}
           </div>
           <div className="text-right text-slate-500 text-xs font-normal ">

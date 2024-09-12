@@ -30,7 +30,7 @@ export const EVMConfig: {
       chainId: number;
       id: string;
       token: string;
-      label: BridgeModel.BridgeSupportChain;
+      label: string;
       rpcUrl: string;
     }
   >;
@@ -160,6 +160,26 @@ export const EVMConfig: {
       token: "ETH",
       label: "TAIKO",
       rpcUrl: "https://rpc.taiko.xyz",
+    },
+    bsc: {
+      network: "mainnet",
+      infuraKey: INFURA_KEY,
+      explorerUrl: "https://bscscan.com",
+      chainId: 56,
+      id: "0x38",
+      token: "BNB",
+      label: "BNB Smart Chain",
+      rpcUrl: "https://bsc-pokt.nodies.app",
+    },
+    gravity: {
+      network: "mainnet",
+      infuraKey: INFURA_KEY,
+      explorerUrl: "https://explorer.gravity.xyz",
+      chainId: 1625,
+      id: "0x659",
+      token: "G",
+      label: "Gravity",
+      rpcUrl: "https://rpc.gravity.xyz",
     },
   },
 
@@ -320,6 +340,22 @@ export const BridgeConfig = {
         },
         eid: "30295",
       },
+      BSC: {
+        send: "0x73a6f440Ba3F7d8Ce2580424765802746D068ffa",
+        pool: {
+          USDC: "0x962Bd449E630b0d928f308Ce63f1A21F02576057",
+          USDCABI: StargatePoolUSDCAbi,
+        },
+        eid: "30102",
+      },
+      Gravity: {
+        send: "0x2D04a0885df6cdcAE24453eCCd07122a52534763",
+        pool: {
+          USDC: "0xC1B8045A6ef2934Cf0f78B0dbD489969Fa9Be7E4",
+          USDCABI: StargateOFTUSDCAbi,
+        },
+        eid: "30294",
+      },
       EndpointV2: "0x1a44076050125825900e736c501f859c50fE728c",
     },
   },
@@ -330,7 +366,7 @@ export const TOKENS: (BridgeModel.BridgeTokenMeta & {
 })[] = [
   {
     symbol: "NEAR",
-    decimals: 24,
+    decimals: { default: 24 },
     addresses: {
       Ethereum: IS_MAINNET
         ? "0x85F17Cf997934a597031b2E18a9aB6ebD4B9f6a4"
@@ -342,7 +378,7 @@ export const TOKENS: (BridgeModel.BridgeTokenMeta & {
   },
   {
     symbol: "ETH",
-    decimals: 18,
+    decimals: { default: 18 },
     addresses: {
       Ethereum: "",
       NEAR: "aurora",
@@ -351,7 +387,7 @@ export const TOKENS: (BridgeModel.BridgeTokenMeta & {
   },
   {
     symbol: "USDT",
-    decimals: 6,
+    decimals: { default: 6 },
     icon: formatFileUrl("/crypto/usdt.svg"),
     addresses: {
       NEAR: IS_MAINNET ? "usdt.tether-token.near" : "usdtt.fakes.testnet",
@@ -360,7 +396,7 @@ export const TOKENS: (BridgeModel.BridgeTokenMeta & {
   },
   {
     symbol: "USDT.e",
-    decimals: 6,
+    decimals: { default: 6 },
     addresses: {
       Ethereum: IS_MAINNET ? "0xdAC17F958D2ee523a2206206994597C13D831ec7" : "",
       NEAR: IS_MAINNET
@@ -371,7 +407,7 @@ export const TOKENS: (BridgeModel.BridgeTokenMeta & {
   },
   {
     symbol: "USDC",
-    decimals: 6,
+    decimals: { default: 6, BSC: 18 },
     icon: formatFileUrl("/crypto/usdc.svg"),
     addresses: {
       NEAR: IS_MAINNET
@@ -389,11 +425,13 @@ export const TOKENS: (BridgeModel.BridgeTokenMeta & {
       SEI: "0x3894085Ef7Ff0f0aeDf52E2A2704928d1Ec074F1",
       TAIKO: "0x19e26B0638bf63aa9fa4d14c6baF8D52eBE86C5C",
       Flare: "0xFbDa5F676cB37624f28265A144A48B0d6e87d3b6",
+      BSC: "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d",
+      Gravity: "0xFbDa5F676cB37624f28265A144A48B0d6e87d3b6",
     },
   },
   {
     symbol: "USDC.e",
-    decimals: 6,
+    decimals: { default: 6 },
     addresses: {
       NEAR: IS_MAINNET
         ? "a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.factory.bridge.near"
@@ -404,7 +442,7 @@ export const TOKENS: (BridgeModel.BridgeTokenMeta & {
   },
   {
     symbol: "DAI",
-    decimals: 18,
+    decimals: { default: 18 },
     addresses: {
       Ethereum: IS_MAINNET ? "0x6B175474E89094C44Da98b954EedeAC495271d0F" : "",
       NEAR: IS_MAINNET
@@ -415,7 +453,7 @@ export const TOKENS: (BridgeModel.BridgeTokenMeta & {
   },
   {
     symbol: "WBTC",
-    decimals: 8,
+    decimals: { default: 8 },
     addresses: {
       Ethereum: IS_MAINNET ? "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599" : "",
       NEAR: IS_MAINNET
@@ -426,7 +464,7 @@ export const TOKENS: (BridgeModel.BridgeTokenMeta & {
   },
   {
     symbol: "OCT",
-    decimals: 18,
+    decimals: { default: 18 },
     addresses: {
       Ethereum: IS_MAINNET ? "0xf5cfbc74057c610c8ef151a439252680ac68c6dc" : "",
       NEAR: IS_MAINNET
@@ -437,7 +475,7 @@ export const TOKENS: (BridgeModel.BridgeTokenMeta & {
   },
   {
     symbol: "WOO",
-    decimals: 18,
+    decimals: { default: 18 },
     addresses: {
       Ethereum: IS_MAINNET ? "0x4691937a7508860f876c9c0a2a617e7d9e945d4b" : "",
       NEAR: IS_MAINNET
@@ -448,7 +486,7 @@ export const TOKENS: (BridgeModel.BridgeTokenMeta & {
   },
   {
     symbol: "MATIC",
-    decimals: 18,
+    decimals: { default: 18 },
     addresses: {
       Ethereum: IS_MAINNET ? "0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0" : "",
     },
@@ -456,7 +494,7 @@ export const TOKENS: (BridgeModel.BridgeTokenMeta & {
   },
   {
     symbol: "AVAX",
-    decimals: 18,
+    decimals: { default: 18 },
     addresses: {
       Ethereum: IS_MAINNET ? "0x93567d6B6553bDe2b652FB7F197a229b93813D3f" : "",
     },
@@ -464,7 +502,7 @@ export const TOKENS: (BridgeModel.BridgeTokenMeta & {
   },
   {
     symbol: "MNT",
-    decimals: 18,
+    decimals: { default: 18 },
     addresses: {
       Ethereum: IS_MAINNET ? "0x3c3a81e81dc49A522A592e7622A7E711c06bf354" : "",
     },
@@ -472,7 +510,7 @@ export const TOKENS: (BridgeModel.BridgeTokenMeta & {
   },
   {
     symbol: "SEI",
-    decimals: 18,
+    decimals: { default: 18 },
     addresses: {
       SEI: "0xE30feDd158A2e3b13e9badaeABaFc5516e95e8C7",
     },
@@ -480,11 +518,27 @@ export const TOKENS: (BridgeModel.BridgeTokenMeta & {
   },
   {
     symbol: "FLR",
-    decimals: 18,
+    decimals: { default: 18 },
     addresses: {
       Flare: "0x1d80c49bbbcd1c0911346656b529df9e5c2f783d",
     },
     icon: formatFileUrl("/crypto/flr.png"),
+  },
+  {
+    symbol: "BNB",
+    decimals: { default: 18 },
+    addresses: {
+      BSC: "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c",
+    },
+    icon: formatFileUrl("/crypto/bnb.png"),
+  },
+  {
+    symbol: "G",
+    decimals: { default: 18 },
+    addresses: {
+      Gravity: "0x8A3f5659Af2E8FE59640723cf7289DD486576716",
+    },
+    icon: formatFileUrl("/crypto/g.png"),
   },
 ];
 
@@ -578,6 +632,20 @@ export const BridgeTokenRoutes: {
     symbols: ["USDC"],
     protocolFeeRatio: 0,
   },
+  {
+    from: "NEAR",
+    to: "BSC",
+    channel: "Stargate",
+    symbols: ["USDC"],
+    protocolFeeRatio: 0.0006,
+  },
+  {
+    from: "NEAR",
+    to: "Gravity",
+    channel: "Stargate",
+    symbols: ["USDC"],
+    protocolFeeRatio: 0,
+  },
   // {
   //   from: 'Ethereum',
   //   to: 'NEAR',
@@ -656,6 +724,20 @@ export const BridgeTokenRoutes: {
   },
   {
     from: "Flare",
+    to: "NEAR",
+    channel: "Stargate",
+    symbols: ["USDC"],
+    protocolFeeRatio: 0.0006,
+  },
+  {
+    from: "BSC",
+    to: "NEAR",
+    channel: "Stargate",
+    symbols: ["USDC"],
+    protocolFeeRatio: 0.0006,
+  },
+  {
+    from: "Gravity",
     to: "NEAR",
     channel: "Stargate",
     symbols: ["USDC"],

@@ -7,7 +7,7 @@ import {
   formatTimestamp,
   formatTxExplorerUrl,
 } from "@/utils/format";
-import { getTokenByAddress } from "@/utils/token";
+import { getTokenByAddress, getTokenDecimals } from "@/utils/token";
 import CustomTooltip from "@/components/customTooltip/customTooltip";
 import { Image } from "@nextui-org/react";
 
@@ -75,7 +75,10 @@ function TableItem({
 
             <CustomTooltip id="token-symbol" />
           </span>
-          {formatAmount(transaction.amount, tokenMeta?.decimals)}
+          {formatAmount(
+            transaction.amount,
+            getTokenDecimals(tokenMeta.symbol, transaction.from_chain)
+          )}
         </div>
       </td>
       <td>

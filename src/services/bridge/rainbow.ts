@@ -10,6 +10,7 @@ import { BridgeConfig } from "@/config/bridge";
 import { evmServices } from "./contract";
 import { decorate, get, Transfer } from "@near-eth/client";
 import { BridgeTransferParams } from ".";
+import { getTokenDecimals } from "@/utils/token";
 
 const rainbowBridgeService = {
   getBridgeInstance({
@@ -66,7 +67,9 @@ const rainbowBridgeService = {
 
     const nearAccount = (await window.selector?.wallet()) as any;
 
-    const amount = new Big(amountIn).times(10 ** tokenIn.decimals).toFixed();
+    const amount = new Big(amountIn)
+      .times(10 ** getTokenDecimals(tokenIn.symbol, from))
+      .toFixed();
 
     const instance = rainbowBridgeService.getBridgeInstance({
       token: tokenIn,
@@ -90,7 +93,8 @@ const rainbowBridgeService = {
         recipient,
         options: {
           sender,
-          ...tokenIn,
+          symbol: tokenIn.symbol,
+          decimals: getTokenDecimals(tokenIn.symbol, "NEAR"),
           nep141Address: tokenIn.addresses.NEAR,
           nearAccount,
         },

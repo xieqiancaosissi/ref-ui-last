@@ -6,7 +6,7 @@ import Big from "big.js";
 import { tokenServices } from "@/services/bridge/contract";
 import { SupportChains, EVMConfig, BridgeTokenRoutes } from "@/config/bridge";
 import { logger } from "@/utils/common";
-import { getTokenMeta } from "@/utils/token";
+import { getTokenDecimals, getTokenMeta } from "@/utils/token";
 import bridgeServices from "@/services/bridge";
 import { formatAmount } from "@/utils/format";
 
@@ -207,11 +207,12 @@ export default function useBridgeForm() {
       });
     } else {
       const amountOut = bridgeChannel
-        ? channelInfoMap?.[bridgeChannel]?.minAmount
-        : Object.values(channelInfoMap || {})[0]?.minAmount;
+        ? channelInfoMap?.[bridgeChannel]?.readableMinAmount
+        : Object.values(channelInfoMap || {})[0]?.readableMinAmount;
+      console.log("amountOut", amountOut);
       setBridgeToValue({
         ...bridgeToValue,
-        amount: formatAmount(amountOut, bridgeToValue.tokenMeta?.decimals),
+        amount: amountOut,
       });
     }
   }, [fromAccountAddress, channelInfoMap, bridgeChannel]);

@@ -12,12 +12,16 @@ declare namespace BridgeModel {
     | "Scroll"
     | "SEI"
     | "TAIKO"
-    | "Flare";
+    | "Flare"
+    | "BSC"
+    | "Gravity";
   type BridgeSupportChannel = "Rainbow" | "Stargate";
   type BridgeTokenMeta = {
     symbol: string;
     name?: string;
-    decimals: number;
+    decimals: {
+      [k in BridgeSupportChain | "default"]?: number;
+    };
     icon: string;
     addresses: {
       [k in BridgeSupportChain]?: string;

@@ -999,6 +999,23 @@ function FarmsDetail(props: {
                   isSignedIn={isSignedIn}
                 ></AddLiquidityEntryBar>
               ) : null}
+              {isEnded() && Number(unlpBalances) <= 0 && (
+                <div
+                  className="absolute top-0 left-0 w-full h-full flex items-center justify-center backdrop-blur-sm rounded-lg"
+                  style={{
+                    background: "rgba(22, 33, 42, 0.7)",
+                    border: "1px solid rgba(255, 255, 255, 0.2)",
+                    zIndex: 1000,
+                  }}
+                >
+                  <p
+                    className="text-base"
+                    style={{ color: "rgba(138, 150, 160, 1)" }}
+                  >
+                    The current Farm has ended
+                  </p>
+                </div>
+              )}
               <div
                 className={`h-full  ${
                   !isSignedIn ? "blur-0" : showAddLiquidityEntry ? "blur-2" : ""
@@ -1259,7 +1276,7 @@ function FarmsDetail(props: {
           ) : (
             <div
               className={`bg-dark-230 rounded-t-2xl px-4 py-6 flex ${
-                showAddLiquidityEntry ? "hidden" : ""
+                isEnded() && Number(unlpBalances) <= 0 ? "hidden" : ""
               }`}
             >
               <div

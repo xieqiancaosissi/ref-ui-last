@@ -358,32 +358,26 @@ function FarmsDetailStake(props: {
     showWalletSelectorModal(appStore.setShowRiskModal);
   }
   return (
-    <div
-      className={`bg-dark-10 rounded-md p-5 xsm:p-0 ${
-        !isSignedIn ||
-        (isEnded &&
-          Number(freeAmount) + Number(lockAmount) + Number(shadow_amount) == 0)
-          ? "hidden"
-          : ""
-      }`}
-    >
+    <div className={`bg-dark-10 rounded-md p-5 xsm:p-0`}>
       <div className="flex items-center mb-4 xsm:mb-7 xsm:border-b xsm:border-white xsm:border-opacity-10 xsm:px-4">
         <button
+          disabled={isEnded}
           className={`text-lg xsm:flex-1 ${
             activeTab === "stake" ? styles.gradient_text : "text-gray-500"
-          } ${isEnded ? "hidden" : ""}`}
+          } ${isEnded ? "cursor-not-allowed text-gray-400" : ""}`}
           onClick={() => {
-            setActiveTab("stake");
-            setAmount("");
-            setLpIsMaxAmount(false);
-            setIsMaxAmount(false);
-            setAmountAvailableCheck(true);
+            if (!isEnded) {
+              setActiveTab("stake");
+              setAmount("");
+              setLpIsMaxAmount(false);
+              setIsMaxAmount(false);
+              setAmountAvailableCheck(true);
+            }
           }}
         >
           Stake
         </button>
-        {isEnded ||
-          !isSignedIn ||
+        {!isSignedIn ||
           (Number(unlpBalances) > 0 && (
             <div
               className="h-4 bg-gray-50 xsm:hidden mx-5"
@@ -408,7 +402,7 @@ function FarmsDetailStake(props: {
         ) : null}
       </div>
       {activeTab === "stake" && (
-        <div className={`xsm:px-4 ${isEnded ? "hidden" : ""}`}>
+        <div className={`xsm:px-4`}>
           <div className="lg:hidden mb-2.5 frcb">
             <div>
               <span

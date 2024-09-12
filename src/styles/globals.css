@@ -478,3 +478,7 @@ options-list::-webkit-scrollbar {
     width: 100%;
   }
 }
+
+*:focus {
+  outline: none;
+}

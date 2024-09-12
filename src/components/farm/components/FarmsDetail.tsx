@@ -999,7 +999,7 @@ function FarmsDetail(props: {
                   isSignedIn={isSignedIn}
                 ></AddLiquidityEntryBar>
               ) : null}
-              {isEnded() && Number(unlpBalances) <= 0 && (
+              {isEnded() && Number(unlpBalances) <= 0 && isSignedIn && (
                 <div
                   className="absolute top-0 left-0 w-full h-full flex items-center justify-center backdrop-blur-sm rounded-lg"
                   style={{

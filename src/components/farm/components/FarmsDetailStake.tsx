@@ -377,29 +377,26 @@ function FarmsDetailStake(props: {
         >
           Stake
         </button>
-        {!isSignedIn ||
-          (Number(unlpBalances) > 0 && (
-            <div
-              className="h-4 bg-gray-50 xsm:hidden mx-5"
-              style={{ width: "2px" }}
-            />
-          ))}
-        {isSignedIn ? (
-          <button
-            className={`text-lg xsm:flex-1 ${
-              activeTab === "unstake" ? styles.gradient_text : "text-gray-500"
-            }  ${Number(unlpBalances) > 0 ? "" : "hidden"}`}
-            onClick={() => {
-              setActiveTab("unstake");
-              setAmount("");
-              setLpIsMaxAmount(false);
-              setIsMaxAmount(false);
-              setAmountAvailableCheck(true);
-            }}
-          >
-            Unstake
-          </button>
-        ) : null}
+        {Number(unlpBalances) > 0 && (
+          <div
+            className="h-4 bg-gray-50 xsm:hidden mx-5"
+            style={{ width: "2px" }}
+          />
+        )}
+        <button
+          className={`text-lg xsm:flex-1 ${
+            activeTab === "unstake" ? styles.gradient_text : "text-gray-500"
+          }  ${Number(unlpBalances) > 0 ? "" : "hidden"}`}
+          onClick={() => {
+            setActiveTab("unstake");
+            setAmount("");
+            setLpIsMaxAmount(false);
+            setIsMaxAmount(false);
+            setAmountAvailableCheck(true);
+          }}
+        >
+          Unstake
+        </button>
       </div>
       {activeTab === "stake" && (
         <div className={`xsm:px-4`}>
@@ -631,34 +628,49 @@ function FarmsDetailStake(props: {
           </div>
           <div className="mt-2.5 text-sm mb-6 frcb xsm:hidden">
             <p className="text-gray-10 ml-1">Lp Tokens</p>
-            <p
-              className={`underline cursor-pointer hover:text-primaryGreen ${
-                isLpMaxAmount ? "text-primaryGreen" : ""
-              }`}
+            {isSignedIn ? (
+              <p
+                className={`underline cursor-pointer hover:text-primaryGreen ${
+                  isLpMaxAmount ? "text-primaryGreen" : ""
+                }`}
+                onClick={() => {
+                  changeAmount(unlpBalances);
+                }}
+              >
+                {toPrecision(unlpBalances, 6)}
+              </p>
+            ) : (
+              <span className="opacity-50">-</span>
+            )}
+          </div>
+          {isSignedIn ? (
+            <div
               onClick={() => {
-                changeAmount(unlpBalances);
+                if (!isDisabledUnstake) {
+                  operationUnStake();
+                }
               }}
+              className={`w-full h-11 frcc rounded paceGrotesk-Bold text-base ${
+                isDisabledUnstake
+                  ? "cursor-not-allowed bg-gray-40 text-gray-50"
+                  : "text-green-10 border border-green-10 cursor-pointer"
+              }`}
             >
-              {toPrecision(unlpBalances, 6)}
-            </p>
-          </div>
-          <div
-            onClick={() => {
-              if (!isDisabledUnstake) {
-                operationUnStake();
-              }
-            }}
-            className={`w-full h-11 frcc rounded paceGrotesk-Bold text-base ${
-              isDisabledUnstake
-                ? "cursor-not-allowed bg-gray-40 text-gray-50"
-                : "text-green-10 border border-green-10 cursor-pointer"
-            }`}
-          >
-            <ButtonTextWrapper
-              loading={unStakeLoading}
-              Text={() => <>Unstake</>}
-            />
-          </div>
+              <ButtonTextWrapper
+                loading={unStakeLoading}
+                Text={() => <>Unstake</>}
+              />
+            </div>
+          ) : (
+            <div
+              className="flex items-center justify-center bg-greenGradient rounded mt-4 text-black font-bold text-base cursor-pointer"
+              style={{ height: "42px" }}
+              onClick={showWalletSelector}
+            >
+              Connect Wallet
+            </div>
+          )}
+
           <div className="mt-5 flex items-start mb-2">
             <FarmDetailsWarn className="xsm:mt-0.5" />
             <p className="ml-1.5 text-gray-10 text-sm">

@@ -112,6 +112,8 @@ export default function ConnectToOrderlyWidget({
     });
   }
   if (connectStatus == "has_connected") return null;
+  connectStatus == "need_register";
+  connectStatus == "need_storage";
   return (
     <div className="flex justify-center items-center">
       {/* top state */}
@@ -130,6 +132,7 @@ export default function ConnectToOrderlyWidget({
                 isConfirmed={isConfirmed}
                 needAuthorization={needAuthorization}
                 setAuthorization={setAuthorization}
+                connectStatus={connectStatus}
               />
             ) : (
               <OrderlyAssetsUI
@@ -137,6 +140,7 @@ export default function ConnectToOrderlyWidget({
                 isConfirmed={isConfirmed}
                 needAuthorization={needAuthorization}
                 setAuthorization={setAuthorization}
+                connectStatus={connectStatus}
               />
             )}
           </div>
@@ -156,11 +160,13 @@ function OrderlyKeyUI({
   isConfirmed,
   needAuthorization,
   setAuthorization,
+  connectStatus,
 }: any) {
   function connectAction(e: any) {
     if (needAuthorization) {
       setAuthorization(true);
-    } else {
+    }
+    if (connectStatus == "need_register" || connectStatus == "need_storage") {
       showConfirmModal(e);
     }
   }
@@ -192,11 +198,13 @@ function OrderlyAssetsUI({
   isConfirmed,
   needAuthorization,
   setAuthorization,
+  connectStatus,
 }: any) {
   function connectAction(e: any) {
     if (needAuthorization) {
       setAuthorization(true);
-    } else {
+    }
+    if (connectStatus == "need_register" || connectStatus == "need_storage") {
       showConfirmModal(e);
     }
   }

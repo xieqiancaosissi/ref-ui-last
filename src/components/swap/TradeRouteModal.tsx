@@ -98,7 +98,7 @@ function TradeRouteModal({
         <div className="flexBetween mt-10">
           <Token icon={tokenIn.icon} size="26" />
           <LeftBracket size={routeLength} />
-          <div className="relative mx-2 xsm:overflow-x-auto">
+          <div className="relative mx-2 overflow-x-auto">
             <div className="w-[620px]">
               {best == "v1" && estimates ? (
                 <>

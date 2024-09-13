@@ -27,6 +27,8 @@ export type ITokenStore = {
   setOwner: (owner: string) => void;
   getBalancesOwner: () => string;
   setBalancesOwner: (balancesOwner: string) => void;
+  get_update_time: () => number;
+  set_update_time: (update_time: number) => void;
 };
 export const useTokenStore = create(
   persist(
@@ -42,6 +44,9 @@ export const useTokenStore = create(
       mcAccountTokens: { data: [], done: false },
       owner: "",
       balancesOwner: "",
+      update_time: undefined,
+      get_update_time: () => get().update_time,
+      set_update_time: (update_time: number) => set({ update_time }),
       get_global_whitelisted_tokens_ids: () => get().whitelisted_tokens_ids,
       set_global_whitelisted_tokens_ids: (whitelisted_tokens_ids: string[]) =>
         set({ whitelisted_tokens_ids }),

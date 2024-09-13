@@ -237,6 +237,7 @@ const useAllWhiteTokensWithBalances = () => {
           })
           .finally(() => {
             tokenStoreRealTime.set_update_loading(false);
+            tokenStore.set_update_time(new Date().getTime());
           });
         getTokensBalance(tknTokens).then((res) => {
           setTknAccountTokensHook({ data: res, done: true });
@@ -252,6 +253,7 @@ const useAllWhiteTokensWithBalances = () => {
         setTknAccountTokensHook({ data: tknTokens, done: true });
         setTknxAccountTokensHook({ data: tknxTokens, done: true });
         setMcAccountTokensHook({ data: mcTokens, done: true });
+        tokenStore.set_update_time(new Date().getTime());
       }
     }
   }

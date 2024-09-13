@@ -1,3 +1,4 @@
+import Big from "big.js";
 import React from "react";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import SelectTokenModal from "../../components/common/SelectTokenModal/Index";
@@ -13,6 +14,7 @@ import {
   useTokenStoreRealTime,
 } from "@/stores/token";
 import { TokenImgWithRiskTag } from "@/components/common/imgContainer";
+import { BALANCE_REFRESH_INTERVAL } from "@/utils/constant";
 
 import {
   usePersistSwapStore,
@@ -42,7 +44,8 @@ function SelectTokenButton(props: ISelectTokenButtonProps) {
     tokenStoreRealTime.get_tokenUpdatedSerialNumber();
   const showToken = isIn ? tokenIn : tokenOut;
   useEffect(() => {
-    if (isOpen) {
+    const isLatest = checkCacheLatest();
+    if (isOpen && !isLatest) {
       tokenStoreRealTime.set_update_loading(true);
       tokenStoreRealTime.set_tokenUpdatedSerialNumber(
         tokenUpdatedSerialNumber + 1
@@ -71,6 +74,16 @@ function SelectTokenButton(props: ISelectTokenButtonProps) {
         global_whitelisted_tokens_ids,
       });
     }
+  }
+  function checkCacheLatest() {
+    const cachedTime = tokenStore.get_update_time();
+    const nowTime = new Date().getTime();
+    if (
+      cachedTime &&
+      Big(nowTime).minus(cachedTime).gt(BALANCE_REFRESH_INTERVAL)
+    )
+      return false;
+    return true;
   }
   return (
     <div>

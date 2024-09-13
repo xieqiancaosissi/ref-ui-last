@@ -1,6 +1,7 @@
 import BN from "bn.js";
 export const MIN_RETAINED_NEAR_AMOUNT = 0.2;
 export const POOL_REFRESH_INTERVAL = 20 * 1000;
+export const BALANCE_REFRESH_INTERVAL = 20 * 1000;
 export const INIT_SLIPPAGE_VALUE = "0.5";
 export const DEFAULT_PAGE_LIMIT = 500;
 export const TOP_POOLS_TOKEN_REFRESH_INTERVAL = 60 * 2;

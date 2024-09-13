@@ -51,7 +51,7 @@ const Staking = () => {
           </div>
           <div className="lg:flex lg:justify-center xsm:-mx-5">
             <div
-              className="lg:w-32 lg:mr-4 xsm:mb-4 bg-greenGradient rounded-lg h-12 flex items-center justify-center text-black text-base cursor-pointer paceGrotesk-Bold"
+              className="lg:w-48 lg:mr-4 xsm:mb-4 bg-greenGradient rounded-lg h-12 flex items-center justify-center text-black text-base cursor-pointer paceGrotesk-Bold"
               onClick={() => {
                 setIsMemeVoteOpen(true);
               }}
@@ -59,7 +59,7 @@ const Staking = () => {
               Vote
             </div>
             <div
-              className="lg:w-32 xsm:mb-4 lg:mr-4 border border-primaryGreen rounded-lg h-12 flex items-center 
+              className="lg:w-48 xsm:mb-4 lg:mr-4 border border-primaryGreen rounded-lg h-12 flex items-center 
               cursor-pointer justify-center text-primaryGreen text-base paceGrotesk-Bold"
               onClick={() => setUserRanking(true)}
             >
@@ -84,7 +84,7 @@ const Staking = () => {
                 </div>
               )}
             </div> */}
-            <div
+            {/* <div
               className="lg:w-32  border border-gray-100 bg-dark-10 rounded-lg h-12 flex cursor-pointer 
               items-center justify-center text-white text-base paceGrotesk-Bold xsm:hidden"
               onClick={() => setShowAirdropModal(true)}
@@ -102,7 +102,7 @@ const Staking = () => {
               <div className="ml-1">
                 <AirdropMobileArrowIcon />
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

@@ -190,7 +190,6 @@ const FarmsPage = (props: any, ref: any) => {
     setSelected(value);
   };
   async function getConfig() {
-    console.log("执行getConfig");
     const config = await get_config();
     const data = REF_VE_CONTRACT_ID
       ? config.booster_seeds?.[REF_VE_CONTRACT_ID]
@@ -203,7 +202,6 @@ const FarmsPage = (props: any, ref: any) => {
     getDetailData_boost_config(data);
   }
   async function init() {
-    console.log("执行init");
     let list_seeds: Seed[];
     let list_farm: FarmBoost[][];
     let pools: PoolRPCView[];
@@ -1015,53 +1013,49 @@ const FarmsPage = (props: any, ref: any) => {
     searchByCondition("main");
   }
   async function get_user_seeds_and_unClaimedRewards() {
-    console.log("执行更新奖励数据1");
-    console.log(accountId,'accountId')
-    if (accountId) {
-      console.log("执行更新奖励数据2");
-      // get user seeds
-      const list_user_seeds = await list_farmer_seeds();
-      set_user_seeds_map(list_user_seeds);
-      // get user unclaimed rewards
-      const userUncliamedRewards = {} as { [key: string]: any };
-      const seed_ids = Object.keys(list_user_seeds);
-      const request: Promise<any>[] = [];
-      seed_ids.forEach((seed_id: string) => {
-        request.push(get_unclaimed_rewards(seed_id));
-      });
-      const resolvedList = await Promise.all(request);
-      resolvedList.forEach((rewards, index) => {
-        if (rewards && Object.keys(rewards).length > 0) {
-          userUncliamedRewards[seed_ids[index]] = rewards;
-        }
-      });
-      set_user_unclaimed_map(userUncliamedRewards);
-      // get user unclaimed token meta
-      const unclaimed_token_meta_datas = {} as { [key: string]: any };
-      const prom_rewards = Object.values(userUncliamedRewards).map(
-        async (rewards) => {
-          const tokens = Object.keys(rewards);
-          const unclaimedTokens = tokens.map(async (tokenId: string) => {
-            const tokenMetadata = await ftGetTokenMetadata(tokenId);
-            return tokenMetadata;
-          });
-          const tempArr = await Promise.all(unclaimedTokens);
-          tempArr.forEach((token: TokenMetadata) => {
-            unclaimed_token_meta_datas[token.id] = token;
-          });
-        }
-      );
-      await Promise.all(prom_rewards);
-      set_user_unclaimed_token_meta_map(unclaimed_token_meta_datas);
-      setUserDataLoading(false);
-      // for detail page
-      getDetailData_user_data({
-        user_seeds_map: list_user_seeds,
-        user_unclaimed_token_meta_map: unclaimed_token_meta_datas,
-        user_unclaimed_map: userUncliamedRewards,
-      });
-      searchByCondition();
-    }
+    // get user seeds
+    const list_user_seeds = await list_farmer_seeds();
+    set_user_seeds_map(list_user_seeds);
+    // get user unclaimed rewards
+    const userUncliamedRewards = {} as { [key: string]: any };
+    const seed_ids = Object.keys(list_user_seeds);
+    const request: Promise<any>[] = [];
+    seed_ids.forEach((seed_id: string) => {
+      request.push(get_unclaimed_rewards(seed_id));
+    });
+    const resolvedList = await Promise.all(request);
+    resolvedList.forEach((rewards, index) => {
+      if (rewards && Object.keys(rewards).length > 0) {
+        userUncliamedRewards[seed_ids[index]] = rewards;
+      }
+    });
+    set_user_unclaimed_map(userUncliamedRewards);
+    // get user unclaimed token meta
+    const unclaimed_token_meta_datas = {} as { [key: string]: any };
+    const prom_rewards = Object.values(userUncliamedRewards).map(
+      async (rewards) => {
+        const tokens = Object.keys(rewards);
+        const unclaimedTokens = tokens.map(async (tokenId: string) => {
+          const tokenMetadata = await ftGetTokenMetadata(tokenId);
+          return tokenMetadata;
+        });
+        const tempArr = await Promise.all(unclaimedTokens);
+        tempArr.forEach((token: TokenMetadata) => {
+          unclaimed_token_meta_datas[token.id] = token;
+        });
+      }
+    );
+    await Promise.all(prom_rewards);
+    set_user_unclaimed_token_meta_map(unclaimed_token_meta_datas);
+    setUserDataLoading(false);
+    // for detail page
+    getDetailData_user_data({
+      user_seeds_map: list_user_seeds,
+      user_unclaimed_token_meta_map: unclaimed_token_meta_datas,
+      user_unclaimed_map: userUncliamedRewards,
+    });
+    searchByCondition();
+    console.log("执行更新奖励数据");
   }
   async function get_ve_seed_share() {
     const result = await getVeSeedShare();

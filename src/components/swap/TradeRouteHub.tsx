@@ -22,7 +22,7 @@ const TradeRouteHub = ({
       if (isStablePool(poolId)) {
         router.push(`/sauce/${poolId}`);
       } else {
-        router.push(`/pools/${poolId}`);
+        router.push(`/pool/${poolId}`);
       }
     } else if (contract == "Ref_DCL") {
       const params_str = get_pool_name(poolId.toString());

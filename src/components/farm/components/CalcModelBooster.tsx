@@ -195,7 +195,7 @@ function CalcModelBooster(
     if (isStable) {
       router.push(`/sauce/${poolId}`);
     } else {
-      router.push(`/pools/${poolId}`);
+      router.push(`/pool/${poolId}`);
     }
   }
   return (

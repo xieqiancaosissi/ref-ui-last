@@ -134,7 +134,7 @@ export const routeMapIds = {
   "trade-limit": ["/limit"],
   "earn-pools": [
     "/pools",
-    "/pools/[id]",
+    "/pool/[id]",
     "/sauce/[id]",
     "/poolV2/[id]",
     "/liquidity/[id]",

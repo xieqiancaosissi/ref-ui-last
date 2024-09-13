@@ -198,7 +198,7 @@ function Pools() {
       const k = await getPoolsDetailById({ pool_id: searchValue });
       if (k.id) {
         if (k.pool_kind == "SIMPLE_POOL") {
-          router.push(`/pools/${k.id}`);
+          router.push(`/pool/${k.id}`);
         }
         if (k.pool_kind == "DCL") {
           const params_str = get_pool_name(k.id.toString());

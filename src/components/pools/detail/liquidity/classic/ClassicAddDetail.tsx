@@ -55,14 +55,14 @@ function DetailSymbol({
 
       <span
         className="cursor-pointer pl-2 py-0.5 text-gradientFrom xsm:hidden"
-        onClick={() => router.push(`/pools/${id}`)}
+        onClick={() => router.push(`/pool/${id}`)}
       >
         <FiExternalLink />
       </span>
 
       <span
         className="cursor-pointer pl-2 py-0.5 text-gradientFrom lg:hidden"
-        onClick={() => router.push(`/pools/${id}`)}
+        onClick={() => router.push(`/pool/${id}`)}
       >
         <ArrowTopRightIcon />
       </span>

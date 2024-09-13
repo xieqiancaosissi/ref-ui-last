@@ -747,7 +747,7 @@ function YourClassicLiquidityLinePage() {
                   <span
                     className="ml-1.5"
                     onClick={() => {
-                      router.push(`/pools/${pool.id}`);
+                      router.push(`/pool/${pool.id}`);
                     }}
                   >
                     <OrdersArrow></OrdersArrow>

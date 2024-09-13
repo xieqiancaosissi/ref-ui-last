@@ -95,7 +95,7 @@ export default function CreatePoolModal({
             const buff = Buffer.from(data, "base64");
             const pool_id = buff.toString("ascii");
 
-            router.push(`/pools/${pool_id}`);
+            router.push(`/pool/${pool_id}`);
           } else {
             router.replace(`/pools`);
           }
@@ -150,7 +150,7 @@ export default function CreatePoolModal({
   }, []);
 
   const toThisPool = () => {
-    router.push(`/pools/${sameId}`);
+    router.push(`/pool/${sameId}`);
   };
 
   return (

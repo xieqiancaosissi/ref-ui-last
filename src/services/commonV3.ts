@@ -1507,7 +1507,7 @@ export function useClassicUrlHandle(from?: string) {
         if (successValue) {
           const buff = Buffer.from(successValue, "base64");
           const v = buff.toString("ascii");
-          router.push(`/pools/${v}`);
+          router.push(`/pool/${v}`);
           // returnValue = v.substring(1, v.length - 1);
         }
       });

@@ -293,7 +293,7 @@ function ClassicAdd(props: any) {
         let status;
         if (res.status == "success") {
           if (fromYours) {
-            router.push(`/pools/${poolDetail.id}`);
+            router.push(`/pool/${poolDetail.id}`);
           } else {
             successToast();
             setAddSuccess((pre: number) => pre + 1);

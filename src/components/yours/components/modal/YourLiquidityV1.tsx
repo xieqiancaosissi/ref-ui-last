@@ -934,7 +934,7 @@ function YourClassicLiquidityLinePage(props: any) {
                 ? `/sauce/${pool.id}`
                 : props?.type == "degen"
                 ? `/sauce/${pool.id}`
-                : `/pools/${pool.id}`
+                : `/pool/${pool.id}`
             );
           }}
         >
@@ -1156,7 +1156,7 @@ function YourClassicLiquidityLinePage(props: any) {
                 ? `/sauce/${pool.id}`
                 : props?.type == "degen"
                 ? `/sauce/${pool.id}`
-                : `/pools/${pool.id}`
+                : `/pool/${pool.id}`
             );
           }}
         >

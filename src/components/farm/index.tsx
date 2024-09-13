@@ -190,6 +190,7 @@ const FarmsPage = (props: any, ref: any) => {
     setSelected(value);
   };
   async function getConfig() {
+    console.log("执行getConfig");
     const config = await get_config();
     const data = REF_VE_CONTRACT_ID
       ? config.booster_seeds?.[REF_VE_CONTRACT_ID]
@@ -202,6 +203,7 @@ const FarmsPage = (props: any, ref: any) => {
     getDetailData_boost_config(data);
   }
   async function init() {
+    console.log("执行init");
     let list_seeds: Seed[];
     let list_farm: FarmBoost[][];
     let pools: PoolRPCView[];
@@ -1049,7 +1051,7 @@ const FarmsPage = (props: any, ref: any) => {
       await Promise.all(prom_rewards);
       set_user_unclaimed_token_meta_map(unclaimed_token_meta_datas);
       setUserDataLoading(false);
-      // console.log("执行更新奖励数据");
+      console.log("执行更新奖励数据");
       // for detail page
       getDetailData_user_data({
         user_seeds_map: list_user_seeds,

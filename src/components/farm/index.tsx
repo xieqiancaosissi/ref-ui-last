@@ -78,8 +78,8 @@ const FarmsPage = (props: any, ref: any) => {
     getDetailData_boost_config,
     getDayVolumeMap,
   } = props;
-  const { getIsSignedIn } = useAccountStore();
-  const accountId = getIsSignedIn();
+  const accountStore = useAccountStore();
+  const accountId = accountStore.getAccountId();
   const [selected, setSelected] = useState("");
   const [user_unWithdraw_rewards, set_user_unWithdraw_rewards] = useState<
     Record<string, string>

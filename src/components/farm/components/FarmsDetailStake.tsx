@@ -112,8 +112,8 @@ function FarmsDetailStake(props: {
     duration_sec,
   } = user_seeds_map[seed_id] || {};
   const appStore = useAppStore();
-  const { getIsSignedIn } = useAccountStore();
-  const isSignedIn = getIsSignedIn();
+  const accountStore = useAccountStore();
+  const isSignedIn = accountStore.getAccountId();
   const freeAmount = toReadableNumber(DECIMALS, free_amount);
   const lockAmount = toReadableNumber(DECIMALS, locked_amount);
   const lockedAmount = toReadableNumber(DECIMALS, locked_amount);

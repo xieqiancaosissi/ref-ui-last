@@ -346,7 +346,7 @@ function ClassicAdd(props: any) {
             }}
           />
         </div>
-        <div className="flex flex-col justify-between lg:w-108 xsm:w-full max-h-[492px] overflow-y-auto rounded-lg bg-dark-10 px-4 py-5">
+        <div className="flex flex-col justify-between lg:w-108 xsm:w-full max-h-[80vh] overflow-y-auto rounded-lg bg-dark-10 px-4 py-5">
           <div className="lg:hidden text-white font-medium text-lg mb-6">
             Add Liquidity
           </div>

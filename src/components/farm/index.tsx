@@ -153,7 +153,9 @@ const FarmsPage = (props: any, ref: any) => {
     init();
     getConfig();
     get_user_unWithDraw_rewards();
-    get_user_seeds_and_unClaimedRewards();
+    if (accountId) {
+      get_user_seeds_and_unClaimedRewards();
+    }
     getLoveTokenBalance();
     get_ve_seed_share();
   }, [accountId]);
@@ -162,7 +164,7 @@ const FarmsPage = (props: any, ref: any) => {
     setGetConfig(getConfig);
     setGet_user_unWithDraw_rewards(get_user_unWithDraw_rewards);
     setGet_user_seeds_and_unClaimedRewards(get_user_seeds_and_unClaimedRewards);
-  }, []);
+  }, [accountId]);
   useEffect(() => {
     if (count > 0) {
       init();
@@ -1012,6 +1014,7 @@ const FarmsPage = (props: any, ref: any) => {
     });
     searchByCondition("main");
   }
+  console.log(accountId, "accountId11111");
   async function get_user_seeds_and_unClaimedRewards() {
     // get user seeds
     const list_user_seeds = await list_farmer_seeds();

@@ -1016,6 +1016,7 @@ const FarmsPage = (props: any, ref: any) => {
   }
   async function get_user_seeds_and_unClaimedRewards() {
     console.log("执行更新奖励数据1");
+    console.log(accountId,'accountId')
     if (accountId) {
       console.log("执行更新奖励数据2");
       // get user seeds

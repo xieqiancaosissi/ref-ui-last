@@ -1314,7 +1314,6 @@ function FarmsDclDetail(props: {
                     )}
                   </>
                 ) : null}
-
                 {activeTab === "Stake" && (
                   <>
                     {!isSignedIn ? (
@@ -1840,6 +1839,7 @@ function AddLiquidityEntryBar(props: {
     <div
       className="absolute inset-0 bg-dark-45 bg-opacity-70 flex flex-col items-center justify-center z-50 border rounded-lg cursor-pointer"
       onClick={goPool}
+      style={{ backdropFilter: "blur(2px)" }}
     >
       <div className="relative w-full h-full flex items-center justify-center">
         <FarmDetailsBgIcon />
@@ -1891,6 +1891,7 @@ function AddLiquidityEntryMobileBar(props: {
     <div
       className="bg-dark-230 px-8 py-6 rounded-t-2xl text-gray-10 cursor-pointer"
       onClick={goPool}
+      style={{ backdropFilter: "blur(2px)" }}
     >
       <p className="text-center mb-4">
         You need LP tokens to stake into the corresponding farm. First, add

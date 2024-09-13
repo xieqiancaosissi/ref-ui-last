@@ -14,7 +14,7 @@ export const PoolRouterGuard = (
   }
   switch (res.pool_kind) {
     case "SIMPLE_POOL":
-      return "/pools";
+      return "/pool";
     case "DCL":
       return "/poolV2";
     case "DEGEN_SWAP":
@@ -22,7 +22,7 @@ export const PoolRouterGuard = (
     case "STABLE_SWAP":
       return fromStable ? "" : "/sauce";
     default:
-      return "/pools"; //
+      return "/pool"; //
   }
 };
 

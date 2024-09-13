@@ -328,6 +328,7 @@ function UserStakeBlock(props: {
       getConfig();
       get_user_unWithDraw_rewards();
       get_user_seeds_and_unClaimedRewards();
+      console.log("get_user_seeds_and_unClaimedRewards方法执行");
     } else if (res.status == "error") {
       failToast(res.errorResult?.message);
     }

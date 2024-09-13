@@ -1042,6 +1042,7 @@ const FarmsPage = (props: any, ref: any) => {
       await Promise.all(prom_rewards);
       set_user_unclaimed_token_meta_map(unclaimed_token_meta_datas);
       setUserDataLoading(false);
+      console.log("执行更新奖励数据");
       // for detail page
       getDetailData_user_data({
         user_seeds_map: list_user_seeds,

@@ -348,10 +348,10 @@ function FarmsDetailStake(props: {
       setAmount("0");
       // ontriggerFarmsStakeUpdate();
       updateSharesAndBalance();
-      init();
-      getConfig();
-      get_user_unWithDraw_rewards();
-      get_user_seeds_and_unClaimedRewards();
+      await init();
+      await getConfig();
+      await get_user_unWithDraw_rewards();
+      await get_user_seeds_and_unClaimedRewards();
     } else if (res.status == "error") {
       failToast(res.errorResult?.message);
     }
@@ -698,4 +698,4 @@ interface Lock {
   multiplier: number;
 }
 
-export default React.memo(FarmsDetailStake);
+export default FarmsDetailStake;

@@ -1015,7 +1015,9 @@ const FarmsPage = (props: any, ref: any) => {
     searchByCondition("main");
   }
   async function get_user_seeds_and_unClaimedRewards() {
+    console.log("执行更新奖励数据1");
     if (accountId) {
+      console.log("执行更新奖励数据2");
       // get user seeds
       const list_user_seeds = await list_farmer_seeds();
       set_user_seeds_map(list_user_seeds);
@@ -1051,7 +1053,6 @@ const FarmsPage = (props: any, ref: any) => {
       await Promise.all(prom_rewards);
       set_user_unclaimed_token_meta_map(unclaimed_token_meta_datas);
       setUserDataLoading(false);
-      console.log("执行更新奖励数据");
       // for detail page
       getDetailData_user_data({
         user_seeds_map: list_user_seeds,

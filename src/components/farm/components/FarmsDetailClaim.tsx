@@ -322,15 +322,15 @@ function UserStakeBlock(props: {
       }
     );
   }
-  function handleDataAfterTranstion(res: IExecutionResult | undefined) {
+  async function handleDataAfterTranstion(res: IExecutionResult | undefined) {
     if (!res) return;
     if (res.status == "success") {
       successToast();
       getTotalUnclaimedRewards();
-      init();
-      getConfig();
-      get_user_unWithDraw_rewards();
-      get_user_seeds_and_unClaimedRewards();
+      await init();
+      await getConfig();
+      await get_user_unWithDraw_rewards();
+      await get_user_seeds_and_unClaimedRewards();
       // console.log("get_user_seeds_and_unClaimedRewards方法执行");
     } else if (res.status == "error") {
       failToast(res.errorResult?.message);

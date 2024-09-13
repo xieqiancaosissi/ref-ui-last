@@ -5,6 +5,7 @@ import { SolidArrowDownIcon } from "./Icons";
 import Table from "./Table";
 import { SelectTokenContext } from "./Context";
 import { TokenMetadata } from "@/services/ft-contract";
+import { useAccountStore } from "@/stores/account";
 import {
   useTokenStore,
   ITokenStore,
@@ -23,6 +24,7 @@ export default function AssetTable({
   const [tab, setTab] = useState<"default" | "tkn" | "tknx" | "mc">("default");
   const tokenStore = useTokenStore() as ITokenStore;
   const tokenStoreRealTime = useTokenStoreRealTime();
+  const accountStore = useAccountStore();
   const defaultAccountTokens = tokenStore.getDefaultAccountTokens();
   const tknAccountTokens = tokenStore.getTknAccountTokens();
   const tknxAccountTokens = tokenStore.getTknxAccountTokens();
@@ -32,6 +34,7 @@ export default function AssetTable({
     tokenStoreRealTime.get_tokenUpdatedSerialNumber();
   const isUpdate = tokenUpdatedSerialNumber > 1;
   const { searchText } = useContext(SelectTokenContext);
+  const accountId = accountStore.getAccountId();
   const [
     defaultSearchResult,
     tknSearchResult,
@@ -193,7 +196,7 @@ export default function AssetTable({
               </div>
             </div>
           </div>
-          {update_loading && isUpdate ? (
+          {update_loading && isUpdate && accountId ? (
             <Spinner
               size="sm"
               className="mb-0.5"

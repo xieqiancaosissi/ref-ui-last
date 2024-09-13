@@ -62,6 +62,7 @@ import NoContent from "../common/NoContent";
 import { FarmsContextData } from "./components/FarmsContext";
 import React from "react";
 import FarmView from "./components/FarmView";
+import { useFarmStore } from "@/stores/farm";
 
 const {
   REF_VE_CONTRACT_ID,
@@ -116,7 +117,6 @@ const FarmsPage = (props: any, ref: any) => {
   const [loveTokenBalance, setLoveTokenBalance] = useState("0");
   const [maxLoveShareAmount, setMaxLoveShareAmount] = useState<string>("0");
   const [globalConfigLoading, setGlobalConfigLoading] = useState<boolean>(true);
-  const farmsContext = useContext(FarmsContextData);
   const refreshTime = 300000;
   const sortList: { [key: string]: string } = {
     tvl: "TVL",
@@ -141,6 +141,14 @@ const FarmsPage = (props: any, ref: any) => {
     },
     { id: "others", name: "Others" },
   ]);
+  const setInit = useFarmStore((state) => state.setInit);
+  const setGetConfig = useFarmStore((state) => state.setGetConfig);
+  const setGet_user_unWithDraw_rewards = useFarmStore(
+    (state) => state.setGet_user_unWithDraw_rewards
+  );
+  const setGet_user_seeds_and_unClaimedRewards = useFarmStore(
+    (state) => state.setGet_user_seeds_and_unClaimedRewards
+  );
   useEffect(() => {
     init();
     getConfig();
@@ -149,6 +157,12 @@ const FarmsPage = (props: any, ref: any) => {
     getLoveTokenBalance();
     get_ve_seed_share();
   }, [accountId]);
+  useEffect(() => {
+    setInit(init);
+    setGetConfig(getConfig);
+    setGet_user_unWithDraw_rewards(get_user_unWithDraw_rewards);
+    setGet_user_seeds_and_unClaimedRewards(get_user_seeds_and_unClaimedRewards);
+  }, []);
   useEffect(() => {
     if (count > 0) {
       init();
@@ -172,13 +186,6 @@ const FarmsPage = (props: any, ref: any) => {
       getYourFarmsQuantity();
     }
   }, [farm_display_List]);
-  useEffect(() => {
-    farmsContext.init = init;
-    farmsContext.getConfig = getConfig;
-    farmsContext.get_user_unWithDraw_rewards = get_user_unWithDraw_rewards;
-    farmsContext.get_user_seeds_and_unClaimedRewards =
-      get_user_seeds_and_unClaimedRewards;
-  }, [farmsContext]);
   const handleCheckbox = (value: SetStateAction<string>) => {
     setSelected(value);
   };
@@ -1042,7 +1049,7 @@ const FarmsPage = (props: any, ref: any) => {
       await Promise.all(prom_rewards);
       set_user_unclaimed_token_meta_map(unclaimed_token_meta_datas);
       setUserDataLoading(false);
-      console.log("执行更新奖励数据");
+      // console.log("执行更新奖励数据");
       // for detail page
       getDetailData_user_data({
         user_seeds_map: list_user_seeds,

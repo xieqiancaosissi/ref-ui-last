@@ -84,15 +84,7 @@ export default function FarmsBoosterPage(props: any) {
   const showLoading = paramId && !showDetailPage && !showDclDetailPage;
   return (
     <>
-      <FarmsContextData.Provider
-        value={{
-          user_data,
-          init: () => {},
-          getConfig: () => {},
-          get_user_unWithDraw_rewards: () => {},
-          get_user_seeds_and_unClaimedRewards: () => {},
-        }}
-      >
+      <FarmsContextData.Provider value={{ user_data }}>
         <FarmsPage
           getDetailData={getDetailData}
           getDetailData_user_data={getDetailData_user_data}

@@ -46,6 +46,7 @@ import getStablePoolTypeConfig from "@/utils/stablePoolConfig/stablePoolTypeConf
 import { FarmsContextData } from "./FarmsContext";
 import CalcEle from "./CalcEle";
 import React from "react";
+import { useFarmStore } from "@/stores/farm";
 const stablePoolTypeConfig = getStablePoolTypeConfig();
 const { STABLE_POOL_IDS } = stablePoolTypeConfig;
 const { FARM_LOCK_SWITCH, REF_VE_CONTRACT_ID, FARM_BLACK_LIST_V2 } =
@@ -82,12 +83,14 @@ function FarmsDetailStake(props: {
     user_data_loading,
     updateSharesAndBalance,
   } = props;
-  const {
-    init,
-    getConfig,
-    get_user_unWithDraw_rewards,
-    get_user_seeds_and_unClaimedRewards,
-  } = useContext(FarmsContextData);
+  const init = useFarmStore((state) => state.init);
+  const getConfig = useFarmStore((state) => state.getConfig);
+  const get_user_unWithDraw_rewards = useFarmStore(
+    (state) => state.get_user_unWithDraw_rewards
+  );
+  const get_user_seeds_and_unClaimedRewards = useFarmStore(
+    (state) => state.get_user_seeds_and_unClaimedRewards
+  );
   const {
     pool,
     min_locking_duration_sec,

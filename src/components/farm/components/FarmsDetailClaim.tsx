@@ -39,6 +39,7 @@ import successToast from "@/components/common/toast/successToast";
 import getStablePoolTypeConfig from "@/utils/stablePoolConfig/stablePoolTypeConfig";
 import { FarmsContextData } from "./FarmsContext";
 import React from "react";
+import { useFarmStore } from "@/stores/farm";
 
 const stablePoolTypeConfig = getStablePoolTypeConfig();
 const { STABLE_POOL_IDS } = stablePoolTypeConfig;
@@ -68,12 +69,14 @@ function UserStakeBlock(props: {
     user_data_loading,
     radio,
   } = props;
-  const {
-    init,
-    getConfig,
-    get_user_unWithDraw_rewards,
-    get_user_seeds_and_unClaimedRewards,
-  } = useContext(FarmsContextData);
+  const init = useFarmStore((state) => state.init);
+  const getConfig = useFarmStore((state) => state.getConfig);
+  const get_user_unWithDraw_rewards = useFarmStore(
+    (state) => state.get_user_unWithDraw_rewards
+  );
+  const get_user_seeds_and_unClaimedRewards = useFarmStore(
+    (state) => state.get_user_seeds_and_unClaimedRewards
+  );
   // const [yourTvl, setYourTvl] = useState("");
   const { pool, min_locking_duration_sec, slash_rate, seed_id, seed_decimal } =
     detailData;
@@ -328,7 +331,7 @@ function UserStakeBlock(props: {
       getConfig();
       get_user_unWithDraw_rewards();
       get_user_seeds_and_unClaimedRewards();
-      console.log("get_user_seeds_and_unClaimedRewards方法执行");
+      // console.log("get_user_seeds_and_unClaimedRewards方法执行");
     } else if (res.status == "error") {
       failToast(res.errorResult?.message);
     }

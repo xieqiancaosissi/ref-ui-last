@@ -68,6 +68,7 @@ import { failToast } from "@/components/orderbook/transactionTipPopUp";
 import successToast from "@/components/common/toast/successToast";
 import { FarmsContextData } from "./FarmsContext";
 import React from "react";
+import { useFarmStore } from "@/stores/farm";
 
 const { REF_VE_CONTRACT_ID, REF_UNI_V3_SWAP_CONTRACT_ID } = getConfig();
 
@@ -92,12 +93,14 @@ function FarmsDclDetail(props: {
     user_data_loading,
     all_seeds,
   } = props;
-  const {
-    init,
-    getConfig,
-    get_user_unWithDraw_rewards,
-    get_user_seeds_and_unClaimedRewards,
-  } = useContext(FarmsContextData);
+  const init = useFarmStore((state) => state.init);
+  const getConfig = useFarmStore((state) => state.getConfig);
+  const get_user_unWithDraw_rewards = useFarmStore(
+    (state) => state.get_user_unWithDraw_rewards
+  );
+  const get_user_seeds_and_unClaimedRewards = useFarmStore(
+    (state) => state.get_user_seeds_and_unClaimedRewards
+  );
   const cardWidth = isMobile() ? "100vw" : "430px";
   const cardHeight = isMobile() ? "90vh" : "80vh";
   const is_mobile = isMobile();
@@ -159,7 +162,7 @@ function FarmsDclDetail(props: {
   }
   const goBacktoFarms = () => {
     router.push("/v2farms");
-    init();
+    // init();
     emptyDetailData();
   };
   function getBoostMutil() {

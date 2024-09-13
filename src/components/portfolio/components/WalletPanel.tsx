@@ -1,5 +1,7 @@
+import React from "react";
 import BigNumber from "bignumber.js";
 import Big from "big.js";
+import { Tooltip } from "react-tooltip";
 import { TokenMetadata } from "@/services/ft-contract";
 import { useTokenBalances } from "@/services/token";
 import { getAccountId } from "@/utils/wallet";
@@ -26,10 +28,8 @@ import { IExecutionResult } from "@/interfaces/wallet";
 import checkTxBeforeShowToast from "@/components/common/toast/checkTxBeforeShowToast";
 import failToast from "@/components/common/toast/failToast";
 import { useAppStore } from "@/stores/app";
-import { useSwapStore } from "@/stores/swap";
-import { Tooltip } from "react-tooltip";
-import React from "react";
 import WalletTokenList from "./WalletTokenList";
+import { BALANCE_REFRESH_INTERVAL } from "@/utils/constant";
 
 function WalletPanel() {
   const {
@@ -78,21 +78,18 @@ function WalletPanel() {
     setWalletLoading(tokens_loading);
   }, [tokens_loading]);
   useEffect(() => {
-    if (isOpen) {
+    const isLatest = checkCacheLatest();
+    if (isOpen && !isLatest) {
       setWalletLoading(true);
+      appStore.setPersonalDataUpdatedSerialNumber(
+        personalDataUpdatedSerialNumber + 1
+      );
     }
   }, [isOpen]);
   // for reload
   useEffect(() => {
     setReloadLoading(is_tokens_loading);
   }, [is_tokens_loading]);
-  useEffect(() => {
-    if (isOpen) {
-      appStore.setPersonalDataUpdatedSerialNumber(
-        personalDataUpdatedSerialNumber + 1
-      );
-    }
-  }, [isOpen]);
   useEffect(() => {
     if (!is_tokens_loading) {
       userTokens.forEach((token: TokenMetadata) => {
@@ -215,6 +212,16 @@ function WalletPanel() {
       setActiveTab("near");
     }
   }, [isOpen]);
+  function checkCacheLatest() {
+    const cachedTime = appStore.get_update_time();
+    const nowTime = new Date().getTime();
+    if (
+      cachedTime &&
+      Big(nowTime).minus(cachedTime).gt(BALANCE_REFRESH_INTERVAL)
+    )
+      return false;
+    return true;
+  }
   function token_data_process(
     target_tokens: TokenMetadata[],
     accountType: keyof TokenMetadata

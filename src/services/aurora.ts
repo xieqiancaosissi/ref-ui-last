@@ -187,6 +187,7 @@ export const useUserRegisteredTokensAllAndNearBalance = () => {
             token.nearNonVisible = result[1][index];
           });
           setTokens(arr);
+          appStore.set_update_time(new Date().getTime());
         })
         .finally(() => {
           set_tokens_loading(false);

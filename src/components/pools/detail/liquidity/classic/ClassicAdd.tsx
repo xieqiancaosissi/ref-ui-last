@@ -335,7 +335,7 @@ function ClassicAdd(props: any) {
             },
       }}
     >
-      <div>
+      <div className="lg:py-[12px] lg:h-[100vh] lg:overflow-y-auto">
         <div className="flex items-center justify-between mb-4 xsm:hidden">
           <AddLiqTitleIcon />
           <LpModalCloseIcon
@@ -346,7 +346,7 @@ function ClassicAdd(props: any) {
             }}
           />
         </div>
-        <div className="flex flex-col justify-between lg:w-108 xsm:w-full max-h-[80vh] overflow-y-auto rounded-lg bg-dark-10 px-4 py-5">
+        <div className="flex flex-col justify-between lg:w-108 xsm:w-full lg:h-[492px] rounded-lg bg-dark-10 px-4 py-5">
           <div className="lg:hidden text-white font-medium text-lg mb-6">
             Add Liquidity
           </div>
@@ -479,7 +479,7 @@ function ClassicAdd(props: any) {
             )
           ) : (
             <div
-              className="flex items-center justify-center bg-greenGradient rounded mt-4 text-black font-bold text-base cursor-pointer"
+              className="flex items-center justify-center bg-greenGradient rounded mt-4 text-black font-bold text-base cursor-pointer shrink-0"
               style={{ height: "42px" }}
               onClick={() => {
                 showWalletSelectorModal(appStore.setShowRiskModal);

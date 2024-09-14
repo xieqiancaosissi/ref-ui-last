@@ -67,7 +67,7 @@ input::-webkit-inner-spin-button {
 
 .classAddLiqThumb::-webkit-scrollbar-thumb {
   background: transparent;
-  border-radius: 2px;
+  border-radius: 1px;
 }
 
 input {

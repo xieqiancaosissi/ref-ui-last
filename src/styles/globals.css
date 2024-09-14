@@ -65,6 +65,12 @@ input::-webkit-inner-spin-button {
   border-radius: 2px;
 }
 
+
+.classAddLiqThumb::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 2px;
+}
+
 input {
   margin: 0;
   background-color: transparent;

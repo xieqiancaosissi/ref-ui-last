@@ -335,7 +335,7 @@ function ClassicAdd(props: any) {
             },
       }}
     >
-      <div className="lg:py-[12px] lg:h-[100vh] lg:overflow-y-auto">
+      <div className="classAddLiqThumb lg:py-[12px] lg:h-[100vh] lg:overflow-y-auto">
         <div className="flex items-center justify-between mb-4 xsm:hidden">
           <AddLiqTitleIcon />
           <LpModalCloseIcon

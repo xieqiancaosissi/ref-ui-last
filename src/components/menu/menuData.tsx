@@ -48,12 +48,6 @@ export function menuData(): IMenu[] {
           icon: <LimitIcon />,
           path: "/limit",
         },
-        {
-          id: "orderbook",
-          label: "Orderbook",
-          icon: <OrderbookIcon />,
-          externalLink: "https://old.app.ref.finance/orderbook/spot",
-        },
       ],
     },
     {

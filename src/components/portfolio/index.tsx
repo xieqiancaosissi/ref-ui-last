@@ -1,10 +1,4 @@
-import React, {
-  useState,
-  createContext,
-  useEffect,
-  useContext,
-  useMemo,
-} from "react";
+import React, { useState, createContext, useEffect, useMemo } from "react";
 import Big from "big.js";
 import { useAccountStore } from "@/stores/account";
 import { isMobile } from "@/utils/device";
@@ -12,28 +6,18 @@ import { getAccountId } from "@/utils/wallet";
 import { getBoostTokenPrices } from "@/services/farm";
 import WalletPanel from "./components/WalletPanel";
 import RefPanel from "./components/RefPanel";
-import OrderlyPanel from "./components/OrderlyPanel";
 import { TotalAssetsIcon } from "../menu/icons";
 import { formatWithCommas_usd } from "@/utils/uiNumber";
 import BurrowPanel from "./components/BurrowPanel";
 import { XrefMobileArrow } from "../xref/icon";
 import FlipNumbers from "react-flip-numbers";
-import useHoldings from "@/hooks/orderbook/useHoldings";
 import { useAppStore } from "@/stores/app";
 import { Spinner } from "@nextui-org/react";
 
 export const OverviewData = createContext<OverviewContextType | null>(null);
 const is_mobile: boolean = !!isMobile();
 
-function Overview({
-  isOpen,
-  orderly_value,
-  setIsOpen,
-}: {
-  isOpen: boolean;
-  orderly_value: string;
-  setIsOpen: any;
-}) {
+function Overview({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpen: any }) {
   const accountStore = useAccountStore();
   const accountId = getAccountId();
   const isSignedIn = accountStore.isSignedIn;
@@ -44,10 +28,6 @@ function Overview({
     useState<boolean>(false);
   const [ref_profit_value, set_ref_profit_value] = useState<string>("0");
   const [ref_profit_value_done, set_ref_profit_value_done] =
-    useState<boolean>(false);
-
-  const [orderly_asset_value, set_orderly_asset_value] = useState<string>("0");
-  const [orderly_asset_value_done, set_orderly_asset_value_done] =
     useState<boolean>(false);
 
   const [burrow_supplied_value, set_burrow_supplied_value] =
@@ -83,11 +63,9 @@ function Overview({
     ) {
       netWorth = Big(ref_invest_value)
         .plus(ref_profit_value)
-        .plus(orderly_asset_value)
         .plus(burrow_supplied_value)
         .plus(burrow_rewards_value)
         .plus(wallet_assets_value)
-        .plus(orderly_value)
         .minus(burrow_borrowied_value)
         .toFixed();
       netWorthDone = true;
@@ -96,13 +74,11 @@ function Overview({
   }, [
     ref_invest_value_done,
     ref_profit_value_done,
-    orderly_asset_value,
     burrow_done,
     wallet_assets_value_done,
     burrow_supplied_value,
     burrow_borrowied_value,
     burrow_rewards_value,
-    orderly_value,
   ]);
 
   const [portfolioAssets, netPortfolioAssets] = useMemo(() => {
@@ -111,10 +87,8 @@ function Overview({
     if (ref_invest_value_done && ref_profit_value_done && burrow_done) {
       portfolioAssets = Big(ref_invest_value)
         .plus(ref_profit_value)
-        .plus(orderly_asset_value)
         .plus(burrow_supplied_value)
         .plus(burrow_rewards_value)
-        .plus(orderly_value)
         .minus(burrow_borrowied_value)
         .toFixed();
       netPortfolioAssets = true;
@@ -123,12 +97,10 @@ function Overview({
   }, [
     ref_invest_value_done,
     ref_profit_value_done,
-    orderly_asset_value,
     burrow_done,
     burrow_supplied_value,
     burrow_borrowied_value,
     burrow_rewards_value,
-    orderly_value,
   ]);
 
   const [claimable, claimableDone] = useMemo(() => {
@@ -178,8 +150,6 @@ function Overview({
         set_ref_invest_value_done,
         set_ref_profit_value,
         set_ref_profit_value_done,
-        set_orderly_asset_value,
-        set_orderly_asset_value_done,
         set_burrow_supplied_value,
         set_burrow_borrowied_value,
         set_burrow_rewards_value,
@@ -262,7 +232,6 @@ function Overview({
             {isOpen ? (
               <div className={activeTab === "Portfolio" ? "" : "hidden"}>
                 <RefPanel></RefPanel>
-                <OrderlyPanel></OrderlyPanel>
                 <BurrowPanel></BurrowPanel>
                 <div className="frcb mt-6 px-4">
                   <p className="text-gray-50 text-sm">Total</p>
@@ -356,7 +325,6 @@ function Overview({
             <div className="fixed bottom-8 left-0 w-full bg-dark-10 py-6 px-4 z-50 rounded-t-2xl border border-modalGrayBg">
               <div className="mb-6 text-lg text-white">Portfolio Assets</div>
               <RefPanel></RefPanel>
-              <OrderlyPanel></OrderlyPanel>
               <BurrowPanel></BurrowPanel>
               <div className="frcb mt-6 px-4">
                 <p className="text-gray-50 text-sm">Total</p>
@@ -379,14 +347,7 @@ export default function AccountOverview({
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
-  const orderly_value = useHoldings();
-  return (
-    <OverviewMemo
-      isOpen={isOpen}
-      orderly_value={orderly_value}
-      setIsOpen={setIsOpen}
-    />
-  );
+  return <OverviewMemo isOpen={isOpen} setIsOpen={setIsOpen} />;
 }
 
 export interface OverviewContextType {
@@ -398,8 +359,6 @@ export interface OverviewContextType {
   set_ref_invest_value_done: React.Dispatch<React.SetStateAction<boolean>>;
   set_ref_profit_value: React.Dispatch<React.SetStateAction<string>>;
   set_ref_profit_value_done: React.Dispatch<React.SetStateAction<boolean>>;
-  set_orderly_asset_value: React.Dispatch<React.SetStateAction<string>>;
-  set_orderly_asset_value_done: React.Dispatch<React.SetStateAction<boolean>>;
   set_burrow_supplied_value: React.Dispatch<React.SetStateAction<string>>;
   set_burrow_borrowied_value: React.Dispatch<React.SetStateAction<string>>;
   set_burrow_rewards_value: React.Dispatch<React.SetStateAction<string>>;

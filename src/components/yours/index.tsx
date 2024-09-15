@@ -28,9 +28,7 @@ function Overview() {
   const [ref_profit_value_done, set_ref_profit_value_done] =
     useState<boolean>(false);
 
-  const [orderly_asset_value, set_orderly_asset_value] = useState<string>("0");
-  const [orderly_asset_value_done, set_orderly_asset_value_done] =
-    useState<boolean>(false);
+  useState<boolean>(false);
 
   const [burrow_supplied_value, set_burrow_supplied_value] =
     useState<string>("0");
@@ -57,7 +55,6 @@ function Overview() {
     ) {
       netWorth = Big(ref_invest_value)
         .plus(ref_profit_value)
-        .plus(orderly_asset_value)
         .plus(burrow_supplied_value)
         .plus(burrow_rewards_value)
         .plus(wallet_assets_value)
@@ -69,7 +66,6 @@ function Overview() {
   }, [
     ref_invest_value_done,
     ref_profit_value_done,
-    orderly_asset_value,
     burrow_done,
     wallet_assets_value_done,
     burrow_supplied_value,
@@ -96,9 +92,6 @@ function Overview() {
     const tokenPriceList = await getBoostTokenPrices();
     setTokenPriceList(tokenPriceList);
   }
-  // console.log(wallet_assets_value,'wallet_assets_value')
-  // console.log(ref_invest_value,'ref_invest_value')
-  // console.log(ref_profit_value,'ref_profit_value')
   return (
     <OverviewData.Provider
       value={{
@@ -110,8 +103,6 @@ function Overview() {
         set_ref_invest_value_done,
         set_ref_profit_value,
         set_ref_profit_value_done,
-        set_orderly_asset_value,
-        set_orderly_asset_value_done,
         set_burrow_supplied_value,
         set_burrow_borrowied_value,
         set_burrow_rewards_value,
@@ -144,8 +135,6 @@ export interface OverviewContextType {
   set_ref_invest_value_done: React.Dispatch<React.SetStateAction<boolean>>;
   set_ref_profit_value: React.Dispatch<React.SetStateAction<string>>;
   set_ref_profit_value_done: React.Dispatch<React.SetStateAction<boolean>>;
-  set_orderly_asset_value: React.Dispatch<React.SetStateAction<string>>;
-  set_orderly_asset_value_done: React.Dispatch<React.SetStateAction<boolean>>;
   set_burrow_supplied_value: React.Dispatch<React.SetStateAction<string>>;
   set_burrow_borrowied_value: React.Dispatch<React.SetStateAction<string>>;
   set_burrow_rewards_value: React.Dispatch<React.SetStateAction<string>>;

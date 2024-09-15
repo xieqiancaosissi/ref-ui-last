@@ -1,32 +1,21 @@
 import React, { useState, useMemo, useEffect } from "react";
-import { useOrderbookDataStore } from "@/stores/orderbook/orderbookDataStore";
 import Modal from "react-modal";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import { isMobile } from "../../utils/device";
 import { toReadableNumber, toPrecision } from "../../utils/numbers";
-import {
-  batchDeleteKeys,
-  batchOrderelyDeleteKeys,
-} from "../../services/portfolioData";
-import {
-  REF_FI_SENDER_WALLET_ACCESS_KEY,
-  getPublicKey,
-} from "../../utils/orderlyUtils";
-import { getAccountKeyInfo } from "../../services/off-chain-api";
-import { IOrderKeyInfo } from "../../services/off-chain-api";
+import { batchDeleteKeys } from "../../services/portfolioData";
 import { ModalClose, QuestionMark } from "../farm/icon";
 import { getAccountId } from "@/utils/wallet";
 import CustomTooltip from "../customTooltip/customTooltip";
 import { getAccount } from "@/utils/near";
-import { CheckedIcon, OrderlyIcon } from "./icons";
+import { CheckedIcon } from "./icons";
 import { ButtonTextWrapper } from "../common/Button";
 import { useAppStore } from "@/stores/app";
 import { showWalletSelectorModal } from "@/utils/wallet";
-import ConnectToOrderlyWidget from "@/components/orderbook/connectToOrderlyWidget";
 import successToast from "../common/toast/successToast";
 import failToast from "../common/toast/failToast";
+import { getUsedKey } from "@/utils/wallet";
 const maxLength = 10;
-const maxOrderlyLength = 10;
 function AccessKeyModal(props: any) {
   const { isOpen, onRequestClose } = props;
   const cardWidth = isMobile() ? "100vw" : "550px";
@@ -34,7 +23,6 @@ function AccessKeyModal(props: any) {
   const is_mobile = isMobile();
   const [currentUsedKeys, setCurrentUsedKeys] = useState<string[]>([]);
   const accountId = getAccountId();
-  const [tab, setTab] = useState<"accessKey" | "orderlyKey">("accessKey");
   const [allKeys, setAllKeys] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const appStore = useAppStore();
@@ -59,20 +47,13 @@ function AccessKeyModal(props: any) {
     fetchKeys();
   }, [addSuccess]);
   async function getUsedKeys() {
-    const keyUsed = await getPublicKey(accountId);
+    const keyUsed = getUsedKey();
     setCurrentUsedKeys([keyUsed]);
   }
   function getApprovedTip() {
     return `
     <div class="flex items-center text-navHighLightText text-xs text-left w-48">
         Authorize one Gas fee key per Dapp. Clean up if there are multiples.
-    </div>
-    `;
-  }
-  function getOrderlyTip() {
-    return `
-    <div class="flex items-center text-navHighLightText text-xs text-left w-48">
-    Authorize one ordering key per account. Clean up if there are multiples. Deleting Orderly Keys may have delays as it requires confirmation from Orderly.
     </div>
     `;
   }
@@ -112,15 +93,8 @@ function AccessKeyModal(props: any) {
       >
         <div className="frcb pt-6 pl-6 pb-5 border-b border-white border-opacity-10 xsm:pt-0 xsm:pb-0 xsm:pr-6">
           <div className="flex items-center w-full">
-            <span
-              onClick={() => {
-                setTab("accessKey");
-              }}
-              className={`flex items-center gap-1.5 text-base pr-4 lg:border-r border-gray-10 border-opacity-20 cursor-pointer xsm:w-1/2 xsm:justify-center xsm:pt-5 xsm:pb-2.5 ${
-                tab == "accessKey"
-                  ? "text-white xsm:border-b-2 xsm:border-white xsm:border-r-0"
-                  : "text-dark-80"
-              }`}
+            <div
+              className={`flex items-center gap-1.5 text-base pr-4 cursor-pointer xsm:w-1/2 xsm:justify-center xsm:pt-5 xsm:pb-2.5 text-white xsm:border-b-2 xsm:border-white xsm:border-r-0`}
             >
               <span className="paceGrotesk-Bold "> Approved</span>
               <div
@@ -133,31 +107,6 @@ function AccessKeyModal(props: any) {
                 <QuestionMark />
                 <CustomTooltip id={"approved"} />
               </div>
-            </span>
-            <div
-              onClick={() => {
-                setTab("orderlyKey");
-              }}
-              className={`flex items-center gap-1.5 pl-4 cursor-pointer xsm:w-1/2 xsm:justify-center xsm:pt-5 xsm:pb-2.5 ${
-                tab == "orderlyKey"
-                  ? "text-white xsm:border-b-2 xsm:border-white xsm:border-r-0"
-                  : "text-dark-80"
-              }`}
-            >
-              <OrderlyIcon isActive={tab == "orderlyKey"} />
-              <span className="flex items-center gap-1.5 text-lg">
-                <span className="paceGrotesk-Bold ">Orderly</span>
-                <div
-                  className="text-white text-right ml-1"
-                  data-class="reactTip"
-                  data-tooltip-id={"orderly"}
-                  data-place="top"
-                  data-tooltip-html={getOrderlyTip()}
-                >
-                  <QuestionMark />
-                  <CustomTooltip id={"orderly"} />
-                </div>
-              </span>
             </div>
           </div>
           <ModalClose
@@ -166,18 +115,10 @@ function AccessKeyModal(props: any) {
           />
         </div>
         <AuthorizedApps
-          hidden={tab == "orderlyKey"}
           currentUsedKeys={currentUsedKeys}
           switchWallet={switchWallet}
           allKeys={allKeys}
           setAddSuccess={setAddSuccess}
-          onRequestClose={onRequestClose}
-        />
-        <OrderlyKeys
-          hidden={tab == "accessKey"}
-          currentUsedKeys={currentUsedKeys}
-          setAddSuccess={setAddSuccess}
-          addSuccess={addSuccess}
           onRequestClose={onRequestClose}
         />
       </div>
@@ -185,14 +126,11 @@ function AccessKeyModal(props: any) {
   );
 }
 function AuthorizedApps({
-  hidden,
   currentUsedKeys,
   allKeys,
   switchWallet,
-  setAddSuccess,
   onRequestClose,
 }: {
-  hidden: boolean;
   currentUsedKeys: string[];
   allKeys: any[];
   switchWallet: any;
@@ -202,7 +140,6 @@ function AuthorizedApps({
   const [clear_loading, set_clear_loading] = useState<boolean>(false);
   const [selectedKeys, setSelectedKeys] = useState<Set<string>>(new Set([]));
   const [loading, setLoading] = useState<boolean>(true);
-  const senderAccessKey = localStorage.getItem(REF_FI_SENDER_WALLET_ACCESS_KEY);
   const disbaledWallet = ["sender", "neth", "keypom", "okx-wallet"];
   const selectedWalletId = window.selector?.store?.getState()?.selectedWalletId;
   useEffect(() => {
@@ -269,12 +206,6 @@ function AuthorizedApps({
         failToast(result.message);
       }
       set_clear_loading(false);
-
-      // if (result instanceof Error) {
-      //   console.error("操作失败:", result);
-      // } else {
-      //   console.log("操作成功:", result);
-      // }
     });
   }
   const disabled = selectedKeys.size === 0;
@@ -282,7 +213,7 @@ function AuthorizedApps({
   const isDisabledAction =
     selectedWalletId && disbaledWallet.includes(selectedWalletId);
   return (
-    <div className={`py-2.5 ${hidden ? "hidden" : ""}`}>
+    <div className={`py-2.5`}>
       <div className="frcb px-6 mb-3 xsm:px-4">
         <div className="flex items-center gap-1">
           <span className="text-sm text-white lg:paceGrotesk-Bold xsm:text-gray-50">
@@ -407,198 +338,6 @@ function AuthorizedApps({
           </div>
         </div>
       )}
-    </div>
-  );
-}
-function OrderlyKeys({
-  hidden,
-  currentUsedKeys,
-  setAddSuccess,
-  addSuccess,
-  onRequestClose,
-}: {
-  hidden: boolean;
-  currentUsedKeys: string[];
-  setAddSuccess: any;
-  addSuccess: number;
-  onRequestClose: any;
-}) {
-  const [clear_loading, set_clear_loading] = useState<boolean>(false);
-  const [selectedKeys, setSelectedKeys] = useState<Set<string>>(new Set([]));
-  const [allOrderlyKeys, setAllOrderlyKeys] = useState<string[]>([]);
-  const [orderlyKeyLoading, setOrderlyKeyLoading] = useState<boolean>(true);
-  const orderbookDataStore = useOrderbookDataStore();
-  const connectStatus = orderbookDataStore.getConnectStatus();
-  const accountId = getAccountId();
-  useEffect(() => {
-    if (accountId && connectStatus == "has_connected") {
-      getAccountKeyInfo({ accountId }).then((keys: IOrderKeyInfo[]) => {
-        const activeKeys = keys
-          .filter((key: IOrderKeyInfo) => key.key_status === "ACTIVE")
-          .reduce<string[]>((acc, cur) => {
-            acc.push(cur.orderly_key);
-            return acc;
-          }, []);
-        setAllOrderlyKeys(activeKeys);
-        setOrderlyKeyLoading(false);
-      });
-    }
-  }, [accountId, connectStatus]);
-  const displayAllOrderlyKeys = useMemo(() => {
-    return allOrderlyKeys.filter((key) => !currentUsedKeys.includes(key));
-  }, [allOrderlyKeys.length, currentUsedKeys.length]);
-  const allCheckdLength = useMemo(() => {
-    if (displayAllOrderlyKeys?.length) {
-      return Math.min(displayAllOrderlyKeys.length, maxOrderlyLength);
-    }
-    return 0;
-  }, [displayAllOrderlyKeys]);
-  function onCheck(public_key: string) {
-    if (selectedKeys.has(public_key)) {
-      selectedKeys.delete(public_key);
-    } else {
-      if (selectedKeys.size == maxOrderlyLength) return;
-      selectedKeys.add(public_key);
-    }
-    setSelectedKeys(new Set(selectedKeys));
-  }
-  function onCheckAll() {
-    if (selectedKeys.size == allCheckdLength) {
-      setSelectedKeys(new Set([]));
-    } else {
-      const checkedAll = displayAllOrderlyKeys
-        .filter((key) => !currentUsedKeys.includes(key))
-        .slice(0, maxOrderlyLength)
-        .reduce<string[]>((acc, cur) => {
-          acc.push(cur);
-          return acc;
-        }, []);
-      setSelectedKeys(new Set(checkedAll));
-    }
-  }
-  function batchClear() {
-    set_clear_loading(true);
-    batchOrderelyDeleteKeys(Array.from(selectedKeys), (result) => {
-      if (result[0]?.final_execution_status == "EXECUTED_OPTIMISTIC") {
-        // let arr = allOrderlyKeys;
-        // console.log(selectedKeys, arr);
-        // Array.from(selectedKeys).map((ite) => {
-        //   arr = arr.filter((item) => item !== ite);
-        // });
-        // setAllOrderlyKeys(arr);
-        successToast();
-        // setAddSuccess((pre) => pre + 1);
-        // setOrderlyKeyLoading(true);
-        onRequestClose();
-      } else {
-        failToast(result.message);
-      }
-      set_clear_loading(false);
-    });
-  }
-  const disabled = selectedKeys.size === 0;
-  const isEmpty = allOrderlyKeys.length == 0;
-  return (
-    <div className={`py-4 ${hidden ? "hidden" : ""}`}>
-      <div className="flex items-center justify-between px-6 mb-3 xsm:px-3">
-        <div className="flex items-center gap-1">
-          <span className="text-sm text-white lg:paceGrotesk-Bold xsm:text-gray-50">
-            Orderly Keys
-          </span>
-          <span className="flex items-center justify-center text-xs text-white px-1.5 py-1.5 rounded-md paceGrotesk-Bold bg-gray-60 bg-opacity-20">
-            {allOrderlyKeys.length}
-          </span>
-        </div>
-        {allCheckdLength > 0 ? (
-          <div className="flex items-center gap-1.5 text-sm text-gray-60">
-            <Checkbox
-              onClick={onCheckAll}
-              checked={selectedKeys.size == allCheckdLength}
-            />{" "}
-            Remove-10
-          </div>
-        ) : null}
-      </div>
-      <ConnectToOrderlyWidget uiType="orderlyKey" />
-      {orderlyKeyLoading && connectStatus == "has_connected" ? (
-        <div className="px-6">
-          <SkeletonTheme
-            baseColor="rgba(33, 43, 53, 0.3)"
-            highlightColor="#2A3643"
-          >
-            <Skeleton width="100%" height={120} count={2} className="mt-4" />
-          </SkeletonTheme>
-        </div>
-      ) : null}
-      <div
-        className="overflow-auto hide-scrollbar px-6 border-b border-dark-160 xsm:px-3"
-        style={{ maxHeight: "290px" }}
-      >
-        <div
-          className={`bg-gray-60 bg-opacity-15 rounded-xl p-4 ${
-            isEmpty ? "hidden" : ""
-          }`}
-        >
-          {allOrderlyKeys
-            .sort((a, b) => {
-              const aIsUsed = currentUsedKeys.includes(a);
-              const bIsUsed = currentUsedKeys.includes(b);
-              return Number(bIsUsed) - Number(aIsUsed);
-            })
-            .map((key) => {
-              const isUsed = currentUsedKeys.includes(key);
-              return (
-                <div key={key} className="gap-2 mb-4">
-                  {isUsed ? (
-                    <span className="flex items-center justify-center bg-primaryGreen text-xs paceGrotesk-Bold italic whitespace-nowrap rounded w-12 text-black">
-                      In use
-                    </span>
-                  ) : null}
-                  <div
-                    className={`flex justify-end items-center ${
-                      isUsed ? "invisible" : "mb-4"
-                    }`}
-                  >
-                    <Checkbox
-                      appearance="b"
-                      checked={selectedKeys.has(key)}
-                      onClick={() => {
-                        onCheck(key);
-                      }}
-                    />
-                  </div>
-                  <div className="flex  flex-col gap-2 flex-grow  bg-dark-60 rounded-md text-xs text-gray-60 p-2.5 break-all">
-                    {key}
-                  </div>
-                </div>
-              );
-            })}
-        </div>
-        {/* {isEmpty ? (
-            <div className="flex justify-center my-20 text-xs text-gray-60">
-              No Data
-            </div>
-          ) : null} */}
-      </div>
-      <div className="px-6 xsm:px-3">
-        <div
-          onClick={() => {
-            if (!disabled && !clear_loading) {
-              batchClear();
-            }
-          }}
-          className={`frcc mt-4 rounded h-12 text-base paceGrotesk-Bold focus:outline-none ${
-            disabled || clear_loading
-              ? "opacity-40 cursor-not-allowed bg-gray-40 text-white"
-              : "cursor-pointer bg-greenGradient text-black"
-          }`}
-        >
-          <ButtonTextWrapper
-            loading={clear_loading}
-            Text={() => <div className="flex items-center gap-2">Clear</div>}
-          />
-        </div>
-      </div>
     </div>
   );
 }

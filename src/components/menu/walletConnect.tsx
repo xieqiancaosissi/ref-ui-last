@@ -23,7 +23,6 @@ import { LinkLine } from "./icons2";
 import { useAppStore } from "@/stores/app";
 import { walletIconConfig } from "./walletConfig";
 import { getSelectedWalletId } from "@/utils/wallet";
-import OrderlyKeyInit from "@/components/orderbook/OrderlyKeyInit";
 import Overview from "../portfolio";
 const is_mobile = isMobile();
 function WalletConnect() {
@@ -299,7 +298,6 @@ function WalletConnect() {
                   </div>
                 </div>
               ) : null}
-              <OrderlyKeyInit />
             </div>
           ) : (
             <div

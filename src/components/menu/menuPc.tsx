@@ -171,7 +171,11 @@ function MenuPc() {
           })}
           <MenuContainer
             className={`absolute transform ${
-              oneLevelData.children.length > 3 ? "scale-x-100" : "scale-x-75"
+              oneLevelData.children.length > 3
+                ? "scale-x-100"
+                : oneLevelData.children.length < 3
+                ? "scale-x-[68%]"
+                : "scale-x-75"
             }`}
             style={{ zIndex: "-1" }}
           />

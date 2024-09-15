@@ -17,7 +17,6 @@ import {
 import { defaultTokenList, getAuroraConfig } from "@/utils/auroraConfig";
 import { Near, WalletConnection, keyStores } from "near-api-js";
 import getConfig from "@/utils/config";
-import getOrderlyConfig from "@/utils/orderlyConfig";
 import {
   WRAP_NEAR_CONTRACT_ID,
   nearMetadata,
@@ -56,7 +55,6 @@ import { REF_UNI_V3_SWAP_CONTRACT_ID } from "@/utils/contract";
 import { useAppStore } from "@/stores/app";
 
 const config = getConfig();
-const orderConfig = getOrderlyConfig();
 export const oneETH = new Big(10).pow(18);
 
 export const AuroraCallGas = "150000000000000";
@@ -93,7 +91,7 @@ export const getAurora = () => {
   const aurora_walletConnection = new AuroraWalletConnection(near, "aurora");
   const account = new AuroraWalletConnection(
     near,
-    orderConfig.ORDERLY_ASSET_MANAGER
+    config.REF_FARM_BOOST_CONTRACT_ID
   ).account();
   //@ts-ignore
   return new Engine(

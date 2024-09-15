@@ -60,11 +60,7 @@ export interface StablePool {
 export interface ReservesMap {
   [index: string]: string;
 }
-export type SwapContractType =
-  | "Ref_Classic"
-  | "Ref_DCL"
-  | "Orderly"
-  | "Trisolaris";
+export type SwapContractType = "Ref_Classic" | "Ref_DCL" | "Trisolaris";
 export enum PoolMode {
   PARALLEL = "parallel swap",
   SMART = "smart routing",
@@ -162,7 +158,7 @@ export interface IEstimateServerResult {
   tokensMap: Record<string, TokenMetadata>;
 }
 
-export type SwapMarket = "ref" | "tri" | "orderly" | undefined;
+export type SwapMarket = "ref" | "tri" | undefined;
 export interface SwapOptions {
   swapsToDo?: EstimateSwapView[];
   swapsToDoServer?: IEstimateSwapServerView;

@@ -20,7 +20,6 @@ import { setupBitteWallet } from "@near-wallet-selector/bitte-wallet";
 import { setupCoin98Wallet } from "@near-wallet-selector/coin98-wallet";
 import "@near-wallet-selector/modal-ui/styles.css";
 import getConfig from "./config";
-import getOrderlyConfig from "./orderlyConfig";
 import { getSelectedRpc } from "./rpc";
 declare global {
   interface Window {
@@ -55,7 +54,7 @@ export async function getWalletSelector({
       },
     ],
   };
-  const signInContractId = getOrderlyConfig().ORDERLY_ASSET_MANAGER;
+  const signInContractId = getConfig().REF_FARM_BOOST_CONTRACT_ID;
   const RPC = getSelectedRpc();
   console.log("00000000000003-wallet loading start");
   const selector: any = await setupWalletSelector({
@@ -120,7 +119,7 @@ export async function getWalletSelector({
   });
   console.log("2222222222222-wallet loading end");
   const modal = setupModal(selector, {
-    contractId: getOrderlyConfig().ORDERLY_ASSET_MANAGER,
+    contractId: getConfig().REF_FARM_BOOST_CONTRACT_ID,
   });
   const { observable }: { observable: any } = selector.store;
   const subscription = observable

@@ -35,6 +35,9 @@ export function addQueryParams(
   }
   return url.toString();
 }
+export function getUsedKey() {
+  return window.selector?.store?.getState()?.accounts?.[0].publicKey;
+}
 
 export const webWalletIds = [
   "my-near-wallet",

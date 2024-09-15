@@ -444,69 +444,6 @@ export function MenuContainer(props: any) {
   );
 }
 
-export const OrderlyOrderBookIcon = (props: any) => {
-  return (
-    <svg
-      {...props}
-      width="28"
-      height="28"
-      viewBox="0 0 28 28"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      xmlnsXlink="http://www.w3.org/1999/xlink"
-    >
-      <rect
-        x="0.5"
-        y="0.5"
-        width="26.2631"
-        height="26.2631"
-        rx="8.5"
-        fill="url(#pattern0_orderbook_orderly)"
-        stroke="#00C6A2"
-      />
-      <defs>
-        <pattern
-          id="pattern0_orderbook_orderly"
-          patternContentUnits="objectBoundingBox"
-          width="1"
-          height="1"
-        >
-          <use xlinkHref="#image0_5909_14232" transform="scale(0.00195312)" />
-        </pattern>
-        <image
-          id="image0_5909_14232"
-          width="512"
-          height="512"
-          xlinkHref="https://img.ref.finance/images/OrderlyOrderBookIcon.png"
-        />
-      </defs>
-    </svg>
-  );
-};
-
-export function OrderlyIcon({ isActive }: { isActive: boolean }) {
-  if (isActive)
-    return <OrderlyOrderBookIcon style={{ width: "18px", height: "18px" }} />;
-  return (
-    <svg
-      width="18"
-      height="18"
-      viewBox="0 0 18 18"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <rect width="18" height="18" rx="5" fill="white" fillOpacity="0.2" />
-      <path
-        fillRule="evenodd"
-        clipRule="evenodd"
-        d="M14.2816 10.5396C13.6157 12.8278 11.5031 14.5 9 14.5C6.49687 14.5 4.38429 12.8278 3.7184 10.5396H7.1348C7.57866 11.0773 8.25032 11.4201 9.00203 11.4201C9.75374 11.4201 10.4254 11.0773 10.8693 10.5396H14.2816ZM14.3901 10.0996H11.1584C11.327 9.76969 11.422 9.39599 11.422 9.00008C11.422 8.60413 11.3269 8.23039 11.1583 7.90045H14.3901C14.4622 8.25573 14.5 8.62345 14.5 9C14.5 9.37657 14.4622 9.74431 14.3901 10.0996ZM6.84566 10.0996C6.6771 9.76969 6.58203 9.39599 6.58203 9.00008C6.58203 8.60413 6.67712 8.23039 6.84571 7.90045H3.60993C3.53784 8.25573 3.5 8.62345 3.5 9C3.5 9.37657 3.53785 9.74431 3.60994 10.0996H6.84566ZM4.60051 5.69879C4.20762 6.22156 3.90573 6.81662 3.71838 7.46045H7.13488C7.57874 6.92277 8.25037 6.58008 9.00203 6.58008C9.7537 6.58008 10.4253 6.92277 10.8692 7.46045H14.2816C14.0943 6.81662 13.7924 6.22156 13.3995 5.69879H4.60051ZM13.0316 5.25879H4.96842C5.97282 4.17694 7.40736 3.5 9 3.5C10.5926 3.5 12.0272 4.17694 13.0316 5.25879Z"
-        fill="white"
-        fillOpacity="0.5"
-      />
-    </svg>
-  );
-}
-
 export function CheckedIcon() {
   return (
     <svg

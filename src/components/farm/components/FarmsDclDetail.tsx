@@ -64,9 +64,8 @@ import { useAppStore } from "@/stores/app";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import { get_pool_name } from "@/services/commonV3";
 import { IExecutionResult } from "@/interfaces/wallet";
-import { failToast } from "@/components/orderbook/transactionTipPopUp";
+import failToast from "@/components/common/toast/failToast";
 import successToast from "@/components/common/toast/successToast";
-import { FarmsContextData } from "./FarmsContext";
 import React from "react";
 import { useFarmStore } from "@/stores/farm";
 

@@ -54,7 +54,6 @@ export async function getWalletSelector({
       },
     ],
   };
-  const signInContractId = getConfig().REF_FARM_BOOST_CONTRACT_ID;
   const RPC = getSelectedRpc();
   console.log("00000000000003-wallet loading start");
   const selector: any = await setupWalletSelector({
@@ -95,7 +94,7 @@ export async function getWalletSelector({
       }),
       setupKeypom({
         networkId: getConfig().networkId as NetworkId,
-        signInContractId,
+        signInContractId: "",
         trialAccountSpecs: {
           url: "/trial-accounts/ACCOUNT_ID#SECRET_KEY",
           modalOptions: KEYPOM_OPTIONS,
@@ -106,12 +105,10 @@ export async function getWalletSelector({
       }),
       setupMintbaseWallet({
         walletUrl: "https://wallet.mintbase.xyz",
-        contractId: signInContractId,
         deprecated: false,
       }),
       setupBitteWallet({
         walletUrl: "https://wallet.bitte.ai",
-        contractId: signInContractId,
         deprecated: false,
       }),
       setupCoin98Wallet({}),
@@ -119,7 +116,7 @@ export async function getWalletSelector({
   });
   console.log("2222222222222-wallet loading end");
   const modal = setupModal(selector, {
-    contractId: getConfig().REF_FARM_BOOST_CONTRACT_ID,
+    contractId: "",
   });
   const { observable }: { observable: any } = selector.store;
   const subscription = observable

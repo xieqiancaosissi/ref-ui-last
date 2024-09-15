@@ -155,6 +155,8 @@ function MenuPc() {
                   chooseTwoLevelMenu(item);
                 }}
                 className={`flex items-center h-9 rounded cursor-pointer text-base gap-2 px-5 ${
+                  oneLevelData.children.length == 2 ? "px-[36px]" : ""
+                } ${
                   twoLevelMenuId === item.id ? "text-white" : "text-gray-10"
                 }`}
               >

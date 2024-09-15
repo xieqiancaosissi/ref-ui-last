@@ -89,7 +89,10 @@ export const getAurora = () => {
     ...config,
   });
   const aurora_walletConnection = new AuroraWalletConnection(near, "aurora");
-  const account = new AuroraWalletConnection(near, "").account();
+  const account = new AuroraWalletConnection(
+    near,
+    config.REF_FARM_BOOST_CONTRACT_ID
+  ).account();
   //@ts-ignore
   return new Engine(
     aurora_walletConnection,

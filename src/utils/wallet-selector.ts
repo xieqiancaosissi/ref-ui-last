@@ -94,7 +94,7 @@ export async function getWalletSelector({
       }),
       setupKeypom({
         networkId: getConfig().networkId as NetworkId,
-        signInContractId: "",
+        signInContractId: '',
         trialAccountSpecs: {
           url: "/trial-accounts/ACCOUNT_ID#SECRET_KEY",
           modalOptions: KEYPOM_OPTIONS,
@@ -116,7 +116,7 @@ export async function getWalletSelector({
   });
   console.log("2222222222222-wallet loading end");
   const modal = setupModal(selector, {
-    contractId: "",
+    contractId: getConfig().REF_FARM_BOOST_CONTRACT_ID,
   });
   const { observable }: { observable: any } = selector.store;
   const subscription = observable

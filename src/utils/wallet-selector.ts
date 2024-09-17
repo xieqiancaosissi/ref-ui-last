@@ -95,7 +95,7 @@ export async function getWalletSelector({
       }),
       setupKeypom({
         networkId: getConfig().networkId as NetworkId,
-        signInContractId: '',
+        signInContractId: "",
         trialAccountSpecs: {
           url: "/trial-accounts/ACCOUNT_ID#SECRET_KEY",
           modalOptions: KEYPOM_OPTIONS,

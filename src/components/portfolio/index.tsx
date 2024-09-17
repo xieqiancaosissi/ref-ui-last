@@ -76,9 +76,12 @@ function Overview({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpen: any }) {
     ref_profit_value_done,
     burrow_done,
     wallet_assets_value_done,
+    ref_invest_value,
+    ref_profit_value,
     burrow_supplied_value,
-    burrow_borrowied_value,
     burrow_rewards_value,
+    wallet_assets_value,
+    burrow_borrowied_value,
   ]);
 
   const [portfolioAssets, netPortfolioAssets] = useMemo(() => {

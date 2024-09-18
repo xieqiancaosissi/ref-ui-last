@@ -304,7 +304,7 @@ export default function Farms(props: any) {
           your_list_liquidities,
         }}
       >
-        <div className={`${activeTab == "2" ? "" : "hidden"}`}>
+        <div className={`${activeTab == "2" ? "" : "hidden"} flex items-center w-full justify-start flex-wrap`}>
           <ClassicFarms></ClassicFarms>
           <DclFarms></DclFarms>
         </div>
@@ -442,18 +442,22 @@ function DclFarms() {
   }
 
   return (
-    <div className="grid grid-cols-2 xs:grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-6 m-auto mt-8">
+    <>
       {dclSeeds.map((seed: Seed, index: number) => {
         return (
           <div
             key={seed.seed_id + index}
-            className={
-              seed.hidden
+            className={`
+              ${seed.hidden
                 ? "hidden"
                 : index < 2
                 ? "bg-farmItemBg rounded-lg"
-                : "bg-gray-20 bg-opacity-30 rounded-lg"
-            }
+                : "bg-gray-20 bg-opacity-30 rounded-lg"}
+                lg:w-[32.5%]
+                xsm:w-full
+                lg:mr-[0.8%]
+                mb-[12px]
+            `}
           >
             <FarmView
               seed={seed}
@@ -471,7 +475,7 @@ function DclFarms() {
           </div>
         );
       })}
-    </div>
+    </>
   );
 }
 
@@ -591,15 +595,20 @@ function ClassicFarms() {
       setMaxLoveShareAmount(amountStr_readable);
     }
   }
-
+  
   return (
-    <div className="grid grid-cols-2 xs:grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-6 m-auto mt-8">
+    <>
       {classicSeeds.map((seed: Seed, index: number) => {
         return (
           <div
             key={seed.seed_id + index}
-            className={
-              seed.hidden ? "hidden" : index < 2 ? "rounded-lg" : "rounded-lg"
+            className={`
+              ${seed.hidden ? "hidden" : index < 2 ? "rounded-lg" : "rounded-lg"}
+               lg:w-[32.5%]
+                xsm:w-full
+               lg:mr-[0.8%]
+              mb-[12px]
+              `
             }
           >
             <FarmView
@@ -618,7 +627,7 @@ function ClassicFarms() {
           </div>
         );
       })}
-    </div>
+    </>
   );
 }
 

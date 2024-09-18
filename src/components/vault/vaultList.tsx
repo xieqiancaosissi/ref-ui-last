@@ -133,27 +133,27 @@ export default function VaultList(props: any) {
         (item) =>
           Number(item.base_apy) +
           Number(item.supply_apy) +
-          Number(item.supply_farm_apy) + 
+          Number(item.supply_farm_apy) +
           Number(item.net_apy)
       );
       setBurrowApr(Math.max(...aprs));
     }
   };
 
-  useEffect(()=>{
-    getBurrowApy().then((res:any)=>{
+  useEffect(() => {
+    getBurrowApy().then((res: any) => {
       if (res?.data?.length > 0) {
         const aprs = res?.data?.map(
           (item) =>
             Number(item.base_apy) +
             Number(item.supply_apy) +
-            Number(item.supply_farm_apy) + 
+            Number(item.supply_farm_apy) +
             Number(item.net_apy)
         );
         setBurrowApr(Math.max(...aprs));
       }
-    })
-  }, [])
+    });
+  }, []);
 
   return (
     <div

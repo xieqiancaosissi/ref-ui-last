@@ -304,7 +304,11 @@ export default function Farms(props: any) {
           your_list_liquidities,
         }}
       >
-        <div className={`${activeTab == "2" ? "" : "hidden"} flex items-center w-full justify-start flex-wrap`}>
+        <div
+          className={`${
+            activeTab == "2" ? "" : "hidden"
+          } flex items-center w-full justify-start flex-wrap`}
+        >
           <ClassicFarms></ClassicFarms>
           <DclFarms></DclFarms>
         </div>
@@ -448,11 +452,13 @@ function DclFarms() {
           <div
             key={seed.seed_id + index}
             className={`
-              ${seed.hidden
-                ? "hidden"
-                : index < 2
-                ? "bg-farmItemBg rounded-lg"
-                : "bg-gray-20 bg-opacity-30 rounded-lg"}
+              ${
+                seed.hidden
+                  ? "hidden"
+                  : index < 2
+                  ? "bg-farmItemBg rounded-lg"
+                  : "bg-gray-20 bg-opacity-30 rounded-lg"
+              }
                 lg:w-[32.5%]
                 xsm:w-full
                 lg:mr-[0.8%]
@@ -595,7 +601,7 @@ function ClassicFarms() {
       setMaxLoveShareAmount(amountStr_readable);
     }
   }
-  
+
   return (
     <>
       {classicSeeds.map((seed: Seed, index: number) => {
@@ -603,13 +609,14 @@ function ClassicFarms() {
           <div
             key={seed.seed_id + index}
             className={`
-              ${seed.hidden ? "hidden" : index < 2 ? "rounded-lg" : "rounded-lg"}
+              ${
+                seed.hidden ? "hidden" : index < 2 ? "rounded-lg" : "rounded-lg"
+              }
                lg:w-[32.5%]
                 xsm:w-full
                lg:mr-[0.8%]
               mb-[12px]
-              `
-            }
+              `}
           >
             <FarmView
               seed={seed}

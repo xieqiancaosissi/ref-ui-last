@@ -121,7 +121,6 @@ export default function VaultList(props: any) {
     });
   }, []);
 
-
   useEffect(() => {
     getBurrowApy().then((res: any) => {
       if (res?.length > 0) {

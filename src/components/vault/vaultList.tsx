@@ -71,10 +71,6 @@ export default function VaultList(props: any) {
   );
 
   useEffect(() => {
-    // fetchBurrowData();
-  }, []);
-
-  useEffect(() => {
     // Concurrently fetch APR values for all pool types
     const fetchAllAprs = async () => {
       const [classicApr, stableApr, dclApr] = await Promise.all([
@@ -125,25 +121,11 @@ export default function VaultList(props: any) {
     });
   }, []);
 
-  const fetchBurrowData = async () => {
-    const response = await fetch("/api/listTokenData");
-    const list = await response.json();
-    if (list?.data?.length > 0) {
-      const aprs = list?.data?.map(
-        (item) =>
-          Number(item.base_apy) +
-          Number(item.supply_apy) +
-          Number(item.supply_farm_apy) +
-          Number(item.net_apy)
-      );
-      setBurrowApr(Math.max(...aprs));
-    }
-  };
 
   useEffect(() => {
     getBurrowApy().then((res: any) => {
-      if (res?.data?.length > 0) {
-        const aprs = res?.data?.map(
+      if (res?.length > 0) {
+        const aprs = res?.map(
           (item) =>
             Number(item.base_apy) +
             Number(item.supply_apy) +

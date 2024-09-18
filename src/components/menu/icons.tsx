@@ -535,3 +535,77 @@ export function TotalAssetsIcon(props: any) {
     />
   );
 }
+
+export function VaultIcon(props: any) {
+  return (
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 18 18"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <rect
+        x="0.75"
+        y="0.75"
+        width="16.5"
+        height="16.5"
+        rx="2.25"
+        stroke="currentColor"
+        strokeWidth="1.5"
+      />
+      <circle
+        cx="9.0006"
+        cy="9"
+        r="3.25"
+        transform="rotate(-45 9.0006 9)"
+        stroke="currentColor"
+        strokeWidth="1.5"
+      />
+      <line
+        x1="5.46293"
+        y1="5.46456"
+        x2="6.87714"
+        y2="6.87878"
+        stroke="currentColor"
+      />
+      <line
+        x1="11.123"
+        y1="6.87862"
+        x2="12.5372"
+        y2="5.46441"
+        stroke="currentColor"
+      />
+      <line
+        x1="5.46676"
+        y1="12.5356"
+        x2="6.88097"
+        y2="11.1214"
+        stroke="currentColor"
+      />
+      <line
+        x1="11.1192"
+        y1="11.1213"
+        x2="12.5334"
+        y2="12.5355"
+        stroke="currentColor"
+      />
+      <line
+        x1="16.1"
+        y1="4"
+        x2="16.1"
+        y2="7"
+        stroke="currentColor"
+        strokeWidth="1.2"
+      />
+      <line
+        x1="16.1"
+        y1="11"
+        x2="16.1"
+        y2="14"
+        stroke="currentColor"
+        strokeWidth="1.2"
+      />
+    </svg>
+  );
+}

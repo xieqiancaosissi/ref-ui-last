@@ -22,8 +22,8 @@ const config: Config = {
   ],
   theme: {
     extend: {
-      fontFamily:{
-        'SpaceGroteskBold':['SpaceGroteskBold']
+      fontFamily: {
+        SpaceGroteskBold: ["SpaceGroteskBold"],
       },
       colors: {
         chartsPink: "#657EFF",
@@ -38,6 +38,7 @@ const config: Config = {
         whiteOpacity: "rgba(255, 255, 255, 0.4)",
         v3feeTextColor: "#586F80",
         refPublicBoxDarkBg: "rgba(27, 36, 44, 0.4)",
+        vaultTagBot: "#0057FF",
         gray: {
           10: "#91A2AE",
           20: "#212B35",
@@ -101,7 +102,7 @@ const config: Config = {
           270: "#121D26",
           280: "rgba(145, 162, 174, 0.2)",
           290: "#0C171F",
-          300: "rgba(151, 151, 151, 0.2)"
+          300: "rgba(151, 151, 151, 0.2)",
         },
         green: {
           10: "#9EFE01",
@@ -150,6 +151,10 @@ const config: Config = {
       },
       backgroundImage: (theme) => ({
         topLinearGradient: "linear-gradient( #FFDA19, #FF833E)",
+        vaultTagLaunchpad:
+          "linear-gradient(to right, rgba(0, 255, 209, 1), rgba(0, 148, 255, 1))",
+        vaultTagLending:
+          "linear-gradient(to right, rgba(255, 75, 118, 1), rgba(125, 45, 153, 1))",
 
         poolsTypelinearGrayBg:
           "linear-gradient(356.54deg, #2A3643 2.38%, #6A88A9 90.82%)",
@@ -187,6 +192,8 @@ const config: Config = {
       xl: { min: "1280px" },
       "2xl": { min: "1536px" },
       "3xl": { min: "1792px" },
+      vxsm: { min: "300px", max: "767px" },
+      vlg: { min: "768px" },
     },
   },
   plugins: [

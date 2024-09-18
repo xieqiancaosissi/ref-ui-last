@@ -421,20 +421,25 @@ function FarmsDetail(props: {
         const b = new BigNumber(sharesInfo.sharesInPool)
           .minus(sharesInfo.amountByShadowInFarm)
           .toFixed();
-        if (new Set(STABLE_POOL_IDS || []).has(poolId?.toString())) {
-          setLpBalance(toReadableNumber(LP_STABLE_TOKEN_DECIMALS, b));
+        if (Number(b) < 0) {
+          setLpBalance("");
         } else {
-          setLpBalance(toReadableNumber(LP_TOKEN_DECIMALS, b));
-        }
-        if (detailData.farmList) {
-          const isEnded = detailData.farmList[0].status == "Ended";
-          if (isEnded) {
-            setShowAddLiquidityEntry(false);
+          const validB = Math.max(0, Number(b)).toString();
+          if (new Set(STABLE_POOL_IDS || []).has(poolId?.toString())) {
+            setLpBalance(toReadableNumber(LP_STABLE_TOKEN_DECIMALS, validB));
           } else {
-            const userSeed = user_seeds_map[detailData.seed_id];
-            setShowAddLiquidityEntry(
-              !Number(b) && !userSeed && !user_data_loading
-            );
+            setLpBalance(toReadableNumber(LP_TOKEN_DECIMALS, validB));
+          }
+          if (detailData.farmList) {
+            const isEnded = detailData.farmList[0].status == "Ended";
+            if (isEnded) {
+              setShowAddLiquidityEntry(false);
+            } else {
+              const userSeed = user_seeds_map[detailData.seed_id];
+              setShowAddLiquidityEntry(
+                !Number(b) && !userSeed && !user_data_loading
+              );
+            }
           }
         }
       }

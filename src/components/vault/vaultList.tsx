@@ -148,7 +148,7 @@ export default function VaultList(props: any) {
             Number(item.base_apy) +
             Number(item.supply_apy) +
             Number(item.supply_farm_apy) +
-            Number(item.net_apy)
+            Number(item?.net_apy || 0)
         );
         setBurrowApr(Math.max(...aprs));
       }

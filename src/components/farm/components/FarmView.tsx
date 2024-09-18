@@ -131,6 +131,7 @@ function FarmView(props: {
   const router = useRouter();
   const accountStore = useAccountStore();
   const isSignedIn = accountStore.isSignedIn;
+  const accountId = accountStore.getAccountId();
   const [yourTvl, setYourTvl] = useState("");
   const unClaimedTokens = useTokens(
     Object.keys(user_unclaimed_map[seed_id] || {})
@@ -152,11 +153,16 @@ function FarmView(props: {
     }
   }, [boostConfig, user_seeds_map]);
   useEffect(() => {
-    if (isSignedIn) {
+    if (accountId) {
       get_list_liquidities();
     }
-  }, [all_seeds]);
+  }, [all_seeds, accountId]);
   useEffect(() => {
+    let isMounted = true;
+    if (!user_seeds_map || !accountId || !pool) {
+      setYourTvl("");
+      return;
+    }
     const { free_amount, shadow_amount, locked_amount } =
       user_seeds_map[seed_id] || {};
     const yourLp = toReadableNumber(
@@ -180,11 +186,15 @@ function FarmView(props: {
           : Number(
               toPrecision(((Number(yourLp) * tvl) / poolShares).toString(), 2)
             );
-      if (yourTvl) {
+      if (isMounted) {
         setYourTvl(yourTvl.toString());
       }
     }
-  }, [Object.keys(user_seeds_map || {})]);
+    return () => {
+      isMounted = false;
+      setYourTvl("");
+    };
+  }, [user_seeds_map, accountId, pool]);
   function sortTokens(tokens: TokenMetadata[]) {
     tokens.sort((a: TokenMetadata, b: TokenMetadata) => {
       if (a.symbol === "NEAR") return 1;
@@ -1268,4 +1278,4 @@ function FarmView(props: {
   );
 }
 
-export default React.memo(FarmView);
+export default FarmView;

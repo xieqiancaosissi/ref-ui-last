@@ -1014,7 +1014,7 @@ const FarmsPage = (props: any, ref: any) => {
     });
     searchByCondition("main");
   }
-  console.log(accountId, "accountId11111");
+  // console.log(accountId, "accountId11111");
   async function get_user_seeds_and_unClaimedRewards() {
     // get user seeds
     const list_user_seeds = await list_farmer_seeds();

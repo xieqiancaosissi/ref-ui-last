@@ -424,11 +424,10 @@ function FarmsDetail(props: {
         if (Number(b) < 0) {
           setLpBalance("");
         } else {
-          const validB = Math.max(0, Number(b)).toString();
           if (new Set(STABLE_POOL_IDS || []).has(poolId?.toString())) {
-            setLpBalance(toReadableNumber(LP_STABLE_TOKEN_DECIMALS, validB));
+            setLpBalance(toReadableNumber(LP_STABLE_TOKEN_DECIMALS, b));
           } else {
-            setLpBalance(toReadableNumber(LP_TOKEN_DECIMALS, validB));
+            setLpBalance(toReadableNumber(LP_TOKEN_DECIMALS, b));
           }
           if (detailData.farmList) {
             const isEnded = detailData.farmList[0].status == "Ended";

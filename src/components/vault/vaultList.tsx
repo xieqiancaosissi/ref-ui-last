@@ -125,9 +125,7 @@ export default function VaultList(props: any) {
     getBurrowApy().then((res: any) => {
       if (res?.length > 0) {
         const aprs = res?.map(
-          (item) =>
-            Number(item.base_apy) +
-            Number(item?.net_apy || 0)
+          (item) => Number(item.base_apy) + Number(item?.net_apy || 0)
         );
         setBurrowApr(Math.max(...aprs));
       }

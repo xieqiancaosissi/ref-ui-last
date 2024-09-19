@@ -9,6 +9,8 @@ import {
   getDeltaSwingApy,
   getDeltaDCAApy,
 } from "./apy";
+import { usePoolStore } from "@/stores/pool";
+
 
 const fetchMaxApr = async (poolType, label) => {
   try {
@@ -39,12 +41,16 @@ const fetchMaxApr = async (poolType, label) => {
 export default function VaultList(props: any) {
   const { currentTag } = props;
   const router = useRouter();
+  const poolStore = usePoolStore();
   const blink = (params: any) => {
     if (params?.path) {
-      router.push(params.path);
+      if (['classic','dcl','stable'].includes(params.name)) {
+        poolStore.setPoolActiveTab(params.name)
+      }
+      router.push(params.path+'?vault=true');
     }
     if (params?.url) {
-      openUrl(params.url);
+      openUrl(params.url+'?vault=true');
     }
   };
   // pool

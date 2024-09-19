@@ -10,6 +10,7 @@ import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 
 import NoContent from "@/components/common/NoContent/index";
 import ClassicFilterTabModal from "./classicFilterTabModal";
+import { useRouter } from "next/router";
 
 export default function Classic({
   searchValue,
@@ -20,13 +21,14 @@ export default function Classic({
   pureIdList: any;
   mobilePros: any;
 }) {
+  const router = useRouter()
+  const [isVault, setIsVault] = useState<boolean>(false)
   const [isActive, setActive] = useState("");
   const [sortMap, setSortMap] = useState({ key: "tvl", sort: "desc" });
   const [isChecked, setIsChecked] = useState(false);
   // pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(100);
-
   const handlePageChange = (newPage: number, newSize: number) => {
     setCurrentPage(newPage);
     !isLoading &&
@@ -66,6 +68,15 @@ export default function Classic({
   });
 
   const [classicOpen, setClassicOpen] = useState(false);
+
+  useEffect(()=>{
+    if (router?.query?.vault == 'true') {
+      // setIsVault(true)
+      setSortMap({ key: 'apr', sort: "desc" });
+      setIsChecked(true)
+    }
+  }, [JSON.stringify(router || {})])
+
   // depency change init currentpage
   useEffect(() => {
     console.log(searchValue, "search");

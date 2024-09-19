@@ -90,7 +90,7 @@ export function VaultColorConfig(type: string) {
   switch (type) {
     case "POOL":
       return "text-black bg-green-10";
-    case "RefFarming":
+    case "Farming":
       return "text-black bg-vaultTagLaunchpad";
     case "Lending":
       return "text-white bg-vaultTagLending";

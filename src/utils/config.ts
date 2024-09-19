@@ -19,6 +19,7 @@ export default function getConfig(
         sodakiApiUrl: "https://api.stats.ref.finance/api",
         newSodakiApiUrl: "https://api.data-service.ref.finance/api",
         txIdApiUrl: "https://api3.nearblocks.io",
+        blockedApiUrl: "https://refburrow-api.netlify.app",
         blackList: ["1371#3", "2769#2"],
         REF_FI_CONTRACT_ID: "v2.ref-finance.near",
         WRAP_NEAR_CONTRACT_ID: process.env.WRAP_NEAR_CONTRACT_ID || "wrap.near",
@@ -69,6 +70,7 @@ export default function getConfig(
         sodakiApiUrl: "https://api.stats.ref.finance/api",
         newSodakiApiUrl: "https://api.data-service.ref.finance/api",
         txIdApiUrl: "https://api-testnet.nearblocks.io",
+        blockedApiUrl: "https://refburrow-api.netlify.app",
         blackList: ["1371#3"],
         REF_FI_CONTRACT_ID: "ref-finance-101.testnet",
         WRAP_NEAR_CONTRACT_ID:
@@ -111,6 +113,7 @@ export default function getConfig(
         sodakiApiUrl: "https://api.stats.ref.finance/api",
         newSodakiApiUrl: "https://api.data-service.ref.finance/api",
         txIdApiUrl: "https://api-testnet.nearblocks.io",
+        blockedApiUrl: "https://refburrow-api.netlify.app",
         blackList: ["1371#3"],
         REF_FI_CONTRACT_ID: "exchange.ref-dev.testnet",
         WRAP_NEAR_CONTRACT_ID:
@@ -153,6 +156,7 @@ export default function getConfig(
         sodakiApiUrl: "https://api.stats.ref.finance/api",
         newSodakiApiUrl: "https://api.data-service.ref.finance/api",
         txIdApiUrl: "https://api3.nearblocks.io",
+        blockedApiUrl: "https://refburrow-api.netlify.app",
         blackList: ["1371#3", "2769#2"],
         REF_FI_CONTRACT_ID: "v2.ref-finance.near",
         WRAP_NEAR_CONTRACT_ID: process.env.WRAP_NEAR_CONTRACT_ID || "wrap.near",

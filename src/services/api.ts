@@ -230,3 +230,9 @@ export const getMemeFarmingAssetsList = async (
       return [];
     });
 };
+
+export const getUserIsBlocked = async (): Promise<any> => {
+  return await fetch(config.blockedApiUrl + "/api/is-blocked", {
+    method: "GET",
+  }).then((res) => res.json());
+};

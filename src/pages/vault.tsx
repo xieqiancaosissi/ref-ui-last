@@ -9,7 +9,7 @@ export default function Vault() {
     <div>
       {/* menu */}
       <ValutAssets />
-      <div className="h-[186px] w-full xsm:hidden"></div>
+      <div className="h-[96px] w-full xsm:hidden"></div>
       <Tab setCurrentTag={setCurrentTag} />
       <div className="h-[56px] w-full xsm:hidden"></div>
       {/* list */}

@@ -40,9 +40,9 @@ export default function Tab(props: any) {
   }, []);
   return (
     <div
-      className="frcc lg:fixed w-full h-17 xsm:mt-12 xsm:px-[12px]"
+      className="frcc lg:fixed w-full h-17 xsm:px-[12px]"
       style={{
-        top: "230px",
+        top: "130px",
         zIndex: "51",
         background: !isMobile ? "#0C171F" : "",
       }}

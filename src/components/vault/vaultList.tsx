@@ -127,8 +127,6 @@ export default function VaultList(props: any) {
         const aprs = res?.map(
           (item) =>
             Number(item.base_apy) +
-            Number(item.supply_apy) +
-            Number(item.supply_farm_apy) +
             Number(item?.net_apy || 0)
         );
         setBurrowApr(Math.max(...aprs));
@@ -145,7 +143,7 @@ export default function VaultList(props: any) {
         return (
           <div
             key={"VaultList" + index}
-            className={`vlg:mr-[30px] cursor-pointer vlg:hover:shadow-green-10 vlg:hover:shadow-sm vlg:w-[334px] vxsm:w-full xsm:my-[15px] rounded-lg bg-dark-290 border border-gray-90 p-[20px] h-[159px] vlg:mb-[30px] flex flex-col justify-between`}
+            className={`vlg:mr-[30px] cursor-pointer vlg:hover:border-green-10 vlg:w-[334px] vxsm:w-full xsm:my-[15px] rounded-lg bg-dark-290 border border-gray-90 p-[20px] h-[159px] vlg:mb-[30px] flex flex-col justify-between`}
             onClick={() => blink(item)}
           >
             <div className="flex items-center">

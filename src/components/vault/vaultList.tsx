@@ -11,7 +11,6 @@ import {
 } from "./apy";
 import { usePoolStore } from "@/stores/pool";
 
-
 const fetchMaxApr = async (poolType, label) => {
   try {
     const res: any = await getSearchResult({
@@ -44,13 +43,13 @@ export default function VaultList(props: any) {
   const poolStore = usePoolStore();
   const blink = (params: any) => {
     if (params?.path) {
-      if (['classic','dcl','stable'].includes(params.name)) {
-        poolStore.setPoolActiveTab(params.name)
+      if (["classic", "dcl", "stable"].includes(params.name)) {
+        poolStore.setPoolActiveTab(params.name);
       }
-      router.push(params.path+'?vault=true');
+      router.push(params.path + "?vault=true");
     }
     if (params?.url) {
-      openUrl(params.url+'?vault=true');
+      openUrl(params.url + "?vault=true");
     }
   };
   // pool

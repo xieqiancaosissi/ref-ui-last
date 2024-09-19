@@ -21,8 +21,8 @@ export default function Classic({
   pureIdList: any;
   mobilePros: any;
 }) {
-  const router = useRouter()
-  const [isVault, setIsVault] = useState<boolean>(false)
+  const router = useRouter();
+  const [isVault, setIsVault] = useState<boolean>(false);
   const [isActive, setActive] = useState("");
   const [sortMap, setSortMap] = useState({ key: "tvl", sort: "desc" });
   const [isChecked, setIsChecked] = useState(false);
@@ -69,13 +69,13 @@ export default function Classic({
 
   const [classicOpen, setClassicOpen] = useState(false);
 
-  useEffect(()=>{
-    if (router?.query?.vault == 'true') {
+  useEffect(() => {
+    if (router?.query?.vault == "true") {
       // setIsVault(true)
-      setSortMap({ key: 'apr', sort: "desc" });
-      setIsChecked(true)
+      setSortMap({ key: "apr", sort: "desc" });
+      setIsChecked(true);
     }
-  }, [JSON.stringify(router || {})])
+  }, [JSON.stringify(router || {})]);
 
   // depency change init currentpage
   useEffect(() => {

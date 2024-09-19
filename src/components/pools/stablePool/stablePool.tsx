@@ -19,7 +19,7 @@ function Classic({
   pureIdList: any;
   mobilePros: any;
 }) {
-  const router = useRouter()
+  const router = useRouter();
   const [isActive, setActive] = useState("");
   const [sortMap, setSortMap] = useState({ key: "tvl", sort: "desc" });
   const [isChecked, setIsChecked] = useState(false);
@@ -92,14 +92,12 @@ function Classic({
     }
   }, [mobilePros]);
 
-
-
-  useEffect(()=>{
-    if (router?.query?.vault == 'true') {
+  useEffect(() => {
+    if (router?.query?.vault == "true") {
       // setIsVault(true)
-      setSortMap({ key: 'apr', sort: "desc" });
+      setSortMap({ key: "apr", sort: "desc" });
     }
-  }, [JSON.stringify(router || {})])
+  }, [JSON.stringify(router || {})]);
   return (
     <>
       <div className="xsm:hidden">

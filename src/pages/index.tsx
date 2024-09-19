@@ -314,10 +314,10 @@ export default function Swap() {
       )}
       {/* v1 */}
       <div
-        className="fixed top-[50px] left-6 bg-white bg-opacity-10 px-3 rounded border 
+        className="fixed top-[50px] left-[18px] bg-white bg-opacity-10 px-3 rounded border 
       border-gray-70 py-2 text-sm text-gray-10 frcc cursor-pointer xsm:left-[12px] xsm:top-[54px]"
         onClick={(e) => {
-          openUrl(`https://app.ref.finance/`);
+          openUrl(`https://old.app.ref.finance/`);
         }}
       >
         <VersionOld className="mr-1.5" />

@@ -311,3 +311,21 @@ export function HeavyWarning(props: any) {
     </svg>
   );
 }
+
+export function VersionOld(props: any) {
+  return (
+    <svg
+      {...props}
+      width="6"
+      height="12"
+      viewBox="0 0 6 12"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M0.348119 6.3518C0.155281 6.15697 0.15528 5.84319 0.348118 5.64835L5.14463 0.802136C5.45886 0.48465 6 0.707166 6 1.15386L6 10.8463C6 11.293 5.45886 11.5155 5.14463 11.198L0.348119 6.3518Z"
+        fill="#02BBA5"
+      />
+    </svg>
+  );
+}

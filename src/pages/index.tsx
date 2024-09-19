@@ -7,6 +7,7 @@ import {
   RefreshIcon,
   SWitchButton,
   CheckboxIcon,
+  VersionOld,
 } from "../components/swap/icons";
 import Input from "../components/swap/Input";
 import SwapDetail from "../components/swap/SwapDetail";
@@ -36,6 +37,7 @@ import SkyWardModal from "@/components/swap/SkyWardModal";
 import getConfigV2 from "@/utils/configV2";
 import { DEFLATION_MARK } from "@/services/pool";
 import { tokenFtMetadata } from "@/services/ft-contract";
+import { openUrl } from "@/services/commonV3";
 const configV2 = getConfigV2();
 const SwapButton = dynamic(() => import("../components/swap/SwapButton"), {
   ssr: false,
@@ -310,6 +312,17 @@ export default function Swap() {
           isOpen={showSkywardTip}
         />
       )}
+      {/* v1 */}
+      <div
+        className="fixed top-[50px] left-6 bg-white bg-opacity-10 px-3 rounded border 
+      border-gray-70 py-2 text-sm text-gray-10 frcc cursor-pointer xsm:left-[12px] xsm:top-[54px]"
+        onClick={(e) => {
+          openUrl(`https://app.ref.finance/`);
+        }}
+      >
+        <VersionOld className="mr-1.5" />
+        Version 1
+      </div>
     </main>
   );
 }

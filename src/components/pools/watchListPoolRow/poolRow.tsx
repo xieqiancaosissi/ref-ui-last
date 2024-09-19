@@ -123,7 +123,7 @@ function PoolRow({
 
                 {item.is_farm && (
                   <div
-                    className={` bg-farmTagBg text-farmApyColor ${styles.tagPublicStyle}`}
+                    className={` bg-farmTagBg text-farmApyColor ${styles.tagPublicStyle} ml-1`}
                   >
                     Farms
                   </div>

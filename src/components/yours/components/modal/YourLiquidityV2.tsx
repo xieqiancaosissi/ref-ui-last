@@ -1515,7 +1515,12 @@ function UserLiquidityLineStyleGroupPage() {
                         } = joined_seed_info;
                         if (length == 1) {
                           return (
-                            <div className="frcs  whitespace-nowrap" key={joined_seed_info.value_of_investment + 'farm'}>
+                            <div
+                              className="frcs  whitespace-nowrap"
+                              key={
+                                joined_seed_info.value_of_investment + "farm"
+                              }
+                            >
                               <StableFarmIcon /> {value_of_investment} in
                               <a
                                 className="cursor-pointer underline ml-1"
@@ -1530,7 +1535,12 @@ function UserLiquidityLineStyleGroupPage() {
                           );
                         } else {
                           return (
-                            <div className="frcs gap-1 whitespace-nowrap" key={joined_seed_info.value_of_investment + 'farm'}>
+                            <div
+                              className="frcs gap-1 whitespace-nowrap"
+                              key={
+                                joined_seed_info.value_of_investment + "farm"
+                              }
+                            >
                               <StableFarmIcon /> {value_of_investment} in
                               <a
                                 className={`cursor-pointer underline ml-1`}

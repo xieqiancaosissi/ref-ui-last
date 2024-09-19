@@ -80,6 +80,8 @@ import successToast from "@/components/common/toast/successToast";
 import failToast from "@/components/common/toast/failToast";
 import { beautifyNumber } from "@/components/common/beautifyNumber";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import { StableFarmIcon, YoursDCLFarmTips } from "@/components/pools/icon";
+import { FiArrowUpRight } from "react-icons/fi";
 
 const { REF_UNI_V3_SWAP_CONTRACT_ID } = getConfig();
 export function YourLiquidityV2(props: any) {
@@ -122,9 +124,13 @@ export function YourLiquidityV2(props: any) {
   // useRemoveLiquidityUrlHandle();
   useEffect(() => {
     getBoostTokenPrices().then(setTokenPriceList);
-    get_all_seeds().then((seeds: Seed[]) => {
-      set_all_seeds(seeds);
-    });
+    get_all_seeds()
+      .then((seeds: Seed[]) => {
+        set_all_seeds(seeds);
+      })
+      .catch((err: any) => {
+        console.log(err, "error");
+      });
   }, []);
   useEffect(() => {
     if (isSignedIn) {
@@ -839,7 +845,7 @@ function UserLiquidityLineStyleGroup({
         }
       }
       // get all seed that user had joined
-      let joined_seeds: any;
+      let joined_seeds: IUserJoinedSeed | any;
       const in_farming_liquidities = groupYourLiquidityList.filter((l: any) => {
         return l.is_in_farming;
       });
@@ -867,19 +873,18 @@ function UserLiquidityLineStyleGroup({
               [targetSeed.seed_id]: {
                 seed: targetSeed,
                 liquidities: [l.liquidity],
-              } as IUserJoinedSeed,
+              },
             };
           } else if (!joined_seeds[targetSeed.seed_id]) {
             joined_seeds[targetSeed.seed_id] = {
               seed: targetSeed,
               liquidities: [l.liquidity],
-            } as IUserJoinedSeed;
+            };
           } else {
             joined_seeds[targetSeed.seed_id].liquidities.push(l.liquidity);
           }
         }
       });
-
       // get farm apr and value of user's investment
       joined_seeds &&
         Object.values(joined_seeds).forEach((joined_seed_info: any) => {
@@ -904,7 +909,6 @@ function UserLiquidityLineStyleGroup({
             joined_seed_info.go_farm_url_link = get_go_seed_link_url(seed);
           }
         });
-
       set_joined_seeds(joined_seeds);
       set_joined_seeds_done(true);
     }
@@ -949,18 +953,14 @@ function UserLiquidityLineStyleGroup({
   ) {
     let total_value = Big(0);
     liquidities.forEach((l: UserLiquidityInfo) => {
-      let v =
-        get_range_part_value(l, seed) == "NaN"
-          ? 0
-          : get_range_part_value(l, seed);
-      if (l.part_farm_ratio && Big(l.unfarm_part_amount || 0).gt(0)) {
-        const partFarmRatio = parseFloat(l.part_farm_ratio);
-        if (!isNaN(partFarmRatio)) {
-          v = Big(partFarmRatio).div(100).mul(v).toFixed();
-        }
+      let v = get_range_part_value(l, seed);
+      if (Big(l.unfarm_part_amount || 0).gt(0)) {
+        v = Big(l.part_farm_ratio).div(100).mul(v).toFixed();
       }
       total_value = total_value.plus(v || 0);
     });
+
+    // console.log(seed,total_value.toFixed(),liquidities)
     return total_value.toFixed();
   }
   const [dclFeeRes, setDCLFeeRes] = useState<any>({});
@@ -1190,6 +1190,7 @@ function UserLiquidityLineStyleGroup({
   }
   function get_range_part_value(liquidity: UserLiquidityInfo, seed: Seed) {
     const [left_point, right_point] = get_valid_range(liquidity, seed.seed_id);
+
     const v = get_liquidity_value_of_range(
       liquidity,
       seed,
@@ -1206,24 +1207,19 @@ function UserLiquidityLineStyleGroup({
   ) {
     const { amount } = liquidity;
     const poolDetail = seed.pool;
-    if (!poolDetail) {
-      return 0;
-    }
     const { token_x, token_y } = poolDetail;
-    const tokenPriceX = token_x && tokenPriceList[token_x];
-    const tokenPriceY = token_y && tokenPriceList[token_y];
     const v = get_total_value_by_liquidity_amount_dcl({
       left_point: leftPoint || liquidity.left_point,
       right_point: rightPoint || liquidity.right_point,
       poolDetail,
       amount,
       price_x_y: {
-        [String(token_x)]: tokenPriceX?.price || "0",
-        [String(token_x)]: tokenPriceY?.price || "0",
+        [token_x]: tokenPriceList[token_x]?.price || "0",
+        [token_y]: tokenPriceList[token_y]?.price || "0",
       },
       metadata_x_y: {
-        [String(token_x)]: tokenMetadata_x_y[0],
-        [String(token_y)]: tokenMetadata_x_y[1],
+        [token_x]: tokenMetadata_x_y[0],
+        [token_y]: tokenMetadata_x_y[1],
       },
     });
     return v;
@@ -1304,6 +1300,7 @@ function UserLiquidityLineStyleGroupPage() {
     setAddSuccess,
     addSuccess,
     history,
+    farm_icon,
   } = useContext(GroupData)!;
   const [switch_off, set_switch_off] = useState<boolean>(true);
   function goPoolDetailPage() {
@@ -1354,7 +1351,7 @@ function UserLiquidityLineStyleGroupPage() {
     <>
       {/* PC */}
       <div
-        className={`rounded-xl mt-3 bg-gray-20 lg:px-4 bg-opacity-30 xsm:hidden hover:cursor-pointer ${
+        className={`rounded-xl my-1 bg-gray-20 lg:px-4 bg-opacity-30 xsm:hidden hover:cursor-pointer ${
           switch_off ? "" : "pb-4"
         }`}
         onMouseEnter={() => set_switch_off(false)}
@@ -1390,6 +1387,18 @@ function UserLiquidityLineStyleGroupPage() {
                     className="frcc text-xs rounded-md px-1.5 cursor-pointer py-0.5  mr-1.5"
                   >
                     <DCLIconNew />
+
+                    {farm_icon ? (
+                      <div
+                        className={` bg-farmTagBg text-farmApyColor   border-farmApyColor ml-2 w-11 h-5 rounded-2xl frcc italic font-normal`}
+                        style={{
+                          border: "0.5px solid ",
+                          fontSize: "10px",
+                        }}
+                      >
+                        Farms
+                      </div>
+                    ) : null}
                   </span>
                 </span>
                 <span className="frcc text-xs text-gray-10 mt-0.5">
@@ -1451,6 +1460,7 @@ function UserLiquidityLineStyleGroupPage() {
                       ) => {
                         const length = Object.values(joined_seeds).length;
                         const { seed_apr, seed_status } = joined_seed_info;
+
                         if (seed_status == "ended") return null;
                         if (length == 1) {
                           return (
@@ -1487,72 +1497,74 @@ function UserLiquidityLineStyleGroupPage() {
             </div>
 
             {/* your liquidity */}
-            <div className="frcc col-span-2">
-              <span className="text-white text-base font-medium">
+            <div className="fccc col-span-2">
+              <span className="text-white text-base font-medium mb-[4px]">
                 {your_liquidity || "-"}
               </span>
               <span>
                 {joined_seeds ? (
-                  <div className="flex items-center gap-2 text-xs">
-                    {(Object.values(joined_seeds) as IUserJoinedSeedDetail[])
+                  <div className="flex flex-col items-end gap-0.5 text-xs text-gray-10">
+                    {Object.values(joined_seeds)
                       .sort(sort_joined_seeds)
-                      .map(
-                        (
-                          joined_seed_info: IUserJoinedSeedDetail,
-                          index: number
-                        ) => {
-                          const length = Object.values(joined_seeds).length;
-                          const {
-                            seed_status,
-                            value_of_investment,
-                            go_farm_url_link,
-                          }: any = joined_seed_info;
-                          if (seed_status == "ended") return null;
-                          if (length == 1) {
-                            return (
-                              <div
-                                key={"in farm" + index}
-                                className="frcs gap-1 text-primaryText whitespace-nowrap"
+                      .map((joined_seed_info: IUserJoinedSeedDetail) => {
+                        const length = Object.values(joined_seeds).length;
+                        const {
+                          seed_status,
+                          value_of_investment,
+                          go_farm_url_link,
+                        } = joined_seed_info;
+                        if (length == 1) {
+                          return (
+                            <div className="frcs  whitespace-nowrap" key={joined_seed_info.value_of_investment + 'farm'}>
+                              <StableFarmIcon /> {value_of_investment} in
+                              <a
+                                className="cursor-pointer underline ml-1"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  openUrl(go_farm_url_link);
+                                }}
                               >
-                                {value_of_investment} in{" "}
-                                <a
-                                  className="cursor-pointer underline"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    history.push(go_farm_url_link);
-                                  }}
-                                >
-                                  farm
-                                </a>
-                              </div>
-                            );
-                          } else {
-                            return (
-                              <div
-                                key={"in farm" + index}
-                                className="frcs gap-1 text-primaryText whitespace-nowrap"
+                                Farm
+                              </a>
+                            </div>
+                          );
+                        } else {
+                          return (
+                            <div className="frcs gap-1 whitespace-nowrap" key={joined_seed_info.value_of_investment + 'farm'}>
+                              <StableFarmIcon /> {value_of_investment} in
+                              <a
+                                className={`cursor-pointer underline ml-1`}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  openUrl(go_farm_url_link);
+                                }}
                               >
-                                {value_of_investment} in{" "}
-                                <a
-                                  className={`cursor-pointer underline text-primaryText hover:text-greenColor`}
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    history.push(go_farm_url_link);
-                                  }}
-                                >
-                                  farm (
-                                  {seed_status == "run"
-                                    ? "new"
-                                    : seed_status == "would_ended"
-                                    ? "pre."
-                                    : "ended"}
-                                  )
-                                </a>
-                              </div>
-                            );
-                          }
+                                Farm (
+                                {seed_status == "run"
+                                  ? "new"
+                                  : seed_status == "would_ended"
+                                  ? "pre."
+                                  : "ended"}
+                                )
+                              </a>
+                            </div>
+                          );
                         }
-                      )}
+                      })}
+                  </div>
+                ) : tip_seed ? (
+                  <div className="frcs justify-end gap-1 text-xs text-gray-10">
+                    <StableFarmIcon />
+                    0% in
+                    <a
+                      className="cursor-pointer underline"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        openUrl(tip_seed.go_farm_url_link);
+                      }}
+                    >
+                      Farm
+                    </a>
                   </div>
                 ) : null}
               </span>
@@ -1667,7 +1679,7 @@ function UserLiquidityLineStyleGroupPage() {
 
       {/* Mobile */}
       <div
-        className={`rounded-xl mt-3 bg-gray-20 lg:px-4 bg-opacity-30 lg:hidden ${
+        className={`rounded-xl my-2 bg-gray-20 lg:px-4 bg-opacity-30 lg:hidden ${
           switch_off ? "" : "pb-4"
         }`}
         onMouseEnter={() => set_switch_off(false)}
@@ -1703,14 +1715,27 @@ function UserLiquidityLineStyleGroupPage() {
                 <span className="text-white font-bold text-base">
                   {tokens[0]?.symbol}-{tokens[1]?.symbol}
                 </span>
-                <div
-                  className="frcc w-8 h-4 border border-black text-white rounded-2xl italic"
-                  style={{
-                    fontSize: "10px",
-                    background: "linear-gradient(to right,#004DE4, #4EF400)",
-                  }}
-                >
-                  DCL
+                <div className="frcc">
+                  <div
+                    className="frcc w-8 h-4 border border-black text-white rounded-2xl italic"
+                    style={{
+                      fontSize: "10px",
+                      background: "linear-gradient(to right,#004DE4, #4EF400)",
+                    }}
+                  >
+                    DCL
+                  </div>
+                  {farm_icon ? (
+                    <div
+                      className={` bg-farmTagBg text-farmApyColor   border-farmApyColor ml-2 w-10 h-4 rounded-2xl frcc italic font-normal`}
+                      style={{
+                        border: "0.5px solid ",
+                        fontSize: "10px",
+                      }}
+                    >
+                      Farms
+                    </div>
+                  ) : null}
                 </div>
               </div>
             </div>
@@ -1992,6 +2017,36 @@ function UserLiquidityLineStyleGroupPage() {
             </div>
           </div>
         </div>
+      </div>
+
+      <div>
+        {tip_seed ? (
+          <div className="flex items-center justify-start ml-3">
+            <div className="relative flex items-center lg:pr-8  bg-dclFarmTipColor justify-end p-1">
+              {/* <TipIon className="mr-2 flex-shrink-0"></TipIon> */}
+              <YoursDCLFarmTips />
+              <span className="lg:text-sm xsm:text-xs lg:ml-4 xsm:ml-2 text-gray-10">
+                {/* <FormattedMessage id="you_can_earn_tip" />{' '} */}
+                <span className="mr-2">Farm available, farm APR up to</span>
+                <span className="font-gothamBold">{tip_seed.seed_apr}</span>
+              </span>
+              <div
+                className="flex items-center justify-center  text-white cursor-pointer ml-5"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  openUrl(tip_seed.go_farm_url_link);
+                }}
+              >
+                <a className="lg:text-sm xsm:text-xs text-gray-10 mr-1 underline">
+                  {/* <FormattedMessage id="go_farm" /> */}
+                  Go farm
+                </a>
+                <FiArrowUpRight className="text-green-10" />
+                {/* <LinkArrowIcon className="cursor-pointer"></LinkArrowIcon> */}
+              </div>
+            </div>
+          </div>
+        ) : null}
       </div>
 
       {showRemoveBox ? (

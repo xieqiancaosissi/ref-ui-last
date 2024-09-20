@@ -1636,7 +1636,7 @@ function FarmsDclDetail(props: {
           ) : (
             <div className="bg-dark-230 rounded-t-2xl px-4 py-6 flex">
               <div
-                className="flex-1 bg-primaryGreen rounded frcc mr-3.5 h-12"
+                className="flex-1 bg-primaryGreen rounded frcc mr-3.5 h-12 text-black"
                 onClick={() => handleTabClick("Stake")}
               >
                 Stake

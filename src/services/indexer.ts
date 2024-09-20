@@ -104,6 +104,12 @@ export const get24hVolumes = async (
         `/poollist/${batchIds.join("|")}/24hvolume/sum`,
       {
         method: "GET",
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+          ...getAuthenticationHeaders(
+            `/poollist/${batchIds.join("|")}/24hvolume/sum`
+          ),
+        },
       }
     )
       .then((res) => res.json())

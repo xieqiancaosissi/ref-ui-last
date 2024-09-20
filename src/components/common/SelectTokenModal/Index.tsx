@@ -19,7 +19,7 @@ export default function SelectTokenModal({
 }: {
   isOpen: boolean;
   onRequestClose: () => void;
-  onSelect: (token: ITokenMetadata) => void;
+  onSelect: (token: ITokenMetadata, needFetch?: boolean) => void;
   excludedTokenIds?: Array<string>;
 }) {
   const [searchText, setSearchText] = useState<string>("");
@@ -140,7 +140,7 @@ export default function SelectTokenModal({
                       setHoverCommonToken(null);
                     }}
                     onClick={() => {
-                      onSelect(token);
+                      onSelect(token, true);
                       onRequestClose();
                     }}
                   >

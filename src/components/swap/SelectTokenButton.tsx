@@ -52,27 +52,36 @@ function SelectTokenButton(props: ISelectTokenButtonProps) {
       );
     }
   }, [isOpen]);
+  tokenStore.getDefaultAccountTokens();
   function showModal() {
     setIsOpen(true);
   }
   function hideModal() {
     setIsOpen(false);
   }
-  function onSelect(token: ITokenMetadata) {
-    updateSelectToken(token);
-  }
-  function updateSelectToken(selectToken) {
-    if (selectToken?.id && global_whitelisted_tokens_ids?.length > 0) {
-      const selectTokenId = getTokenUIId(selectToken);
-      setSwapTokenAndBalances({
-        tokenInId: isIn ? selectTokenId : getTokenUIId(tokenIn),
-        tokenOutId: isOut ? selectTokenId : getTokenUIId(tokenOut),
-        accountId,
-        swapStore,
-        persistSwapStore,
-        tokenStore,
-        global_whitelisted_tokens_ids,
-      });
+  function onSelect(token: ITokenMetadata, needFetch = false) {
+    let targetToken = token;
+    if (needFetch) {
+      const defaultAccountTokens =
+        tokenStore.getDefaultAccountTokens()?.data || [];
+      const tknAccountTokens = tokenStore.getTknAccountTokens()?.data || [];
+      const tknxAccountTokens = tokenStore.getTknxAccountTokens()?.data || [];
+      const mcAccountTokens = tokenStore.getMcAccountTokens()?.data || [];
+      const tokens = defaultAccountTokens
+        .concat(tknAccountTokens)
+        .concat(tknxAccountTokens)
+        .concat(mcAccountTokens);
+      const target = tokens.find((t) => t.id == token.id);
+      if (target) {
+        targetToken = target;
+      }
+    }
+    if (isIn) {
+      swapStore.setTokenIn(targetToken);
+      persistSwapStore.setTokenInId(targetToken.id);
+    } else if (isOut) {
+      swapStore.setTokenOut(targetToken);
+      persistSwapStore.setTokenOutId(targetToken.id);
     }
   }
   function checkCacheLatest() {

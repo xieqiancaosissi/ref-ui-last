@@ -55,7 +55,7 @@ export async function getWalletSelector({
     ],
   };
   const RPC = getSelectedRpc();
-  console.log("00000000000004-wallet loading start");
+  console.log("0000000000000-wallet loading start");
   const signInContractId = getConfig().REF_FARM_BOOST_CONTRACT_ID;
   const selector: any = await setupWalletSelector({
     network: {

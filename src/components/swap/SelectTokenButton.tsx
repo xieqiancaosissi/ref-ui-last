@@ -71,17 +71,18 @@ function SelectTokenButton(props: ISelectTokenButtonProps) {
         .concat(tknAccountTokens)
         .concat(tknxAccountTokens)
         .concat(mcAccountTokens);
-      const target = tokens.find((t) => t.id == token.id);
+      const target = tokens.find((t) => t.id == token.id && t.symbol == token.symbol);
       if (target) {
         targetToken = target;
       }
     }
+    const targetTokenId = getTokenUIId(targetToken);
     if (isIn) {
       swapStore.setTokenIn(targetToken);
-      persistSwapStore.setTokenInId(targetToken.id);
+      persistSwapStore.setTokenInId(targetTokenId);
     } else if (isOut) {
       swapStore.setTokenOut(targetToken);
-      persistSwapStore.setTokenOutId(targetToken.id);
+      persistSwapStore.setTokenOutId(targetTokenId);
     }
   }
   function checkCacheLatest() {

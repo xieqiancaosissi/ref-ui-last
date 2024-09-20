@@ -71,7 +71,9 @@ function SelectTokenButton(props: ISelectTokenButtonProps) {
         .concat(tknAccountTokens)
         .concat(tknxAccountTokens)
         .concat(mcAccountTokens);
-      const target = tokens.find((t) => t.id == token.id && t.symbol == token.symbol);
+      const target = tokens.find(
+        (t) => t.id == token.id && t.symbol == token.symbol
+      );
       if (target) {
         targetToken = target;
       }

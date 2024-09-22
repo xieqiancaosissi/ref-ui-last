@@ -111,7 +111,7 @@ export default function getConfig(
         nearExplorerUrl: "https://explorer.testnet.near.org/",
         indexerUrl: "https://dev-indexer.ref-finance.com",
         sodakiApiUrl: "https://api.stats.ref.finance/api",
-        dataServiceApiUrl: "https://api.data-service.ref.finance/api",
+        dataServiceApiUrl: "https://dev.data-service.ref-finance.com/api",
         txIdApiUrl: "https://api-testnet.nearblocks.io",
         blockedApiUrl: "https://geo.deltarpc.com",
         blackList: ["1371#3"],

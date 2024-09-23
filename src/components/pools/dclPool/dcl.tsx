@@ -10,6 +10,7 @@ import HoverTip from "@/components/common/Tips/index";
 import PoolDocTips from "@/components/pools/poolDocTips/index";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import NoContent from "@/components/common/NoContent";
+import { useRouter } from "next/router";
 
 export default function Classic({
   searchValue,
@@ -20,6 +21,7 @@ export default function Classic({
   pureIdList: any;
   mobilePros: any;
 }) {
+  const router = useRouter();
   const [isActive, setActive] = useState("");
   const [sortMap, setSortMap] = useState({ key: "tvl", sort: "desc" });
   const [isChecked, setIsChecked] = useState(true);
@@ -82,6 +84,15 @@ export default function Classic({
       setSortMap({ key: sortMap.key, sort: mobilePros?.sort });
     }
   }, [mobilePros]);
+
+  useEffect(() => {
+    if (router?.query?.vault == "true") {
+      // setIsVault(true)
+      setSortMap({ key: "apr", sort: "desc" });
+      setIsChecked(true);
+    }
+  }, [JSON.stringify(router || {})]);
+
   return (
     <>
       <div className="xsm:hidden">

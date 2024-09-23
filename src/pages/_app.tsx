@@ -21,6 +21,7 @@ import { addUserWallet } from "@/services/indexer";
 import Menu from "../components/menu";
 import WalletInit from "../components/menu/walletInit";
 import { getUserIsBlocked } from "@/services/api";
+import { PUBLIC_BLOCK_FEATURE } from "@/utils/constant";
 const Footer = dynamic(() => import("../components/footer"), { ssr: false });
 const RpcList = dynamic(() => import("@/components/rpc"), { ssr: false });
 const ModalGAPrivacy = dynamic(
@@ -56,12 +57,14 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
   const accountStore = useAccountStore();
   const accountId = accountStore.getAccountId();
   useEffect(() => {
-    getUserIsBlocked().then((res) => {
-      if (res.blocked === true) {
-        setIsBlocked(true);
-      }
-    });
-  }, []);
+    if (PUBLIC_BLOCK_FEATURE) {
+      getUserIsBlocked().then((res) => {
+        if (res.blocked === true) {
+          setIsBlocked(true);
+        }
+      });
+    }
+  }, [PUBLIC_BLOCK_FEATURE]);
   useEffect(() => {
     const handleRouteChangeStart = () => {
       setProgress(30);
@@ -131,7 +134,7 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
           <LedgerTransactionModal />
           <WalletInit />
         </div>
-        {isBlocked && (
+        {isBlocked && PUBLIC_BLOCK_FEATURE && (
           <div
             className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center"
             style={{ zIndex: "10000", backdropFilter: "blur(6px)" }}

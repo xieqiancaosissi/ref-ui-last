@@ -26,3 +26,4 @@ export const TIMESTAMP_DIVISOR = 1000000000;
 export const TKN_SUFFIX = "tkn";
 export const TKNX_SUFFIX = "tknx";
 export const MC_SUFFIX = "meme-cooking";
+export const PUBLIC_BLOCK_FEATURE = true;

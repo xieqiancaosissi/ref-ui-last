@@ -378,7 +378,7 @@ export function getMemeDataConfig(): any {
       meme_winner_tokens: [
         "blackdragon.tkn.near",
         "token.lonkingnearbackto2024.near",
-        // "touched.tkn.near",
+        "touched.tkn.near",
         "gear.enleap.near",
         "token.0xshitzu.near",
       ],
@@ -422,7 +422,7 @@ export function getMemeDataConfig(): any {
         "token.lonkingnearbackto2024.near",
         "blackdragon.tkn.near",
         "gear.enleap.near",
-        // "touched.tkn.near",
+        "touched.tkn.near",
         "token.0xshitzu.near",
       ],
     };

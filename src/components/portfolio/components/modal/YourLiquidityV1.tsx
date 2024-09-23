@@ -707,7 +707,6 @@ function YourClassicLiquidityLinePage() {
     v2Farm,
     stakeList,
     v2StakeList,
-    router,
     pureIdList,
     poolNew,
     usePoolFullData,
@@ -718,6 +717,7 @@ function YourClassicLiquidityLinePage() {
   const { onRequestClose, setIsOpen } = useContext(
     PortfolioData
   ) as PortfolioContextType;
+  const router = useRouter();
   const { shares, shadowBurrowShare } = useYourliquidity(pool.id);
   const farmStakeTotal = useFarmStake({ poolId: Number(pool.id), stakeList });
   const userTotalShare = BigNumber.sum(sharesNew, farmStakeTotal);

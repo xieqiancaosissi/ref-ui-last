@@ -666,7 +666,7 @@ function DclFarmRowPage() {
             {displaySymbols()}
           </span>
           <span
-            className="frcc text-xs text-gray-10 px-1 rounded-md border border-gray-90 mr-1.5"
+            className="ml-2 frcc text-xs text-gray-10 px-1 rounded-md border border-gray-90 mr-1.5 cursor-pointer"
             onClick={() => {
               goFarmDetailPage(seed, router, onRequestClose, setIsOpen);
             }}

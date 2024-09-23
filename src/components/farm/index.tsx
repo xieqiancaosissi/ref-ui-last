@@ -63,6 +63,7 @@ import { FarmsContextData } from "./components/FarmsContext";
 import React from "react";
 import FarmView from "./components/FarmView";
 import { useFarmStore } from "@/stores/farm";
+import { useRouter } from "next/router";
 
 const {
   REF_VE_CONTRACT_ID,
@@ -118,6 +119,8 @@ const FarmsPage = (props: any, ref: any) => {
   const [maxLoveShareAmount, setMaxLoveShareAmount] = useState<string>("0");
   const [globalConfigLoading, setGlobalConfigLoading] = useState<boolean>(true);
   const refreshTime = 300000;
+  const router = useRouter();
+  const paramId = router.query.id || "";
   const sortList: { [key: string]: string } = {
     tvl: "TVL",
     apr: "APR",
@@ -158,13 +161,13 @@ const FarmsPage = (props: any, ref: any) => {
     }
     getLoveTokenBalance();
     get_ve_seed_share();
-  }, [accountId]);
+  }, [accountId, paramId]);
   useEffect(() => {
     setInit(init);
     setGetConfig(getConfig);
     setGet_user_unWithDraw_rewards(get_user_unWithDraw_rewards);
     setGet_user_seeds_and_unClaimedRewards(get_user_seeds_and_unClaimedRewards);
-  }, [accountId]);
+  }, [accountId, paramId]);
   useEffect(() => {
     if (count > 0) {
       init();

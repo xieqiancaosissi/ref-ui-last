@@ -107,7 +107,7 @@ export const get24hVolumes = async (
         headers: {
           "Content-type": "application/json; charset=UTF-8",
           ...getAuthenticationHeaders(
-            `/poollist/${batchIds.join("|")}/24hvolume/sum`
+            `/api/poollist/${batchIds.join("|")}/24hvolume/sum`
           ),
         },
       }

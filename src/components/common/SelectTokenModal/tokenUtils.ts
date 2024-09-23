@@ -136,6 +136,11 @@ export async function setSwapTokenAndBalances({
       tokenOutId == "near" ? "NEAR" : tokenOutId
     );
     const balances = await Promise.all([in_pending, out_pending]);
+    if (window.selectTokenUpdated) {
+      // Prevents problems caused by asynchronism
+      window.selectTokenUpdated = undefined;
+      return;
+    }
     TOKEN_IN = {
       ...metas[0],
       balanceDecimal: balances[0],
@@ -172,67 +177,6 @@ export async function setSwapTokenAndBalances({
   persistSwapStore.setTokenInId(getTokenUIId(TOKEN_IN));
   persistSwapStore.setTokenOutId(getTokenUIId(TOKEN_OUT));
   swapStore.setBalanceLoading(false);
-}
-export async function updateBalances({
-  tokenInId,
-  tokenOutId,
-  accountId,
-  swapStore,
-  tokenStore,
-  doNotshowLoading,
-  global_whitelisted_tokens_ids,
-}: {
-  tokenInId: string;
-  tokenOutId: string;
-  accountId: string;
-  swapStore: any;
-  tokenStore: any;
-  doNotshowLoading?: boolean;
-  global_whitelisted_tokens_ids: string[];
-}) {
-  if (accountId) {
-    const in_meta_pending = ftGetTokenMetadata(tokenInId, true);
-    const out_meta_pending = ftGetTokenMetadata(tokenOutId, true);
-    const metas = await Promise.all([in_meta_pending, out_meta_pending]);
-    if (!doNotshowLoading) {
-      swapStore.setBalanceLoading(true);
-    }
-    const in_pending = getTokenBalance(
-      tokenInId == "near" ? "NEAR" : tokenInId
-    );
-    const out_pending = getTokenBalance(
-      tokenOutId == "near" ? "NEAR" : tokenOutId
-    );
-    const balances = await Promise.all([in_pending, out_pending]);
-    const TOKEN_IN = {
-      ...metas[0],
-      balanceDecimal: balances[0],
-      balance: toReadableNumber(metas[0].decimals, balances[0]),
-    };
-    const TOKEN_OUT = {
-      ...metas[1],
-      balanceDecimal: balances[1],
-      balance: toReadableNumber(metas[1].decimals, balances[1]),
-    };
-    if (
-      !global_whitelisted_tokens_ids.includes(TOKEN_IN.id) &&
-      isRiskTokenBySuffix(TOKEN_IN)
-    ) {
-      TOKEN_IN.isRisk = true;
-    }
-    if (
-      !global_whitelisted_tokens_ids.includes(TOKEN_OUT.id) &&
-      isRiskTokenBySuffix(TOKEN_OUT)
-    ) {
-      TOKEN_OUT.isRisk = true;
-    }
-    updateStoreBalance({
-      token_in: TOKEN_IN,
-      token_out: TOKEN_OUT,
-      tokenStore,
-    });
-    swapStore.setBalanceLoading(false);
-  }
 }
 export function purgeTokensByIds(
   tokens: TokenMetadata[],

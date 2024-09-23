@@ -29,6 +29,7 @@ declare global {
     accountId: string;
     sender?: any;
     adaptiveRPC?: string;
+    selectTokenUpdated?: boolean;
   }
 }
 interface GetWalletSelectorArgs {

@@ -86,6 +86,7 @@ function SelectTokenButton(props: ISelectTokenButtonProps) {
       swapStore.setTokenOut(targetToken);
       persistSwapStore.setTokenOutId(targetTokenId);
     }
+    window.selectTokenUpdated = true;
   }
   function checkCacheLatest() {
     const cachedTime = tokenStore.get_update_time();

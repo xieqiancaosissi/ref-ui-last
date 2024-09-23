@@ -4,10 +4,7 @@ import { usePersistSwapStore, useSwapStore } from "@/stores/swap";
 import { useTokenStore, ITokenStore } from "@/stores/token";
 import { useAccountStore } from "@/stores/account";
 import useAllWhiteTokensWithBalances from "@/hooks/useAllWhiteTokensWithBalances";
-import {
-  setSwapTokenAndBalances,
-  updateBalances,
-} from "@/components/common/SelectTokenModal/tokenUtils";
+import { setSwapTokenAndBalances } from "@/components/common/SelectTokenModal/tokenUtils";
 import { IUITokens } from "@/interfaces/tokens";
 const configV2 = getConfigV2();
 const { INIT_SWAP_PAIRS } = configV2;
@@ -54,11 +51,12 @@ function InitData() {
   useEffect(() => {
     if (tokenInId && tokenOutId && accountId) {
       const timerId = setInterval(() => {
-        updateBalances({
+        setSwapTokenAndBalances({
           tokenInId,
           tokenOutId,
           accountId,
           swapStore,
+          persistSwapStore,
           tokenStore,
           global_whitelisted_tokens_ids,
           doNotshowLoading: true,

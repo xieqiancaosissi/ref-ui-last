@@ -139,11 +139,13 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
             className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center"
             style={{ zIndex: "10000", backdropFilter: "blur(6px)" }}
           >
-            <div className="text-white text-center bg-dark-10 p-6 rounded-lg">
-              <h2>You are prohibited from accessing app.ref.finance</h2>
-              <p>
-                due to your location or other infringement of the Terms of
-                Services.
+            <div
+              className="text-white text-center bg-dark-10 p-6 rounded-lg"
+              style={{ width: "400px" }}
+            >
+              <p className="text-base">
+                You are prohibited from accessing app.ref.finance due to your
+                location or other infringement of the Terms of Services.
               </p>
             </div>
           </div>

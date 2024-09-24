@@ -130,9 +130,7 @@ function ShareContainer(props: any) {
               poolDetail.id?.toString()
             ) && (
               <div
-                className={`cursor-pointer xsm:mt-auto ${
-                  !(countV2 > endedFarmCountV2) ? "hidden" : ""
-                }`}
+                className={`cursor-pointer xsm:mt-auto`}
                 onClick={(e) => {
                   e.stopPropagation();
                   e.preventDefault();

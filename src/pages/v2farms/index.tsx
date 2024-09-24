@@ -73,7 +73,6 @@ export default function FarmsBoosterPage(props: any) {
   const emptyDetailData = () => {
     setDetailData(null);
   };
-
   const baseCondition =
     paramId &&
     detailData &&

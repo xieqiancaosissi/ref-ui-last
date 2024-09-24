@@ -543,7 +543,7 @@ const FarmsPage = (props: any, ref: any) => {
         }
       });
       if (!targetFarms) {
-        openUrl("/v2farms");
+        router.push("/v2farms");
       } else {
         getDetailData({
           detailData: targetFarms,

@@ -37,6 +37,7 @@ export default function getConfigV2(
           "17208628f84f5d6ad33f0da3bbbeb27ffcb398eac501a31bd6ad2011e36133a1|wrap.near|2000",
           "853d955acef822db058eb8505911ed77f175b99e.factory.bridge.near|wrap.near|2000",
           "aurora|wrap.near|2000",
+          "usdt.tether-token.near|wrap.near|2000",
         ],
         NATIVE_TOKENS: [
           "usdt.tether-token.near",
@@ -150,6 +151,7 @@ export default function getConfigV2(
           "17208628f84f5d6ad33f0da3bbbeb27ffcb398eac501a31bd6ad2011e36133a1|wrap.near|2000",
           "853d955acef822db058eb8505911ed77f175b99e.factory.bridge.near|wrap.near|2000",
           "aurora|wrap.near|2000",
+          "usdt.tether-token.near|wrap.near|2000",
         ],
         NATIVE_TOKENS: [
           "usdt.tether-token.near",

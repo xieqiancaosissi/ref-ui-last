@@ -1,3 +1,4 @@
+import BigNumber from "bignumber.js";
 import { useState, useEffect, useCallback } from "react";
 import { usePoolStore } from "@/stores/pool";
 import { useAccountStore } from "@/stores/account";
@@ -22,15 +23,11 @@ import _ from "lodash";
 
 import { PoolInfo } from "@/services/swapV3";
 import { getAllTokenPrices } from "@/services/farm";
-import BigNumber from "bignumber.js";
 import { toReadableNumber } from "@/utils/numbers";
 import getConfigV2 from "@/utils/configV2";
 import getConfig from "@/utils/config";
 import { refSwapV3ViewFunction } from "@/utils/contract";
 import { useSwapStore } from "@/stores/swap";
-import { refFiViewFunction } from "@/utils/contract";
-import { STABLE_LP_TOKEN_DECIMALS } from "@/utils/constant";
-import { toNonDivisibleNumber } from "@/utils/numbers";
 import { StablePool } from "@/interfaces/swap";
 import { getRemoveLiquidityByTokens } from "./useStableShares";
 import { list_seed_farms } from "@/services/farm";
@@ -362,10 +359,13 @@ export const useAllPoolsV2 = (forPool?: boolean) => {
         let final = list;
         if (forPool) {
         } else {
-          final = list.filter((p: any) =>
-            getConfigV2().WHITE_LIST_DCL_POOL_IDS_IN_LIMIT_ORDERS.includes(
-              p.pool_id
-            )
+          // final = list.filter((p: any) =>
+          //   getConfigV2().WHITE_LIST_DCL_POOL_IDS_IN_LIMIT_ORDERS.includes(
+          //     p.pool_id
+          //   )
+          // );
+          final = list.filter(
+            (p: any) => !getConfig().DCL_POOL_BLACK_LIST.includes(p.pool_id)
           );
         }
         return Promise.all(
@@ -427,11 +427,14 @@ export const useAllDclPools = () => {
     if (Object.keys(tokenPriceList || {}).length > 0 || pricesDone) {
       listPools()
         .then((list: PoolInfo[]) => {
-          const final = list.filter((p: any) => {
-            return getConfigV2().WHITE_LIST_DCL_POOL_IDS_IN_LIMIT_ORDERS.includes(
-              p.pool_id
-            );
-          });
+          // const final = list.filter((p: any) => {
+          //   return getConfigV2().WHITE_LIST_DCL_POOL_IDS_IN_LIMIT_ORDERS.includes(
+          //     p.pool_id
+          //   );
+          // });
+          const final = list.filter(
+            (p: any) => !getConfig().DCL_POOL_BLACK_LIST.includes(p.pool_id)
+          );
           return Promise.all(
             final.map(async (p: any) => {
               const token_x: any = p.token_x;

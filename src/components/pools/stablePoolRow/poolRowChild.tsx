@@ -402,7 +402,7 @@ function PoolRow(props: any) {
                   item.id?.toString()
                 ) && (
                   <div
-                    className={`cursor-pointer`}
+                    className={`cursor-pointer ${!(countV2 > endedFarmCountV2) ? 'hidden' : ''}`}
                     onClick={(e) => {
                       e.stopPropagation();
                       e.preventDefault();

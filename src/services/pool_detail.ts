@@ -167,25 +167,27 @@ export const canFarmV2 = async (
   withEnded?: boolean
 ): Promise<Record<string, any>> => {
   let boostFarms;
+
   if (!withEnded) {
     boostFarms = (await db.queryBoostFarms()).filter(
-      (farm) => farm.status !== "Ended"
+      (farm) => farm.status !== 'Ended'
     );
   } else {
     boostFarms = await db.queryBoostFarms();
   }
   const countV2 = boostFarms.reduce((pre, cur) => {
-    if (Number(cur.pool_id) === pool_id) return pre + 1;
+    if (cur.pool_id === pool_id) return pre + 1;
     return pre;
   }, 0);
+
   const endedCount = boostFarms.reduce((pre, cur) => {
-    if (cur.status === "Ended" && Number(cur.pool_id) === pool_id)
+    if (cur.status === 'Ended' && cur.pool_id === pool_id)
       return pre + 1;
     return pre;
   }, 0);
   return {
     count: countV2,
-    version: "V2",
+    version: 'V2',
     endedCount,
   };
 };

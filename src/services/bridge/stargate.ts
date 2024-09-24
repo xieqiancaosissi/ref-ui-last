@@ -79,10 +79,14 @@ const stargateBridgeService = {
         ? discountedFeeUSD.toString()
         : fullFeeUSD.toString();
       logger.log("feeAmount", feeAmount);
-      const readableFeeAmount = new Big(formatAmount(
-        feeAmount,
-        getTokenDecimals(params.tokenIn.symbol, params.from)
-      )).round(6, Big.roundDown).toString();
+      const readableFeeAmount = new Big(
+        formatAmount(
+          feeAmount,
+          getTokenDecimals(params.tokenIn.symbol, params.from)
+        )
+      )
+        .round(6, Big.roundDown)
+        .toString();
       logger.log("readableFeeAmount", readableFeeAmount);
       const usdFee = readableFeeAmount;
       if (Number(params.amount) < Number(readableFeeAmount))
@@ -121,10 +125,14 @@ const stargateBridgeService = {
         const protocolFee = new Big(sendParam.amountLD.toString())
           .times(protocolFeeRatio)
           .toFixed(0);
-        const readableProtocolFee = new Big(formatAmount(
-          protocolFee,
-          getTokenDecimals(params.tokenIn.symbol, params.from)
-        )).round(6, Big.roundDown).toString();
+        const readableProtocolFee = new Big(
+          formatAmount(
+            protocolFee,
+            getTokenDecimals(params.tokenIn.symbol, params.from)
+          )
+        )
+          .round(6, Big.roundDown)
+          .toString();
         const minAmountWithSlippage = new Big(sendParam.minAmountLD.toString())
           .times(1 - params.slippage)
           .toFixed(0);
@@ -134,14 +142,22 @@ const stargateBridgeService = {
         logger.log("origin minAmountLD", sendParam.minAmountLD.toString());
         const newSendParam = { ...sendParam };
         newSendParam.minAmountLD = BigNumber.from(minAmountWithSlippage);
-        const readableMinAmount = new Big(formatAmount(
-          minAmount,
-          getTokenDecimals(params.tokenIn.symbol, params.from)
-        )).round(6, Big.roundDown).toString();
-        const readableMinAmountWithSlippage = new Big(formatAmount(
-          minAmountWithSlippage,
-          getTokenDecimals(params.tokenIn.symbol, params.from)
-        )).round(6, Big.roundDown).toString();
+        const readableMinAmount = new Big(
+          formatAmount(
+            minAmount,
+            getTokenDecimals(params.tokenIn.symbol, params.from)
+          )
+        )
+          .round(6, Big.roundDown)
+          .toString();
+        const readableMinAmountWithSlippage = new Big(
+          formatAmount(
+            minAmountWithSlippage,
+            getTokenDecimals(params.tokenIn.symbol, params.from)
+          )
+        )
+          .round(6, Big.roundDown)
+          .toString();
         return {
           minAmount,
           readableMinAmount,
@@ -166,10 +182,11 @@ const stargateBridgeService = {
       const { nativeFee, lzTokenFee } = messagingFee;
       const feeAmount = new Big(nativeFee).plus(lzTokenFee).toString();
       const mainToken = getChainMainToken(params.from);
-      const readableFeeAmount = new Big(formatAmount(
-        feeAmount,
-        getTokenDecimals(mainToken.symbol, params.from)
-      )).round(6, Big.roundDown).toString();
+      const readableFeeAmount = new Big(
+        formatAmount(feeAmount, getTokenDecimals(mainToken.symbol, params.from))
+      )
+        .round(6, Big.roundDown)
+        .toString();
       const ethPriceInUSD = await tokenServices.getEvmPrice(mainToken.symbol);
       const usdFee = new Big(readableFeeAmount).times(ethPriceInUSD).toString();
       const newSendParam = { ...sendParam };
@@ -180,10 +197,14 @@ const stargateBridgeService = {
       const protocolFee = new Big(sendParam.amountLD.toString())
         .times(protocolFeeRatio)
         .toFixed(0);
-      const readableProtocolFee =  new Big(formatAmount(
-        protocolFee,
-        getTokenDecimals(params.tokenIn.symbol, params.from)
-      )).round(6, Big.roundDown).toString();
+      const readableProtocolFee = new Big(
+        formatAmount(
+          protocolFee,
+          getTokenDecimals(params.tokenIn.symbol, params.from)
+        )
+      )
+        .round(6, Big.roundDown)
+        .toString();
       const minAmountWithSlippage = new Big(sendParam.minAmountLD.toString())
         .times(1 - params.slippage)
         .toFixed(0);
@@ -192,14 +213,22 @@ const stargateBridgeService = {
       logger.log("minAmount", minAmount);
       logger.log("minAmountWithSlippage", minAmountWithSlippage);
       logger.log("origin minAmountLD", sendParam.minAmountLD.toString());
-      const readableMinAmount = new Big(formatAmount(
-        minAmount,
-        getTokenDecimals(params.tokenIn.symbol, params.from)
-      )).round(6, Big.roundDown).toString();
-      const readableMinAmountWithSlippage = new Big(formatAmount(
-        minAmountWithSlippage,
-        getTokenDecimals(params.tokenIn.symbol, params.from)
-      )).round(6, Big.roundDown).toString();
+      const readableMinAmount = new Big(
+        formatAmount(
+          minAmount,
+          getTokenDecimals(params.tokenIn.symbol, params.from)
+        )
+      )
+        .round(6, Big.roundDown)
+        .toString();
+      const readableMinAmountWithSlippage = new Big(
+        formatAmount(
+          minAmountWithSlippage,
+          getTokenDecimals(params.tokenIn.symbol, params.from)
+        )
+      )
+        .round(6, Big.roundDown)
+        .toString();
 
       return {
         minAmount,

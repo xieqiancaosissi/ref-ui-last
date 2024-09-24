@@ -76,10 +76,13 @@ function TableItem({
 
             <CustomTooltip id="token-symbol" />
           </span>
-          {formatNumber(formatAmount(
-            transaction.amount,
-            getTokenDecimals(tokenMeta.symbol, transaction.from_chain)
-          ),{maximumFractionDigits:6})}
+          {formatNumber(
+            formatAmount(
+              transaction.amount,
+              getTokenDecimals(tokenMeta.symbol, transaction.from_chain)
+            ),
+            { maximumFractionDigits: 6 }
+          )}
         </div>
       </td>
       <td>

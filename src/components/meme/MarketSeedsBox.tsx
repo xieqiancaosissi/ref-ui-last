@@ -46,6 +46,7 @@ const MarketSeedsBox = ({
   const [isStakeOpen, setIsStakeOpen] = useState(false);
   const [modal_action_seed_id, set_modal_action_seed_id] = useState("");
   const memeDataConfig = getMemeDataConfig();
+  const { coming_offline_soon_token } = getMemeDataConfig();
   const appStore = useAppStore();
   // if parent components is intro
   const meme_winner_tokens =
@@ -107,9 +108,11 @@ const MarketSeedsBox = ({
       {Object.entries(displaySeeds).map(([seed_id, seed]) => {
         // const xrefSeed = xrefSeeds[MEME_TOKEN_XREF_MAP[seed_id]];
         // const is_pending = isPending(seed) && isPending(xrefSeed);
+        const isComingOffline = coming_offline_soon_token.includes(seed_id);
         const stakeButtonDisabled =
-          emptyNumber(user_balances[seed_id]) &&
-          emptyNumber(user_balances[xrefTokenId]);
+          isComingOffline ||
+          (emptyNumber(user_balances[seed_id]) &&
+            emptyNumber(user_balances[xrefTokenId]));
         const hasLpSeed =
           lpSeeds?.[seed_id]?.farmList?.[0]?.status &&
           lpSeeds?.[seed_id].farmList?.[0].status !== "Ended";

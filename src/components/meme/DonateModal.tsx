@@ -5,7 +5,7 @@ import Modal from "react-modal";
 import { isMobile } from "../../utils/device";
 import { TokenMetadata } from "../../services/ft-contract";
 import { MemeContext } from "./context";
-import { getMemeContractConfig } from "./memeConfig";
+import { getMemeContractConfig, getMemeDataConfig } from "./memeConfig";
 import { InputAmount } from "./InputBox";
 import { toReadableNumber, toNonDivisibleNumber } from "../../utils/numbers";
 import { donate } from "../../services/meme";
@@ -20,6 +20,7 @@ import { IExecutionResult } from "@/interfaces/wallet";
 import successToast from "../common/toast/successToast";
 import failToast from "../common/toast/failToast";
 const { MEME_TOKEN_XREF_MAP } = getMemeContractConfig();
+const { coming_offline_soon_token } = getMemeDataConfig();
 function DonateModal(props: any) {
   const { isOpen, onRequestClose } = props;
   const [selectedTab, setSelectedTab] = useState("");
@@ -162,6 +163,10 @@ function DonateModal(props: any) {
           <div className="mt-5 flex flex-wrap mb-2 xsm:hidden">
             {!emptyObject(xrefSeeds) &&
               Object.keys(MEME_TOKEN_XREF_MAP)
+                .filter(
+                  (memeTokenId) =>
+                    !coming_offline_soon_token.includes(memeTokenId)
+                )
                 .sort(sortByXrefStaked(xrefSeeds))
                 .map((memeTokenId) => {
                   return (
@@ -196,6 +201,10 @@ function DonateModal(props: any) {
                    cursor-pointer outline-none bg-dark-70 text-white w-max"
                 >
                   {Object.keys(MEME_TOKEN_XREF_MAP)
+                    .filter(
+                      (memeTokenId) =>
+                        !coming_offline_soon_token.includes(memeTokenId)
+                    )
                     .sort(sortByXrefStaked(xrefSeeds))
                     .map((memeTokenId, index, array) => (
                       <div

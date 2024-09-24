@@ -300,6 +300,7 @@ export function getMemeDataConfig(): any {
         "blackdragon.fakes.testnet",
         "shitzu.fakes.testnet",
       ],
+      coming_offline_soon_token: [""],
     };
   } else if (env == "testnet") {
     return {
@@ -344,6 +345,7 @@ export function getMemeDataConfig(): any {
         "blackdragon.fakes.testnet",
         "shitzu.fakes.testnet",
       ],
+      coming_offline_soon_token: [""],
     };
   } else {
     return {
@@ -425,6 +427,7 @@ export function getMemeDataConfig(): any {
         "touched.tkn.near",
         "token.0xshitzu.near",
       ],
+      coming_offline_soon_token: ["touched.tkn.near"],
     };
   }
 }

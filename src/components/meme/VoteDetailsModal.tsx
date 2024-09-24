@@ -136,6 +136,7 @@ function DonateListPc({ donateList }: { donateList: IDonate[] }) {
   const isSignedIn = getIsSignedIn();
   const { xrefSeeds, xrefTokenId, xrefFarmContractUserData } =
     useContext(MemeContext)!;
+  const { coming_offline_soon_token } = getMemeDataConfig();
   return (
     <div>
       <div className="bg-dark-60 rounded-2xl border border-dark-50 mb-4">
@@ -153,6 +154,9 @@ function DonateListPc({ donateList }: { donateList: IDonate[] }) {
               {isSignedIn ? <div className="pl-1">You Voted</div> : null}
             </div>
             {donateList
+              .filter(({ memeTokenId }) => {
+                return !coming_offline_soon_token.includes(memeTokenId);
+              })
               .sort((b, a) => {
                 return Big(a.xrefStakedAmount)
                   .minus(b.xrefStakedAmount)
@@ -241,10 +245,14 @@ function DonateListMobile({ donateList }: { donateList: IDonate[] }) {
   const isSignedIn = getIsSignedIn();
   const { xrefSeeds, xrefTokenId, xrefFarmContractUserData } =
     useContext(MemeContext)!;
+  const { coming_offline_soon_token } = getMemeDataConfig();
   return (
     <div>
       <div>
         {donateList
+          .filter(({ memeTokenId }) => {
+            return !coming_offline_soon_token.includes(memeTokenId);
+          })
           .sort((b, a) => {
             return Big(a.xrefStakedAmount).minus(b.xrefStakedAmount).toNumber();
           })

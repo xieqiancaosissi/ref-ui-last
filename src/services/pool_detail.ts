@@ -174,9 +174,8 @@ export const canFarmV2 = async (
   } else {
     boostFarms = await db.queryBoostFarms();
   }
-
   const countV2 = boostFarms.reduce((pre, cur) => {
-    if (Number(cur.pool_id) == pool_id) return pre + 1;
+    if (Number(cur.pool_id) === pool_id) return pre + 1;
     return pre;
   }, 0);
   const endedCount = boostFarms.reduce((pre, cur) => {
@@ -184,7 +183,6 @@ export const canFarmV2 = async (
       return pre + 1;
     return pre;
   }, 0);
-
   return {
     count: countV2,
     version: "V2",

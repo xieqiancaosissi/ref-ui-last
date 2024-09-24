@@ -1624,11 +1624,12 @@ async function getFarmDataList(initData: any) {
       token_ids = token_account_ids;
     }
     const promise_token_meta_data: Promise<any>[] = [];
-    token_ids.forEach(async (tokenId: string) => {
+    token_ids?.forEach(async (tokenId: string) => {
       promise_token_meta_data.push(ftGetTokenMetadata(tokenId));
     });
     const tokens_meta_data = await Promise.all(promise_token_meta_data);
-    pool.tokens_meta_data = tokens_meta_data;
+    // pool.tokens_meta_data = tokens_meta_data;
+    Object.assign(pool || {}, tokens_meta_data)
     const promise_farm_meta_data = farmList.map(async (farm: FarmBoost) => {
       const tokenId = farm.terms.reward_token;
       const tokenMetadata = await ftGetTokenMetadata(tokenId);
@@ -1661,6 +1662,7 @@ async function getFarmDataList(initData: any) {
         metadata_x_y: { [token_x]: token_x_meta, [token_y]: token_y_meta },
       });
     } else {
+      if (!pool) return false;
       const { tvl, id, shares_total_supply } = pool;
       const poolShares = Number(
         toReadableNumber(DECIMALS, shares_total_supply)

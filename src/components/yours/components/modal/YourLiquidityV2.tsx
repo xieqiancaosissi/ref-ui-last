@@ -974,7 +974,7 @@ function UserLiquidityLineStyleGroup({
 
   useEffect(() => {
     let apr_24 = "";
-    if (dclFeeRes?.fee_data) {
+    if (dclFeeRes?.apr?.fee_data) {
       // 24h profit
       poolDetail.token_x_metadata = tokenMetadata_x_y[0];
       poolDetail.token_y_metadata = tokenMetadata_x_y[1];

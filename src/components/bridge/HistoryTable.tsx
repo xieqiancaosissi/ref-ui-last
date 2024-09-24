@@ -3,6 +3,7 @@ import SvgIcon from "./SvgIcon";
 import {
   formatAmount,
   formatChainIcon,
+  formatNumber,
   formatSortAddress,
   formatTimestamp,
   formatTxExplorerUrl,
@@ -75,10 +76,10 @@ function TableItem({
 
             <CustomTooltip id="token-symbol" />
           </span>
-          {formatAmount(
+          {formatNumber(formatAmount(
             transaction.amount,
             getTokenDecimals(tokenMeta.symbol, transaction.from_chain)
-          )}
+          ),{maximumFractionDigits:6})}
         </div>
       </td>
       <td>

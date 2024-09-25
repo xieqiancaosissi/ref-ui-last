@@ -796,7 +796,12 @@ function UserLiquidityLineStyleGroup({
     ) {
       get_24_apr();
     }
-  }, [JSON.stringify(poolDetail || {}), tokenPriceList?.length, tokenMetadata_x_y, liquidities_list?.length]);
+  }, [
+    JSON.stringify(poolDetail || {}),
+    tokenPriceList?.length,
+    tokenMetadata_x_y,
+    liquidities_list?.length,
+  ]);
   useEffect(() => {
     if (
       all_seeds?.length > 0 &&

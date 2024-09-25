@@ -118,7 +118,7 @@ export function FarmView(props: {
   const [yourApr, setYourApr] = useState("");
   const [yourActualAprRate, setYourActualAprRate] = useState("1");
   // const tokens = sortTokens(seed.pool?.tokens_meta_data || []);
-  const tokens = sortTokens( dealToken()  || []);
+  const tokens = sortTokens(dealToken() || []);
   const router = useRouter();
   const [yourTvl, setYourTvl] = useState("");
   const unClaimedTokens = useTokens(
@@ -141,8 +141,7 @@ export function FarmView(props: {
     locked_amount = "0",
   } = user_seeds_map[seed_id] || {};
 
-
-  function dealToken (){
+  function dealToken() {
     const rewardTokenList: any = [];
     if (seed.farmList) {
       seed.farmList.forEach((farm: FarmBoost) => {
@@ -152,7 +151,7 @@ export function FarmView(props: {
         }
       });
     }
-    return rewardTokenList
+    return rewardTokenList;
   }
 
   useEffect(() => {

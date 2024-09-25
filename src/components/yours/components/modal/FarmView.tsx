@@ -100,7 +100,6 @@ export function FarmView(props: {
   } = props;
   const { pool, seedTvl, total_seed_amount, seed_id, farmList, seed_decimal } =
     seed;
-
   // const detailData = getDetailData();
   // console.log(detailData)
   const [contractId, temp_pool_id] = seed_id.split("@");
@@ -117,8 +116,7 @@ export function FarmView(props: {
   const [lpSwitchStatus, setLpSwitchStatus] = useState("1");
   const [yourApr, setYourApr] = useState("");
   const [yourActualAprRate, setYourActualAprRate] = useState("1");
-  // const tokens = sortTokens(seed.pool?.tokens_meta_data || []);
-  const tokens = sortTokens(dealToken() || []);
+  const tokens = sortTokens(seed.pool?.tokens_meta_data || []);
   const router = useRouter();
   const [yourTvl, setYourTvl] = useState("");
   const unClaimedTokens = useTokens(
@@ -140,19 +138,6 @@ export function FarmView(props: {
     x_locked_amount = "0",
     locked_amount = "0",
   } = user_seeds_map[seed_id] || {};
-
-  function dealToken() {
-    const rewardTokenList: any = [];
-    if (seed.farmList) {
-      seed.farmList.forEach((farm: FarmBoost) => {
-        const { token_meta_data } = farm;
-        if (token_meta_data) {
-          rewardTokenList.push(token_meta_data);
-        }
-      });
-    }
-    return rewardTokenList;
-  }
 
   useEffect(() => {
     const yourApr = getYourApr();

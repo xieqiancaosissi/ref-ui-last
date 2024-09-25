@@ -1628,8 +1628,7 @@ async function getFarmDataList(initData: any) {
       promise_token_meta_data.push(ftGetTokenMetadata(tokenId));
     });
     const tokens_meta_data = await Promise.all(promise_token_meta_data);
-    // pool.tokens_meta_data = tokens_meta_data;
-    Object.assign(pool || {}, tokens_meta_data);
+    pool.tokens_meta_data = tokens_meta_data;
     const promise_farm_meta_data = farmList.map(async (farm: FarmBoost) => {
       const tokenId = farm.terms.reward_token;
       const tokenMetadata = await ftGetTokenMetadata(tokenId);

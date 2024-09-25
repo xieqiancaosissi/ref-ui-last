@@ -211,6 +211,16 @@ export default function Swap() {
   // select-none
   return (
     <main className="m-auto my-20 xsm:mt-4 xsm:w-95vw lg:w-[420px]">
+      <div
+        className="lg:hidden mt-[-40px] mb-[18px] bg-white bg-opacity-10 px-3 rounded border w-fit 
+      border-gray-70 py-2 text-sm text-gray-10 frcc cursor-pointer"
+        onClick={(e) => {
+          openUrl(`https://old.app.ref.finance/`);
+        }}
+      >
+        <VersionOld className="mr-1.5" />
+        Version 1
+      </div>
       <InitData />
       <SwapPopup />
       <div className="rounded-lg bg-dark-10 p-4">
@@ -314,8 +324,8 @@ export default function Swap() {
       )}
       {/* v1 */}
       <div
-        className="fixed top-[50px] left-[18px] bg-white bg-opacity-10 px-3 rounded border 
-      border-gray-70 py-2 text-sm text-gray-10 frcc cursor-pointer xsm:left-[12px] xsm:top-[54px]"
+        className="xsm:hidden fixed top-[50px] left-[18px] bg-white bg-opacity-10 px-3 rounded border 
+      border-gray-70 py-2 text-sm text-gray-10 frcc cursor-pointer"
         onClick={(e) => {
           openUrl(`https://old.app.ref.finance/`);
         }}

@@ -912,9 +912,10 @@ function ClassicFarmRow({ seed }: { seed: Seed }) {
   }
   function displaySymbols() {
     let result = "";
-    pool?.tokens_meta_data?.forEach((token: TokenMetadata, index: number) => {
-      const symbol = toRealSymbol(token.symbol);
-      if (index === (pool?.tokens_meta_data?.length ?? 0) - 1) {
+    // result = toRealSymbol(pool.token_symbols.join("-"));
+    pool?.token_symbols?.forEach((token: any, index: number) => {
+      const symbol = toRealSymbol(token);
+      if (index === (pool?.token_symbols?.length ?? 0) - 1) {
         result += symbol;
       } else {
         result += symbol + "-";

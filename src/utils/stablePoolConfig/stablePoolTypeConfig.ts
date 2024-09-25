@@ -14,7 +14,7 @@ export default function getStablePoolTypeConfig(
           "4513",
           "4514",
           "5219",
-          "5029"
+          "5029",
         ],
         DEGEN_POOLS_IDS: [],
         STABLE_POOL_IDS: ["1910", "3020", "3364", "3433"],
@@ -43,7 +43,7 @@ export default function getStablePoolTypeConfig(
           "4513",
           "4514",
           "5219",
-          "5029"
+          "5029",
         ],
         DEGEN_POOLS_IDS: [],
         STABLE_POOL_IDS: ["1910", "3020", "3364", "3433"],

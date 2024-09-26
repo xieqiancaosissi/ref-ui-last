@@ -6,6 +6,7 @@ import { useAccountStore } from "@/stores/account";
 import useAllWhiteTokensWithBalances from "@/hooks/useAllWhiteTokensWithBalances";
 import { setSwapTokenAndBalances } from "@/components/common/SelectTokenModal/tokenUtils";
 import { IUITokens } from "@/interfaces/tokens";
+import { getAllTokenPrices } from "@/services/farm";
 const configV2 = getConfigV2();
 const { INIT_SWAP_PAIRS } = configV2;
 function InitData() {
@@ -25,6 +26,11 @@ function InitData() {
     tokenStore.get_global_whitelisted_tokens_ids();
   const tokenInId = persistSwapStore.getTokenInId();
   const tokenOutId = persistSwapStore.getTokenOutId();
+  useEffect(() => {
+    getAllTokenPrices().then((res) => {
+      swapStore.setAllTokenPrices(res);
+    });
+  }, []);
   useEffect(() => {
     if (!walletLoading && global_whitelisted_tokens_ids?.length > 0) {
       const tokenInIdStore = persistSwapStore.getTokenInId();

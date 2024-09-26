@@ -23,7 +23,6 @@ import {
   PRICE_IMPACT_RED_VALUE,
 } from "@/utils/constant";
 import useMultiSwap from "@/hooks/useMultiSwap";
-import { getAllTokenPrices } from "@/services/farm";
 import {
   useSwapStore,
   usePersistSwapStore,
@@ -82,11 +81,6 @@ export default function Swap() {
     }, 500),
     []
   );
-  useEffect(() => {
-    getAllTokenPrices().then((res) => {
-      swapStore.setAllTokenPrices(res);
-    });
-  }, []);
   useEffect(() => {
     if (tokenIn?.id == configV2.SKYWARDID) {
       setShowSkywardTip(true);

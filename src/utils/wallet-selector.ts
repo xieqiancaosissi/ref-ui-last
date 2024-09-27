@@ -21,6 +21,11 @@ import { setupCoin98Wallet } from "@near-wallet-selector/coin98-wallet";
 import "@near-wallet-selector/modal-ui/styles.css";
 import getConfig from "./config";
 import { getSelectedRpc } from "./rpc";
+import type { Config } from "@wagmi/core";
+import { reconnect, http, createConfig } from "@wagmi/core";
+import { walletConnect, injected } from "@wagmi/connectors";
+import { setupEthereumWallets } from "@near-wallet-selector/ethereum-wallets";
+import { createWeb3Modal } from "@web3modal/wagmi";
 declare global {
   interface Window {
     selector: WalletSelector & { getAccountId: () => string };
@@ -57,7 +62,48 @@ export async function getWalletSelector({
   };
   const RPC = getSelectedRpc();
   console.log("0000000000001-wallet loading start");
+  const projectId = "87e549918631f833447b56c15354e450";
   const signInContractId = getConfig().REF_FARM_BOOST_CONTRACT_ID;
+  // evm wallet config start
+  const nearBlock = {
+    id: 397,
+    name: "NEAR Mainnet",
+    nativeCurrency: {
+      decimals: 18,
+      name: "NEAR",
+      symbol: "NEAR",
+    },
+    rpcUrls: {
+      default: { http: ["https://eth-rpc.mainnet.near.org"] },
+      public: { http: ["https://eth-rpc.mainnet.near.org"] },
+    },
+    blockExplorers: {
+      default: {
+        name: "NEAR Explorer",
+        url: "https://eth-explorer.near.org",
+      },
+    },
+    testnet: false,
+  };
+  const wagmiConfig: Config = createConfig({
+    chains: [nearBlock],
+    transports: {
+      [nearBlock.id]: http(),
+    },
+    connectors: [
+      walletConnect({
+        projectId,
+        showQrModal: false,
+      }),
+      injected({ shimDisconnect: true }),
+    ],
+  });
+  reconnect(wagmiConfig);
+  const web3Modal = createWeb3Modal({
+    wagmiConfig,
+    projectId,
+  });
+  // evm wallet config end
   const selector: any = await setupWalletSelector({
     network: {
       networkId: getConfig().networkId as NetworkId,
@@ -84,7 +130,7 @@ export async function getWalletSelector({
       setupNightly(),
       setupLedger(),
       setupWalletConnect({
-        projectId: "87e549918631f833447b56c15354e450",
+        projectId,
 
         metadata: {
           name: "ref finance",
@@ -116,6 +162,11 @@ export async function getWalletSelector({
         contractId: signInContractId,
       }),
       setupCoin98Wallet({}),
+      setupEthereumWallets({
+        wagmiConfig,
+        web3Modal,
+        alwaysOnboardDuringSignIn: true,
+      } as any),
     ],
   });
   console.log("2222222222222-wallet loading end");

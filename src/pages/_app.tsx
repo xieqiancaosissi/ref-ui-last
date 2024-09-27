@@ -141,7 +141,7 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
           >
             <div
               className="text-white text-center bg-dark-10 p-6 rounded-lg"
-              style={{ width: "400px" }}
+              style={{ width: "250px" }}
             >
               <p className="text-base">
                 You are prohibited from accessing app.ref.finance due to your

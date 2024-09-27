@@ -1492,11 +1492,13 @@ function FarmsDclDetail(props: {
           <p onClick={goBacktoFarms}> {`Farms  >`}</p>
           <p className="text-white ml-1">Details</p>
         </div>
-        <div className="flex mb-1">{displayImgs()}</div>
         <div className="text-white text-lg flex items-center justify-between mb-4">
-          <div className="flex items-center">
-            {displaySymbols()}
-            <FarmListDCLIcon className="ml-1" />
+          <div className="flex mb-1">
+            {displayImgs()}
+            <div className="ml-1 flex items-center">
+              {displaySymbols()}
+              <FarmListDCLIcon className="ml-1" />
+            </div>
           </div>
           <div
             className="text-gray-60 text-sm flex items-center"

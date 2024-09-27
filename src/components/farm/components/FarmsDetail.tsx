@@ -1116,20 +1116,41 @@ function FarmsDetail(props: {
           <p onClick={goBacktoFarms}> {`Farms  >`}</p>
           <p className="text-white ml-1">Details</p>
         </div>
-        <div className="flex mb-1">{displayImgs()}</div>
-        <div className="text-white text-lg flex items-center justify-between mb-4">
-          <div className="flex items-center">
-            {displaySymbols()}
-            {showNewTag() ? <NewTag className="ml-1"></NewTag> : null}
+        {seed_id === "v2.ref-finance.near@4179" ? (
+          <>
+            <div className="flex mb-1">{displayImgs()}</div>
+            <div className="text-white text-lg flex items-center justify-between mb-4">
+              <div className="flex items-center">
+                {displaySymbols()}
+                {showNewTag() ? <NewTag className="ml-1"></NewTag> : null}
+              </div>
+              <div
+                className="text-gray-60 text-sm flex items-center"
+                onClick={goPool}
+              >
+                <p className="underline mr-1">Pool</p>
+                <FarmDetailsPoolIcon />
+              </div>
+            </div>
+          </>
+        ) : (
+          <div className="text-white text-lg flex items-center justify-between mb-4">
+            <div className="flex mb-1">
+              {displayImgs()}
+              <div className="ml-1">
+                {displaySymbols()}
+                {showNewTag() ? <NewTag className="ml-1"></NewTag> : null}
+              </div>
+            </div>
+            <div
+              className="text-gray-60 text-sm flex items-center"
+              onClick={goPool}
+            >
+              <p className="underline mr-1">Pool</p>
+              <FarmDetailsPoolIcon />
+            </div>
           </div>
-          <div
-            className="text-gray-60 text-sm flex items-center"
-            onClick={goPool}
-          >
-            <p className="underline mr-1">Pool</p>
-            <FarmDetailsPoolIcon />
-          </div>
-        </div>
+        )}
         <div className="bg-dark-210 rounded-md p-3.5 mb-4">
           <div className="frcb text-sm mb-4">
             <p className="text-gray-50">Total staked</p>

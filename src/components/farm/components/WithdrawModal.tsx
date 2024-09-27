@@ -266,26 +266,26 @@ function Withdraw({
               </div>
             </div>
           ) : null}
-          <div className="flex flex-col items-start bg-gray-40 justify-between rounded-lg px-6 py-4  mb-4">
+          <div className="flex flex-col items-start bg-gray-40 justify-between rounded-lg px-6 py-4  mb-4 xs:px-4">
             <span className="text-white text-sm">
               🤑 How to compound rewards?
             </span>
-            <div className="flex items-center flex-wrap mt-4">
-              <div className="flex items-center text-xs text-gray-150 mr-5 mb-1 xs:mr-3">
+            <div className="flex items-center flex-wrap mt-4 xs:flex-nowrap xs:overflow-x-auto">
+              <div className="flex items-center text-xs text-gray-150 mr-5 mb-1 xs:mr-3 xs:flex-shrink-0">
                 <label className="flex items-center justify-center w-3.5 h-3.5 rounded-full text-black bg-primaryGreen mr-1">
                   1
                 </label>
-                <div className="text-gray-150 mr-4">Withdraw</div>
+                <div className="text-gray-150 mr-4 xs:mr-2">Withdraw</div>
                 {">>"}
               </div>
-              <div className="flex items-center text-xs text-gray-150 mr-5 mb-1 xs:mr-3">
+              <div className="flex items-center text-xs text-gray-150 mr-5 mb-1 xs:mr-3 xs:flex-shrink-0">
                 <label className="flex items-center justify-center w-4 h-4 rounded-full text-black bg-primaryGreen mr-1">
                   2
                 </label>
-                <div className="text-gray-150 mr-4">Add Liquidity</div>
+                <div className="text-gray-150 mr-4 xs:mr-2">Add Liquidity</div>
                 {">>"}
               </div>
-              <div className="flex items-center text-xs text-gray-150 mb-1">
+              <div className="flex items-center text-xs text-gray-150 mb-1 xs:flex-shrink-0">
                 <label className="flex items-center justify-center w-4 h-4 rounded-full text-black bg-primaryGreen mr-1">
                   3
                 </label>

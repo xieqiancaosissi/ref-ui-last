@@ -283,8 +283,9 @@ function RateChart() {
 
     return null;
   };
+  console.log('88888888888888-isMobile', isMobile);
   return (
-    <div className="w-full xsm:mt-5 text-white">
+    <div className="xsm:mt-5 text-white" style={{ width: isMobile ? 'cale(100vw - 24px)': 'calc(100% - 260px)'}}>
       {/* base data start */}
       <div className="flex xsm:flex-col-reverse items-center justify-between pl-4 pr-3 mt-3 xsm:pl-0 xsm:pr-0 xsm:-mt-2">
         <div className="frcs xsm:justify-start xsm:w-full xsm:mt-4 xs:flex xs:items-center xs:mb-2 xs:justify-between xs:flex-wrap">
